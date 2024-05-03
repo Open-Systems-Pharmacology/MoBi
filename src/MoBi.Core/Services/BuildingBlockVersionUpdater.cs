@@ -1,8 +1,10 @@
 ﻿using System.Linq;
+using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 
@@ -18,11 +20,13 @@ namespace MoBi.Core.Services
    {
       private readonly IMoBiProjectRetriever _projectRetriever;
       private readonly IEventPublisher _eventPublisher;
+      private readonly IDialogCreator _dialogCreator;
 
-      public BuildingBlockVersionUpdater(IMoBiProjectRetriever projectRetriever, IEventPublisher eventPublisher)
+      public BuildingBlockVersionUpdater(IMoBiProjectRetriever projectRetriever, IEventPublisher eventPublisher, IDialogCreator dialogCreator)
       {
          _projectRetriever = projectRetriever;
          _eventPublisher = eventPublisher;
+         _dialogCreator = dialogCreator;
       }
 
       public void UpdateBuildingBlockVersion(IBuildingBlock buildingBlock, uint newVersion)
@@ -30,9 +34,22 @@ namespace MoBi.Core.Services
          if (buildingBlock == null)
             return;
 
+         if (shouldShowModuleConversionWarning(buildingBlock))
+            showModuleConversionWarning(buildingBlock);
+
          buildingBlock.Version = newVersion;
          publishSimulationStatusChangedEvents(buildingBlock);
          publishModuleStatusChangedEvents(buildingBlock);
+      }
+
+      private void showModuleConversionWarning(IBuildingBlock buildingBlock)
+      {
+         _dialogCreator.MessageBoxInfo(AppConstants.Captions.TheModuleWillBeConvertedFromPKSimToExtensionModule(buildingBlock.Module.Name));
+      }
+
+      private bool shouldShowModuleConversionWarning(IBuildingBlock buildingBlock)
+      {
+         return buildingBlock.Module != null && buildingBlock.Module.IsPKSimModule;
       }
 
       private void publishModuleStatusChangedEvents(IBuildingBlock buildingBlock)
