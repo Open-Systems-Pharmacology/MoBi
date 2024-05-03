@@ -7,7 +7,7 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class concern_for_UpdateSimulationSettingsInSimulationCommand : ContextSpecification<UpdateSimulationSettingsInSimulationCommand>
+   public class concern_for_UpdateSolverAndSchemaInSimulationCommand : ContextSpecification<UpdateSolverAndSchemaInSimulationCommand>
    {
       protected IMoBiSimulation _simulation;
       protected SimulationSettings _newSimulationSettings;
@@ -27,11 +27,11 @@ namespace MoBi.Core.Commands
             Id = "simulationId"
          };
          _newSimulationSettings = new SimulationSettings();
-         sut = new UpdateSimulationSettingsInSimulationCommand(_simulation, _newSimulationSettings);
+         sut = new UpdateSolverAndSchemaInSimulationCommand(_simulation, _newSimulationSettings.Solver, _newSimulationSettings.OutputSchema);
       }
    }
 
-   public class When_updating_simulation_settings_in_a_simulation : concern_for_UpdateSimulationSettingsInSimulationCommand
+   public class When_updating_simulation_settings_in_a_simulation : concern_for_UpdateSolverAndSchemaInSimulationCommand
    {
       protected override void Because()
       {
@@ -41,11 +41,12 @@ namespace MoBi.Core.Commands
       [Observation]
       public void the_simulation_settings_are_updated_in_the_simulation()
       {
-         _simulation.Configuration.SimulationSettings.ShouldBeEqualTo(_newSimulationSettings);
+         _simulation.Configuration.SimulationSettings.Solver.ShouldBeEqualTo(_newSimulationSettings.Solver);
+         _simulation.Configuration.SimulationSettings.OutputSchema.ShouldBeEqualTo(_newSimulationSettings.OutputSchema);
       }
    }
 
-   public class When_reversing_the_update_of_simulation_settings_in_a_simulation : concern_for_UpdateSimulationSettingsInSimulationCommand
+   public class When_reversing_the_update_of_simulation_settings_in_a_simulation : concern_for_UpdateSolverAndSchemaInSimulationCommand
    {
       protected override void Context()
       {
@@ -62,7 +63,8 @@ namespace MoBi.Core.Commands
       [Observation]
       public void the_original_simulation_settings_are_restored()
       {
-         _simulation.Configuration.SimulationSettings.ShouldBeEqualTo(_oldSimulationSettings);
+         _simulation.Configuration.SimulationSettings.OutputSchema.ShouldBeEqualTo(_oldSimulationSettings.OutputSchema);
+         _simulation.Configuration.SimulationSettings.Solver.ShouldBeEqualTo(_oldSimulationSettings.Solver);
       }
    }
 }

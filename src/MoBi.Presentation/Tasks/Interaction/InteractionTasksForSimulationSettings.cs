@@ -4,6 +4,7 @@ using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Presentation.Tasks.Edit;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility.Extensions;
 
@@ -14,6 +15,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       void LoadDefaultSimulationSettingsInProject();
       void Edit(SimulationSettings simulationSettings);
       void UpdateDefaultSimulationSettingsInProject(SimulationSettings simulationSettings);
+      void UpdateDefaultOutputSelectionsInProject(SimulationSettings simulationSettings);
    }
 
    public class InteractionTasksForSimulationSettings : InteractionTasksForBuildingBlock<MoBiProject, SimulationSettings>, IInteractionTasksForSimulationSettings
@@ -53,13 +55,29 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (simulationSettingsBlocks == null || !simulationSettingsBlocks.Any())
             return;
 
-         UpdateDefaultSimulationSettingsInProject(simulationSettingsBlocks.First());
+         replaceSimulationSettingsInProject(simulationSettingsBlocks.First());
+      }
+
+      private void replaceSimulationSettingsInProject(SimulationSettings simulationSettings)
+      {
+         Context.CurrentProject.SimulationSettings = simulationSettings;
+         Context.PublishEvent(new DefaultSimulationSettingsUpdatedEvent(Context.CurrentProject.SimulationSettings));
       }
 
       public void UpdateDefaultSimulationSettingsInProject(SimulationSettings simulationSettings)
       {
-         Context.CurrentProject.SimulationSettings = simulationSettings;
-         Context.PublishEvent(new DefaultSimulationSettingsUpdatedEvent(simulationSettings));
+         var clonedSettings = Context.Clone(simulationSettings);
+         Context.CurrentProject.SimulationSettings.OutputSchema = clonedSettings.OutputSchema;
+         Context.CurrentProject.SimulationSettings.Solver = clonedSettings.Solver;
+
+         Context.PublishEvent(new DefaultSimulationSettingsUpdatedEvent(Context.CurrentProject.SimulationSettings));
+      }
+
+      public void UpdateDefaultOutputSelectionsInProject(SimulationSettings simulationSettings)
+      {
+         var clonedSettings = Context.Clone(simulationSettings);
+         Context.CurrentProject.SimulationSettings.OutputSelections = clonedSettings.OutputSelections;
+         Context.PublishEvent(new DefaultSimulationSettingsUpdatedEvent(Context.CurrentProject.SimulationSettings));
       }
 
       public void Edit(SimulationSettings simulationSettings)
