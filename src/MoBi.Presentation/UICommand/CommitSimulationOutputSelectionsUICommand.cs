@@ -1,4 +1,5 @@
-﻿using MoBi.Presentation.Tasks.Interaction;
+﻿using System.Linq;
+using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.UICommands;
@@ -19,7 +20,7 @@ namespace MoBi.Presentation.UICommand
 
       protected override void PerformExecute()
       {
-         _simulationSettingsTask.UpdateDefaultOutputSelectionsInProject(Subject);
+         _simulationSettingsTask.UpdateDefaultOutputSelectionsInProject(Subject.OutputSelections.ToList());
       }
    }
 }
