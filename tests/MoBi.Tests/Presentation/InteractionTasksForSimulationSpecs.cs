@@ -340,10 +340,15 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void the_changes_should_include_the_individual_and_settings_from_the_simulation()
+      public void the_changes_should_include_the_individual_from_the_simulation()
       {
          _changes.ShouldContain(_simulationIndividual);
-         _changes.ShouldContain(_simulation.Settings);
+      }
+
+      [Observation]
+      public void the_changes_should_not_include_the_settings_from_the_simulation()
+      {
+         _changes.ShouldNotContain(_simulation.Settings);
       }
    }
 }

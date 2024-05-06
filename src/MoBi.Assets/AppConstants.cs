@@ -263,7 +263,7 @@ namespace MoBi.Assets
 
          public static string ConvertDistributedPathAndValueEntityToConstantValue(string type, string path) => $"Convert distributed {type} '{path}' to constant value";
 
-         public static string UpdateSimulationSettingsInSimulation(string simulationName) => $"Update simulation settings in simulation {simulationName}";
+         public static string UpdateSimulationSolverSettingsAndSchemaInSimulation(string simulationName) => $"Update simulation solver settings and output schema in simulation {simulationName}";
 
 
          public static string DeleteResultsFromSimulation(string simulationName)
@@ -1092,10 +1092,12 @@ namespace MoBi.Assets
          public static readonly string AddBuildingBlocks = "Add Building Blocks...";
          public static readonly string LoadBuildingBlocks = "Load Building Blocks...";
          public static readonly string LoadBuildingBlocksFromTemplate = "Load Building Blocks from Template...";
-         public static readonly string MakeSettingsProjectDefault = "Make Settings Project Default";
-         public static readonly string RefreshSettingsFromProjectDefault = "Refresh Settings from Project Default";
+         public static readonly string MakeProjectDefaults = "Make project defaults";
+         public static readonly string RefreshFromProjectDefaults = "Refresh from project defaults";
          public static readonly string AddLocalMoleculeParameters = "Add Local Molecule Parameters";
          public static readonly string AddProteinExpression = "Add Protein Expression";
+         public static readonly string OutputSelections = "Output Selections";
+         public static readonly string SettingsAndSchema = "Settings and Schema";
 
          public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
 
@@ -1930,6 +1932,11 @@ namespace MoBi.Assets
             sb.Append(" - ");
             sb.AppendLine(allNames.ToString("\n - "));
             return sb.ToString();
+         }
+
+         public static string TheModuleWillBeConvertedFromPKSimToExtensionModule(string moduleName)
+         {
+            return $"The PK-Sim module '{moduleName}' will be converted to an extension module";
          }
       }
 

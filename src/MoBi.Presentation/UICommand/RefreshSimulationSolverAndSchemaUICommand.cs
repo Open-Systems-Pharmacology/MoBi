@@ -5,12 +5,12 @@ using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.UICommand
 {
-   public class RefreshSimulationSettingsUICommand : ActiveObjectUICommand<IMoBiSimulation>
+   public class RefreshSimulationSolverAndSchemaUICommand : ActiveObjectUICommand<IMoBiSimulation>
    {
       private readonly ISimulationUpdateTask _simulationUpdateTask;
       private readonly IMoBiContext _context;
 
-      public RefreshSimulationSettingsUICommand(
+      public RefreshSimulationSolverAndSchemaUICommand(
          ISimulationUpdateTask simulationUpdateTask,
          IMoBiContext context,
          IActiveSubjectRetriever activeSubjectRetriever) :
@@ -22,7 +22,7 @@ namespace MoBi.Presentation.UICommand
 
       protected override void PerformExecute()
       {
-         _context.AddToHistory(_simulationUpdateTask.UpdateSimulationSettings(Subject));
+         _context.AddToHistory(_simulationUpdateTask.UpdateSimulationSolverAndSchema(Subject));
       }
    }
 }

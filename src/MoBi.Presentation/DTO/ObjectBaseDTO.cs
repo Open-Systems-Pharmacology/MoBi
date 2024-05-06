@@ -152,6 +152,14 @@ namespace MoBi.Presentation.DTO
       }
    }
 
+   public class SimulationSettingsViewItem : ObjectBaseDTO
+   {
+      public SimulationSettingsViewItem(SimulationSettings simulationSettings) : base(simulationSettings)
+      {
+         
+      }
+   }
+
    public class FavoritesNodeViewItem : ObjectBaseDTO
    {
    }
