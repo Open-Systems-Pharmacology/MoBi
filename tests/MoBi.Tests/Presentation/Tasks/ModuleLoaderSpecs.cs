@@ -3,6 +3,7 @@ using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Services;
 using MoBi.Core.Exceptions;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.BDDHelper;
@@ -23,6 +24,8 @@ namespace MoBi.Presentation.Tasks
       protected IInteractionTasksForModule _moduleTask;
       protected IInteractionTaskContext _interactionTaskContext;
       protected Module _addedModule;
+      private ICloneManagerForSimulation _cloneManager;
+      protected SimulationConfiguration _clonedConfiguration;
 
       protected override void Context()
       {
@@ -31,28 +34,34 @@ namespace MoBi.Presentation.Tasks
          _moduleTask = A.Fake<IInteractionTasksForModule>();
          _expressionTask = A.Fake<IInteractionTasksForExpressionProfileBuildingBlock>();
          _individualTask = A.Fake<IInteractionTasksForIndividualBuildingBlock>();
+         _cloneManager = A.Fake<ICloneManagerForSimulation>();
          _project = new MoBiProject();
          _simulationTransfer = new SimulationTransfer();
 
-         _moBiSimulation = new MoBiSimulation();
+         _moBiSimulation = new MoBiSimulation
+         {
+            Configuration = new SimulationConfiguration()
+         };
+
          _simulationTransfer.Simulation = _moBiSimulation;
 
-         _moBiSimulation.Configuration = new SimulationConfiguration();
+         _clonedConfiguration = new SimulationConfiguration();
          _addedModule = new Module().WithName("module");
-         _moBiSimulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(_addedModule));
+         _clonedConfiguration.AddModuleConfiguration(new ModuleConfiguration(_addedModule));
          AddAdditionalBuildingBlocks();
 
          A.CallTo(() => _interactionTaskContext.InteractionTask.CorrectName(A<Module>._, A<IEnumerable<string>>._)).Returns(true);
          A.CallTo(() => _moduleTask.AskForPKMLFileToOpen()).Returns("filePath");
+         A.CallTo(() => _cloneManager.CloneSimulationConfiguration(_moBiSimulation.Configuration)).Returns(_clonedConfiguration);
 
-         sut = new ModuleLoader(_moduleTask, _expressionTask, _individualTask, _interactionTaskContext);
+         sut = new ModuleLoader(_moduleTask, _expressionTask, _individualTask, _interactionTaskContext, _cloneManager);
       }
 
       protected virtual void AddAdditionalBuildingBlocks()
       {
-         _moBiSimulation.Configuration.Individual = new IndividualBuildingBlock().WithName("individual");
-         _moBiSimulation.Configuration.AddExpressionProfile(new ExpressionProfileBuildingBlock().WithName("expressionProfile1"));
-         _moBiSimulation.Configuration.AddExpressionProfile(new ExpressionProfileBuildingBlock().WithName("expressionProfile2"));
+         _clonedConfiguration.Individual = new IndividualBuildingBlock().WithName("individual");
+         _clonedConfiguration.AddExpressionProfile(new ExpressionProfileBuildingBlock().WithName("expressionProfile1"));
+         _clonedConfiguration.AddExpressionProfile(new ExpressionProfileBuildingBlock().WithName("expressionProfile2"));
       }
    }
 
@@ -124,10 +133,10 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void the_tasks_should_be_used_to_add_elements_to_projects()
       {
-         A.CallTo(() => _moduleTask.AddTo(A<IReadOnlyCollection<Module>>.That.Matches(x => x.Contains(_moBiSimulation.Modules.Single())), _project, null)).MustHaveHappened();
-         A.CallTo(() => _individualTask.AddTo(A<IReadOnlyCollection<IndividualBuildingBlock>>.That.Matches(x => x.ElementAt(0).Equals(_moBiSimulation.Configuration.Individual)), _project, null)).MustHaveHappened();
-         A.CallTo(() => _expressionTask.AddTo(A<IReadOnlyCollection<ExpressionProfileBuildingBlock>>.That.Matches(x => x.ElementAt(0).Equals(_moBiSimulation.Configuration.ExpressionProfiles[0])), _project, null)).MustHaveHappened();
-         A.CallTo(() => _expressionTask.AddTo(A<IReadOnlyCollection<ExpressionProfileBuildingBlock>>.That.Matches(x => x.ElementAt(1).Equals(_moBiSimulation.Configuration.ExpressionProfiles[1])), _project, null)).MustHaveHappened();
+         A.CallTo(() => _moduleTask.AddTo(A<IReadOnlyCollection<Module>>.That.Matches(x => x.Contains(_addedModule)), _project, null)).MustHaveHappened();
+         A.CallTo(() => _individualTask.AddTo(A<IReadOnlyCollection<IndividualBuildingBlock>>.That.Matches(x => x.ElementAt(0).Equals(_clonedConfiguration.Individual)), _project, null)).MustHaveHappened();
+         A.CallTo(() => _expressionTask.AddTo(A<IReadOnlyCollection<ExpressionProfileBuildingBlock>>.That.Matches(x => x.ElementAt(0).Equals(_clonedConfiguration.ExpressionProfiles[0])), _project, null)).MustHaveHappened();
+         A.CallTo(() => _expressionTask.AddTo(A<IReadOnlyCollection<ExpressionProfileBuildingBlock>>.That.Matches(x => x.ElementAt(1).Equals(_clonedConfiguration.ExpressionProfiles[1])), _project, null)).MustHaveHappened();
       }
    }
 
@@ -148,7 +157,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void the_module_is_still_loaded_using_the_interaction_task()
       {
-         A.CallTo(() => _moduleTask.AddTo(A<IReadOnlyCollection<Module>>.That.Matches(x => x.Contains(_moBiSimulation.Modules.Single())), _project, null)).MustHaveHappened();
+         A.CallTo(() => _moduleTask.AddTo(A<IReadOnlyCollection<Module>>.That.Matches(x => x.Contains(_addedModule)), _project, null)).MustHaveHappened();
       }
 
       [Observation]
@@ -188,7 +197,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void the_module_is_still_loaded_using_the_interaction_task()
       {
-         A.CallTo(() => _moduleTask.AddTo(A<IReadOnlyCollection<Module>>.That.Matches(x => x.Contains(_moBiSimulation.Modules.Single())), _project, null)).MustHaveHappened();
+         A.CallTo(() => _moduleTask.AddTo(A<IReadOnlyCollection<Module>>.That.Matches(x => x.Contains(_addedModule)), _project, null)).MustHaveHappened();
       }
    }
 }
