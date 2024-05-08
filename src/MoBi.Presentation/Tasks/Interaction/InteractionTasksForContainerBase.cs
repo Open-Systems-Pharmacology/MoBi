@@ -5,7 +5,10 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Core.Serialization.Exchange;
+using MoBi.Presentation.DTO;
+using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
+using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
@@ -82,7 +85,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          var addParameterValuesCommand = addParameterValues(parameterValues, spatialStructure.Module);
 
-         if(!addParameterValuesCommand.IsEmpty())
+         if (!addParameterValuesCommand.IsEmpty())
             macroCommand.Add(addParameterValuesCommand);
 
          var addNeighborhoodsCommand = AddNeighborhoodsToSpatialStructure(allImportedNeighborhoods, spatialStructure);
@@ -121,6 +124,69 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (parameterValues == null || !parameterValues.Any())
             return new MoBiEmptyCommand();
 
+         var parameterValuesBuildingBlock = buildingBlockToAdd(module);
+
+         if (parameterValuesBuildingBlock != null)
+            return addToExistingBuildingBlock(parameterValues.ToList(), parameterValuesBuildingBlock);
+
+         return addAsNewBuildingBlock(parameterValues, module);
+      }
+
+      private ICommand addToExistingBuildingBlock(IReadOnlyList<ParameterValue> parameterValuesToAdd, ParameterValuesBuildingBlock parameterValuesBuildingBlock)
+      {
+         var macroCommand = new MoBiMacroCommand
+         {
+            CommandType = AppConstants.Commands.AddOrReplaceCommand,
+            ObjectType = ObjectTypes.ParameterValue,
+            Description = AppConstants.Commands.AddOrReplaceParameterValuesToBuildingBlock(parameterValuesBuildingBlock.Name)
+         };
+
+         parameterValuesToAdd.Each(x => macroCommand.AddRange(createCommand(parameterValuesBuildingBlock, x)));
+
+         return macroCommand.Run(_interactionTaskContext.Context);
+      }
+
+      private static IEnumerable<ICommand> createCommand(ParameterValuesBuildingBlock parameterValuesBuildingBlock, ParameterValue x)
+      {
+         var existingParameterValue = parameterValuesBuildingBlock.FindByPath(x.Path);
+         if (existingParameterValue != null)
+            yield return new RemoveParameterValueFromBuildingBlockCommand(parameterValuesBuildingBlock, existingParameterValue.Path);
+         
+         yield return new AddParameterValueToBuildingBlockCommand(parameterValuesBuildingBlock, x);
+      }
+
+      private ParameterValuesBuildingBlock buildingBlockToAdd(Module module)
+      {
+         var moduleBuildingBlocks = module.ParameterValuesCollection;
+
+         // If there are no existing building blocks, then you can only add as a new building block
+         if (!moduleBuildingBlocks.Any())
+            return null;
+
+         using (var modal = ApplicationController.Start<IModalPresenter>())
+         {
+            var presenter = ApplicationController.Start<ISelectSinglePresenter<ParameterValuesBuildingBlock>>();
+            presenter.SetDescription(AppConstants.Captions.SelectTheBuildingBlockWhereParameterValuesWillBeAdded);
+            modal.Text = AppConstants.Captions.SelectParameterValuesBuildingBlock;
+            modal.Encapsulate(presenter);
+            
+            presenter.InitializeWith(new List<ParameterValuesBuildingBlock>
+            {
+               NullPathAndValueEntityBuildingBlocks.NewParameterValues
+            }.Concat(moduleBuildingBlocks));
+            modal.CanCancel = false;
+            modal.Show(AppConstants.Dialog.SelectSingleSize);
+            return existingBuildingBlockSelected(presenter.Selection) ? presenter.Selection : null;
+         }
+      }
+
+      private static bool existingBuildingBlockSelected(ParameterValuesBuildingBlock selectedBuildingBlock)
+      {
+         return !ReferenceEquals(selectedBuildingBlock, NullPathAndValueEntityBuildingBlocks.NewParameterValues);
+      }
+
+      private ICommand addAsNewBuildingBlock(ParameterValuesBuildingBlock parameterValues, Module module)
+      {
          var cloneOfParameterValues = _interactionTaskContext.InteractionTask.Clone(parameterValues);
          return new AddBuildingBlockToModuleCommand<ParameterValuesBuildingBlock>(cloneOfParameterValues, module).Run(_interactionTaskContext.Context);
       }
@@ -130,7 +196,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          try
          {
             var spatialStructureTransfer = InteractionTask.LoadTransfer<SpatialStructureTransfer>(filename);
-            // Clone here because we will received all original Id's from InteractionTask
+            // Clone here because we will receive all original Ids from InteractionTask
             return (Context.Clone(spatialStructureTransfer.SpatialStructure), Context.Clone(spatialStructureTransfer.ParameterValues));
          }
          catch

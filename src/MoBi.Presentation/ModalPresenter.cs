@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using OSPSuite.Utility.Events;
 using MoBi.Presentation.Views;
 using OSPSuite.Presentation.Presenters;
@@ -11,12 +12,25 @@ namespace MoBi.Presentation
       bool Show();
       string Text { get; set; }
       IPresenter SubPresenter { get; }
+      bool CanCancel { get; set; }
+      bool Show(Size modalSize);
    }
 
    internal class ModalPresenter : AbstractDisposablePresenter<IContainerModalView, IModalPresenter>, IModalPresenter
    {
       private readonly IEventPublisher _eventPublisher;
       public IPresenter SubPresenter { get; protected set; }
+
+      public bool CanCancel
+      {
+         get => _view.CancelVisible;
+         set => _view.CancelVisible = value;
+      }
+
+      public bool Show(Size modalSize)
+      {
+         return _view.Show(modalSize);
+      }
 
       public ModalPresenter(IContainerModalView view, IEventPublisher eventPublisher) : base(view)
       {

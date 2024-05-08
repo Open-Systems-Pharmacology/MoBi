@@ -4,8 +4,8 @@ using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Serialization.Exchange;
-using MoBi.Core.Serialization.Xml.Serializer;
 using MoBi.Helpers;
+using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.UI.Diagram.DiagramManagers;
@@ -30,9 +30,113 @@ namespace MoBi.Presentation.Tasks
          _objectPathFactory = new ObjectPathFactoryForSpecs();
          _editTask = A.Fake<IEditTaskForContainer>();
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
-         _interactionTaskForNeighborhood= A.Fake<IInteractionTasksForChildren<IContainer, IContainer>>();   
+         _interactionTaskForNeighborhood = A.Fake<IInteractionTasksForChildren<IContainer, IContainer>>();
 
          sut = new InteractionTasksForTopContainer(_interactionTaskContext, _editTask, _objectPathFactory, _interactionTaskForNeighborhood);
+      }
+   }
+
+   internal class When_importing_a_spatial_structure_transfer_into_a_container_and_updating_an_existing_building_block_with_parameter_values : concern_for_InteractionTasksForTopContainer
+   {
+      private MoBiSpatialStructure _spatialStructure;
+      private SpatialStructureTransfer _spatialStructureTransfer;
+      private MoBiSpatialStructure _newSpatialStructure;
+      private ParameterValuesBuildingBlock _parameterValuesBuildingBlock;
+      private Module _module;
+      private ISelectSinglePresenter<ParameterValuesBuildingBlock> _selectManyPresenter;
+      private ParameterValuesBuildingBlock _existingParameterValuesBuildingBlock;
+
+      protected override void Context()
+      {
+         base.Context();
+         _selectManyPresenter = A.Fake<ISelectSinglePresenter<ParameterValuesBuildingBlock>>();
+         _spatialStructure = new MoBiSpatialStructure().WithName("Organism");
+         _newSpatialStructure = new MoBiSpatialStructure().WithName("New");
+         _module = new Module().WithName("Module");
+
+         _parameterValuesBuildingBlock = new ParameterValuesBuildingBlock().WithName("ParameterValues");
+         _parameterValuesBuildingBlock.Add(new ParameterValue().WithName("ParameterValue"));
+         _spatialStructureTransfer = new SpatialStructureTransfer
+         {
+            SpatialStructure = _newSpatialStructure,
+            ParameterValues = _parameterValuesBuildingBlock
+         };
+         _spatialStructureTransfer.SpatialStructure.Add(new Container().WithName("TopContainer"));
+
+         _module.Add(_spatialStructure);
+         _existingParameterValuesBuildingBlock = new ParameterValuesBuildingBlock().WithName("AnotherParameterValuesBuildingBlock");
+         _existingParameterValuesBuildingBlock.Add(new ParameterValue().WithName("ParameterValue"));
+         _module.Add(_existingParameterValuesBuildingBlock);
+
+         var filePath = "filepath";
+         A.CallTo(() => _interactionTaskContext.InteractionTask.AskForFileToOpen(A<string>._, A<string>._, A<string>._)).Returns(filePath);
+         A.CallTo(() => _interactionTaskContext.InteractionTask.LoadTransfer<SpatialStructureTransfer>(filePath)).Returns(_spatialStructureTransfer);
+         A.CallTo(() => _interactionTaskContext.Context.Clone(_newSpatialStructure)).Returns(_newSpatialStructure);
+         A.CallTo(() => _interactionTaskContext.Context.Clone(_parameterValuesBuildingBlock)).Returns(_parameterValuesBuildingBlock);
+         A.CallTo(() => _interactionTaskContext.ApplicationController.Start<ISelectSinglePresenter<ParameterValuesBuildingBlock>>()).Returns(_selectManyPresenter);
+         A.CallTo(() => _selectManyPresenter.Selection).Returns(_existingParameterValuesBuildingBlock);
+      }
+
+      protected override void Because()
+      {
+         sut.AddExisting(_spatialStructure, _spatialStructure);
+      }
+
+      [Observation]
+      public void the_value_should_be_replaced_in_the_existing_building_block()
+      {
+         _existingParameterValuesBuildingBlock.FindByPath("ParameterValue").ShouldBeEqualTo(_spatialStructureTransfer.ParameterValues.First());
+      }
+
+      [Observation]
+      public void the_dialog_should_be_used_to_select_the_start_values_target_building_block()
+      {
+         A.CallTo(() => _interactionTaskContext.ApplicationController.Start<ISelectSinglePresenter<ParameterValuesBuildingBlock>>()).MustHaveHappened();
+      }
+   }
+
+   internal class When_importing_a_spatial_structure_transfer_into_a_container_and_there_isnt_a_parameter_values_building_block_in_the_same_module : concern_for_InteractionTasksForTopContainer
+   {
+      private MoBiSpatialStructure _spatialStructure;
+      private SpatialStructureTransfer _spatialStructureTransfer;
+      private MoBiSpatialStructure _newSpatialStructure;
+      private ParameterValuesBuildingBlock _parameterValuesBuildingBlock;
+      private Module _module;
+
+      protected override void Context()
+      {
+         base.Context();
+         _spatialStructure = new MoBiSpatialStructure().WithName("Organism");
+         _newSpatialStructure = new MoBiSpatialStructure().WithName("New");
+         _module = new Module().WithName("Module");
+
+         _parameterValuesBuildingBlock = new ParameterValuesBuildingBlock().WithName("ParameterValues");
+         _parameterValuesBuildingBlock.Add(new ParameterValue().WithName("ParameterValue"));
+         _spatialStructureTransfer = new SpatialStructureTransfer
+         {
+            SpatialStructure = _newSpatialStructure,
+            ParameterValues = _parameterValuesBuildingBlock
+         };
+         _spatialStructureTransfer.SpatialStructure.Add(new Container().WithName("TopContainer"));
+
+         _module.Add(_spatialStructure);
+
+         var filePath = "filepath";
+         A.CallTo(() => _interactionTaskContext.InteractionTask.AskForFileToOpen(A<string>._, A<string>._, A<string>._)).Returns(filePath);
+         A.CallTo(() => _interactionTaskContext.InteractionTask.LoadTransfer<SpatialStructureTransfer>(filePath)).Returns(_spatialStructureTransfer);
+         A.CallTo(() => _interactionTaskContext.Context.Clone(_newSpatialStructure)).Returns(_newSpatialStructure);
+         A.CallTo(() => _interactionTaskContext.Context.Clone(_parameterValuesBuildingBlock)).Returns(_parameterValuesBuildingBlock);
+      }
+
+      protected override void Because()
+      {
+         sut.AddExisting(_spatialStructure, _spatialStructure);
+      }
+
+      [Observation]
+      public void the_dialog_should_not_be_used_to_select_building_blocks()
+      {
+         A.CallTo(() => _interactionTaskContext.ApplicationController.Start<ISelectSinglePresenter<ParameterValuesBuildingBlock>>()).MustNotHaveHappened();
       }
    }
 
@@ -89,7 +193,7 @@ namespace MoBi.Presentation.Tasks
          {
             FirstNeighborPath = new ObjectPath("Organism", "Muscle", "BloodCells"),
             SecondNeighborPath = new ObjectPath("Organism", "SomethingElse")
-         }.WithName("Muscle_bls_SomethingElse");   
+         }.WithName("Muscle_bls_SomethingElse");
 
          spatialStructure.AddNeighborhood(neighborhoodBuilder);
 

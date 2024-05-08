@@ -1,4 +1,5 @@
-﻿using MoBi.Presentation;
+﻿using System.Drawing;
+using MoBi.Presentation;
 using MoBi.Presentation.Views;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Extensions;
@@ -24,6 +25,12 @@ namespace MoBi.UI.Views
       {
          Display();
          return !Canceled;
+      }
+
+      public bool Show(Size modalSize)
+      {
+         Size = modalSize;
+         return Show();
       }
 
       public void AttachPresenter(IModalPresenter presenter)

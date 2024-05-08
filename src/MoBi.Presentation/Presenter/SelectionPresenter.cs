@@ -1,19 +1,35 @@
 using System.Collections.Generic;
+using MoBi.Presentation.DTO;
+using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Views;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface ISelectionPresenter
+   public abstract class SelectionPresenter<TView, TPresenter, TSelectable> : AbstractPresenter<TView, TPresenter> where TView : IView<TPresenter>, ISelectionView<TSelectable> where TPresenter : IPresenter
    {
-      object Select();
-      ISelectionView GetView();
-      void SetDefault();
-   }
+      private readonly IItemToListItemMapper<TSelectable> _itemToListItemMapper;
+      private IEnumerable<TSelectable> _allItems;
 
-   public interface ISelectionPresenter<T> : ISelectionPresenter,IPresenter
-   {
-      IEnumerable<T> SelectionList { get; set; }
-      T Selection { set; get; }
+      protected SelectionPresenter(TView view, IItemToListItemMapper<TSelectable> itemToListItemMapper) : base(view)
+      {
+         _itemToListItemMapper = itemToListItemMapper;
+         _itemToListItemMapper.Initialize(GetName);
+      }
+
+      public void InitializeWith(IEnumerable<TSelectable> allItems)
+      {
+         _allItems = allItems;
+         _view.InitializeWith(MapAllItems());
+      }
+
+      protected virtual IEnumerable<ListItemDTO<TSelectable>> MapAllItems()
+      {
+         return _allItems.MapAllUsing(_itemToListItemMapper);
+      }
+
+      public abstract string GetName(TSelectable item);
    }
 }
