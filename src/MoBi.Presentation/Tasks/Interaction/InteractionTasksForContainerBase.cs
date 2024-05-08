@@ -138,7 +138,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          {
             CommandType = AppConstants.Commands.AddOrReplaceCommand,
             ObjectType = ObjectTypes.ParameterValue,
-            Description = AppConstants.Commands.AddOrReplaceParameterValuesToBuildingBlock(parameterValuesBuildingBlock.Name)
+            Description = AppConstants.Commands.AddOrReplaceParameterValuesInBuildingBlock(parameterValuesBuildingBlock.Name)
          };
 
          parameterValuesToAdd.Each(x => macroCommand.AddRange(createCommand(parameterValuesBuildingBlock, x)));
@@ -166,7 +166,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          using (var modal = ApplicationController.Start<IModalPresenter>())
          {
             var presenter = ApplicationController.Start<ISelectSinglePresenter<ParameterValuesBuildingBlock>>();
-            presenter.SetDescription(AppConstants.Captions.SelectTheBuildingBlockWhereParameterValuesWillBeAdded);
+            presenter.SetDescription(AppConstants.Captions.SelectTheBuildingBlockWhereParameterValuesWillBeAddedOrUpdated);
             modal.Text = AppConstants.Captions.SelectParameterValuesBuildingBlock;
             modal.Encapsulate(presenter);
             
@@ -180,10 +180,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          }
       }
 
-      private static bool existingBuildingBlockSelected(ParameterValuesBuildingBlock selectedBuildingBlock)
-      {
-         return !ReferenceEquals(selectedBuildingBlock, NullPathAndValueEntityBuildingBlocks.NewParameterValues);
-      }
+      private static bool existingBuildingBlockSelected(ParameterValuesBuildingBlock selectedBuildingBlock) => !ReferenceEquals(selectedBuildingBlock, NullPathAndValueEntityBuildingBlocks.NewParameterValues);
 
       private ICommand addAsNewBuildingBlock(ParameterValuesBuildingBlock parameterValues, Module module)
       {

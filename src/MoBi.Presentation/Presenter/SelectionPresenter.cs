@@ -25,10 +25,7 @@ namespace MoBi.Presentation.Presenter
          _view.InitializeWith(MapAllItems());
       }
 
-      protected virtual IEnumerable<ListItemDTO<TSelectable>> MapAllItems()
-      {
-         return _allItems.MapAllUsing(_itemToListItemMapper);
-      }
+      protected virtual IEnumerable<ListItemDTO<TSelectable>> MapAllItems() => _allItems.MapAllUsing(_itemToListItemMapper);
 
       public abstract string GetName(TSelectable item);
    }

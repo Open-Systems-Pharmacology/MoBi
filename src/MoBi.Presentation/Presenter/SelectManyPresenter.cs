@@ -26,9 +26,6 @@ namespace MoBi.Presentation.Presenter
          return base.MapAllItems().OrderBy(x => x.DisplayName);
       }
 
-      public IEnumerable<T> Selections
-      {
-         get { return _view.Selections.Select(x => x.Item); }
-      }
+      public IEnumerable<T> Selections => _view.Selections.Select(x => x.Item);
    }
 }

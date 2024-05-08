@@ -19,9 +19,6 @@ namespace MoBi.Presentation.Presenter
 
       public T Selection => _view.Selection.Item;
 
-      public void SetDescription(string description)
-      {
-         _view.SetDescription(description);
-      }
+      public void SetDescription(string description) => _view.SetDescription(description);
    }
 }

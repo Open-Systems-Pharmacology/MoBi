@@ -10,9 +10,6 @@ namespace MoBi.Presentation.Presenter
       {
       }
 
-      public override string GetName(T item)
-      {
-         return item.Name;
-      }
+      public override string GetName(T item) => item.Name;
    }
 }

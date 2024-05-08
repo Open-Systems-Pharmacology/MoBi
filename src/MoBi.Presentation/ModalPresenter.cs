@@ -31,15 +31,9 @@ namespace MoBi.Presentation
          }
       }
 
-      public bool Show(Size modalSize)
-      {
-         return _view.Show(modalSize);
-      }
+      public bool Show(Size modalSize) => _view.Show(modalSize);
 
-      public ModalPresenter(IContainerModalView view, IEventPublisher eventPublisher) : base(view)
-      {
-         _eventPublisher = eventPublisher;
-      }
+      public ModalPresenter(IContainerModalView view, IEventPublisher eventPublisher) : base(view) => _eventPublisher = eventPublisher;
 
       public void Encapsulate(IPresenter subPresenter)
       {
@@ -48,15 +42,9 @@ namespace MoBi.Presentation
          _view.AddSubView(subPresenter.BaseView);
       }
 
-      private void subPresenterChanged(object sender, EventArgs eventArgs)
-      {
-         updateView();
-      }
+      private void subPresenterChanged(object sender, EventArgs eventArgs) => updateView();
 
-      private void updateView()
-      {
-         _view.OkEnabled = CanClose;
-      }
+      private void updateView() => _view.OkEnabled = CanClose;
 
       public bool Show()
       {

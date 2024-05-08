@@ -806,9 +806,9 @@ namespace MoBi.Assets
             return $"Changed the simulation configuration of simulation '{simulationName}'";
          }
 
-         public static string AddOrReplaceParameterValuesToBuildingBlock(string buildingBlockName)
+         public static string AddOrReplaceParameterValuesInBuildingBlock(string buildingBlockName)
          {
-            return $"Add or replace multiple parameter values to '{buildingBlockName}'";
+            return $"Add or replace multiple parameter values in '{buildingBlockName}'";
          }
       }
 
@@ -1600,7 +1600,7 @@ namespace MoBi.Assets
          public static readonly string AddExpressionDescription = "<b>The building block will be extended with expression parameter values for selected <i>molecules</i> in the selected <i>organ</i> </b>";
          public static readonly string AddDefaultCurveForNewSimulations = "Add default curve for new simulations";
          public static readonly string ChangeDefaultCurveForNewSimulations = "Change default curve for new simulations";
-         public static readonly string SelectTheBuildingBlockWhereParameterValuesWillBeAdded = "Select the building block where parameter values will be added";
+         public static readonly string SelectTheBuildingBlockWhereParameterValuesWillBeAddedOrUpdated = "Select the building block where parameter values will be added or updated";
          public static readonly string SelectParameterValuesBuildingBlock = "Select Parameter Values Building Block";
          public static readonly string NewParameterValuesBuildingBlock = "New Parameter Values Building Block";
          public static string SelectEntitiesThatWillBeReplaced(string entityType) => $"Select {entityType.Pluralize()} that will be replaced";
