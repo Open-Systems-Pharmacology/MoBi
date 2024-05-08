@@ -8,5 +8,6 @@ namespace MoBi.Presentation.Views
       void AddSubView(IView subView);
       bool Show();
       bool Show(Size modalSize);
+      bool CanClose { get; set; }
    }
 }

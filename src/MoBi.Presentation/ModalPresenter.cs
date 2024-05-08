@@ -24,7 +24,11 @@ namespace MoBi.Presentation
       public bool CanCancel
       {
          get => _view.CancelVisible;
-         set => _view.CancelVisible = value;
+         set
+         {
+            _view.CanClose = value;
+            _view.CancelVisible = value;
+         }
       }
 
       public bool Show(Size modalSize)

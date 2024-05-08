@@ -33,6 +33,12 @@ namespace MoBi.UI.Views
          return Show();
       }
 
+      public bool CanClose
+      {
+         get => CloseBox;
+         set => CloseBox = value;
+      }
+
       public void AttachPresenter(IModalPresenter presenter)
       {
       }
