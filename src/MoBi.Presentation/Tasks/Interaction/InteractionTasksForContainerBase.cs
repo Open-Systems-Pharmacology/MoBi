@@ -175,7 +175,7 @@ namespace MoBi.Presentation.Tasks.Interaction
                NullPathAndValueEntityBuildingBlocks.NewParameterValues
             }.Concat(moduleBuildingBlocks));
             modal.CanCancel = false;
-            modal.Show(AppConstants.Dialog.SelectSingleSize);
+            modal.Show(AppConstants.Dialog.SELECT_SINGLE_SIZE);
             return existingBuildingBlockSelected(presenter.Selection) ? presenter.Selection : null;
          }
       }
