@@ -866,7 +866,7 @@ namespace MoBi.Assets
          public static readonly string ApplyDefaultNaming = "Apply default renaming";
          public static readonly string RemoveSelectedResultsFromSimulations = "Do you really want to remove the selected results from simulations";
          public static readonly string RemoveSelectedResultsFromProject = "Do you really want to remove the selected result(s) from the project";
-         public const Size SELECT_SINGLE_SIZE = new Size(475, 160);
+         public static readonly Size SELECT_SINGLE_SIZE = new Size(475, 160);
 
          public static string RemoveSimulationsFromProject(string projectName)
          {
