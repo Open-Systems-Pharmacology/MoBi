@@ -3,6 +3,7 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Services;
 using MoBi.Core.Helper;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Commands.Core;
@@ -25,13 +26,19 @@ namespace MoBi.Presentation.Tasks
       private readonly IInteractionTasksForExpressionProfileBuildingBlock _expressionTask;
       private readonly IInteractionTasksForIndividualBuildingBlock _individualTask;
       private readonly IInteractionTaskContext _interactionTaskContext;
+      private readonly ICloneManagerForSimulation _cloneManager;
 
-      public ModuleLoader(IInteractionTasksForModule moduleTask, IInteractionTasksForExpressionProfileBuildingBlock expressionTask, IInteractionTasksForIndividualBuildingBlock individualTask, IInteractionTaskContext interactionTaskContext)
+      public ModuleLoader(IInteractionTasksForModule moduleTask, 
+         IInteractionTasksForExpressionProfileBuildingBlock expressionTask, 
+         IInteractionTasksForIndividualBuildingBlock individualTask, 
+         IInteractionTaskContext interactionTaskContext,
+         ICloneManagerForSimulation cloneManager)
       {
          _moduleTask = moduleTask;
          _expressionTask = expressionTask;
          _individualTask = individualTask;
          _interactionTaskContext = interactionTaskContext;
+         _cloneManager = cloneManager;
       }
 
       public IMoBiCommand LoadModule(MoBiProject project)
@@ -55,7 +62,10 @@ namespace MoBi.Presentation.Tasks
 
       private IMoBiCommand addFromSimulationTransfer(MoBiProject project, string filename)
       {
-         var configuration = _interactionTaskContext.InteractionTask.LoadTransfer<SimulationTransfer>(filename).Simulation.Configuration;
+         var simulation = _interactionTaskContext.InteractionTask.LoadTransfer<SimulationTransfer>(filename).Simulation;
+
+         // Clone the simulation configuration so that any loaded objects will have unique Ids.
+         var configuration = _cloneManager.CloneSimulationConfiguration(simulation.Configuration);
 
          var macroCommand = new MoBiMacroCommand
          {
