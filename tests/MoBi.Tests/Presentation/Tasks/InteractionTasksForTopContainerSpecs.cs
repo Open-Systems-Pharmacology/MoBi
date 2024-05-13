@@ -24,15 +24,17 @@ namespace MoBi.Presentation.Tasks
       private IEditTaskFor<IContainer> _editTask;
       private IObjectPathFactory _objectPathFactory;
       protected IInteractionTasksForChildren<IContainer, IContainer> _interactionTaskForNeighborhood;
+      protected IParameterValuesTask _parameterValuesTask;
 
       protected override void Context()
       {
          _objectPathFactory = new ObjectPathFactoryForSpecs();
+         _parameterValuesTask = A.Fake<IParameterValuesTask>();
          _editTask = A.Fake<IEditTaskForContainer>();
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
          _interactionTaskForNeighborhood = A.Fake<IInteractionTasksForChildren<IContainer, IContainer>>();
 
-         sut = new InteractionTasksForTopContainer(_interactionTaskContext, _editTask, _objectPathFactory, _interactionTaskForNeighborhood);
+         sut = new InteractionTasksForTopContainer(_interactionTaskContext, _editTask, _objectPathFactory, _interactionTaskForNeighborhood, _parameterValuesTask);
       }
    }
 
@@ -83,16 +85,11 @@ namespace MoBi.Presentation.Tasks
       }
 
       [Observation]
-      public void the_value_should_be_replaced_in_the_existing_building_block()
+      public void the_extend_should_be_used_to_combine_building_blocks()
       {
-         _existingParameterValuesBuildingBlock.FindByPath("ParameterValue").ShouldBeEqualTo(_spatialStructureTransfer.ParameterValues.First());
+         A.CallTo(() => _parameterValuesTask.ExtendBuildingBlockWith(_existingParameterValuesBuildingBlock, A<IReadOnlyList<ParameterValue>>.That.Contains(_parameterValuesBuildingBlock.First()))).MustHaveHappened();
       }
 
-      [Observation]
-      public void the_dialog_should_be_used_to_select_the_start_values_target_building_block()
-      {
-         A.CallTo(() => _interactionTaskContext.ApplicationController.Start<ISelectSinglePresenter<ParameterValuesBuildingBlock>>()).MustHaveHappened();
-      }
    }
 
    internal class When_importing_a_spatial_structure_transfer_into_a_container_and_there_isnt_a_parameter_values_building_block_in_the_same_module : concern_for_InteractionTasksForTopContainer

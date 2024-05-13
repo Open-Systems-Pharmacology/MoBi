@@ -19,7 +19,8 @@ namespace MoBi.Presentation.Tasks.Interaction
          IInteractionTaskContext interactionTaskContext,
          IEditTaskFor<IContainer> editTask,
          IObjectPathFactory objectPathFactory,
-         IInteractionTasksForChildren<IContainer, IContainer> interactionTaskForNeighborhood) : base(interactionTaskContext, editTask, objectPathFactory)
+         IInteractionTasksForChildren<IContainer, IContainer> interactionTaskForNeighborhood,
+         IParameterValuesTask parameterValuesTask) : base(interactionTaskContext, editTask, objectPathFactory, parameterValuesTask)
       {
          _interactionTaskForNeighborhood = interactionTaskForNeighborhood;
       }

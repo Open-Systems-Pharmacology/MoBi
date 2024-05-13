@@ -260,7 +260,6 @@ namespace MoBi.Assets
          public static readonly string UpdateProjectDefaultSimulationSettings = "Update project default simulation settings";
          public static readonly string RemoveTrackedQuantityChanges = "Remove tracked quantity changes";
          public static readonly string AddedMultipleBuildingBlocksFromFile = "Added multiple building blocks from file";
-         public static readonly string AddOrReplaceCommand = "Add or replace";
 
          public static string ConvertDistributedPathAndValueEntityToConstantValue(string type, string path) => $"Convert distributed {type} '{path}' to constant value";
 
@@ -804,11 +803,6 @@ namespace MoBi.Assets
          public static string ChangeSimulationConfiguration(string simulationName)
          {
             return $"Changed the simulation configuration of simulation '{simulationName}'";
-         }
-
-         public static string AddOrReplaceParameterValuesInBuildingBlock(string buildingBlockName)
-         {
-            return $"Add or replace multiple parameter values in '{buildingBlockName}'";
          }
       }
 

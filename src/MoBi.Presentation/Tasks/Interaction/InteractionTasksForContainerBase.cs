@@ -21,14 +21,17 @@ namespace MoBi.Presentation.Tasks.Interaction
    public abstract class InteractionTasksForContainerBase<TParent> : InteractionTasksForChildren<TParent, IContainer> where TParent : class, IObjectBase
    {
       private readonly IObjectPathFactory _objectPathFactory;
+      private readonly IParameterValuesTask _parameterValuesTask;
 
       protected InteractionTasksForContainerBase(
          IInteractionTaskContext interactionTaskContext,
          IEditTaskFor<IContainer> editTask,
-         IObjectPathFactory objectPathFactory)
+         IObjectPathFactory objectPathFactory,
+         IParameterValuesTask parameterValuesTask)
          : base(interactionTaskContext, editTask)
       {
          _objectPathFactory = objectPathFactory;
+         _parameterValuesTask = parameterValuesTask;
       }
 
       public override IContainer CreateNewEntity(TParent parent)
@@ -134,25 +137,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       private ICommand addToExistingBuildingBlock(IReadOnlyList<ParameterValue> parameterValuesToAdd, ParameterValuesBuildingBlock parameterValuesBuildingBlock)
       {
-         var macroCommand = new MoBiMacroCommand
-         {
-            CommandType = AppConstants.Commands.AddOrReplaceCommand,
-            ObjectType = ObjectTypes.ParameterValue,
-            Description = AppConstants.Commands.AddOrReplaceParameterValuesInBuildingBlock(parameterValuesBuildingBlock.Name)
-         };
-
-         parameterValuesToAdd.Each(x => macroCommand.AddRange(createCommand(parameterValuesBuildingBlock, x)));
-
-         return macroCommand.Run(_interactionTaskContext.Context);
-      }
-
-      private static IEnumerable<ICommand> createCommand(ParameterValuesBuildingBlock parameterValuesBuildingBlock, ParameterValue x)
-      {
-         var existingParameterValue = parameterValuesBuildingBlock.FindByPath(x.Path);
-         if (existingParameterValue != null)
-            yield return new RemoveParameterValueFromBuildingBlockCommand(parameterValuesBuildingBlock, existingParameterValue.Path);
-         
-         yield return new AddParameterValueToBuildingBlockCommand(parameterValuesBuildingBlock, x);
+         return _parameterValuesTask.ExtendBuildingBlockWith(parameterValuesBuildingBlock, parameterValuesToAdd);
       }
 
       private ParameterValuesBuildingBlock buildingBlockToAdd(Module module)
