@@ -16,11 +16,7 @@ namespace MoBi.Presentation.DTO
       public virtual bool WithInitialConditions
       {
          get => _withInitialConditions;
-         set
-         {
-            _withInitialConditions = value;
-            OnPropertyChanged(nameof(WithInitialConditions));
-         }
+         set => SetProperty(ref _withInitialConditions, value);
       }
 
       public virtual bool WithParameterValues { get; set; }
