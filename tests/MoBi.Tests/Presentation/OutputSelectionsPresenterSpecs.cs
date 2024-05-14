@@ -6,6 +6,7 @@ using MoBi.Core.Services;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
+using MoBi.UI.Views;
 using OSPSuite.BDDHelper;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -21,6 +22,7 @@ namespace MoBi.Presentation
       protected ISimulationPersistableUpdater _simulationPersistableUpdater;
       protected IInteractionTasksForSimulationSettings _simulationSettingsTask;
       protected IMoBiProjectRetriever _projectRetriever;
+      protected IDefaultOutputSelectionsButtonsView _defaultButtonsView;
 
       protected override void Context()
       {
@@ -29,8 +31,9 @@ namespace MoBi.Presentation
          _simulationPersistableUpdater = A.Fake<ISimulationPersistableUpdater>();
          _simulationSettingsTask = A.Fake<IInteractionTasksForSimulationSettings>();
          _projectRetriever = A.Fake<IMoBiProjectRetriever>();
+         _defaultButtonsView = new DefaultOutputSelectionsButtonsView();
 
-         sut = new OutputSelectionsPresenter(_view, _quantitySelectionPresenter, _simulationPersistableUpdater, _simulationSettingsTask, _projectRetriever);
+         sut = new OutputSelectionsPresenter(_view, _quantitySelectionPresenter, _simulationPersistableUpdater, _simulationSettingsTask, _projectRetriever, _defaultButtonsView);
       }
 
       protected bool ContainsAllElementsFrom(IReadOnlyList<QuantitySelection> argumentList, IReadOnlyList<QuantitySelection> outputSelections)
@@ -56,7 +59,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.MakeCurrentSelectionDefault();
+         _defaultButtonsView.MakeProjectDefaultsClicked();
       }
 
       [Observation]
@@ -87,7 +90,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.LoadSelectionFromDefaults();
+         _defaultButtonsView.LoadProjectDefaultsClicked();
       }
 
       [Observation]
