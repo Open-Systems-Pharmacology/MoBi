@@ -44,8 +44,8 @@ namespace MoBi.UI.Views
          initialConditionsNameItem.Text = AppConstants.Captions.Name.FormatForLabel();
          parameterValuesNameItem.Text = AppConstants.Captions.Name.FormatForLabel();
 
-         StartValueCheckChanged(cbInitialConditions.Checked, initialConditionsNameItem);
-         StartValueCheckChanged(cbParameterValues.Checked, parameterValuesNameItem);
+         ShowOrHideNamingItem(initialConditionsNameItem, show: cbInitialConditions.Checked);
+         ShowOrHideNamingItem(parameterValuesNameItem, show: cbParameterValues.Checked);
       }
 
       protected void ShowStartValueNameControls()
@@ -69,13 +69,13 @@ namespace MoBi.UI.Views
          _screenBinder.Bind(dto => dto.WithObserver).To(cbObservers);
          _screenBinder.Bind(dto => dto.WithPassiveTransport).To(cbPassiveTransports);
          _screenBinder.Bind(dto => dto.WithReaction).To(cbReactions);
-         _screenBinder.Bind(dto => dto.WithParameterValues).To(cbParameterValues).OnValueUpdated += (o, e) => OnEvent(() => StartValueCheckChanged(e, parameterValuesNameItem));
-         _screenBinder.Bind(dto => dto.WithInitialConditions).To(cbInitialConditions).OnValueUpdated += (o, e) => OnEvent(() => StartValueCheckChanged(e, initialConditionsNameItem));
+         _screenBinder.Bind(dto => dto.WithParameterValues).To(cbParameterValues).OnValueUpdated += (o, newValue) => OnEvent(() => ShowOrHideNamingItem(parameterValuesNameItem, show: newValue));
+         _screenBinder.Bind(dto => dto.WithInitialConditions).To(cbInitialConditions).OnValueUpdated += (o, newValue) => OnEvent(() => ShowOrHideNamingItem(initialConditionsNameItem, show: newValue));
 
          RegisterValidationFor(_screenBinder);
       }
 
-      protected virtual void StartValueCheckChanged(bool enabled, LayoutControlItem namingLayoutControlItem)
+      protected virtual void ShowOrHideNamingItem(LayoutControlItem namingLayoutControlItem, bool show)
       {
          namingLayoutControlItem.Visibility = LayoutVisibility.Never;
       }

@@ -8,13 +8,14 @@ using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation
 {
    public class concern_for_CreateModulePresenter : ContextSpecification<CreateModulePresenter>
    {
       protected ICreateModuleDTOToModuleMapper _mapper;
-      private IMoBiContext _context;
+      protected IMoBiContext _context;
       protected ICreateModuleView _view;
       protected MoBiProject _project;
 

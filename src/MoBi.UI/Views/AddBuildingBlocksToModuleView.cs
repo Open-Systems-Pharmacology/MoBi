@@ -11,7 +11,7 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.UI.Views
 {
-   public class AddBuildingBlocksToModuleView : BaseModuleContentView<AddBuildingBlocksToModuleDTO>,
+   public class AddBuildingBlocksToModuleView : AddContentToModuleView<AddBuildingBlocksToModuleDTO, IAddBuildingBlocksToModulePresenter>,
       IAddBuildingBlocksToModuleView
    {
       public override void InitializeResources()
@@ -36,13 +36,9 @@ namespace MoBi.UI.Views
             adjustViewForOnlyParameterValues();
       }
 
-      protected override void StartValueCheckChanged(bool enabled, LayoutControlItem namingLayoutControlItem)
+      protected override void ShowOrHideNamingItem(LayoutControlItem namingLayoutControlItem, bool show)
       {
-         namingLayoutControlItem.Visibility = LayoutVisibilityConvertor.FromBoolean(enabled);
-      }
-
-      public void AttachPresenter(IAddBuildingBlocksToModulePresenter presenter)
-      {
+         namingLayoutControlItem.Visibility = LayoutVisibilityConvertor.FromBoolean(show);
       }
 
       public void adjustViewForOnlyParameterValues()
@@ -83,11 +79,9 @@ namespace MoBi.UI.Views
       }
    }
 
-   public class CreateModuleView : BaseModuleContentView<ModuleContentDTO>, ICreateModuleView
+   public class CreateModuleView : AddContentToModuleView<ModuleContentDTO, ICreateModulePresenter>, ICreateModuleView
    {
-      public void AttachPresenter(ICreateModulePresenter presenter)
-      {
-      }
+
    }
 
    public class CloneBuildingBlocksToModuleView : BaseModuleContentView<CloneBuildingBlocksToModuleDTO>,
