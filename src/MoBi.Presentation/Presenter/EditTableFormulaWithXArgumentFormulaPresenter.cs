@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Services;
 using MoBi.Presentation.DTO;
@@ -87,8 +88,8 @@ namespace MoBi.Presentation.Presenter
       {
          using (var presenter = _applicationController.Start<ISelectFormulaUsablePathPresenter>())
          {
-            var referencePresenter = _selectReferencePresenterFactory.ReferenceAtParameterFor(UsingObject.ParentContainer);
-            presenter.Init(predicate, UsingObject, new[] {UsingObject.RootContainer}, caption, referencePresenter);
+            var referencePresenter = _selectReferencePresenterFactory.ReferenceAtParameterFor(UsingObject?.ParentContainer);
+            presenter.Init(predicate, UsingObject, UsingObject == null ? Enumerable.Empty<IObjectBase>() : new[] {UsingObject.RootContainer}, caption, referencePresenter);
             return presenter.GetSelection();
          }
       }
