@@ -1,4 +1,5 @@
-﻿using MoBi.Assets;
+﻿using System.Windows.Forms;
+using MoBi.Assets;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using OSPSuite.Assets;
@@ -10,8 +11,6 @@ namespace MoBi.UI.Views
 {
    public partial class OutputSelectionsView : BaseModalView, IOutputSelectionsView
    {
-      private IOutputSelectionsPresenter _presenter;
-
       public OutputSelectionsView(IMainView shell)
          : base(shell)
       {
@@ -20,12 +19,16 @@ namespace MoBi.UI.Views
 
       public void AttachPresenter(IOutputSelectionsPresenter presenter)
       {
-         _presenter = presenter;
       }
 
       public void AddSettingsView(IView view)
       {
          panel.FillWith(view);
+      }
+
+      public void AddDefaultButtonsView(IView view)
+      {
+         ReplaceExtraButtonWith(view as Control);
       }
 
       public override void InitializeResources()
@@ -34,24 +37,8 @@ namespace MoBi.UI.Views
          Caption = AppConstants.Captions.SimulationSettings;
          ApplicationIcon = ApplicationIcons.Simulation;
 
-         ExtraCaption = AppConstants.Captions.MakeDefault;
          ExtraEnabled = true;
          ExtraVisible = true;
-
-         btnLoadDefaults.Text = AppConstants.Captions.LoadFromDefaults;
-         btnLoadDefaults.Click += (o, e) => OnEvent(loadDefaultsClicked);
-
-         tablePanel.AdjustButton(btnLoadDefaults);
-      }
-
-      private void loadDefaultsClicked()
-      {
-         _presenter.LoadSelectionFromDefaults();
-      }
-
-      protected override void ExtraClicked()
-      {
-         _presenter.MakeCurrentSelectionDefault();
       }
    }
 }
