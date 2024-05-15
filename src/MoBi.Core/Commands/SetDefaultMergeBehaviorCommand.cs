@@ -6,13 +6,13 @@ using OSPSuite.Core.Domain;
 
 namespace MoBi.Core.Commands
 {
-   public class SetDefaultMergeBehavior : MoBiReversibleCommand
+   public class SetDefaultMergeBehaviorCommand : MoBiReversibleCommand
    {
       private Module _module;
       private MergeBehavior _oldBehavior;
       private readonly MergeBehavior _newMergeBehavior;
 
-      public SetDefaultMergeBehavior(Module module, MergeBehavior newMergeBehavior)
+      public SetDefaultMergeBehaviorCommand(Module module, MergeBehavior newMergeBehavior)
       {
          ObjectType = new ObjectTypeResolver().TypeFor<Module>();
          CommandType = AppConstants.Commands.EditCommand;
@@ -40,7 +40,7 @@ namespace MoBi.Core.Commands
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return new SetDefaultMergeBehavior(_module, _oldBehavior);
+         return new SetDefaultMergeBehaviorCommand(_module, _oldBehavior);
       }
 
       public override void RestoreExecutionData(IMoBiContext context)

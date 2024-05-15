@@ -99,12 +99,12 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public void MakeExtendModule(Module module)
       {
-         context.AddToHistory(new SetDefaultMergeBehavior(module, MergeBehavior.Extend).Run(context));
+         context.AddToHistory(new SetDefaultMergeBehaviorCommand(module, MergeBehavior.Extend).Run(context));
       }
 
       public void MakeOverwriteModule(Module module)
       {
-         context.AddToHistory(new SetDefaultMergeBehavior(module, MergeBehavior.Overwrite).Run(context));
+         context.AddToHistory(new SetDefaultMergeBehaviorCommand(module, MergeBehavior.Overwrite).Run(context));
       }
 
       public void AddNewInitialConditionsBuildingBlock(Module module)
