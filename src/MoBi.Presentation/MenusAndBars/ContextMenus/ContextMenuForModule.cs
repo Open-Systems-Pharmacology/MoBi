@@ -9,6 +9,7 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Presentation.UICommands;
 using OSPSuite.Utility.Extensions;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 
@@ -38,12 +39,36 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          _allMenuItems.Add(createNewBuildingBlocksItemFor(module));
          _allMenuItems.Add(createExistingBuildingBlockItemFor(module));
          _allMenuItems.Add(createExistingBuildingBlockFromTemplateItemFor(module));
+         _allMenuItems.Add(createDefaultMergeBehaviorItemFor(module));
          _allMenuItems.Add(createRenameItemFor(module));
          _allMenuItems.Add(createSaveItemFor(module));
          _allMenuItems.Add(createRemoveItemFor(module));
          _allMenuItems.Add(createCloneMenuItem(module));
          
          return this;
+      }
+
+      private IMenuBarItem createDefaultMergeBehaviorItemFor(Module module)
+      {
+         return CreateSubMenu.WithCaption(AppConstants.MenuNames.DefaultMergeBehavior)
+            .WithItem(CreateMenuCheckButton.WithCaption(MergeBehavior.Overwrite.ToString())
+               .WithChecked(module.DefaultMergeBehavior == MergeBehavior.Overwrite)
+               .WithCheckedAction(defaultOverwrite => makeModuleOverwrite(module, defaultOverwrite)))
+            .WithItem(CreateMenuCheckButton.WithCaption(MergeBehavior.Extend.ToString())
+               .WithChecked(module.DefaultMergeBehavior == MergeBehavior.Extend)
+               .WithCheckedAction(defaultExtend => makeModuleExtend(module, defaultExtend)));
+      }
+
+      private void makeModuleExtend(Module module, bool defaultExtend)
+      {
+         if (defaultExtend && module.DefaultMergeBehavior != MergeBehavior.Extend)
+            _container.Resolve<MakeExtendModuleUICommand>().For(module).ExecuteWithinExceptionHandler();
+      }
+
+      private void makeModuleOverwrite(Module module, bool defaultOverwrite)
+      {
+         if(defaultOverwrite && module.DefaultMergeBehavior != MergeBehavior.Overwrite)
+            _container.Resolve<MakeOverwriteModuleUICommand>().For(module).ExecuteWithinExceptionHandler();
       }
 
       private IMenuBarItem createSaveItemFor(Module module)

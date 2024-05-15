@@ -804,6 +804,11 @@ namespace MoBi.Assets
          {
             return $"Changed the simulation configuration of simulation '{simulationName}'";
          }
+
+         public static string SetModuleMergeBehavior(string moduleName, string newMergeBehavior)
+         {
+            return $"Set merge behavior to '{newMergeBehavior}' for module '{moduleName}'";
+         }
       }
 
       public static class BarNames
@@ -1098,6 +1103,7 @@ namespace MoBi.Assets
          public static readonly string AddProteinExpression = "Add Protein Expression";
          public static readonly string OutputSelections = "Output Selections";
          public static readonly string SettingsAndSchema = "Settings and Schema";
+         public static readonly string DefaultMergeBehavior = "Default Merge Behavior";
 
          public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
 

@@ -24,6 +24,8 @@ namespace MoBi.Presentation.Tasks.Interaction
       void AddCloneToProject(Module moduleToClone);
       void AddNewInitialConditionsBuildingBlock(Module module);
       void AddNewParameterValuesBuildingBlock(Module module);
+      void MakeExtendModule(Module module);
+      void MakeOverwriteModule(Module module);
    }
 
    public class InteractionTasksForModule : InteractionTasksForChildren<MoBiProject, Module>, IInteractionTasksForModule
@@ -93,6 +95,16 @@ namespace MoBi.Presentation.Tasks.Interaction
       public void AddNewParameterValuesBuildingBlock(Module module)
       {
          addBuildingBlocksToModule(module, presenter => presenter.AddParameterValuesToModule(module));
+      }
+
+      public void MakeExtendModule(Module module)
+      {
+         context.AddToHistory(new SetDefaultMergeBehavior(module, MergeBehavior.Extend).Run(context));
+      }
+
+      public void MakeOverwriteModule(Module module)
+      {
+         context.AddToHistory(new SetDefaultMergeBehavior(module, MergeBehavior.Overwrite).Run(context));
       }
 
       public void AddNewInitialConditionsBuildingBlock(Module module)
