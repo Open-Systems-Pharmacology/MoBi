@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using MoBi.Assets;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
@@ -8,7 +9,12 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface ICloneBuildingBlocksToModulePresenter : IDisposablePresenter
+   public interface IBaseModuleContentPresenter : IDisposablePresenter
+   {
+      IReadOnlyList<MergeBehavior> AllMergeBehaviors { get; }
+   }
+
+   public interface ICloneBuildingBlocksToModulePresenter : IBaseModuleContentPresenter
    {
       /// <summary>
       ///    Selectively removes building blocks from <paramref name="clonedModule" /> based on user selection
@@ -17,7 +23,7 @@ namespace MoBi.Presentation.Presenter
       bool SelectClonedBuildingBlocks(Module clonedModule);
    }
 
-   public class CloneBuildingBlocksToModulePresenter : AbstractDisposablePresenter<ICloneBuildingBlocksToModuleView, ICloneBuildingBlocksToModulePresenter>,
+   public class CloneBuildingBlocksToModulePresenter : BaseModuleContentPresenter<ICloneBuildingBlocksToModuleView, ICloneBuildingBlocksToModulePresenter>,
       ICloneBuildingBlocksToModulePresenter
    {
       private readonly IMoBiProjectRetriever _projectRetriever;
@@ -42,6 +48,7 @@ namespace MoBi.Presentation.Presenter
          dto.BuildingBlocksToRemove.Each(clonedModule.Remove);
 
          clonedModule.Name = dto.Name;
+         clonedModule.DefaultMergeBehavior = dto.DefaultMergeBehavior;
 
          return true;
       }

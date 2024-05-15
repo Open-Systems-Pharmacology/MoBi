@@ -1,6 +1,6 @@
 ﻿namespace MoBi.UI.Views
 {
-   partial class BaseModuleContentView<TDTO>
+   partial class BaseModuleContentView<TDTO, TPresenter>
    {
       /// <summary> 
       /// Required designer variable.
@@ -60,6 +60,8 @@
          this.moleculesItem = new DevExpress.XtraLayout.LayoutControlItem();
          this.parameterValuesNameItem = new DevExpress.XtraLayout.LayoutControlItem();
          this.initialConditionsNameItem = new DevExpress.XtraLayout.LayoutControlItem();
+         this.cbDefaultMergeBehavior = new OSPSuite.UI.Controls.UxComboBoxEdit();
+         this.defaultMergeBehaviorItem = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.checkEdit1.Properties)).BeginInit();
@@ -93,11 +95,13 @@
          ((System.ComponentModel.ISupportInitialize)(this.moleculesItem)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.parameterValuesNameItem)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.initialConditionsNameItem)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.cbDefaultMergeBehavior.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.defaultMergeBehaviorItem)).BeginInit();
          this.SuspendLayout();
          // 
          // tablePanel
          // 
-         this.tablePanel.Location = new System.Drawing.Point(0, 273);
+         this.tablePanel.Location = new System.Drawing.Point(0, 305);
          // 
          // checkEdit1
          // 
@@ -138,6 +142,7 @@
          // layoutControl
          // 
          this.layoutControl.AllowCustomization = false;
+         this.layoutControl.Controls.Add(this.cbDefaultMergeBehavior);
          this.layoutControl.Controls.Add(this.tbInitialConditionsName);
          this.layoutControl.Controls.Add(this.tbParameterValuesName);
          this.layoutControl.Controls.Add(this.cbMolecules);
@@ -154,13 +159,13 @@
          this.layoutControl.Name = "layoutControl";
          this.layoutControl.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(1244, 200, 650, 1069);
          this.layoutControl.Root = this.Root;
-         this.layoutControl.Size = new System.Drawing.Size(580, 316);
+         this.layoutControl.Size = new System.Drawing.Size(580, 348);
          this.layoutControl.TabIndex = 39;
          this.layoutControl.Text = "uxLayoutControl1";
          // 
          // tbInitialConditionsName
          // 
-         this.tbInitialConditionsName.Location = new System.Drawing.Point(334, 213);
+         this.tbInitialConditionsName.Location = new System.Drawing.Point(334, 237);
          this.tbInitialConditionsName.Name = "tbInitialConditionsName";
          this.tbInitialConditionsName.Size = new System.Drawing.Size(222, 20);
          this.tbInitialConditionsName.StyleController = this.layoutControl;
@@ -168,7 +173,7 @@
          // 
          // tbParameterValuesName
          // 
-         this.tbParameterValuesName.Location = new System.Drawing.Point(334, 237);
+         this.tbParameterValuesName.Location = new System.Drawing.Point(334, 261);
          this.tbParameterValuesName.Name = "tbParameterValuesName";
          this.tbParameterValuesName.Size = new System.Drawing.Size(222, 20);
          this.tbParameterValuesName.StyleController = this.layoutControl;
@@ -176,7 +181,7 @@
          // 
          // cbMolecules
          // 
-         this.cbMolecules.Location = new System.Drawing.Point(24, 117);
+         this.cbMolecules.Location = new System.Drawing.Point(24, 141);
          this.cbMolecules.Name = "cbMolecules";
          this.cbMolecules.Properties.Caption = "cbMolecules";
          this.cbMolecules.Size = new System.Drawing.Size(532, 20);
@@ -185,7 +190,7 @@
          // 
          // cbParameterValues
          // 
-         this.cbParameterValues.Location = new System.Drawing.Point(24, 237);
+         this.cbParameterValues.Location = new System.Drawing.Point(24, 261);
          this.cbParameterValues.Name = "cbParameterValues";
          this.cbParameterValues.Properties.Caption = "cbParameterValues";
          this.cbParameterValues.Size = new System.Drawing.Size(164, 20);
@@ -194,7 +199,7 @@
          // 
          // cbInitialConditions
          // 
-         this.cbInitialConditions.Location = new System.Drawing.Point(24, 213);
+         this.cbInitialConditions.Location = new System.Drawing.Point(24, 237);
          this.cbInitialConditions.Name = "cbInitialConditions";
          this.cbInitialConditions.Properties.Caption = "cbInitialConditions";
          this.cbInitialConditions.Size = new System.Drawing.Size(164, 20);
@@ -203,7 +208,7 @@
          // 
          // cbEventGroup
          // 
-         this.cbEventGroup.Location = new System.Drawing.Point(24, 189);
+         this.cbEventGroup.Location = new System.Drawing.Point(24, 213);
          this.cbEventGroup.Name = "cbEventGroup";
          this.cbEventGroup.Properties.Caption = "cbEventGroup";
          this.cbEventGroup.Size = new System.Drawing.Size(532, 20);
@@ -212,7 +217,7 @@
          // 
          // cbObservers
          // 
-         this.cbObservers.Location = new System.Drawing.Point(24, 165);
+         this.cbObservers.Location = new System.Drawing.Point(24, 189);
          this.cbObservers.Name = "cbObservers";
          this.cbObservers.Properties.Caption = "cbObservers";
          this.cbObservers.Size = new System.Drawing.Size(532, 20);
@@ -221,7 +226,7 @@
          // 
          // cbPassiveTransports
          // 
-         this.cbPassiveTransports.Location = new System.Drawing.Point(24, 141);
+         this.cbPassiveTransports.Location = new System.Drawing.Point(24, 165);
          this.cbPassiveTransports.Name = "cbPassiveTransports";
          this.cbPassiveTransports.Properties.Caption = "cbPassiveTransports";
          this.cbPassiveTransports.Size = new System.Drawing.Size(532, 20);
@@ -230,7 +235,7 @@
          // 
          // cbReactions
          // 
-         this.cbReactions.Location = new System.Drawing.Point(24, 93);
+         this.cbReactions.Location = new System.Drawing.Point(24, 117);
          this.cbReactions.Name = "cbReactions";
          this.cbReactions.Properties.Caption = "cbReactions";
          this.cbReactions.Size = new System.Drawing.Size(532, 20);
@@ -239,7 +244,7 @@
          // 
          // cbSpatialStructure
          // 
-         this.cbSpatialStructure.Location = new System.Drawing.Point(24, 69);
+         this.cbSpatialStructure.Location = new System.Drawing.Point(24, 93);
          this.cbSpatialStructure.Name = "cbSpatialStructure";
          this.cbSpatialStructure.Properties.Caption = "cbSpatialStructure";
          this.cbSpatialStructure.Size = new System.Drawing.Size(532, 20);
@@ -261,17 +266,18 @@
          this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.emptySpaceItem1,
             this.moduleNameItem,
-            this.createBuildingBlocksGroup});
+            this.createBuildingBlocksGroup,
+            this.defaultMergeBehaviorItem});
          this.Root.Name = "Root";
-         this.Root.Size = new System.Drawing.Size(580, 316);
+         this.Root.Size = new System.Drawing.Size(580, 348);
          this.Root.TextVisible = false;
          // 
          // emptySpaceItem1
          // 
          this.emptySpaceItem1.AllowHotTrack = false;
-         this.emptySpaceItem1.Location = new System.Drawing.Point(0, 261);
+         this.emptySpaceItem1.Location = new System.Drawing.Point(0, 285);
          this.emptySpaceItem1.Name = "emptySpaceItem1";
-         this.emptySpaceItem1.Size = new System.Drawing.Size(560, 35);
+         this.emptySpaceItem1.Size = new System.Drawing.Size(560, 43);
          this.emptySpaceItem1.TextSize = new System.Drawing.Size(0, 0);
          // 
          // moduleNameItem
@@ -295,7 +301,7 @@
             this.moleculesItem,
             this.parameterValuesNameItem,
             this.initialConditionsNameItem});
-         this.createBuildingBlocksGroup.Location = new System.Drawing.Point(0, 24);
+         this.createBuildingBlocksGroup.Location = new System.Drawing.Point(0, 48);
          this.createBuildingBlocksGroup.Name = "createBuildingBlocksGroup";
          this.createBuildingBlocksGroup.Size = new System.Drawing.Size(560, 237);
          // 
@@ -377,7 +383,6 @@
          this.parameterValuesNameItem.Location = new System.Drawing.Point(168, 168);
          this.parameterValuesNameItem.Name = "parameterValuesNameItem";
          this.parameterValuesNameItem.Size = new System.Drawing.Size(368, 24);
-         this.parameterValuesNameItem.Text = "parameterValuesNameItem";
          this.parameterValuesNameItem.TextSize = new System.Drawing.Size(130, 13);
          // 
          // initialConditionsNameItem
@@ -386,14 +391,32 @@
          this.initialConditionsNameItem.Location = new System.Drawing.Point(168, 144);
          this.initialConditionsNameItem.Name = "initialConditionsNameItem";
          this.initialConditionsNameItem.Size = new System.Drawing.Size(368, 24);
-         this.initialConditionsNameItem.Text = "initialConditionsNameItem";
          this.initialConditionsNameItem.TextSize = new System.Drawing.Size(130, 13);
+         // 
+         // cbDefaultMergeBehavior
+         // 
+         this.cbDefaultMergeBehavior.Location = new System.Drawing.Point(154, 36);
+         this.cbDefaultMergeBehavior.Name = "cbDefaultMergeBehavior";
+         this.cbDefaultMergeBehavior.Properties.AllowMouseWheel = false;
+         this.cbDefaultMergeBehavior.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+         this.cbDefaultMergeBehavior.Size = new System.Drawing.Size(414, 20);
+         this.cbDefaultMergeBehavior.StyleController = this.layoutControl;
+         this.cbDefaultMergeBehavior.TabIndex = 16;
+         // 
+         // defaultMergeBehaviorItem
+         // 
+         this.defaultMergeBehaviorItem.Control = this.cbDefaultMergeBehavior;
+         this.defaultMergeBehaviorItem.Location = new System.Drawing.Point(0, 24);
+         this.defaultMergeBehaviorItem.Name = "defaultMergeBehaviorItem";
+         this.defaultMergeBehaviorItem.Size = new System.Drawing.Size(560, 24);
+         this.defaultMergeBehaviorItem.TextSize = new System.Drawing.Size(130, 13);
          // 
          // BaseModuleContentView
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-         this.ClientSize = new System.Drawing.Size(580, 316);
+         this.ClientSize = new System.Drawing.Size(580, 348);
          this.Controls.Add(this.layoutControl);
          this.Name = "BaseModuleContentView";
          this.Controls.SetChildIndex(this.layoutControl, 0);
@@ -431,6 +454,8 @@
          ((System.ComponentModel.ISupportInitialize)(this.moleculesItem)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.parameterValuesNameItem)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.initialConditionsNameItem)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.cbDefaultMergeBehavior.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.defaultMergeBehaviorItem)).EndInit();
          this.ResumeLayout(false);
          this.PerformLayout();
 
@@ -467,5 +492,7 @@
       protected DevExpress.XtraEditors.TextEdit tbParameterValuesName;
       protected DevExpress.XtraLayout.LayoutControlItem parameterValuesNameItem;
       protected DevExpress.XtraLayout.LayoutControlItem initialConditionsNameItem;
+      private OSPSuite.UI.Controls.UxComboBoxEdit cbDefaultMergeBehavior;
+      private DevExpress.XtraLayout.LayoutControlItem defaultMergeBehaviorItem;
    }
 }

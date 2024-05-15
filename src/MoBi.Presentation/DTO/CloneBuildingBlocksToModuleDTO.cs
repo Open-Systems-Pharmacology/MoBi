@@ -39,6 +39,8 @@ namespace MoBi.Presentation.DTO
          
          CanSelectParameterValues = module.ParameterValuesCollection.Any();
          WithParameterValues = CanSelectParameterValues;
+
+         DefaultMergeBehavior = module.DefaultMergeBehavior;
       }
 
       public IReadOnlyCollection<IBuildingBlock> BuildingBlocksToRemove {

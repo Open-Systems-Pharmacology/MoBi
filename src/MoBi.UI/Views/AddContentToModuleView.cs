@@ -4,15 +4,8 @@ using MoBi.Presentation.Views;
 
 namespace MoBi.UI.Views
 {
-   public abstract class AddContentToModuleView<TDTO, TPresenter> : BaseModuleContentView<TDTO>, IAddContentToModuleView<TPresenter> where TDTO : ModuleContentDTO where TPresenter : IAddContentToModulePresenter
+   public abstract class AddContentToModuleView<TDTO, TPresenter> : BaseModuleContentView<TDTO, TPresenter>, IAddContentToModuleView<TPresenter> where TDTO : ModuleContentDTO where TPresenter : IAddContentToModulePresenter
    {
-      protected TPresenter _presenter;
-
-      public void AttachPresenter(TPresenter presenter)
-      {
-         _presenter = presenter;
-      }
-
       public void ShowInitialConditionsName()
       {
          ShowOrHideNamingItem(initialConditionsNameItem, true);

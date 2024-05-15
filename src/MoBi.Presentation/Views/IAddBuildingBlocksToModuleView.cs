@@ -7,6 +7,7 @@ namespace MoBi.Presentation.Views
    public interface IAddContentToModuleView<TPresenter> : IModalView<TPresenter> where TPresenter : IAddContentToModulePresenter
    {
       void ShowInitialConditionsName();
+      void DisableDefaultMergeBehavior();
    }
 
    public interface IAddBuildingBlocksToModuleView : IAddContentToModuleView<IAddBuildingBlocksToModulePresenter>
