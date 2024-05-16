@@ -20,6 +20,7 @@ namespace MoBi.Presentation.Tasks.Interaction
    public interface IParameterValuesTask : IInteractionTasksForExtendablePathAndValueEntity<ParameterValuesBuildingBlock, ParameterValue>
    {
       void AddStartValueExpression(ParameterValuesBuildingBlock buildingBlock);
+      IMoBiCommand ExtendBuildingBlockWith(ParameterValuesBuildingBlock buildingBlock, IReadOnlyList<ParameterValue> newParameterValues);
    }
 
    public class ParameterValuesTask : InteractionTasksForExtendablePathAndValueEntity<ParameterValuesBuildingBlock, ParameterValue>, IParameterValuesTask
@@ -87,12 +88,18 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (organ == null || molecules == null || !molecules.Any())
             return;
 
-         var newStartValues = filterEntitiesToRetain(buildingBlock, createExpressionBasedOn(organ, molecules));
+         var newParameterValues = createExpressionBasedOn(organ, molecules);
 
-         AddCommand(Extend(newStartValues, buildingBlock, retainConflictingEntities: false));
+         AddCommand(ExtendBuildingBlockWith(buildingBlock, newParameterValues));
       }
 
-      private IReadOnlyList<ParameterValue> filterEntitiesToRetain(ParameterValuesBuildingBlock originalBuildingBlock, IReadOnlyList<ParameterValue> newParameterValues)
+      public IMoBiCommand ExtendBuildingBlockWith(ParameterValuesBuildingBlock buildingBlock, IReadOnlyList<ParameterValue> newParameterValues)
+      {
+         var newStartValues = FilterEntitiesToRetain(buildingBlock, newParameterValues);
+         return Extend(newStartValues, buildingBlock, retainConflictingEntities: false);
+      }
+
+      public IReadOnlyList<ParameterValue> FilterEntitiesToRetain(ParameterValuesBuildingBlock originalBuildingBlock, IReadOnlyList<ParameterValue> newParameterValues)
       {
          using (var pathSelectionPresenter = Context.Resolve<IPathAndValueEntitySelectionPresenter>())
          {

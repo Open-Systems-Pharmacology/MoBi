@@ -101,11 +101,11 @@ namespace MoBi.Presentation
          registerDiagramPresenter(container);
 
          //selection presenter
-         container.Register<ISelectionPresenter<XElement>, SelectXmlElementPresenter>();
          container.Register(typeof(IDescriptorConditionListPresenter<>), typeof(DescriptorConditionListPresenter<>));
          container.Register<ISelectManyPresenter<XElement>, SelectXmlElementPresenter>();
-         container.Register<ISelectManyPresenter<OSPSuite.Core.Domain.IContainer>, SelectObjectBasePresenter<OSPSuite.Core.Domain.IContainer>>();
-         container.Register<ISelectManyPresenter<EventGroupBuilder>, SelectObjectBasePresenter<EventGroupBuilder>>();
+         container.Register<ISelectManyPresenter<OSPSuite.Core.Domain.IContainer>, SelectManyObjectBasePresenter<OSPSuite.Core.Domain.IContainer>>();
+         container.Register<ISelectManyPresenter<EventGroupBuilder>, SelectManyObjectBasePresenter<EventGroupBuilder>>();
+         container.Register<ISelectSinglePresenter<ParameterValuesBuildingBlock>, SelectSingleObjectBasePresenter<ParameterValuesBuildingBlock>>();
 
          container.Register<ISettingsPersistor<IUserSettings>, UserSettingsPersistor>();
          container.Register<ISettingsPersistor<IApplicationSettings>, ApplicationSettingsPersistor>();
