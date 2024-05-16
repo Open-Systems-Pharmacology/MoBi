@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using FakeItEasy;
-using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
@@ -57,12 +57,13 @@ namespace MoBi.Presentation.Tasks
          };
          A.CallTo(() => _interactionTaskContext.Context).Returns(_context);
          A.CallTo(() => _context.CurrentProject).Returns(_currentProject);
-         A.CallTo(() => _context.Clone(_simulationSettings)).Returns(_clonedSettings);
+         A.CallTo(() => _context.Clone(_simulationSettings.OutputSchema)).Returns(_clonedSettings.OutputSchema);
+         A.CallTo(() => _context.Clone(_simulationSettings.Solver)).Returns(_clonedSettings.Solver);
       }
 
       protected override void Because()
       {
-         sut.UpdateDefaultSimulationSettingsInProject(_simulationSettings);
+         sut.UpdateDefaultSimulationSettingsInProject(_simulationSettings.OutputSchema, _simulationSettings.Solver);
       }
 
       [Observation]
@@ -78,37 +79,37 @@ namespace MoBi.Presentation.Tasks
       private SimulationSettings _simulationSettings;
       private IMoBiContext _context;
       private MoBiProject _currentProject;
-      private SimulationSettings _clonedSettings;
 
       protected override void Context()
       {
          base.Context();
          _simulationSettings = new SimulationSettings();
+         _simulationSettings.OutputSelections.AddOutput(new QuantitySelection("The|Path"));
          _context = A.Fake<IMoBiContext>();
          _currentProject = new MoBiProject
          {
             SimulationSettings = new SimulationSettings()
          };
 
-         _clonedSettings = new SimulationSettings
-         {
-            OutputSelections = new OutputSelections()
-         };
-
          A.CallTo(() => _interactionTaskContext.Context).Returns(_context);
          A.CallTo(() => _context.CurrentProject).Returns(_currentProject);
-         A.CallTo(() => _context.Clone(_simulationSettings)).Returns(_clonedSettings);
       }
 
       protected override void Because()
       {
-         sut.UpdateDefaultOutputSelectionsInProject(_simulationSettings);
+         sut.UpdateDefaultOutputSelectionsInProject(_simulationSettings.OutputSelections.ToList());
       }
 
       [Observation]
       public void the_simulation_settings_should_be_updated()
       {
-         _context.CurrentProject.SimulationSettings.OutputSelections.ShouldBeEqualTo(_clonedSettings.OutputSelections);
+         _context.CurrentProject.SimulationSettings.OutputSelections.First().Path.ShouldBeEqualTo("The|Path");
+      }
+
+      [Observation]
+      public void the_added_output_selection_should_not_be_the_same_object()
+      {
+         ReferenceEquals(_context.CurrentProject.SimulationSettings.OutputSelections.First(), _simulationSettings.OutputSelections.First()).ShouldBeFalse();
       }
    }
 

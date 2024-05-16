@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
@@ -14,8 +15,8 @@ namespace MoBi.Presentation.Tasks.Interaction
    {
       void LoadDefaultSimulationSettingsInProject();
       void Edit(SimulationSettings simulationSettings);
-      void UpdateDefaultSimulationSettingsInProject(SimulationSettings simulationSettings);
-      void UpdateDefaultOutputSelectionsInProject(SimulationSettings simulationSettings);
+      void UpdateDefaultSimulationSettingsInProject(OutputSchema outputSchema, SolverSettings solverSettings);
+      void UpdateDefaultOutputSelectionsInProject(IReadOnlyList<QuantitySelection> selectedQuantities);
    }
 
    public class InteractionTasksForSimulationSettings : InteractionTasksForBuildingBlock<MoBiProject, SimulationSettings>, IInteractionTasksForSimulationSettings
@@ -64,19 +65,19 @@ namespace MoBi.Presentation.Tasks.Interaction
          Context.PublishEvent(new DefaultSimulationSettingsUpdatedEvent(Context.CurrentProject.SimulationSettings));
       }
 
-      public void UpdateDefaultSimulationSettingsInProject(SimulationSettings simulationSettings)
+      public void UpdateDefaultSimulationSettingsInProject(OutputSchema outputSchema, SolverSettings solverSettings)
       {
-         var clonedSettings = Context.Clone(simulationSettings);
-         Context.CurrentProject.SimulationSettings.OutputSchema = clonedSettings.OutputSchema;
-         Context.CurrentProject.SimulationSettings.Solver = clonedSettings.Solver;
+         Context.CurrentProject.SimulationSettings.OutputSchema = Context.Clone(outputSchema);
+         Context.CurrentProject.SimulationSettings.Solver = Context.Clone(solverSettings);
 
          Context.PublishEvent(new DefaultSimulationSettingsUpdatedEvent(Context.CurrentProject.SimulationSettings));
       }
 
-      public void UpdateDefaultOutputSelectionsInProject(SimulationSettings simulationSettings)
+      public void UpdateDefaultOutputSelectionsInProject(IReadOnlyList<QuantitySelection> selectedQuantities)
       {
-         var clonedSettings = Context.Clone(simulationSettings);
-         Context.CurrentProject.SimulationSettings.OutputSelections = clonedSettings.OutputSelections;
+         var projectSelections = Context.CurrentProject.SimulationSettings.OutputSelections;
+         projectSelections.Clear();
+         selectedQuantities.Each(x => projectSelections.AddOutput(x.Clone()));
          Context.PublishEvent(new DefaultSimulationSettingsUpdatedEvent(Context.CurrentProject.SimulationSettings));
       }
 
