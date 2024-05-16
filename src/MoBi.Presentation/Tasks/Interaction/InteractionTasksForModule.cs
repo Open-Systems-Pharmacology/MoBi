@@ -37,20 +37,11 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
       }
 
-      public override IMoBiCommand GetRemoveCommand(Module objectToRemove, MoBiProject parent, IBuildingBlock buildingBlock)
-      {
-         return new RemoveModuleCommand(objectToRemove);
-      }
+      public override IMoBiCommand GetRemoveCommand(Module objectToRemove, MoBiProject parent, IBuildingBlock buildingBlock) => new RemoveModuleCommand(objectToRemove);
 
-      public override IMoBiCommand GetAddCommand(Module itemToAdd, MoBiProject parent, IBuildingBlock buildingBlock)
-      {
-         return new AddModuleCommand(itemToAdd);
-      }
+      public override IMoBiCommand GetAddCommand(Module itemToAdd, MoBiProject parent, IBuildingBlock buildingBlock) => new AddModuleCommand(itemToAdd);
 
-      public IMoBiCommand GetAddBuildingBlocksToModuleCommand(Module existingModule, IReadOnlyList<IBuildingBlock> listOfNewBuildingBlocks)
-      {
-         return new AddMultipleBuildingBlocksToModuleCommand(existingModule, listOfNewBuildingBlocks);
-      }
+      public IMoBiCommand GetAddBuildingBlocksToModuleCommand(Module existingModule, IReadOnlyList<IBuildingBlock> listOfNewBuildingBlocks) => new AddMultipleBuildingBlocksToModuleCommand(existingModule, listOfNewBuildingBlocks);
 
       protected override void SetAddCommandDescription(Module child, MoBiProject parent, IMoBiCommand addCommand, MoBiMacroCommand macroCommand,
          IBuildingBlock buildingBlock)
@@ -73,10 +64,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          }
       }
 
-      public void AddBuildingBlocksToModule(Module module)
-      {
-         addBuildingBlocksToModule(module, presenter => presenter.AddBuildingBlocksToModule(module));
-      }
+      public void AddBuildingBlocksToModule(Module module) => addBuildingBlocksToModule(module, presenter => presenter.AddBuildingBlocksToModule(module));
 
       private void addBuildingBlocksToModule(Module module, Func<IAddBuildingBlocksToModulePresenter, IReadOnlyList<IBuildingBlock>> buildingBlockCreator)
       {
@@ -92,35 +80,17 @@ namespace MoBi.Presentation.Tasks.Interaction
          }
       }
 
-      public void AddNewParameterValuesBuildingBlock(Module module)
-      {
-         addBuildingBlocksToModule(module, presenter => presenter.AddParameterValuesToModule(module));
-      }
+      public void AddNewParameterValuesBuildingBlock(Module module) => addBuildingBlocksToModule(module, presenter => presenter.AddParameterValuesToModule(module));
 
-      public void MakeExtendModule(Module module)
-      {
-         context.AddToHistory(new SetDefaultMergeBehaviorCommand(module, MergeBehavior.Extend).Run(context));
-      }
+      public void MakeExtendModule(Module module) => context.AddToHistory(new SetDefaultMergeBehaviorCommand(module, MergeBehavior.Extend).Run(context));
 
-      public void MakeOverwriteModule(Module module)
-      {
-         context.AddToHistory(new SetDefaultMergeBehaviorCommand(module, MergeBehavior.Overwrite).Run(context));
-      }
+      public void MakeOverwriteModule(Module module) => context.AddToHistory(new SetDefaultMergeBehaviorCommand(module, MergeBehavior.Overwrite).Run(context));
 
-      public void AddNewInitialConditionsBuildingBlock(Module module)
-      {
-         addBuildingBlocksToModule(module, presenter => presenter.AddInitialConditionsToModule(module));
-      }
+      public void AddNewInitialConditionsBuildingBlock(Module module) => addBuildingBlocksToModule(module, presenter => presenter.AddInitialConditionsToModule(module));
 
-      public void LoadBuildingBlocksToModule(Module module)
-      {
-         loadBuildingBlocksToModule(module, AskForPKMLFileToOpen);
-      }
+      public void LoadBuildingBlocksToModule(Module module) => loadBuildingBlocksToModule(module, AskForPKMLFileToOpen);
 
-      public void LoadBuildingBlocksFromTemplateToModule(Module module)
-      {
-         loadBuildingBlocksToModule(module, openTemplateFile);
-      }
+      public void LoadBuildingBlocksFromTemplateToModule(Module module) => loadBuildingBlocksToModule(module, openTemplateFile);
 
       public override IMoBiCommand Remove(Module module, MoBiProject parent, IBuildingBlock buildingBlock, bool silent = false)
       {

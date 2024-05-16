@@ -33,19 +33,10 @@ namespace MoBi.Core.Commands
          _module.DefaultMergeBehavior = _newMergeBehavior;
       }
 
-      protected override void ClearReferences()
-      {
-         _module = null;
-      }
+      protected override void ClearReferences() => _module = null;
 
-      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
-      {
-         return new SetDefaultMergeBehaviorCommand(_module, _oldBehavior);
-      }
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context) => new SetDefaultMergeBehaviorCommand(_module, _oldBehavior);
 
-      public override void RestoreExecutionData(IMoBiContext context)
-      {
-         _module = context.Get<Module>(ModuleId);
-      }
+      public override void RestoreExecutionData(IMoBiContext context) => _module = context.Get<Module>(ModuleId);
    }
 }

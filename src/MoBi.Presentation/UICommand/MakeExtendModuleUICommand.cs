@@ -13,9 +13,6 @@ namespace MoBi.Presentation.UICommand
          _tasks = tasks;
       }
 
-      protected override void PerformExecute()
-      {
-         _tasks.MakeExtendModule(Subject);
-      }
+      protected override void PerformExecute() => _tasks.MakeExtendModule(Subject);
    }
 }

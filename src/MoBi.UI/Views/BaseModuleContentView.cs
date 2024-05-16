@@ -65,15 +65,9 @@ namespace MoBi.UI.Views
          ActiveControl = tbModuleName;
       }
 
-      public virtual void AttachPresenter(TPresenter presenter)
-      {
-         _presenter = presenter;
-      }
+      public virtual void AttachPresenter(TPresenter presenter) => _presenter = presenter;
 
-      public void DisableDefaultMergeBehavior()
-      {
-         defaultMergeBehaviorItem.Enabled = false;
-      }
+      public void DisableDefaultMergeBehavior() => defaultMergeBehaviorItem.Enabled = false;
 
       public override void InitializeBinding()
       {
@@ -91,10 +85,7 @@ namespace MoBi.UI.Views
          RegisterValidationFor(_screenBinder);
       }
 
-      protected virtual void ShowOrHideNamingItem(LayoutControlItem namingLayoutControlItem, bool show)
-      {
-         namingLayoutControlItem.Visibility = LayoutVisibility.Never;
-      }
+      protected virtual void ShowOrHideNamingItem(LayoutControlItem namingLayoutControlItem, bool show) => namingLayoutControlItem.Visibility = LayoutVisibility.Never;
 
       public virtual void BindTo(TDTO moduleContentDTO)
       {
@@ -114,14 +105,8 @@ namespace MoBi.UI.Views
          parameterValuesItem.Enabled = dto.CanSelectParameterValues;
       }
 
-      protected void DisableRename()
-      {
-         tbModuleName.Enabled = false;
-      }
+      protected void DisableRename() => tbModuleName.Enabled = false;
 
-      protected virtual void DisposeBinders()
-      {
-         _screenBinder.Dispose();
-      }
+      protected virtual void DisposeBinders() => _screenBinder.Dispose();
    }
 }
