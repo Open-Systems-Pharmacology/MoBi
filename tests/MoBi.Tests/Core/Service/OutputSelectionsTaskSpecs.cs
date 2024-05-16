@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Services;
 using MoBi.Presentation;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks;
@@ -44,7 +43,7 @@ namespace MoBi.Core.Service
 
       protected virtual void SetupFakePresenterResponses()
       {
-         A.CallTo(() => _modalPresenter.Show()).Returns(true);
+         A.CallTo(() => _modalPresenter.Show(null)).Returns(true);
          A.CallTo(() => _quantitySelectionPresenter.SelectedPath).Returns(new ObjectPath("another|path"));
       }
    }
@@ -91,7 +90,7 @@ namespace MoBi.Core.Service
 
       protected override void SetupFakePresenterResponses()
       {
-         A.CallTo(() => _modalPresenter.Show()).Returns(false);
+         A.CallTo(() => _modalPresenter.Show(null)).Returns(false);
       }
 
       protected override void Because()
@@ -116,7 +115,7 @@ namespace MoBi.Core.Service
    {
       protected override void SetupFakePresenterResponses()
       {
-         A.CallTo(() => _modalPresenter.Show()).Returns(false);
+         A.CallTo(() => _modalPresenter.Show(null)).Returns(false);
       }
 
       protected override void Because()

@@ -1,13 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
-using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
 using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface ISelectManyPresenter<T> : IInitializablePresenter<IEnumerable<T>>, IPresenter<ISelectManyView<T>>
+   public interface ISelectManyPresenter<T> : ISelectionPresenter<T>, IPresenter<ISelectManyView<T>>
    {
       IEnumerable<T> Selections { get; }
       string GetName(T item);
@@ -19,11 +18,6 @@ namespace MoBi.Presentation.Presenter
          : base(view, itemToListItemMapper)
       {
 
-      }
-
-      protected override IEnumerable<ListItemDTO<T>> MapAllItems()
-      {
-         return base.MapAllItems().OrderBy(x => x.DisplayName);
       }
 
       public IEnumerable<T> Selections => _view.Selections.Select(x => x.Item);

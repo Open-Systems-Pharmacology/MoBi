@@ -54,7 +54,7 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _context.Context.Create<IParameter>()).Returns(_parameter);
          A.CallTo(() => _context.UserSettings.ParameterDefaultDimension).Returns("UNKNOWN");
          A.CallTo(_context.ApplicationController).WithReturnType<IModalPresenter>().Returns(modalPresenter);
-         A.CallTo(() => modalPresenter.Show()).Returns(true);
+         A.CallTo(() => modalPresenter.Show(null)).Returns(true);
          A.CallTo(() => modalPresenter.SubPresenter).Returns(editParameterPresenter);
          A.CallTo(() => _context.ApplicationController.Start<ISelectReferenceAtParameterPresenter>()).Returns(A.Fake<ISelectReferenceAtParameterPresenter>());
          A.CallTo(_dimensionFactory).WithReturnType<IDimension>().Returns(_dimension);

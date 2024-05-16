@@ -9,11 +9,10 @@ namespace MoBi.Presentation
    public interface IModalPresenter : IDisposablePresenter
    {
       void Encapsulate(IPresenter subPresenter);
-      bool Show();
       string Text { get; set; }
       IPresenter SubPresenter { get; }
       bool CanCancel { get; set; }
-      bool Show(Size modalSize);
+      bool Show(Size? modalSize = null);
    }
 
    internal class ModalPresenter : AbstractDisposablePresenter<IContainerModalView, IModalPresenter>, IModalPresenter
@@ -31,7 +30,7 @@ namespace MoBi.Presentation
          }
       }
 
-      public bool Show(Size modalSize) => _view.Show(modalSize);
+      public bool Show(Size? modalSize) => modalSize == null ? _view.Show() : _view.Show(modalSize.Value);
 
       public ModalPresenter(IContainerModalView view, IEventPublisher eventPublisher) : base(view) => _eventPublisher = eventPublisher;
 

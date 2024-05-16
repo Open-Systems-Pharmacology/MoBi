@@ -50,7 +50,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_get_a_edit_presenter_for_container()
       {
-         A.CallTo(() => _modalPresenter.Show()).MustHaveHappened();
+         A.CallTo(() => _modalPresenter.Show(null)).MustHaveHappened();
       }
    }
 

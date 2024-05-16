@@ -8,7 +8,6 @@ using MoBi.Core.Serialization.Exchange;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
-using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
@@ -154,11 +153,12 @@ namespace MoBi.Presentation.Tasks.Interaction
             presenter.SetDescription(AppConstants.Captions.SelectTheBuildingBlockWhereParameterValuesWillBeAddedOrUpdated);
             modal.Text = AppConstants.Captions.SelectParameterValuesBuildingBlock;
             modal.Encapsulate(presenter);
-            
-            presenter.InitializeWith(new List<ParameterValuesBuildingBlock>
+
+            var allItems = new List<ParameterValuesBuildingBlock>(moduleBuildingBlocks)
             {
                NullPathAndValueEntityBuildingBlocks.NewParameterValues
-            }.Concat(moduleBuildingBlocks));
+            };
+            presenter.InitializeWith(allItems, x => !Equals(x, NullPathAndValueEntityBuildingBlocks.NewParameterValues));
             modal.CanCancel = false;
             modal.Show(AppConstants.Dialog.SELECT_SINGLE_SIZE);
             return existingBuildingBlockSelected(presenter.Selection) ? presenter.Selection : null;
