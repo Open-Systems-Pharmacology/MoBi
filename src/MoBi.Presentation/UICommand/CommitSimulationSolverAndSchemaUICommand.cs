@@ -20,7 +20,7 @@ namespace MoBi.Presentation.UICommand
 
       protected override void PerformExecute()
       {
-         _simulationSettingsTask.UpdateDefaultSimulationSettingsInProject(Subject);
+         _simulationSettingsTask.UpdateDefaultSimulationSettingsInProject(Subject.OutputSchema, Subject.Solver);
       }
    }
 }

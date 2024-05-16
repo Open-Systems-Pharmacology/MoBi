@@ -1597,6 +1597,8 @@ namespace MoBi.Assets
          public static readonly string SelectTheBuildingBlockWhereParameterValuesWillBeAddedOrUpdated = "Select the building block where parameter values will be added or updated";
          public static readonly string SelectParameterValuesBuildingBlock = "Select Parameter Values Building Block";
          public static readonly string NewParameterValuesBuildingBlock = "New Parameter Values Building Block";
+         public static readonly string MakeDefault = "Make defaults";
+         public static readonly string LoadFromDefaults = "Load from defaults";
          public static string SelectEntitiesThatWillBeReplaced(string entityType) => $"Select {entityType.Pluralize()} that will be replaced";
          public static string SelectEntitiesThatWillBeReplacedDescription(string entityType, string buildingBlockName) => $"<b>Selected <i>{entityType.Pluralize()}</i> will replace existing <i>{entityType.Pluralize()}</i> in the building block <i>{buildingBlockName}</i></b>";
          public static string ExportContainerDescription(string exportedContainerPath) => $"<b>Select a <i>file path</i> and optional <i>individual</i> and <i>expression profiles</i> for container export. Parameters from the <i>individual</i> and <i>expression profiles</i> that match the path {exportedContainerPath} will be added to the container before exporting.</b>";
