@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
-using MoBi.Presentation.MenusAndBars.ContextMenus;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using OSPSuite.Presentation.Presenters.ContextMenus;
@@ -16,14 +14,11 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using ITreeNodeFactory = MoBi.Presentation.Nodes.ITreeNodeFactory;
-using OSPSuite.Core.Extensions;
-using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation
 {
-   public abstract class concern_for_HierarchicalStructurePresenter :
-      ContextSpecification<IHierarchicalStructurePresenter>
+   internal abstract class concern_for_HierarchicalSimulationPresenter : ContextSpecification<HierarchicalSimulationPresenter>
    {
       private IHierarchicalStructureView _view;
       protected IMoBiContext _context;
@@ -40,7 +35,7 @@ namespace MoBi.Presentation
          _simulationSettingsMapper = A.Fake<ISimulationSettingsToObjectBaseDTOMapper>();
          _dtoMapper = A.Fake<IObjectBaseToObjectBaseDTOMapper>();
 
-         _favorites = new ObjectBaseDTO()
+         _favorites = new ObjectBaseDTO
          {
             Name = Captions.Favorites,
             Icon = ApplicationIcons.Favorites,
@@ -58,7 +53,7 @@ namespace MoBi.Presentation
       }
    }
 
-   internal class When_getting_child_objects : concern_for_HierarchicalStructurePresenter
+   internal class When_getting_child_objects : concern_for_HierarchicalSimulationPresenter
    {
       private IReadOnlyList<ObjectBaseDTO> _result;
       private ObjectBaseDTO _dto;
@@ -88,7 +83,7 @@ namespace MoBi.Presentation
       }
    }
 
-   internal class When_selecting_the_favorites_node : concern_for_HierarchicalStructurePresenter
+   internal class When_selecting_the_favorites_node : concern_for_HierarchicalSimulationPresenter
    {
       protected override void Because()
       {
@@ -109,7 +104,7 @@ namespace MoBi.Presentation
       }
    }
 
-   internal class When_selecting_a_node_with_an_object_base : concern_for_HierarchicalStructurePresenter
+   internal class When_selecting_a_node_with_an_object_base : concern_for_HierarchicalSimulationPresenter
    {
       private ObjectBaseDTO _dto;
 
@@ -131,14 +126,14 @@ namespace MoBi.Presentation
       }
    }
 
-   internal class When_selecting_a_node_without_an_object_base : concern_for_HierarchicalStructurePresenter
+   internal class When_selecting_a_neighbor_node : concern_for_HierarchicalSimulationPresenter
    {
       private ObjectBaseDTO _dto;
 
       protected override void Context()
       {
          base.Context();
-         _dto = new ObjectBaseDTO();
+         _dto = new NeighborDTO(new ObjectPath());
       }
 
       protected override void Because()

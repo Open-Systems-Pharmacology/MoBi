@@ -10,6 +10,7 @@ using MoBi.Presentation.Views;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
@@ -156,6 +157,18 @@ namespace MoBi.Presentation.Presenter
 
          var entityToSelect = entity.IsAnImplementationOf<IParameter>() ? entity.ParentContainer : entity;
          _view.Select(entityToSelect);
+      }
+
+      protected override void RaiseEntitySelectedEvent(ObjectBaseDTO objectBaseDTO)
+      {
+         base.RaiseEntitySelectedEvent(objectBaseDTO);
+         if (!(objectBaseDTO is NeighborDTO neighborDTO)) 
+            return;
+
+         var entity = _spatialStructure.TopContainers.Select(x => neighborDTO.Path.Resolve<IEntity>(x)).FirstOrDefault();
+         
+         if(entity != null)
+            _context.PublishEvent(new EntitySelectedEvent(entity, this));
       }
    }
 }
