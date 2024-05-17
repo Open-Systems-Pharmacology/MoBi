@@ -45,7 +45,7 @@ namespace MoBi.Core.Commands
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return new AddSelectedBuildingBlockToLastModuleConfigurationCommand<T>(_buildingBlock, _simulation);
+         return new AddSelectedBuildingBlockToLastModuleConfigurationCommand<T>(_buildingBlock, _simulation).AsInverseFor(this);
       }
 
       protected override void ClearReferences()

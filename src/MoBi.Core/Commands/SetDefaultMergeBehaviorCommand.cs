@@ -35,7 +35,7 @@ namespace MoBi.Core.Commands
 
       protected override void ClearReferences() => _module = null;
 
-      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context) => new SetDefaultMergeBehaviorCommand(_module, _oldBehavior);
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context) => new SetDefaultMergeBehaviorCommand(_module, _oldBehavior).AsInverseFor(this);
 
       public override void RestoreExecutionData(IMoBiContext context) => _module = context.Get<Module>(ModuleId);
    }
