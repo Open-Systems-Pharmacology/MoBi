@@ -4,7 +4,12 @@ using OSPSuite.Presentation.Views;
 
 namespace MoBi.Presentation.Views
 {
-   public interface IAddBuildingBlocksToModuleView : IModalView<IAddBuildingBlocksToModulePresenter>
+   public interface IAddContentToModuleView<TPresenter> : IModalView<TPresenter> where TPresenter : IAddContentToModulePresenter
+   {
+      void ShowInitialConditionsName();
+   }
+
+   public interface IAddBuildingBlocksToModuleView : IAddContentToModuleView<IAddBuildingBlocksToModulePresenter>
    {
       void BindTo(AddBuildingBlocksToModuleDTO moduleContentDTO);
    }

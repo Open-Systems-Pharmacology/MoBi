@@ -4,7 +4,7 @@ using OSPSuite.Presentation.Views;
 
 namespace MoBi.Presentation.Views
 {
-   public interface ICreateModuleView : IModalView<ICreateModulePresenter>   
+   public interface ICreateModuleView : IAddContentToModuleView<ICreateModulePresenter>   
    {
       void BindTo(ModuleContentDTO createModuleDTO);
    }

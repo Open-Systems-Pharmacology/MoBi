@@ -263,7 +263,7 @@ namespace MoBi.Assets
 
          public static string ConvertDistributedPathAndValueEntityToConstantValue(string type, string path) => $"Convert distributed {type} '{path}' to constant value";
 
-         public static string UpdateSimulationSettingsInSimulation(string simulationName) => $"Update simulation settings in simulation {simulationName}";
+         public static string UpdateSimulationSolverSettingsAndSchemaInSimulation(string simulationName) => $"Update simulation solver settings and output schema in simulation {simulationName}";
 
 
          public static string DeleteResultsFromSimulation(string simulationName)
@@ -860,6 +860,7 @@ namespace MoBi.Assets
          public static readonly string ApplyDefaultNaming = "Apply default renaming";
          public static readonly string RemoveSelectedResultsFromSimulations = "Do you really want to remove the selected results from simulations";
          public static readonly string RemoveSelectedResultsFromProject = "Do you really want to remove the selected result(s) from the project";
+         public static readonly Size SELECT_SINGLE_SIZE = new Size(475, 160);
 
          public static string RemoveSimulationsFromProject(string projectName)
          {
@@ -1092,10 +1093,12 @@ namespace MoBi.Assets
          public static readonly string AddBuildingBlocks = "Add Building Blocks...";
          public static readonly string LoadBuildingBlocks = "Load Building Blocks...";
          public static readonly string LoadBuildingBlocksFromTemplate = "Load Building Blocks from Template...";
-         public static readonly string MakeSettingsProjectDefault = "Make Settings Project Default";
-         public static readonly string RefreshSettingsFromProjectDefault = "Refresh Settings from Project Default";
+         public static readonly string MakeProjectDefaults = "Make project defaults";
+         public static readonly string RefreshFromProjectDefaults = "Refresh from project defaults";
          public static readonly string AddLocalMoleculeParameters = "Add Local Molecule Parameters";
          public static readonly string AddProteinExpression = "Add Protein Expression";
+         public static readonly string OutputSelections = "Output Selections";
+         public static readonly string SettingsAndSchema = "Settings and Schema";
 
          public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
 
@@ -1591,6 +1594,11 @@ namespace MoBi.Assets
          public static readonly string AddExpressionDescription = "<b>The building block will be extended with expression parameter values for selected <i>molecules</i> in the selected <i>organ</i> </b>";
          public static readonly string AddDefaultCurveForNewSimulations = "Add default curve for new simulations";
          public static readonly string ChangeDefaultCurveForNewSimulations = "Change default curve for new simulations";
+         public static readonly string SelectTheBuildingBlockWhereParameterValuesWillBeAddedOrUpdated = "Select the building block where parameter values will be added or updated";
+         public static readonly string SelectParameterValuesBuildingBlock = "Select Parameter Values Building Block";
+         public static readonly string NewParameterValuesBuildingBlock = "New Parameter Values Building Block";
+         public static readonly string MakeDefault = "Make defaults";
+         public static readonly string LoadFromDefaults = "Load from defaults";
          public static string SelectEntitiesThatWillBeReplaced(string entityType) => $"Select {entityType.Pluralize()} that will be replaced";
          public static string SelectEntitiesThatWillBeReplacedDescription(string entityType, string buildingBlockName) => $"<b>Selected <i>{entityType.Pluralize()}</i> will replace existing <i>{entityType.Pluralize()}</i> in the building block <i>{buildingBlockName}</i></b>";
          public static string ExportContainerDescription(string exportedContainerPath) => $"<b>Select a <i>file path</i> and optional <i>individual</i> and <i>expression profiles</i> for container export. Parameters from the <i>individual</i> and <i>expression profiles</i> that match the path {exportedContainerPath} will be added to the container before exporting.</b>";
@@ -1930,6 +1938,11 @@ namespace MoBi.Assets
             sb.Append(" - ");
             sb.AppendLine(allNames.ToString("\n - "));
             return sb.ToString();
+         }
+
+         public static string TheModuleWillBeConvertedFromPKSimToExtensionModule(string moduleName)
+         {
+            return $"The PK-Sim module '{moduleName}' will be converted to an extension module";
          }
       }
 

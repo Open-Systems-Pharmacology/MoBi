@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using FakeItEasy;
-using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
@@ -29,28 +29,87 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class When_committing_simulation_settings : concern_for_InteractionTasksForSimulationSettings
+   public class When_committing_simulation_solver_and_schema : concern_for_InteractionTasksForSimulationSettings
    {
       private SimulationSettings _simulationSettings;
       private IMoBiContext _context;
+      private MoBiProject _currentProject;
+      private SimulationSettings _clonedSettings;
 
       protected override void Context()
       {
          base.Context();
          _simulationSettings = new SimulationSettings();
          _context = A.Fake<IMoBiContext>();
+
+         _clonedSettings = new SimulationSettings
+         {
+            Solver = new SolverSettings(),
+            OutputSchema = new OutputSchema()
+         };
+         _currentProject = new MoBiProject
+         {
+            SimulationSettings = new SimulationSettings
+            {
+               Solver = new SolverSettings(),
+               OutputSchema = new OutputSchema()
+            }
+         };
          A.CallTo(() => _interactionTaskContext.Context).Returns(_context);
+         A.CallTo(() => _context.CurrentProject).Returns(_currentProject);
+         A.CallTo(() => _context.Clone(_simulationSettings.OutputSchema)).Returns(_clonedSettings.OutputSchema);
+         A.CallTo(() => _context.Clone(_simulationSettings.Solver)).Returns(_clonedSettings.Solver);
       }
 
       protected override void Because()
       {
-         sut.UpdateDefaultSimulationSettingsInProject(_simulationSettings);
+         sut.UpdateDefaultSimulationSettingsInProject(_simulationSettings.OutputSchema, _simulationSettings.Solver);
       }
 
       [Observation]
       public void the_simulation_settings_should_be_updated()
       {
-         _context.CurrentProject.SimulationSettings.ShouldBeEqualTo(_simulationSettings);
+         _context.CurrentProject.SimulationSettings.OutputSchema.ShouldBeEqualTo(_clonedSettings.OutputSchema);
+         _context.CurrentProject.SimulationSettings.Solver.ShouldBeEqualTo(_clonedSettings.Solver);
+      }
+   }
+
+   public class When_committing_simulation_output_selections : concern_for_InteractionTasksForSimulationSettings
+   {
+      private SimulationSettings _simulationSettings;
+      private IMoBiContext _context;
+      private MoBiProject _currentProject;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulationSettings = new SimulationSettings();
+         _simulationSettings.OutputSelections.AddOutput(new QuantitySelection("The|Path"));
+         _context = A.Fake<IMoBiContext>();
+         _currentProject = new MoBiProject
+         {
+            SimulationSettings = new SimulationSettings()
+         };
+
+         A.CallTo(() => _interactionTaskContext.Context).Returns(_context);
+         A.CallTo(() => _context.CurrentProject).Returns(_currentProject);
+      }
+
+      protected override void Because()
+      {
+         sut.UpdateDefaultOutputSelectionsInProject(_simulationSettings.OutputSelections.ToList());
+      }
+
+      [Observation]
+      public void the_simulation_settings_should_be_updated()
+      {
+         _context.CurrentProject.SimulationSettings.OutputSelections.First().Path.ShouldBeEqualTo("The|Path");
+      }
+
+      [Observation]
+      public void the_added_output_selection_should_not_be_the_same_object()
+      {
+         ReferenceEquals(_context.CurrentProject.SimulationSettings.OutputSelections.First(), _simulationSettings.OutputSelections.First()).ShouldBeFalse();
       }
    }
 

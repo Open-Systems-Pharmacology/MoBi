@@ -49,7 +49,7 @@ namespace MoBi.Presentation.Presenter
          var dto = new SpatialStructureDTO(spatialStructure)
          {
             Id = spatialStructure.Id,
-            Name = spatialStructure.Name,
+            Name = spatialStructure.DisplayName,
             Icon =ApplicationIcons.IconByName(spatialStructure.Icon)
          };
 

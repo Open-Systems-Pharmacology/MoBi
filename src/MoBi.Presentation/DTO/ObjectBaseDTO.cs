@@ -112,6 +112,17 @@ namespace MoBi.Presentation.DTO
       }
    }
 
+   public class NeighborDTO : ObjectBaseDTO
+   {
+      public NeighborDTO(ObjectPath objectPath)
+      {
+         Name = objectPath;
+         Path = objectPath;
+      }
+
+      public ObjectPath Path { get; }
+   }
+
    public class BuildingBlockViewItem : ObjectBaseDTO
    {
       public IBuildingBlock BuildingBlock { get; }
@@ -149,6 +160,14 @@ namespace MoBi.Presentation.DTO
       public SimulationViewItem(IMoBiSimulation simulation) : base(simulation)
       {
          Simulation = simulation;
+      }
+   }
+
+   public class SimulationSettingsViewItem : ObjectBaseDTO
+   {
+      public SimulationSettingsViewItem(SimulationSettings simulationSettings) : base(simulationSettings)
+      {
+         
       }
    }
 

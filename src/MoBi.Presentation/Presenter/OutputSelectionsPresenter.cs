@@ -1,7 +1,9 @@
-﻿using MoBi.Assets;
+﻿using System.Linq;
+using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using MoBi.Presentation.Presenter.BasePresenter;
+using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Extensions;
@@ -23,18 +25,29 @@ namespace MoBi.Presentation.Presenter
    {
       private readonly IQuantitySelectionPresenter _quantitySelectionPresenter;
       private readonly ISimulationPersistableUpdater _simulationPersistableUpdater;
+      private readonly IInteractionTasksForSimulationSettings _simulationSettingsTask;
+      private readonly IMoBiProjectRetriever _projectRetriever;
       private IMoBiSimulation _simulation;
       private OutputSelections _editedSelection;
 
-      public OutputSelectionsPresenter(IOutputSelectionsView view, IQuantitySelectionPresenter quantitySelectionPresenter,
-         ISimulationPersistableUpdater simulationPersistableUpdater)
+      public OutputSelectionsPresenter(IOutputSelectionsView view, 
+         IQuantitySelectionPresenter quantitySelectionPresenter,
+         ISimulationPersistableUpdater simulationPersistableUpdater, 
+         IInteractionTasksForSimulationSettings simulationSettingsTask, 
+         IMoBiProjectRetriever projectRetriever,
+         IDefaultOutputSelectionsButtonsView defaultButtonsView)
          : base(view)
       {
          _quantitySelectionPresenter = quantitySelectionPresenter;
          _simulationPersistableUpdater = simulationPersistableUpdater;
+         _simulationSettingsTask = simulationSettingsTask;
+         _projectRetriever = projectRetriever;
          _quantitySelectionPresenter.AutomaticallyHideEmptyColumns = true;
          _quantitySelectionPresenter.StatusChanged += (o, e) => refreshView();
          _view.AddSettingsView(_quantitySelectionPresenter.BaseView);
+         defaultButtonsView.MakeProjectDefaultsClicked = makeCurrentSelectionDefault;
+         defaultButtonsView.LoadProjectDefaultsClicked = loadSelectionFromDefaults;
+         _view.AddDefaultButtonsView(defaultButtonsView);
          _quantitySelectionPresenter.Description = AppConstants.Captions.SimulationSettingsDescription.FormatForDescription();
          AddSubPresenters( _quantitySelectionPresenter);
       }
@@ -60,6 +73,16 @@ namespace MoBi.Presentation.Presenter
 
          updateSettingsFromSelection();
          return _editedSelection;
+      }
+
+      private void loadSelectionFromDefaults()
+      {
+         _quantitySelectionPresenter.UpdateSelection(_projectRetriever.Current.SimulationSettings.OutputSelections.ToList());
+      }
+
+      private void makeCurrentSelectionDefault()
+      {
+         _simulationSettingsTask.UpdateDefaultOutputSelectionsInProject(_quantitySelectionPresenter.SelectedQuantities().ToList());
       }
 
       private OutputSelections defaultSettingsFrom(IMoBiSimulation simulation)

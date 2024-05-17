@@ -124,5 +124,34 @@ namespace MoBi.Presentation
             A.CallTo(() => _view.Add(_dto, _neighborhoodsContainerDTO)).MustHaveHappened();
          }
       }
+
+      internal class When_selecting_a_neighbor_node : concern_for_HierarchicalSpatialStructurePresenter
+      {
+         private ObjectBaseDTO _dto;
+         private Container _pathContainer;
+
+         protected override void Context()
+         {
+            base.Context();
+            _dto = new NeighborDTO(new ObjectPath("Organism", "Path"));
+            var rootContainer = new Container().WithName("Organism");
+            rootContainer.Mode = ContainerMode.Physical;
+            _pathContainer = new Container().WithName("Path");
+            rootContainer.Add(_pathContainer);
+
+            _spatialStructure.AddTopContainer(rootContainer);
+         }
+
+         protected override void Because()
+         {
+            sut.Select(_dto);
+         }
+
+         [Observation]
+         public void should_raise_entity_selected_event_for_the_entity_resolved_from_the_neighbor_path()
+         {
+            A.CallTo(() => _context.PublishEvent(A<EntitySelectedEvent>.That.Matches(x => x.ObjectBase == _pathContainer))).MustHaveHappened();
+         }
+      }
    }
 }

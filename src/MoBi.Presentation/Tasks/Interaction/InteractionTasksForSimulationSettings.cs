@@ -1,9 +1,11 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Presentation.Tasks.Edit;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility.Extensions;
 
@@ -13,7 +15,8 @@ namespace MoBi.Presentation.Tasks.Interaction
    {
       void LoadDefaultSimulationSettingsInProject();
       void Edit(SimulationSettings simulationSettings);
-      void UpdateDefaultSimulationSettingsInProject(SimulationSettings simulationSettings);
+      void UpdateDefaultSimulationSettingsInProject(OutputSchema outputSchema, SolverSettings solverSettings);
+      void UpdateDefaultOutputSelectionsInProject(IReadOnlyList<QuantitySelection> selectedQuantities);
    }
 
    public class InteractionTasksForSimulationSettings : InteractionTasksForBuildingBlock<MoBiProject, SimulationSettings>, IInteractionTasksForSimulationSettings
@@ -53,13 +56,29 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (simulationSettingsBlocks == null || !simulationSettingsBlocks.Any())
             return;
 
-         UpdateDefaultSimulationSettingsInProject(simulationSettingsBlocks.First());
+         replaceSimulationSettingsInProject(simulationSettingsBlocks.First());
       }
 
-      public void UpdateDefaultSimulationSettingsInProject(SimulationSettings simulationSettings)
+      private void replaceSimulationSettingsInProject(SimulationSettings simulationSettings)
       {
          Context.CurrentProject.SimulationSettings = simulationSettings;
-         Context.PublishEvent(new DefaultSimulationSettingsUpdatedEvent(simulationSettings));
+         Context.PublishEvent(new DefaultSimulationSettingsUpdatedEvent(Context.CurrentProject.SimulationSettings));
+      }
+
+      public void UpdateDefaultSimulationSettingsInProject(OutputSchema outputSchema, SolverSettings solverSettings)
+      {
+         Context.CurrentProject.SimulationSettings.OutputSchema = Context.Clone(outputSchema);
+         Context.CurrentProject.SimulationSettings.Solver = Context.Clone(solverSettings);
+
+         Context.PublishEvent(new DefaultSimulationSettingsUpdatedEvent(Context.CurrentProject.SimulationSettings));
+      }
+
+      public void UpdateDefaultOutputSelectionsInProject(IReadOnlyList<QuantitySelection> selectedQuantities)
+      {
+         var projectSelections = Context.CurrentProject.SimulationSettings.OutputSelections;
+         projectSelections.Clear();
+         selectedQuantities.Each(x => projectSelections.AddOutput(x.Clone()));
+         Context.PublishEvent(new DefaultSimulationSettingsUpdatedEvent(Context.CurrentProject.SimulationSettings));
       }
 
       public void Edit(SimulationSettings simulationSettings)

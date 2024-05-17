@@ -81,7 +81,7 @@ namespace MoBi.Presentation
          _modalPresenter = A.Fake<IModalPresenter>();
          A.CallTo(() => _applicationController.Start<ISelectNeighborPathPresenter>()).Returns(_selectNeighborPathPresenter);
          A.CallTo(() => _applicationController.Start<IModalPresenter>()).Returns(_modalPresenter);
-         A.CallTo(() => _modalPresenter.Show()).Returns(true);
+         A.CallTo(() => _modalPresenter.Show(null)).Returns(true);
 
          A.CallTo(() => _selectNeighborPathPresenter.NeighborPath).Returns(new ObjectPath("A", "B", "C"));
          sut.Edit(_neighborhoodBuilder);

@@ -19,7 +19,7 @@ namespace MoBi.Presentation
       protected MoBiProject _project;
       protected Module _existingModule;
       protected IReadOnlyList<IBuildingBlock> _listOfNewBuildingBlocks;
-      private IModuleToAddBuildingBlocksToModuleDTOMapper _moduleToDTOMapper;
+      protected IModuleToAddBuildingBlocksToModuleDTOMapper _moduleToDTOMapper;
 
       protected override void Context()
       {
@@ -35,6 +35,67 @@ namespace MoBi.Presentation
             new ReactionBuildingBlock()
          };
          sut = new AddBuildingBlocksToModulePresenter(_view, _dtoToBuildingBlocksMapper, _moduleToDTOMapper);
+      }
+   }
+
+   public class When_adding_molecules_to_a_building_block_with_initial_conditions : concern_for_AddBuildingBlocksToModulePresenter
+   {
+      private AddBuildingBlocksToModuleDTO _dto;
+
+      protected override void Context()
+      {
+         base.Context();
+         _dto = new AddBuildingBlocksToModuleDTO(_existingModule);
+         _existingModule.Add(new InitialConditionsBuildingBlock());
+         A.CallTo(() => _moduleToDTOMapper.MapFrom(_existingModule)).Returns(_dto);
+         sut.AddBuildingBlocksToModule(_existingModule);
+      }
+
+      protected override void Because()
+      {
+         sut.AddMoleculesSelectionChanged(true);
+      }
+
+      [Observation]
+      public void the_building_module_dto_should_not_be_updated()
+      {
+         _dto.WithInitialConditions.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void the_view_should_not_be_updated_to_show_the_initial_condition_naming()
+      {
+         A.CallTo(() => _view.ShowInitialConditionsName()).MustNotHaveHappened();
+      }
+   }
+
+   public class When_adding_molecules_to_a_building_block_without_initial_conditions : concern_for_AddBuildingBlocksToModulePresenter
+   {
+      private AddBuildingBlocksToModuleDTO _dto;
+
+      protected override void Context()
+      {
+         base.Context();
+         _dto = new AddBuildingBlocksToModuleDTO(_existingModule);
+         A.CallTo(() => _moduleToDTOMapper.MapFrom(_existingModule)).Returns(_dto);
+         sut.AddBuildingBlocksToModule(_existingModule);
+      }
+
+      protected override void Because()
+      {
+         sut.AddMoleculesSelectionChanged(true);
+      }
+
+      [Observation]
+      public void the_module_dto_should_be_updated()
+      {
+         _dto.WithInitialConditions.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void the_view_should_be_updated_to_show_the_initial_condition_naming()
+      {
+         A.CallTo(() => _view.ShowInitialConditionsName()).MustHaveHappened();
       }
    }
 

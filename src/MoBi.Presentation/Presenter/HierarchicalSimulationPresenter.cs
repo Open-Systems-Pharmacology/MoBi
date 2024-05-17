@@ -27,6 +27,7 @@ namespace MoBi.Presentation.Presenter
       Action ShowSolverSettings { set; get; }
       Action ShowOutputSchema { get; set; }
       Func<IEnumerable<IParameter>> SimulationFavorites { get; set; }
+      IMoBiSimulation Simulation { get; }
    }
 
    internal class HierarchicalSimulationPresenter : HierarchicalStructureEditPresenter, IHierarchicalSimulationPresenter
@@ -38,6 +39,8 @@ namespace MoBi.Presentation.Presenter
       public Action ShowOutputSchema { get; set; }
 
       public Func<IEnumerable<IParameter>> SimulationFavorites { get; set; } = () => new List<IParameter>();
+
+      public IMoBiSimulation Simulation => _simulation;
 
       public HierarchicalSimulationPresenter(IHierarchicalStructureView view, IMoBiContext context,
          IObjectBaseToObjectBaseDTOMapper objectBaseMapper,

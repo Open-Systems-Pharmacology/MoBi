@@ -109,7 +109,7 @@ namespace MoBi.Presentation
             Configuration = new SimulationConfiguration()
          };
 
-         A.CallTo(() => _interactionTaskContext.InteractionTask.PromptForNewName(A<IObjectBase>._, A<IEnumerable<string>>._)).Returns("new name");
+         A.CallTo(() => _interactionTaskContext.InteractionTask.PromptForNewName(A<IMoBiSimulation>._, A<IEnumerable<string>>._)).Returns("new name");
          A.CallTo(() => _cloneManager.CloneSimulation(_originalSimulation)).Returns(_clonedSimulation);
          A.CallTo(() => _interactionTaskContext.Context.CurrentProject).Returns(_moBiProject);
       }

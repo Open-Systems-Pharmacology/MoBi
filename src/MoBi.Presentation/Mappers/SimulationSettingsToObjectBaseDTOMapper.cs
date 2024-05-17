@@ -38,7 +38,7 @@ namespace MoBi.Presentation.Mappers
 
       public ObjectBaseDTO MapFrom(SimulationSettings simulationSettings)
       {
-         return new ObjectBaseDTO(simulationSettings)
+         return new SimulationSettingsViewItem(simulationSettings)
          {
             Id = AppConstants.SimulationSettingsId,
             Icon = ApplicationIcons.Settings,
