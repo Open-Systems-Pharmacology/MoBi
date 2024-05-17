@@ -46,6 +46,7 @@ namespace MoBi.UI
          container.Register<IReactionDiagramPresenter, IBaseDiagramPresenter<MoBiReactionBuildingBlock>, ReactionDiagramPresenter>(LifeStyle.Transient);
 
          container.Register(typeof(ISelectManyView<>), typeof(SelectManyView<>));
+         container.Register(typeof(ISelectSingleView<>), typeof(SelectSingleView<>));
 
          var mainView = container.Resolve<IMoBiMainView>();
          var exceptionView = container.Resolve<IExceptionView>();

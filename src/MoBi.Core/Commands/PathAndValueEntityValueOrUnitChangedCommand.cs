@@ -45,7 +45,7 @@ namespace MoBi.Core.Commands
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return new PathAndValueEntityValueOrUnitChangedCommandWithDistribution<TBuilder, TBuildingBlock>(_builder, _oldBaseValue, _oldDisplayUnit, _buildingBlock, _oldDistributionType).AsInverseFor(this);
+         return new PathAndValueEntityValueOrUnitChangedCommandWithDistribution(_builder, _oldBaseValue, _oldDisplayUnit, _buildingBlock, _oldDistributionType).AsInverseFor(this);
       }
 
       protected override void ClearReferences()
@@ -69,8 +69,8 @@ namespace MoBi.Core.Commands
       }
 
       // This command is used to restore a distribution when a distributed parameter is changed to non-distributed, and then the command is reversed.
-      // There is no general way to change between distribution types, so this class is private so it can only be used with restore functionality
-      private class PathAndValueEntityValueOrUnitChangedCommandWithDistribution<TBuilder, TBuildingBlock> : PathAndValueEntityValueOrUnitChangedCommand<TBuilder, TBuildingBlock> where TBuilder : PathAndValueEntity where TBuildingBlock : class, IBuildingBlock<TBuilder>
+      // There is no general way to change between distribution types, so this class is private, so it can only be used with restore functionality
+      private class PathAndValueEntityValueOrUnitChangedCommandWithDistribution : PathAndValueEntityValueOrUnitChangedCommand<TBuilder, TBuildingBlock>
       {
          private readonly DistributionType? _newDistributionType;
 

@@ -65,10 +65,10 @@ namespace MoBi.Presentation.Presenter
       private IEnumerable<ObjectBaseDTO> neighborsOf(NeighborhoodBuilder neighborhoodBuilder)
       {
          if (neighborhoodBuilder.FirstNeighborPath != null)
-            yield return new ObjectBaseDTO { Name = neighborhoodBuilder.FirstNeighborPath, Icon = ApplicationIcons.Neighbor, Id = createNeighborhoodId(neighborhoodBuilder, neighborhoodBuilder.FirstNeighborPath) };
+            yield return new NeighborDTO(neighborhoodBuilder.FirstNeighborPath) { Icon = ApplicationIcons.Neighbor, Id = createNeighborhoodId(neighborhoodBuilder, neighborhoodBuilder.FirstNeighborPath) };
 
          if (neighborhoodBuilder.SecondNeighborPath != null)
-            yield return new ObjectBaseDTO { Name = neighborhoodBuilder.SecondNeighborPath, Icon = ApplicationIcons.Neighbor, Id = createNeighborhoodId(neighborhoodBuilder, neighborhoodBuilder.SecondNeighborPath) };
+            yield return new NeighborDTO(neighborhoodBuilder.SecondNeighborPath) { Icon = ApplicationIcons.Neighbor, Id = createNeighborhoodId(neighborhoodBuilder, neighborhoodBuilder.SecondNeighborPath) };
       }
 
       /// <summary>

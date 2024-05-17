@@ -6,9 +6,9 @@ using OSPSuite.Presentation.Views;
 
 namespace MoBi.Presentation.Views
 {
-   public interface ISelectManyView<T> : IView<ISelectManyPresenter<T>>
+   public interface ISelectManyView<T> : IView<ISelectManyPresenter<T>>, ISelectionView<T>
    {
-      void InitializeWith(IEnumerable<ListItemDTO<T>> allItems);
+      
       IEnumerable<ListItemDTO<T>> Selections { get; }
    }
 }

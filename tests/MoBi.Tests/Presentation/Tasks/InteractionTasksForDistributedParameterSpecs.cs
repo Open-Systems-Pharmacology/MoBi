@@ -43,7 +43,7 @@ namespace MoBi.Presentation.Tasks
          var modalPresenter = A.Fake<IModalPresenter>();
          _distributedParameter = A.Fake<IDistributedParameter>();
          A.CallTo(_context.ApplicationController).WithReturnType<IModalPresenter>().Returns(modalPresenter);
-         A.CallTo(() => modalPresenter.Show()).Returns(true);
+         A.CallTo(() => modalPresenter.Show(null)).Returns(true);
          A.CallTo(() => _context.Context.Create<IDistributedParameter>()).Returns(_distributedParameter);
       }
 
