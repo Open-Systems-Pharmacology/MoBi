@@ -3,17 +3,17 @@ using DevExpress.XtraLayout.Utils;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
+using MoBi.Presentation.Views;
 using OSPSuite.Assets;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
-using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Views;
 using static MoBi.Assets.AppConstants.Captions;
 
 namespace MoBi.UI.Views
 {
-   public abstract partial class BaseModuleContentView<TDTO, TPresenter> : BaseModalView, IModalView<TPresenter>
+   public abstract partial class BaseModuleContentView<TDTO, TPresenter> : BaseModalView, IBaseModuleContentView<TPresenter>
       where TDTO : ModuleContentDTO where TPresenter : IBaseModuleContentPresenter
    {
       protected readonly ScreenBinder<TDTO> _screenBinder = new ScreenBinder<TDTO>();
@@ -43,14 +43,20 @@ namespace MoBi.UI.Views
          cbInitialConditions.Text = InitialConditions;
          cbParameterValues.Text = ParameterValues;
          createBuildingBlocksGroup.Text = CreateBuildingBlocks;
-
+         defaultMergeBehaviorGroup.Text = DefaultMergeBehavior;
          defaultMergeBehaviorItem.Text = DefaultMergeBehavior.FormatForLabel();
-
          initialConditionsNameItem.Text = AppConstants.Captions.Name.FormatForLabel();
          parameterValuesNameItem.Text = AppConstants.Captions.Name.FormatForLabel();
 
          ShowOrHideNamingItem(initialConditionsNameItem, show: cbInitialConditions.Checked);
          ShowOrHideNamingItem(parameterValuesNameItem, show: cbParameterValues.Checked);
+
+         lblDescription.AllowHtmlString = true;
+      }
+
+      public void SetBehaviorDescription(string description)
+      {
+         lblDescription.Text = description;
       }
 
       protected void ShowStartValueNameControls()
@@ -80,7 +86,7 @@ namespace MoBi.UI.Views
          _screenBinder.Bind(dto => dto.WithReaction).To(cbReactions);
          _screenBinder.Bind(dto => dto.WithParameterValues).To(cbParameterValues).OnValueUpdated += (o, newValue) => OnEvent(() => ShowOrHideNamingItem(parameterValuesNameItem, show: newValue));
          _screenBinder.Bind(dto => dto.WithInitialConditions).To(cbInitialConditions).OnValueUpdated += (o, newValue) => OnEvent(() => ShowOrHideNamingItem(initialConditionsNameItem, show: newValue));
-         _screenBinder.Bind(dto => dto.DefaultMergeBehavior).To(cbDefaultMergeBehavior).WithValues(_presenter.AllMergeBehaviors);
+         _screenBinder.Bind(dto => dto.DefaultMergeBehavior).To(cbDefaultMergeBehavior).WithValues(_presenter.AllMergeBehaviors).Changed += () => OnEvent(_presenter.DefaultMergeBehaviorChanged);
 
          RegisterValidationFor(_screenBinder);
       }
@@ -90,6 +96,7 @@ namespace MoBi.UI.Views
       public virtual void BindTo(TDTO moduleContentDTO)
       {
          _screenBinder.BindToSource(moduleContentDTO);
+         _presenter.DefaultMergeBehaviorChanged();
          disableExistingBuildingBlocks(moduleContentDTO);
       }
 

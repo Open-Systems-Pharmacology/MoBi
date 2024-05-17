@@ -1,19 +1,12 @@
-using System.Collections.Generic;
 using MoBi.Assets;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IBaseModuleContentPresenter : IDisposablePresenter
-   {
-      IReadOnlyList<MergeBehavior> AllMergeBehaviors { get; }
-   }
-
    public interface ICloneBuildingBlocksToModulePresenter : IBaseModuleContentPresenter
    {
       /// <summary>
@@ -27,6 +20,7 @@ namespace MoBi.Presentation.Presenter
       ICloneBuildingBlocksToModulePresenter
    {
       private readonly IMoBiProjectRetriever _projectRetriever;
+      private CloneBuildingBlocksToModuleDTO _dto;
 
       public CloneBuildingBlocksToModulePresenter(ICloneBuildingBlocksToModuleView view, IMoBiProjectRetriever projectRetriever) : base(view)
       {
@@ -36,21 +30,23 @@ namespace MoBi.Presentation.Presenter
       public bool SelectClonedBuildingBlocks(Module clonedModule)
       {
          _view.Caption = AppConstants.Captions.SelectBuildingBlocksToCloneFrom(clonedModule);
-         var dto = new CloneBuildingBlocksToModuleDTO(clonedModule);
-         dto.AddUsedNames(_projectRetriever.Current.Modules.AllNames());
+         _dto = new CloneBuildingBlocksToModuleDTO(clonedModule);
+         _dto.AddUsedNames(_projectRetriever.Current.Modules.AllNames());
 
-         _view.BindTo(dto);
+         _view.BindTo(_dto);
          _view.Display();
 
          if (_view.Canceled)
             return false;
 
-         dto.BuildingBlocksToRemove.Each(clonedModule.Remove);
+         _dto.BuildingBlocksToRemove.Each(clonedModule.Remove);
 
-         clonedModule.Name = dto.Name;
-         clonedModule.DefaultMergeBehavior = dto.DefaultMergeBehavior;
+         clonedModule.Name = _dto.Name;
+         clonedModule.DefaultMergeBehavior = _dto.DefaultMergeBehavior;
 
          return true;
       }
+
+      public override MergeBehavior SelectedBehavior => _dto.DefaultMergeBehavior;
    }
 }
