@@ -34,14 +34,13 @@ namespace MoBi.Presentation.Presenter
             RaiseUserDefinedSelectedEvent();
 
          else
-            raiseEntitySelectedEvent(objectBaseDTO);
+            RaiseEntitySelectedEvent(objectBaseDTO);
       }
 
-      private void raiseEntitySelectedEvent(ObjectBaseDTO objectBaseDTO)
+      protected virtual void RaiseEntitySelectedEvent(ObjectBaseDTO objectBaseDTO)
       {
-         // First and second neighbor node selections should not trigger an EntitySelectedEvent
-         // because they are not a selectable entity
-         if(objectBaseDTO.ObjectBase != null)
+         // This presenter cannot handle the Neighbor selection, but a derived presenter can
+         if(!(objectBaseDTO is NeighborDTO))
             _context.PublishEvent(new EntitySelectedEvent(objectBaseDTO.ObjectBase, this));
       }
 
