@@ -165,7 +165,7 @@ namespace MoBi.Presentation.Presenter
          if (!(objectBaseDTO is NeighborDTO neighborDTO)) 
             return;
 
-         var entity = _spatialStructure.TopContainers.Select(x => neighborDTO.Path.Resolve<IEntity>(x)).FirstOrDefault();
+         var entity = _spatialStructure.TopContainers.Select(x => neighborDTO.Path.Resolve<IEntity>(x)).FirstOrDefault(x => x != default);
          
          if(entity != null)
             _context.PublishEvent(new EntitySelectedEvent(entity, this));

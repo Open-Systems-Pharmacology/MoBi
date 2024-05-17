@@ -39,6 +39,7 @@ namespace MoBi.Presentation.Presenter
 
       protected virtual void RaiseEntitySelectedEvent(ObjectBaseDTO objectBaseDTO)
       {
+         // This presenter cannot handle the Neighbor selection, but a derived presenter can
          if(!(objectBaseDTO is NeighborDTO))
             _context.PublishEvent(new EntitySelectedEvent(objectBaseDTO.ObjectBase, this));
       }
