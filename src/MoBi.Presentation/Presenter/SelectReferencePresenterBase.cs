@@ -174,7 +174,10 @@ namespace MoBi.Presentation.Presenter
       public ObjectPath GetSelection()
       {
          var selection = getSelected<IEntity>();
-         return _objectPathFactory.CreateRelativeObjectPath(_refObject, selection);
+
+         return shouldCreateAbsolutePaths ? 
+            _objectPathFactory.CreateAbsoluteObjectPath(selection) : 
+            _objectPathFactory.CreateRelativeObjectPath(_refObject, selection);
       }
 
       private T getSelected<T>() where T : class, IObjectBase
