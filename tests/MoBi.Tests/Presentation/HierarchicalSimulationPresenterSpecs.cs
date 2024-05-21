@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using MoBi.Core.Domain.Model;
@@ -12,9 +13,9 @@ using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Assets;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
-using ITreeNodeFactory = MoBi.Presentation.Nodes.ITreeNodeFactory;
 using OSPSuite.Utility.Extensions;
+using ITreeNodeFactory = MoBi.Presentation.Nodes.ITreeNodeFactory;
+using OSPSuite.SimModel;
 
 namespace MoBi.Presentation
 {
@@ -27,6 +28,7 @@ namespace MoBi.Presentation
       protected ObjectBaseDTO _favorites;
       private ITreeNodeFactory _treeNodeFactory;
       private IViewItemContextMenuFactory _contextMenuFactory;
+      protected INeighborhoodToNeighborDTOMapper _neighborhoodDTOMapper;
 
       protected override void Context()
       {
@@ -34,6 +36,7 @@ namespace MoBi.Presentation
          _context = A.Fake<IMoBiContext>();
          _simulationSettingsMapper = A.Fake<ISimulationSettingsToObjectBaseDTOMapper>();
          _dtoMapper = A.Fake<IObjectBaseToObjectBaseDTOMapper>();
+         _neighborhoodDTOMapper = A.Fake<INeighborhoodToNeighborDTOMapper>();
 
          _favorites = new ObjectBaseDTO
          {
@@ -49,25 +52,47 @@ namespace MoBi.Presentation
          _contextMenuFactory = A.Fake<IViewItemContextMenuFactory>();
 
          sut = new HierarchicalSimulationPresenter(_view, _context, _dtoMapper, _simulationSettingsMapper,
-            _treeNodeFactory, _contextMenuFactory);
+            _treeNodeFactory, _contextMenuFactory, _neighborhoodDTOMapper);
+
+         sut.ShowOutputSchema = () => { };
+         sut.ShowSolverSettings = () => { };
       }
    }
 
-   internal class When_getting_child_objects : concern_for_HierarchicalSimulationPresenter
+   internal class When_getting_child_objects_from_simulation_presenter : concern_for_HierarchicalSimulationPresenter
    {
       private IReadOnlyList<ObjectBaseDTO> _result;
       private ObjectBaseDTO _dto;
+      private IMoBiSimulation _simulation;
 
       protected override void Context()
       {
          base.Context();
-         var neighborhoodBuilder = new NeighborhoodBuilder
+         var neighbor1 = new Container().WithName("path");
+         var neighbor2 = new Container().WithName("path");
+         _simulation = new MoBiSimulation()
          {
-            FirstNeighborPath = new ObjectPath("neighbor1", "path"),
-            SecondNeighborPath = new ObjectPath("neighbor2", "path"),
+            Model = new Model
+            {
+               Root = new Container()
+            }
+         }.WithName("SimulationName");
+
+         var neighborhood = new Neighborhood
+         {
+            FirstNeighbor = neighbor1,
+            SecondNeighbor = neighbor2,
          }.WithId("neighborhood");
 
-         _dto = new ObjectBaseDTO(neighborhoodBuilder);
+         _dto = new ObjectBaseDTO(neighborhood);
+
+         A.CallTo(() => _neighborhoodDTOMapper.MapFrom(neighborhood)).Returns(new List<NeighborDTO>
+         {
+            new NeighborDTO(new ObjectPath("SimulationName", "neighborhood1", "path")),
+            new NeighborDTO(new ObjectPath("SimulationName", "neighborhood2", "path"))
+         });
+
+         sut.Edit(_simulation);
       }
 
       protected override void Because()
@@ -76,10 +101,12 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void neighbors_must_have_unique_id()
+      public void neighbors_must_have_names_without_simulation_name()
       {
-         _result[1].Id.ShouldBeEqualTo("neighborhood-neighbor2|path");
-         _result[0].Id.ShouldBeEqualTo("neighborhood-neighbor1|path");
+         _result.Each(x =>
+         {
+            x.Name.Contains("SimulationName").ShouldBeFalse();
+         });
       }
    }
 
@@ -103,6 +130,8 @@ namespace MoBi.Presentation
          A.CallTo(() => _context.PublishEvent(A<EntitySelectedEvent>._)).MustNotHaveHappened();
       }
    }
+
+
 
    internal class When_selecting_a_node_with_an_object_base : concern_for_HierarchicalSimulationPresenter
    {
@@ -129,11 +158,27 @@ namespace MoBi.Presentation
    internal class When_selecting_a_neighbor_node : concern_for_HierarchicalSimulationPresenter
    {
       private ObjectBaseDTO _dto;
+      private MoBiSimulation _simulation;
+      private Container _resolvedContainer;
 
       protected override void Context()
       {
          base.Context();
-         _dto = new NeighborDTO(new ObjectPath());
+         _dto = new NeighborDTO(new ObjectPath("container"));
+
+         _resolvedContainer = new Container().WithName("container");
+         _simulation = new MoBiSimulation
+         {
+            Model = new Model
+            {
+               Root = new Container().WithChild(_resolvedContainer)
+               
+            }
+         }.WithName("SimulationName");
+
+         sut.Edit(_simulation);
+         sut.ShowOutputSchema = () => { };
+         sut.ShowSolverSettings = () => { };
       }
 
       protected override void Because()
@@ -142,9 +187,9 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_not_raise_entity_selected_event()
+      public void should_raise_entity_selected_event()
       {
-         A.CallTo(() => _context.PublishEvent(A<EntitySelectedEvent>._)).MustNotHaveHappened();
+         A.CallTo(() => _context.PublishEvent(A<EntitySelectedEvent>.That.Matches(x => x.ObjectBase == _resolvedContainer))).MustHaveHappened();
       }
    }
 }

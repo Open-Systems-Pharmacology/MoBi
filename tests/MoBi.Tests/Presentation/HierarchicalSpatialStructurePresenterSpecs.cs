@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System.Collections.Generic;
+using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Presentation.DTO;
@@ -7,9 +8,11 @@ using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation
 {
@@ -21,6 +24,7 @@ namespace MoBi.Presentation
       protected IMoBiContext _context;
       protected IHierarchicalStructureView _view;
       protected MoBiSpatialStructure _spatialStructure;
+      private INeighborhoodToNeighborDTOMapper _neighborhoodDTOMapper;
 
       protected override void Context()
       {
@@ -29,8 +33,9 @@ namespace MoBi.Presentation
          _objectBaseToObjectBaseDTOMapper = A.Fake<IObjectBaseToObjectBaseDTOMapper>();
          _contextMenuFactory = A.Fake<IViewItemContextMenuFactory>();
          _treeNodeFactory = A.Fake<ITreeNodeFactory>();
+         _neighborhoodDTOMapper = A.Fake<INeighborhoodToNeighborDTOMapper>();
 
-         sut = new HierarchicalSpatialStructurePresenter(_view, _context, _objectBaseToObjectBaseDTOMapper, _contextMenuFactory, _treeNodeFactory);
+         sut = new HierarchicalSpatialStructurePresenter(_view, _context, _objectBaseToObjectBaseDTOMapper, _contextMenuFactory, _treeNodeFactory, _neighborhoodDTOMapper);
 
          _spatialStructure = new MoBiSpatialStructure();
          sut.Edit(_spatialStructure);

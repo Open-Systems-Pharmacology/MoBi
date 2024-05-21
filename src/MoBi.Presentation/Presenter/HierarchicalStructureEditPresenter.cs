@@ -3,6 +3,7 @@ using MoBi.Core.Events;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
+using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Nodes;
 using ITreeNodeFactory = MoBi.Presentation.Nodes.ITreeNodeFactory;
 
@@ -10,17 +11,20 @@ namespace MoBi.Presentation.Presenter
 {
    public abstract class HierarchicalStructureEditPresenter : HierarchicalStructurePresenter
    {
+      protected readonly INeighborhoodToNeighborDTOMapper _neighborhoodToNeighborDTOMapper;
 
       protected ITreeNode _favoritesNode;
       protected ITreeNode _userDefinedNode;
 
       protected HierarchicalStructureEditPresenter(
-         IHierarchicalStructureView view, 
+         IHierarchicalStructureView view,
          IMoBiContext context,
-         IObjectBaseToObjectBaseDTOMapper objectBaseMapper, 
-         ITreeNodeFactory treeNodeFactory)
+         IObjectBaseToObjectBaseDTOMapper objectBaseMapper,
+         ITreeNodeFactory treeNodeFactory,
+         INeighborhoodToNeighborDTOMapper neighborhoodToNeighborDTOMapper)
          : base(view, context, objectBaseMapper)
       {
+         _neighborhoodToNeighborDTOMapper = neighborhoodToNeighborDTOMapper;
          _favoritesNode = treeNodeFactory.CreateForFavorites();
          _userDefinedNode = treeNodeFactory.CreateForUserDefined();
       }
@@ -37,12 +41,26 @@ namespace MoBi.Presentation.Presenter
             RaiseEntitySelectedEvent(objectBaseDTO);
       }
 
-      protected virtual void RaiseEntitySelectedEvent(ObjectBaseDTO objectBaseDTO)
+      protected void RaiseEntitySelectedEvent(ObjectBaseDTO objectBaseDTO)
       {
-         // This presenter cannot handle the Neighbor selection, but a derived presenter can
-         if(!(objectBaseDTO is NeighborDTO))
-            _context.PublishEvent(new EntitySelectedEvent(objectBaseDTO.ObjectBase, this));
+
+         var entity = GetSelectedObject(objectBaseDTO);
+
+         if (entity != null)
+            _context.PublishEvent(new EntitySelectedEvent(entity, this));
       }
+
+      protected IObjectBase GetSelectedObject(ObjectBaseDTO dto)
+      {
+         if (dto is NeighborDTO neighborDTO)
+         {
+            return GetEntityForNeighbor(neighborDTO);
+         }
+
+         return dto.ObjectBase;
+      }
+
+      protected abstract IEntity GetEntityForNeighbor(NeighborDTO neighborDTO);
 
       protected abstract void RaiseFavoritesSelectedEvent();
 
