@@ -13,6 +13,10 @@ namespace MoBi.Presentation.UICommand
          _tasks = tasks;
       }
 
-      protected override void PerformExecute() => _tasks.MakeOverwriteModule(Subject);
+      protected override void PerformExecute()
+      {
+         if(Subject.DefaultMergeBehavior != MergeBehavior.Overwrite)
+            _tasks.MakeOverwriteModule(Subject);
+      } 
    }
 }

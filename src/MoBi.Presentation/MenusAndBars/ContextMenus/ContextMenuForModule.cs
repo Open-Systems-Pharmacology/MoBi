@@ -53,22 +53,10 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return CreateSubMenu.WithCaption(AppConstants.MenuNames.DefaultMergeBehavior)
             .WithItem(CreateMenuCheckButton.WithCaption(MergeBehavior.Overwrite.ToString())
                .WithChecked(module.DefaultMergeBehavior == MergeBehavior.Overwrite)
-               .WithCheckedAction(defaultOverwrite => makeModuleOverwrite(module, defaultOverwrite)))
+               .WithCommandFor<MakeOverwriteModuleUICommand, Module>(module, _container))
             .WithItem(CreateMenuCheckButton.WithCaption(MergeBehavior.Extend.ToString())
                .WithChecked(module.DefaultMergeBehavior == MergeBehavior.Extend)
-               .WithCheckedAction(defaultExtend => makeModuleExtend(module, defaultExtend)));
-      }
-
-      private void makeModuleExtend(Module module, bool defaultExtend)
-      {
-         if (defaultExtend && module.DefaultMergeBehavior != MergeBehavior.Extend)
-            _container.Resolve<MakeExtendModuleUICommand>().For(module).ExecuteWithinExceptionHandler();
-      }
-
-      private void makeModuleOverwrite(Module module, bool defaultOverwrite)
-      {
-         if(defaultOverwrite && module.DefaultMergeBehavior != MergeBehavior.Overwrite)
-            _container.Resolve<MakeOverwriteModuleUICommand>().For(module).ExecuteWithinExceptionHandler();
+               .WithCommandFor<MakeExtendModuleUICommand, Module>(module, _container));
       }
 
       private IMenuBarItem createSaveItemFor(Module module)

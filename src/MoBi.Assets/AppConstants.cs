@@ -1606,8 +1606,8 @@ namespace MoBi.Assets
          public static readonly string MakeDefault = "Make defaults";
          public static readonly string LoadFromDefaults = "Load from defaults";
          public static readonly string DefaultMergeBehavior = "Default Merge Behavior";
-         public static readonly string ExtendMergeBehaviorDescription = "<b>The module containers will be <i>merged recursively using add and update behavior</i></b>";
-         public static readonly string OverwriteMergeBehaviorDescription = "<b>The module containers will be <i>replaced</i> by path</b>";
+         public static readonly string ExtendMergeBehaviorDescription = "The module containers will be merged recursively using add and update behavior";
+         public static readonly string OverwriteMergeBehaviorDescription = "The module containers will be replaced by path";
 
          public static string SelectEntitiesThatWillBeReplaced(string entityType) => $"Select {entityType.Pluralize()} that will be replaced";
          public static string SelectEntitiesThatWillBeReplacedDescription(string entityType, string buildingBlockName) => $"<b>Selected <i>{entityType.Pluralize()}</i> will replace existing <i>{entityType.Pluralize()}</i> in the building block <i>{buildingBlockName}</i></b>";

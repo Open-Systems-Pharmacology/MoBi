@@ -44,7 +44,7 @@ namespace MoBi.UI.Views
          cbParameterValues.Text = ParameterValues;
          createBuildingBlocksGroup.Text = CreateBuildingBlocks;
          defaultMergeBehaviorGroup.Text = DefaultMergeBehavior;
-         defaultMergeBehaviorItem.Text = DefaultMergeBehavior.FormatForLabel();
+         defaultMergeBehaviorItem.TextVisible = false;
          initialConditionsNameItem.Text = AppConstants.Captions.Name.FormatForLabel();
          parameterValuesNameItem.Text = AppConstants.Captions.Name.FormatForLabel();
 
@@ -56,7 +56,7 @@ namespace MoBi.UI.Views
 
       public void SetBehaviorDescription(string description)
       {
-         lblDescription.Text = description;
+         lblDescription.Text = description.FormatForDescription();
       }
 
       protected void ShowStartValueNameControls()
