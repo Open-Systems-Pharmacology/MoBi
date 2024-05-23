@@ -22,7 +22,7 @@ namespace MoBi.Presentation.Presenter
 
       public ISelectReferenceAtParameterPresenter ReferenceAtParameterFor(IContainer container)
       {
-         return ReferenceAtParameterFor(container.GetType());
+         return ReferenceAtParameterFor(container?.GetType());
       }
 
       public ISelectReferenceAtParameterPresenter ReferenceAtParameterFor(Type parentType)

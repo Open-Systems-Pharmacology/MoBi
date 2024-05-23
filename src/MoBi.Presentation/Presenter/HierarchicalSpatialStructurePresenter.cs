@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using MoBi.Core.Domain.Model;
@@ -10,7 +11,6 @@ using MoBi.Presentation.Views;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
@@ -39,8 +39,8 @@ namespace MoBi.Presentation.Presenter
          IMoBiContext context,
          IObjectBaseToObjectBaseDTOMapper objectBaseMapper,
          IViewItemContextMenuFactory contextMenuFactory,
-         ITreeNodeFactory treeNodeFactory)
-         : base(view, context, objectBaseMapper, treeNodeFactory)
+         ITreeNodeFactory treeNodeFactory, INeighborhoodToNeighborDTOMapper neighborhoodToNeighborDTOMapper)
+         : base(view, context, objectBaseMapper, treeNodeFactory, neighborhoodToNeighborDTOMapper)
       {
          _contextMenuFactory = contextMenuFactory;
       }
@@ -52,7 +52,7 @@ namespace MoBi.Presentation.Presenter
          _view.AddNode(_favoritesNode);
          _view.AddNode(_userDefinedNode);
 
-         var roots = new List<ObjectBaseDTO> {_objectBaseMapper.MapFrom(spatialStructure.GlobalMoleculeDependentProperties)};
+         var roots = new List<ObjectBaseDTO> { _objectBaseMapper.MapFrom(spatialStructure.GlobalMoleculeDependentProperties) };
          spatialStructure.TopContainers.Each(x => roots.Add(_objectBaseMapper.MapFrom(x)));
 
          var neighborhood = _objectBaseMapper.MapFrom(spatialStructure.NeighborhoodsContainer);
@@ -159,16 +159,24 @@ namespace MoBi.Presentation.Presenter
          _view.Select(entityToSelect);
       }
 
-      protected override void RaiseEntitySelectedEvent(ObjectBaseDTO objectBaseDTO)
+      protected override IEntity GetEntityForNeighbor(NeighborDTO neighborDTO)
       {
-         base.RaiseEntitySelectedEvent(objectBaseDTO);
-         if (!(objectBaseDTO is NeighborDTO neighborDTO)) 
-            return;
+         return _spatialStructure.TopContainers.Select(x => neighborDTO.Path.Resolve<IEntity>(x)).FirstOrDefault(x => x != default);
+      }
 
-         var entity = _spatialStructure.TopContainers.Select(x => neighborDTO.Path.Resolve<IEntity>(x)).FirstOrDefault(x => x != default);
-         
-         if(entity != null)
-            _context.PublishEvent(new EntitySelectedEvent(entity, this));
+      protected override IReadOnlyList<ObjectBaseDTO> GetChildrenSorted(IContainer container, Func<IEntity, bool> predicate)
+      {
+         if (container is NeighborhoodBuilder neighborhood)
+         {
+            return neighborsOf(neighborhood).Union(base.GetChildrenSorted(container, predicate)).ToList();
+         }
+
+         return base.GetChildrenSorted(container, predicate);
+      }
+
+      private IEnumerable<ObjectBaseDTO> neighborsOf(NeighborhoodBuilder neighborhoodBuilder)
+      {
+         return _neighborhoodToNeighborDTOMapper.MapFrom(neighborhoodBuilder);
       }
    }
 }

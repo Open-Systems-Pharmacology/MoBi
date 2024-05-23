@@ -44,8 +44,8 @@ namespace MoBi.Presentation.Presenter
 
       public HierarchicalSimulationPresenter(IHierarchicalStructureView view, IMoBiContext context,
          IObjectBaseToObjectBaseDTOMapper objectBaseMapper,
-         ISimulationSettingsToObjectBaseDTOMapper simulationSettingsMapper, ITreeNodeFactory treeNodeFactory, IViewItemContextMenuFactory contextMenuFactory)
-         : base(view, context, objectBaseMapper, treeNodeFactory)
+         ISimulationSettingsToObjectBaseDTOMapper simulationSettingsMapper, ITreeNodeFactory treeNodeFactory, IViewItemContextMenuFactory contextMenuFactory, INeighborhoodToNeighborDTOMapper neighborhoodToNeighborDTOMapper)
+         : base(view, context, objectBaseMapper, treeNodeFactory, neighborhoodToNeighborDTOMapper)
       {
          _simulationSettingsMapper = simulationSettingsMapper;
          _contextMenuFactory = contextMenuFactory;
@@ -116,9 +116,7 @@ namespace MoBi.Presentation.Presenter
             ShowOutputSchema();
          else if (string.Equals(objectBaseDTO.Id, AppConstants.SolverSettingsId))
             ShowSolverSettings();
-         else if (string.Equals(objectBaseDTO.Id, AppConstants.SimulationSettingsId))
-            return;
-         else
+         else if (!string.Equals(objectBaseDTO.Id, AppConstants.SimulationSettingsId))
             base.Select(objectBaseDTO);
       }
 
@@ -148,6 +146,31 @@ namespace MoBi.Presentation.Presenter
       {
          return _simulation.Model.Root.Equals(entity.RootContainer) ||
                 _simulation.Model.Neighborhoods.Equals(entity.RootContainer);
+      }
+
+      protected override IReadOnlyList<ObjectBaseDTO> GetChildrenSorted(IContainer container, Func<IEntity, bool> predicate)
+      {
+         if (container is Neighborhood neighborhood)
+         {
+            return neighborsOf(neighborhood).Union(base.GetChildrenSorted(container, predicate)).ToList();
+         }
+         return base.GetChildrenSorted(container, predicate);
+      }
+
+      private IEnumerable<ObjectBaseDTO> neighborsOf(Neighborhood neighborhood)
+      {
+         var neighbors = _neighborhoodToNeighborDTOMapper.MapFrom(neighborhood).ToList();
+         neighbors.Each(x =>
+         {
+            x.Path.Remove(_simulation.Name);
+            x.Name = x.Path;
+         });
+         return neighbors;
+      }
+
+      protected override IEntity GetEntityForNeighbor(NeighborDTO neighborDTO)
+      {
+         return neighborDTO.Path.Resolve<IEntity>(_simulation.Model.Root);
       }
    }
 }
