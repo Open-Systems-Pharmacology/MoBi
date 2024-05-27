@@ -3,12 +3,11 @@ using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface ICloneBuildingBlocksToModulePresenter : IDisposablePresenter
+   public interface ICloneBuildingBlocksToModulePresenter : IBaseModuleContentPresenter
    {
       /// <summary>
       ///    Selectively removes building blocks from <paramref name="clonedModule" /> based on user selection
@@ -17,10 +16,11 @@ namespace MoBi.Presentation.Presenter
       bool SelectClonedBuildingBlocks(Module clonedModule);
    }
 
-   public class CloneBuildingBlocksToModulePresenter : AbstractDisposablePresenter<ICloneBuildingBlocksToModuleView, ICloneBuildingBlocksToModulePresenter>,
+   public class CloneBuildingBlocksToModulePresenter : BaseModuleContentPresenter<ICloneBuildingBlocksToModuleView, ICloneBuildingBlocksToModulePresenter>,
       ICloneBuildingBlocksToModulePresenter
    {
       private readonly IMoBiProjectRetriever _projectRetriever;
+      private CloneBuildingBlocksToModuleDTO _dto;
 
       public CloneBuildingBlocksToModulePresenter(ICloneBuildingBlocksToModuleView view, IMoBiProjectRetriever projectRetriever) : base(view)
       {
@@ -30,20 +30,23 @@ namespace MoBi.Presentation.Presenter
       public bool SelectClonedBuildingBlocks(Module clonedModule)
       {
          _view.Caption = AppConstants.Captions.SelectBuildingBlocksToCloneFrom(clonedModule);
-         var dto = new CloneBuildingBlocksToModuleDTO(clonedModule);
-         dto.AddUsedNames(_projectRetriever.Current.Modules.AllNames());
+         _dto = new CloneBuildingBlocksToModuleDTO(clonedModule);
+         _dto.AddUsedNames(_projectRetriever.Current.Modules.AllNames());
 
-         _view.BindTo(dto);
+         _view.BindTo(_dto);
          _view.Display();
 
          if (_view.Canceled)
             return false;
 
-         dto.BuildingBlocksToRemove.Each(clonedModule.Remove);
+         _dto.BuildingBlocksToRemove.Each(clonedModule.Remove);
 
-         clonedModule.Name = dto.Name;
+         clonedModule.Name = _dto.Name;
+         clonedModule.DefaultMergeBehavior = _dto.DefaultMergeBehavior;
 
          return true;
       }
+
+      public override MergeBehavior SelectedBehavior => _dto.DefaultMergeBehavior;
    }
 }

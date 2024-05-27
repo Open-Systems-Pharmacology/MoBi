@@ -84,11 +84,9 @@ namespace MoBi.UI.Views
 
    }
 
-   public class CloneBuildingBlocksToModuleView : BaseModuleContentView<CloneBuildingBlocksToModuleDTO>,
+   public class CloneBuildingBlocksToModuleView : BaseModuleContentView<CloneBuildingBlocksToModuleDTO, ICloneBuildingBlocksToModulePresenter>,
       ICloneBuildingBlocksToModuleView
    {
-      public void AttachPresenter(ICloneBuildingBlocksToModulePresenter presenter)
-      {
-      }
+
    }
 }

@@ -80,6 +80,8 @@ namespace MoBi.Presentation.Mappers
             module.Add(CreateDefault<InitialConditionsBuildingBlock>(DefaultNames.InitialConditions));
          }
 
+         module.DefaultMergeBehavior = createModuleDTO.DefaultMergeBehavior;
+
          return module;
       }
    }

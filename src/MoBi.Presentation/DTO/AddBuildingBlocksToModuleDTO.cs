@@ -40,6 +40,8 @@ namespace MoBi.Presentation.DTO
          _existingParameterValuesNames = new List<string>();
          _existingInitialConditionsNames = new List<string>();
 
+         DefaultMergeBehavior = module.DefaultMergeBehavior;
+
          Rules.AddRange(AllRules.All);
       }
 

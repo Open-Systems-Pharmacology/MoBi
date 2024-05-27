@@ -804,6 +804,11 @@ namespace MoBi.Assets
          {
             return $"Changed the simulation configuration of simulation '{simulationName}'";
          }
+
+         public static string SetModuleMergeBehavior(string moduleName, string newMergeBehavior)
+         {
+            return $"Set merge behavior to '{newMergeBehavior}' for module '{moduleName}'";
+         }
       }
 
       public static class BarNames
@@ -1099,6 +1104,7 @@ namespace MoBi.Assets
          public static readonly string AddProteinExpression = "Add Protein Expression";
          public static readonly string OutputSelections = "Output Selections";
          public static readonly string SettingsAndSchema = "Settings and Schema";
+         public static readonly string DefaultMergeBehavior = "Default Merge Behavior";
 
          public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
 
@@ -1599,6 +1605,10 @@ namespace MoBi.Assets
          public static readonly string NewParameterValuesBuildingBlock = "New Parameter Values Building Block";
          public static readonly string MakeDefault = "Make defaults";
          public static readonly string LoadFromDefaults = "Load from defaults";
+         public static readonly string DefaultMergeBehavior = "Default Merge Behavior";
+         public static readonly string ExtendMergeBehaviorDescription = "The module containers will be merged recursively using add and update behavior";
+         public static readonly string OverwriteMergeBehaviorDescription = "The module containers will be replaced by path";
+
          public static string SelectEntitiesThatWillBeReplaced(string entityType) => $"Select {entityType.Pluralize()} that will be replaced";
          public static string SelectEntitiesThatWillBeReplacedDescription(string entityType, string buildingBlockName) => $"<b>Selected <i>{entityType.Pluralize()}</i> will replace existing <i>{entityType.Pluralize()}</i> in the building block <i>{buildingBlockName}</i></b>";
          public static string ExportContainerDescription(string exportedContainerPath) => $"<b>Select a <i>file path</i> and optional <i>individual</i> and <i>expression profiles</i> for container export. Parameters from the <i>individual</i> and <i>expression profiles</i> that match the path {exportedContainerPath} will be added to the container before exporting.</b>";

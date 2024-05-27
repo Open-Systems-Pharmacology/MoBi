@@ -2,16 +2,15 @@ using System.Linq;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IAddContentToModulePresenter : IDisposablePresenter
+   public interface IAddContentToModulePresenter : IBaseModuleContentPresenter
    {
       void AddMoleculesSelectionChanged(bool moleculesSelected);
    }
 
-   public abstract class AddContentToModulePresenter<TView, TPresenter> : AbstractDisposablePresenter<TView, TPresenter>, IAddContentToModulePresenter where TView : IAddContentToModuleView<TPresenter> where TPresenter : IAddContentToModulePresenter
+   public abstract class AddContentToModulePresenter<TView, TPresenter> : BaseModuleContentPresenter<TView, TPresenter>, IAddContentToModulePresenter where TView : IAddContentToModuleView<TPresenter> where TPresenter : IAddContentToModulePresenter
    {
       protected AddContentToModulePresenter(TView view) : base(view)
       {
@@ -19,6 +18,8 @@ namespace MoBi.Presentation.Presenter
 
       protected abstract Module Module { get; }
       protected abstract ModuleContentDTO ContentDTO { get; }
+
+      public override MergeBehavior SelectedBehavior => ContentDTO.DefaultMergeBehavior;
 
       public void AddMoleculesSelectionChanged(bool moleculesSelected)
       {

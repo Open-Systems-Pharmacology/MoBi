@@ -44,7 +44,7 @@ namespace MoBi.Core.Commands
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return new RemoveSelectedBuildingBlockFromLastModuleConfigurationCommand<T>(_buildingBlock, _simulation);
+         return new RemoveSelectedBuildingBlockFromLastModuleConfigurationCommand<T>(_buildingBlock, _simulation).AsInverseFor(this);
       }
 
       protected override void ClearReferences()
