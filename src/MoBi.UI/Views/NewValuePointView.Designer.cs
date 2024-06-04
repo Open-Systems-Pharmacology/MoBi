@@ -31,9 +31,8 @@
       {
          this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
-         this.veX = new MoBi.UI.Views.ValueEdit();
          this.layoutControlItemX = new DevExpress.XtraLayout.LayoutControlItem();
-         this.veY = new MoBi.UI.Views.ValueEdit();
+
          this.layoutControlItemY = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
@@ -45,8 +44,6 @@
          // 
          // layoutControl1
          // 
-         this.layoutControl1.Controls.Add(this.veY);
-         this.layoutControl1.Controls.Add(this.veX);
          this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
          this.layoutControl1.Location = new System.Drawing.Point(0, 0);
          this.layoutControl1.Name = "layoutControl1";
@@ -71,15 +68,7 @@
          // 
          // veX
          // 
-         this.veX.Location = new System.Drawing.Point(109, 12);
-         this.veX.MaximumSize = new System.Drawing.Size(200000, 20);
-         this.veX.Name = "veX";
-         this.veX.Size = new System.Drawing.Size(433, 20);
-         this.veX.TabIndex = 4;
          // 
-         // layoutControlItemX
-         // 
-         this.layoutControlItemX.Control = this.veX;
          this.layoutControlItemX.CustomizationFormText = "layoutControlItemX";
          this.layoutControlItemX.Location = new System.Drawing.Point(0, 0);
          this.layoutControlItemX.Name = "layoutControlItemX";
@@ -88,16 +77,10 @@
          this.layoutControlItemX.TextSize = new System.Drawing.Size(93, 13);
          // 
          // veY
-         // 
-         this.veY.Location = new System.Drawing.Point(109, 36);
-         this.veY.MaximumSize = new System.Drawing.Size(200000, 20);
-         this.veY.Name = "veY";
-         this.veY.Size = new System.Drawing.Size(433, 20);
-         this.veY.TabIndex = 5;
+
          // 
          // layoutControlItemY
-         // 
-         this.layoutControlItemY.Control = this.veY;
+
          this.layoutControlItemY.CustomizationFormText = "layoutControlItemY";
          this.layoutControlItemY.Location = new System.Drawing.Point(0, 24);
          this.layoutControlItemY.Name = "layoutControlItemY";
@@ -128,8 +111,6 @@
 
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl1;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
-      private ValueEdit veY;
-      private ValueEdit veX;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemX;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemY;
 
