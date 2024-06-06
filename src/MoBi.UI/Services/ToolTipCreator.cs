@@ -13,7 +13,7 @@ namespace MoBi.UI.Services
    public interface IToolTipCreator : OSPSuite.UI.Services.IToolTipCreator
    {
       SuperToolTip ToolTipFor(NotificationMessage notificationMessage);
-      SuperToolTip ToolTipFor(IMoBiParameterDTO parameterDTO);
+      SuperToolTip ToolTipFor(IMoBiParameterDTO parameterDTO, string cellValue = null);
       SuperToolTip ToolTipFor(UsedCalculationMethodDTO calculationMethod);
    }
 
@@ -33,11 +33,15 @@ namespace MoBi.UI.Services
       }
 
 
-      public SuperToolTip ToolTipFor(IMoBiParameterDTO parameterDTO)
+      public SuperToolTip ToolTipFor(IMoBiParameterDTO parameterDTO, string cellValue = null)
       {
-         var toolTip = CreateToolTip(parameterDTO.Description, parameterDTO.Name);
+         var toolTip = CreateToolTip();
+
+         toolTip = addToolTip(createCellValueToolTip(cellValue), toolTip);
+         toolTip = addToolTip(CreateToolTip(parameterDTO.Description, parameterDTO.Name), toolTip);
          toolTip = addFormulaToolTip(parameterDTO.Formula, toolTip, AppConstants.Captions.Formula);
-         return addFormulaToolTip(parameterDTO.RHSFormula, toolTip, AppConstants.Captions.RHSFormula);
+         toolTip = addFormulaToolTip(parameterDTO.RHSFormula, toolTip, AppConstants.Captions.RHSFormula);
+         return toolTip;
       }
 
       private static SuperToolTip addFormulaToolTip(FormulaBuilderDTO formula, SuperToolTip toolTip, string title)
@@ -62,10 +66,32 @@ namespace MoBi.UI.Services
 
          return toolTip;
       }
-
+      
       public SuperToolTip ToolTipFor(UsedCalculationMethodDTO calculationMethod)
       {
          var toolTip = CreateToolTip(calculationMethod.Description, calculationMethod.CalculationMethodName);
+         return toolTip;
+      }
+
+      private SuperToolTip createCellValueToolTip(string cellValue)
+      {
+         if (cellValue == string.Empty)
+         {
+            return CreateToolTip();
+         }
+
+         var newToolTip = CreateToolTip(string.Empty, cellValue);
+         newToolTip.Items.AddSeparator();
+         return newToolTip;
+      }
+
+      private SuperToolTip addToolTip(SuperToolTip toolTipToAdd, SuperToolTip toolTip)
+      {
+         foreach (BaseToolTipItem item in toolTipToAdd.Items)
+         {
+            toolTip.Items.Add(item);
+         }
+
          return toolTip;
       }
    }

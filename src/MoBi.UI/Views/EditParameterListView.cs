@@ -71,15 +71,20 @@ namespace MoBi.UI.Views
          var parameterDTO = _gridViewBinder.ElementAt(e);
          if (parameterDTO == null) return;
 
-         var superToolTip = getToolTipFor(parameterDTO);
+         var gridHitInfo = _gridView.CalcHitInfo(e.ControlMousePosition);
+         if (gridHitInfo.Column == null) return;
+         
+         var columnName = gridHitInfo.Column.Name;
+         var cellValue = _gridView.GetRowCellValue(gridHitInfo.RowHandle, gridHitInfo.Column).ToString();
+         
+         var superToolTip = getToolTipFor(parameterDTO, cellValue);
 
-         //An object that uniquely identifies a row cell
-         e.Info = new ToolTipControlInfo(parameterDTO, string.Empty) { SuperTip = superToolTip, ToolTipType = ToolTipType.SuperTip };
+         e.Info = new ToolTipControlInfo(parameterDTO.Name+columnName, string.Empty) { SuperTip = superToolTip, ToolTipType = ToolTipType.SuperTip };
       }
 
-      private SuperToolTip getToolTipFor(ParameterDTO parameterDTO)
+      private SuperToolTip getToolTipFor(ParameterDTO parameterDTO, string cellValue)
       {
-         return _toolTipCreator.ToolTipFor(parameterDTO);
+         return _toolTipCreator.ToolTipFor(parameterDTO, cellValue);
       }
 
       private void onGridViewMouseDown(MouseEventArgs e)
@@ -237,7 +242,6 @@ namespace MoBi.UI.Views
                _gridView.FocusedRowHandle = firstRowHandle;
          }
       }
-
       private void hideEditor()
       {
          _unitControl.Hide();
