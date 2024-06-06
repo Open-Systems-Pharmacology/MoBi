@@ -221,11 +221,9 @@ namespace MoBi.Presentation.Tasks
 
       private IMoBiCommand renameCommand(IObjectBase objectBase, string newName) => new RenameObjectBaseCommand(objectBase, newName, _buildingBlock);
 
-      private string renameDescription<T>(T objectBase, string oldName, string newName, string propertyName) where T : IObjectBase
-      {
-         return AppConstants.Commands.EditDescription(_objectTypeResolver.TypeFor<T>(), propertyName, oldName, newName, objectBase.Name);
-      }
-
+      private string renameDescription(IObjectBase objectBase, string oldName, string newName, string propertyName) =>
+        AppConstants.Commands.EditDescription(_objectTypeResolver.TypeFor(objectBase), propertyName, oldName, newName, objectBase.Name);
+      
       private void checkTagsInContainer(IContainer container)
       {
          //Check Name Tags!
