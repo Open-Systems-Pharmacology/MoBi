@@ -34,6 +34,7 @@ namespace MoBi.UI.Views
          _toolTipCreator = toolTipCreator;
          _toolTipController.AllowHtmlText = true;
          _toolTipController.GetActiveObjectInfo += onToolTipControllerGetActiveObjectInfo;
+         _toolTipController.Initialize();
          grdCalculationMethodsView.OptionsView.ShowGroupPanel = false;
          grdCalculationMethodsView.GridControl.ToolTipController = _toolTipController;
       }

@@ -84,5 +84,10 @@ namespace MoBi.UI.Views
       {
          e.Cancel = _presenter.FormClosing();
       }
-   }
+
+        private void _panelModuleExplorer_Click(object sender, EventArgs e)
+        {
+
+        }
+    }
 }

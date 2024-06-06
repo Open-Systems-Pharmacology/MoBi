@@ -16,6 +16,7 @@ using MoBi.Presentation.Views;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
 using OSPSuite.UI.Views;
 using IToolTipCreator = MoBi.UI.Services.IToolTipCreator;
@@ -44,7 +45,7 @@ namespace MoBi.UI.Views
          gridViewMessages.CustomRowFilter += customRowFilter;
          _statusIconRepository = new RepositoryItemPictureEdit();
          var toolTipController = new ToolTipController {ImageList = imageListRetriever.AllImages16x16};
-         toolTipController.AutoPopDelay = AppConstants.NotificationToolTipDelay;
+         toolTipController.Initialize();
          toolTipController.GetActiveObjectInfo += onToolTipControllerGetActiveObjectInfo;
          gridMessages.ToolTipController = toolTipController;
          gridViewMessages.MouseDown += (o, e) => this.DoWithinExceptionHandler(() => onGridViewMouseDown(e));
