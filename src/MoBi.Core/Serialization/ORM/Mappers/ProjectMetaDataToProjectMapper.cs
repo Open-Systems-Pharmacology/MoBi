@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Core.Domain.Extensions;
@@ -65,7 +66,7 @@ namespace MoBi.Core.Serialization.ORM.Mappers
                {
                   addSimulationToProject(simulationMetaData, serializationContext);
                }
-
+               
                //then load the rest of the entities
                var nonProjectBuildingBlocks = new List<IBuildingBlock>();
                foreach (var entityMetaData in projectMetaData.Children)
@@ -91,8 +92,21 @@ namespace MoBi.Core.Serialization.ORM.Mappers
          var simulationSettingsBlocks = moduleBuildingBlocks.OfType<SimulationSettings>().ToList();
          simulationSettingsBlocks.Each(x => moduleBuildingBlocks.Remove(x));
 
-         addModuleBuildingBlocks(moduleBuildingBlocks);
+
+         var uniqueBuildingBlockTypes = hasUniqueBuildingBlocks(moduleBuildingBlocks);
+         if(uniqueBuildingBlockTypes)
+            addModuleBuildingBlocks(moduleBuildingBlocks);
+         else
+            addBuildingBlocksToModule(moduleBuildingBlocks);
+         
          addSimulationSettingsBuildingBlocks(simulationSettingsBlocks);
+      }
+      private void addBuildingBlocksToModule(List<IBuildingBlock> moduleBuildingBlocks)
+      {
+         if (!moduleBuildingBlocks.Any())
+            return;
+
+         moduleBuildingBlocks.Each(addBuildingBlockAsModule);
       }
 
       private void addSimulationSettingsBuildingBlocks(List<SimulationSettings> simulationSettingsBlocks)
@@ -109,8 +123,9 @@ namespace MoBi.Core.Serialization.ORM.Mappers
       {
          if (!moduleBuildingBlocks.Any())
             return;
-
-         moduleBuildingBlocks.Each(addBuildingBlockAsModule);
+         var module = _moduleFactory.CreateModuleWithName("Module1");
+         moduleBuildingBlocks.Each(module.Add);
+         _project.AddModule(module);
       }
 
       private void addBuildingBlockAsModule(IBuildingBlock buildingBlock)
@@ -217,6 +232,28 @@ namespace MoBi.Core.Serialization.ORM.Mappers
             dataRepository.SetPersistable(true);
             moBiSimulation.HistoricResults.Add(dataRepository);
          }
+      }
+
+      private bool hasUniqueBuildingBlocks(List<IBuildingBlock> moduleBuildingBlocks)
+      {
+         var uniqueTypes = new HashSet<Type>
+         {
+            typeof(MoleculeBuildingBlock),
+            typeof(PassiveTransportBuildingBlock),
+            typeof(EventGroupBuildingBlock),
+            typeof(InitialConditionsBuildingBlock),
+            typeof(ParameterValuesBuildingBlock),
+            typeof(MoBiReactionBuildingBlock),
+            typeof(MoBiSpatialStructure),
+            typeof(ObserverBuildingBlock)
+         };
+
+         return moduleBuildingBlocks
+            .Select(block => block.GetType())
+            .Where(type => uniqueTypes.Contains(type))
+            .GroupBy(type => type)
+            .All(group => group.Count() == 1);
+
       }
    }
 }
