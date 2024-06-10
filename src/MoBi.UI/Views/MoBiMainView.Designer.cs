@@ -179,7 +179,6 @@ namespace MoBi.UI.Views
             this._panelModuleExplorer.OriginalSize = new System.Drawing.Size(400, 375);
             this._panelModuleExplorer.Size = new System.Drawing.Size(467, 461);
             this._panelModuleExplorer.Text = "_panelModuleExplorer";
-            this._panelModuleExplorer.Click += new System.EventHandler(this._panelModuleExplorer_Click);
             // 
             // controlContainer8
             // 
