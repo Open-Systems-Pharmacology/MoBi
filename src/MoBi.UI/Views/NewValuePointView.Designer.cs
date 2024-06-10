@@ -29,98 +29,82 @@
       /// </summary>
       private void InitializeComponent()
       {
-         this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
-         this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
-         this.veX = new MoBi.UI.Views.ValueEdit();
-         this.layoutControlItemX = new DevExpress.XtraLayout.LayoutControlItem();
-         this.veY = new MoBi.UI.Views.ValueEdit();
-         this.layoutControlItemY = new DevExpress.XtraLayout.LayoutControlItem();
-         ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
-         this.layoutControl1.SuspendLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemX)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemY)).BeginInit();
-         this.SuspendLayout();
-         // 
-         // layoutControl1
-         // 
-         this.layoutControl1.Controls.Add(this.veY);
-         this.layoutControl1.Controls.Add(this.veX);
-         this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.layoutControl1.Location = new System.Drawing.Point(0, 0);
-         this.layoutControl1.Name = "layoutControl1";
-         this.layoutControl1.Root = this.layoutControlGroup1;
-         this.layoutControl1.Size = new System.Drawing.Size(554, 75);
-         this.layoutControl1.TabIndex = 14;
-         this.layoutControl1.Text = "layoutControl1";
-         // 
-         // layoutControlGroup1
-         // 
-         this.layoutControlGroup1.CustomizationFormText = "layoutControlGroup1";
-         this.layoutControlGroup1.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
-         this.layoutControlGroup1.GroupBordersVisible = false;
-         this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.layoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
+            this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
+            this.layoutControlItemX = new DevExpress.XtraLayout.LayoutControlItem();
+            this.layoutControlItemY = new DevExpress.XtraLayout.LayoutControlItem();
+            ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemX)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemY)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // tablePanel
+            // 
+            this.tablePanel.Location = new System.Drawing.Point(0, 113);
+            this.tablePanel.Size = new System.Drawing.Size(646, 53);
+            // 
+            // layoutControl1
+            // 
+            this.layoutControl1.AllowCustomization = false;
+            this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.layoutControl1.Location = new System.Drawing.Point(0, 0);
+            this.layoutControl1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.layoutControl1.Name = "layoutControl1";
+            this.layoutControl1.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(706, -1350, 812, 500);
+            this.layoutControl1.Root = this.layoutControlGroup1;
+            this.layoutControl1.Size = new System.Drawing.Size(646, 113);
+            this.layoutControl1.TabIndex = 14;
+            this.layoutControl1.Text = "layoutControl1";
+            // 
+            // layoutControlGroup1
+            // 
+            this.layoutControlGroup1.CustomizationFormText = "layoutControlGroup1";
+            this.layoutControlGroup1.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
+            this.layoutControlGroup1.GroupBordersVisible = false;
+            this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItemX,
             this.layoutControlItemY});
-         this.layoutControlGroup1.Location = new System.Drawing.Point(0, 0);
-         this.layoutControlGroup1.Name = "layoutControlGroup1";
-         this.layoutControlGroup1.Size = new System.Drawing.Size(554, 75);
-         this.layoutControlGroup1.Text = "layoutControlGroup1";
-         this.layoutControlGroup1.TextVisible = false;
-         // 
-         // veX
-         // 
-         this.veX.Location = new System.Drawing.Point(109, 12);
-         this.veX.MaximumSize = new System.Drawing.Size(200000, 20);
-         this.veX.Name = "veX";
-         this.veX.Size = new System.Drawing.Size(433, 20);
-         this.veX.TabIndex = 4;
-         // 
-         // layoutControlItemX
-         // 
-         this.layoutControlItemX.Control = this.veX;
-         this.layoutControlItemX.CustomizationFormText = "layoutControlItemX";
-         this.layoutControlItemX.Location = new System.Drawing.Point(0, 0);
-         this.layoutControlItemX.Name = "layoutControlItemX";
-         this.layoutControlItemX.Size = new System.Drawing.Size(534, 24);
-         this.layoutControlItemX.Text = "layoutControlItemX";
-         this.layoutControlItemX.TextSize = new System.Drawing.Size(93, 13);
-         // 
-         // veY
-         // 
-         this.veY.Location = new System.Drawing.Point(109, 36);
-         this.veY.MaximumSize = new System.Drawing.Size(200000, 20);
-         this.veY.Name = "veY";
-         this.veY.Size = new System.Drawing.Size(433, 20);
-         this.veY.TabIndex = 5;
-         // 
-         // layoutControlItemY
-         // 
-         this.layoutControlItemY.Control = this.veY;
-         this.layoutControlItemY.CustomizationFormText = "layoutControlItemY";
-         this.layoutControlItemY.Location = new System.Drawing.Point(0, 24);
-         this.layoutControlItemY.Name = "layoutControlItemY";
-         this.layoutControlItemY.Size = new System.Drawing.Size(534, 31);
-         this.layoutControlItemY.Text = "layoutControlItemY";
-         this.layoutControlItemY.TextSize = new System.Drawing.Size(93, 13);
-         // 
-         // NewValuePointView
-         // 
-         this.AcceptButton = null;
-         this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-         this.ClientSize = new System.Drawing.Size(554, 121);
-         this.Controls.Add(this.layoutControl1);
-         this.Name = "NewValuePointView";
-         this.Controls.SetChildIndex(this.layoutControl1, 0);
-         ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
-         this.layoutControl1.ResumeLayout(false);
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemX)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemY)).EndInit();
-         this.ResumeLayout(false);
+            this.layoutControlGroup1.Name = "Root";
+            this.layoutControlGroup1.Size = new System.Drawing.Size(646, 113);
+            this.layoutControlGroup1.TextVisible = false;
+            // 
+            // layoutControlItemX
+            // 
+            this.layoutControlItemX.CustomizationFormText = "layoutControlItemX";
+            this.layoutControlItemX.Location = new System.Drawing.Point(0, 0);
+            this.layoutControlItemX.Name = "layoutControlItemX";
+            this.layoutControlItemX.Size = new System.Drawing.Size(622, 44);
+            this.layoutControlItemX.TextSize = new System.Drawing.Size(109, 16);
+            // 
+            // layoutControlItemY
+            // 
+            this.layoutControlItemY.CustomizationFormText = "layoutControlItemY";
+            this.layoutControlItemY.Location = new System.Drawing.Point(0, 44);
+            this.layoutControlItemY.Name = "layoutControlItemY";
+            this.layoutControlItemY.Size = new System.Drawing.Size(622, 45);
+            this.layoutControlItemY.TextSize = new System.Drawing.Size(109, 16);
+            // 
+            // NewValuePointView
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(646, 166);
+            this.Controls.Add(this.layoutControl1);
+            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.Name = "NewValuePointView";
+            this.Controls.SetChildIndex(this.tablePanel, 0);
+            this.Controls.SetChildIndex(this.layoutControl1, 0);
+            ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemX)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemY)).EndInit();
+            this.ResumeLayout(false);
+            this.PerformLayout();
 
       }
 
@@ -128,8 +112,6 @@
 
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl1;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
-      private ValueEdit veY;
-      private ValueEdit veX;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemX;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemY;
 
