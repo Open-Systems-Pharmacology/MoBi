@@ -79,7 +79,8 @@ namespace MoBi.UI.Views
          
          var superToolTip = getToolTipFor(parameterDTO, cellValue);
 
-         e.Info = new ToolTipControlInfo(parameterDTO.Name+columnName, string.Empty) { SuperTip = superToolTip, ToolTipType = ToolTipType.SuperTip };
+         // Adds a super-tooltip for the current active object. Uniquely identified by the combination of parameterDTO.Name and columnName.
+         e.Info = new ToolTipControlInfo(parameterDTO.Name + columnName, string.Empty) { SuperTip = superToolTip, ToolTipType = ToolTipType.SuperTip };
       }
 
       private SuperToolTip getToolTipFor(ParameterDTO parameterDTO, string cellValue)
@@ -242,6 +243,7 @@ namespace MoBi.UI.Views
                _gridView.FocusedRowHandle = firstRowHandle;
          }
       }
+      
       private void hideEditor()
       {
          _unitControl.Hide();
