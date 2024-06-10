@@ -87,11 +87,7 @@ namespace MoBi.UI.Services
 
       private SuperToolTip addToolTip(SuperToolTip toolTipToAdd, SuperToolTip toolTip)
       {
-         foreach (BaseToolTipItem item in toolTipToAdd.Items)
-         {
-            toolTip.Items.Add(item);
-         }
-
+         toolTipToAdd.Items.Cast<BaseToolTipItem>().ToList().ForEach(x => toolTip.Items.Add(x));
          return toolTip;
       }
    }
