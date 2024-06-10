@@ -87,7 +87,7 @@ namespace MoBi.IntegrationTests
       }
 
       [Observation]
-      public void should_be_able_to_load_Diclofenac_model()
+      public void should_be_able_to_load_project_model()
       {
          _context.CurrentProject.ShouldNotBeNull();
       }
@@ -130,6 +130,4 @@ namespace MoBi.IntegrationTests
       }
 
    }
-
-
 }
