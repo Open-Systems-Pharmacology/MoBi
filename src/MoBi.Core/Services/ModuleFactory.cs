@@ -21,11 +21,7 @@ namespace MoBi.Core.Services
          _objectTypeResolver = objectTypeResolver;
       }
 
-      public Module CreateModuleWithName(string moduleName)
-      {
-         var newModule = _objectBaseFactory.Create<Module>().WithName(moduleName);
-         return newModule;
-      }
+      public Module CreateModuleWithName(string moduleName) => _objectBaseFactory.Create<Module>().WithName(moduleName);
 
       public Module CreateDedicatedModuleFor(IBuildingBlock buildingBlock)
       {

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MoBi.Assets;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Exceptions;
@@ -93,21 +94,17 @@ namespace MoBi.Core.Serialization.ORM.Mappers
          simulationSettingsBlocks.Each(x => moduleBuildingBlocks.Remove(x));
 
 
-         var uniqueBuildingBlockTypes = hasUniqueBuildingBlocks(moduleBuildingBlocks);
-         if(uniqueBuildingBlockTypes)
+         
+         if(hasUniqueBuildingBlocks(moduleBuildingBlocks))
             addModuleBuildingBlocks(moduleBuildingBlocks);
          else
             addBuildingBlocksToModule(moduleBuildingBlocks);
          
          addSimulationSettingsBuildingBlocks(simulationSettingsBlocks);
       }
-      private void addBuildingBlocksToModule(List<IBuildingBlock> moduleBuildingBlocks)
-      {
-         if (!moduleBuildingBlocks.Any())
-            return;
-
+      private void addBuildingBlocksToModule(List<IBuildingBlock> moduleBuildingBlocks) =>
          moduleBuildingBlocks.Each(addBuildingBlockAsModule);
-      }
+      
 
       private void addSimulationSettingsBuildingBlocks(List<SimulationSettings> simulationSettingsBlocks)
       {
@@ -123,7 +120,7 @@ namespace MoBi.Core.Serialization.ORM.Mappers
       {
          if (!moduleBuildingBlocks.Any())
             return;
-         var module = _moduleFactory.CreateModuleWithName("Module1");
+         var module = _moduleFactory.CreateModuleWithName(AppConstants.DefaultNames.DefaultSingleModuleName);
          moduleBuildingBlocks.Each(module.Add);
          _project.AddModule(module);
       }

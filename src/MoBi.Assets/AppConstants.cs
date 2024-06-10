@@ -90,6 +90,7 @@ namespace MoBi.Assets
       {
          public static readonly string EmptyCalculationMethod = "No Calculation Method";
          public static readonly string EmptyCalculationMethodDescription = "";
+         public static readonly string DefaultSingleModuleName = "Module1";
 
          public static readonly string GlobalEventTag = "Events";
 

@@ -1,9 +1,6 @@
 ﻿using System.Linq;
-using DevExpress.Utils.About;
-using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
-using NPOI.SS.Formula.Functions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
 
@@ -28,7 +25,7 @@ namespace MoBi.Core.Serialization.Converter
          if (project.Modules.Count() != 1)
             project.Simulations.Each(rebuildModuleConfigurationsFrom);
          else
-            project.Simulations.Each(x=> renameSimulationModules(x, project.Modules.Single().Name));
+            project.Simulations.Each(x => renameSimulationModules(x, project.Modules.Single().Name));
       }
 
       private void rebuildModuleConfigurationsFrom(IMoBiSimulation simulation)
