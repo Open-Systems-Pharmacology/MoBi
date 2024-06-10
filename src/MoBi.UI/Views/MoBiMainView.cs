@@ -84,5 +84,5 @@ namespace MoBi.UI.Views
       {
          e.Cancel = _presenter.FormClosing();
       }
-    }
+   }
 }
