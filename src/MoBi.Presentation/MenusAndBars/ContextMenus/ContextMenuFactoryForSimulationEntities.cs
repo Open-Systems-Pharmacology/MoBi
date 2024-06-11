@@ -8,7 +8,7 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
-    public class ContextMenuFactoryForSimulationEntities : IContextMenuSpecificationFactory<IViewItem>
+   public class ContextMenuFactoryForSimulationEntities : IContextMenuSpecificationFactory<IViewItem>
    {
       private readonly IMoBiContext _context;
 
@@ -19,9 +19,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       public IContextMenu CreateFor(IViewItem objectRequestingContextMenu, IPresenterWithContextMenu<IViewItem> presenter)
       {
-         var contextMenu = _context.Resolve<ContextMenuForSimulationEntities>();
-         var dto = objectRequestingContextMenu as ObjectBaseDTO;
-         return contextMenu.InitializeWith(dto, presenter);
+         return new ContextMenuForSimulationEntities(objectRequestingContextMenu.DowncastTo<ObjectBaseDTO>(), _context, presenter.DowncastTo<IHierarchicalSimulationPresenter>());
       }
 
       public bool IsSatisfiedBy(IViewItem objectRequestingContextMenu, IPresenterWithContextMenu<IViewItem> presenter)
@@ -29,6 +27,5 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return presenter.IsAnImplementationOf<HierarchicalSimulationPresenter>()
                 && objectRequestingContextMenu.IsAnImplementationOf<ObjectBaseDTO>();
       }
-
    }
 }

@@ -153,7 +153,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          var hGlobal = IntPtr.Zero;
          try
          {
-            if (OpenClipboard(IntPtr.Zero))
+            if (OpenClipboard(hGlobal))
             {
                if (EmptyClipboard())
                {
