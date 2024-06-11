@@ -32,7 +32,6 @@ namespace MoBi.UI.Services
          return toolTip;
       }
 
-
       public SuperToolTip ToolTipFor(IMoBiParameterDTO parameterDTO, string cellValue = null)
       {
          var toolTip = CreateToolTip();
@@ -66,19 +65,16 @@ namespace MoBi.UI.Services
 
          return toolTip;
       }
-      
+
       public SuperToolTip ToolTipFor(UsedCalculationMethodDTO calculationMethod)
       {
-         var toolTip = CreateToolTip(calculationMethod.Description, calculationMethod.CalculationMethodName);
-         return toolTip;
+         return CreateToolTip(calculationMethod.Description, calculationMethod.CalculationMethodName);
       }
 
       private SuperToolTip createCellValueToolTip(string cellValue)
       {
          if (cellValue == string.Empty)
-         {
             return CreateToolTip();
-         }
 
          var newToolTip = CreateToolTip(string.Empty, cellValue);
          newToolTip.Items.AddSeparator();
