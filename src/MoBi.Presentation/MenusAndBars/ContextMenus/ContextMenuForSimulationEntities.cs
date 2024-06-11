@@ -1,128 +1,45 @@
-﻿using MoBi.Assets;
-using MoBi.Core.Domain.Extensions;
-using MoBi.Core.Domain.Model;
+﻿using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
-using MoBi.Presentation.UICommand;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using System.Collections.Generic;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
-    public abstract class ContextMenuForSimulationEntitiesBase<TContainer> : ContextMenuFor<TContainer> where TContainer : class, IContainer
-    {
-        protected ContextMenuForSimulationEntitiesBase(IMoBiContext context, IObjectTypeResolver objectTypeResolver, OSPSuite.Utility.Container.IContainer container) : base(context, objectTypeResolver, container)
-        {
-        }
+    public class ContextMenuForSimulationEntities : ContextMenuBase
+   {
+      private readonly IMoBiContext _context;
+      private IEntity _entity;
+      private readonly IEntityPathResolver _entityPathResolver;
+      private readonly ClipboardTask _clipboardTask;
 
-        public override IContextMenu InitializeWith(ObjectBaseDTO dto, IPresenter presenter)
-        {
-            base.InitializeWith(dto, presenter);
-            var container = _context.Get<TContainer>(dto.Id);
-            AddParameterToContainerMenus(container);
-            return this;
-        }
+      public ContextMenuForSimulationEntities(IMoBiContext context, IEntityPathResolver entityPathResolver, ClipboardTask clipboardTask)
+      {
+         _context = context;
+         _entityPathResolver = entityPathResolver;
+         _clipboardTask = clipboardTask;
+      }
 
-        protected void AddParameterToContainerMenus(TContainer container)
-        {
-            _allMenuItems.Add(CreateAddNewChild<IParameter>(container).AsGroupStarter());
-            _allMenuItems.Add(createAddExistingChild<IParameter>(container));
-            _allMenuItems.Add(createAddExistingFromTemplateItemFor<IParameter>(container));
-        }
+      public IContextMenu InitializeWith(ObjectBaseDTO dto, IPresenter presenter)
+      {
 
-        protected virtual IMenuBarItem CreateAddExistingItemFor(TContainer selectedObject)
-        {
-            return createAddExistingChild<TContainer>(selectedObject);
-        }
+         _entity = _context.Get<IEntity>(dto.Id);
+         return this;
+      }
 
-        protected virtual IMenuBarItem CreateAddNewItemFor(TContainer selectedObject)
-        {
-            return CreateAddNewChild<TContainer>(selectedObject);
-        }
+      public override IEnumerable<IMenuBarItem> AllMenuItems()
+      {
+         return new List<IMenuBarItem>() { CreateMenuButton.WithCaption("Copy path").WithActionCommand(copyPathToClipBoard).WithIcon(ApplicationIcons.Copy) };
+      }
 
-        protected override IMenuBarItem CreateDeleteItemFor(TContainer objectToRemove)
-        {
-            if (objectToRemove.ParentContainer != null)
-                return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
-                   .WithCommandFor<RemoveCommandForContainer, IContainer>(objectToRemove, _container)
-                   .WithIcon(ApplicationIcons.Delete);
-
-            return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
-               .WithCommandFor<RemoveTopContainerCommand, IContainer>(objectToRemove, _container)
-               .WithIcon(ApplicationIcons.Delete);
-        }
-
-        private IMenuBarItem createAddExistingChild<T>(TContainer container) where T : class, IEntity
-        {
-            var typeName = _objectTypeResolver.TypeFor<T>();
-            return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExisting(typeName))
-               .WithIcon(ApplicationIcons.LoadIconFor(typeName))
-               .WithCommandFor<AddExistingCommandFor<IContainer, T>, IContainer>(container, _container);
-        }
-
-        private IMenuBarItem createAddExistingFromTemplateItemFor<T>(TContainer parent) where T : class
-        {
-            var typeName = _objectTypeResolver.TypeFor<T>();
-            return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExistingFromTemplate(typeName))
-               .WithIcon(ApplicationIcons.LoadTemplateIconFor(typeName))
-               .WithCommandFor<AddExistingFromTemplateCommandFor<IContainer, T>, IContainer>(parent, _container);
-        }
-
-        protected IMenuBarItem CreateAddNewChild<T>(TContainer container) where T : class, IEntity
-        {
-            var typeName = _objectTypeResolver.TypeFor<T>();
-            return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddNew(typeName))
-               .WithIcon(ApplicationIcons.AddIconFor(typeName))
-               .WithCommandFor<AddNewCommandFor<IContainer, T>, IContainer>(container, _container);
-        }
-    }
-
-    public class ContextMenuForSimulationEntities : ContextMenuForSimulationEntitiesBase<IContainer>
-    {
-        public ContextMenuForSimulationEntities(IMoBiContext context, IObjectTypeResolver objectTypeResolver, OSPSuite.Utility.Container.IContainer container) : base(context, objectTypeResolver, container)
-        {
-        }
-
-        public override IContextMenu InitializeWith(ObjectBaseDTO dto, IPresenter presenter)
-        {
-            base.InitializeWith(dto, presenter);
-            var container = _context.Get<IContainer>(dto.Id);
-
-            if (!dto.Name.IsSpecialName())
-            {
-                _allMenuItems.Add(CreateAddNewItemFor(container));
-                _allMenuItems.Add(CreateAddExistingItemFor(container));
-            }
-
-            _allMenuItems.Add(CreateAddNewChild<IDistributedParameter>(container));
-            return this;
-        }
-
-        protected override void AddSaveItems(IContainer container)
-        {
-            _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.SaveAsPKML.WithEllipsis())
-               .WithCommandFor<SaveWithIndividualAndExpressionUICommand, IContainer>(container, _container)
-               .WithIcon(ApplicationIcons.PKMLSave));
-        }
-
-    }
-
-    //public class ContextMenuForSimulationEntitiesInEventGroups : ContextMenuForContainerBase<IContainer>
-    //{
-    //   public ContextMenuForSimulationEntitiesInEventGroups(IMoBiContext context, IObjectTypeResolver objectTypeResolver, OSPSuite.Utility.Container.IContainer container) : base(context, objectTypeResolver, container)
-    //   {
-    //   }
-
-    //   protected override IMenuBarItem CreateDeleteItemFor(IContainer objectToRemove)
-    //   {
-    //      return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
-    //         .WithIcon(ApplicationIcons.Delete)
-    //         .WithCommandFor<RemoveCommandForContainerAtEventGroup, IContainer>(objectToRemove, _container);
-    //   }
-    //}
+      private void copyPathToClipBoard()
+      {
+         _clipboardTask.PutTextToClipboard(_entityPathResolver.FullPathFor(_entity));
+      }
+   }
 }

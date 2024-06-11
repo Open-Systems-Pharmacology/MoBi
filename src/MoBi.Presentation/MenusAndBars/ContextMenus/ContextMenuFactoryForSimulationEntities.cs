@@ -1,8 +1,6 @@
 ﻿using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
@@ -10,25 +8,27 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
-   public class ContextMenuFactoryForSimulationEntities : ContextMenuForObjectBaseDTOSpecificationFactory<IContainer>
+    public class ContextMenuFactoryForSimulationEntities : IContextMenuSpecificationFactory<IViewItem>
    {
-      public ContextMenuFactoryForSimulationEntities(IMoBiContext context) : base(context)
+      private readonly IMoBiContext _context;
+
+      public ContextMenuFactoryForSimulationEntities(IMoBiContext context)
       {
+         _context = context;
       }
 
-      public override IContextMenu CreateFor(ObjectBaseDTO objectBaseDTO, IPresenterWithContextMenu<IViewItem> presenter)
+      public IContextMenu CreateFor(IViewItem objectRequestingContextMenu, IPresenterWithContextMenu<IViewItem> presenter)
       {
-         var contextMenu = _context.Resolve<ContextMenuForContainer>();
-         return contextMenu.InitializeWith(objectBaseDTO, presenter);
+         var contextMenu = _context.Resolve<ContextMenuForSimulationEntities>();
+         var dto = objectRequestingContextMenu as ObjectBaseDTO;
+         return contextMenu.InitializeWith(dto, presenter);
       }
 
-      protected override bool IsSatisfiedBy(IEntity entity, IPresenterWithContextMenu<IViewItem> presenter)
+      public bool IsSatisfiedBy(IViewItem objectRequestingContextMenu, IPresenterWithContextMenu<IViewItem> presenter)
       {
          return presenter.IsAnImplementationOf<HierarchicalSimulationPresenter>()
-                && entity.IsAnImplementationOf<IEntity>()
-                && entity.IsAnImplementationOf<HierarchicalSimulationPresenter>();
-         ////neighborhoods will be dealt with separately
-         //&& !entity.IsNamed(Constants.NEIGHBORHOODS);
+                && objectRequestingContextMenu.IsAnImplementationOf<ObjectBaseDTO>();
       }
+
    }
 }
