@@ -10,6 +10,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
 using OSPSuite.UI.Views;
 using OSPSuite.Utility.Extensions;
@@ -30,6 +31,7 @@ namespace MoBi.UI.Views
          treeView.MouseClick += onMouseClicked;
          treeView.StateImageList = imageListRetriever.AllImages16x16;
          barManager.Images = imageListRetriever.AllImages16x16;
+         treeView.ToolTipController.Initialize();
       }
 
       private void onMouseClicked(object sender, MouseEventArgs mouseEventArgs)

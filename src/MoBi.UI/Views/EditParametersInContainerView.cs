@@ -62,6 +62,7 @@ namespace MoBi.UI.Views
          _valueOriginBinder = valueOriginBinder;
          InitializeComponent();
          var toolTipController = new ToolTipController {AllowHtmlText = true};
+         toolTipController.Initialize();
          _unitControl = new UxComboBoxUnit<ParameterDTO>(gridControl);
          _gridView.HiddenEditor += (o, e) => hideEditor();
          gridControl.KeyDown += gridViewKeyDown;
