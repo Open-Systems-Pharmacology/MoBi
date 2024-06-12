@@ -19,7 +19,11 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       public IContextMenu CreateFor(IViewItem objectRequestingContextMenu, IPresenterWithContextMenu<IViewItem> presenter)
       {
-         return new ContextMenuForSimulationEntities(objectRequestingContextMenu.DowncastTo<ObjectBaseDTO>(), _context, presenter.DowncastTo<IHierarchicalSimulationPresenter>());
+         return new ContextMenuForSimulationEntities(
+            objectRequestingContextMenu.DowncastTo<ObjectBaseDTO>(),
+            _context,
+            presenter.DowncastTo<IHierarchicalSimulationPresenter>()
+         );
       }
 
       public bool IsSatisfiedBy(IViewItem objectRequestingContextMenu, IPresenterWithContextMenu<IViewItem> presenter)
