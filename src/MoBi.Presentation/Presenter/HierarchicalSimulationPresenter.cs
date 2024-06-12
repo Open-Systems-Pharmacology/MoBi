@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -182,7 +181,7 @@ namespace MoBi.Presentation.Presenter
 
       public void CopyCurrentPathToClipBoard(IEntity entity)
       {
-         Clipboard.SetText(_entityPathResolver.FullPathFor(entity));
+         _view.CopyToClipBoard(_entityPathResolver.FullPathFor(entity));
       }
    }
 }
