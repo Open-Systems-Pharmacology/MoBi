@@ -6,6 +6,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
 using System.Collections.Generic;
+using MoBi.Assets;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
@@ -22,7 +23,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       public override IEnumerable<IMenuBarItem> AllMenuItems()
       {
-         yield return CreateMenuButton.WithCaption("Copy path")
+         yield return CreateMenuButton.WithCaption(AppConstants.Captions.CopyPath)
             .WithActionCommand(() => _presenter.CopyCurrentPathToClipBoard(_entity))
             .WithIcon(ApplicationIcons.Copy);
       }

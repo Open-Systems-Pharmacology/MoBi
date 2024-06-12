@@ -1706,6 +1706,7 @@ namespace MoBi.Assets
          public static readonly string ProjectModules = "Project Modules";
          public static readonly string ConfigureIndividualAndExpressions = "Configure Individual and Expressions";
          public static readonly string IndividualNotSelected = "Individual Not Selected";
+         public static readonly string CopyPath = "Copy path";
 
          public static string AddBuildingBlocksToModule(string moduleName) => $"Add Building Blocks to Module:  {moduleName}";
          public static string LoadBuildingBlockToModule(string moduleName) => $"Load Building Block to Module:  {moduleName}";
