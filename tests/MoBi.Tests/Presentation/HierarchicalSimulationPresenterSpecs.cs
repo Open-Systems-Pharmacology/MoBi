@@ -41,7 +41,7 @@ namespace MoBi.Presentation
          _neighborhoodDTOMapper = A.Fake<INeighborhoodToNeighborDTOMapper>();
          _entityPathResolver = A.Fake<IEntityPathResolver>();
 
-            _favorites = new ObjectBaseDTO
+         _favorites = new ObjectBaseDTO
          {
             Name = Captions.Favorites,
             Icon = ApplicationIcons.Favorites,
