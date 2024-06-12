@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Text;
 using OSPSuite.UI.Extensions;
 using OSPSuite.Utility.Extensions;
@@ -37,7 +38,7 @@ namespace MoBi.UI.Services
          var toolTip = CreateToolTip();
 
          toolTip = addToolTip(createCellValueToolTip(cellValue), toolTip);
-         toolTip = addToolTip(CreateToolTip(parameterDTO.Description, parameterDTO.Name), toolTip);
+         toolTip = addParameterNameToolTip(parameterDTO.Name, parameterDTO.Description, toolTip);
          toolTip = addFormulaToolTip(parameterDTO.Formula, toolTip, AppConstants.Captions.Formula);
          toolTip = addFormulaToolTip(parameterDTO.RHSFormula, toolTip, AppConstants.Captions.RHSFormula);
          return toolTip;
@@ -76,7 +77,7 @@ namespace MoBi.UI.Services
          if (cellValue == string.Empty)
             return CreateToolTip();
 
-         var newToolTip = CreateToolTip(string.Empty, cellValue);
+         var newToolTip = CreateToolTip(string.Empty, $"...{cellValue}");
          newToolTip.Items.AddSeparator();
          return newToolTip;
       }
@@ -86,5 +87,13 @@ namespace MoBi.UI.Services
          toolTipToAdd.Items.Cast<BaseToolTipItem>().ToList().ForEach(x => toolTip.Items.Add(x));
          return toolTip;
       }
-   }
+
+      // Creates a 3-line tooltip with the literal "Parameter" in bold, followed by the parameter-name, followed by the description.
+        private SuperToolTip addParameterNameToolTip(string name, string description, SuperToolTip toolTip)
+      {
+         var tt = CreateToolTip(name, ObjectTypes.Parameter);
+         tt.Items.Add(description);
+         return addToolTip(tt, toolTip);
+      }
+    }
 }

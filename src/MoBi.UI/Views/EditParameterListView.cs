@@ -73,9 +73,9 @@ namespace MoBi.UI.Views
 
          var gridHitInfo = _gridView.CalcHitInfo(e.ControlMousePosition);
          if (gridHitInfo.Column == null) return;
-         
+
          var columnName = gridHitInfo.Column.Name;
-         var cellValue = _gridView.GetRowCellValue(gridHitInfo.RowHandle, gridHitInfo.Column).ToString();
+         var cellValue = _gridView.GetRowCellDisplayText(gridHitInfo.RowHandle, gridHitInfo.Column);
          
          var superToolTip = getToolTipFor(parameterDTO, cellValue);
 
