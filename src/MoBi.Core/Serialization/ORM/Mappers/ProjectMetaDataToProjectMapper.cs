@@ -90,17 +90,10 @@ namespace MoBi.Core.Serialization.ORM.Mappers
       {
          var simulationSettingsBlocks = moduleBuildingBlocks.OfType<SimulationSettings>().ToList();
          simulationSettingsBlocks.Each(x => moduleBuildingBlocks.Remove(x));
-         
-         if(hasUniqueBuildingBlocks(moduleBuildingBlocks))
-            addAllBuildingBlocksToModule(moduleBuildingBlocks);
-         else
-            addAllBuildingBlocksToSeparateModules(moduleBuildingBlocks);
-         
+
+         addModuleBuildingBlocks(moduleBuildingBlocks);
          addSimulationSettingsBuildingBlocks(simulationSettingsBlocks);
       }
-      private void addAllBuildingBlocksToSeparateModules(List<IBuildingBlock> moduleBuildingBlocks) =>
-         moduleBuildingBlocks.Each(addBuildingBlockAsModule);
-      
 
       private void addSimulationSettingsBuildingBlocks(List<SimulationSettings> simulationSettingsBlocks)
       {
@@ -112,13 +105,12 @@ namespace MoBi.Core.Serialization.ORM.Mappers
          //    throw new MoBiException($"Project contains multiple simulation settings");
       }
 
-      private void addAllBuildingBlocksToModule(List<IBuildingBlock> moduleBuildingBlocks)
+      private void addModuleBuildingBlocks(List<IBuildingBlock> moduleBuildingBlocks)
       {
          if (!moduleBuildingBlocks.Any())
             return;
-         var module = _moduleFactory.CreateModuleWithName(AppConstants.DefaultNames.DefaultSingleModuleName);
-         moduleBuildingBlocks.Each(module.Add);
-         _project.AddModule(module);
+
+         moduleBuildingBlocks.Each(addBuildingBlockAsModule);
       }
 
       private void addBuildingBlockAsModule(IBuildingBlock buildingBlock)
