@@ -1,14 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Services;
+using MoBi.Core.Events;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Tasks.Edit;
+using NPOI.POIFS.Properties;
 using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
@@ -201,7 +204,11 @@ namespace MoBi.Presentation.Tasks.Interaction
          // The clone manager can return an existing formula from the formula cache if it is present and equivalent to the formula being cloned
          // This is important for renaming step. We can't just rename this formula if one already exists in the cache with the same name because
          // it might actually be the same one.
+         var formulaCount = buildingBlock.FormulaCache.Count;
          var clonedFormula = _cloneManagerForBuildingBlock.Clone(moleculeBuilder.DefaultStartFormula, buildingBlock.FormulaCache);
+
+         if (formulaCount != buildingBlock.FormulaCache.Count)
+            Context.PublishEvent(new AddedEvent<IFormula>(clonedFormula, buildingBlock));
 
          // Update this formula in the initial condition
          macroCommand.Add(ChangeValueFormulaCommand(buildingBlock, initialCondition,
