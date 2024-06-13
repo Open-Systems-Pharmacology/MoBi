@@ -697,7 +697,8 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _cloneManagerForBuildingBlock.Clone(_builder.DefaultStartFormula, _initialConditionsBuildingBlock.FormulaCache)).Invokes(x => _initialConditionsBuildingBlock.FormulaCache.Add(_refreshedFormula)).Returns(_refreshedFormula);
+         A.CallTo(() => _cloneManagerForBuildingBlock.Clone(_builder.DefaultStartFormula, _initialConditionsBuildingBlock.FormulaCache))
+            .Invokes(x => _initialConditionsBuildingBlock.FormulaCache.Add(_refreshedFormula)).Returns(_refreshedFormula);
          A.CallTo(() => _context.Context.PublishEvent(A<AddedEvent<IFormula>>._))
             .Invokes(x => _addEvent = x.GetArgument<AddedEvent<IFormula>>(0));
       }
@@ -727,7 +728,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class When_updating_a_molecule_start_value_from_original_building_block_and_all_formulas_will_be_replaced_and_AddEvent_Only_executed_once : concern_for_initialConditions_With_formulas_for_Renaming
+   public class When_updating_a_molecule_start_value_from_original_building_block_and_all_formulas_will_be_replaced_and_added_event_should_not_be_called: concern_for_initialConditions_With_formulas_for_Renaming
    {
        
       protected override void Context()
