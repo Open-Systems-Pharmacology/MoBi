@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Presentation.DTO;
@@ -12,15 +6,22 @@ using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IHierarchicalSimulationPresenter : 
-      IHierarchicalStructurePresenter, 
+   public interface IHierarchicalSimulationPresenter :
+      IHierarchicalStructurePresenter,
       IEditPresenter<IMoBiSimulation>,
       IListener<EntitySelectedEvent>
    {
@@ -28,6 +29,8 @@ namespace MoBi.Presentation.Presenter
       Action ShowOutputSchema { get; set; }
       Func<IEnumerable<IParameter>> SimulationFavorites { get; set; }
       IMoBiSimulation Simulation { get; }
+      void CopyCurrentPathToClipBoard(IEntity entity);
+
    }
 
    internal class HierarchicalSimulationPresenter : HierarchicalStructureEditPresenter, IHierarchicalSimulationPresenter
@@ -35,6 +38,7 @@ namespace MoBi.Presentation.Presenter
       private IMoBiSimulation _simulation;
       private readonly ISimulationSettingsToObjectBaseDTOMapper _simulationSettingsMapper;
       private readonly IViewItemContextMenuFactory _contextMenuFactory;
+      private readonly IEntityPathResolver _entityPathResolver;
       public Action ShowSolverSettings { set; get; }
       public Action ShowOutputSchema { get; set; }
 
@@ -44,11 +48,12 @@ namespace MoBi.Presentation.Presenter
 
       public HierarchicalSimulationPresenter(IHierarchicalStructureView view, IMoBiContext context,
          IObjectBaseToObjectBaseDTOMapper objectBaseMapper,
-         ISimulationSettingsToObjectBaseDTOMapper simulationSettingsMapper, ITreeNodeFactory treeNodeFactory, IViewItemContextMenuFactory contextMenuFactory, INeighborhoodToNeighborDTOMapper neighborhoodToNeighborDTOMapper)
+         ISimulationSettingsToObjectBaseDTOMapper simulationSettingsMapper, ITreeNodeFactory treeNodeFactory, IViewItemContextMenuFactory contextMenuFactory, INeighborhoodToNeighborDTOMapper neighborhoodToNeighborDTOMapper, IEntityPathResolver entityPathResolver)
          : base(view, context, objectBaseMapper, treeNodeFactory, neighborhoodToNeighborDTOMapper)
       {
          _simulationSettingsMapper = simulationSettingsMapper;
          _contextMenuFactory = contextMenuFactory;
+         _entityPathResolver = entityPathResolver;
       }
 
       protected override void RaiseFavoritesSelectedEvent()
@@ -76,7 +81,7 @@ namespace MoBi.Presentation.Presenter
          _view.AddNode(_favoritesNode);
          _view.AddNode(_userDefinedNode);
 
-         var roots = new List<ObjectBaseDTO> {_simulationSettingsMapper.MapFrom(simulation.Settings) };
+         var roots = new List<ObjectBaseDTO> { _simulationSettingsMapper.MapFrom(simulation.Settings) };
          roots.AddRange(rootContainers());
          _view.Show(roots);
 
@@ -154,6 +159,7 @@ namespace MoBi.Presentation.Presenter
          {
             return neighborsOf(neighborhood).Union(base.GetChildrenSorted(container, predicate)).ToList();
          }
+
          return base.GetChildrenSorted(container, predicate);
       }
 
@@ -171,6 +177,11 @@ namespace MoBi.Presentation.Presenter
       protected override IEntity GetEntityForNeighbor(NeighborDTO neighborDTO)
       {
          return neighborDTO.Path.Resolve<IEntity>(_simulation.Model.Root);
+      }
+
+      public void CopyCurrentPathToClipBoard(IEntity entity)
+      {
+         _view.CopyToClipBoard(_entityPathResolver.FullPathFor(entity));
       }
    }
 }

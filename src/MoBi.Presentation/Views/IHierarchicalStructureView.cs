@@ -17,6 +17,7 @@ namespace MoBi.Presentation.Views
       void Remove(IWithId withId);
       void AddNode(ITreeNode newNode);
       void Select(IWithId withId);
-      void Clear();
+      void CopyToClipBoard(string text);
+        void Clear();
    }
 }
