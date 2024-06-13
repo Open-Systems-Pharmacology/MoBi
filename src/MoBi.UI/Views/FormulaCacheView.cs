@@ -9,6 +9,7 @@ using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Base;
+using DevExpress.XtraGrid.Views.Grid;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
@@ -19,6 +20,7 @@ using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
 using OSPSuite.UI.Views;
+using Northwoods.Go;
 
 namespace MoBi.UI.Views
 {
@@ -50,13 +52,15 @@ namespace MoBi.UI.Views
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(dto => buttonRepository)
             .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_BUTTON_WIDTH);
+            
 
-         grdFormulaList.FocusedRowChanged += (o, e) => OnEvent(() => _presenter.Select(_gridBinder.ElementAt(e.FocusedRowHandle)));
+            grdFormulaList.FocusedRowChanged += (o, e) => OnEvent(() => _presenter.Select(_gridBinder.ElementAt(e.FocusedRowHandle)));
          grdFormulaList.MouseDown += (o, e) => OnEvent(onGridViewMouseDown,e);
          buttonRepository.ButtonClick += (o, e) => OnEvent(() => _presenter.Remove(_gridBinder.FocusedElement));
+         
       }
-
-      public override void InitializeResources()
+        
+        public override void InitializeResources()
       {
          base.InitializeResources();
          splitContainerControl1.CollapsePanel= SplitCollapsePanel.Panel2;
@@ -65,9 +69,11 @@ namespace MoBi.UI.Views
       private void onGridViewMouseDown(MouseEventArgs e)
       {
          if (e.Button != MouseButtons.Right) return;
-
+         
          var rowHandle = grdFormulaList.RowHandleAt(e);
-         _presenter.ShowContextMenu(_gridBinder.ElementAt(rowHandle), e.Location);
+         var element = _gridBinder.ElementAt(rowHandle);
+
+         _presenter.ShowContextMenu(element, e.Location);
       }
 
    

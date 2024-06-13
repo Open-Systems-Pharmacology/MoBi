@@ -3,6 +3,7 @@ using MoBi.Assets;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Utility.Extensions;
 using MoBi.Core;
+using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using OSPSuite.Presentation.Core;
@@ -31,10 +32,6 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       private readonly FormulaBuilderDTO _formulaDTO;
       private readonly IFormulaCachePresenter _presenter;
 
-      public ContextMenuForFormula() 
-      {
-      }
-
       public ContextMenuForFormula(FormulaBuilderDTO formulaDTO, IFormulaCachePresenter presenter)
       {
          _formulaDTO = formulaDTO;
@@ -44,7 +41,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       public override IEnumerable<IMenuBarItem> AllMenuItems()
       {
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.Rename)
-            .WithActionCommand(()=>_presenter.Rename(_formulaDTO))
+            .WithActionCommand(() => _presenter.Rename(_formulaDTO))
             .WithIcon(ApplicationIcons.Rename);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.Clone)
@@ -55,6 +52,19 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithActionCommand(() => _presenter.Remove(_formulaDTO))
             .WithIcon(ApplicationIcons.Delete)
             .AsGroupStarter();
+         
+         yield return CreateMenuButton.WithCaption("Copy")//TODO use constant
+            .WithActionCommand(() => _presenter.Copy(_formulaDTO))
+            .WithIcon(ApplicationIcons.Copy)
+            .AsGroupStarter();
+
+            if (_presenter.FormulasExistOnClipBoard())
+         {
+            yield return CreateMenuButton.WithCaption("Paste") //TODO use constant
+               .WithActionCommand(() => _presenter.Paste(_formulaDTO))
+               .WithIcon(ApplicationIcons.Paste)
+               .AsGroupStarter();
+         }
       }
    }
 }

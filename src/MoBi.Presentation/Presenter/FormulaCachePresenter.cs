@@ -37,7 +37,10 @@ namespace MoBi.Presentation.Presenter
       void Remove(FormulaBuilderDTO formulaDTO);
       void Rename(FormulaBuilderDTO formulaDTO);
       void Clone(FormulaBuilderDTO formulaDTO);
+      void Copy(FormulaBuilderDTO formulaDTO);
+      void Paste(FormulaBuilderDTO formulaDTO);
       void Select(IFormula formula);
+      bool FormulasExistOnClipBoard();
    }
 
    internal class FormulaCachePresenter : AbstractEditPresenter<IFormulaCacheView, IFormulaCachePresenter, IBuildingBlock>, IFormulaCachePresenter
@@ -49,16 +52,17 @@ namespace MoBi.Presentation.Presenter
       private IBuildingBlock _buildingBlock;
       private readonly IMoBiContext _context;
       private readonly IViewItemContextMenuFactory _viewItemContextMenuFactory;
-      private readonly IDialogCreator _dialogCreator;
+        private readonly IDialogCreator _dialogCreator;
       private readonly ICloneManagerForBuildingBlock _cloneManager;
       private readonly IFormulaUsageChecker _formulaUsageChecker;
       private readonly IObjectBaseNamingTask _namingTask;
       private IEnumerable<FormulaBuilderDTO> _dtoFormulaBuilders;
       private bool _disableEventsForHeavyWork;
+      private readonly IClipboardManager _clipboardManager;
 
       public FormulaCachePresenter(IFormulaCacheView view, IFormulaToFormulaBuilderDTOMapper formulaBuilderToDTOFormulaBuilderMapper,
          IFormulaPresenterCache formulaPresenterCache, IMoBiContext context, IViewItemContextMenuFactory viewItemContextMenuFactory,
-         IDialogCreator dialogCreator, ICloneManagerForBuildingBlock cloneManager, IFormulaUsageChecker formulaUsageChecker, IObjectBaseNamingTask namingTask)
+         IDialogCreator dialogCreator, ICloneManagerForBuildingBlock cloneManager, IFormulaUsageChecker formulaUsageChecker, IObjectBaseNamingTask namingTask, IClipboardManager clipboardManager)
          : base(view)
       {
          _formulaBuilderToDTOFormulaBuilderMapper = formulaBuilderToDTOFormulaBuilderMapper;
@@ -69,6 +73,7 @@ namespace MoBi.Presentation.Presenter
          _viewItemContextMenuFactory = viewItemContextMenuFactory;
          _dialogCreator = dialogCreator;
          _formulaPresenterCache = formulaPresenterCache;
+         _clipboardManager = clipboardManager;
       }
 
       public override void Edit(IBuildingBlock objectToEdit)
@@ -152,6 +157,27 @@ namespace MoBi.Presentation.Presenter
          var cloneFormula = _cloneManager.Clone(formula, new FormulaCache());
          cloneFormula.Name = newName;
          addToParent(cloneFormula);
+        }
+
+      public void Copy(FormulaBuilderDTO formulaDTO)
+      {
+         _clipboardManager.CopyToClipBoard(getFormulaForDTO(formulaDTO));
+      }
+
+
+      public void Paste(FormulaBuilderDTO formulaDTO)
+      {
+         _clipboardManager.PasteFromClipBoard<IFormula>(addFormula);
+      }
+
+      private void addFormula(IFormula obj)
+      {
+         addToParent(obj);
+      }
+
+      public bool FormulasExistOnClipBoard()
+      {
+         return _clipboardManager.ObjectsExistOnClipBoard<IFormula>();
       }
 
       public override void ReleaseFrom(IEventPublisher eventPublisher)

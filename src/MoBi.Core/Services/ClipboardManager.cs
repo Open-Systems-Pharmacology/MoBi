@@ -16,7 +16,9 @@ namespace MoBi.Core.Services
       void CutToClipBoard<T>(T cutToClipBoard, Action<T> remove) where T : IObjectBase;
       void CutToClipBoard<T>(IEnumerable<T> objectsToCut, Action<T> remove) where T : IObjectBase;
       void PasteFromClipBoard<T>(Action<T> add) where T : class, IObjectBase;
-      void Clear();
+      bool ObjectsExistOnClipBoard<T>() where T : class, IObjectBase;
+ 
+       void Clear();
    }
 
    public class ClipboardManager : IClipboardManager
@@ -49,6 +51,11 @@ namespace MoBi.Core.Services
       {
          _clipboardData.Init(objectsToCut.Cast<IObjectBase>());
          objectsToCut.Each(remove);
+      }
+
+      public bool ObjectsExistOnClipBoard<T>() where T : class, IObjectBase
+      {
+         return _clipboardData.PastedObjects.Any(pasteObject => pasteObject.IsAnImplementationOf<T>());
       }
 
       public void PasteFromClipBoard<T>(Action<T> add) where T : class, IObjectBase
