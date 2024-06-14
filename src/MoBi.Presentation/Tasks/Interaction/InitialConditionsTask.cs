@@ -205,6 +205,11 @@ namespace MoBi.Presentation.Tasks.Interaction
          var formulaCount = buildingBlock.FormulaCache.Count;
          var clonedFormula = _cloneManagerForBuildingBlock.Clone(moleculeBuilder.DefaultStartFormula, buildingBlock.FormulaCache);
 
+         //This condition is to ensure we are not executing this AddEvent twice for the same formula
+         //Since _cloneManagerForBuildingBlock.Clone(moleculeBuilder.DefaultStartFormula, buildingBlock.FormulaCache)
+         //has the Cache as input parameter, and it is adding the formula if it is not already there
+         //We need to check if the count has changed to know if the formula was added
+         //If the count has changed, then we need to publish the event
          if (formulaCount != buildingBlock.FormulaCache.Count)
             Context.PublishEvent(new AddedEvent<IFormula>(clonedFormula, buildingBlock));
 
