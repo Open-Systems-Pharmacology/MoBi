@@ -10,6 +10,7 @@ using DevExpress.XtraGrid.Views.Base;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using MoBi.UI.Extensions;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
@@ -69,23 +70,11 @@ namespace MoBi.UI.Views
       private void onToolTipControllerGetActiveObjectInfo(object sender, ToolTipControllerGetActiveObjectInfoEventArgs e)
       {
          var parameterDTO = _gridViewBinder.ElementAt(e);
-         if (parameterDTO == null) return;
 
-         var gridHitInfo = _gridView.CalcHitInfo(e.ControlMousePosition);
-         if (gridHitInfo.Column == null) return;
+         if (parameterDTO == null)
+            return;
 
-         var columnName = gridHitInfo.Column.Name;
-         var cellValue = _gridView.GetRowCellDisplayText(gridHitInfo.RowHandle, gridHitInfo.Column);
-         
-         var superToolTip = getToolTipFor(parameterDTO, cellValue);
-
-         // Adds a super-tooltip for the current active object. Uniquely identified by the combination of parameterDTO.Name and columnName.
-         e.Info = new ToolTipControlInfo(parameterDTO.Name + columnName, string.Empty) { SuperTip = superToolTip, ToolTipType = ToolTipType.SuperTip };
-      }
-
-      private SuperToolTip getToolTipFor(ParameterDTO parameterDTO, string cellValue)
-      {
-         return _toolTipCreator.ToolTipFor(parameterDTO, cellValue);
+         e.Info = _gridView.CreateToolTipControlInfoFor(parameterDTO, e.ControlMousePosition, _toolTipCreator.ToolTipFor);
       }
 
       private void onGridViewMouseDown(MouseEventArgs e)
@@ -243,7 +232,7 @@ namespace MoBi.UI.Views
                _gridView.FocusedRowHandle = firstRowHandle;
          }
       }
-      
+
       private void hideEditor()
       {
          _unitControl.Hide();

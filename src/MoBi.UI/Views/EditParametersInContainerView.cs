@@ -7,13 +7,13 @@ using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Base;
-using DevExpress.XtraGrid.Views.Grid.ViewInfo;
 using DevExpress.XtraLayout.Utils;
 using MoBi.Assets;
 using MoBi.Presentation;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using MoBi.UI.Extensions;
 using MoBi.UI.Services;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
@@ -61,7 +61,7 @@ namespace MoBi.UI.Views
          _toolTipCreator = toolTipCreator;
          _valueOriginBinder = valueOriginBinder;
          InitializeComponent();
-         var toolTipController = new ToolTipController {AllowHtmlText = true};
+         var toolTipController = new ToolTipController { AllowHtmlText = true };
          _unitControl = new UxComboBoxUnit<ParameterDTO>(gridControl);
          _gridView.HiddenEditor += (o, e) => hideEditor();
          gridControl.KeyDown += gridViewKeyDown;
@@ -100,7 +100,7 @@ namespace MoBi.UI.Views
 
       private void createResetButtonItem()
       {
-         _isFixedParameterEditRepository = new UxRepositoryItemButtonImage(ApplicationIcons.Reset, ToolTips.ResetParameterToolTip) {TextEditStyle = TextEditStyles.Standard};
+         _isFixedParameterEditRepository = new UxRepositoryItemButtonImage(ApplicationIcons.Reset, ToolTips.ResetParameterToolTip) { TextEditStyle = TextEditStyles.Standard };
          _isFixedParameterEditRepository.Buttons[0].IsLeft = true;
       }
 
@@ -109,7 +109,7 @@ namespace MoBi.UI.Views
          base.InitializeBinding();
          createResetButtonItem();
 
-         _gridViewBinder = new GridViewBinder<ParameterDTO>(_gridView) {ValidationMode = ValidationMode.LeavingCell};
+         _gridViewBinder = new GridViewBinder<ParameterDTO>(_gridView) { ValidationMode = ValidationMode.LeavingCell };
 
          _nameButtonRepository = createNameEdit();
          _nameButtonRepository.ButtonClick += (o, e) => onRenameClick(e, _gridViewBinder.FocusedElement);
@@ -196,19 +196,10 @@ namespace MoBi.UI.Views
 
 
          var parameterDTO = _gridViewBinder.ElementAt(e);
-         if (parameterDTO == null) return;
+         if (parameterDTO == null)
+            return;
 
-         //check if subclass want to display a tool tip as well
-         var hi = _gridView.CalcHitInfo(e.ControlMousePosition);
-         var superToolTip = GetToolTipFor(parameterDTO, hi);
-
-         //An object that uniquely identifies a row cell
-         e.Info = new ToolTipControlInfo(parameterDTO, string.Empty) {SuperTip = superToolTip, ToolTipType = ToolTipType.SuperTip};
-      }
-
-      protected virtual SuperToolTip GetToolTipFor(ParameterDTO parameterDTO, GridHitInfo hi)
-      {
-         return _toolTipCreator.ToolTipFor(parameterDTO);
+         e.Info = _gridView.CreateToolTipControlInfoFor(parameterDTO, e.ControlMousePosition, _toolTipCreator.ToolTipFor);
       }
 
       private void setParameterUnit(ParameterDTO parameter, Unit unit)
@@ -269,7 +260,7 @@ namespace MoBi.UI.Views
 
       private RepositoryItemButtonEdit createNameEdit()
       {
-         var buttonRepository = new RepositoryItemButtonEdit {TextEditStyle = TextEditStyles.DisableTextEditor};
+         var buttonRepository = new RepositoryItemButtonEdit { TextEditStyle = TextEditStyles.DisableTextEditor };
          buttonRepository.Buttons[0].Kind = ButtonPredefines.Ellipsis;
          buttonRepository.Buttons[0].ToolTip = ToolTips.ParameterList.NewParameterName;
          return buttonRepository;
