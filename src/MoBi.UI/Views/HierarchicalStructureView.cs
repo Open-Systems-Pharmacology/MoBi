@@ -1,18 +1,18 @@
-﻿using System.Collections.Generic;
-using System.Windows.Forms;
-using DevExpress.XtraBars;
+﻿using DevExpress.XtraBars;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
-using NPOI.POIFS.Properties;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
 using OSPSuite.UI.Views;
 using OSPSuite.Utility.Extensions;
+using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace MoBi.UI.Views
 {
@@ -30,6 +30,7 @@ namespace MoBi.UI.Views
          treeView.MouseClick += onMouseClicked;
          treeView.StateImageList = imageListRetriever.AllImages16x16;
          barManager.Images = imageListRetriever.AllImages16x16;
+         treeView.ToolTipController.Initialize();
       }
 
       private void onMouseClicked(object sender, MouseEventArgs mouseEventArgs)
@@ -121,6 +122,8 @@ namespace MoBi.UI.Views
          treeView.SelectNode(nodeById);
          selectionChanged(nodeById);
       }
+
+      public void CopyToClipBoard(string text) => Clipboard.SetText(text);
 
       public void Clear()
       {

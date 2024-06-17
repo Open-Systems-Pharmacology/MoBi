@@ -20,6 +20,7 @@ using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.UI.Binders;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
 using OSPSuite.UI.Services;
 using OSPSuite.UI.Views;
@@ -63,6 +64,7 @@ namespace MoBi.UI.Views
          PopupBarManager = new BarManager { Form = this, Images = imageListRetriever.AllImages16x16 };
 
          var toolTipController = new ToolTipController { AllowHtmlText = true };
+         toolTipController.Initialize();
          toolTipController.GetActiveObjectInfo += onToolTipControllerGetActiveObjectInfo;
          _gridControl.ToolTipController = toolTipController;
       }

@@ -7,6 +7,7 @@ namespace MoBi.Core.Services
    public interface IModuleFactory
    {
       Module CreateDedicatedModuleFor(IBuildingBlock buildingBlock);
+      Module CreateModuleWithName(string moduleName);
    }
 
    public class ModuleFactory : IModuleFactory
@@ -19,6 +20,8 @@ namespace MoBi.Core.Services
          _objectBaseFactory = objectBaseFactory;
          _objectTypeResolver = objectTypeResolver;
       }
+
+      public Module CreateModuleWithName(string moduleName) => _objectBaseFactory.Create<Module>().WithName(moduleName);
 
       public Module CreateDedicatedModuleFor(IBuildingBlock buildingBlock)
       {
