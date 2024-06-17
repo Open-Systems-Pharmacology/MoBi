@@ -642,7 +642,7 @@ namespace MoBi.Presentation.Tasks
          var spatialStructure = A.Fake<MoBiSpatialStructure>();
          var moleculeBuildingBlock = new MoleculeBuildingBlock();
          A.CallTo(() => _context.BuildingBlockRepository.MoleculeBlockCollection).Returns(new[] { moleculeBuildingBlock });
-         A.CallTo(() => _context.BuildingBlockRepository.SpatialStructureCollection).Returns(new[] {spatialStructure});
+         A.CallTo(() => _context.BuildingBlockRepository.SpatialStructureCollection).Returns(new[] { spatialStructure });
          var molecule = new MoleculeBuilder { Name = "Mol", Dimension = Constants.Dimension.NO_DIMENSION };
          moleculeBuildingBlock.Add(molecule);
          _nullStartValue = new InitialCondition { Name = molecule.Name, Value = 1, Dimension = Constants.Dimension.NO_DIMENSION };
@@ -674,6 +674,7 @@ namespace MoBi.Presentation.Tasks
       protected ExplicitFormula _refreshedFormula;
       protected AddedEvent<IFormula> _addEvent;
       protected MoleculeBuilder _builder;
+
       protected override void Context()
       {
          base.Context();
@@ -689,7 +690,6 @@ namespace MoBi.Presentation.Tasks
          _initialConditionsBuildingBlock.FormulaCache.Add(startValue.Formula);
          _refreshedFormula = new ExplicitFormula("M/V").WithId("m/v").WithName("FormulaName");
       }
-
    }
 
    public class When_updating_a_molecule_start_value_from_original_building_block_and_all_formulas_will_be_replaced : concern_for_initialConditions_With_formulas_for_Renaming
@@ -720,7 +720,6 @@ namespace MoBi.Presentation.Tasks
          _addEvent.AddedObject.ShouldBeEqualTo(_refreshedFormula);
       }
 
-
       [Observation]
       public void the_formula_that_was_replaced_is_removed_from_cache()
       {
@@ -728,9 +727,8 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class When_updating_a_molecule_start_value_from_original_building_block_and_all_formulas_will_be_replaced_and_added_event_should_not_be_called: concern_for_initialConditions_With_formulas_for_Renaming
+   public class When_updating_a_molecule_start_value_from_original_building_block_and_all_formulas_will_be_replaced_and_added_event_should_not_be_called : concern_for_initialConditions_With_formulas_for_Renaming
    {
-       
       protected override void Context()
       {
          base.Context();
@@ -781,7 +779,7 @@ namespace MoBi.Presentation.Tasks
          _initialConditionsBuildingBlock.Add(thirdStartValue);
          var secondStartValue = new InitialCondition { Name = "anothername", Value = 45, Dimension = Constants.Dimension.NO_DIMENSION, Formula = _replacedFormula };
          _initialConditionsBuildingBlock.Add(secondStartValue);
-         
+
          _initialConditionsBuildingBlock.FormulaCache.Add(startValue.Formula);
          _refreshedFormula = new ExplicitFormula("M/V").WithId("m/v").WithName("M/V");
          A.CallTo(() => _cloneManagerForBuildingBlock.Clone(builder.DefaultStartFormula, _initialConditionsBuildingBlock.FormulaCache)).Invokes(x => _initialConditionsBuildingBlock.FormulaCache.Add(_refreshedFormula)).Returns(_refreshedFormula);
