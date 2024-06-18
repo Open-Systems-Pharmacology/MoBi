@@ -22,24 +22,14 @@ namespace MoBi.Core.Domain
       /// <summary>
       /// add new items to clipboard. Do not erase previous ones
       /// </summary>
-      public void AddRange(IEnumerable<IObjectBase> pasteObjects)
-      {
-         _pastedObjects.AddRange(pasteObjects);
-      }
+      public void AddRange(IEnumerable<IObjectBase> pasteObjects) => _pastedObjects.AddRange(pasteObjects);
 
       /// <summary>
       /// add item to clipboard. Do not erase previous ones
       /// </summary>
-      public void Add(IObjectBase pastedObject)
-      {
-         _pastedObjects.Add(pastedObject);
-      }
+      public void Add(IObjectBase pastedObject) => _pastedObjects.Add(pastedObject);
 
-      public void Clear()
-      {
-         _pastedObjects.Clear();
-      }
-
+      public void Clear() => _pastedObjects.Clear();
    }
 
   
