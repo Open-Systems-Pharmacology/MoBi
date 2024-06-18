@@ -101,14 +101,13 @@ namespace MoBi.Presentation.Presenter
 
       public void Select(FormulaBuilderDTO formulaDTO)
       {
-         if (formulaDTO == null) return;
+         if (formulaDTO == null) 
+            return;
+
          Select(getFormulaForDTO(formulaDTO));
       }
 
-      private IFormula getFormulaForDTO(FormulaBuilderDTO dtoFormulaBuilder)
-      {
-         return _cache.FindById(dtoFormulaBuilder.Id);
-      }
+      private IFormula getFormulaForDTO(FormulaBuilderDTO dtoFormulaBuilder) => _cache.FindById(dtoFormulaBuilder.Id);
 
       public void Remove(FormulaBuilderDTO formulaDTO)
       {
@@ -146,10 +145,7 @@ namespace MoBi.Presentation.Presenter
          Edit(_buildingBlock);
       }
 
-      private string getNewNameForFormula(IFormula formula)
-      {
-         return _namingTask.RenameFor(formula, _buildingBlock.FormulaCache.Select(x => x.Name).ToList());
-      }
+      private string getNewNameForFormula(IFormula formula) => _namingTask.RenameFor(formula, _buildingBlock.FormulaCache.Select(x => x.Name).ToList());
 
       public void Clone(FormulaBuilderDTO formulaDTO)
       {
@@ -166,10 +162,7 @@ namespace MoBi.Presentation.Presenter
          addToParent(cloneFormula);
       }
 
-      public void Copy(FormulaBuilderDTO formulaDTO)
-      {
-         _clipboardManager.CopyToClipBoard(getFormulaForDTO(formulaDTO));
-      }
+      public void Copy(FormulaBuilderDTO formulaDTO) => _clipboardManager.CopyToClipBoard(getFormulaForDTO(formulaDTO));
 
       public void Paste(FormulaBuilderDTO formulaDTO)
       {
@@ -186,10 +179,7 @@ namespace MoBi.Presentation.Presenter
          _view.Select(dtoFor(formula));
       }
 
-      private bool formulaNameConflicts(IFormula formula)
-      {
-         return _cache.FindByName(formula.Name) != null;
-      }
+      private bool formulaNameConflicts(IFormula formula) => _cache.FindByName(formula.Name) != null;
 
       private bool renameConflictingFormula(IFormula formula)
       {
@@ -202,10 +192,7 @@ namespace MoBi.Presentation.Presenter
          return true;
       }
 
-      public bool FormulasExistOnClipBoard()
-      {
-         return _clipboardManager.ObjectsExistOnClipBoard<IFormula>();
-      }
+      public bool FormulasExistOnClipBoard() => _clipboardManager.ObjectsExistOnClipBoard<IFormula>();
 
       public override void ReleaseFrom(IEventPublisher eventPublisher)
       {
@@ -230,16 +217,16 @@ namespace MoBi.Presentation.Presenter
          return Equals(_editPresenter.Subject, formula);
       }
 
-      public void ShowContextMenu(IViewItem objectRequestingPopup, Point popupLocation)
-      {
-         var contextMenu = _viewItemContextMenuFactory.CreateFor(objectRequestingPopup, this);
-         contextMenu.Show(_view, popupLocation);
-      }
+      public void ShowContextMenu(IViewItem objectRequestingPopup, Point popupLocation) => 
+         _viewItemContextMenuFactory.CreateFor(objectRequestingPopup, this).Show(_view, popupLocation);
 
       public void Handle(EntitySelectedEvent eventToHandle)
       {
          var formula = eventToHandle.ObjectBase as IFormula;
-         if (formula == null) return;
+         
+         if (formula == null) 
+            return;
+         
          if (_cache.Contains(formula))
          {
             Select(formula);
@@ -286,15 +273,9 @@ namespace MoBi.Presentation.Presenter
          Edit(_buildingBlock);
       }
 
-      private FormulaBuilderDTO dtoFor(IFormula formula)
-      {
-         return _dtoFormulaBuilders.FindById(formula.Id);
-      }
+      private FormulaBuilderDTO dtoFor(IFormula formula) => _dtoFormulaBuilders.FindById(formula.Id);
 
-      public void Handle(BulkUpdateStartedEvent eventToHandle)
-      {
-         _disableEventsForHeavyWork = true;
-      }
+      public void Handle(BulkUpdateStartedEvent eventToHandle) => _disableEventsForHeavyWork = true;
 
       public void Handle(BulkUpdateFinishedEvent eventToHandle)
       {
