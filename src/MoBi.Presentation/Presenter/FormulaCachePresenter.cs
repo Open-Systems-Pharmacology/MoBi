@@ -166,7 +166,7 @@ namespace MoBi.Presentation.Presenter
 
       public void Paste(FormulaBuilderDTO formulaDTO)
       {
-         if (_clipboardManager.ObjectsExistOnClipBoard<IFormula>())
+         if (_clipboardManager.ClipBoardContainsType<IFormula>())
             _clipboardManager.PasteFromClipBoard<IFormula>(addFormulaAndSelect);
       }
 
@@ -192,7 +192,7 @@ namespace MoBi.Presentation.Presenter
          return true;
       }
 
-      public bool FormulasExistOnClipBoard() => _clipboardManager.ObjectsExistOnClipBoard<IFormula>();
+      public bool FormulasExistOnClipBoard() => _clipboardManager.ClipBoardContainsType<IFormula>();
 
       public override void ReleaseFrom(IEventPublisher eventPublisher)
       {

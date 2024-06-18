@@ -7,16 +7,13 @@ namespace MoBi.Core.Domain
    {
       private readonly List<IObjectBase> _pastedObjects = new List<IObjectBase>();
 
-      public IEnumerable<IObjectBase> PastedObjects
-      {
-         get { return _pastedObjects; }
-      }
+      public IReadOnlyList<IObjectBase> PastedObjects => _pastedObjects;
 
       /// <summary>
       /// Init clipboard with data and removed old ones
       /// </summary>
       /// <param name="pasteObjects"></param>
-      public void Init(IEnumerable<IObjectBase> pasteObjects)
+      public void Init(IReadOnlyList<IObjectBase> pasteObjects)
       {
          Clear();
          AddRange(pasteObjects);

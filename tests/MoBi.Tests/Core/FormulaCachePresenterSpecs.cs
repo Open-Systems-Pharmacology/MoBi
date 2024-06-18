@@ -282,7 +282,7 @@ namespace MoBi.Core
       [Observation]
       public void the_clipboard_manager_is_used_to_track_the_copy()
       {
-         _clipBoardManager.ObjectsExistOnClipBoard<IFormula>().ShouldBeTrue();
+         _clipBoardManager.ClipBoardContainsType<IFormula>().ShouldBeTrue();
       }
    }
 
