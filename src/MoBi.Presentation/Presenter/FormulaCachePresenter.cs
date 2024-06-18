@@ -43,7 +43,7 @@ namespace MoBi.Presentation.Presenter
       bool FormulasExistOnClipBoard();
    }
 
-   internal class FormulaCachePresenter : AbstractEditPresenter<IFormulaCacheView, IFormulaCachePresenter, IBuildingBlock>, IFormulaCachePresenter
+   public class FormulaCachePresenter : AbstractEditPresenter<IFormulaCacheView, IFormulaCachePresenter, IBuildingBlock>, IFormulaCachePresenter
    {
       private IFormulaCache _cache;
       private readonly IFormulaToFormulaBuilderDTOMapper _formulaBuilderToDTOFormulaBuilderMapper;
@@ -52,7 +52,7 @@ namespace MoBi.Presentation.Presenter
       private IBuildingBlock _buildingBlock;
       private readonly IMoBiContext _context;
       private readonly IViewItemContextMenuFactory _viewItemContextMenuFactory;
-        private readonly IDialogCreator _dialogCreator;
+      private readonly IDialogCreator _dialogCreator;
       private readonly ICloneManagerForBuildingBlock _cloneManager;
       private readonly IFormulaUsageChecker _formulaUsageChecker;
       private readonly IObjectBaseNamingTask _namingTask;
@@ -121,7 +121,8 @@ namespace MoBi.Presentation.Presenter
          }
 
          var result = _dialogCreator.MessageBoxYesNo(AppConstants.Captions.ReallyDeleteFormula(formula.Name));
-         if (result == ViewResult.No) return;
+         if (result == ViewResult.No) 
+            return;
 
          AddCommand(new RemoveFormulaFromFormulaCacheCommand(_buildingBlock, formula).Run(_context));
          //Ensure that if an invalid formula is removed, the invalid message is removed as well
@@ -136,7 +137,7 @@ namespace MoBi.Presentation.Presenter
          if (formula == null)
             return;
 
-         var newName = _namingTask.RenameFor(formula, _buildingBlock.FormulaCache.Select(x => x.Name).ToList());
+         var newName = getNewNameForFormula(formula);
 
          if (string.IsNullOrEmpty(newName))
             return;
@@ -145,34 +146,60 @@ namespace MoBi.Presentation.Presenter
          Edit(_buildingBlock);
       }
 
+      private string getNewNameForFormula(IFormula formula)
+      {
+         return _namingTask.RenameFor(formula, _buildingBlock.FormulaCache.Select(x => x.Name).ToList());
+      }
+
       public void Clone(FormulaBuilderDTO formulaDTO)
       {
          var formula = getFormulaForDTO(formulaDTO);
-         if (formula == null) return;
+         if (formula == null) 
+            return;
 
          var newName = _namingTask.NewName(AppConstants.Captions.NewName, AppConstants.Captions.CloneFormulaTitle, formula.Name, _buildingBlock.FormulaCache.Select(x => x.Name));
-         if (string.IsNullOrEmpty(newName)) 
+         if (string.IsNullOrEmpty(newName))
             return;
 
          var cloneFormula = _cloneManager.Clone(formula, new FormulaCache());
          cloneFormula.Name = newName;
          addToParent(cloneFormula);
-        }
+      }
 
       public void Copy(FormulaBuilderDTO formulaDTO)
       {
          _clipboardManager.CopyToClipBoard(getFormulaForDTO(formulaDTO));
       }
 
-
       public void Paste(FormulaBuilderDTO formulaDTO)
       {
-         _clipboardManager.PasteFromClipBoard<IFormula>(addFormula);
+         if (_clipboardManager.ObjectsExistOnClipBoard<IFormula>())
+            _clipboardManager.PasteFromClipBoard<IFormula>(addFormulaAndSelect);
       }
 
-      private void addFormula(IFormula obj)
+      private void addFormulaAndSelect(IFormula formula)
       {
-         addToParent(obj);
+         if (formulaNameConflicts(formula) && !renameConflictingFormula(formula))
+            return;
+
+         addToParent(formula);
+         _view.Select(dtoFor(formula));
+      }
+
+      private bool formulaNameConflicts(IFormula formula)
+      {
+         return _cache.FindByName(formula.Name) != null;
+      }
+
+      private bool renameConflictingFormula(IFormula formula)
+      {
+         var newName = getNewNameForFormula(formula);
+         if (string.IsNullOrEmpty(newName))
+            return false;
+
+         // We can rename this formula without a command because it is not in the cache yet
+         formula.Name = newName;
+         return true;
       }
 
       public bool FormulasExistOnClipBoard()
@@ -198,7 +225,8 @@ namespace MoBi.Presentation.Presenter
 
       private bool formulaIsBeingEdited(IFormula formula)
       {
-         if (_editPresenter == null) return false;
+         if (_editPresenter == null)
+            return false;
          return Equals(_editPresenter.Subject, formula);
       }
 
