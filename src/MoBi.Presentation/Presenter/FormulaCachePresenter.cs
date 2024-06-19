@@ -198,9 +198,11 @@ namespace MoBi.Presentation.Presenter
          if (_disableEventsForHeavyWork)
             return;
 
-         if (_cache == null) return;
+         if (_cache == null) 
+            return;
          var formula = eventToHandle.AddedObject as IFormula;
-         if (formula == null) return;
+         if (formula == null) 
+            return;
 
          if (!Equals(eventToHandle.Parent, _buildingBlock))
             return;
