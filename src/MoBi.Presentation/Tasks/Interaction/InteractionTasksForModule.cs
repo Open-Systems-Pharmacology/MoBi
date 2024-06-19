@@ -153,13 +153,13 @@ namespace MoBi.Presentation.Tasks.Interaction
          switch (buildingBlockType)
          {
             case BuildingBlockType.Reaction:
-               items.AddRange(InteractionTask.LoadItems<ReactionBuildingBlock>(filename));
+               items.AddRange(InteractionTask.LoadItems<MoBiReactionBuildingBlock>(filename));
                break;
             case BuildingBlockType.EventGroup:
                items.AddRange(InteractionTask.LoadItems<EventGroupBuildingBlock>(filename));
                break;
             case BuildingBlockType.SpatialStructure:
-               items.AddRange(InteractionTask.LoadItems<SpatialStructure>(filename));
+               items.AddRange(InteractionTask.LoadItems<MoBiSpatialStructure>(filename));
                break;
             case BuildingBlockType.PassiveTransport:
                items.AddRange(InteractionTask.LoadItems<PassiveTransportBuildingBlock>(filename));
