@@ -306,7 +306,6 @@ namespace MoBi.Assets
             return $"Move building block {buildingBlock} to module {moduleName}";
          }
 
-
          public static string AddToProjectDescription(string objectType, string objectName)
          {
             return AddToDescription(objectType, objectName, Project);

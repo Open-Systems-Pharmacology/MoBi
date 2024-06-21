@@ -213,7 +213,13 @@ namespace MoBi.Presentation.Presenter
       public bool CanDrop(ITreeNode dragNode, ITreeNode targetNode) => nodeIsModuleConfiguration(targetNode) && !Equals(dragNode, targetNode);
       public void DropNode(ITreeNode dragNode, ITreeNode targetNode, DragDropKeyState keyState = DragDropKeyState.None)
       {
-         throw new System.NotImplementedException();
+         var movingConfiguration = moduleConfigurationDTOFor(dragNode);
+         var targetConfiguration = moduleConfigurationDTOFor(targetNode);
+         if (movingConfiguration == null || targetConfiguration == null)
+            return;
+
+         moveConfiguration(movingConfiguration, targetConfiguration);
+         refreshSelectedModulesView(dragNode);
       }
 
       public void MoveUp(ITreeNode selectedNode)
@@ -251,22 +257,6 @@ namespace MoBi.Presentation.Presenter
          _moduleConfigurationDTOs.Remove(selectedConfiguration);
          _moduleConfigurationDTOs.Insert(targetIndex, selectedConfiguration);
          refreshSelectedModulesView(selectedNode);
-      }
-
-      public void MoveNode(ITreeNode dragNode, ITreeNode targetNode)
-      {
-         var movingConfiguration = moduleConfigurationDTOFor(dragNode);
-         var targetConfiguration = moduleConfigurationDTOFor(targetNode);
-         if (movingConfiguration == null || targetConfiguration == null)
-            return;
-
-         moveConfiguration(movingConfiguration, targetConfiguration);
-         refreshSelectedModulesView(dragNode);
-      }
-
-      public void CopyNode(ITreeNode dragNode, ITreeNode targetNode)
-      {
-         throw new System.NotImplementedException();
       }
 
       private void refreshSelectedModulesView(ITreeNode selectedNode)

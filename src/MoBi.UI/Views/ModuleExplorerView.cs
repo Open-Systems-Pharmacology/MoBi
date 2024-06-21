@@ -22,7 +22,6 @@ namespace MoBi.UI.Views
       {
          InitializeComponent();
          treeView.CompareNodeValues += compareNodeValues;
-         treeView.DragDrop += HandleDragDrop;
       }
 
       public void AttachPresenter(IModuleExplorerPresenter presenter)
@@ -35,18 +34,5 @@ namespace MoBi.UI.Views
       {
          e.Result = _moduleExplorerPresenter.OrderingComparisonFor(e.Node1.Tag as ITreeNode<IWithName>, e.Node2.Tag as ITreeNode<IWithName>);
       }
-
-      private void HandleDragDrop(object sender, DragEventArgs e)
-      {
-
-         var data = e.Data.GetData(typeof(ITreeNode));
-         var data2 = e.Data.GetData(typeof(ITreeNode<IBuildingBlock>));
-         var data3 = e.Data.GetData(typeof(DragDropInfo));
-         var target = data3 as DragDropInfo;
-         var subject = target.Subject;
-         var tv = this.TreeView as UxImageTreeView;
-         var nodes = tv.Nodes;
-      }
-
    }
 }
