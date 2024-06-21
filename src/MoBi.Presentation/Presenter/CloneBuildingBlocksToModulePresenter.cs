@@ -42,11 +42,11 @@ namespace MoBi.Presentation.Presenter
          _dto.BuildingBlocksToRemove.Each(clonedModule.Remove);
 
          clonedModule.Name = _dto.Name;
-         clonedModule.DefaultMergeBehavior = _dto.DefaultMergeBehavior;
+         clonedModule.MergeBehavior = _dto.MergeBehavior;
 
          return true;
       }
 
-      public override MergeBehavior SelectedBehavior => _dto.DefaultMergeBehavior;
+      public override MergeBehavior SelectedBehavior => _dto.MergeBehavior;
    }
 }

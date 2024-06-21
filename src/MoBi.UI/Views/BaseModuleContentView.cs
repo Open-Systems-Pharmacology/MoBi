@@ -43,8 +43,8 @@ namespace MoBi.UI.Views
          cbInitialConditions.Text = InitialConditions;
          cbParameterValues.Text = ParameterValues;
          createBuildingBlocksGroup.Text = CreateBuildingBlocks;
-         defaultMergeBehaviorGroup.Text = DefaultMergeBehavior;
-         defaultMergeBehaviorItem.TextVisible = false;
+         mergeBehaviorGroup.Text = MergeBehavior;
+         mergeBehaviorItem.TextVisible = false;
          initialConditionsNameItem.Text = AppConstants.Captions.Name.FormatForLabel();
          parameterValuesNameItem.Text = AppConstants.Captions.Name.FormatForLabel();
 
@@ -73,7 +73,7 @@ namespace MoBi.UI.Views
 
       public virtual void AttachPresenter(TPresenter presenter) => _presenter = presenter;
 
-      public void DisableDefaultMergeBehavior() => defaultMergeBehaviorItem.Enabled = false;
+      public void DisableDefaultMergeBehavior() => mergeBehaviorItem.Enabled = false;
 
       public override void InitializeBinding()
       {
@@ -86,7 +86,7 @@ namespace MoBi.UI.Views
          _screenBinder.Bind(dto => dto.WithReaction).To(cbReactions);
          _screenBinder.Bind(dto => dto.WithParameterValues).To(cbParameterValues).OnValueUpdated += (o, newValue) => OnEvent(() => ShowOrHideNamingItem(parameterValuesNameItem, show: newValue));
          _screenBinder.Bind(dto => dto.WithInitialConditions).To(cbInitialConditions).OnValueUpdated += (o, newValue) => OnEvent(() => ShowOrHideNamingItem(initialConditionsNameItem, show: newValue));
-         _screenBinder.Bind(dto => dto.DefaultMergeBehavior).To(cbDefaultMergeBehavior).WithValues(_presenter.AllMergeBehaviors).Changed += () => OnEvent(_presenter.DefaultMergeBehaviorChanged);
+         _screenBinder.Bind(dto => dto.MergeBehavior).To(cbDefaultMergeBehavior).WithValues(_presenter.AllMergeBehaviors).Changed += () => OnEvent(_presenter.MergeBehaviorChanged);
 
          RegisterValidationFor(_screenBinder);
       }
@@ -96,7 +96,7 @@ namespace MoBi.UI.Views
       public virtual void BindTo(TDTO moduleContentDTO)
       {
          _screenBinder.BindToSource(moduleContentDTO);
-         _presenter.DefaultMergeBehaviorChanged();
+         _presenter.MergeBehaviorChanged();
          disableExistingBuildingBlocks(moduleContentDTO);
       }
 

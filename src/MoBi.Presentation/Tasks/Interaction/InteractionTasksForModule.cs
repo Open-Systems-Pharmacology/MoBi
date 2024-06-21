@@ -82,9 +82,9 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public void AddNewParameterValuesBuildingBlock(Module module) => addBuildingBlocksToModule(module, presenter => presenter.AddParameterValuesToModule(module));
 
-      public void MakeExtendModule(Module module) => context.AddToHistory(new SetDefaultMergeBehaviorCommand(module, MergeBehavior.Extend).Run(context));
+      public void MakeExtendModule(Module module) => context.AddToHistory(new SetMergeBehaviorCommand(module, MergeBehavior.Extend).Run(context));
 
-      public void MakeOverwriteModule(Module module) => context.AddToHistory(new SetDefaultMergeBehaviorCommand(module, MergeBehavior.Overwrite).Run(context));
+      public void MakeOverwriteModule(Module module) => context.AddToHistory(new SetMergeBehaviorCommand(module, MergeBehavior.Overwrite).Run(context));
 
       public void AddNewInitialConditionsBuildingBlock(Module module) => addBuildingBlocksToModule(module, presenter => presenter.AddInitialConditionsToModule(module));
 

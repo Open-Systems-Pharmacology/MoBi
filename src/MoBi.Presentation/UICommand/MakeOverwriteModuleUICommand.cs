@@ -15,7 +15,7 @@ namespace MoBi.Presentation.UICommand
 
       protected override void PerformExecute()
       {
-         if(Subject.DefaultMergeBehavior != MergeBehavior.Overwrite)
+         if(Subject.MergeBehavior != MergeBehavior.Overwrite)
             _tasks.MakeOverwriteModule(Subject);
       } 
    }

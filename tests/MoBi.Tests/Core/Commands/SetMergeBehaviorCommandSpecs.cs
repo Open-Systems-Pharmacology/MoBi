@@ -6,7 +6,7 @@ using OSPSuite.Core.Domain;
 
 namespace MoBi.Core.Commands
 {
-   internal abstract class concern_for_SetDefaultMergeBehaviorCommand : ContextSpecification<SetDefaultMergeBehaviorCommand>
+   internal abstract class concern_for_SetMergeBehaviorCommand : ContextSpecification<SetMergeBehaviorCommand>
    {
       protected Module _module;
       protected IMoBiContext _context;
@@ -16,20 +16,20 @@ namespace MoBi.Core.Commands
          _module = new Module().WithId("moduleid");
          _context = A.Fake<IMoBiContext>();
          A.CallTo(() => _context.Get<Module>(_module.Id)).Returns(_module);
-         sut = new SetDefaultMergeBehaviorCommand(_module, MergeBehavior);
+         sut = new SetMergeBehaviorCommand(_module, MergeBehavior);
       }
 
       public abstract MergeBehavior MergeBehavior { get; }
    }
 
-   internal class when_setting_module_to_extend : concern_for_SetDefaultMergeBehaviorCommand
+   internal class when_setting_module_to_extend : concern_for_SetMergeBehaviorCommand
    {
       public override MergeBehavior MergeBehavior => MergeBehavior.Extend;
 
       protected override void Context()
       {
          base.Context();
-         _module.DefaultMergeBehavior = MergeBehavior.Overwrite;
+         _module.MergeBehavior = MergeBehavior.Overwrite;
       }
 
       protected override void Because()
@@ -40,18 +40,18 @@ namespace MoBi.Core.Commands
       [Observation]
       public void the_module_merge_behavior_should_be_updated()
       {
-         _module.DefaultMergeBehavior.ShouldBeEqualTo(MergeBehavior.Extend);
+         _module.MergeBehavior.ShouldBeEqualTo(MergeBehavior.Extend);
       }
    }
 
-   internal class when_setting_module_to_overwrite : concern_for_SetDefaultMergeBehaviorCommand
+   internal class when_setting_module_to_overwrite : concern_for_SetMergeBehaviorCommand
    {
       public override MergeBehavior MergeBehavior => MergeBehavior.Overwrite;
 
       protected override void Context()
       {
          base.Context();
-         _module.DefaultMergeBehavior = MergeBehavior.Extend;
+         _module.MergeBehavior = MergeBehavior.Extend;
       }
 
       protected override void Because()
@@ -62,18 +62,18 @@ namespace MoBi.Core.Commands
       [Observation]
       public void the_module_merge_behavior_should_be_updated()
       {
-         _module.DefaultMergeBehavior.ShouldBeEqualTo(MergeBehavior.Overwrite);
+         _module.MergeBehavior.ShouldBeEqualTo(MergeBehavior.Overwrite);
       }
    }
 
-   internal class when_reversing_setting_module_to_overwrite : concern_for_SetDefaultMergeBehaviorCommand
+   internal class when_reversing_setting_module_to_overwrite : concern_for_SetMergeBehaviorCommand
    {
       public override MergeBehavior MergeBehavior => MergeBehavior.Overwrite;
 
       protected override void Context()
       {
          base.Context();
-         _module.DefaultMergeBehavior = MergeBehavior.Extend;
+         _module.MergeBehavior = MergeBehavior.Extend;
       }
 
       protected override void Because()
@@ -84,18 +84,18 @@ namespace MoBi.Core.Commands
       [Observation]
       public void the_module_merge_behavior_should_be_reverted()
       {
-         _module.DefaultMergeBehavior.ShouldBeEqualTo(MergeBehavior.Extend);
+         _module.MergeBehavior.ShouldBeEqualTo(MergeBehavior.Extend);
       }
    }
 
-   internal class when_reversing_setting_module_to_extend : concern_for_SetDefaultMergeBehaviorCommand
+   internal class when_reversing_setting_module_to_extend : concern_for_SetMergeBehaviorCommand
    {
       public override MergeBehavior MergeBehavior => MergeBehavior.Extend;
 
       protected override void Context()
       {
          base.Context();
-         _module.DefaultMergeBehavior = MergeBehavior.Overwrite;
+         _module.MergeBehavior = MergeBehavior.Overwrite;
       }
 
       protected override void Because()
@@ -106,7 +106,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void the_module_merge_behavior_should_be_reverted()
       {
-         _module.DefaultMergeBehavior.ShouldBeEqualTo(MergeBehavior.Overwrite);
+         _module.MergeBehavior.ShouldBeEqualTo(MergeBehavior.Overwrite);
       }
    }
 }

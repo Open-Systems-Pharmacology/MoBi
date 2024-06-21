@@ -4,7 +4,7 @@ namespace MoBi.Presentation.DTO
 {
    public class ModuleContentDTO : ObjectBaseDTO, IWithProhibitedNames
    {
-      public MergeBehavior DefaultMergeBehavior { get; set; }
+      public MergeBehavior MergeBehavior { get; set; }
       public bool WithReaction { get; set; }
       public bool WithEventGroup { get; set; }
       public bool WithSpatialStructure { get; set; }

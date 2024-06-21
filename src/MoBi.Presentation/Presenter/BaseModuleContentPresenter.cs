@@ -12,7 +12,7 @@ namespace MoBi.Presentation.Presenter
    public interface IBaseModuleContentPresenter : IDisposablePresenter
    {
       IReadOnlyList<MergeBehavior> AllMergeBehaviors { get; }
-      void DefaultMergeBehaviorChanged();
+      void MergeBehaviorChanged();
    }
 
    public abstract class BaseModuleContentPresenter<TView, TPresenter> : AbstractDisposablePresenter<TView, TPresenter> where TView : IBaseModuleContentView<TPresenter> where TPresenter : IBaseModuleContentPresenter
@@ -25,7 +25,7 @@ namespace MoBi.Presentation.Presenter
       public IReadOnlyList<MergeBehavior> AllMergeBehaviors => EnumHelper.AllValuesFor<MergeBehavior>().ToList();
 
 
-      public void DefaultMergeBehaviorChanged()
+      public void MergeBehaviorChanged()
       {
          updateMergeBehaviorDescription();
       }
