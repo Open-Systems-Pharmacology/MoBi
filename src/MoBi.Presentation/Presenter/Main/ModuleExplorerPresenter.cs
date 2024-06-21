@@ -42,6 +42,7 @@ namespace MoBi.Presentation.Presenter.Main
    {
       private readonly IObservedDataInExplorerPresenter _observedDataInExplorerPresenter;
       private readonly IEditBuildingBlockStarter _editBuildingBlockStarter;
+      private readonly IInteractionTasksForModule _interactionTaskForModule;
 
       public ModuleExplorerPresenter(IModuleExplorerView view, IRegionResolver regionResolver, ITreeNodeFactory treeNodeFactory,
          IViewItemContextMenuFactory viewItemContextMenuFactory, IMoBiContext context, IClassificationPresenter classificationPresenter,
