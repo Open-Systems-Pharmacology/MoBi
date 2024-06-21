@@ -7,6 +7,7 @@ using MoBi.Presentation.Presenter.Simulation;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
@@ -210,6 +211,10 @@ namespace MoBi.Presentation.Presenter
       private bool nodeIsModuleConfiguration(ITreeNode node) => node?.TagAsObject is ModuleConfigurationDTO;
 
       public bool CanDrop(ITreeNode dragNode, ITreeNode targetNode) => nodeIsModuleConfiguration(targetNode) && !Equals(dragNode, targetNode);
+      public void DropNode(ITreeNode dragNode, ITreeNode targetNode, DragDropKeyState keyState = DragDropKeyState.None)
+      {
+         throw new System.NotImplementedException();
+      }
 
       public void MoveUp(ITreeNode selectedNode)
       {
@@ -257,6 +262,11 @@ namespace MoBi.Presentation.Presenter
 
          moveConfiguration(movingConfiguration, targetConfiguration);
          refreshSelectedModulesView(dragNode);
+      }
+
+      public void CopyNode(ITreeNode dragNode, ITreeNode targetNode)
+      {
+         throw new System.NotImplementedException();
       }
 
       private void refreshSelectedModulesView(ITreeNode selectedNode)

@@ -212,6 +212,8 @@ namespace MoBi.Assets
 
       public static class Commands
       {
+         public static readonly string CopyCommand = Command.CommandTypeCopy;
+         public static readonly string MoveCommand = Command.CommandTypeMove;
          public static readonly string AddCommand = Command.CommandTypeAdd;
          public static readonly string DeleteCommand = Command.CommandTypeDelete;
          public static readonly string CreateCommand = Command.CommandTypeCreate;
@@ -299,6 +301,12 @@ namespace MoBi.Assets
             return $"Add selected building blocks to {moduleName}";
          }
 
+         public static string MoveBuildingBlockToModule(string buildingBlock, string moduleName)
+         {
+            return $"Move building block {buildingBlock} to module {moduleName}";
+         }
+
+
          public static string AddToProjectDescription(string objectType, string objectName)
          {
             return AddToDescription(objectType, objectName, Project);
@@ -327,6 +335,11 @@ namespace MoBi.Assets
          public static string RemoveMoleculeFromListDescription(string moleculeName, string parentType, string parentPath, string listType)
          {
             return $"Remove molecule '{moleculeName}' from the {listType.ToLowerInvariant()} of {parentType} '{parentPath}'";
+         }
+
+         public static string CopyToDescription(string objectType, string objectName, string parentName)
+         {
+            return $"Copy {objectType} '{objectName}' to '{parentName}'";
          }
 
          public static string AddToDescription(string objectType, string objectName, string parentName)

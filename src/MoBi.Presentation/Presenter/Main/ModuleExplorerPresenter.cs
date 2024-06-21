@@ -1,15 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Presentation.DTO;
+using MoBi.Presentation.Extensions;
 using MoBi.Presentation.Nodes;
+using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
@@ -23,6 +27,7 @@ using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using ITreeNodeFactory = MoBi.Presentation.Nodes.ITreeNodeFactory;
+using Keys = OSPSuite.Presentation.Core.Keys;
 
 namespace MoBi.Presentation.Presenter.Main
 {
@@ -48,13 +53,14 @@ namespace MoBi.Presentation.Presenter.Main
          IViewItemContextMenuFactory viewItemContextMenuFactory, IMoBiContext context, IClassificationPresenter classificationPresenter,
          IToolTipPartCreator toolTipPartCreator, IObservedDataInExplorerPresenter observedDataInExplorerPresenter,
          IMultipleTreeNodeContextMenuFactory multipleTreeNodeContextMenuFactory, IProjectRetriever projectRetriever,
-         IEditBuildingBlockStarter editBuildingBlockStarter) :
+         IEditBuildingBlockStarter editBuildingBlockStarter, IInteractionTasksForModule interactionTaskForModule) :
          base(view, regionResolver, treeNodeFactory, viewItemContextMenuFactory, context, RegionNames.ModuleExplorer,
             classificationPresenter, toolTipPartCreator, multipleTreeNodeContextMenuFactory, projectRetriever)
       {
          _observedDataInExplorerPresenter = observedDataInExplorerPresenter;
          _observedDataInExplorerPresenter.InitializeWith(this, classificationPresenter, RootNodeTypes.ObservedDataFolder);
          _editBuildingBlockStarter = editBuildingBlockStarter;
+         _interactionTaskForModule = interactionTaskForModule;
       }
 
       protected override IContextMenu ContextMenuFor(ITreeNode treeNode)
@@ -69,6 +75,60 @@ namespace MoBi.Presentation.Presenter.Main
             return ContextMenuFor(new ModuleViewItem(module));
 
          return base.ContextMenuFor(treeNode);
+      }
+
+      public override bool CanDrop(ITreeNode targetNode, ITreeNode nodeToDrop)
+      {
+         var canDrop = base.CanDrop(targetNode, nodeToDrop);
+         if (!canDrop)
+         {
+            //This checks if the node to drop is a building block and the target node is a module
+            var buildingBlockSourceNode = targetNode as ITreeNode<IBuildingBlock>;
+            var targetModuleNode = nodeToDrop as ModuleNode;
+
+            if (targetModuleNode == null || buildingBlockSourceNode == null)
+            {
+               return false;
+            }
+
+            // This checks if the building block is already in the module, not by type but by ref. Meaning, it is his own module
+            if (Equals(buildingBlockSourceNode.ParentNode, targetModuleNode))
+               return false;
+
+            // This checks if the building block is already in the module, by type
+            if (!targetModuleNode.Tag.CanAdd(buildingBlockSourceNode.Tag))
+               return false;
+
+            return true;
+
+         }
+         return false;
+      }
+
+      public override void DropNode(ITreeNode dragNode, ITreeNode targetNode, DragDropKeyState keyState = DragDropKeyState.None)
+      {
+         var buildingBlockSourceNode = dragNode as ITreeNode<IBuildingBlock>;
+         var targetModuleNode = targetNode as ModuleNode;
+
+         if (buildingBlockSourceNode == null || targetModuleNode == null)
+            return;
+
+         var targetModule = targetModuleNode.Tag;
+         var movingBuildingBlock = buildingBlockSourceNode.Tag;
+         var sourceModule = movingBuildingBlock.Module;
+         if(sourceModule == null)
+            return;
+
+         switch (keyState)
+         {
+            case DragDropKeyState.None:
+               _interactionTaskForModule.MoveBuildingBlock(movingBuildingBlock, targetModule);
+               break;
+            case DragDropKeyState.CtrlKey:
+               _interactionTaskForModule.CopyBuildingBlock(movingBuildingBlock, targetModule);
+               break;
+         }
+         
       }
 
       protected override bool IsExpandable(ITreeNode node)
@@ -134,6 +194,9 @@ namespace MoBi.Presentation.Presenter.Main
             return false;
 
          if (node.IsAnImplementationOf<ClassificationNode>())
+            return true;
+
+         if(node.IsAnImplementationOf<BuildingBlockNode>())
             return true;
 
          return _observedDataInExplorerPresenter.CanDrag(node);

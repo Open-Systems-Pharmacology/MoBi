@@ -16,6 +16,10 @@ using OSPSuite.Presentation.Regions;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
 using ITreeNodeFactory = MoBi.Presentation.Nodes.ITreeNodeFactory;
+using OSPSuite.Presentation.Presenters.Nodes;
+using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Formulas;
+using System.Runtime.Remoting.Contexts;
 
 namespace MoBi.Presentation.Presenter.Main
 {
