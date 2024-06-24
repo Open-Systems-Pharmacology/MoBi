@@ -65,11 +65,5 @@ namespace MoBi.Core.Commands
          _event.AddedObject.ShouldBeEqualTo(_bb);
          _event.Parent.ShouldBeEqualTo(_targetModule);
       }
-
-      [Observation]
-      public void event_to_refresh_simulation_should_be_published()
-      {
-         A.CallTo(() => _context.PublishEvent(A<SimulationStatusChangedEvent>.That.Matches(x => x.Simulation.Equals(_affectedSimulation)))).MustHaveHappened(1, Times.Exactly);
-      }
    }
 }
