@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Presentation.DTO;
@@ -20,9 +23,6 @@ using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using ITreeNodeFactory = MoBi.Presentation.Nodes.ITreeNodeFactory;
 
 namespace MoBi.Presentation.Presenter.Main
@@ -81,9 +81,9 @@ namespace MoBi.Presentation.Presenter.Main
 
          var (targetModuleNode, buildingBlockSourceNode) = convertToExpectedTypes(nodeToDrop, targetNode);
 
-         if(targetModuleNode == null ||  buildingBlockSourceNode == null)
+         if (targetModuleNode == null || buildingBlockSourceNode == null)
             return false;
-         
+
          if (moduleAlreadyContainsNode(buildingBlockSourceNode, targetModuleNode))
             return false;
 
@@ -95,25 +95,23 @@ namespace MoBi.Presentation.Presenter.Main
 
       private static bool isPossibleToAddBuildingBlockToModule(ModuleNode targetModuleNode, ITreeNode<IBuildingBlock> buildingBlockSourceNode) =>
          targetModuleNode.Tag.CanAdd(buildingBlockSourceNode.Tag);
-      
 
       private static (ModuleNode moduleNode, ITreeNode<IBuildingBlock> buildingBlockSourceNode) convertToExpectedTypes(ITreeNode nodeToDrop, ITreeNode targetNode) =>
          (targetNode as ModuleNode, nodeToDrop as ITreeNode<IBuildingBlock>);
-      
 
       private static bool moduleAlreadyContainsNode(ITreeNode<IBuildingBlock> buildingBlockSourceNode, ModuleNode targetModuleNode) =>
          Equals(buildingBlockSourceNode.ParentNode, targetModuleNode);
-      
+
       public override void DropNode(ITreeNode nodeToDrop, ITreeNode targetNode, DragDropKeyFlags keyState = DragDropKeyFlags.None)
       {
-         if(!handleDropNodeForBuildingBlocks(nodeToDrop, targetNode, keyState))
+         if (!handleDropNodeForBuildingBlocks(nodeToDrop, targetNode, keyState))
             base.DropNode(nodeToDrop, targetNode, keyState);
       }
 
       private bool handleDropNodeForBuildingBlocks(ITreeNode nodeToDrop, ITreeNode targetNode, DragDropKeyFlags keyState)
       {
          var (targetModuleNode, buildingBlockSourceNode) = convertToExpectedTypes(nodeToDrop, targetNode);
-         
+
          if (buildingBlockSourceNode == null || targetModuleNode == null)
             return false;
 
@@ -131,6 +129,7 @@ namespace MoBi.Presentation.Presenter.Main
                _interactionTaskForModule.CopyBuildingBlock(movingBuildingBlock, targetModule);
                return true;
          }
+
          return false;
       }
 
@@ -151,7 +150,6 @@ namespace MoBi.Presentation.Presenter.Main
          var moleculeBuildingBlock = node.ParentNode.TagAsObject.DowncastTo<MoleculeBuildingBlock>();
          _editBuildingBlockStarter.EditMolecule(moleculeBuildingBlock, moleculeBuilder);
       }
-
 
       private void editSingleBuildingBlockModule(Module module)
       {
