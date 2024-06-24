@@ -8,9 +8,6 @@ namespace MoBi.Core.Commands
 {
    public class MoveBuildingBlockToModuleCommand : MoBiMacroCommand
    {
-      private Module _destinationModule;
-      private IBuildingBlock _buildingBlockToMove;
-
       public MoveBuildingBlockToModuleCommand(IBuildingBlock buildingBlockToMove, Module targetModule)
       {
          ObjectType = ObjectTypes.BuildingBlock;
