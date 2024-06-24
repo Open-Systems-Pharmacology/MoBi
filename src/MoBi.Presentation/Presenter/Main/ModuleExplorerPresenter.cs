@@ -73,55 +73,65 @@ namespace MoBi.Presentation.Presenter.Main
          return base.ContextMenuFor(treeNode);
       }
 
-      public override bool CanDrop(ITreeNode targetNode, ITreeNode nodeToDrop)
+      public override bool CanDrop(ITreeNode nodeToDrop, ITreeNode targetNode)
       {
-         var canDrop = base.CanDrop(targetNode, nodeToDrop);
-         if (!canDrop)
-         {
-            //This checks if the node to drop is a building block and the target node is a module
-            var buildingBlockSourceNode = targetNode as ITreeNode<IBuildingBlock>;
-            var targetModuleNode = nodeToDrop as ModuleNode;
-
-            if (targetModuleNode == null || buildingBlockSourceNode == null)
-               return false;
-
-            // This checks if the building block is already in the module, not by type but by ref. Meaning, it is his own module
-            if (Equals(buildingBlockSourceNode.ParentNode, targetModuleNode))
-               return false;
-
-            // This checks if the building block is already in the module, by type
-            if (!targetModuleNode.Tag.CanAdd(buildingBlockSourceNode.Tag))
-               return false;
-
+         var canDrop = base.CanDrop(nodeToDrop, targetNode);
+         if (canDrop)
             return true;
 
-         }
-         return false;
+         var (targetModuleNode, buildingBlockSourceNode) = convertToExpectedTypes(nodeToDrop, targetNode);
+
+         if(targetModuleNode == null ||  buildingBlockSourceNode == null)
+            return false;
+         
+         if (moduleAlreadyContainsNode(buildingBlockSourceNode, targetModuleNode))
+            return false;
+
+         if (!isPossibleToAddBuildingBlockToModule(targetModuleNode, buildingBlockSourceNode))
+            return false;
+
+         return true;
       }
 
-      public override void DropNode(ITreeNode dragNode, ITreeNode targetNode, DragDropKeyFlags keyState = DragDropKeyFlags.None)
-      {
-         var buildingBlockSourceNode = dragNode as ITreeNode<IBuildingBlock>;
-         var targetModuleNode = targetNode as ModuleNode;
+      private static bool isPossibleToAddBuildingBlockToModule(ModuleNode targetModuleNode, ITreeNode<IBuildingBlock> buildingBlockSourceNode) =>
+         targetModuleNode.Tag.CanAdd(buildingBlockSourceNode.Tag);
+      
 
+      private static (ModuleNode moduleNode, ITreeNode<IBuildingBlock> buildingBlockSourceNode) convertToExpectedTypes(ITreeNode nodeToDrop, ITreeNode targetNode) =>
+         (targetNode as ModuleNode, nodeToDrop as ITreeNode<IBuildingBlock>);
+      
+
+      private static bool moduleAlreadyContainsNode(ITreeNode<IBuildingBlock> buildingBlockSourceNode, ModuleNode targetModuleNode) =>
+         Equals(buildingBlockSourceNode.ParentNode, targetModuleNode);
+      
+      public override void DropNode(ITreeNode nodeToDrop, ITreeNode targetNode, DragDropKeyFlags keyState = DragDropKeyFlags.None)
+      {
+         if(!handleDropNodeForBuildingBlocks(nodeToDrop, targetNode, keyState))
+            base.DropNode(nodeToDrop, targetNode, keyState);
+      }
+
+      private bool handleDropNodeForBuildingBlocks(ITreeNode nodeToDrop, ITreeNode targetNode, DragDropKeyFlags keyState)
+      {
+         var (targetModuleNode, buildingBlockSourceNode) = convertToExpectedTypes(nodeToDrop, targetNode);
+         
          if (buildingBlockSourceNode == null || targetModuleNode == null)
-            return;
+            return false;
+
+         var movingBuildingBlock = buildingBlockSourceNode.Tag;
+         if (movingBuildingBlock.Module == null)
+            return false;
 
          var targetModule = targetModuleNode.Tag;
-         var movingBuildingBlock = buildingBlockSourceNode.Tag;
-
-         if(movingBuildingBlock.Module == null)
-            return;
-
          switch (keyState)
          {
             case DragDropKeyFlags.None:
                _interactionTaskForModule.MoveBuildingBlock(movingBuildingBlock, targetModule);
-               break;
+               return true;
             case DragDropKeyFlags.CtrlKey:
                _interactionTaskForModule.CopyBuildingBlock(movingBuildingBlock, targetModule);
-               break;
+               return true;
          }
+         return false;
       }
 
       protected override bool IsExpandable(ITreeNode node)
@@ -145,7 +155,7 @@ namespace MoBi.Presentation.Presenter.Main
 
       private void editSingleBuildingBlockModule(Module module)
       {
-         if (module.BuildingBlocks.Count != 1) 
+         if (module.BuildingBlocks.Count != 1)
             return;
 
          var buildingBlock = module.BuildingBlocks.First();
@@ -189,7 +199,7 @@ namespace MoBi.Presentation.Presenter.Main
          if (node.IsAnImplementationOf<ClassificationNode>())
             return true;
 
-         if(node.IsAnImplementationOf<BuildingBlockNode>())
+         if (node.IsAnImplementationOf<BuildingBlockNode>())
             return true;
 
          return _observedDataInExplorerPresenter.CanDrag(node);
@@ -202,7 +212,7 @@ namespace MoBi.Presentation.Presenter.Main
 
          if (nodeIsStartValueFolderNode(node1))
             return 1;
-         
+
          if (nodeIsStartValueFolderNode(node2))
             return -1;
 
@@ -319,9 +329,9 @@ namespace MoBi.Presentation.Presenter.Main
       {
          var nodeById = _view.TreeView.NodeById(module.Id);
 
-         if (!(nodeById is ModuleNode moduleNode)) 
+         if (!(nodeById is ModuleNode moduleNode))
             return nodeById;
-         
+
          switch (buildingBlock)
          {
             case ParameterValuesBuildingBlock _:
@@ -353,7 +363,7 @@ namespace MoBi.Presentation.Presenter.Main
       public void Handle(RemovedEvent eventToHandle)
       {
          RemoveNodesFor(eventToHandle.RemovedObjects);
-         if(eventToHandle.Parent is Module module)
+         if (eventToHandle.Parent is Module module)
             refreshModuleIcon(module);
       }
 
