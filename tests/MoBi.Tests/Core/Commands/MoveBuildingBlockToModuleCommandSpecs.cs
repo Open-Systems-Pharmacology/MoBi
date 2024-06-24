@@ -25,7 +25,7 @@ namespace MoBi.Core.Commands
          _sourceModule = new Module().WithId("sourceModuleId");
          _sourceModule.Add(_newReactionBuildingBlock);
          _targetModule = new Module().WithId("targetModuleId");
-
+         
          _withIdRepository = new WithIdRepository();
          _registrationTask = new RegisterTask(_withIdRepository);
          sut = new MoveBuildingBlockToModuleCommand(_newReactionBuildingBlock, _targetModule);
