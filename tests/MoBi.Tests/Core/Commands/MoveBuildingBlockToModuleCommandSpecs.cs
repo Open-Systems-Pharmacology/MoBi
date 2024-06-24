@@ -22,10 +22,10 @@ namespace MoBi.Core.Commands
       protected override void Context()
       {
          _newReactionBuildingBlock = new ReactionBuildingBlock().WithId("reactionId");
-         _sourceModule= new Module().WithId("sourceModuleId");
+         _sourceModule = new Module().WithId("sourceModuleId");
          _sourceModule.Add(_newReactionBuildingBlock);
          _targetModule = new Module().WithId("targetModuleId");
-         
+
          _withIdRepository = new WithIdRepository();
          _registrationTask = new RegisterTask(_withIdRepository);
          sut = new MoveBuildingBlockToModuleCommand(_newReactionBuildingBlock, _targetModule);
@@ -53,7 +53,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class When_executing_the_move_blocks_to_module_command_with_No_Module : concern_for_MoveBuildingBlockToModuleCommand
+   public class When_executing_the_move_blocks_to_module_command_with_no_module : concern_for_MoveBuildingBlockToModuleCommand
    {
       protected override void Context()
       {
@@ -65,6 +65,30 @@ namespace MoBi.Core.Commands
       public void should_throw_an_exception()
       {
          The.Action(() => sut.Execute(_context)).ShouldThrowAn<NullReferenceException>();
+      }
+   }
+
+   public class When_reversing_the_move_blocks_to_module_command : concern_for_MoveBuildingBlockToModuleCommand
+   {
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _context.Get<Module>(_sourceModule.Id)).Returns(_sourceModule);
+         A.CallTo(() => _context.Get<Module>(_targetModule.Id)).Returns(_targetModule);
+         A.CallTo(() => _context.Get<IBuildingBlock>(_newReactionBuildingBlock.Id)).Returns(_newReactionBuildingBlock);
+         A.CallTo(() => _context.Deserialize<IBuildingBlock>(A<byte[]>._)).Returns(_newReactionBuildingBlock);
+      }
+
+      protected override void Because()
+      {
+         sut.ExecuteAndInvokeInverse(_context);
+      }
+
+      [Observation]
+      public void the_building_blocks_must_be_moved_to_the_module()
+      {
+         _targetModule.Reactions.ShouldBeNull();
+         _sourceModule.Reactions.ShouldBeEqualTo(_newReactionBuildingBlock);
       }
    }
 }
