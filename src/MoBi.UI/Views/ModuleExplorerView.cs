@@ -1,14 +1,8 @@
-﻿using System;
-using System.Windows.Forms;
-using DevExpress.XtraTreeList;
-using DevExpress.XtraTreeList.Nodes;
+﻿using DevExpress.XtraTreeList;
 using MoBi.Presentation.Presenter.Main;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Nodes;
-using OSPSuite.UI.Controls;
 using OSPSuite.UI.Services;
 using OSPSuite.UI.Views;
 

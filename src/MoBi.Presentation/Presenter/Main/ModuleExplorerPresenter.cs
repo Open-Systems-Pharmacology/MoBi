@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Presentation.DTO;
-using MoBi.Presentation.Extensions;
 using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
@@ -13,7 +8,6 @@ using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
@@ -26,8 +20,10 @@ using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using ITreeNodeFactory = MoBi.Presentation.Nodes.ITreeNodeFactory;
-using Keys = OSPSuite.Presentation.Core.Keys;
 
 namespace MoBi.Presentation.Presenter.Main
 {
@@ -87,9 +83,7 @@ namespace MoBi.Presentation.Presenter.Main
             var targetModuleNode = nodeToDrop as ModuleNode;
 
             if (targetModuleNode == null || buildingBlockSourceNode == null)
-            {
                return false;
-            }
 
             // This checks if the building block is already in the module, not by type but by ref. Meaning, it is his own module
             if (Equals(buildingBlockSourceNode.ParentNode, targetModuleNode))
@@ -115,8 +109,8 @@ namespace MoBi.Presentation.Presenter.Main
 
          var targetModule = targetModuleNode.Tag;
          var movingBuildingBlock = buildingBlockSourceNode.Tag;
-         var sourceModule = movingBuildingBlock.Module;
-         if(sourceModule == null)
+
+         if(movingBuildingBlock.Module == null)
             return;
 
          switch (keyState)
@@ -128,7 +122,6 @@ namespace MoBi.Presentation.Presenter.Main
                _interactionTaskForModule.CopyBuildingBlock(movingBuildingBlock, targetModule);
                break;
          }
-         
       }
 
       protected override bool IsExpandable(ITreeNode node)
