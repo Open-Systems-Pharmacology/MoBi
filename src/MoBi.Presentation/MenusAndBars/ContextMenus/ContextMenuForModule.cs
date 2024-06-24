@@ -50,12 +50,12 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       private IMenuBarItem createDefaultMergeBehaviorItemFor(Module module)
       {
-         return CreateSubMenu.WithCaption(AppConstants.MenuNames.DefaultMergeBehavior)
+         return CreateSubMenu.WithCaption(AppConstants.MenuNames.MergeBehavior)
             .WithItem(CreateMenuCheckButton.WithCaption(MergeBehavior.Overwrite.ToString())
-               .WithChecked(module.DefaultMergeBehavior == MergeBehavior.Overwrite)
+               .WithChecked(module.MergeBehavior == MergeBehavior.Overwrite)
                .WithCommandFor<MakeOverwriteModuleUICommand, Module>(module, _container))
             .WithItem(CreateMenuCheckButton.WithCaption(MergeBehavior.Extend.ToString())
-               .WithChecked(module.DefaultMergeBehavior == MergeBehavior.Extend)
+               .WithChecked(module.MergeBehavior == MergeBehavior.Extend)
                .WithCommandFor<MakeExtendModuleUICommand, Module>(module, _container));
       }
 

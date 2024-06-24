@@ -40,7 +40,7 @@ namespace MoBi.Presentation
          {
             dto.WithSpatialStructure = false;
             dto.Name = "a new name";
-            dto.DefaultMergeBehavior = MergeBehavior.Extend;
+            dto.MergeBehavior = MergeBehavior.Extend;
          });
       }
 
@@ -58,7 +58,7 @@ namespace MoBi.Presentation
       [Observation]
       public void the_cloned_module_should_retain_the_default_merge_behavior()
       {
-         _clonedModule.DefaultMergeBehavior.ShouldBeEqualTo(MergeBehavior.Extend);
+         _clonedModule.MergeBehavior.ShouldBeEqualTo(MergeBehavior.Extend);
       }
 
       [Observation]

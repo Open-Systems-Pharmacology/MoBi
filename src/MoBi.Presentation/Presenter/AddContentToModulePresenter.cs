@@ -19,7 +19,7 @@ namespace MoBi.Presentation.Presenter
       protected abstract Module Module { get; }
       protected abstract ModuleContentDTO ContentDTO { get; }
 
-      public override MergeBehavior SelectedBehavior => ContentDTO.DefaultMergeBehavior;
+      public override MergeBehavior SelectedBehavior => ContentDTO.MergeBehavior;
 
       public void AddMoleculesSelectionChanged(bool moleculesSelected)
       {

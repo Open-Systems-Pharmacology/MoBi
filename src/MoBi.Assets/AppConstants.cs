@@ -1117,7 +1117,7 @@ namespace MoBi.Assets
          public static readonly string AddProteinExpression = "Add Protein Expression";
          public static readonly string OutputSelections = "Output Selections";
          public static readonly string SettingsAndSchema = "Settings and Schema";
-         public static readonly string DefaultMergeBehavior = "Default Merge Behavior";
+         public static readonly string MergeBehavior = "Merge Behavior";
 
          public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
 
@@ -1618,7 +1618,7 @@ namespace MoBi.Assets
          public static readonly string NewParameterValuesBuildingBlock = "New Parameter Values Building Block";
          public static readonly string MakeDefault = "Make defaults";
          public static readonly string LoadFromDefaults = "Load from defaults";
-         public static readonly string DefaultMergeBehavior = "Default Merge Behavior";
+         public static readonly string MergeBehavior = "Merge Behavior";
          public static readonly string ExtendMergeBehaviorDescription = "The module containers will be merged recursively using add and update behavior";
          public static readonly string OverwriteMergeBehaviorDescription = "The module containers will be replaced by path";
 
