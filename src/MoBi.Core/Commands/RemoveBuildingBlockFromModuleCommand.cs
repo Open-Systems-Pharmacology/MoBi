@@ -17,7 +17,7 @@ namespace MoBi.Core.Commands
 
       public RemoveBuildingBlockFromModuleCommand(T buildingBlock, Module existingModule) : base(buildingBlock, existingModule)  
       {
-         ObjectType = new ObjectTypeResolver().TypeFor<T>();
+         ObjectType = new ObjectTypeResolver().TypeFor(buildingBlock);
          CommandType = AppConstants.Commands.DeleteCommand;
          Silent = false;
          Description = AppConstants.Commands.RemoveFromDescription(ObjectType, buildingBlock.Name, _existingModule.Name);

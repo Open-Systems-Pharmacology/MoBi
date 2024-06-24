@@ -7,6 +7,7 @@ using MoBi.Presentation.Presenter.Simulation;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
@@ -210,6 +211,16 @@ namespace MoBi.Presentation.Presenter
       private bool nodeIsModuleConfiguration(ITreeNode node) => node?.TagAsObject is ModuleConfigurationDTO;
 
       public bool CanDrop(ITreeNode dragNode, ITreeNode targetNode) => nodeIsModuleConfiguration(targetNode) && !Equals(dragNode, targetNode);
+      public void DropNode(ITreeNode dragNode, ITreeNode targetNode, DragDropKeyFlags keyState = DragDropKeyFlags.None)
+      {
+         var movingConfiguration = moduleConfigurationDTOFor(dragNode);
+         var targetConfiguration = moduleConfigurationDTOFor(targetNode);
+         if (movingConfiguration == null || targetConfiguration == null)
+            return;
+
+         moveConfiguration(movingConfiguration, targetConfiguration);
+         refreshSelectedModulesView(dragNode);
+      }
 
       public void MoveUp(ITreeNode selectedNode)
       {
@@ -246,17 +257,6 @@ namespace MoBi.Presentation.Presenter
          _moduleConfigurationDTOs.Remove(selectedConfiguration);
          _moduleConfigurationDTOs.Insert(targetIndex, selectedConfiguration);
          refreshSelectedModulesView(selectedNode);
-      }
-
-      public void MoveNode(ITreeNode dragNode, ITreeNode targetNode)
-      {
-         var movingConfiguration = moduleConfigurationDTOFor(dragNode);
-         var targetConfiguration = moduleConfigurationDTOFor(targetNode);
-         if (movingConfiguration == null || targetConfiguration == null)
-            return;
-
-         moveConfiguration(movingConfiguration, targetConfiguration);
-         refreshSelectedModulesView(dragNode);
       }
 
       private void refreshSelectedModulesView(ITreeNode selectedNode)

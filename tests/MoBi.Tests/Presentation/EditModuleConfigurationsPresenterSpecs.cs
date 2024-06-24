@@ -79,7 +79,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.MoveNode(_treeNode2, _treeNode1);
+         sut.DropNode(_treeNode2, _treeNode1);
       }
 
       [Observation]

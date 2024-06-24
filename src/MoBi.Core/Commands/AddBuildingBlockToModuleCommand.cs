@@ -15,7 +15,7 @@ namespace MoBi.Core.Commands
 
       public AddBuildingBlockToModuleCommand(T buildingBlock, Module existingModule) : base(buildingBlock, existingModule)
       {
-         ObjectType = new ObjectTypeResolver().TypeFor<T>();
+         ObjectType = new ObjectTypeResolver().TypeFor(buildingBlock);
          CommandType = AppConstants.Commands.AddCommand;
          _buildingBlockId = buildingBlock.Id;
 

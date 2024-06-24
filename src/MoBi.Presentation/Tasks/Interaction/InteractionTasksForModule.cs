@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
@@ -26,6 +27,8 @@ namespace MoBi.Presentation.Tasks.Interaction
       void AddNewParameterValuesBuildingBlock(Module module);
       void MakeExtendModule(Module module);
       void MakeOverwriteModule(Module module);
+      void MoveBuildingBlock(IBuildingBlock buildingBlockToMove, Module destinationModule);
+      void CopyBuildingBlock(IBuildingBlock buildingBlockToCopy, Module destinationModule);
    }
 
    public class InteractionTasksForModule : InteractionTasksForChildren<MoBiProject, Module>, IInteractionTasksForModule
@@ -85,6 +88,25 @@ namespace MoBi.Presentation.Tasks.Interaction
       public void MakeExtendModule(Module module) => context.AddToHistory(new SetMergeBehaviorCommand(module, MergeBehavior.Extend).Run(context));
 
       public void MakeOverwriteModule(Module module) => context.AddToHistory(new SetMergeBehaviorCommand(module, MergeBehavior.Overwrite).Run(context));
+      public void MoveBuildingBlock(IBuildingBlock buildingBlockToMove, Module destinationModule)
+      {
+         if(buildingBlockToMove.Module==null)
+            return;
+
+         context.AddToHistory(new MoveBuildingBlockToModuleCommand(buildingBlockToMove, destinationModule)
+            .Run(context));
+      }
+
+      public void CopyBuildingBlock(IBuildingBlock buildingBlockToCopy, Module destinationModule)
+      {
+         if (buildingBlockToCopy.Module == null)
+            return;
+
+         var buildingBlock = context.Clone(buildingBlockToCopy);
+         
+         context.AddToHistory(new CopyBuildingBlockToModuleCommand<IBuildingBlock>(buildingBlock, destinationModule)
+            .Run(context));
+      }
 
       public void AddNewInitialConditionsBuildingBlock(Module module) => addBuildingBlocksToModule(module, presenter => presenter.AddInitialConditionsToModule(module));
 
