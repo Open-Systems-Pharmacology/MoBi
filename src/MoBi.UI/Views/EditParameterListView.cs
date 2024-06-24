@@ -10,6 +10,7 @@ using DevExpress.XtraGrid.Views.Base;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using MoBi.UI.Extensions;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
@@ -71,17 +72,11 @@ namespace MoBi.UI.Views
       private void onToolTipControllerGetActiveObjectInfo(object sender, ToolTipControllerGetActiveObjectInfoEventArgs e)
       {
          var parameterDTO = _gridViewBinder.ElementAt(e);
-         if (parameterDTO == null) return;
 
-         var superToolTip = getToolTipFor(parameterDTO);
+         if (parameterDTO == null)
+            return;
 
-         //An object that uniquely identifies a row cell
-         e.Info = new ToolTipControlInfo(parameterDTO, string.Empty) { SuperTip = superToolTip, ToolTipType = ToolTipType.SuperTip };
-      }
-
-      private SuperToolTip getToolTipFor(ParameterDTO parameterDTO)
-      {
-         return _toolTipCreator.ToolTipFor(parameterDTO);
+         e.Info = _gridView.CreateToolTipControlInfoFor(parameterDTO, e.ControlMousePosition, _toolTipCreator.ToolTipFor);
       }
 
       private void onGridViewMouseDown(MouseEventArgs e)
