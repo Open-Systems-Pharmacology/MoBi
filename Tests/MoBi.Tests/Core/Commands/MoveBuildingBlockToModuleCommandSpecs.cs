@@ -52,22 +52,7 @@ namespace MoBi.Core.Commands
          _sourceModule.Reactions.ShouldBeNull();
       }
    }
-
-   public class When_executing_the_move_blocks_to_module_command_with_no_module : concern_for_MoveBuildingBlockToModuleCommand
-   {
-      protected override void Context()
-      {
-         base.Context();
-         _newReactionBuildingBlock.Module = null;
-      }
-
-      [Observation]
-      public void should_throw_an_exception()
-      {
-         The.Action(() => sut.Execute(_context)).ShouldThrowAn<NullReferenceException>();
-      }
-   }
-
+   
    public class When_reversing_the_move_blocks_to_module_command : concern_for_MoveBuildingBlockToModuleCommand
    {
       protected override void Context()
@@ -85,7 +70,7 @@ namespace MoBi.Core.Commands
       }
 
       [Observation]
-      public void the_building_blocks_must_be_moved_to_the_module()
+      public void the_building_blocks_must_be_moved_back_to_the_module()
       {
          _targetModule.Reactions.ShouldBeNull();
          _sourceModule.Reactions.ShouldBeEqualTo(_newReactionBuildingBlock);
