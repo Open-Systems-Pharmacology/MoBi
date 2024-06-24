@@ -1,9 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using DevExpress.DataProcessing.InMemoryDataProcessor;
-using DevExpress.Utils.Extensions;
-using FakeItEasy;
+﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Helpers;
@@ -11,9 +6,8 @@ using MoBi.Presentation.DTO;
 using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Presenter.Main;
+using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
-using NPOI.SS.Formula.Functions;
-using OSPSuite.Assets;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -31,6 +25,9 @@ using OSPSuite.Presentation.Regions;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Extensions;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 using TreeNodeFactory = MoBi.Presentation.Nodes.TreeNodeFactory;
 
 namespace MoBi.Presentation
@@ -48,7 +45,7 @@ namespace MoBi.Presentation
       private IMultipleTreeNodeContextMenuFactory _multipleTreeNodeContextMenuFactory;
       private IProjectRetriever _projectRetriever;
       protected IEditBuildingBlockStarter _editBuildingBlockStarter;
-
+      protected IInteractionTasksForModule _interactionTaskForModule;
       protected ITreeNode<RootNodeType> _nodeObservedDataFolder;
       private IObservedDataRepository _observedDataRepository;
 
@@ -67,10 +64,11 @@ namespace MoBi.Presentation
          _observedDataInExplorerPresenter = A.Fake<IObservedDataInExplorerPresenter>();
          _multipleTreeNodeContextMenuFactory = A.Fake<IMultipleTreeNodeContextMenuFactory>();
          _editBuildingBlockStarter = A.Fake<IEditBuildingBlockStarter>();
+         _editBuildingBlockStarter = A.Fake<IEditBuildingBlockStarter>();
          _treeNodeFactory = new TreeNodeFactory(_observedDataRepository, _toolTipPartCreator);
-
+         _interactionTaskForModule = A.Fake<IInteractionTasksForModule>();
          sut = new ModuleExplorerPresenter(_view, _regionResolver, _treeNodeFactory, _viewItemContextMenuFactory, _context,
-            _classificationPresenter, _toolTipPartCreator, _observedDataInExplorerPresenter, _multipleTreeNodeContextMenuFactory, _projectRetriever, _editBuildingBlockStarter);
+            _classificationPresenter, _toolTipPartCreator, _observedDataInExplorerPresenter, _multipleTreeNodeContextMenuFactory, _projectRetriever, _editBuildingBlockStarter, _interactionTaskForModule);
       }
    }
 
