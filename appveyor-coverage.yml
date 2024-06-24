@@ -1,5 +1,5 @@
 configuration: Debug
-image: Visual Studio 2019
+image: Visual Studio 2022
 
 version: '{build}'
 
@@ -20,7 +20,6 @@ clone_depth: 1
 install:
   - set PATH=C:\Ruby22\bin;C:\\Python34;C:\\Python34\\Scripts;%PATH%"
   - pip install codecov
-  - ps: cinst nunit-extension-vs-project-loader --no-progress
 
 before_build:
   - nuget sources add -name bddhelper -source https://ci.appveyor.com/nuget/ospsuite-bddhelper 
