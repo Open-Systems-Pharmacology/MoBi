@@ -105,7 +105,7 @@ namespace MoBi.Presentation.Presenter.Main
          return false;
       }
 
-      public override void DropNode(ITreeNode dragNode, ITreeNode targetNode, DragDropKeyState keyState = DragDropKeyState.None)
+      public override void DropNode(ITreeNode dragNode, ITreeNode targetNode, DragDropKeyFlags keyState = DragDropKeyFlags.None)
       {
          var buildingBlockSourceNode = dragNode as ITreeNode<IBuildingBlock>;
          var targetModuleNode = targetNode as ModuleNode;
@@ -121,10 +121,10 @@ namespace MoBi.Presentation.Presenter.Main
 
          switch (keyState)
          {
-            case DragDropKeyState.None:
+            case DragDropKeyFlags.None:
                _interactionTaskForModule.MoveBuildingBlock(movingBuildingBlock, targetModule);
                break;
-            case DragDropKeyState.CtrlKey:
+            case DragDropKeyFlags.CtrlKey:
                _interactionTaskForModule.CopyBuildingBlock(movingBuildingBlock, targetModule);
                break;
          }

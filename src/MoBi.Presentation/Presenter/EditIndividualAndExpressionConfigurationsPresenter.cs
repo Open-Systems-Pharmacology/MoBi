@@ -160,7 +160,7 @@ namespace MoBi.Presentation.Presenter
          return expression != null;
       }
 
-      public void DropNode(ITreeNode dragNode, ITreeNode targetNode, DragDropKeyState keyState = DragDropKeyState.None)
+      public void DropNode(ITreeNode dragNode, ITreeNode targetNode, DragDropKeyFlags keyState = DragDropKeyFlags.None)
       {
          var movingExpression = dragNode.TagAsObject as ExpressionProfileBuildingBlock;
          var targetExpression = targetNode.TagAsObject as ExpressionProfileBuildingBlock;

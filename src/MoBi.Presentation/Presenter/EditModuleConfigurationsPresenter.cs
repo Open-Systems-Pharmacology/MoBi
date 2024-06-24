@@ -211,7 +211,7 @@ namespace MoBi.Presentation.Presenter
       private bool nodeIsModuleConfiguration(ITreeNode node) => node?.TagAsObject is ModuleConfigurationDTO;
 
       public bool CanDrop(ITreeNode dragNode, ITreeNode targetNode) => nodeIsModuleConfiguration(targetNode) && !Equals(dragNode, targetNode);
-      public void DropNode(ITreeNode dragNode, ITreeNode targetNode, DragDropKeyState keyState = DragDropKeyState.None)
+      public void DropNode(ITreeNode dragNode, ITreeNode targetNode, DragDropKeyFlags keyState = DragDropKeyFlags.None)
       {
          var movingConfiguration = moduleConfigurationDTOFor(dragNode);
          var targetConfiguration = moduleConfigurationDTOFor(targetNode);
