@@ -75,8 +75,7 @@ namespace MoBi.Presentation.Presenter.Main
 
       public override bool CanDrop(ITreeNode nodeToDrop, ITreeNode targetNode)
       {
-         var canDrop = base.CanDrop(nodeToDrop, targetNode);
-         if (canDrop)
+         if (base.CanDrop(nodeToDrop, targetNode))
             return true;
 
          var (targetModuleNode, buildingBlockSourceNode) = convertToExpectedTypes(nodeToDrop, targetNode);
@@ -104,11 +103,11 @@ namespace MoBi.Presentation.Presenter.Main
 
       public override void DropNode(ITreeNode nodeToDrop, ITreeNode targetNode, DragDropKeyFlags keyState = DragDropKeyFlags.None)
       {
-         if (!handleDropNodeForBuildingBlocks(nodeToDrop, targetNode, keyState))
+         if (!handleDropNodeForBuildingBlock(nodeToDrop, targetNode, keyState))
             base.DropNode(nodeToDrop, targetNode, keyState);
       }
 
-      private bool handleDropNodeForBuildingBlocks(ITreeNode nodeToDrop, ITreeNode targetNode, DragDropKeyFlags keyState)
+      private bool handleDropNodeForBuildingBlock(ITreeNode nodeToDrop, ITreeNode targetNode, DragDropKeyFlags keyState)
       {
          var (targetModuleNode, buildingBlockSourceNode) = convertToExpectedTypes(nodeToDrop, targetNode);
 
