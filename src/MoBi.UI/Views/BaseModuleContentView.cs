@@ -75,6 +75,8 @@ namespace MoBi.UI.Views
 
       public void DisableDefaultMergeBehavior() => mergeBehaviorItem.Enabled = false;
 
+      public void HideDefaultMergeBehaviorGroup() => mergeBehaviorGroup.Visibility = LayoutVisibility.Never; 
+
       public override void InitializeBinding()
       {
          _screenBinder.Bind(dto => dto.Name).To(tbModuleName);
