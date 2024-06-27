@@ -17,7 +17,7 @@ namespace MoBi.Core.Commands
          _quantity = quantity;
          _quantityId = quantity.Id;
          CommandType = AppConstants.Commands.EditCommand;
-         ObjectType = new ObjectTypeResolver().TypeFor(_quantity);
+         ObjectType = new ObjectTypeResolver().TypeFor(quantity);
       }
 
       protected override void ClearReferences()

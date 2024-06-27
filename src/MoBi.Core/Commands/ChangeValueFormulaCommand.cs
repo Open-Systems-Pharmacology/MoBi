@@ -27,7 +27,7 @@ namespace MoBi.Core.Commands
          _oldFormula = oldFormula;
          _objectBaseId = _buildingBlock.Id;
          _changedPathAndValueEntity = pathAndValueEntity;
-         ObjectType = new ObjectTypeResolver().TypeFor(_changedPathAndValueEntity);
+         ObjectType = new ObjectTypeResolver().TypeFor(pathAndValueEntity);
 
          Description = AppConstants.Commands.EditDescription(ObjectType, AppConstants.Captions.FormulaName, _oldFormula?.ToString() ?? AppConstants.NullString, _newFormula?.ToString() ?? AppConstants.NullString, _changedPathAndValueEntity.Path.PathAsString);
 

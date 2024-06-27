@@ -23,7 +23,7 @@ namespace MoBi.Core.Commands
          _newFormulaString = newFormulaString;
          _oldFormulaString = formula.FormulaString;
 
-         ObjectType = new ObjectTypeResolver().TypeFor(_formula);
+         ObjectType = new ObjectTypeResolver().TypeFor(formula);
          CommandType = AppConstants.Commands.EditCommand;
          Description = AppConstants.Commands.ChangeFormulaString(formula.Name, _newFormulaString, _oldFormulaString, buildingBlock.Name);
       }
