@@ -9,7 +9,7 @@ namespace MoBi.Presentation.Views
    {
       void ShowInitialConditionsName();
       void DisableDefaultMergeBehavior();
-      void HideDefaultMergeBehaviorGroup();
+      void HideMergeBehaviorGroup();
    }
 
    public interface IAddBuildingBlocksToModuleView : IAddContentToModuleView<IAddBuildingBlocksToModulePresenter>

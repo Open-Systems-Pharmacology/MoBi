@@ -41,7 +41,7 @@ namespace MoBi.Presentation.Presenter
       private IReadOnlyList<IBuildingBlock> addBuildingBlocksToModule(Module module, Action<AddBuildingBlocksToModuleDTO> configureDTOAction = null)
       {
          _view.Caption = AppConstants.Captions.AddBuildingBlocksToModule(module.Name);
-         _view.HideDefaultMergeBehaviorGroup();
+         _view.HideMergeBehaviorGroup();
          _addBuildingBlocksToModuleDTO = _moduleToAddBuildingBlocksToModuleDTOMapper.MapFrom(module);
          configureDTOAction?.Invoke(_addBuildingBlocksToModuleDTO);
 

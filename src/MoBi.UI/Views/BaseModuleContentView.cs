@@ -75,10 +75,10 @@ namespace MoBi.UI.Views
 
       public void DisableDefaultMergeBehavior() => mergeBehaviorItem.Enabled = false;
 
-      public void HideDefaultMergeBehaviorGroup()
+      public void HideMergeBehaviorGroup()
       {
          mergeBehaviorGroup.Visibility = LayoutVisibility.Never;
-         this.Height -= mergeBehaviorGroup.Height;
+         Height -= mergeBehaviorGroup.Height;
       }
 
       public override void InitializeBinding()
