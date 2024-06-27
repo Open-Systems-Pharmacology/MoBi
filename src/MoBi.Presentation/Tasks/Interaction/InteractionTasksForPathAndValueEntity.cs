@@ -91,7 +91,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             return new MoBiEmptyCommand();
          }
 
-         var objectType = new ObjectTypeResolver().TypeFor<TBuilder>();
+         var objectType = new ObjectTypeResolver().TypeFor(distributedParameter);
          var moBiMacroCommand = new MoBiMacroCommand
          {
             CommandType = AppConstants.Commands.UpdateCommand,

@@ -13,7 +13,7 @@ namespace MoBi.Core.Commands
 
       protected RemoveBuildingBlockFromProjectCommand(T buildingBlock)
       {
-         ObjectType = new ObjectTypeResolver().TypeFor<T>();
+         ObjectType = new ObjectTypeResolver().TypeFor(buildingBlock);
          CommandType = AppConstants.Commands.DeleteCommand;
          Description = AppConstants.Commands.RemoveFromProjectDescription(ObjectType, buildingBlock.Name);
          _buildingBlock = buildingBlock;

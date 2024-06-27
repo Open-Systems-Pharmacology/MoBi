@@ -27,7 +27,7 @@ namespace MoBi.Core.Commands
 
       private void setCommandConstants()
       {
-         ObjectType = new ObjectTypeResolver().TypeFor<TPathAndValueEntity>();
+         ObjectType = new ObjectTypeResolver().TypeFor(_originalPathAndValueEntity);
          CommandType = AppConstants.Commands.EditCommand;
          var newPath = _newContainerPath.Clone<ObjectPath>().AndAdd(_originalPathAndValueEntity.Name);
          Description = AppConstants.Commands.EditPath(ObjectType, _originalPathAndValueEntity.Path, newPath);

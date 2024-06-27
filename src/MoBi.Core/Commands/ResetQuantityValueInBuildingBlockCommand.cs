@@ -20,7 +20,7 @@ namespace MoBi.Core.Commands
          _quantityId = _quantity.Id;
          _oldQuantityValue = quantity.Value;
          CommandType = AppConstants.Commands.EditCommand;
-         ObjectType = new ObjectTypeResolver().TypeFor(quantity);
+         ObjectType = new ObjectTypeResolver().TypeFor(_quantity);
       }
 
       protected override void ExecuteWith(IMoBiContext context)

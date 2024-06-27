@@ -31,7 +31,7 @@ namespace MoBi.Core.Commands
       protected void SetCommandParameters(string newValue, string oldValue)
       {
          CommandType = AppConstants.Commands.EditCommand;
-         ObjectType = new ObjectTypeResolver().TypeFor<TPathAndValueEntity>();
+         ObjectType = new ObjectTypeResolver().TypeFor(_originalEntity);
          Description = AppConstants.Commands.SetDescription(ObjectType, AppConstants.Commands.Name, newValue, oldValue);
       }
 
