@@ -1,5 +1,4 @@
-﻿using System;
-using OSPSuite.Presentation.Nodes;
+﻿using OSPSuite.Presentation.Nodes;
 using MoBi.Presentation.DTO;
 
 namespace MoBi.Presentation.Nodes
@@ -34,12 +33,7 @@ namespace MoBi.Presentation.Nodes
 
       private void updateId()
       {
-         _id = GenerateUniqueId();
-      }
-
-      private string GenerateUniqueId()
-      {
-         return $"{FullPath()}_{Guid.NewGuid()}";
+         _id = FullPath();
       }
    }
 }
