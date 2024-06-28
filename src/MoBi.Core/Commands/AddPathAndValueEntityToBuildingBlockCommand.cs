@@ -19,7 +19,7 @@ namespace MoBi.Core.Commands
       {
          _pathAndValueEntity = pathAndValueEntity;
          CommandType = AppConstants.Commands.AddCommand;
-         ObjectType = new ObjectTypeResolver().TypeFor<T>();
+         ObjectType = new ObjectTypeResolver().TypeFor(_pathAndValueEntity);
          Description = AppConstants.Commands.AddedPathAndValueEntity(pathAndValueEntity, buildingBlock.Name, ObjectType);
          _objectPath = pathAndValueEntity.Path;
       }

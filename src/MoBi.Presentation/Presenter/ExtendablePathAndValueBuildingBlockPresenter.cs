@@ -56,7 +56,7 @@ namespace MoBi.Presentation.Presenter
          IDistributedPathAndValueEntityPresenter<TStartValueDTO, TBuildingBlock> distributedPathAndValuePresenter)
          : base(view, interactionTasksForExtendablePathAndValueEntity, formulaToValueFormulaDTOMapper, dimensionFactory, distributedPathAndValuePresenter)
       {
-         _objectType = new ObjectTypeResolver().TypeFor<TPathAndValueEntity>();
+         _objectType = new ObjectTypeResolver().TypeFor(_focusedStartValue);
          _interactionTasksForExtendablePathAndValueEntity = interactionTasksForExtendablePathAndValueEntity;
          _valueMapper = valueMapper;
          IsOriginalStartValue = isOriginalStartValue;

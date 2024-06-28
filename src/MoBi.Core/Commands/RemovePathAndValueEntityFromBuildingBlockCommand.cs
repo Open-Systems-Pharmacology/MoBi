@@ -16,8 +16,8 @@ namespace MoBi.Core.Commands
       {
          CommandType = AppConstants.Commands.DeleteCommand;
 
-         ObjectType = new ObjectTypeResolver().TypeFor<T>();
          _originalEntity = _buildingBlock.ByPath(path);
+         ObjectType = new ObjectTypeResolver().TypeFor(_originalEntity);
          Description = AppConstants.Commands.RemovePathAndValueEntity(_originalEntity, parent.Name, ObjectType);
       }
 
