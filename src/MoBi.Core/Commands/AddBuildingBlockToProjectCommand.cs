@@ -14,7 +14,7 @@ namespace MoBi.Core.Commands
 
       protected AddBuildingBlockToProjectCommand(T buildingBlock)
       {
-         ObjectType = new ObjectTypeResolver().TypeFor<T>();
+         ObjectType = new ObjectTypeResolver().TypeFor(buildingBlock);
          CommandType = AppConstants.Commands.AddCommand;
          _buildingBlock = buildingBlock;
          BuildingBlockId = buildingBlock.Id;

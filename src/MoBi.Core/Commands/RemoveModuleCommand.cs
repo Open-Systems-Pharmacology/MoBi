@@ -15,7 +15,7 @@ namespace MoBi.Core.Commands
 
       public RemoveModuleCommand(Module module)
       {
-         ObjectType = new ObjectTypeResolver().TypeFor<Module>();
+         ObjectType = new ObjectTypeResolver().TypeFor(module);
          CommandType = AppConstants.Commands.DeleteCommand;
          Description = AppConstants.Commands.RemoveFromProjectDescription(ObjectType, module.Name);
          _module = module;

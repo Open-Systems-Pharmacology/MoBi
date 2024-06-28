@@ -15,7 +15,7 @@ namespace MoBi.Core.Commands
 
       public AddModuleCommand(Module module)
       {
-         ObjectType = new ObjectTypeResolver().TypeFor<Module>();
+         ObjectType = new ObjectTypeResolver().TypeFor(module);
          CommandType = AppConstants.Commands.AddCommand;
          _module = module;
          ModuleId = module.Id;
