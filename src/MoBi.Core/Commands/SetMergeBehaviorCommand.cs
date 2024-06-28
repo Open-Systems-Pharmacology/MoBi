@@ -1,8 +1,10 @@
 ﻿using MoBi.Assets;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Events;
 using MoBi.Core.Helper;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Commands
 {
@@ -21,7 +23,7 @@ namespace MoBi.Core.Commands
          _module = module;
          _newMergeBehavior = newMergeBehavior;
          ModuleId = module.Id;
-         
+
          _module = module;
       }
 
@@ -31,6 +33,7 @@ namespace MoBi.Core.Commands
       {
          _oldBehavior = _module.MergeBehavior;
          _module.MergeBehavior = _newMergeBehavior;
+         context.CurrentProject.SimulationsUsing(_module).Each(x => context.PublishEvent(new SimulationStatusChangedEvent(x)));
       }
 
       protected override void ClearReferences() => _module = null;
