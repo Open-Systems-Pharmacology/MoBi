@@ -34,10 +34,18 @@ namespace MoBi.Presentation.Mappers
 
       public ITreeNode MapFrom(ObjectBaseDTO objectBaseDTO)
       {
+         var retValue = new ReferenceNode(objectBaseDTO)
+         {
+            Icon = objectBaseDTO.Icon,
+            GetChildren = x => _getChildren(x).Select(MapFrom).ToList(),
+            Text = objectBaseDTO.ObjectBase is OSPSuite.Core.Domain.Builder.BuildingBlock ? ((OSPSuite.Core.Domain.Builder.BuildingBlock)objectBaseDTO.ObjectBase).DisplayName : objectBaseDTO.Name
+         };
+
          return new ReferenceNode(objectBaseDTO)
          {
             Icon = objectBaseDTO.Icon,
-            GetChildren = x => _getChildren(x).Select(MapFrom).ToList()
+            GetChildren = x => _getChildren(x).Select(MapFrom).ToList(),
+            Text = objectBaseDTO.ObjectBase is OSPSuite.Core.Domain.Builder.BuildingBlock ? ((OSPSuite.Core.Domain.Builder.BuildingBlock)objectBaseDTO.ObjectBase).DisplayName : objectBaseDTO.Name
          };
       }
 

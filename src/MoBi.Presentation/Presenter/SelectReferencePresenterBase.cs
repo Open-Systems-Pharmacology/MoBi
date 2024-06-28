@@ -241,6 +241,7 @@ namespace MoBi.Presentation.Presenter
       protected void AddSpatialStructures()
       {
          var spatialStructures = _buildingBlockRepository.SpatialStructureCollection;
+         var mapped = spatialStructures.MapAllUsing(_referenceMapper);
          _view.AddNodes(spatialStructures.MapAllUsing(_referenceMapper));
       }
 
