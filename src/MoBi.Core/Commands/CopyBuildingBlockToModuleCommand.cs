@@ -1,8 +1,4 @@
 ﻿using MoBi.Assets;
-using MoBi.Core.Domain.Model;
-using MoBi.Core.Events;
-using MoBi.Core.Helper;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 

@@ -22,7 +22,7 @@ namespace MoBi.Core.Commands
       protected override void Context()
       {
          _newReactionBuildingBlock = new ReactionBuildingBlock().WithId("reactionId");
-         _sourceModule= new Module().WithId("sourceModuleId");
+         _sourceModule = new Module().WithId("sourceModuleId");
          _sourceModule.Add(_newReactionBuildingBlock);
          _targetModule = new Module().WithId("targetModuleId");
          
@@ -52,19 +52,28 @@ namespace MoBi.Core.Commands
          _sourceModule.Reactions.ShouldBeNull();
       }
    }
-
-   public class When_executing_the_move_blocks_to_module_command_with_No_Module : concern_for_MoveBuildingBlockToModuleCommand
+   
+   public class When_reversing_the_move_blocks_to_module_command : concern_for_MoveBuildingBlockToModuleCommand
    {
       protected override void Context()
       {
          base.Context();
-         _newReactionBuildingBlock.Module = null;
+         A.CallTo(() => _context.Get<Module>(_sourceModule.Id)).Returns(_sourceModule);
+         A.CallTo(() => _context.Get<Module>(_targetModule.Id)).Returns(_targetModule);
+         A.CallTo(() => _context.Get<IBuildingBlock>(_newReactionBuildingBlock.Id)).Returns(_newReactionBuildingBlock);
+         A.CallTo(() => _context.Deserialize<IBuildingBlock>(A<byte[]>._)).Returns(_newReactionBuildingBlock);
+      }
+
+      protected override void Because()
+      {
+         sut.ExecuteAndInvokeInverse(_context);
       }
 
       [Observation]
-      public void should_throw_an_exception()
+      public void the_building_blocks_must_be_moved_back_to_the_module()
       {
-         The.Action(() => sut.Execute(_context)).ShouldThrowAn<NullReferenceException>();
+         _targetModule.Reactions.ShouldBeNull();
+         _sourceModule.Reactions.ShouldBeEqualTo(_newReactionBuildingBlock);
       }
    }
 }
