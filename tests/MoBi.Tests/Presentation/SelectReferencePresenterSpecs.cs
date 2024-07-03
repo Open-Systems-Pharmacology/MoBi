@@ -10,10 +10,13 @@ using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
+using MoBi.UI.Views;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.UI.Services;
+using OSPSuite.Utility;
 
 namespace MoBi.Presentation
 {
@@ -227,6 +230,90 @@ namespace MoBi.Presentation
       public void should_return_an_empty_list()
       {
          _result.ShouldBeEmpty();
+      }
+   }
+
+   public abstract class concern_for_SelectReferencePresenter_with_node_text : ContextSpecification<ISelectReferencePresenter>
+   {
+      protected ISelectReferenceView _view;
+      protected IMoBiContext _context;
+      protected ObjectBaseToObjectBaseDTOMapper _objectBaseDTOMapper;
+      protected IObjectBaseToDummyMoleculeDTOMapper _moleculeMapper;
+      protected IParameterToDummyParameterDTOMapper _parameterMapper;
+      protected IUserSettings _userSettings;
+      private IObjectPathCreatorAtParameter _objectPathCreator;
+      private ObjectBaseDTOToReferenceNodeMapper _referenceMapper;
+      protected IBuildingBlockRepository _buildingBlockRepository;
+
+      protected override void Context()
+      {
+         _view = A.Fake<ISelectReferenceView>();
+         _view = new SelectReferenceView(A.Fake<IImageListRetriever>());
+         _context = A.Fake<IMoBiContext>();
+         _objectBaseDTOMapper = new ObjectBaseToObjectBaseDTOMapper();
+         _moleculeMapper = A.Fake<IObjectBaseToDummyMoleculeDTOMapper>();
+         _parameterMapper = A.Fake<IParameterToDummyParameterDTOMapper>();
+         _userSettings = A.Fake<IUserSettings>();
+         _objectPathCreator = A.Fake<IObjectPathCreatorAtParameter>();
+         _referenceMapper = new ObjectBaseDTOToReferenceNodeMapper(_objectBaseDTOMapper);
+         _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
+         sut = new SelectReferenceAtParameterPresenter(_view, _objectBaseDTOMapper, _context, _userSettings,
+            _moleculeMapper, _parameterMapper, _referenceMapper,
+            _objectPathCreator, _buildingBlockRepository);
+      }
+   }
+
+   internal class When_getting_child_objects_for_an_global_molecule_properties_container_check_trees_text :
+      concern_for_SelectReferencePresenter_with_node_text
+   {
+      private ObjectBaseDTO _dtoDistributedParameter;
+      private IEnumerable<ObjectBaseDTO> _result;
+      protected IEntity localReferencePoint;
+      protected IEnumerable<IObjectBase> contextSpecificEntitiesToAddToReferenceTree;
+      protected IUsingFormula editedObject;
+      private MoBiSpatialStructure _moBiSpatialStructure;
+      private MoBiSpatialStructure _unselectedSpatialStructure;
+      private MoBiSpatialStructure[] _moBiSpatialStructures;
+
+      protected override void Context()
+      {
+
+         base.Context();
+         localReferencePoint = A.Fake<IEntity>();
+         contextSpecificEntitiesToAddToReferenceTree = new List<IObjectBase>();
+         editedObject = A.Fake<IUsingFormula>();
+         var objectBaseRepository = A.Fake<IWithIdRepository>();
+         A.CallTo(() => _context.ObjectRepository).Returns(objectBaseRepository);
+         _moBiSpatialStructure = new MoBiSpatialStructure();
+         _moBiSpatialStructure.Name = "MoBiSpatialStructure 1";
+         _moBiSpatialStructure.Module = new Module { Name = "Module 1" };
+         _moBiSpatialStructure.Id = ShortGuid.NewGuid();
+         _unselectedSpatialStructure = new MoBiSpatialStructure();
+         _unselectedSpatialStructure.Name = "MoBiSpatialStructure 2";
+         _unselectedSpatialStructure.Module = new Module { Name = "Module 2" };
+         _unselectedSpatialStructure.Id = ShortGuid.NewGuid();
+         _moBiSpatialStructures = new[] { _unselectedSpatialStructure, _moBiSpatialStructure };
+         A.CallTo(() => _buildingBlockRepository.SpatialStructureCollection).Returns(_moBiSpatialStructures);
+      }
+
+      protected override void Because()
+      {
+         sut.Init(null, contextSpecificEntitiesToAddToReferenceTree, editedObject);
+      }
+
+      [Observation]
+      public void should_return_nodes_with_specific_properties()
+      {
+         var moBiSpatialStructureNodes = _view.GetNodes(_moBiSpatialStructure as IObjectBase);
+         var unselectedSpatialStructureNodes = _view.GetNodes(_unselectedSpatialStructure as IObjectBase);
+
+         var moBiSpatialStructureNode = moBiSpatialStructureNodes.FirstOrDefault();
+         var unselectedSpatialStructureNode = unselectedSpatialStructureNodes.FirstOrDefault();
+
+         moBiSpatialStructureNode.ShouldNotBeNull();
+         unselectedSpatialStructureNode.ShouldNotBeNull();
+         moBiSpatialStructureNode.Text.ShouldBeEqualTo(_moBiSpatialStructure.DisplayName);
+         unselectedSpatialStructureNode.Text.ShouldBeEqualTo(_unselectedSpatialStructure.DisplayName);
       }
    }
 }
