@@ -1116,7 +1116,7 @@ namespace MoBi.Assets
          public static readonly string AddLocalMoleculeParameters = "Add Local Molecule Parameters";
          public static readonly string AddProteinExpression = "Add Protein Expression";
          public static readonly string OutputSelections = "Output Selections";
-         public static readonly string SettingsAndSchema = "Settings and Schema";
+         public static readonly string SettingsAndSchema = "Output Intervals and Solver Settings";
          public static readonly string MergeBehavior = "Merge Behavior";
 
          public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
