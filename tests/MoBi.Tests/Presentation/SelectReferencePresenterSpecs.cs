@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using FakeItEasy;
+﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
 using MoBi.Core.Services;
@@ -17,6 +15,8 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.UI.Services;
 using OSPSuite.Utility;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MoBi.Presentation
 {
