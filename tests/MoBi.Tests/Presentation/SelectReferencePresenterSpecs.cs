@@ -28,9 +28,9 @@ namespace MoBi.Presentation
       protected IObjectBaseToDummyMoleculeDTOMapper _moleculeMapper;
       protected IParameterToDummyParameterDTOMapper _parameterMapper;
       protected IUserSettings _userSettings;
-      private IObjectPathCreatorAtParameter _objectPathCreator;
-      private IObjectBaseDTOToReferenceNodeMapper _referenceMapper;
-      private IBuildingBlockRepository _buildingBlockRepository;
+      protected IObjectPathCreatorAtParameter _objectPathCreator;
+      protected IObjectBaseDTOToReferenceNodeMapper _referenceMapper;
+      protected IBuildingBlockRepository _buildingBlockRepository;
 
       protected override void Context()
       {
@@ -233,28 +233,16 @@ namespace MoBi.Presentation
       }
    }
 
-   public abstract class concern_for_SelectReferencePresenter_with_node_text : ContextSpecification<ISelectReferencePresenter>
+   public abstract class concern_for_SelectReferencePresenter_with_node_text : concern_for_SelectReferencePresenter
    {
-      protected ISelectReferenceView _view;
-      protected IMoBiContext _context;
       protected ObjectBaseToObjectBaseDTOMapper _objectBaseDTOMapper;
-      protected IObjectBaseToDummyMoleculeDTOMapper _moleculeMapper;
-      protected IParameterToDummyParameterDTOMapper _parameterMapper;
-      protected IUserSettings _userSettings;
-      private IObjectPathCreatorAtParameter _objectPathCreator;
-      private ObjectBaseDTOToReferenceNodeMapper _referenceMapper;
-      protected IBuildingBlockRepository _buildingBlockRepository;
+      protected ObjectBaseDTOToReferenceNodeMapper _referenceMapper;
 
       protected override void Context()
       {
-         _view = A.Fake<ISelectReferenceView>();
+         base.Context();
          _view = new SelectReferenceView(A.Fake<IImageListRetriever>());
-         _context = A.Fake<IMoBiContext>();
          _objectBaseDTOMapper = new ObjectBaseToObjectBaseDTOMapper();
-         _moleculeMapper = A.Fake<IObjectBaseToDummyMoleculeDTOMapper>();
-         _parameterMapper = A.Fake<IParameterToDummyParameterDTOMapper>();
-         _userSettings = A.Fake<IUserSettings>();
-         _objectPathCreator = A.Fake<IObjectPathCreatorAtParameter>();
          _referenceMapper = new ObjectBaseDTOToReferenceNodeMapper(_objectBaseDTOMapper);
          _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
          sut = new SelectReferenceAtParameterPresenter(_view, _objectBaseDTOMapper, _context, _userSettings,
@@ -266,11 +254,6 @@ namespace MoBi.Presentation
    internal class When_getting_child_objects_for_an_global_molecule_properties_container_check_trees_text :
       concern_for_SelectReferencePresenter_with_node_text
    {
-      private ObjectBaseDTO _dtoDistributedParameter;
-      private IEnumerable<ObjectBaseDTO> _result;
-      protected IEntity localReferencePoint;
-      protected IEnumerable<IObjectBase> contextSpecificEntitiesToAddToReferenceTree;
-      protected IUsingFormula editedObject;
       private MoBiSpatialStructure _moBiSpatialStructure;
       private MoBiSpatialStructure _unselectedSpatialStructure;
       private MoBiSpatialStructure[] _moBiSpatialStructures;
@@ -279,26 +262,17 @@ namespace MoBi.Presentation
       {
 
          base.Context();
-         localReferencePoint = A.Fake<IEntity>();
-         contextSpecificEntitiesToAddToReferenceTree = new List<IObjectBase>();
-         editedObject = A.Fake<IUsingFormula>();
-         var objectBaseRepository = A.Fake<IWithIdRepository>();
-         A.CallTo(() => _context.ObjectRepository).Returns(objectBaseRepository);
-         _moBiSpatialStructure = new MoBiSpatialStructure();
-         _moBiSpatialStructure.Name = "MoBiSpatialStructure 1";
+         _moBiSpatialStructure = new MoBiSpatialStructure { Name = "MoBiSpatialStructure 1", Id = ShortGuid.NewGuid() };
          _moBiSpatialStructure.Module = new Module { Name = "Module 1" };
-         _moBiSpatialStructure.Id = ShortGuid.NewGuid();
-         _unselectedSpatialStructure = new MoBiSpatialStructure();
-         _unselectedSpatialStructure.Name = "MoBiSpatialStructure 2";
+         _unselectedSpatialStructure = new MoBiSpatialStructure { Name = "MoBiSpatialStructure 2", Id = ShortGuid.NewGuid() };
          _unselectedSpatialStructure.Module = new Module { Name = "Module 2" };
-         _unselectedSpatialStructure.Id = ShortGuid.NewGuid();
          _moBiSpatialStructures = new[] { _unselectedSpatialStructure, _moBiSpatialStructure };
          A.CallTo(() => _buildingBlockRepository.SpatialStructureCollection).Returns(_moBiSpatialStructures);
       }
 
       protected override void Because()
       {
-         sut.Init(null, contextSpecificEntitiesToAddToReferenceTree, editedObject);
+         sut.Init(null, new List<IObjectBase>(), A.Fake<IUsingFormula>());
       }
 
       [Observation]
