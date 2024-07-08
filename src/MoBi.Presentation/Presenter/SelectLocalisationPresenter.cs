@@ -10,6 +10,7 @@ using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
 
@@ -50,7 +51,7 @@ namespace MoBi.Presentation.Presenter
          {
             Id = spatialStructure.Id,
             Name = spatialStructure.DisplayName,
-            Icon =ApplicationIcons.IconByName(spatialStructure.Icon)
+            Icon = ApplicationIcons.IconByName(spatialStructure.Icon)
          };
 
          if (_localisation.Is(Localisations.ContainerOnly))
@@ -64,7 +65,7 @@ namespace MoBi.Presentation.Presenter
             dto.TopContainers = spatialStructure.TopContainers.MapAllUsing(_dtoContainerMapper);
             dto.Neighborhoods = _dtoContainerMapper.MapFrom(spatialStructure.NeighborhoodsContainer);
          }
- 
+
          return dto;
       }
 
@@ -76,10 +77,10 @@ namespace MoBi.Presentation.Presenter
 
          if (!_modalPresenter.Show())
             return null;
-         
+
          var dto = _view.Selected;
          var selectedEntity = getSelectedEntity(dto);
-         
+
          return isUsableLocalisation(selectedEntity) ? selectedEntity : null;
       }
 
@@ -99,12 +100,18 @@ namespace MoBi.Presentation.Presenter
 
       public IEnumerable<ObjectBaseDTO> GetChildObjects(string parentId)
       {
-         var parent = _context.Get<IContainer>(parentId);
-         if (parent == null)
-            return Enumerable.Empty<ObjectBaseDTO>();
+         var parent = _context.Get(parentId);
 
-         return parent.GetChildrenSortedByName<IContainer>(canAddContainer)
-            .MapAllUsing(_mapper);
+         switch (parent)
+         {
+            case IContainer parentContainer:
+               return parentContainer.GetChildrenSortedByName<IContainer>(canAddContainer)
+                  .MapAllUsing(_mapper);
+            case SpatialStructure spatialStructure:
+               return spatialStructure.TopContainers.MapAllUsing(_mapper);
+            default:
+               return Enumerable.Empty<ObjectBaseDTO>();
+         }
       }
 
       private bool canAddContainer(IContainer container)
