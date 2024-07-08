@@ -1,4 +1,5 @@
-﻿using OSPSuite.DataBinding;
+﻿using System.Windows.Forms;
+using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.UI.Extensions;
@@ -54,7 +55,9 @@ namespace MoBi.UI.Views
 
          _gridViewBinder.Bind(x => x.Dimension).WithRepository(x => _dimensionComboBoxRepository)
             .WithOnValueUpdating((o,e) => OnEvent(() => onDimensionSet(o,e)));
-      }
+
+         _gridViewBinder.GridView.MouseDown += (o, e) => OnEvent(onGridViewMouseDown, e);
+        }
 
       public override string NameColumnCaption => AppConstants.Captions.ParameterName;
 
@@ -77,6 +80,14 @@ namespace MoBi.UI.Views
          });
       }
 
-      private IParameterValuesPresenter parameterValuesPresenter => _presenter.DowncastTo<IParameterValuesPresenter>();
+      private void onGridViewMouseDown(MouseEventArgs e)
+      {
+         if (e.Button != MouseButtons.Right) return;
+         
+         ((ParameterValuesPresenter)_presenter).ShowContextMenu(null, e.Location);
+         return;
+      }
+
+        private IParameterValuesPresenter parameterValuesPresenter => _presenter.DowncastTo<IParameterValuesPresenter>();
    }
 }

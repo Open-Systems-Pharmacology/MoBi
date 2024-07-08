@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Drawing;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
@@ -80,5 +81,9 @@ namespace MoBi.Presentation.Presenter
 
          AddCommand(macroCommand);
       }
+
+      public void ShowContextMenu(object o, Point eLocation) => o=null; // todo remove and implement
+        // _viewItemContextMenuFactory.CreateFor(objectRequestingPopup, this).Show(_view, popupLocation);
+
    }
 }
