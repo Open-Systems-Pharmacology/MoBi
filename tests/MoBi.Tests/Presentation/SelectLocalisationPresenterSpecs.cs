@@ -35,6 +35,35 @@ namespace MoBi.Presentation
       }
    }
 
+   internal class When_getting_child_objects_from_not_found_object : concern_for_SelectLocalisationPresenter
+   {
+      private string _parentId;
+      private SpatialStructure _moBiSpatialStructure;
+      private List<IObjectBase> _result;
+      private IContainer _topContainer;
+
+      protected override void Context()
+      {
+         base.Context();
+         _moBiSpatialStructure = new MoBiSpatialStructure();
+         _topContainer = new Container();
+         _moBiSpatialStructure.AddTopContainer(_topContainer);
+         _parentId = "parentId";
+         A.CallTo(() => _context.Get(_parentId)).Returns(null);
+      }
+
+      protected override void Because()
+      {
+         _result = sut.GetChildObjects(_parentId).Select(x => x.ObjectBase).ToList();
+      }
+
+      [Observation]
+      public void should_return_no_child_objects()
+      {
+         _result.ShouldBeEmpty();
+      }
+   }
+
    internal class When_getting_child_objects_from_spatial_structure : concern_for_SelectLocalisationPresenter
    {
       private string _parentId;
