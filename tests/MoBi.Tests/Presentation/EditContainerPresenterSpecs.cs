@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using FakeItEasy;
+﻿using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
@@ -16,6 +15,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Utility.Extensions;
+using System.Linq;
 
 namespace MoBi.Presentation
 {

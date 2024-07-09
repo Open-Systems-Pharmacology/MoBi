@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-using System.Linq;
-using MoBi.Assets;
+﻿using MoBi.Assets;
 using MoBi.Core.Domain.Repository;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -8,6 +6,7 @@ using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters;
+using System.Linq;
 
 namespace MoBi.Presentation.Presenter
 {

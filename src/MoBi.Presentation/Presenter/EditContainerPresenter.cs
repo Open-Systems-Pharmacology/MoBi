@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Runtime.Remoting.Contexts;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Extensions;
@@ -12,16 +7,16 @@ using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Tasks.Edit;
-using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
-using NHibernate.Criterion;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Extensions;
-using OSPSuite.Core.Journal;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Utility;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MoBi.Presentation.Presenter
 {
