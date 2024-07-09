@@ -11,7 +11,7 @@ namespace MoBi.Presentation.Presenter
 {
    public interface ISelectContainerPresenter : ISelectObjectPathPresenter
    {
-      ObjectPath Select(string parentName = "");
+      ObjectPath Select(string parentName);
    }
 
    public class SelectContainerPresenter : AbstractDisposablePresenter<ISelectObjectPathView, ISelectObjectPathPresenter>, ISelectContainerPresenter
