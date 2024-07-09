@@ -1,10 +1,5 @@
 ﻿using System.Windows.Forms;
-using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.UI.Extensions;
-using OSPSuite.UI.RepositoryItems;
-using OSPSuite.Utility.Extensions;
+using DevExpress.XtraBars;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Formatters;
@@ -12,21 +7,30 @@ using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.UI.Binders;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.RepositoryItems;
+using OSPSuite.UI.Services;
+using OSPSuite.UI.Views;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.UI.Views
 {
-   public partial class ParameterValuesView : BasePathAndValueEntityView<ParameterValueDTO, ParameterValue>, IParameterValuesView
+   public partial class ParameterValuesView : BasePathAndValueEntityView<ParameterValueDTO, ParameterValue>, IParameterValuesView, IViewWithPopup
    {
       private readonly IDimensionFactory _dimensionFactory;
       private readonly UxRepositoryItemComboBox _dimensionComboBoxRepository;
 
-      public ParameterValuesView(IDimensionFactory dimensionFactory, ValueOriginBinder<ParameterValueDTO> valueOriginBinder):base(valueOriginBinder)
+      public ParameterValuesView(IDimensionFactory dimensionFactory, ValueOriginBinder<ParameterValueDTO> valueOriginBinder, IImageListRetriever imageListRetriever) : base(valueOriginBinder)
       {
          InitializeComponent();
-         
+
          _dimensionFactory = dimensionFactory;
          _dimensionComboBoxRepository = new UxRepositoryItemComboBox(gridView);
+         PopupBarManager = new BarManager { Form = this, Images = imageListRetriever.AllImages16x16 };
       }
 
       public void AttachPresenter(IParameterValuesPresenter presenter)
@@ -54,10 +58,10 @@ namespace MoBi.UI.Views
             .WithOnValueUpdating((o, e) => parameterValuesPresenter.SetFormula(o, e.NewValue.Formula));
 
          _gridViewBinder.Bind(x => x.Dimension).WithRepository(x => _dimensionComboBoxRepository)
-            .WithOnValueUpdating((o,e) => OnEvent(() => onDimensionSet(o,e)));
+            .WithOnValueUpdating((o, e) => OnEvent(() => onDimensionSet(o, e)));
 
          _gridViewBinder.GridView.MouseDown += (o, e) => OnEvent(onGridViewMouseDown, e);
-        }
+      }
 
       public override string NameColumnCaption => AppConstants.Captions.ParameterName;
 
@@ -83,11 +87,12 @@ namespace MoBi.UI.Views
       private void onGridViewMouseDown(MouseEventArgs e)
       {
          if (e.Button != MouseButtons.Right) return;
-         
+
          ((ParameterValuesPresenter)_presenter).ShowContextMenu(null, e.Location);
-         return;
       }
 
-        private IParameterValuesPresenter parameterValuesPresenter => _presenter.DowncastTo<IParameterValuesPresenter>();
+      private IParameterValuesPresenter parameterValuesPresenter => _presenter.DowncastTo<IParameterValuesPresenter>();
+
+      public BarManager PopupBarManager { get; }
    }
 }
