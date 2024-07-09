@@ -189,16 +189,16 @@ namespace MoBi.Presentation
       [Observation]
       public void should_update_the_parent_path_if_a_selection_was_made()
       {
-         A.CallTo(() => _selectContainerPresenter.Select()).Returns(new ObjectPath("A", "B", "C"));
-         sut.UpdateParentPath();
+         A.CallTo(() => _selectContainerPresenter.Select(string.Empty)).Returns(new ObjectPath("A", "B", "C"));
+         sut.UpdateParentPath(string.Empty);
          _container.ParentPath.PathAsString.ShouldBeEqualTo("A|B|C");
       }
 
       [Observation]
       public void should_not_update_the_parent_path_if_the_user_canceled_the_action()
       {
-         A.CallTo(() => _selectContainerPresenter.Select()).Returns(null);
-         sut.UpdateParentPath();
+         A.CallTo(() => _selectContainerPresenter.Select(string.Empty)).Returns(null);
+         sut.UpdateParentPath(string.Empty);
          _container.ParentPath.PathAsString.ShouldBeEqualTo("A|B");
       }
    }

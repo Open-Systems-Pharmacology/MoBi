@@ -26,7 +26,7 @@ namespace MoBi.Presentation.Presenter
       bool ReadOnly { set; }
       void SetName(string name);
       void SetParentPath(string parentPath);
-      void UpdateParentPath();
+      void UpdateParentPath(string parentPath);
       string ContainerModeDisplayFor(ContainerMode mode);
       IReadOnlyList<ContainerMode> AllContainerModes { get; }
       void SetContainerMode(ContainerMode newContainerMode);
@@ -61,11 +61,11 @@ namespace MoBi.Presentation.Presenter
          AddSubPresenters(_tagsPresenter);
       }
 
-      public void UpdateParentPath()
+      public void UpdateParentPath(string parentName)
       {
          using (var presenter = _applicationController.Start<ISelectContainerPresenter>())
          {
-            var objectPath = presenter.Select();
+            var objectPath = presenter.Select(parentName);
             if (objectPath == null) return;
             SetParentPath(objectPath);
          }

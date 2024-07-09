@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Drawing;
+using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Repository;
 using MoBi.Presentation.Mappers;
@@ -10,7 +11,7 @@ namespace MoBi.Presentation.Presenter
 {
    public interface ISelectContainerPresenter : ISelectObjectPathPresenter
    {
-      ObjectPath Select();
+      ObjectPath Select(string parentName = "");
    }
 
    public class SelectContainerPresenter : AbstractDisposablePresenter<ISelectObjectPathView, ISelectObjectPathPresenter>, ISelectContainerPresenter
@@ -34,16 +35,24 @@ namespace MoBi.Presentation.Presenter
          _selectContainerInTreePresenter.OnSelectedEntityChanged += (o, e) => _view.OkEnabled = e != null;
       }
 
-      public ObjectPath Select()
+      public ObjectPath Select(string parentName)
       {
-         init();
+         init(parentName);
          _view.Display();
          return _view.Canceled ? null : _selectContainerInTreePresenter.SelectedEntityPath;
       }
 
-      private void init()
+      private void init(string parentName)
       {
-         var list = _buildingBlockRepository.SpatialStructureCollection.Select(x => _moduleToModuleAndSpatialStructureDTOMapper.MapFrom(x.Module)).ToList();
+         var list = _buildingBlockRepository.SpatialStructureCollection.Select(x => _moduleToModuleAndSpatialStructureDTOMapper.MapFrom(x.Module))
+            .Select(item =>
+            {
+               item.SpatialStructure.TopContainers = item.SpatialStructure.TopContainers
+                  .Where(container => container.Name != parentName)
+                  .ToList();
+               return item;
+            })
+            .ToList();
          _selectContainerInTreePresenter.InitTreeStructure(list);
       }
    }
