@@ -24,9 +24,9 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          var allMenuItems = new IMenuBarItem[]
          {
-            CreateMenuButton.WithCaption(AppConstants.Captions.CopyPath)
+            CreateMenuButton.WithCaption(AppConstants.MenuNames.NewParameterValue)
                .WithActionCommand(() => _presenter.AddNewEmptyPathAndValueEntity())
-               .WithIcon(ApplicationIcons.Copy)
+               .WithIcon(ApplicationIcons.Add)
          };
          return allMenuItems;
       }
