@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
-using MoBi.Presentation.DTO;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
