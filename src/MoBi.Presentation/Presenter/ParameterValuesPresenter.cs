@@ -13,12 +13,14 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Presenters.ContextMenus;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IParameterValuesPresenter : IExtendablePathAndValueBuildingBlockPresenter<ParameterValueDTO>, IEditPresenter<ParameterValuesBuildingBlock>
-   {
+   public interface IParameterValuesPresenter : IExtendablePathAndValueBuildingBlockPresenter<ParameterValueDTO>, IEditPresenter<ParameterValuesBuildingBlock>, IPresenterWithContextMenu<IViewItem>
+    {
       void UpdateDimension(ParameterValueDTO valueObject, IDimension newDimension);
    }
 
@@ -32,6 +34,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IParameterValuesTask _parameterValuesTask;
       private readonly IDisplayUnitRetriever _displayUnitRetriever;
       private readonly IParameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper _parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper;
+      private IViewItemContextMenuFactory _viewItemContextMenuFactory;
 
       public ParameterValuesPresenter(
          IParameterValuesView view,
@@ -44,12 +47,14 @@ namespace MoBi.Presentation.Presenter
          IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper,
          IParameterValueDistributedPathAndValueEntityPresenter distributedParameterPresenter,
          IParameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper,
-         IDimensionFactory dimensionFactory)
+         IDimensionFactory dimensionFactory, 
+         IViewItemContextMenuFactory viewItemContextMenuFactory)
          : base(view, valueMapper, parameterValuesTask, parameterValuesCreator, context, deletePathAndValueEntityPresenter, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
       {
          _parameterValuesTask = parameterValuesTask;
          _displayUnitRetriever = displayUnitRetriever;
          _parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper = parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper;
+         _viewItemContextMenuFactory = viewItemContextMenuFactory;
          view.HideIsPresentView();
          view.HideRefreshView();
          view.HideNegativeValuesAllowedView();
@@ -82,8 +87,7 @@ namespace MoBi.Presentation.Presenter
          AddCommand(macroCommand);
       }
 
-      public void ShowContextMenu(object o, Point eLocation) => o=null; // todo remove and implement
-        // _viewItemContextMenuFactory.CreateFor(objectRequestingPopup, this).Show(_view, popupLocation);
-
-   }
+        public void ShowContextMenu(IViewItem objectRequestingPopup, Point popupLocation) => 
+           _viewItemContextMenuFactory.CreateFor(objectRequestingPopup, this).Show(_view, popupLocation);
+    }
 }
