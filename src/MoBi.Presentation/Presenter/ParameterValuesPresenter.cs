@@ -8,6 +8,7 @@ using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
+using NHibernate.Util;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
@@ -20,8 +21,9 @@ using OSPSuite.Presentation.Presenters.ContextMenus;
 namespace MoBi.Presentation.Presenter
 {
    public interface IParameterValuesPresenter : IExtendablePathAndValueBuildingBlockPresenter<ParameterValueDTO>, IEditPresenter<ParameterValuesBuildingBlock>, IPresenterWithContextMenu<IViewItem>
-    {
+   {
       void UpdateDimension(ParameterValueDTO valueObject, IDimension newDimension);
+      void AddNewParameterValue();
    }
 
    public class ParameterValuesPresenter
@@ -34,7 +36,9 @@ namespace MoBi.Presentation.Presenter
       private readonly IParameterValuesTask _parameterValuesTask;
       private readonly IDisplayUnitRetriever _displayUnitRetriever;
       private readonly IParameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper _parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper;
-      private IViewItemContextMenuFactory _viewItemContextMenuFactory;
+      private readonly IViewItemContextMenuFactory _viewItemContextMenuFactory;
+      private readonly IModalPresenter _modalPresenter;
+      private readonly ISelectContainerInTreePresenter _presenter;
 
       public ParameterValuesPresenter(
          IParameterValuesView view,
@@ -47,14 +51,20 @@ namespace MoBi.Presentation.Presenter
          IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper,
          IParameterValueDistributedPathAndValueEntityPresenter distributedParameterPresenter,
          IParameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper,
-         IDimensionFactory dimensionFactory, 
-         IViewItemContextMenuFactory viewItemContextMenuFactory)
+         IDimensionFactory dimensionFactory,
+         IViewItemContextMenuFactory viewItemContextMenuFactory,
+         IModalPresenter modalPresenter,
+         ISelectContainerInTreePresenter presenter)
          : base(view, valueMapper, parameterValuesTask, parameterValuesCreator, context, deletePathAndValueEntityPresenter, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
       {
          _parameterValuesTask = parameterValuesTask;
          _displayUnitRetriever = displayUnitRetriever;
          _parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper = parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper;
          _viewItemContextMenuFactory = viewItemContextMenuFactory;
+         _modalPresenter = modalPresenter;
+         _presenter = presenter;
+         _modalPresenter.Encapsulate(this);
+         _modalPresenter.Text = AppConstants.Captions.SelectLocalReferencePoint;
          view.HideIsPresentView();
          view.HideRefreshView();
          view.HideNegativeValuesAllowedView();
@@ -87,7 +97,17 @@ namespace MoBi.Presentation.Presenter
          AddCommand(macroCommand);
       }
 
-        public void ShowContextMenu(IViewItem objectRequestingPopup, Point popupLocation) => 
-           _viewItemContextMenuFactory.CreateFor(objectRequestingPopup, this).Show(_view, popupLocation);
-    }
+      public void ShowContextMenu(IViewItem objectRequestingPopup, Point popupLocation) =>
+         _viewItemContextMenuFactory.CreateFor(objectRequestingPopup, this).Show(_view, popupLocation);
+
+      public void AddNewParameterValue()
+      {
+         IReadOnlyList<ObjectBaseDTO> list = new List<ObjectBaseDTO>();
+         _presenter.InitTreeStructure(list);
+         _modalPresenter.Encapsulate(_presenter);
+         if (!_modalPresenter.Show())
+            return;
+         AddNewEmptyPathAndValueEntity();
+      }
+   }
 }

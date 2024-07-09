@@ -22,13 +22,10 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       public override IEnumerable<IMenuBarItem> AllMenuItems()
       {
-         var allMenuItems = new IMenuBarItem[]
-         {
-            CreateMenuButton.WithCaption(AppConstants.MenuNames.NewParameterValue)
-               .WithActionCommand(() => _presenter.AddNewEmptyPathAndValueEntity())
-               .WithIcon(ApplicationIcons.Add)
-         };
-         return allMenuItems;
+         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.NewParameterValue)
+            .WithActionCommand(() => _presenter.AddNewParameterValue())
+            .WithIcon(ApplicationIcons.Add);
+
       }
    }
 }
