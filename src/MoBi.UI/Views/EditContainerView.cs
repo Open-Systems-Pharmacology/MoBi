@@ -6,6 +6,7 @@ using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using MoBi.UI.Extensions;
 using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
@@ -66,7 +67,7 @@ namespace MoBi.UI.Views
 
       private void ParentButtonClick()
       {
-         _presenter.UpdateParentPath(_containerDTO?.Name ?? string.Empty);
+         _presenter.UpdateParentPath(_containerDTO);
       }
 
       public void Activate()

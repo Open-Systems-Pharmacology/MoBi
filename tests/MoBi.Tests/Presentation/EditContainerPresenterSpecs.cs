@@ -2,9 +2,11 @@
 using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
+using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -27,7 +29,7 @@ namespace MoBi.Presentation
       private ITagsPresenter _tagsPresenter;
       protected IApplicationController _applicationController;
       protected ICommandCollector _commandCollector;
-
+      protected InteractionTasksForContainer _tasksForContainer;
       protected override void Context()
       {
          _view = A.Fake<IEditContainerView>();
@@ -37,6 +39,7 @@ namespace MoBi.Presentation
          _context = A.Fake<IMoBiContext>();
          _tagsPresenter = A.Fake<ITagsPresenter>();
          _applicationController = A.Fake<IApplicationController>();
+         _tasksForContainer = A.Fake<InteractionTasksForContainer>();
          sut = new EditContainerPresenter(_view, _containerMapper, _editTasks, _parametersInContainerPresenter, _context, _tagsPresenter, _applicationController);
          _commandCollector = new MoBiMacroCommand();
          sut.InitializeWith(_commandCollector);
@@ -174,7 +177,7 @@ namespace MoBi.Presentation
       private IContainer _container;
       private SpatialStructure _buildingBlock;
       private ISelectContainerPresenter _selectContainerPresenter;
-
+      private ContainerDTO _containter = new ContainerDTO(null);
       protected override void Context()
       {
          base.Context();
@@ -189,16 +192,16 @@ namespace MoBi.Presentation
       [Observation]
       public void should_update_the_parent_path_if_a_selection_was_made()
       {
-         A.CallTo(() => _selectContainerPresenter.Select(string.Empty)).Returns(new ObjectPath("A", "B", "C"));
-         sut.UpdateParentPath(string.Empty);
+         A.CallTo(() => _selectContainerPresenter.Select(_containter)).Returns(new ObjectPath("A", "B", "C"));
+         sut.UpdateParentPath(_containter);
          _container.ParentPath.PathAsString.ShouldBeEqualTo("A|B|C");
       }
 
       [Observation]
       public void should_not_update_the_parent_path_if_the_user_canceled_the_action()
       {
-         A.CallTo(() => _selectContainerPresenter.Select(string.Empty)).Returns(null);
-         sut.UpdateParentPath(string.Empty);
+         A.CallTo(() => _selectContainerPresenter.Select(_containter)).Returns(null);
+         sut.UpdateParentPath(_containter);
          _container.ParentPath.PathAsString.ShouldBeEqualTo("A|B");
       }
    }

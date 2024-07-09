@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Extensions;
@@ -10,11 +12,14 @@ using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Tasks.Edit;
+using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
+using NHibernate.Criterion;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Journal;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Utility;
 
@@ -26,7 +31,7 @@ namespace MoBi.Presentation.Presenter
       bool ReadOnly { set; }
       void SetName(string name);
       void SetParentPath(string parentPath);
-      void UpdateParentPath(string parentPath);
+      void UpdateParentPath(ContainerDTO containerDTO);
       string ContainerModeDisplayFor(ContainerMode mode);
       IReadOnlyList<ContainerMode> AllContainerModes { get; }
       void SetContainerMode(ContainerMode newContainerMode);
@@ -40,7 +45,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IEditTaskForContainer _editTasks;
       private ContainerDTO _containerDTO;
       private readonly ITagsPresenter _tagsPresenter;
-      private readonly IApplicationController _applicationController;
+      private readonly IApplicationController _applicationController; 
 
       public EditContainerPresenter(
          IEditContainerView view,
@@ -61,11 +66,11 @@ namespace MoBi.Presentation.Presenter
          AddSubPresenters(_tagsPresenter);
       }
 
-      public void UpdateParentPath(string parentName)
+      public void UpdateParentPath(ContainerDTO containerDTO)
       {
          using (var presenter = _applicationController.Start<ISelectContainerPresenter>())
          {
-            var objectPath = presenter.Select(parentName);
+            var objectPath = presenter.Select(containerDTO);
             if (objectPath == null) return;
             SetParentPath(objectPath);
          }

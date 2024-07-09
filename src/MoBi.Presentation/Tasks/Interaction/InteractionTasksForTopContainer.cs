@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Tasks.Edit;
@@ -9,6 +10,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 {
    public interface IInteractionTasksForTopContainer : IInteractionTasksForChildren<MoBiSpatialStructure, IContainer>
    {
+      ObjectPath BuildObjectPath(IContainer container);
    }
 
    public class InteractionTasksForTopContainer : InteractionTasksForContainerBase<MoBiSpatialStructure>, IInteractionTasksForTopContainer
@@ -41,6 +43,9 @@ namespace MoBi.Presentation.Tasks.Interaction
          newEntity.ContainerType = ContainerType.Organism;
          return newEntity;
       }
+
+      public ObjectPath BuildObjectPath(IContainer container) 
+         => new ObjectPath(container?.ParentPath ?? string.Empty, container?.Name ?? string.Empty);
 
       protected override IMoBiCommand AddNeighborhoodsToSpatialStructure(IReadOnlyList<NeighborhoodBuilder> neighborhoods, MoBiSpatialStructure spatialStructure)
       {

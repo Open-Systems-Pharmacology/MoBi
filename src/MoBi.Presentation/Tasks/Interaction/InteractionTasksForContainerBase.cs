@@ -19,7 +19,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 {
    public abstract class InteractionTasksForContainerBase<TParent> : InteractionTasksForChildren<TParent, IContainer> where TParent : class, IObjectBase
    {
-      private readonly IObjectPathFactory _objectPathFactory;
+      protected readonly IObjectPathFactory _objectPathFactory;
       private readonly IParameterValuesTask _parameterValuesTask;
 
       protected InteractionTasksForContainerBase(
