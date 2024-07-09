@@ -241,12 +241,7 @@ namespace MoBi.Presentation.Presenter
       protected void AddSpatialStructures()
       {
          var spatialStructures = _buildingBlockRepository.SpatialStructureCollection;
-         var nodes = spatialStructures.Select(x =>
-         {
-            var mapped = _referenceMapper.MapFrom(x);
-            mapped.Text = x.DisplayName;
-            return mapped;
-         });
+         var nodes = spatialStructures.Select(x => _referenceMapper.MapFrom(x).WithText(x.DisplayName));
 
          _view.AddNodes(nodes);
       }
