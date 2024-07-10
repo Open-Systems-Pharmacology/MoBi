@@ -115,10 +115,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             return;
 
          parameterValuesBuildingBlock.Name = parameterValuesBuildingBlock.Name.Replace(oldName, newName);
-         parameterValuesBuildingBlock.Each(x =>
-         {
-            x.ContainerPath.Replace(oldName, newName);
-         });
+         parameterValuesBuildingBlock.Each(x => { x.ContainerPath.Replace(oldName, newName); });
       }
 
       private ICommand addParameterValues(ParameterValuesBuildingBlock parameterValues, Module module)

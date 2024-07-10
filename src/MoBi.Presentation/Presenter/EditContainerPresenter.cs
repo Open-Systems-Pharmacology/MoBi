@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Extensions;
@@ -15,9 +18,6 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Utility;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace MoBi.Presentation.Presenter
 {

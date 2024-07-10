@@ -1,7 +1,7 @@
-﻿using FakeItEasy;
+﻿using System.Linq;
+using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
-using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
@@ -15,7 +15,6 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Utility.Extensions;
-using System.Linq;
 
 namespace MoBi.Presentation
 {
@@ -30,6 +29,7 @@ namespace MoBi.Presentation
       protected IApplicationController _applicationController;
       protected ICommandCollector _commandCollector;
       private IInteractionTasksForTopContainer _tasksForTopContainer;
+
       protected override void Context()
       {
          _view = A.Fake<IEditContainerView>();
@@ -178,6 +178,7 @@ namespace MoBi.Presentation
       private SpatialStructure _buildingBlock;
       private ISelectContainerPresenter _selectContainerPresenter;
       private ObjectPath _excludedObjectPath;
+
       protected override void Context()
       {
          base.Context();
@@ -190,6 +191,7 @@ namespace MoBi.Presentation
          A.CallTo(() => _applicationController.Start<ISelectContainerPresenter>()).Returns(_selectContainerPresenter);
          A.CallTo(() => _selectContainerPresenter.Select(_excludedObjectPath)).Returns(new ObjectPath("A", "B", "C"));
       }
+
       protected override void Because()
       {
          sut.UpdateParentPath();
@@ -201,12 +203,14 @@ namespace MoBi.Presentation
          _container.ParentPath.PathAsString.ShouldBeEqualTo("A|B|C");
       }
    }
+
    public class When_the_edit_container_presenter_is_updating_the_parent_path_and_user_cancels : concern_for_EditContainerPresenter
    {
       private IContainer _container;
       private SpatialStructure _buildingBlock;
       private ISelectContainerPresenter _selectContainerPresenter;
       private ObjectPath _excludedObjectPath;
+
       protected override void Context()
       {
          base.Context();

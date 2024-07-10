@@ -1,10 +1,9 @@
-﻿using MoBi.Core.Commands;
+﻿using System.Collections.Generic;
+using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using System.Collections.Generic;
-using MoBi.Presentation.Mappers;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
@@ -29,7 +28,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public override IMoBiCommand GetRemoveCommand(IContainer entityToRemove, MoBiSpatialStructure parent, IBuildingBlock buildingBlock)
       {
-         return new RemoveTopContainerCommand((MoBiSpatialStructure) buildingBlock, entityToRemove);
+         return new RemoveTopContainerCommand((MoBiSpatialStructure)buildingBlock, entityToRemove);
       }
 
       public override IMoBiCommand GetAddCommand(IContainer container, MoBiSpatialStructure spatialStructure, IBuildingBlock buildingBlock)
@@ -52,7 +51,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          objectPath.AddAtFront(container.ParentPath);
          return objectPath;
-      }  
+      }
 
       protected override IMoBiCommand AddNeighborhoodsToSpatialStructure(IReadOnlyList<NeighborhoodBuilder> neighborhoods, MoBiSpatialStructure spatialStructure)
       {

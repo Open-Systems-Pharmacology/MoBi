@@ -89,7 +89,6 @@ namespace MoBi.Presentation.Tasks
       {
          A.CallTo(() => _parameterValuesTask.ExtendBuildingBlockWith(_existingParameterValuesBuildingBlock, A<IReadOnlyList<ParameterValue>>.That.Contains(_parameterValuesBuildingBlock.First()))).MustHaveHappened();
       }
-
    }
 
    internal class When_importing_a_spatial_structure_transfer_into_a_container_and_there_isnt_a_parameter_values_building_block_in_the_same_module : concern_for_InteractionTasksForTopContainer
@@ -226,10 +225,11 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _interactionTaskForNeighborhood.AddTo(A<IReadOnlyList<IContainer>>.That.Contains(_importedNeighborhood), _spatialStructure.NeighborhoodsContainer, _spatialStructure)).MustHaveHappened();
       }
    }
+
    internal class When_building_object_path_with_parentPath : concern_for_InteractionTasksForTopContainer
    {
       private IContainer _topContainter;
-      
+
       protected override void Context()
       {
          base.Context();
@@ -243,7 +243,6 @@ namespace MoBi.Presentation.Tasks
          var objectPath = sut.BuildObjectPath(_topContainter);
          objectPath.PathAsString.ShouldBeEqualTo($"{_topContainter.ParentPath}|{_topContainter.Name}");
       }
-
    }
 
    internal class When_building_object_path_with_no_parentPath : concern_for_InteractionTasksForTopContainer
