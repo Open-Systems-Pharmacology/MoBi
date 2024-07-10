@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using FakeItEasy;
+﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
 using MoBi.Core.Services;
@@ -10,10 +8,15 @@ using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
+using MoBi.UI.Views;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.UI.Services;
+using OSPSuite.Utility;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MoBi.Presentation
 {
@@ -25,9 +28,9 @@ namespace MoBi.Presentation
       protected IObjectBaseToDummyMoleculeDTOMapper _moleculeMapper;
       protected IParameterToDummyParameterDTOMapper _parameterMapper;
       protected IUserSettings _userSettings;
-      private IObjectPathCreatorAtParameter _objectPathCreator;
-      private IObjectBaseDTOToReferenceNodeMapper _referenceMapper;
-      private IBuildingBlockRepository _buildingBlockRepository;
+      protected IObjectPathCreatorAtParameter _objectPathCreator;
+      protected IObjectBaseDTOToReferenceNodeMapper _referenceMapper;
+      protected IBuildingBlockRepository _buildingBlockRepository;
 
       protected override void Context()
       {
@@ -227,6 +230,64 @@ namespace MoBi.Presentation
       public void should_return_an_empty_list()
       {
          _result.ShouldBeEmpty();
+      }
+   }
+
+   public abstract class concern_for_SelectReferencePresenter_with_node_text : concern_for_SelectReferencePresenter
+   {
+      protected ObjectBaseToObjectBaseDTOMapper _objectBaseDTOMapper;
+      protected ObjectBaseDTOToReferenceNodeMapper _referenceMapper;
+
+      protected override void Context()
+      {
+         base.Context();
+         _view = new SelectReferenceView(A.Fake<IImageListRetriever>());
+         _objectBaseDTOMapper = new ObjectBaseToObjectBaseDTOMapper();
+         _referenceMapper = new ObjectBaseDTOToReferenceNodeMapper(_objectBaseDTOMapper);
+         _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
+         sut = new SelectReferenceAtParameterPresenter(_view, _objectBaseDTOMapper, _context, _userSettings,
+            _moleculeMapper, _parameterMapper, _referenceMapper,
+            _objectPathCreator, _buildingBlockRepository);
+      }
+   }
+
+   internal class When_getting_child_objects_for_an_global_molecule_properties_container_check_trees_text :
+      concern_for_SelectReferencePresenter_with_node_text
+   {
+      private MoBiSpatialStructure _moBiSpatialStructure;
+      private MoBiSpatialStructure _unselectedSpatialStructure;
+      private MoBiSpatialStructure[] _moBiSpatialStructures;
+
+      protected override void Context()
+      {
+
+         base.Context();
+         _moBiSpatialStructure = new MoBiSpatialStructure { Name = "MoBiSpatialStructure 1", Id = ShortGuid.NewGuid() };
+         _moBiSpatialStructure.Module = new Module { Name = "Module 1" };
+         _unselectedSpatialStructure = new MoBiSpatialStructure { Name = "MoBiSpatialStructure 2", Id = ShortGuid.NewGuid() };
+         _unselectedSpatialStructure.Module = new Module { Name = "Module 2" };
+         _moBiSpatialStructures = new[] { _unselectedSpatialStructure, _moBiSpatialStructure };
+         A.CallTo(() => _buildingBlockRepository.SpatialStructureCollection).Returns(_moBiSpatialStructures);
+      }
+
+      protected override void Because()
+      {
+         sut.Init(null, new List<IObjectBase>(), A.Fake<IUsingFormula>());
+      }
+
+      [Observation]
+      public void should_return_nodes_with_specific_properties()
+      {
+         var moBiSpatialStructureNodes = _view.GetNodes(_moBiSpatialStructure as IObjectBase);
+         var unselectedSpatialStructureNodes = _view.GetNodes(_unselectedSpatialStructure as IObjectBase);
+
+         var moBiSpatialStructureNode = moBiSpatialStructureNodes.FirstOrDefault();
+         var unselectedSpatialStructureNode = unselectedSpatialStructureNodes.FirstOrDefault();
+
+         moBiSpatialStructureNode.ShouldNotBeNull();
+         unselectedSpatialStructureNode.ShouldNotBeNull();
+         moBiSpatialStructureNode.Text.ShouldBeEqualTo(_moBiSpatialStructure.DisplayName);
+         unselectedSpatialStructureNode.Text.ShouldBeEqualTo(_unselectedSpatialStructure.DisplayName);
       }
    }
 }
