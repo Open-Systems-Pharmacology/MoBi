@@ -23,7 +23,6 @@ namespace MoBi.UI.Views
       protected ScreenBinder<ContainerDTO> _screenBinder;
       protected bool _readOnly;
       private readonly UserLookAndFeel _lookAndFeel;
-      private ContainerDTO _containerDTO;
 
       public EditContainerView(UserLookAndFeel lookAndFeel)
       {
@@ -61,12 +60,7 @@ namespace MoBi.UI.Views
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
 
          btName.ButtonClick += (o, e) => OnEvent(_presenter.RenameSubject);
-         btParentPath.ButtonClick += (o, e) => OnEvent(ParentButtonClick);
-      }
-
-      private void ParentButtonClick()
-      {
-         _presenter.UpdateParentPath(_containerDTO);
+         btParentPath.ButtonClick += (o, e) => OnEvent(_presenter.UpdateParentPath);
       }
 
       public void Activate()
@@ -107,7 +101,6 @@ namespace MoBi.UI.Views
 
       public virtual void BindTo(ContainerDTO dto)
       {
-         _containerDTO = dto;
          _screenBinder.BindToSource(dto);
          initNameControl(dto);
          initParentPathControl(dto);

@@ -7,6 +7,7 @@ using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Tasks.Edit;
+using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
@@ -26,7 +27,7 @@ namespace MoBi.Presentation.Presenter
       bool ReadOnly { set; }
       void SetName(string name);
       void SetParentPath(string parentPath);
-      void UpdateParentPath(ContainerDTO containerDTO);
+      void UpdateParentPath();
       string ContainerModeDisplayFor(ContainerMode mode);
       IReadOnlyList<ContainerMode> AllContainerModes { get; }
       void SetContainerMode(ContainerMode newContainerMode);
@@ -40,7 +41,8 @@ namespace MoBi.Presentation.Presenter
       private readonly IEditTaskForContainer _editTasks;
       private ContainerDTO _containerDTO;
       private readonly ITagsPresenter _tagsPresenter;
-      private readonly IApplicationController _applicationController; 
+      private readonly IApplicationController _applicationController;
+      private readonly IInteractionTasksForTopContainer _tasksForTopContainer;
 
       public EditContainerPresenter(
          IEditContainerView view,
@@ -49,23 +51,25 @@ namespace MoBi.Presentation.Presenter
          IEditParametersInContainerPresenter editParametersInContainerPresenter,
          IMoBiContext context,
          ITagsPresenter tagsPresenter,
-         IApplicationController applicationController)
+         IApplicationController applicationController,
+         IInteractionTasksForTopContainer tasksForTopContainer)
          : base(view, editParametersInContainerPresenter, context, editTasks)
       {
          _containerMapper = containerMapper;
          _tagsPresenter = tagsPresenter;
          _applicationController = applicationController;
          _editTasks = editTasks;
+         _tasksForTopContainer = tasksForTopContainer;
          _view.AddParameterView(editParametersInContainerPresenter.BaseView);
          _view.AddTagsView(_tagsPresenter.BaseView);
          AddSubPresenters(_tagsPresenter);
       }
 
-      public void UpdateParentPath(ContainerDTO containerDTO)
+      public void UpdateParentPath()
       {
          using (var presenter = _applicationController.Start<ISelectContainerPresenter>())
          {
-            var objectPath = presenter.Select(containerDTO);
+            var objectPath = presenter.Select(_tasksForTopContainer.BuildObjectPath(_container));
             if (objectPath == null) return;
             SetParentPath(objectPath);
          }

@@ -4,6 +4,7 @@ using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using System.Collections.Generic;
+using MoBi.Presentation.Mappers;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
@@ -43,8 +44,15 @@ namespace MoBi.Presentation.Tasks.Interaction
          return newEntity;
       }
 
-      public ObjectPath BuildObjectPath(IContainer container) 
-         => new ObjectPath(container?.ParentPath ?? string.Empty, container?.Name ?? string.Empty);
+      public ObjectPath BuildObjectPath(IContainer container)
+      {
+         var objectPath = _objectPathFactory.CreateAbsoluteObjectPath(container);
+         if (container.ParentPath == null)
+            return objectPath;
+
+         objectPath.AddAtFront(container.ParentPath);
+         return objectPath;
+      }  
 
       protected override IMoBiCommand AddNeighborhoodsToSpatialStructure(IReadOnlyList<NeighborhoodBuilder> neighborhoods, MoBiSpatialStructure spatialStructure)
       {

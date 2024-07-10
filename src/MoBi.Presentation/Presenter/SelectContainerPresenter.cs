@@ -7,12 +7,13 @@ using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters;
 using System.Linq;
+using FluentNHibernate.Utils;
 
 namespace MoBi.Presentation.Presenter
 {
    public interface ISelectContainerPresenter : ISelectObjectPathPresenter
    {
-      ObjectPath Select(ContainerDTO containerDTO);
+      ObjectPath Select(ObjectPath excludedObjectPath);
    }
 
    public class SelectContainerPresenter : AbstractDisposablePresenter<ISelectObjectPathView, ISelectObjectPathPresenter>, ISelectContainerPresenter
@@ -39,26 +40,23 @@ namespace MoBi.Presentation.Presenter
          _tasksForTopContainer = tasksForTopContainer;
       }
 
-      public ObjectPath Select(ContainerDTO containerDTO)
+      public ObjectPath Select(ObjectPath excludedObjectPath)
       {
-         init(containerDTO);
+         init(excludedObjectPath);
          _view.Display();
          return _view.Canceled ? null : _selectContainerInTreePresenter.SelectedEntityPath;
       }
 
-      private void init(ContainerDTO containerDTO)
+      private void init(ObjectPath excludedObjectPath)
       {
-         var parentObjectPath = _tasksForTopContainer.BuildObjectPath(containerDTO.ObjectBase as IContainer);
-         var list = _buildingBlockRepository.SpatialStructureCollection.Select(x => _moduleToModuleAndSpatialStructureDTOMapper.MapFrom(x.Module))
-            .Select(item =>
-            {
-               item.SpatialStructure.TopContainers = item.SpatialStructure.TopContainers
-                  .Where(container => !parentObjectPath.Equals(_tasksForTopContainer.BuildObjectPath(container.ObjectBase as IContainer)))
-                  .ToList();
-               return item;
-            })
-            .ToList();
+         var list = _buildingBlockRepository.SpatialStructureCollection.Select(x => _moduleToModuleAndSpatialStructureDTOMapper.MapFrom(x.Module)).ToList();
+         list.Each(item => removeTopContainersWithPath(item, excludedObjectPath));
          _selectContainerInTreePresenter.InitTreeStructure(list);
       }
+
+      private void removeTopContainersWithPath(ModuleAndSpatialStructureDTO item, ObjectPath excludedObjectPath ) =>
+         item.SpatialStructure.TopContainers = item.SpatialStructure.TopContainers
+            .Where(containerDTO => containerDTO.ObjectBase is IContainer container && !excludedObjectPath.Equals(_tasksForTopContainer.BuildObjectPath(container)))
+            .ToList();
    }
 }
