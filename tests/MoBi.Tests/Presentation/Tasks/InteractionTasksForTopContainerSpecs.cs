@@ -228,20 +228,20 @@ namespace MoBi.Presentation.Tasks
 
    internal class When_building_object_path_with_parentPath : concern_for_InteractionTasksForTopContainer
    {
-      private IContainer _topContainter;
+      private IContainer _topContainer;
 
       protected override void Context()
       {
          base.Context();
-         _topContainter = new Container().WithName("Muscle");
-         _topContainter.ParentPath = new ObjectPath("Organism");
+         _topContainer = new Container().WithName("Muscle");
+         _topContainer.ParentPath = new ObjectPath("Organism");
       }
 
       [Observation]
       public void should_return_object_path_with_parent_and_name()
       {
-         var objectPath = sut.BuildObjectPath(_topContainter);
-         objectPath.PathAsString.ShouldBeEqualTo($"{_topContainter.ParentPath}|{_topContainter.Name}");
+         var objectPath = sut.BuildObjectPath(_topContainer);
+         objectPath.PathAsString.ShouldBeEqualTo($"{_topContainer.ParentPath}|{_topContainer.Name}");
       }
    }
 
