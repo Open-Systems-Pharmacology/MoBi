@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using DevExpress.XtraEditors.Controls;
+using DevExpress.XtraLayout.Utils;
 using MoBi.Assets;
 using MoBi.Core.Domain;
 using MoBi.Presentation.DTO;
@@ -143,6 +144,10 @@ namespace MoBi.UI.Views
             _changeLocalisationAllowed = value;
             btEditSelectLocalisation.Properties.Buttons[0].Enabled = _changeLocalisationAllowed;
             btEditSelectLocalisation.Properties.Buttons[0].Visible = _changeLocalisationAllowed;
+
+            var localisationVisibility = value ? LayoutVisibility.Always : LayoutVisibility.Never;
+            layoutItemRadioGroup.Visibility = localisationVisibility;
+            layoutItemLocalisation.Visibility = localisationVisibility;
          }
       }
 
