@@ -33,9 +33,9 @@ namespace MoBi.Presentation.Presenter
    {
       protected readonly IPathAndValueEntityToPathAndValueEntityDTOMapper<TPathAndValueEntity, TStartValueDTO> _valueMapper;
 
-      private readonly IInteractionTasksForExtendablePathAndValueEntity<TBuildingBlock, TPathAndValueEntity> _interactionTasksForExtendablePathAndValueEntity;
+      protected readonly IInteractionTasksForExtendablePathAndValueEntity<TBuildingBlock, TPathAndValueEntity> _interactionTasksForExtendablePathAndValueEntity;
       protected BindingList<TStartValueDTO> _startValueDTOs;
-      private readonly IEmptyStartValueCreator<TPathAndValueEntity> _emptyStartValueCreator;
+      protected readonly IEmptyStartValueCreator<TPathAndValueEntity> _emptyStartValueCreator;
       protected readonly IMoBiContext _context;
       private bool _handleChangedEvents;
       private TPathAndValueEntity _focusedStartValue;
@@ -90,10 +90,12 @@ namespace MoBi.Presentation.Presenter
             pathAndValueEntity: _emptyStartValueCreator.CreateEmptyStartValue(_interactionTasksForExtendablePathAndValueEntity.GetDefaultDimension()),
             buildingBlock: _buildingBlock
          ));
-         bindToView();
+         BindToView();
       }
 
-      public bool CanCreateNewFormula
+
+
+        public bool CanCreateNewFormula
       {
          set { _view.CanCreateNewFormula = value; }
       }
@@ -161,13 +163,13 @@ namespace MoBi.Presentation.Presenter
       {
          if (buildingBlock == null) return;
          _startValueDTOs = ValueDTOsFor(buildingBlock).OrderBy(pathAndValueEntity => IsOriginalStartValue(pathAndValueEntity)).ToBindingList();
-         bindToView();
+         BindToView();
          initializeColumns();
       }
 
       protected abstract IReadOnlyList<TStartValueDTO> ValueDTOsFor(TBuildingBlock buildingBlock);
 
-      private void bindToView()
+      protected void BindToView()
       {
          _view.BindTo(_startValueDTOs);
       }

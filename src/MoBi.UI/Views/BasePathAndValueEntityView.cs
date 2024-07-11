@@ -273,7 +273,8 @@ namespace MoBi.UI.Views
          _pathElementsColumns[i].XtraColumn.VisibleIndex = previousColumn.XtraColumn.VisibleIndex + 1;
       }
 
-      protected void OnNameSet(TPathAndValueEntity startValueDTO, PropertyValueSetEventArgs<string> eventArgs) => _presenter.UpdatePathAndValueEntityName(startValueDTO, eventArgs.NewValue);
+      protected void OnNameSet(TPathAndValueEntity startValueDTO, PropertyValueSetEventArgs<string> eventArgs) 
+         => _presenter.UpdatePathAndValueEntityName(startValueDTO, eventArgs.NewValue);
 
       private void configureGridView()
       {

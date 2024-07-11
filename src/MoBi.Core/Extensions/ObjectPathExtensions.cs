@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.Core.Domain;
 
 namespace MoBi.Core.Extensions
@@ -17,5 +18,8 @@ namespace MoBi.Core.Extensions
          }
          return new ObjectPath(containerPath);
       }
+
+
+      public static ObjectPath ContainerPath(this ObjectPath objectPath) => ContainerPath(objectPath.ToArray());
    }
 }

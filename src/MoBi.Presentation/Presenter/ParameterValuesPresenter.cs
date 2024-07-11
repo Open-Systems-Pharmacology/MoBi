@@ -1,14 +1,15 @@
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
-using NHibernate.Util;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
@@ -38,7 +39,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IParameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper _parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper;
       private readonly IViewItemContextMenuFactory _viewItemContextMenuFactory;
       private readonly IModalPresenter _modalPresenter;
-      private readonly ISelectContainerInTreePresenter _presenter;
+      private readonly ISelectReferenceAtParameterValuePresenter _referenceAtParamValuePresenter;
 
       public ParameterValuesPresenter(
          IParameterValuesView view,
@@ -54,15 +55,14 @@ namespace MoBi.Presentation.Presenter
          IDimensionFactory dimensionFactory,
          IViewItemContextMenuFactory viewItemContextMenuFactory,
          IModalPresenter modalPresenter,
-         ISelectContainerInTreePresenter presenter)
-         : base(view, valueMapper, parameterValuesTask, parameterValuesCreator, context, deletePathAndValueEntityPresenter, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
+         ISelectReferenceAtParameterValuePresenter selectReferenceAtParameterValuePresenter) : base(view, valueMapper, parameterValuesTask, parameterValuesCreator, context, deletePathAndValueEntityPresenter, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
       {
          _parameterValuesTask = parameterValuesTask;
          _displayUnitRetriever = displayUnitRetriever;
          _parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper = parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper;
          _viewItemContextMenuFactory = viewItemContextMenuFactory;
          _modalPresenter = modalPresenter;
-         _presenter = presenter;
+         _referenceAtParamValuePresenter = selectReferenceAtParameterValuePresenter;
          _modalPresenter.Encapsulate(this);
          _modalPresenter.Text = AppConstants.Captions.SelectLocalReferencePoint;
          view.HideIsPresentView();
@@ -102,12 +102,31 @@ namespace MoBi.Presentation.Presenter
 
       public void AddNewParameterValue()
       {
-         IReadOnlyList<ObjectBaseDTO> list = new List<ObjectBaseDTO>();
-         _presenter.InitTreeStructure(list);
-         _modalPresenter.Encapsulate(_presenter);
+         _referenceAtParamValuePresenter.Init(null, new List<IObjectBase>(), null);
+
+         _modalPresenter.Encapsulate(_referenceAtParamValuePresenter);
          if (!_modalPresenter.Show())
             return;
-         AddNewEmptyPathAndValueEntity();
+
+         AddNewEmptyPathAndValueEntity(_referenceAtParamValuePresenter.GetSelection());
+         _view.InitializePathColumns();
       }
-   }
+
+      public void AddNewEmptyPathAndValueEntity(ObjectPath entityPath)
+      {
+         var newParameterValue = _emptyStartValueCreator.CreateEmptyStartValue(_interactionTasksForExtendablePathAndValueEntity.GetDefaultDimension());
+         newParameterValue.Path = entityPath;
+
+
+         // newRecord.ContainerPath = entityPath.ContainerPath();
+         // newRecord.Name = entityPath.Last();
+         // newRecord.ParameterValue.Name = entityPath.Last();
+
+
+         var newRecord = _valueMapper.MapFrom(newParameterValue, _buildingBlock);
+
+         _startValueDTOs.Insert(0, newRecord);
+         BindToView();
+      }
+    }
 }
