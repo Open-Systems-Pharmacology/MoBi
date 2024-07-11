@@ -56,7 +56,7 @@ namespace MoBi.Presentation.Presenter
 
       protected IEntity EntityFrom(ObjectBaseDTO dto) => _context.Get<IEntity>(dto.Id);
 
-      public ObjectPath SelectedEntityPath => SelectedEntity != null ? _objectPathFactory.CreateAbsoluteObjectPath(SelectedEntity) : null;
+      public virtual ObjectPath SelectedEntityPath => SelectedEntity != null ? _objectPathFactory.CreateAbsoluteObjectPath(SelectedEntity) : null;
 
       public virtual void SelectObjectBaseDTO(ObjectBaseDTO dto)
       {

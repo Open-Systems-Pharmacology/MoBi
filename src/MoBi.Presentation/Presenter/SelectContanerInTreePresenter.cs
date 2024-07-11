@@ -4,6 +4,7 @@ using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
+using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
@@ -18,16 +19,21 @@ namespace MoBi.Presentation.Presenter
    public class SelectContainerInTreePresenter : SelectEntityInTreePresenter, ISelectContainerInTreePresenter
    {
       private readonly IContainerToContainerDTOMapper _containerDTOMapper;
+      private readonly IInteractionTasksForTopContainer _tasksForTopContainer;
 
       public SelectContainerInTreePresenter(ISelectEntityInTreeView view,
          IObjectPathFactory objectPathFactory,
          IMoBiContext context,
          IContainerToContainerDTOMapper containerDTOMapper,
-         IObjectBaseDTOToSpatialStructureNodeMapper spatialStructureNodeMapper) : base(view, objectPathFactory, context, spatialStructureNodeMapper)
+         IObjectBaseDTOToSpatialStructureNodeMapper spatialStructureNodeMapper,
+         IInteractionTasksForTopContainer tasksForTopContainer) : base(view, objectPathFactory, context, spatialStructureNodeMapper)
       {
          _containerDTOMapper = containerDTOMapper;
+         _tasksForTopContainer = tasksForTopContainer;
          GetChildren = getChildren;
       }
+
+      public override ObjectPath SelectedEntityPath => _tasksForTopContainer.BuildObjectPath(SelectedEntity as IContainer);
 
       private IReadOnlyList<ObjectBaseDTO> getChildren(ObjectBaseDTO parentDTO)
       {

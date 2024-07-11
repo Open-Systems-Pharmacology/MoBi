@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
+using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -20,6 +20,7 @@ namespace MoBi.Presentation
       protected ISelectEntityInTreeView _view;
       protected IObjectPathFactory _objectPathFactory;
       protected IMoBiContext _context;
+      protected IInteractionTasksForTopContainer _tasksForTopContainer;
 
       protected override void Context()
       {
@@ -28,7 +29,8 @@ namespace MoBi.Presentation
          _context = A.Fake<IMoBiContext>();
          _containerDTOMapper = A.Fake<IContainerToContainerDTOMapper>();
          _objectBaseToSpatialStructureNodeMapper = A.Fake<IObjectBaseDTOToSpatialStructureNodeMapper>();
-         sut = new SelectContainerInTreePresenter(_view, _objectPathFactory, _context, _containerDTOMapper, _objectBaseToSpatialStructureNodeMapper);
+         _tasksForTopContainer = A.Fake<IInteractionTasksForTopContainer>();
+         sut = new SelectContainerInTreePresenter(_view, _objectPathFactory, _context, _containerDTOMapper, _objectBaseToSpatialStructureNodeMapper, _tasksForTopContainer);
       }
    }
 
@@ -75,7 +77,6 @@ namespace MoBi.Presentation
          base.Context();
          _buildingBlock = new ParameterValuesBuildingBlock().WithId("id");
          A.CallTo(() => _context.Get<IEntity>(_buildingBlock.Id)).Returns(null);
-
       }
 
       protected override void Because()
@@ -100,7 +101,6 @@ namespace MoBi.Presentation
          base.Context();
          _distributedParameter = new DistributedParameter().WithId("distParm");
          A.CallTo(() => _context.Get<IEntity>(_distributedParameter.Id)).Returns(_distributedParameter);
-
       }
 
       protected override void Because()
@@ -112,6 +112,31 @@ namespace MoBi.Presentation
       public void should_return_an_empty_list()
       {
          _children.ShouldBeEmpty();
+      }
+   }
+
+   internal class When_presenting_a_selected_entity_path : concern_for_SelectContainerInTreePresenter
+   {
+      private Container _topContainer;
+
+      protected override void Context()
+      {
+         base.Context();
+         _topContainer = new Container().WithName("Muscle").WithId("id");
+         _topContainer.ParentPath = new ObjectPath("Organism");
+         A.CallTo(() => _context.Get<IEntity>(_topContainer.Id)).Returns(_topContainer);
+         A.CallTo(() => _view.Selected).Returns(new ObjectBaseDTO(_topContainer));
+      }
+
+      protected override void Because()
+      {
+         var objectPath = sut.SelectedEntityPath;
+      }
+
+      [Observation]
+      public void should_return_correct_path()
+      {
+         A.CallTo(() => _tasksForTopContainer.BuildObjectPath(_topContainer)).MustHaveHappened();
       }
    }
 }

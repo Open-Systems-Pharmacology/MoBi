@@ -5,6 +5,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
+using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -27,6 +28,7 @@ namespace MoBi.Presentation
       private ITagsPresenter _tagsPresenter;
       protected IApplicationController _applicationController;
       protected ICommandCollector _commandCollector;
+      private IInteractionTasksForTopContainer _tasksForTopContainer;
 
       protected override void Context()
       {
@@ -37,7 +39,8 @@ namespace MoBi.Presentation
          _context = A.Fake<IMoBiContext>();
          _tagsPresenter = A.Fake<ITagsPresenter>();
          _applicationController = A.Fake<IApplicationController>();
-         sut = new EditContainerPresenter(_view, _containerMapper, _editTasks, _parametersInContainerPresenter, _context, _tagsPresenter, _applicationController);
+         _tasksForTopContainer = A.Fake<IInteractionTasksForTopContainer>();
+         sut = new EditContainerPresenter(_view, _containerMapper, _editTasks, _parametersInContainerPresenter, _context, _tagsPresenter, _applicationController, _tasksForTopContainer);
          _commandCollector = new MoBiMacroCommand();
          sut.InitializeWith(_commandCollector);
       }
@@ -89,7 +92,7 @@ namespace MoBi.Presentation
          base.Context();
          _parentPath = "NewPath";
          _muscleInterstitialPath = new FormulaUsablePath("A", "B", "Muscle", "Interstitial");
-         _muscle = new Container {ParentPath = new ObjectPath("A", "B")}.WithName("Muscle");
+         _muscle = new Container { ParentPath = new ObjectPath("A", "B") }.WithName("Muscle");
          _neighborhoodReferencingContainer = new NeighborhoodBuilder
          {
             FirstNeighborPath = _muscleInterstitialPath,
@@ -174,31 +177,61 @@ namespace MoBi.Presentation
       private IContainer _container;
       private SpatialStructure _buildingBlock;
       private ISelectContainerPresenter _selectContainerPresenter;
+      private ObjectPath _excludedObjectPath;
 
       protected override void Context()
       {
          base.Context();
-         _container = new Container {ParentPath = new ObjectPath("A", "B")};
+         _container = new Container { ParentPath = new ObjectPath("A", "B") };
          _buildingBlock = new SpatialStructure();
+         _excludedObjectPath = new ObjectPath();
          sut.Edit(_container);
          sut.BuildingBlock = _buildingBlock;
          _selectContainerPresenter = A.Fake<ISelectContainerPresenter>();
          A.CallTo(() => _applicationController.Start<ISelectContainerPresenter>()).Returns(_selectContainerPresenter);
+         A.CallTo(() => _selectContainerPresenter.Select(_excludedObjectPath)).Returns(new ObjectPath("A", "B", "C"));
+      }
+
+      protected override void Because()
+      {
+         sut.UpdateParentPath();
       }
 
       [Observation]
-      public void should_update_the_parent_path_if_a_selection_was_made()
+      public void should_update_the_parent_path()
       {
-         A.CallTo(() => _selectContainerPresenter.Select()).Returns(new ObjectPath("A", "B", "C"));
-         sut.UpdateParentPath();
          _container.ParentPath.PathAsString.ShouldBeEqualTo("A|B|C");
       }
+   }
+
+   public class When_the_edit_container_presenter_is_updating_the_parent_path_and_user_cancels : concern_for_EditContainerPresenter
+   {
+      private IContainer _container;
+      private SpatialStructure _buildingBlock;
+      private ISelectContainerPresenter _selectContainerPresenter;
+      private ObjectPath _excludedObjectPath;
+
+      protected override void Context()
+      {
+         base.Context();
+         _container = new Container { ParentPath = new ObjectPath("A", "B") };
+         _buildingBlock = new SpatialStructure();
+         _excludedObjectPath = new ObjectPath();
+         sut.Edit(_container);
+         sut.BuildingBlock = _buildingBlock;
+         _selectContainerPresenter = A.Fake<ISelectContainerPresenter>();
+         A.CallTo(() => _applicationController.Start<ISelectContainerPresenter>()).Returns(_selectContainerPresenter);
+         A.CallTo(() => _selectContainerPresenter.Select(_excludedObjectPath)).Returns(null);
+      }
+
+      protected override void Because()
+      {
+         sut.UpdateParentPath();
+      }
 
       [Observation]
-      public void should_not_update_the_parent_path_if_the_user_canceled_the_action()
+      public void should_not_update_the_parent_path()
       {
-         A.CallTo(() => _selectContainerPresenter.Select()).Returns(null);
-         sut.UpdateParentPath();
          _container.ParentPath.PathAsString.ShouldBeEqualTo("A|B");
       }
    }

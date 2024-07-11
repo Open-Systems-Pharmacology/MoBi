@@ -89,7 +89,6 @@ namespace MoBi.Presentation.Tasks
       {
          A.CallTo(() => _parameterValuesTask.ExtendBuildingBlockWith(_existingParameterValuesBuildingBlock, A<IReadOnlyList<ParameterValue>>.That.Contains(_parameterValuesBuildingBlock.First()))).MustHaveHappened();
       }
-
    }
 
    internal class When_importing_a_spatial_structure_transfer_into_a_container_and_there_isnt_a_parameter_values_building_block_in_the_same_module : concern_for_InteractionTasksForTopContainer
@@ -224,6 +223,43 @@ namespace MoBi.Presentation.Tasks
       public void should_add_the_neighborhood_to_the_spatial_structure_via_the_dedicated_task()
       {
          A.CallTo(() => _interactionTaskForNeighborhood.AddTo(A<IReadOnlyList<IContainer>>.That.Contains(_importedNeighborhood), _spatialStructure.NeighborhoodsContainer, _spatialStructure)).MustHaveHappened();
+      }
+   }
+
+   internal class When_building_object_path_with_parentPath : concern_for_InteractionTasksForTopContainer
+   {
+      private IContainer _topContainer;
+
+      protected override void Context()
+      {
+         base.Context();
+         _topContainer = new Container().WithName("Muscle");
+         _topContainer.ParentPath = new ObjectPath("Organism");
+      }
+
+      [Observation]
+      public void should_return_object_path_with_parent_and_name()
+      {
+         var objectPath = sut.BuildObjectPath(_topContainer);
+         objectPath.PathAsString.ShouldBeEqualTo($"{_topContainer.ParentPath}|{_topContainer.Name}");
+      }
+   }
+
+   internal class When_building_object_path_with_no_parentPath : concern_for_InteractionTasksForTopContainer
+   {
+      private IContainer _topContainer;
+
+      protected override void Context()
+      {
+         base.Context();
+         _topContainer = new Container().WithName("Muscle");
+      }
+
+      [Observation]
+      public void should_return_object_path_with_name_only()
+      {
+         var objectPath = sut.BuildObjectPath(_topContainer);
+         objectPath.PathAsString.ShouldBeEqualTo($"{_topContainer.Name}");
       }
    }
 }
