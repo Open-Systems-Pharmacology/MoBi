@@ -368,7 +368,7 @@ namespace MoBi.UI.Views
 
       public string ParentName
       {
-         set => lblParentName.Text = value.FormatForLabel(checkCase: false);
+         set => lblParentName.Text = string.IsNullOrEmpty(value) ? "New passive transport:" : value.FormatForLabel(checkCase: false);
       }
 
       public void SetEditParameterView(IView subView)
