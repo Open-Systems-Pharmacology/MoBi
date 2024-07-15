@@ -286,7 +286,6 @@ namespace MoBi.UI.Views
          return repository;
       }
 
-    
       public void BindTo(IEnumerable<ParameterDTO> parameters)
       {
          chkShowAdvancedParameter.Checked = _presenter.ShowAdvancedParameters;

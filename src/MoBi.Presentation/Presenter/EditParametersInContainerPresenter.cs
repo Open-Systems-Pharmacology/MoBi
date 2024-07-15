@@ -15,7 +15,6 @@ using MoBi.Presentation.Views;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
@@ -374,7 +373,7 @@ namespace MoBi.Presentation.Presenter
 
          if (parameter.IsAnImplementationOf<IDistributedParameter>())
          {
-            _editDistributedParameterPresenter.Edit((IDistributedParameter) parameter);
+            _editDistributedParameterPresenter.Edit((IDistributedParameter)parameter);
             _view.SetEditParameterView(_editDistributedParameterPresenter.View);
          }
          else

@@ -6,13 +6,13 @@ using OSPSuite.Presentation.Views;
 
 namespace MoBi.Presentation.Views
 {
-   public interface IEditParametersInContainerView :  IView<IEditParametersInContainerPresenter>
+   public interface IEditParametersInContainerView : IView<IEditParametersInContainerPresenter>
    {
       void SetNameForContainer(IContainer container);
       void BindTo(IEnumerable<ParameterDTO> dtos);
       EditParameterMode EditMode { get; set; }
       bool ShowBuildMode { get; set; }
-      string ParentName {  set; }
+      string ParentName { set; }
       void SetEditParameterView(IView view);
       void RefreshList();
       void Select(ParameterDTO parameterToSelect);
