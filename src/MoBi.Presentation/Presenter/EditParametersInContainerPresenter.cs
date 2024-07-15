@@ -15,6 +15,7 @@ using MoBi.Presentation.Views;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
@@ -72,6 +73,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IEditDistributedParameterPresenter _editDistributedParameterPresenter;
       private readonly IEditParameterPresenter _editParameterPresenter;
       private bool _ignoreAddEvents;
+
       public bool ChangeLocalisationAllowed { set; private get; }
 
       public EditParametersInContainerPresenter(IEditParametersInContainerView view,
@@ -109,7 +111,7 @@ namespace MoBi.Presentation.Presenter
          RhsReference = getNewReferencePresenterFor(container);
          ShowBuildMode = container.CanSetBuildModeForParameters();
          ParameterBuildModes = container.AvailableBuildModeForParameters();
-         _view.ParentName = container.Name;
+         _view.SetNameForContainer(container);
          createParameterCache(_getParametersFunc(container));
          showParameters();
       }

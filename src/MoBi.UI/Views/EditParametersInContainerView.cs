@@ -17,6 +17,7 @@ using MoBi.UI.Extensions;
 using MoBi.UI.Services;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
@@ -55,8 +56,9 @@ namespace MoBi.UI.Views
       private readonly RepositoryItemButtonEdit _removeButtonRepository = new UxRepositoryItemButtonEdit(ButtonPredefines.Delete);
       private RepositoryItemButtonEdit _nameButtonRepository;
       private readonly UxRepositoryItemCheckEdit _checkBoxRepository;
+      private readonly IObjectTypeResolver _typeResolver;
 
-      public EditParametersInContainerView(IToolTipCreator toolTipCreator, ValueOriginBinder<ParameterDTO> valueOriginBinder)
+      public EditParametersInContainerView(IToolTipCreator toolTipCreator, ValueOriginBinder<ParameterDTO> valueOriginBinder, IObjectTypeResolver typeResolver)
       {
          _toolTipCreator = toolTipCreator;
          _valueOriginBinder = valueOriginBinder;
@@ -79,6 +81,7 @@ namespace MoBi.UI.Views
          toolTipController.GetActiveObjectInfo += onToolTipControllerGetActiveObjectInfo;
 
          _checkBoxRepository = new UxRepositoryItemCheckEdit(_gridView);
+         _typeResolver = typeResolver;
       }
 
       private void hideEditor()
@@ -283,6 +286,7 @@ namespace MoBi.UI.Views
          return repository;
       }
 
+    
       public void BindTo(IEnumerable<ParameterDTO> parameters)
       {
          chkShowAdvancedParameter.Checked = _presenter.ShowAdvancedParameters;
@@ -368,8 +372,11 @@ namespace MoBi.UI.Views
 
       public string ParentName
       {
-         set => lblParentName.Text = string.IsNullOrEmpty(value) ? "New passive transport:" : value.FormatForLabel(checkCase: false);
+         set => lblParentName.Text = value.FormatForLabel(checkCase: false);
       }
+
+      public void SetNameForContainer(IContainer container) =>
+         lblParentName.Text = string.IsNullOrEmpty(container.Name) ? $"New {_typeResolver.TypeFor(container)}".FormatForLabel(checkCase: false) : container.Name.FormatForLabel(checkCase: false);
 
       public void SetEditParameterView(IView subView)
       {
