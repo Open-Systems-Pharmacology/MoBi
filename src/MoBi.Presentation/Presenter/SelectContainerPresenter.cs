@@ -21,14 +21,15 @@ namespace MoBi.Presentation.Presenter
       private readonly ISelectContainerInTreePresenter _selectContainerInTreePresenter;
       private readonly IModuleToModuleAndSpatialStructureDTOMapper _moduleToModuleAndSpatialStructureDTOMapper;
       private readonly IBuildingBlockRepository _buildingBlockRepository;
-      private readonly IInteractionTasksForTopContainer _tasksForTopContainer;
+      protected readonly IObjectPathFactory _objectPathFactory;
 
       public SelectContainerPresenter(
          ISelectObjectPathView view,
          ISelectContainerInTreePresenter selectContainerInTreePresenter,
          IModuleToModuleAndSpatialStructureDTOMapper moduleToModuleAndSpatialStructureDTOMapper,
          IBuildingBlockRepository buildingBlockRepository,
-         IInteractionTasksForTopContainer tasksForTopContainer) : base(view)
+         IInteractionTasksForTopContainer tasksForTopContainer,
+         IObjectPathFactory objectPathFactory) : base(view)
       {
          _selectContainerInTreePresenter = selectContainerInTreePresenter;
          _moduleToModuleAndSpatialStructureDTOMapper = moduleToModuleAndSpatialStructureDTOMapper;
@@ -37,7 +38,7 @@ namespace MoBi.Presentation.Presenter
          _view.Caption = AppConstants.Captions.SelectContainer;
          _view.AddSelectionView(_selectContainerInTreePresenter.View);
          _selectContainerInTreePresenter.OnSelectedEntityChanged += (o, e) => _view.OkEnabled = e != null;
-         _tasksForTopContainer = tasksForTopContainer;
+         _objectPathFactory = objectPathFactory;
       }
 
       public ObjectPath Select(ObjectPath excludedObjectPath)
@@ -56,7 +57,7 @@ namespace MoBi.Presentation.Presenter
 
       private void removeTopContainersWithPath(ModuleAndSpatialStructureDTO dto, ObjectPath excludedObjectPath) =>
          dto.SpatialStructure.TopContainers = dto.SpatialStructure.TopContainers
-            .Where(containerDTO => containerDTO.ObjectBase is IContainer container && !excludedObjectPath.Equals(_tasksForTopContainer.BuildObjectPath(container)))
+            .Where(containerDTO => containerDTO.ObjectBase is IContainer container && !excludedObjectPath.Equals(_objectPathFactory.CreateAbsoluteObjectPath(container)))
             .ToList();
    }
 }

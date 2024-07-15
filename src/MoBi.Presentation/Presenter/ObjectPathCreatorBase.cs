@@ -9,6 +9,7 @@ using MoBi.Presentation.DTO;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.UnitSystem;
+using MoBi.Presentation.Tasks.Interaction;
 
 namespace MoBi.Presentation.Presenter
 {
