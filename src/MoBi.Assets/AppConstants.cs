@@ -1289,10 +1289,8 @@ namespace MoBi.Assets
 
          public static string CouldNotFindDimension(string dimension) => $"Could not find the dimension: {dimension}";
 
-         public static string CannotRemoveParameter(string parameterName, string containerName, string containerType)
-         {
-            return string.Format("Parameter '{0}' is a mandatory parameter of {2} '{1}' and cannot be removed.", parameterName, containerName, containerType.ToLowerInvariant());
-         }
+         public static string CannotRemoveParameter(string parameterName, string containerName, string containerType) => 
+            $"Parameter '{parameterName}' is a mandatory parameter of {containerType.ToLowerInvariant()} '{containerName}' and cannot be removed.";
 
          public static string AliasNotUnique(string alias, string formulaName) => $"Alias '{alias}' is not unique in formula '{formulaName}'.";
 
