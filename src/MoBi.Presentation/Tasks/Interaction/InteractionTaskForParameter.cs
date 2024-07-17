@@ -143,9 +143,6 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (container == null)
             return true;
 
-         if (parameter.IsNamed(Constants.Parameters.VOLUME) && container.Mode == ContainerMode.Physical)
-            return false;
-
          if (parameter.IsNamed(Constants.Parameters.CONCENTRATION) && container.IsAnImplementationOf<MoleculeBuilder>())
             return false;
 
