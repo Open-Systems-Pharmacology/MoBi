@@ -15,8 +15,10 @@ using MoBi.Presentation.Views;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Events;
@@ -72,6 +74,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IEditDistributedParameterPresenter _editDistributedParameterPresenter;
       private readonly IEditParameterPresenter _editParameterPresenter;
       private bool _ignoreAddEvents;
+      private readonly IObjectTypeResolver _typeResolver;
 
       public bool ChangeLocalisationAllowed { set; private get; }
 
@@ -86,7 +89,8 @@ namespace MoBi.Presentation.Presenter
          IClipboardManager clipboardManager,
          IEditTaskFor<IParameter> editTask,
          ISelectReferencePresenterFactory selectReferencePresenterFactory,
-         IFavoriteTask favoriteTask)
+         IFavoriteTask favoriteTask, 
+         IObjectTypeResolver typeResolver)
          : base(view, quantityTask, interactionTaskContext, formulaMapper, parameterTask, favoriteTask)
       {
          _clipboardManager = clipboardManager;
@@ -101,6 +105,7 @@ namespace MoBi.Presentation.Presenter
          AddSubPresenters(_editDistributedParameterPresenter, _editParameterPresenter);
          _getParametersFunc = x => x.GetChildrenSortedByName<IParameter>();
          ChangeLocalisationAllowed = true;
+         _typeResolver = typeResolver;
       }
 
       public void Edit(IContainer container)
@@ -110,7 +115,7 @@ namespace MoBi.Presentation.Presenter
          RhsReference = getNewReferencePresenterFor(container);
          ShowBuildMode = container.CanSetBuildModeForParameters();
          ParameterBuildModes = container.AvailableBuildModeForParameters();
-         _view.SetNameForContainer(container);
+         _view.ParentName = getContainerName(container);
          createParameterCache(_getParametersFunc(container));
          showParameters();
       }
@@ -160,6 +165,11 @@ namespace MoBi.Presentation.Presenter
          var referencePresenter = _selectReferencePresenterFactory.ReferenceAtParameterFor(container);
          referencePresenter.ChangeLocalisationAllowed = ChangeLocalisationAllowed;
          return referencePresenter;
+      }
+
+      private string getContainerName(IContainer container)
+      {
+         return string.IsNullOrEmpty(container.Name) ? $"New {_typeResolver.TypeFor(container)}" : container.Name;
       }
 
       public void Select(IParameter parameter)

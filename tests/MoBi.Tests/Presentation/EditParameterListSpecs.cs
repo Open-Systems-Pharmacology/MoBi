@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using DevExpress.XtraEditors;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
@@ -9,15 +11,19 @@ using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
+using MoBi.UI.Services;
+using MoBi.UI.Views;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.DTO;
+using OSPSuite.UI.Binders;
 
 namespace MoBi.Presentation
 {
@@ -37,10 +43,11 @@ namespace MoBi.Presentation
       private IEditTaskFor<IParameter> _editTask;
       protected ISelectReferencePresenterFactory _selectReferencePresenterFactory;
       protected IFavoriteTask _favoriteTask;
+      protected IObjectTypeResolver _typeResolver;
 
       protected override void Context()
       {
-         _view = A.Fake<IEditParametersInContainerView>();
+         _view = new EditParametersInContainerView(A.Fake<IToolTipCreator>(), A.Fake<ValueOriginBinder<ParameterDTO>>());
          _formulaMapper = A.Fake<IFormulaToFormulaBuilderDTOMapper>();
          _parameterMapper = A.Fake<IParameterToParameterDTOMapper>();
          _inteactionTasks = A.Fake<IInteractionTasksForParameter>();
@@ -56,8 +63,9 @@ namespace MoBi.Presentation
          _editTask = A.Fake<IEditTaskFor<IParameter>>();
          _selectReferencePresenterFactory = A.Fake<ISelectReferencePresenterFactory>();
          _favoriteTask = A.Fake<IFavoriteTask>();
+         _typeResolver = A.Fake<IObjectTypeResolver>();
          sut = new EditParametersInContainerPresenter(_view, _formulaMapper, _parameterMapper, _inteactionTasks,
-            _distributeParameterPresenter, _parameterPresenter, _quantityTask, _interactionTaskContext, _clipboardManager, _editTask, _selectReferencePresenterFactory, _favoriteTask);
+            _distributeParameterPresenter, _parameterPresenter, _quantityTask, _interactionTaskContext, _clipboardManager, _editTask, _selectReferencePresenterFactory, _favoriteTask, _typeResolver);
          sut.InitializeWith(A.Fake<ICommandCollector>());
       }
    }
@@ -144,7 +152,7 @@ namespace MoBi.Presentation
          _parameter.Value = _value;
 
          _parameter.IsFixedValue = true;
-         _parameterDTO = new ParameterDTO(_parameter) {Value = _setValue};
+         _parameterDTO = new ParameterDTO(_parameter) { Value = _setValue };
          sut.BuildingBlock = _buildingBlock;
       }
 
@@ -373,6 +381,62 @@ namespace MoBi.Presentation
       public void should_tell_quantuity_task_to_set_vlaue()
       {
          A.CallTo(() => _favoriteTask.SetParameterFavorite(_parameter, true)).MustHaveHappened();
+      }
+   }
+
+   public class When_containter_does_not_have_a_name : concern_for_EditParameterListPresenter
+   {
+      private IContainer _container;
+      private readonly string _containterType = "Container";
+
+      protected override void Context()
+      {
+         base.Context();
+         _container = new Container();
+         A.CallTo(() => _typeResolver.TypeFor(_container)).Returns(_containterType);
+      }
+
+      protected override void Because()
+      {
+         sut.Edit(_container);
+      }
+
+      [Observation]
+      public void edit_must_be_called_after_pasting()
+      {
+         var lblParentNameField = _view.GetType()
+            .GetField("lblParentName", BindingFlags.NonPublic | BindingFlags.Instance);
+         var lblParentName = (LabelControl)lblParentNameField.GetValue(_view);
+
+         lblParentName.Text.ShouldBeEqualTo($"New {_containterType}:");
+      }
+   }
+
+   public class When_containter_does_have_a_name : concern_for_EditParameterListPresenter
+   {
+      private IContainer _container;
+      private readonly string _containterName = "Container Name";
+
+      protected override void Context()
+      {
+         base.Context();
+         _container = new Container();
+         _container.Name = _containterName;
+      }
+
+      protected override void Because()
+      {
+         sut.Edit(_container);
+      }
+
+      [Observation]
+      public void edit_must_be_called_after_pasting()
+      {
+         var lblParentNameField = _view.GetType()
+            .GetField("lblParentName", BindingFlags.NonPublic | BindingFlags.Instance);
+         var lblParentName = (LabelControl)lblParentNameField.GetValue(_view);
+
+         lblParentName.Text.ShouldBeEqualTo($"{_containterName}:");
       }
    }
 }

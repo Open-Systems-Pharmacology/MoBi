@@ -56,9 +56,9 @@ namespace MoBi.UI.Views
       private readonly RepositoryItemButtonEdit _removeButtonRepository = new UxRepositoryItemButtonEdit(ButtonPredefines.Delete);
       private RepositoryItemButtonEdit _nameButtonRepository;
       private readonly UxRepositoryItemCheckEdit _checkBoxRepository;
-      private readonly IObjectTypeResolver _typeResolver;
+      
 
-      public EditParametersInContainerView(IToolTipCreator toolTipCreator, ValueOriginBinder<ParameterDTO> valueOriginBinder, IObjectTypeResolver typeResolver)
+      public EditParametersInContainerView(IToolTipCreator toolTipCreator, ValueOriginBinder<ParameterDTO> valueOriginBinder)
       {
          _toolTipCreator = toolTipCreator;
          _valueOriginBinder = valueOriginBinder;
@@ -81,7 +81,7 @@ namespace MoBi.UI.Views
          toolTipController.GetActiveObjectInfo += onToolTipControllerGetActiveObjectInfo;
 
          _checkBoxRepository = new UxRepositoryItemCheckEdit(_gridView);
-         _typeResolver = typeResolver;
+      
       }
 
       private void hideEditor()
@@ -373,9 +373,6 @@ namespace MoBi.UI.Views
       {
          set => lblParentName.Text = value.FormatForLabel(checkCase: false);
       }
-
-      public void SetNameForContainer(IContainer container) =>
-         lblParentName.Text = string.IsNullOrEmpty(container.Name) ? $"New {_typeResolver.TypeFor(container)}".FormatForLabel(checkCase: false) : container.Name.FormatForLabel(checkCase: false);
 
       public void SetEditParameterView(IView subView)
       {
