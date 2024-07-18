@@ -168,7 +168,7 @@ namespace MoBi.Presentation.Presenter
 
       private string getContainerName(IContainer container)
       {
-         return string.IsNullOrEmpty(container.Name) ? $"New {_typeResolver.TypeFor(container)}" : container.Name;
+         return string.IsNullOrEmpty(container.Name) ? AppConstants.Captions.NewWindow(_typeResolver.TypeFor(container)) : container.Name;
       }
 
       public void Select(IParameter parameter)
