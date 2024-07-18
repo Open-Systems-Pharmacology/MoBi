@@ -387,13 +387,16 @@ namespace MoBi.Presentation
 
    public class When_containter_does_not_have_a_name : concern_for_EditParameterListPresenter
    {
-      private IContainer _container;
+      protected IContainer _container;
       private readonly string _containterType = "Container";
 
       protected override void Context()
       {
          base.Context();
          _container = new Container();
+         _view = new EditParametersInContainerView(A.Fake<IToolTipCreator>(), A.Fake<ValueOriginBinder<ParameterDTO>>());
+         sut = new EditParametersInContainerPresenter(_view, _formulaMapper, _parameterMapper, _inteactionTasks,
+            _distributeParameterPresenter, _parameterPresenter, _quantityTask, _interactionTaskContext, _clipboardManager, _editTask, _selectReferencePresenterFactory, _favoriteTask, _typeResolver);
          A.CallTo(() => _typeResolver.TypeFor(_container)).Returns(_containterType);
       }
 
@@ -413,21 +416,14 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_containter_does_have_a_name : concern_for_EditParameterListPresenter
+   public class When_containter_does_have_a_name : When_containter_does_not_have_a_name
    {
-      private IContainer _container;
       private readonly string _containterName = "Container Name";
 
       protected override void Context()
       {
          base.Context();
-         _container = new Container();
          _container.Name = _containterName;
-         _view = new EditParametersInContainerView(A.Fake<IToolTipCreator>(), A.Fake<ValueOriginBinder<ParameterDTO>>());
-         sut = new EditParametersInContainerPresenter(_view, _formulaMapper, _parameterMapper, _inteactionTasks,
-            _distributeParameterPresenter, _parameterPresenter, _quantityTask, _interactionTaskContext, _clipboardManager, _editTask, _selectReferencePresenterFactory, _favoriteTask, _typeResolver);
-         sut.InitializeWith(A.Fake<ICommandCollector>());
-
       }
 
       protected override void Because()
