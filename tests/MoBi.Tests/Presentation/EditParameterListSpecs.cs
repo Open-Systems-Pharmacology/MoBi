@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using DevExpress.XtraEditors;
+using DevExpress.XtraExport.Helpers;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
@@ -39,15 +40,15 @@ namespace MoBi.Presentation
       protected IParameter _advancedParameter;
       protected IQuantityTask _quantityTask;
       protected IInteractionTaskContext _interactionTaskContext;
-      private IClipboardManager _clipboardManager;
-      private IEditTaskFor<IParameter> _editTask;
+      protected IClipboardManager _clipboardManager;
+      protected IEditTaskFor<IParameter> _editTask;
       protected ISelectReferencePresenterFactory _selectReferencePresenterFactory;
       protected IFavoriteTask _favoriteTask;
       protected IObjectTypeResolver _typeResolver;
 
       protected override void Context()
       {
-         _view = new EditParametersInContainerView(A.Fake<IToolTipCreator>(), A.Fake<ValueOriginBinder<ParameterDTO>>());
+         _view = A.Fake<IEditParametersInContainerView>();
          _formulaMapper = A.Fake<IFormulaToFormulaBuilderDTOMapper>();
          _parameterMapper = A.Fake<IParameterToParameterDTOMapper>();
          _inteactionTasks = A.Fake<IInteractionTasksForParameter>();
@@ -422,6 +423,11 @@ namespace MoBi.Presentation
          base.Context();
          _container = new Container();
          _container.Name = _containterName;
+         _view = new EditParametersInContainerView(A.Fake<IToolTipCreator>(), A.Fake<ValueOriginBinder<ParameterDTO>>());
+         sut = new EditParametersInContainerPresenter(_view, _formulaMapper, _parameterMapper, _inteactionTasks,
+            _distributeParameterPresenter, _parameterPresenter, _quantityTask, _interactionTaskContext, _clipboardManager, _editTask, _selectReferencePresenterFactory, _favoriteTask, _typeResolver);
+         sut.InitializeWith(A.Fake<ICommandCollector>());
+
       }
 
       protected override void Because()
