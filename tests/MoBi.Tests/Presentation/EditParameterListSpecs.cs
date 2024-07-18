@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using DevExpress.Entity.Model;
 using DevExpress.XtraEditors;
 using DevExpress.XtraExport.Helpers;
 using FakeItEasy;
@@ -385,10 +386,10 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_containter_does_not_have_a_name : concern_for_EditParameterListPresenter
+   public class When_container_does_not_have_a_name : concern_for_EditParameterListPresenter
    {
       protected IContainer _container;
-      private readonly string _containterType = "Container";
+      private readonly string _containerType = "Container";
 
       protected override void Context()
       {
@@ -397,7 +398,7 @@ namespace MoBi.Presentation
          _view = new EditParametersInContainerView(A.Fake<IToolTipCreator>(), A.Fake<ValueOriginBinder<ParameterDTO>>());
          sut = new EditParametersInContainerPresenter(_view, _formulaMapper, _parameterMapper, _inteactionTasks,
             _distributeParameterPresenter, _parameterPresenter, _quantityTask, _interactionTaskContext, _clipboardManager, _editTask, _selectReferencePresenterFactory, _favoriteTask, _typeResolver);
-         A.CallTo(() => _typeResolver.TypeFor(_container)).Returns(_containterType);
+         A.CallTo(() => _typeResolver.TypeFor(_container)).Returns(_containerType);
       }
 
       protected override void Because()
@@ -406,24 +407,30 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void edit_must_be_called_after_pasting()
+      public void label_should_containt_name()
       {
          var lblParentNameField = _view.GetType()
             .GetField("lblParentName", BindingFlags.NonPublic | BindingFlags.Instance);
          var lblParentName = (LabelControl)lblParentNameField.GetValue(_view);
 
-         lblParentName.Text.ShouldBeEqualTo($"New {_containterType}:");
+         lblParentName.Text.ShouldBeEqualTo($"New {_containerType}:");
       }
    }
 
-   public class When_containter_does_have_a_name : When_containter_does_not_have_a_name
+   public class When_containter_does_have_a_name : concern_for_EditParameterListPresenter
    {
-      private readonly string _containterName = "Container Name";
+      protected IContainer _container;
+      private readonly string _containerName = "Container Name";
 
       protected override void Context()
       {
          base.Context();
-         _container.Name = _containterName;
+         _container = new Container();
+         _view = new EditParametersInContainerView(A.Fake<IToolTipCreator>(), A.Fake<ValueOriginBinder<ParameterDTO>>());
+         sut = new EditParametersInContainerPresenter(_view, _formulaMapper, _parameterMapper, _inteactionTasks,
+            _distributeParameterPresenter, _parameterPresenter, _quantityTask, _interactionTaskContext, _clipboardManager, _editTask, _selectReferencePresenterFactory, _favoriteTask, _typeResolver);
+
+         _container.Name = _containerName;
       }
 
       protected override void Because()
@@ -432,13 +439,13 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void edit_must_be_called_after_pasting()
+      public void label_should_containt_name()
       {
          var lblParentNameField = _view.GetType()
             .GetField("lblParentName", BindingFlags.NonPublic | BindingFlags.Instance);
          var lblParentName = (LabelControl)lblParentNameField.GetValue(_view);
 
-         lblParentName.Text.ShouldBeEqualTo($"{_containterName}:");
+         lblParentName.Text.ShouldBeEqualTo($"{_containerName}:");
       }
    }
 }
