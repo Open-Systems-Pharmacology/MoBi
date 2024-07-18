@@ -18,7 +18,6 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
-using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Events;
@@ -89,7 +88,7 @@ namespace MoBi.Presentation.Presenter
          IClipboardManager clipboardManager,
          IEditTaskFor<IParameter> editTask,
          ISelectReferencePresenterFactory selectReferencePresenterFactory,
-         IFavoriteTask favoriteTask, 
+         IFavoriteTask favoriteTask,
          IObjectTypeResolver typeResolver)
          : base(view, quantityTask, interactionTaskContext, formulaMapper, parameterTask, favoriteTask)
       {

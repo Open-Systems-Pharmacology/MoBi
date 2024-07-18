@@ -1,9 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using DevExpress.Entity.Model;
-using DevExpress.XtraEditors;
-using DevExpress.XtraExport.Helpers;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
@@ -13,8 +9,6 @@ using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
-using MoBi.UI.Services;
-using MoBi.UI.Views;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
@@ -25,7 +19,6 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.DTO;
-using OSPSuite.UI.Binders;
 
 namespace MoBi.Presentation
 {
@@ -395,7 +388,6 @@ namespace MoBi.Presentation
       {
          base.Context();
          _container = new Container();
-         _view = new EditParametersInContainerView(A.Fake<IToolTipCreator>(), A.Fake<ValueOriginBinder<ParameterDTO>>());
          sut = new EditParametersInContainerPresenter(_view, _formulaMapper, _parameterMapper, _inteactionTasks,
             _distributeParameterPresenter, _parameterPresenter, _quantityTask, _interactionTaskContext, _clipboardManager, _editTask, _selectReferencePresenterFactory, _favoriteTask, _typeResolver);
          A.CallTo(() => _typeResolver.TypeFor(_container)).Returns(_containerType);
@@ -407,17 +399,13 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void label_should_containt_name()
+      public void label_should_contain_name()
       {
-         var lblParentNameField = _view.GetType()
-            .GetField("lblParentName", BindingFlags.NonPublic | BindingFlags.Instance);
-         var lblParentName = (LabelControl)lblParentNameField.GetValue(_view);
-
-         lblParentName.Text.ShouldBeEqualTo($"New {_containerType}:");
+         A.CallTo(_view).Where(x => x.Method.Name.Equals("set_ParentName") && x.Arguments.Get<string>(0).Equals($"New {_containerType}")).MustHaveHappened();
       }
    }
 
-   public class When_containter_does_have_a_name : concern_for_EditParameterListPresenter
+   public class When_container_does_have_a_name : concern_for_EditParameterListPresenter
    {
       protected IContainer _container;
       private readonly string _containerName = "Container Name";
@@ -426,7 +414,7 @@ namespace MoBi.Presentation
       {
          base.Context();
          _container = new Container();
-         _view = new EditParametersInContainerView(A.Fake<IToolTipCreator>(), A.Fake<ValueOriginBinder<ParameterDTO>>());
+         //_view = new EditParametersInContainerView(A.Fake<IToolTipCreator>(), A.Fake<ValueOriginBinder<ParameterDTO>>());
          sut = new EditParametersInContainerPresenter(_view, _formulaMapper, _parameterMapper, _inteactionTasks,
             _distributeParameterPresenter, _parameterPresenter, _quantityTask, _interactionTaskContext, _clipboardManager, _editTask, _selectReferencePresenterFactory, _favoriteTask, _typeResolver);
 
@@ -439,13 +427,9 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void label_should_containt_name()
+      public void label_should_contain_name()
       {
-         var lblParentNameField = _view.GetType()
-            .GetField("lblParentName", BindingFlags.NonPublic | BindingFlags.Instance);
-         var lblParentName = (LabelControl)lblParentNameField.GetValue(_view);
-
-         lblParentName.Text.ShouldBeEqualTo($"{_containerName}:");
+         A.CallTo(_view).Where(x => x.Method.Name.Equals("set_ParentName") && x.Arguments.Get<string>(0).Equals(_containerName)).MustHaveHappened();
       }
    }
 }

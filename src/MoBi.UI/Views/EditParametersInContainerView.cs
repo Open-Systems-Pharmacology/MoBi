@@ -17,7 +17,6 @@ using MoBi.UI.Extensions;
 using MoBi.UI.Services;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
@@ -56,7 +55,6 @@ namespace MoBi.UI.Views
       private readonly RepositoryItemButtonEdit _removeButtonRepository = new UxRepositoryItemButtonEdit(ButtonPredefines.Delete);
       private RepositoryItemButtonEdit _nameButtonRepository;
       private readonly UxRepositoryItemCheckEdit _checkBoxRepository;
-      
 
       public EditParametersInContainerView(IToolTipCreator toolTipCreator, ValueOriginBinder<ParameterDTO> valueOriginBinder)
       {
@@ -81,7 +79,6 @@ namespace MoBi.UI.Views
          toolTipController.GetActiveObjectInfo += onToolTipControllerGetActiveObjectInfo;
 
          _checkBoxRepository = new UxRepositoryItemCheckEdit(_gridView);
-      
       }
 
       private void hideEditor()
