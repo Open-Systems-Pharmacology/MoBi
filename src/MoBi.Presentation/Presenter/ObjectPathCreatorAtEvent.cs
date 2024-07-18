@@ -4,7 +4,6 @@ using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
-using MoBi.Presentation.Tasks.Interaction;
 
 namespace MoBi.Presentation.Presenter
 {

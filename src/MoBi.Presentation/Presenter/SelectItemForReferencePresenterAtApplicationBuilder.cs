@@ -14,7 +14,7 @@ namespace MoBi.Presentation.Presenter
    internal class SelectReferencePresenterAtApplicationBuilder : SelectReferencePresenterBase, ISelectReferencePresenterAtApplicationBuilder
    {
       public SelectReferencePresenterAtApplicationBuilder(ISelectReferenceView view, IObjectBaseToObjectBaseDTOMapper objectBaseDTOMapper, IMoBiContext context, IUserSettings userSettings, IObjectBaseToDummyMoleculeDTOMapper dtoObjectBaseToMoleculeDTOMapper, IParameterToDummyParameterDTOMapper dummyParameterDTOMapper,
-         IObjectBaseDTOToReferenceNodeMapper referenceMapper, IObjectPathCreatorAtMoleculeApllicationBuilder objectPathCreator, IBuildingBlockRepository buildingBlockRepository)
+         IObjectBaseDTOToReferenceNodeMapper referenceMapper, IObjectPathCreatorAtMoleculeApplicationBuilder objectPathCreator, IBuildingBlockRepository buildingBlockRepository)
          : base(view, objectBaseDTOMapper, context, userSettings, dtoObjectBaseToMoleculeDTOMapper, dummyParameterDTOMapper, referenceMapper, objectPathCreator, Localisations.ContainerOnly, buildingBlockRepository)
       {
       }

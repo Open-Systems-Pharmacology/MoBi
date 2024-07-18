@@ -1,12 +1,11 @@
 ﻿using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
-using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IObjectPathCreatorAtInitialCondition:IObjectPathCreator
+   public interface IObjectPathCreatorAtInitialCondition : IObjectPathCreator
    {
    }
 
@@ -27,10 +26,9 @@ namespace MoBi.Presentation.Presenter
             dto.BuildMode = parameter.BuildMode;
             return dto;
          }
+
          return base.CreatePathsFromEntity(objectBase, shouldCreateAbsolutePaths, refObject, editedObject);
       }
-
-      
 
       private FormulaUsablePath cratePathToMoleculeProperty(IParameter parameter, bool shouldCreateAbsolutePaths, IEntity refObject)
       {
@@ -57,7 +55,7 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      protected override T AdjustReferences<T>(IEntity entity, T path) 
+      protected override T AdjustReferences<T>(IEntity entity, T path)
       {
          path.AddAtFront(ObjectPath.PARENT_CONTAINER);
          return path;

@@ -1162,7 +1162,7 @@ namespace MoBi.Presentation
       {
          IAliasCreator aliasCreator = new AliasCreator();
          _context = A.Fake<IMoBiContext>();
-         sut = new ObjectPathCreatorAtMoleculeApllicationBuilder(new ObjectPathFactory(aliasCreator), aliasCreator, _context);
+         sut = new ObjectPathCreatorAtMoleculeApplicationBuilder(new ObjectPathFactory(aliasCreator), aliasCreator, _context);
       }
    }
 

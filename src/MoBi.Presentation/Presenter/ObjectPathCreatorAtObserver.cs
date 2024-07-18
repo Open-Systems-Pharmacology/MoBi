@@ -1,8 +1,6 @@
-﻿using System.Linq;
-using MoBi.Core.Domain.Extensions;
+﻿using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
-using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
 
 namespace MoBi.Presentation.Presenter
@@ -17,7 +15,7 @@ namespace MoBi.Presentation.Presenter
       {
       }
 
-      protected override T AdjustReferences<T>(IEntity entity, T path) 
+      protected override T AdjustReferences<T>(IEntity entity, T path)
       {
          path.AddAtFront(ObjectPath.PARENT_CONTAINER);
          path.AddAtFront(ObjectPath.PARENT_CONTAINER);
@@ -35,24 +33,25 @@ namespace MoBi.Presentation.Presenter
          : base(objectPathFactory, aliasCreator, context)
       {
       }
-      
+
       public override ReferenceDTO CreatePathFromParameterDummy(ObjectBaseDTO objectBaseDTO, bool shouldCreateAbsolutePaths, IEntity refObject, IUsingFormula editedObject)
       {
          var dtoReference = base.CreatePathFromParameterDummy(objectBaseDTO, shouldCreateAbsolutePaths, refObject, editedObject);
          if (!shouldCreateAbsolutePaths && !IsMoleculeReference(objectBaseDTO))
          {
-            var dtoDummyParameter = (DummyParameterDTO) objectBaseDTO;
+            var dtoDummyParameter = (DummyParameterDTO)objectBaseDTO;
             correctMoleculeReferences(dtoDummyParameter.ModelParentName, dtoDummyParameter.Parameter, dtoReference.Path);
          }
+
          return dtoReference;
       }
 
-      private void correctMoleculeReferences<T>(string moleculeName,IEntity entity,T path) where T : ObjectPath
+      private void correctMoleculeReferences<T>(string moleculeName, IEntity entity, T path) where T : ObjectPath
       {
-         if (!entity.IsAtMolecule()) 
+         if (!entity.IsAtMolecule())
             return;
 
-         if (!path.Contains(moleculeName)) 
+         if (!path.Contains(moleculeName))
             return;
 
          path.Replace(moleculeName, ObjectPathKeywords.MOLECULE);
