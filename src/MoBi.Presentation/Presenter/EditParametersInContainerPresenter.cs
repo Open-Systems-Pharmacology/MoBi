@@ -166,10 +166,9 @@ namespace MoBi.Presentation.Presenter
          return referencePresenter;
       }
 
-      private string getContainerName(IContainer container)
-      {
-         return string.IsNullOrEmpty(container.Name) ? AppConstants.Captions.NewWindow(_typeResolver.TypeFor(container)) : container.Name;
-      }
+      private string getContainerName(IContainer container) =>
+         string.IsNullOrEmpty(container.Name) ? AppConstants.Captions.NewWindow(_typeResolver.TypeFor(container)) : container.Name;
+      
 
       public void Select(IParameter parameter)
       {
