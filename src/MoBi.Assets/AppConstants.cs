@@ -256,6 +256,7 @@ namespace MoBi.Assets
          public static readonly string RemoveMultipleResultsFromSimulations = "Remove multiple results from simulations";
          public static readonly string RemoveMultipleParameterValues = "Remove multiple parameter values";
          public static readonly string RemoveMultipleInitialConditions = "Remove multiple initial conditions";
+         public static readonly string RemoveMultipleModules = "Remove multiple modules";
          public static readonly string SimulationType = "simulation";
          public static readonly string BuildingBlockType = "building block";
          public static readonly string ParameterType = "parameter";
@@ -879,6 +880,7 @@ namespace MoBi.Assets
          public static readonly string RemoveSelectedResultsFromSimulations = "Do you really want to remove the selected results from simulations";
          public static readonly string RemoveSelectedResultsFromProject = "Do you really want to remove the selected result(s) from the project";
          public static readonly Size SELECT_SINGLE_SIZE = new Size(475, 160);
+         public static readonly string RemoveMultipleModules = "Do you really want to remove the selected Modules?";
 
          public static string RemoveSimulationsFromProject(string projectName)
          {
@@ -2278,6 +2280,7 @@ namespace MoBi.Assets
       public class MoBiObjectTypes
       {
          public static readonly string Data = "Data";
+         public static readonly string Module = "Module";
       }
 
    }

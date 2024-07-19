@@ -39,7 +39,7 @@
     <PackageReference Include="OSPSuite.Assets.Images" Version="12.0.300" />
     <PackageReference Include="OSPSuite.Infrastructure.Export" Version="12.0.300" />
     <PackageReference Include="OSPSuite.Infrastructure.Reporting" Version="12.0.300" />
-    <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="12.0.300" />
+    <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="12.0.297" />
     <PackageReference Include="OSPSuite.Infrastructure.Import" Version="12.0.300" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
   </ItemGroup>
