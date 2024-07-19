@@ -1,16 +1,15 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Presentation.MenuAndBars;
-using OSPSuite.Presentation.Nodes;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.UICommand;
-using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Presenters;
-using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.MenuAndBars;
+using OSPSuite.Presentation.Nodes;
+using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Presenters.ContextMenus;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
@@ -41,11 +40,13 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       protected override IEnumerable<IMenuBarItem> AllMenuItemsFor(IReadOnlyList<Module> modules, IMoBiContext context)
       {
-         var menuItems = new List<IMenuBarItem>();
-         menuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
+         var menuItems = new List<IMenuBarItem>
+         {
+            CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
             .WithCommandFor<RemoveMultipleModulesUICommand, IReadOnlyList<Module>>(modules, _container)
-            .WithIcon(ApplicationIcons.Delete));
-         
+            .WithIcon(ApplicationIcons.Delete)
+         };
+
          return menuItems;
       }
    }
