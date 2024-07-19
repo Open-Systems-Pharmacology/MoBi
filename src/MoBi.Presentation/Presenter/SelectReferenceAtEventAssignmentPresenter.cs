@@ -20,7 +20,7 @@ namespace MoBi.Presentation.Presenter
          IObjectBaseToDummyMoleculeDTOMapper objectBaseToMoleculeDummyMapper,
          IParameterToDummyParameterDTOMapper dummyParameterDTOMapper, 
          IObjectBaseDTOToReferenceNodeMapper referenceMapper, 
-         IObjectPathCreatorAtEventAssingment objectPathCreator, 
+         IObjectPathCreatorAtEventAssignment objectPathCreator, 
          IBuildingBlockRepository buildingBlockRepository)
          : base(view, objectBaseDTOMapper, context, userSettings, objectBaseToMoleculeDummyMapper, dummyParameterDTOMapper, referenceMapper, objectPathCreator, Localisations.ContainerOnly, buildingBlockRepository)
       {

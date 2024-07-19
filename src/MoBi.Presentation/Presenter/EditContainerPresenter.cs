@@ -42,8 +42,7 @@ namespace MoBi.Presentation.Presenter
       private ContainerDTO _containerDTO;
       private readonly ITagsPresenter _tagsPresenter;
       private readonly IApplicationController _applicationController;
-      private readonly IInteractionTasksForTopContainer _tasksForTopContainer;
-
+      private readonly IObjectPathFactory _objectPathFactory;
       public EditContainerPresenter(
          IEditContainerView view,
          IContainerToContainerDTOMapper containerMapper,
@@ -52,14 +51,14 @@ namespace MoBi.Presentation.Presenter
          IMoBiContext context,
          ITagsPresenter tagsPresenter,
          IApplicationController applicationController,
-         IInteractionTasksForTopContainer tasksForTopContainer)
+         IObjectPathFactory objectPathFactory)
          : base(view, editParametersInContainerPresenter, context, editTasks)
       {
          _containerMapper = containerMapper;
          _tagsPresenter = tagsPresenter;
          _applicationController = applicationController;
          _editTasks = editTasks;
-         _tasksForTopContainer = tasksForTopContainer;
+         _objectPathFactory = objectPathFactory;
          _view.AddParameterView(editParametersInContainerPresenter.BaseView);
          _view.AddTagsView(_tagsPresenter.BaseView);
          AddSubPresenters(_tagsPresenter);
@@ -69,7 +68,7 @@ namespace MoBi.Presentation.Presenter
       {
          using (var presenter = _applicationController.Start<ISelectContainerPresenter>())
          {
-            var objectPath = presenter.Select(_tasksForTopContainer.BuildObjectPath(_container));
+            var objectPath = presenter.Select(_objectPathFactory.CreateAbsoluteObjectPath(_container));
             if (objectPath == null) return;
             SetParentPath(objectPath);
          }

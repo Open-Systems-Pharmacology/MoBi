@@ -9,7 +9,6 @@ namespace MoBi.Presentation.Tasks.Interaction
 {
    public interface IInteractionTasksForTopContainer : IInteractionTasksForChildren<MoBiSpatialStructure, IContainer>
    {
-      ObjectPath BuildObjectPath(IContainer container);
    }
 
    public class InteractionTasksForTopContainer : InteractionTasksForContainerBase<MoBiSpatialStructure>, IInteractionTasksForTopContainer
@@ -41,16 +40,6 @@ namespace MoBi.Presentation.Tasks.Interaction
          var newEntity = base.CreateNewEntity(spatialStructure);
          newEntity.ContainerType = ContainerType.Organism;
          return newEntity;
-      }
-
-      public ObjectPath BuildObjectPath(IContainer container)
-      {
-         var objectPath = _objectPathFactory.CreateAbsoluteObjectPath(container);
-         if (container.ParentPath == null)
-            return objectPath;
-
-         objectPath.AddAtFront(container.ParentPath);
-         return objectPath;
       }
 
       protected override IMoBiCommand AddNeighborhoodsToSpatialStructure(IReadOnlyList<NeighborhoodBuilder> neighborhoods, MoBiSpatialStructure spatialStructure)

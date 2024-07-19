@@ -28,7 +28,7 @@ namespace MoBi.Presentation
       private ITagsPresenter _tagsPresenter;
       protected IApplicationController _applicationController;
       protected ICommandCollector _commandCollector;
-      private IInteractionTasksForTopContainer _tasksForTopContainer;
+      private IObjectPathFactory _objectPathFactory;
 
       protected override void Context()
       {
@@ -39,8 +39,8 @@ namespace MoBi.Presentation
          _context = A.Fake<IMoBiContext>();
          _tagsPresenter = A.Fake<ITagsPresenter>();
          _applicationController = A.Fake<IApplicationController>();
-         _tasksForTopContainer = A.Fake<IInteractionTasksForTopContainer>();
-         sut = new EditContainerPresenter(_view, _containerMapper, _editTasks, _parametersInContainerPresenter, _context, _tagsPresenter, _applicationController, _tasksForTopContainer);
+         _objectPathFactory = A.Fake<IObjectPathFactory>();
+         sut = new EditContainerPresenter(_view, _containerMapper, _editTasks, _parametersInContainerPresenter, _context, _tagsPresenter, _applicationController, _objectPathFactory);
          _commandCollector = new MoBiMacroCommand();
          sut.InitializeWith(_commandCollector);
       }

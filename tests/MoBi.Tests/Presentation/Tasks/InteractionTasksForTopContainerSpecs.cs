@@ -225,41 +225,4 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _interactionTaskForNeighborhood.AddTo(A<IReadOnlyList<IContainer>>.That.Contains(_importedNeighborhood), _spatialStructure.NeighborhoodsContainer, _spatialStructure)).MustHaveHappened();
       }
    }
-
-   internal class When_building_object_path_with_parentPath : concern_for_InteractionTasksForTopContainer
-   {
-      private IContainer _topContainer;
-
-      protected override void Context()
-      {
-         base.Context();
-         _topContainer = new Container().WithName("Muscle");
-         _topContainer.ParentPath = new ObjectPath("Organism");
-      }
-
-      [Observation]
-      public void should_return_object_path_with_parent_and_name()
-      {
-         var objectPath = sut.BuildObjectPath(_topContainer);
-         objectPath.PathAsString.ShouldBeEqualTo($"{_topContainer.ParentPath}|{_topContainer.Name}");
-      }
-   }
-
-   internal class When_building_object_path_with_no_parentPath : concern_for_InteractionTasksForTopContainer
-   {
-      private IContainer _topContainer;
-
-      protected override void Context()
-      {
-         base.Context();
-         _topContainer = new Container().WithName("Muscle");
-      }
-
-      [Observation]
-      public void should_return_object_path_with_name_only()
-      {
-         var objectPath = sut.BuildObjectPath(_topContainer);
-         objectPath.PathAsString.ShouldBeEqualTo($"{_topContainer.Name}");
-      }
-   }
 }

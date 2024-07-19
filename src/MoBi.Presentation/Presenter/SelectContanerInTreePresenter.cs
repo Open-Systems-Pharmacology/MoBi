@@ -19,21 +19,20 @@ namespace MoBi.Presentation.Presenter
    public class SelectContainerInTreePresenter : SelectEntityInTreePresenter, ISelectContainerInTreePresenter
    {
       private readonly IContainerToContainerDTOMapper _containerDTOMapper;
-      private readonly IInteractionTasksForTopContainer _tasksForTopContainer;
+      private readonly IObjectPathFactory _objectPathFactory;
 
       public SelectContainerInTreePresenter(ISelectEntityInTreeView view,
          IObjectPathFactory objectPathFactory,
          IMoBiContext context,
          IContainerToContainerDTOMapper containerDTOMapper,
-         IObjectBaseDTOToSpatialStructureNodeMapper spatialStructureNodeMapper,
-         IInteractionTasksForTopContainer tasksForTopContainer) : base(view, objectPathFactory, context, spatialStructureNodeMapper)
+         IObjectBaseDTOToSpatialStructureNodeMapper spatialStructureNodeMapper) : base(view, objectPathFactory, context, spatialStructureNodeMapper)
       {
          _containerDTOMapper = containerDTOMapper;
-         _tasksForTopContainer = tasksForTopContainer;
+         _objectPathFactory = objectPathFactory;
          GetChildren = getChildren;
       }
 
-      public override ObjectPath SelectedEntityPath => _tasksForTopContainer.BuildObjectPath(SelectedEntity as IContainer);
+      public override ObjectPath SelectedEntityPath => _objectPathFactory.CreateAbsoluteObjectPath(SelectedEntity as IContainer);
 
       private IReadOnlyList<ObjectBaseDTO> getChildren(ObjectBaseDTO parentDTO)
       {
