@@ -235,9 +235,6 @@ namespace MoBi.Presentation
 
    public abstract class concern_for_SelectReferencePresenter_with_node_text : concern_for_SelectReferencePresenter
    {
-      protected ObjectBaseToObjectBaseDTOMapper _objectBaseDTOMapper;
-      protected ObjectBaseDTOToReferenceNodeMapper _referenceMapper;
-
       protected override void Context()
       {
          base.Context();
@@ -262,10 +259,16 @@ namespace MoBi.Presentation
       {
 
          base.Context();
-         _moBiSpatialStructure = new MoBiSpatialStructure { Name = "MoBiSpatialStructure 1", Id = ShortGuid.NewGuid() };
-         _moBiSpatialStructure.Module = new Module { Name = "Module 1" };
-         _unselectedSpatialStructure = new MoBiSpatialStructure { Name = "MoBiSpatialStructure 2", Id = ShortGuid.NewGuid() };
-         _unselectedSpatialStructure.Module = new Module { Name = "Module 2" };
+         _moBiSpatialStructure = new MoBiSpatialStructure
+         {
+            Name = "MoBiSpatialStructure 1", Id = ShortGuid.NewGuid(),
+            Module = new Module { Name = "Module 1" }
+         };
+         _unselectedSpatialStructure = new MoBiSpatialStructure
+         {
+            Name = "MoBiSpatialStructure 2", Id = ShortGuid.NewGuid(),
+            Module = new Module { Name = "Module 2" }
+         };
          _moBiSpatialStructures = new[] { _unselectedSpatialStructure, _moBiSpatialStructure };
          A.CallTo(() => _buildingBlockRepository.SpatialStructureCollection).Returns(_moBiSpatialStructures);
       }

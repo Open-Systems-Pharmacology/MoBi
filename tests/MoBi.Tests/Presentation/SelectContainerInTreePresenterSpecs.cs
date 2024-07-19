@@ -20,7 +20,6 @@ namespace MoBi.Presentation
       protected ISelectEntityInTreeView _view;
       protected IObjectPathFactory _objectPathFactory;
       protected IMoBiContext _context;
-      protected IInteractionTasksForTopContainer _tasksForTopContainer;
 
       protected override void Context()
       {
@@ -29,8 +28,7 @@ namespace MoBi.Presentation
          _context = A.Fake<IMoBiContext>();
          _containerDTOMapper = A.Fake<IContainerToContainerDTOMapper>();
          _objectBaseToSpatialStructureNodeMapper = A.Fake<IObjectBaseDTOToSpatialStructureNodeMapper>();
-         _tasksForTopContainer = A.Fake<IInteractionTasksForTopContainer>();
-         sut = new SelectContainerInTreePresenter(_view, _objectPathFactory, _context, _containerDTOMapper, _objectBaseToSpatialStructureNodeMapper, _tasksForTopContainer);
+         sut = new SelectContainerInTreePresenter(_view, _objectPathFactory, _context, _containerDTOMapper, _objectBaseToSpatialStructureNodeMapper);
       }
    }
 
@@ -112,31 +110,6 @@ namespace MoBi.Presentation
       public void should_return_an_empty_list()
       {
          _children.ShouldBeEmpty();
-      }
-   }
-
-   internal class When_presenting_a_selected_entity_path : concern_for_SelectContainerInTreePresenter
-   {
-      private Container _topContainer;
-
-      protected override void Context()
-      {
-         base.Context();
-         _topContainer = new Container().WithName("Muscle").WithId("id");
-         _topContainer.ParentPath = new ObjectPath("Organism");
-         A.CallTo(() => _context.Get<IEntity>(_topContainer.Id)).Returns(_topContainer);
-         A.CallTo(() => _view.Selected).Returns(new ObjectBaseDTO(_topContainer));
-      }
-
-      protected override void Because()
-      {
-         var objectPath = sut.SelectedEntityPath;
-      }
-
-      [Observation]
-      public void should_return_correct_path()
-      {
-         A.CallTo(() => _tasksForTopContainer.BuildObjectPath(_topContainer)).MustHaveHappened();
       }
    }
 }

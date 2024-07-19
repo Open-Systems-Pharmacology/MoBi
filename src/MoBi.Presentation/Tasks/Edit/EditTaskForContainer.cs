@@ -102,7 +102,7 @@ namespace MoBi.Presentation.Tasks.Edit
          var allSubContainers = container.GetAllContainersAndSelf<IContainer>();
          allSubContainers.Each(subContainer =>
          {
-            var subContainerPath = container.ParentPath.Concat(_objectPathFactory.CreateAbsoluteObjectPath(subContainer));
+            var subContainerPath = _objectPathFactory.CreateAbsoluteObjectPath(subContainer);
             addIndividualParametersToContainerByPath(individual, subContainer, new ObjectPath(subContainerPath));
          });
       }

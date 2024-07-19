@@ -124,7 +124,7 @@ namespace MoBi.Core
          _neighborhood = new NeighborhoodBuilder
          {
             //mae the neighborhood reference a sub container instead of the root container
-            FirstNeighborPath = _objectPathFactory.CreateAbsoluteObjectPath(_container).AndAddAtFront("Bone").AndAddAtFront("Organism"),
+            FirstNeighborPath = _objectPathFactory.CreateAbsoluteObjectPath(_container),
             SecondNeighborPath = new ObjectPath("A", "PATH"),
             Name = "_neighborhoodBetweenCont2AndUnknown"
          };
