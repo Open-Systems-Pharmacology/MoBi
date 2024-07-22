@@ -1,5 +1,4 @@
 ﻿using FakeItEasy;
-using MoBi.Presentation;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Interaction;
@@ -23,24 +22,24 @@ namespace MoBi.Presentation
          sut.InitializeWith(A.Fake<ICommandCollector>());
       }
    }
-}
 
-public class When_editing_a_distributed_path_and_value_entity : concern_for_IndividualDistributedPathAndValueEntityPresenter
-{
-   private IndividualParameterDTO _dto;
-   private IndividualBuildingBlock _buildingBlock;
-
-   protected override void Context()
+   public class When_editing_a_distributed_path_and_value_entity : concern_for_IndividualDistributedPathAndValueEntityPresenter
    {
-      base.Context();
-      _buildingBlock = new IndividualBuildingBlock();
-      _dto = new IndividualParameterDTO(new IndividualParameter());
-      sut.Edit(_dto, _buildingBlock);
-   }
+      private IndividualParameterDTO _dto;
+      private IndividualBuildingBlock _buildingBlock;
 
-   [Observation]
-   public void Should_bind_to_the_dto()
-   {
-      A.CallTo(() => _view.BindTo(_dto)).MustHaveHappened();
+      protected override void Context()
+      {
+         base.Context();
+         _buildingBlock = new IndividualBuildingBlock();
+         _dto = new IndividualParameterDTO(new IndividualParameter());
+         sut.Edit(_dto, _buildingBlock);
+      }
+
+      [Observation]
+      public void Should_bind_to_the_dto()
+      {
+         A.CallTo(() => _view.BindTo(_dto)).MustHaveHappened();
+      }
    }
 }

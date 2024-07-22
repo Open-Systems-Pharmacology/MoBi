@@ -134,7 +134,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             return;
          foreach (var entity in entitiesToSerialize)
          {
-            var fileName = Path.Combine(folderNameToSave, $"{entity.ToString()}.{Constants.Filter.PKML_EXTENSION}");
+            var fileName = Path.Combine(folderNameToSave, $"{entity.ToString()}{Constants.Filter.PKML_EXTENSION}");
             Save(entity, fileName);
          }
       }
