@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Contexts;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
@@ -12,6 +11,7 @@ using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
@@ -29,15 +29,18 @@ namespace MoBi.Presentation.Tasks.Interaction
       void MakeOverwriteModule(Module module);
       void MoveBuildingBlock(IBuildingBlock buildingBlockToMove, Module destinationModule);
       void CopyBuildingBlock(IBuildingBlock buildingBlockToCopy, Module destinationModule);
+      void RemoveMultipleModules(IReadOnlyList<Module> modulesToRemove);
    }
 
    public class InteractionTasksForModule : InteractionTasksForChildren<MoBiProject, Module>, IInteractionTasksForModule
    {
       private IMoBiContext context => _interactionTaskContext.Context;
+      private readonly IDialogCreator _dialogCreator;
 
-      public InteractionTasksForModule(IInteractionTaskContext interactionTaskContext, IEditTaskForModule editTask) : base(interactionTaskContext,
+      public InteractionTasksForModule(IInteractionTaskContext interactionTaskContext, IEditTaskForModule editTask, IDialogCreator dialogCreator) : base(interactionTaskContext,
          editTask)
       {
+         _dialogCreator = dialogCreator;
       }
 
       public override IMoBiCommand GetRemoveCommand(Module objectToRemove, MoBiProject parent, IBuildingBlock buildingBlock) => new RemoveModuleCommand(objectToRemove);
@@ -88,9 +91,10 @@ namespace MoBi.Presentation.Tasks.Interaction
       public void MakeExtendModule(Module module) => context.AddToHistory(new SetMergeBehaviorCommand(module, MergeBehavior.Extend).Run(context));
 
       public void MakeOverwriteModule(Module module) => context.AddToHistory(new SetMergeBehaviorCommand(module, MergeBehavior.Overwrite).Run(context));
+
       public void MoveBuildingBlock(IBuildingBlock buildingBlockToMove, Module destinationModule)
       {
-         if(buildingBlockToMove.Module==null)
+         if (buildingBlockToMove.Module == null)
             return;
 
          context.AddToHistory(new MoveBuildingBlockToModuleCommand(buildingBlockToMove, destinationModule)
@@ -103,7 +107,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             return;
 
          var buildingBlock = context.Clone(buildingBlockToCopy);
-         
+
          context.AddToHistory(new CopyBuildingBlockToModuleCommand<IBuildingBlock>(buildingBlock, destinationModule)
             .Run(context));
       }
@@ -135,6 +139,22 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          context.AddToHistory(GetAddCommand(clonedModule, context.CurrentProject, null)
             .Run(context));
+      }
+
+      public void RemoveMultipleModules(IReadOnlyList<Module> modulesToRemove)
+      {
+         if (_dialogCreator.MessageBoxYesNo(AppConstants.Dialog.RemoveMultipleModules) != ViewResult.Yes)
+            return;
+
+         var macroCommand = new MoBiMacroCommand
+         {
+            Description = AppConstants.Commands.RemoveMultipleModules,
+            ObjectType = AppConstants.MoBiObjectTypes.Module,
+            CommandType = AppConstants.Commands.DeleteCommand
+         };
+
+         modulesToRemove.Each(x => macroCommand.Add(GetRemoveCommand(x, null, null)));
+         context.AddToHistory(macroCommand.Run(context));
       }
 
       private void loadBuildingBlocksToModule(Module module, Func<string> getFilename)

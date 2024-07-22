@@ -1,26 +1,26 @@
 ﻿using FakeItEasy;
+using MoBi.Core;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Repositories;
 using MoBi.Core.Services;
-using MoBi.Core;
 using MoBi.Helpers;
+using MoBi.Presentation;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Settings;
+using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
-using MoBi.Presentation.Tasks;
-using MoBi.Presentation;
 using NUnit.Framework;
+using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Container;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Domain;
 
 namespace MoBi.IntegrationTests
 {
@@ -52,7 +52,7 @@ namespace MoBi.IntegrationTests
          A.CallTo(() => _dialogCreator.AskForFileToOpen(A<string>._, A<string>._, A<string>._, A<string>._, A<string>._)).Returns(DomainHelperForSpecs.TestFileFullPath("Sim_V12.pkml"));
          _module = new Module();
 
-         sut = new InteractionTasksForModule(_context, new EditTaskForModule(_context));
+         sut = new InteractionTasksForModule(_context, new EditTaskForModule(_context), _dialogCreator);
       }
 
       [TestCase(BuildingBlockType.SpatialStructure)]

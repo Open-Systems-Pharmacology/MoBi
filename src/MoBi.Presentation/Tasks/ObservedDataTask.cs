@@ -38,8 +38,6 @@ namespace MoBi.Presentation.Tasks
       void RemoveResultsFromSimulations(IReadOnlyList<DataRepository> resultsToRemove);
 
       void AddAndReplaceObservedDataFromConfigurationToProject(ImporterConfiguration configuration, IReadOnlyList<DataRepository> observedDataFromSameFile);
-
-      void RemoveMultipleModules(IReadOnlyList<Module> modulesToRemove);
    }
 
    public class ObservedDataTask : OSPSuite.Core.Domain.Services.ObservedDataTask, IObservedDataTask
@@ -278,22 +276,6 @@ namespace MoBi.Presentation.Tasks
                }
             }
          }
-      }
-
-      public void RemoveMultipleModules(IReadOnlyList<Module> modulesToRemove)
-      {
-         if (_dialogCreator.MessageBoxYesNo(AppConstants.Dialog.RemoveMultipleModules) != ViewResult.Yes)
-            return;
-
-         var macroCommand = new MoBiMacroCommand
-         {
-            Description = AppConstants.Commands.RemoveMultipleModules,
-            ObjectType = AppConstants.MoBiObjectTypes.Module,
-            CommandType = AppConstants.Commands.DeleteCommand
-         };
-
-         modulesToRemove.Each(x => macroCommand.Add(new RemoveModuleCommand(x)));
-         _context.AddToHistory(macroCommand.Run(_context));
       }
 
       private DataRepository findDataRepositoryInList(IEnumerable<DataRepository> dataRepositoryList, DataRepository targetDataRepository)
