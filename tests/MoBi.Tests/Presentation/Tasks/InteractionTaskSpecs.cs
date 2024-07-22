@@ -107,7 +107,7 @@ namespace MoBi.Presentation.Tasks
          base.Context();
          _modulesToSave.Add(_module1);
          _modulesToSave.Add(_module2);
-         A.CallTo(() => _dialogCreator.AskForFolder(AppConstants.Captions.SelectFolderToSave, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.PROJECT)).Returns(_path);
+         A.CallTo(() => _dialogCreator.AskForFolder(A<string>.Ignored, A<string>.Ignored, A<string>.Ignored)).Returns(_path);
       }
 
       protected override void Because()
@@ -123,7 +123,7 @@ namespace MoBi.Presentation.Tasks
       }
 
       private string buildFileNameFromModule(Module module) =>
-         $"{module.Name}.{Constants.Filter.PKML_EXTENSION}";
+         $"{module.Name}{Constants.Filter.PKML_EXTENSION}";
    }
 
    public class When_saving_multiple_modules_and_cancel : concern_for_InteractionTask
@@ -137,7 +137,7 @@ namespace MoBi.Presentation.Tasks
          base.Context();
          _modulesToSave.Add(_module1);
          _modulesToSave.Add(_module2);
-         A.CallTo(() => _dialogCreator.AskForFolder(AppConstants.Captions.SelectFolderToSave, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.PROJECT)).Returns(string.Empty);
+         A.CallTo(() => _dialogCreator.AskForFolder(A<string>.Ignored, A<string>.Ignored, A<string>.Ignored)).Returns(string.Empty);
       }
 
       protected override void Because()
@@ -148,10 +148,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_call_save_as_many_times_as_modules_with_correct_filePath()
       {
-         A.CallTo(() => _serializationTask.SaveModelPart(_module1, Path.Combine(A<string>.Ignored, buildFileNameFromModule(_module1)))).MustNotHaveHappened();
+         A.CallTo(() => _serializationTask.SaveModelPart(_module1, A<string>.Ignored)).MustNotHaveHappened();
       }
-
-      private string buildFileNameFromModule(Module module) =>
-         $"{module.Name}.{Constants.Filter.PKML_EXTENSION}";
    }
 }

@@ -9,6 +9,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
 
@@ -129,7 +130,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public void SaveMultiple<T>(IReadOnlyList<T> entitiesToSerialize)
       {
-         var folderNameToSave = _dialogCreator.AskForFolder(AppConstants.Captions.SelectFolderToSave, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.PROJECT);
+         var folderNameToSave = _dialogCreator.AskForFolder("Select input folder", Constants.DirectoryKey.REPORT);
          if (string.IsNullOrEmpty(folderNameToSave))
             return;
          foreach (var entity in entitiesToSerialize)

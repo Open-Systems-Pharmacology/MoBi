@@ -1120,7 +1120,6 @@ namespace MoBi.Assets
          public static readonly string OutputSelections = "Output Selections";
          public static readonly string SettingsAndSchema = "Output Intervals and Solver Settings";
          public static readonly string MergeBehavior = "Merge Behavior";
-         public static readonly string SaveAsPkml = "Save as Pkml...";
 
          public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
 
