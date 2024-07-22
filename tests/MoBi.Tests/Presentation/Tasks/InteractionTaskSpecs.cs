@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using FakeItEasy;
-using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Repositories;
 using MoBi.Core.Services;
