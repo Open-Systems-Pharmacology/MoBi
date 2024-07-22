@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Events;
@@ -10,7 +9,6 @@ using MoBi.Core.Helper;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -124,7 +122,7 @@ namespace MoBi.Presentation.Presenter
          _circularReferenceChecker = circularReferenceChecker;
          _context = context;
          _formulaPresenterCache = formulaPresenterCache;
-         _allFormulaType = new HashSet<Type> {typeof(ConstantFormula), typeof(TableFormula), typeof(ExplicitFormula), typeof(TableFormulaWithOffset), typeof(TableFormulaWithXArgument), typeof(SumFormula)};
+         _allFormulaType = new HashSet<Type> {typeof(ConstantFormula), typeof(TableFormula), typeof(DistributedTableFormula), typeof(ExplicitFormula), typeof(TableFormulaWithOffset), typeof(TableFormulaWithXArgument), typeof(SumFormula)};
          _defaultFormulaType = _allFormulaType.First();
       }
 

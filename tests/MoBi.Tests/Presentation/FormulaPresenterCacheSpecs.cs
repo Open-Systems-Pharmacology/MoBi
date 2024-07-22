@@ -27,6 +27,7 @@ namespace MoBi.Presentation
       [TestCase(typeof(ExplicitFormula), typeof(IEditExplicitFormulaPresenter))]
       [TestCase(typeof(BlackBoxFormula), typeof(IEditBlackBoxFormulaPresenter))]
       [TestCase(typeof(TableFormula), typeof(IEditTableFormulaPresenter))]
+      [TestCase(typeof(DistributedTableFormula), typeof(IEditTableFormulaPresenter))]
       [TestCase(typeof(TableFormulaWithOffset), typeof(IEditTableFormulaWithOffsetFormulaPresenter))]
       [TestCase(typeof(SumFormula), typeof(IEditSumFormulaPresenter))]
       [TestCase(typeof(TableFormulaWithXArgument), typeof(IEditTableFormulaWithXArgumentFormulaPresenter))]
