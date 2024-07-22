@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
@@ -29,6 +30,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       string AskForFolder(string title, string directoryKey);
       T LoadTransfer<T>(string filePath);
       string PromptForNewName<T>(T objectBase, IEnumerable<string> forbiddenNames) where T : IObjectBase;
+      void SaveMultiple<T>(IReadOnlyList<T> entitiesToSerialize);
    }
 
    public class InteractionTask : IInteractionTask
@@ -124,5 +126,17 @@ namespace MoBi.Presentation.Tasks.Interaction
       public bool CorrectName<T>(T objectBase, IEnumerable<string> forbiddenNames) where T : IObjectBase => _nameCorrector.CorrectName(forbiddenNames, objectBase);
 
       public string PromptForNewName<T>(T objectBase, IEnumerable<string> forbiddenNames) where T : IObjectBase => _nameCorrector.PromptForCorrectName(forbiddenNames.ToList(), objectBase);
+
+      public void SaveMultiple<T>(IReadOnlyList<T> entitiesToSerialize)
+      {
+         var folderNameToSave = _dialogCreator.AskForFolder(AppConstants.Captions.SelectFolderToSave, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.PROJECT);
+         if (string.IsNullOrEmpty(folderNameToSave))
+            return;
+         foreach (var entity in entitiesToSerialize)
+         {
+            var fileName = Path.Combine(folderNameToSave, $"{entity.ToString()}.{Constants.Filter.PKML_EXTENSION}");
+            Save(entity, fileName);
+         }
+      }
    }
 }

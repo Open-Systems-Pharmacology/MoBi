@@ -43,8 +43,11 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          var menuItems = new List<IMenuBarItem>
          {
             CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
-            .WithCommandFor<RemoveMultipleModulesUICommand, IReadOnlyList<Module>>(modules, _container)
-            .WithIcon(ApplicationIcons.Delete)
+               .WithCommandFor<RemoveMultipleModulesUICommand, IReadOnlyList<Module>>(modules, _container)
+               .WithIcon(ApplicationIcons.Delete),
+            CreateMenuButton.WithCaption(AppConstants.MenuNames.SaveAsPKML)
+               .WithCommandFor<SaveUICommandForMultiple<Module>, IReadOnlyList<Module>>(modules, _container)
+               .WithIcon(ApplicationIcons.SaveIconFor(nameof(Module)))
          };
 
          return menuItems;

@@ -1120,6 +1120,7 @@ namespace MoBi.Assets
          public static readonly string OutputSelections = "Output Selections";
          public static readonly string SettingsAndSchema = "Output Intervals and Solver Settings";
          public static readonly string MergeBehavior = "Merge Behavior";
+         public static readonly string SaveAsPkml = "Save as Pkml...";
 
          public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
 
@@ -1722,6 +1723,7 @@ namespace MoBi.Assets
          public static readonly string CopyPath = "Copy Path";
          public static readonly string CopyFormula = "Copy Formula";
          public static readonly string PasteFormula = "Paste Formula";
+         public static readonly string SelectFolderToSave = "Select Folders to Save files to";
 
          public static string AddBuildingBlocksToModule(string moduleName) => $"Add Building Blocks to Module:  {moduleName}";
          public static string LoadBuildingBlockToModule(string moduleName) => $"Load Building Block to Module:  {moduleName}";
