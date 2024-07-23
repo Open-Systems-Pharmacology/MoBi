@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using FakeItEasy;
-using MoBi.Core.Domain.Model;
 using MoBi.Core.Repositories;
 using MoBi.Core.Services;
 using MoBi.Presentation.Tasks.Interaction;
@@ -26,8 +25,6 @@ namespace MoBi.Presentation.Tasks
       protected IObjectTypeResolver _objectTypeResolver;
       protected IForbiddenNamesRetriever _forbiddenNamesRetriever;
       protected IMoBiApplicationController _moBiApplicationController;
-      private ICheckNameVisitor _checkNamesVisitor;
-      private IMoBiContext _moBiContext;
 
       protected override void Context()
       {
@@ -40,8 +37,6 @@ namespace MoBi.Presentation.Tasks
          _objectTypeResolver = A.Fake<IObjectTypeResolver>();
          _forbiddenNamesRetriever = A.Fake<IForbiddenNamesRetriever>();
          _moBiApplicationController = A.Fake<IMoBiApplicationController>();
-         _moBiContext = A.Fake<IMoBiContext>();
-         _checkNamesVisitor = A.Fake<ICheckNameVisitor>();
 
          sut = new InteractionTask(_serializationTask, _dialogCreator, _iconRepository, _nameCorrector, _cloneManagerForBuildingBlock, _adjustFormulasVisitor, _objectTypeResolver, _forbiddenNamesRetriever);
       }
@@ -76,7 +71,7 @@ namespace MoBi.Presentation.Tasks
             .Invokes(x =>
             {
                var formulaCache = x.GetArgument<IFormulaCache>(1);
-               formulaCache.Add(_cloneFormula1);
+               formulaCache?.Add(_cloneFormula1);
             })
             .Returns(clonedBuildingBlock);
       }
