@@ -137,7 +137,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       private void saveMultiple<T>(IReadOnlyList<T> entitiesToSerialize)
       {
-         var folderNameToSave = _dialogCreator.AskForFolder("Select input folder", Constants.DirectoryKey.REPORT);
+         var folderNameToSave = _dialogCreator.AskForFolder(AppConstants.Captions.SelectInputFolder, Constants.DirectoryKey.PROJECT);
          if (string.IsNullOrEmpty(folderNameToSave))
             return;
          foreach (var entity in entitiesToSerialize)

@@ -1722,6 +1722,7 @@ namespace MoBi.Assets
          public static readonly string CopyPath = "Copy Path";
          public static readonly string CopyFormula = "Copy Formula";
          public static readonly string PasteFormula = "Paste Formula";
+         public static readonly string SelectInputFolder = "Select input folder";
 
          public static string AddBuildingBlocksToModule(string moduleName) => $"Add Building Blocks to Module:  {moduleName}";
          public static string LoadBuildingBlockToModule(string moduleName) => $"Load Building Block to Module:  {moduleName}";
