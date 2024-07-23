@@ -5,6 +5,7 @@ using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Exceptions;
+using MoBi.Core.Helper;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
@@ -29,18 +30,15 @@ namespace MoBi.Presentation.Tasks.Interaction
       void MakeOverwriteModule(Module module);
       void MoveBuildingBlock(IBuildingBlock buildingBlockToMove, Module destinationModule);
       void CopyBuildingBlock(IBuildingBlock buildingBlockToCopy, Module destinationModule);
-      void RemoveMultipleModules(IReadOnlyList<Module> modulesToRemove);
+      void Remove(IReadOnlyList<Module> modulesToRemove);
    }
 
    public class InteractionTasksForModule : InteractionTasksForChildren<MoBiProject, Module>, IInteractionTasksForModule
    {
       private IMoBiContext context => _interactionTaskContext.Context;
-      private readonly IDialogCreator _dialogCreator;
 
-      public InteractionTasksForModule(IInteractionTaskContext interactionTaskContext, IEditTaskForModule editTask, IDialogCreator dialogCreator) : base(interactionTaskContext,
-         editTask)
+      public InteractionTasksForModule(IInteractionTaskContext interactionTaskContext, IEditTaskForModule editTask) : base(interactionTaskContext, editTask)
       {
-         _dialogCreator = dialogCreator;
       }
 
       public override IMoBiCommand GetRemoveCommand(Module objectToRemove, MoBiProject parent, IBuildingBlock buildingBlock) => new RemoveModuleCommand(objectToRemove);
@@ -141,15 +139,15 @@ namespace MoBi.Presentation.Tasks.Interaction
             .Run(context));
       }
 
-      public void RemoveMultipleModules(IReadOnlyList<Module> modulesToRemove)
+      public void Remove(IReadOnlyList<Module> modulesToRemove)
       {
-         if (_dialogCreator.MessageBoxYesNo(AppConstants.Dialog.RemoveMultipleModules) != ViewResult.Yes)
+         if (_interactionTaskContext.DialogCreator.MessageBoxYesNo(AppConstants.Dialog.RemoveMultipleModules) != ViewResult.Yes)
             return;
 
          var macroCommand = new MoBiMacroCommand
          {
             Description = AppConstants.Commands.RemoveMultipleModules,
-            ObjectType = AppConstants.MoBiObjectTypes.Module,
+            ObjectType = new ObjectTypeResolver().TypeFor<Module>(),
             CommandType = AppConstants.Commands.DeleteCommand
          };
 

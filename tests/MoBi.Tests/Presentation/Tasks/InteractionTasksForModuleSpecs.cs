@@ -21,9 +21,8 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Context()
       {
-         var dialogCreator = A.Fake<IDialogCreator>();
          _context = A.Fake<IInteractionTaskContext>();
-         sut = new InteractionTasksForModule(_context, new EditTaskForModule(_context), dialogCreator);
+         sut = new InteractionTasksForModule(_context, new EditTaskForModule(_context));
       }
    }
 

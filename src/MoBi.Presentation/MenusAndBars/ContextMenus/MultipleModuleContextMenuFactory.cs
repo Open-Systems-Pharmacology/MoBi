@@ -33,8 +33,8 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
    public class MultipleModuleContextMenu : ContextMenu<IReadOnlyList<Module>, IMoBiContext>
    {
-      public MultipleModuleContextMenu(IReadOnlyList<Module> moduList, IMoBiContext context, IContainer container)
-         : base(moduList, context, container)
+      public MultipleModuleContextMenu(IReadOnlyList<Module> modules, IMoBiContext context, IContainer container)
+         : base(modules, context, container)
       {
       }
 

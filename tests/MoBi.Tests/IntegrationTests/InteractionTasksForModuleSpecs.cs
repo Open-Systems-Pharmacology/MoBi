@@ -52,7 +52,7 @@ namespace MoBi.IntegrationTests
          A.CallTo(() => _dialogCreator.AskForFileToOpen(A<string>._, A<string>._, A<string>._, A<string>._, A<string>._)).Returns(DomainHelperForSpecs.TestFileFullPath("Sim_V12.pkml"));
          _module = new Module();
 
-         sut = new InteractionTasksForModule(_context, new EditTaskForModule(_context), _dialogCreator);
+         sut = new InteractionTasksForModule(_context, new EditTaskForModule(_context));
       }
 
       [TestCase(BuildingBlockType.SpatialStructure)]
