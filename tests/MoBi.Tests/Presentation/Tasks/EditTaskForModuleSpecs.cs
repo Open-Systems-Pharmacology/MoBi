@@ -3,6 +3,7 @@ using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Helpers;
+using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.BDDHelper;
@@ -58,16 +59,25 @@ namespace MoBi.Presentation.Tasks
       private List<IObjectBase> _existingObjectsInParent;
       private EditTaskForModule _sut;
       private IInteractionTaskContext _interactionTaskContext;
+      private ISelectRenamingPresenter _selectRenamingPresenter;
+      private IMoBiApplicationController _applicationController;
 
       protected override void Context()
       {
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
+         _selectRenamingPresenter = A.Fake<ISelectRenamingPresenter>();
+         _applicationController = A.Fake<IMoBiApplicationController>();
+
+         A.CallTo(() => _applicationController.Start<ISelectRenamingPresenter>()).Returns(_selectRenamingPresenter);
+         A.CallTo(() => _interactionTaskContext.ApplicationController).Returns(_applicationController);
+
          _sut = A.Fake<EditTaskForModule>(options => options
             .WithArgumentsForConstructor(() => new EditTaskForModule(_interactionTaskContext))
             .CallsBaseMethods());
 
          _module = new Module().WithName("newModule1");
          _existingObjectsInParent = new List<IObjectBase> { new Module().WithName("newModule2") };
+
          A.CallTo(() => _interactionTaskContext.NamingTask.RenameFor(A<IObjectBase>.Ignored, A<IReadOnlyList<string>>.Ignored)).Returns("Module1");
       }
 
@@ -79,7 +89,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_rename_module_but_not_related_objects()
       {
-         A.CallTo(_sut).Where(x => x.Method.Name.Contains("GetRenameCommandFor") && x.Arguments.Get<IBuildingBlock>(1) == null).MustHaveHappened();
+         A.CallTo(() => _applicationController.Start<ISelectRenamingPresenter>()).MustNotHaveHappened();
       }
    }
 }
