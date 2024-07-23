@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Tasks.Edit
 {
@@ -18,5 +19,11 @@ namespace MoBi.Presentation.Tasks.Edit
       {
          return _context.CurrentProject.Modules.AllNames();
       }
+
+      public override void Rename(Module objectBase, IEnumerable<IObjectBase> existingObjectsInParent, IBuildingBlock buildingBlock)
+      {
+         base.Rename(objectBase, existingObjectsInParent, null);
+      }
+
    }
 }
