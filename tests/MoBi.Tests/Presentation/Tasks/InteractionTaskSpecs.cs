@@ -111,7 +111,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         sut.SaveMultiple(_modulesToSave);
+         sut.Save(_modulesToSave);
       }
 
       [Observation]
@@ -141,7 +141,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         sut.SaveMultiple(_modulesToSave);
+         sut.Save(_modulesToSave);
       }
 
       [Observation]

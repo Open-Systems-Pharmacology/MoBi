@@ -342,7 +342,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_have_called_the_savemultiple_on_interactionTast()
       {
-         A.CallTo(() => _interactionTask.SaveMultiple(_entitiesToSave)).MustHaveHappened();
+         A.CallTo(() => _interactionTask.Save(_entitiesToSave)).MustHaveHappened();
       }
    }
 }

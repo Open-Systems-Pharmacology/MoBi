@@ -18,7 +18,7 @@ namespace MoBi.Presentation.Tasks.Interaction
    public interface IInteractionTask
    {
       IReadOnlyCollection<T> LoadItems<T>(string filename) where T : class, IObjectBase;
-      void Save<T>(T entityToSerialize) where T : IObjectBase;
+      void Save<T>(IReadOnlyList<T> entitiesToSerialize) where T : IObjectBase;
       void Save<T>(T entityToSerialize, string fileName);
       string IconFor<T>(T entity) where T : IObjectBase;
       bool CorrectName<T>(T objectBase, IEnumerable<string> forbiddenNames) where T : IObjectBase;
@@ -31,7 +31,6 @@ namespace MoBi.Presentation.Tasks.Interaction
       string AskForFolder(string title, string directoryKey);
       T LoadTransfer<T>(string filePath);
       string PromptForNewName<T>(T objectBase, IEnumerable<string> forbiddenNames) where T : IObjectBase;
-      void SaveMultiple<T>(IReadOnlyList<T> entitiesToSerialize);
    }
 
    public class InteractionTask : IInteractionTask
@@ -65,12 +64,20 @@ namespace MoBi.Presentation.Tasks.Interaction
          return loadedItems.Select(Clone).ToList();
       }
 
-      public virtual void Save<T>(T entityToSerialize) where T : IObjectBase
+      public virtual void Save<T>(IReadOnlyList<T> entitiesToSerialize) where T : IObjectBase
       {
-         var fileName = _dialogCreator.AskForFileToSave(AppConstants.Captions.Save, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.PROJECT, entityToSerialize.Name);
-         if (fileName.IsNullOrEmpty()) return;
+         if (entitiesToSerialize.Count == 1)
+         {
+            var entityToSerialize = entitiesToSerialize.First();
+            var fileName = _dialogCreator.AskForFileToSave(AppConstants.Captions.Save, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.PROJECT, entityToSerialize.Name);
+            if (fileName.IsNullOrEmpty()) return;
 
-         _serializationTask.SaveModelPart(entityToSerialize, fileName);
+            _serializationTask.SaveModelPart(entityToSerialize, fileName);
+         }
+         else
+         {
+            saveMultiple(entitiesToSerialize);
+         }
       }
 
       public void Save<T>(T entityToSerialize, string fileName) => _serializationTask.SaveModelPart(entityToSerialize, fileName);
@@ -128,7 +135,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public string PromptForNewName<T>(T objectBase, IEnumerable<string> forbiddenNames) where T : IObjectBase => _nameCorrector.PromptForCorrectName(forbiddenNames.ToList(), objectBase);
 
-      public void SaveMultiple<T>(IReadOnlyList<T> entitiesToSerialize)
+      private void saveMultiple<T>(IReadOnlyList<T> entitiesToSerialize)
       {
          var folderNameToSave = _dialogCreator.AskForFolder("Select input folder", Constants.DirectoryKey.REPORT);
          if (string.IsNullOrEmpty(folderNameToSave))
