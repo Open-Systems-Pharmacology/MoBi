@@ -68,7 +68,7 @@ namespace MoBi.Presentation.Tasks.Edit
       {
          Rename(entity, entity.ParentContainer, buildingBlock);
       }
-      
+
       public virtual void Rename(T objectBase, IEnumerable<IObjectBase> existingObjectsInParent, IBuildingBlock buildingBlock)
       {
          var forbiddenNames = GetForbiddenNames(objectBase, existingObjectsInParent);
