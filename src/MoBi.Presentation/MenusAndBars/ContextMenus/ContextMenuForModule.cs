@@ -104,7 +104,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       private IMenuBarItem createRenameItemFor(Module module)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Rename)
-            .WithCommandFor<RenameObjectCommand<Module>, Module>(module, _container)
+            .WithCommandFor<RenameFromContextMenuCommand<Module>, Module>(module, _container)
             .WithIcon(ApplicationIcons.Rename);
       }
    }
