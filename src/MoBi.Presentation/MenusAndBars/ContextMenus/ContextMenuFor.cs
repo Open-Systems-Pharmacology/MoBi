@@ -87,7 +87,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithIcon(ApplicationIcons.Edit);
       }
 
-      protected IMenuBarItem CreateRenameItemFor(TObjectBase objectToEdit)
+      protected virtual IMenuBarItem CreateRenameItemFor(TObjectBase objectToEdit)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Rename)
             .WithCommandFor<RenameObjectCommand<TObjectBase>, TObjectBase>(objectToEdit, _container)
