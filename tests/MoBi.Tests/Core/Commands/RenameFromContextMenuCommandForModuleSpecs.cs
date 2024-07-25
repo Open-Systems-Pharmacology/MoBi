@@ -14,32 +14,27 @@ namespace MoBi.Core.Commands
 {
    public abstract class RenameFromContextMenuCommandForModuleSpecs : ContextSpecification<RenameFromContextMenuCommand<Module>>
    {
-      protected MoleculeBuildingBlock _bb;
-      protected Module _sourceModule;
       protected IMoBiApplicationController _applicationController;
-      private EditTaskForModule _editTasks;
-      private IInteractionTaskContext _interactionTaskContext;
-      private ISelectRenamingPresenter _selectRenamingPresenter;
 
       protected override void Context()
       {
-         _interactionTaskContext = A.Fake<IInteractionTaskContext>();
-         _selectRenamingPresenter = A.Fake<ISelectRenamingPresenter>();
+         var interactionTaskContext = A.Fake<IInteractionTaskContext>();
+         var selectRenamingPresenter = A.Fake<ISelectRenamingPresenter>();
          _applicationController = A.Fake<IMoBiApplicationController>();
-         _sourceModule = new Module().WithId("sourceModuleId").WithName("Source Module");
-         _editTasks = A.Fake<EditTaskForModule>(options => options
-            .WithArgumentsForConstructor(() => new EditTaskForModule(_interactionTaskContext))
+         var sourceModule = new Module().WithId("sourceModuleId").WithName("Source Module");
+         var editTasks = A.Fake<EditTaskForModule>(options => options
+            .WithArgumentsForConstructor(() => new EditTaskForModule(interactionTaskContext))
             .CallsBaseMethods());
-         A.CallTo(() => _applicationController.Start<ISelectRenamingPresenter>()).Returns(_selectRenamingPresenter);
-         A.CallTo(() => _interactionTaskContext.ApplicationController).Returns(_applicationController);
-         A.CallTo(() => _interactionTaskContext.NamingTask.RenameFor(A<IObjectBase>.Ignored, A<IReadOnlyList<string>>.Ignored)).Returns("Module1");
+         A.CallTo(() => _applicationController.Start<ISelectRenamingPresenter>()).Returns(selectRenamingPresenter);
+         A.CallTo(() => interactionTaskContext.ApplicationController).Returns(_applicationController);
+         A.CallTo(() => interactionTaskContext.NamingTask.RenameFor(A<IObjectBase>.Ignored, A<IReadOnlyList<string>>.Ignored)).Returns("Module1");
 
-         _bb = new MoleculeBuildingBlock().WithId("newMoleculeBuildingBlockId");
-         _bb.Module = _sourceModule;
-         _sourceModule.Add(_bb);
-         sut = new RenameFromContextMenuCommand<Module>(_editTasks)
+         var bb = new MoleculeBuildingBlock().WithId("newMoleculeBuildingBlockId");
+         bb.Module = sourceModule;
+         sourceModule.Add(bb);
+         sut = new RenameFromContextMenuCommand<Module>(editTasks)
          {
-            Subject = _sourceModule
+            Subject = sourceModule
          };
       }
    }
@@ -54,7 +49,7 @@ namespace MoBi.Core.Commands
       }
 
       [Observation]
-      public void should_rename_module_but_not_related_objects()
+      public void should_not_call_applicationController_start()
       {
          A.CallTo(() => _applicationController.Start<ISelectRenamingPresenter>()).MustNotHaveHappened();
       }
