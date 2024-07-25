@@ -19,13 +19,11 @@ namespace MoBi.Core.Commands
       protected override void Context()
       {
          var interactionTaskContext = A.Fake<IInteractionTaskContext>();
-         var selectRenamingPresenter = A.Fake<ISelectRenamingPresenter>();
          _applicationController = A.Fake<IMoBiApplicationController>();
          var sourceModule = new Module().WithId("sourceModuleId").WithName("Source Module");
          var editTasks = A.Fake<EditTaskForModule>(options => options
             .WithArgumentsForConstructor(() => new EditTaskForModule(interactionTaskContext))
             .CallsBaseMethods());
-         A.CallTo(() => _applicationController.Start<ISelectRenamingPresenter>()).Returns(selectRenamingPresenter);
          A.CallTo(() => interactionTaskContext.ApplicationController).Returns(_applicationController);
          A.CallTo(() => interactionTaskContext.NamingTask.RenameFor(A<IObjectBase>.Ignored, A<IReadOnlyList<string>>.Ignored)).Returns("Module1");
 
@@ -41,8 +39,6 @@ namespace MoBi.Core.Commands
 
    internal class When_renaming_a_module_from_contextmenucommand : RenameFromContextMenuCommandForModuleSpecs
    {
-      private AddedEvent _event;
-
       protected override void Because()
       {
          sut.Execute();
