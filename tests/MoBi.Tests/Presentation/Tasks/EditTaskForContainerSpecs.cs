@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
@@ -318,6 +319,30 @@ namespace MoBi.Presentation.Tasks
       {
          //at least one command with the special case command
          _renameCommand.DowncastTo<MoBiMacroCommand>().All().Any(x => x.IsAnImplementationOf<RenameContainerCommand>()).ShouldBeTrue();
+      }
+   }
+
+   public class When_saving_multiple_container_to_pkml : concern_for_EditTaskForContainer
+   {
+      private List<IContainer> _entitiesToSave;
+
+      protected override void Context()
+      {
+         base.Context();
+         _entitiesToSave = new List<IContainer>();
+         _entitiesToSave.Add(new Container().WithName("Container1"));
+         A.CallTo(_interactionTask).WithReturnType<string>().Returns("FilePath");
+      }
+
+      protected override void Because()
+      {
+         sut.SaveMultiple(_entitiesToSave);
+      }
+
+      [Observation]
+      public void should_have_called_the_savemultiple_on_interactionTast()
+      {
+         A.CallTo(() => _interactionTask.Save(_entitiesToSave)).MustHaveHappened();
       }
    }
 }

@@ -38,6 +38,7 @@ namespace MoBi.Presentation.Tasks.Edit
       string ObjectName { get; }
       bool EditEntityModal(T newEntity, IEnumerable<IObjectBase> existingObjectsInParent, ICommandCollector commandCollector, IBuildingBlock buildingBlock);
       string IconFor(IObjectBase objectBase);
+      void SaveMultiple(IReadOnlyList<T> entitiesToSerialize);
    }
 
    public abstract class EditTaskFor<T> : IEditTaskFor<T> where T : class, IObjectBase
@@ -179,10 +180,13 @@ namespace MoBi.Presentation.Tasks.Edit
          return existingObjectsInParent.AllNames();
       }
 
-      public virtual void Save(T entityToSerialize)
-      {
-         _interactionTask.Save(entityToSerialize);
-      }
+      public virtual void SaveMultiple(IReadOnlyList<T> entitiesToSerialize) =>
+         _interactionTask.Save(entitiesToSerialize);
+      
+
+      public virtual void Save(T entityToSerialize) =>
+         _interactionTask.Save(new List<T>{entityToSerialize});
+
 
       public virtual bool EditEntityModal(T entity, IEnumerable<IObjectBase> existingObjectsInParent, ICommandCollector commandCollector, IBuildingBlock buildingBlock)
       {
