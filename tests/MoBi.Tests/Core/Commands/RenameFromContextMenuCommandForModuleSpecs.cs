@@ -14,23 +14,12 @@ namespace MoBi.Core.Commands
 {
    public abstract class RenameFromContextMenuCommandForModuleSpecs : ContextSpecification<RenameFromContextMenuCommand<Module>>
    {
-      protected IMoBiApplicationController _applicationController;
-
+      protected EditTaskForModule _editTask;
       protected override void Context()
       {
-         var interactionTaskContext = A.Fake<IInteractionTaskContext>();
-         _applicationController = A.Fake<IMoBiApplicationController>();
          var sourceModule = new Module().WithId("sourceModuleId").WithName("Source Module");
-         var editTasks = A.Fake<EditTaskForModule>(options => options
-            .WithArgumentsForConstructor(() => new EditTaskForModule(interactionTaskContext))
-            .CallsBaseMethods());
-         A.CallTo(() => interactionTaskContext.ApplicationController).Returns(_applicationController);
-         A.CallTo(() => interactionTaskContext.NamingTask.RenameFor(A<IObjectBase>.Ignored, A<IReadOnlyList<string>>.Ignored)).Returns("Module1");
-
-         var bb = new MoleculeBuildingBlock().WithId("newMoleculeBuildingBlockId");
-         bb.Module = sourceModule;
-         sourceModule.Add(bb);
-         sut = new RenameFromContextMenuCommand<Module>(editTasks)
+         _editTask = A.Fake<EditTaskForModule>();
+         sut = new RenameFromContextMenuCommand<Module>(_editTask)
          {
             Subject = sourceModule
          };
@@ -45,9 +34,9 @@ namespace MoBi.Core.Commands
       }
 
       [Observation]
-      public void should_not_call_applicationController_start()
+      public void should_call_rename_with_null_as_buildingblock()
       {
-         A.CallTo(() => _applicationController.Start<ISelectRenamingPresenter>()).MustNotHaveHappened();
+         A.CallTo(() => _editTask.Rename(A<Module>.Ignored, A< IEnumerable<IObjectBase>>.Ignored, null)).MustHaveHappened();
       }
    }
 }

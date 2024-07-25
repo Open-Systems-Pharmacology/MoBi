@@ -14,24 +14,15 @@ namespace MoBi.Core.Commands
 {
    public abstract class RenameFromContextMenuCommandForBuildingBlockSpecs : ContextSpecification<RenameFromContextMenuCommand<MoleculeBuildingBlock>>
    {
-      protected IInteractionTaskContext _interactionTaskContext;
-      private EditTasksForBuildingBlock<MoleculeBuildingBlock> _editTasks;
-
+      protected EditTasksForBuildingBlock<MoleculeBuildingBlock> _editTasks;
+      protected MoleculeBuildingBlock _buildingBlock;
       protected override void Context()
       {
-         _interactionTaskContext = A.Fake<IInteractionTaskContext>();
-         var sourceModule = new Module().WithId("sourceModuleId").WithName("Source Module");
-         _editTasks = A.Fake<EditTasksForBuildingBlock<MoleculeBuildingBlock>>(options => options
-            .WithArgumentsForConstructor(() => new EditTasksForBuildingBlock<MoleculeBuildingBlock>(_interactionTaskContext))
-            .CallsBaseMethods());
-         A.CallTo(() => _interactionTaskContext.NamingTask.RenameFor(A<IObjectBase>.Ignored, A<IReadOnlyList<string>>.Ignored)).Returns("Module1");
-
-         var bb = new MoleculeBuildingBlock().WithId("newMoleculeBuildingBlockId");
-         bb.Module = sourceModule;
-         sourceModule.Add(bb);
+         _editTasks = A.Fake<EditTasksForBuildingBlock<MoleculeBuildingBlock>>();
+         _buildingBlock = new MoleculeBuildingBlock().WithId("newMoleculeBuildingBlockId");
          sut = new RenameFromContextMenuCommand<MoleculeBuildingBlock>(_editTasks)
          {
-            Subject = bb
+            Subject = _buildingBlock
          };
       }
    }
@@ -45,9 +36,9 @@ namespace MoBi.Core.Commands
       }
 
       [Observation]
-      public void should_call_getpossiblechangesfrom()
+      public void should_call_rename_with_moleculebuildingblock()
       {
-         A.CallTo(() => _interactionTaskContext.CheckNamesVisitor.GetPossibleChangesFrom(A<IObjectBase>.Ignored, A<string>.Ignored, A<IBuildingBlock>.Ignored, A<string>.Ignored)).MustHaveHappened();
+         A.CallTo(() => _editTasks.Rename(A<MoleculeBuildingBlock>.Ignored, A<IEnumerable<IObjectBase>>.Ignored, _buildingBlock)).MustHaveHappened();
       }
    }
 }
