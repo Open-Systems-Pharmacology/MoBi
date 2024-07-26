@@ -21,7 +21,7 @@ namespace MoBi.Core.Domain.Extensions
          yield return ParameterBuildMode.Global;
 
          if (container.IsAnImplementationOf<MoleculeBuilder>())
-            yield return ParameterBuildMode.Property;
+            yield return ParameterBuildMode.Global;
       }
 
       public static ParameterBuildMode DefaultParameterBuildMode(this IContainer container)

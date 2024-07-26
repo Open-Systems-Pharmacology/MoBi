@@ -131,7 +131,6 @@ namespace MoBi.Core.Services
          var nameHash = new HashSet<string>();
          addNamesToHash(nameHash, allParametersFromMoleculesInProject(ParameterBuildMode.Global));
          addNamesToHash(nameHash, allParametersFromMoleculesInProject(ParameterBuildMode.Local));
-         addNamesToHash(nameHash, allParametersFromMoleculesInProject(ParameterBuildMode.Property));
          return nameHash;
       }
 
