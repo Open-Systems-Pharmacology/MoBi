@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Linq;
 using FakeItEasy;
-using MoBi.Core.Extensions;
-using MoBi.Helpers;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using OSPSuite.BDDHelper;

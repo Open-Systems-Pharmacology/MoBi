@@ -61,7 +61,6 @@ namespace MoBi.Presentation.Tasks.Interaction
       ICommand SetValueOrigin(TBuildingBlock buildingBlock, ValueOrigin valueOrigin, TBuilder pathAndValueEntity);
 
       IMoBiCommand ConvertDistributedParameterToConstantParameter(TBuilder distributedParameter, TBuildingBlock buildingBlock, IReadOnlyList<TBuilder> subParameters);
-
    }
 
    public abstract class InteractionTasksForPathAndValueEntity<TParent, TBuildingBlock, TBuilder> : InteractionTasksForEnumerableBuildingBlock<TParent, TBuildingBlock, TBuilder>, IInteractionTasksForPathAndValueEntity<TBuildingBlock, TBuilder>
@@ -117,6 +116,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
          return _parameterFactory.CreateDistributedParameter(distributedEntity.Name, distributionType, dimension: distributedEntity.Dimension, displayUnit: distributedEntity.DisplayUnit) as IDistributedParameter;
       }
+
       protected virtual string GetNewNameForClone(TBuildingBlock buildingBlockToClone)
       {
          var name = _interactionTaskContext.NamingTask.NewName(

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
@@ -27,11 +26,11 @@ namespace MoBi.Presentation.Tasks.Interaction
       private readonly IPKSimStarter _pkSimStarter;
       private readonly IContainerTask _containerTask;
 
-      public InteractionTasksForExpressionProfileBuildingBlock(IInteractionTaskContext interactionTaskContext, 
-         IEditTasksForExpressionProfileBuildingBlock editTask, 
-         IMoBiFormulaTask formulaTask, 
-         IPKSimStarter pkSimStarter, 
-         IContainerTask containerTask, 
+      public InteractionTasksForExpressionProfileBuildingBlock(IInteractionTaskContext interactionTaskContext,
+         IEditTasksForExpressionProfileBuildingBlock editTask,
+         IMoBiFormulaTask formulaTask,
+         IPKSimStarter pkSimStarter,
+         IContainerTask containerTask,
          IParameterFactory parameterFactory) :
          base(interactionTaskContext, editTask, formulaTask, parameterFactory)
       {
@@ -96,7 +95,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             return true;
 
          (_, _, string suggestedCategory) = Constants.ContainerName.NamesFromExpressionProfileName(_containerTask.CreateUniqueName(forbiddenNames, expressionProfile.Name, canUseBaseName: true));
-         
+
          var newName = newNameFromSuggestion(expressionProfile, suggestedCategory);
          if (string.IsNullOrEmpty(newName))
             return false;

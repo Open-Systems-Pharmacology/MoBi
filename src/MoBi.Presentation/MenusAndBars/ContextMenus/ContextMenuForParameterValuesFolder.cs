@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using MoBi.Assets;
-using MoBi.Core.Helper;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.UICommand;
 using OSPSuite.Assets;
