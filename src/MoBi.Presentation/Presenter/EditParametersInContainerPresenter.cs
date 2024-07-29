@@ -15,6 +15,7 @@ using MoBi.Presentation.Views;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
@@ -72,6 +73,8 @@ namespace MoBi.Presentation.Presenter
       private readonly IEditDistributedParameterPresenter _editDistributedParameterPresenter;
       private readonly IEditParameterPresenter _editParameterPresenter;
       private bool _ignoreAddEvents;
+      private readonly IObjectTypeResolver _typeResolver;
+
       public bool ChangeLocalisationAllowed { set; private get; }
 
       public EditParametersInContainerPresenter(IEditParametersInContainerView view,
@@ -85,7 +88,8 @@ namespace MoBi.Presentation.Presenter
          IClipboardManager clipboardManager,
          IEditTaskFor<IParameter> editTask,
          ISelectReferencePresenterFactory selectReferencePresenterFactory,
-         IFavoriteTask favoriteTask)
+         IFavoriteTask favoriteTask,
+         IObjectTypeResolver typeResolver)
          : base(view, quantityTask, interactionTaskContext, formulaMapper, parameterTask, favoriteTask)
       {
          _clipboardManager = clipboardManager;
@@ -100,6 +104,7 @@ namespace MoBi.Presentation.Presenter
          AddSubPresenters(_editDistributedParameterPresenter, _editParameterPresenter);
          _getParametersFunc = x => x.GetChildrenSortedByName<IParameter>();
          ChangeLocalisationAllowed = true;
+         _typeResolver = typeResolver;
       }
 
       public void Edit(IContainer container)
@@ -109,7 +114,7 @@ namespace MoBi.Presentation.Presenter
          RhsReference = getNewReferencePresenterFor(container);
          ShowBuildMode = container.CanSetBuildModeForParameters();
          ParameterBuildModes = container.AvailableBuildModeForParameters();
-         _view.ParentName = container.Name;
+         _view.ParentName = getContainerName(container);
          createParameterCache(_getParametersFunc(container));
          showParameters();
       }
@@ -160,6 +165,10 @@ namespace MoBi.Presentation.Presenter
          referencePresenter.ChangeLocalisationAllowed = ChangeLocalisationAllowed;
          return referencePresenter;
       }
+
+      private string getContainerName(IContainer container) =>
+         string.IsNullOrEmpty(container.Name) ? AppConstants.Captions.NewWindow(_typeResolver.TypeFor(container)) : container.Name;
+      
 
       public void Select(IParameter parameter)
       {
@@ -372,7 +381,7 @@ namespace MoBi.Presentation.Presenter
 
          if (parameter.IsAnImplementationOf<IDistributedParameter>())
          {
-            _editDistributedParameterPresenter.Edit((IDistributedParameter) parameter);
+            _editDistributedParameterPresenter.Edit((IDistributedParameter)parameter);
             _view.SetEditParameterView(_editDistributedParameterPresenter.View);
          }
          else

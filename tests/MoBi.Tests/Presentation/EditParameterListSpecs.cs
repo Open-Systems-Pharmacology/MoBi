@@ -15,6 +15,7 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.DTO;
@@ -33,10 +34,11 @@ namespace MoBi.Presentation
       protected IParameter _advancedParameter;
       protected IQuantityTask _quantityTask;
       protected IInteractionTaskContext _interactionTaskContext;
-      private IClipboardManager _clipboardManager;
-      private IEditTaskFor<IParameter> _editTask;
+      protected IClipboardManager _clipboardManager;
+      protected IEditTaskFor<IParameter> _editTask;
       protected ISelectReferencePresenterFactory _selectReferencePresenterFactory;
       protected IFavoriteTask _favoriteTask;
+      protected IObjectTypeResolver _typeResolver;
 
       protected override void Context()
       {
@@ -56,8 +58,9 @@ namespace MoBi.Presentation
          _editTask = A.Fake<IEditTaskFor<IParameter>>();
          _selectReferencePresenterFactory = A.Fake<ISelectReferencePresenterFactory>();
          _favoriteTask = A.Fake<IFavoriteTask>();
+         _typeResolver = A.Fake<IObjectTypeResolver>();
          sut = new EditParametersInContainerPresenter(_view, _formulaMapper, _parameterMapper, _interactionTasks,
-            _distributeParameterPresenter, _parameterPresenter, _quantityTask, _interactionTaskContext, _clipboardManager, _editTask, _selectReferencePresenterFactory, _favoriteTask);
+            _distributeParameterPresenter, _parameterPresenter, _quantityTask, _interactionTaskContext, _clipboardManager, _editTask, _selectReferencePresenterFactory, _favoriteTask, _typeResolver);
          sut.InitializeWith(A.Fake<ICommandCollector>());
       }
    }
@@ -144,7 +147,7 @@ namespace MoBi.Presentation
          _parameter.Value = _value;
 
          _parameter.IsFixedValue = true;
-         _parameterDTO = new ParameterDTO(_parameter) {Value = _setValue};
+         _parameterDTO = new ParameterDTO(_parameter) { Value = _setValue };
          sut.BuildingBlock = _buildingBlock;
       }
 
@@ -375,6 +378,60 @@ namespace MoBi.Presentation
       public void should_tell_quantity_task_to_set_value()
       {
          A.CallTo(() => _favoriteTask.SetParameterFavorite(_parameter, true)).MustHaveHappened();
+      }
+   }
+
+   public class When_container_does_not_have_a_name : concern_for_EditParameterListPresenter
+   {
+      protected IContainer _container;
+      private readonly string _containerType = "Container";
+
+      protected override void Context()
+      {
+         base.Context();
+         _container = new Container();
+         sut = new EditParametersInContainerPresenter(_view, _formulaMapper, _parameterMapper, _interactionTasks,
+            _distributeParameterPresenter, _parameterPresenter, _quantityTask, _interactionTaskContext, _clipboardManager, _editTask, _selectReferencePresenterFactory, _favoriteTask, _typeResolver);
+         A.CallTo(() => _typeResolver.TypeFor(_container)).Returns(_containerType);
+      }
+
+      protected override void Because()
+      {
+         sut.Edit(_container);
+      }
+
+      [Observation]
+      public void label_should_contain_name()
+      {
+         A.CallTo(_view).Where(x => x.Method.Name.Equals("set_ParentName") && x.Arguments.Get<string>(0).Equals($"New {_containerType}")).MustHaveHappened();
+      }
+   }
+
+   public class When_container_does_have_a_name : concern_for_EditParameterListPresenter
+   {
+      protected IContainer _container;
+      private readonly string _containerName = "Container Name";
+
+      protected override void Context()
+      {
+         base.Context();
+         _container = new Container();
+         //_view = new EditParametersInContainerView(A.Fake<IToolTipCreator>(), A.Fake<ValueOriginBinder<ParameterDTO>>());
+         sut = new EditParametersInContainerPresenter(_view, _formulaMapper, _parameterMapper, _interactionTasks,
+            _distributeParameterPresenter, _parameterPresenter, _quantityTask, _interactionTaskContext, _clipboardManager, _editTask, _selectReferencePresenterFactory, _favoriteTask, _typeResolver);
+
+         _container.Name = _containerName;
+      }
+
+      protected override void Because()
+      {
+         sut.Edit(_container);
+      }
+
+      [Observation]
+      public void label_should_contain_name()
+      {
+         A.CallTo(_view).Where(x => x.Method.Name.Equals("set_ParentName") && x.Arguments.Get<string>(0).Equals(_containerName)).MustHaveHappened();
       }
    }
 }
