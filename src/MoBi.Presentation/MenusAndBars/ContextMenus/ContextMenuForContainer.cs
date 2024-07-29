@@ -11,6 +11,7 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using System.Windows;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
@@ -84,8 +85,11 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
    public class ContextMenuForContainer : ContextMenuForContainerBase<IContainer>
    {
-      public ContextMenuForContainer(IMoBiContext context, IObjectTypeResolver objectTypeResolver, OSPSuite.Utility.Container.IContainer container) : base(context, objectTypeResolver, container)
+      private readonly IEntityPathResolver _entityPathResolver;
+
+      public ContextMenuForContainer(IMoBiContext context, IObjectTypeResolver objectTypeResolver, OSPSuite.Utility.Container.IContainer container, IEntityPathResolver entityPathResolver) : base(context, objectTypeResolver, container)
       {
+         _entityPathResolver = entityPathResolver;
       }
 
       public override IContextMenu InitializeWith(ObjectBaseDTO dto, IPresenter presenter)
@@ -108,8 +112,20 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.SaveAsPKML.WithEllipsis())
             .WithCommandFor<SaveWithIndividualAndExpressionUICommand, IContainer>(container, _container)
             .WithIcon(ApplicationIcons.PKMLSave));
+
+         _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.SaveAsPKML.WithEllipsis())
+            .WithCommandFor<SaveWithIndividualAndExpressionUICommand, IContainer>(container, _container)
+            .WithIcon(ApplicationIcons.PKMLSave));
+
+         _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.Captions.CopyPath)
+            .WithActionCommand(() => CopyCurrentPathToClipBoard(container as IEntity))
+            .WithIcon(ApplicationIcons.Copy));
       }
 
+      public void CopyCurrentPathToClipBoard(IEntity entity)
+      {
+         Clipboard.SetText(_entityPathResolver.FullPathFor(entity));
+      }
    }
 
    public class ContextMenuForContainerInEventGroups : ContextMenuForContainerBase<IContainer>

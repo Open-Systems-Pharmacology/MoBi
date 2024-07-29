@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System.Drawing;
+using System.Windows.Forms;
 using DevExpress.XtraBars;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
@@ -10,6 +11,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
+using OSPSuite.Presentation.Core;
 using OSPSuite.UI.Binders;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
@@ -87,8 +89,8 @@ namespace MoBi.UI.Views
       private void onGridViewMouseDown(MouseEventArgs e)
       {
          if (e.Button != MouseButtons.Right) return;
-
-         ((ParameterValuesPresenter)_presenter).ShowContextMenu(null, e.Location);
+         var location = new Point(e.X, e.Y+50);
+         ((ParameterValuesPresenter)_presenter).ShowContextMenu(null, location);
       }
 
       private IParameterValuesPresenter parameterValuesPresenter => _presenter.DowncastTo<IParameterValuesPresenter>();
