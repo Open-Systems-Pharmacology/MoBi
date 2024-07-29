@@ -15,9 +15,9 @@ namespace MoBi.Presentation.Mappers
       private readonly IPathAndValueEntityToParameterValueMapper _individualParameterToParameterValueMapper;
       private readonly IObjectBaseFactory _objectBaseFactory;
 
-      public IndividualToParameterValuesMapper(IPathAndValueEntityToParameterValueMapper expressionParameterToParameterValueMapper, IObjectBaseFactory objectBaseFactory)
+      public IndividualToParameterValuesMapper(IPathAndValueEntityToParameterValueMapper individualParameterToParameterValueMapper, IObjectBaseFactory objectBaseFactory)
       {
-         _individualParameterToParameterValueMapper = expressionParameterToParameterValueMapper;
+         _individualParameterToParameterValueMapper = individualParameterToParameterValueMapper;
          _objectBaseFactory = objectBaseFactory;
       }
 

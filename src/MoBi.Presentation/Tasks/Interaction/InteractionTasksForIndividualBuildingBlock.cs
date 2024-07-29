@@ -13,7 +13,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       IInteractionTasksForProjectPathAndValueEntityBuildingBlocks<IndividualBuildingBlock, IndividualParameter>,
       IInteractionTasksForProjectBuildingBlock
    {
-      IReadOnlyList<IndividualBuildingBlock> LoadFromPKML(); }
+   }
 
    public class InteractionTasksForIndividualBuildingBlock : InteractionTasksForProjectPathAndValueEntityBuildingBlocks<IndividualBuildingBlock, IndividualParameter>, IInteractionTasksForIndividualBuildingBlock
    {
@@ -23,12 +23,6 @@ namespace MoBi.Presentation.Tasks.Interaction
          IParameterFactory parameterFactory) : 
          base(interactionTaskContext, editTask, moBiFormulaTask, parameterFactory)
       {
-      }
-
-      public IReadOnlyList<IndividualBuildingBlock> LoadFromPKML()
-      {
-         var filename = AskForPKMLFileToOpen();
-         return (string.IsNullOrEmpty(filename) ? Enumerable.Empty<IndividualBuildingBlock>() : LoadItems(filename)).ToList();
       }
 
       public override IMoBiCommand GetRemoveCommand(IndividualBuildingBlock individualBuildingBlockToRemove, MoBiProject parent, IBuildingBlock buildingBlock)

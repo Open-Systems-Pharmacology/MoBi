@@ -18,7 +18,7 @@ namespace MoBi.Presentation.Mapper
    {
       private IObjectBaseFactory _objectFactory;
       private ICloneManagerForModel _cloneManager;
-      private PathAndValueEntityToParameterValueMapper _expressionParameterToParameterValueMapper;
+      private PathAndValueEntityToParameterValueMapper _individualParameterToParameterValueMapper;
 
       protected override void Context()
       {
@@ -29,8 +29,8 @@ namespace MoBi.Presentation.Mapper
 
          _cloneManager = new CloneManagerForModel(_objectFactory, new DataRepositoryTask(), A.Fake<IModelFinalizer>());
 
-         _expressionParameterToParameterValueMapper = new PathAndValueEntityToParameterValueMapper(_objectFactory, _cloneManager);
-         sut = new IndividualToParameterValuesMapper(_expressionParameterToParameterValueMapper, _objectFactory);
+         _individualParameterToParameterValueMapper = new PathAndValueEntityToParameterValueMapper(_objectFactory, _cloneManager);
+         sut = new IndividualToParameterValuesMapper(_individualParameterToParameterValueMapper, _objectFactory);
       }
 
       public class mapping_from_individual_to_values_building_block : concern_for_IndividualToParameterValuesMapper
@@ -57,11 +57,11 @@ namespace MoBi.Presentation.Mapper
             addIndividualParameter(individualParameter);
          }
 
-         private void addIndividualParameter(IndividualParameter expressionParameter)
+         private void addIndividualParameter(IndividualParameter individualParameter)
          {
-            _individual.Add(expressionParameter);
-            if (expressionParameter.Formula != null)
-               _individual.AddFormula(expressionParameter.Formula);
+            _individual.Add(individualParameter);
+            if (individualParameter.Formula != null)
+               _individual.AddFormula(individualParameter.Formula);
          }
 
          private static IndividualParameter createIndividualParameter(string parameterName)

@@ -18,7 +18,6 @@ namespace MoBi.Presentation.Tasks.Interaction
       IInteractionTasksForProjectPathAndValueEntityBuildingBlocks<ExpressionProfileBuildingBlock, ExpressionParameter>,
       IInteractionTasksForProjectBuildingBlock
    {
-      IReadOnlyList<ExpressionProfileBuildingBlock> LoadFromPKML();
       IMoBiCommand UpdateExpressionProfileFromDatabase(ExpressionProfileBuildingBlock buildingBlock);
    }
 
@@ -39,12 +38,6 @@ namespace MoBi.Presentation.Tasks.Interaction
          _editTaskForExpressionProfileBuildingBlock = editTask;
          _pkSimStarter = pkSimStarter;
          _containerTask = containerTask;
-      }
-
-      public IReadOnlyList<ExpressionProfileBuildingBlock> LoadFromPKML()
-      {
-         var filename = AskForPKMLFileToOpen();
-         return (string.IsNullOrEmpty(filename) ? Enumerable.Empty<ExpressionProfileBuildingBlock>() : LoadItems(filename)).ToList();
       }
 
       public IMoBiCommand UpdateExpressionProfileFromDatabase(ExpressionProfileBuildingBlock buildingBlock)
