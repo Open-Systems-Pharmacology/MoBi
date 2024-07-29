@@ -27,7 +27,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public override IMoBiCommand GetRemoveCommand(IContainer entityToRemove, MoBiSpatialStructure parent, IBuildingBlock buildingBlock)
       {
-         return new RemoveTopContainerCommand((MoBiSpatialStructure) buildingBlock, entityToRemove);
+         return new RemoveTopContainerCommand((MoBiSpatialStructure)buildingBlock, entityToRemove);
       }
 
       public override IMoBiCommand GetAddCommand(IContainer container, MoBiSpatialStructure spatialStructure, IBuildingBlock buildingBlock)

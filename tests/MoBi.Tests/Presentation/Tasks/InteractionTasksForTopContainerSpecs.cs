@@ -89,7 +89,6 @@ namespace MoBi.Presentation.Tasks
       {
          A.CallTo(() => _parameterValuesTask.ExtendBuildingBlockWith(_existingParameterValuesBuildingBlock, A<IReadOnlyList<ParameterValue>>.That.Contains(_parameterValuesBuildingBlock.First()))).MustHaveHappened();
       }
-
    }
 
    internal class When_importing_a_spatial_structure_transfer_into_a_container_and_there_isnt_a_parameter_values_building_block_in_the_same_module : concern_for_InteractionTasksForTopContainer

@@ -241,7 +241,9 @@ namespace MoBi.Presentation.Presenter
       protected void AddSpatialStructures()
       {
          var spatialStructures = _buildingBlockRepository.SpatialStructureCollection;
-         _view.AddNodes(spatialStructures.MapAllUsing(_referenceMapper));
+         var nodes = spatialStructures.Select(x => _referenceMapper.MapFrom(x).WithText(x.DisplayName));
+
+         _view.AddNodes(nodes);
       }
 
       private bool shouldCreateAbsolutePaths => _view.ObjectPathType.Equals(ObjectPathType.Absolute);

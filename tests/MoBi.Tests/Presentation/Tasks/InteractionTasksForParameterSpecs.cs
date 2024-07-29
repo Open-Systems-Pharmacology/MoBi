@@ -147,22 +147,5 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class When_removing_a_volume_parameter_in_a_physical_container : concern_for_InteractionTasksForParameter
-   {
-      private IParameter _parameter;
-      private IContainer _container;
-
-      protected override void Context()
-      {
-         base.Context();
-         _container = new Container().WithMode(ContainerMode.Physical);
-         _parameter = new Parameter().WithName(Constants.Parameters.VOLUME).WithParentContainer(_container);
-      }
-
-      [Observation]
-      public void should_throw_an_exception()
-      {
-         The.Action(() => sut.Remove(_parameter, _container, A.Fake<IBuildingBlock>())).ShouldThrowAn<MoBiException>();
-      }
-   }
+  
 }

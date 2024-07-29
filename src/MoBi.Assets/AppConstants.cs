@@ -256,6 +256,7 @@ namespace MoBi.Assets
          public static readonly string RemoveMultipleResultsFromSimulations = "Remove multiple results from simulations";
          public static readonly string RemoveMultipleParameterValues = "Remove multiple parameter values";
          public static readonly string RemoveMultipleInitialConditions = "Remove multiple initial conditions";
+         public static readonly string RemoveMultipleModules = "Remove multiple modules";
          public static readonly string SimulationType = "simulation";
          public static readonly string BuildingBlockType = "building block";
          public static readonly string ParameterType = "parameter";
@@ -879,6 +880,7 @@ namespace MoBi.Assets
          public static readonly string RemoveSelectedResultsFromSimulations = "Do you really want to remove the selected results from simulations";
          public static readonly string RemoveSelectedResultsFromProject = "Do you really want to remove the selected result(s) from the project";
          public static readonly Size SELECT_SINGLE_SIZE = new Size(475, 160);
+         public static readonly string RemoveMultipleModules = "Do you really want to remove the selected Modules?";
 
          public static string RemoveSimulationsFromProject(string projectName)
          {
@@ -1289,10 +1291,8 @@ namespace MoBi.Assets
 
          public static string CouldNotFindDimension(string dimension) => $"Could not find the dimension: {dimension}";
 
-         public static string CannotRemoveParameter(string parameterName, string containerName, string containerType)
-         {
-            return string.Format("Parameter '{0}' is a mandatory parameter of {2} '{1}' and cannot be removed.", parameterName, containerName, containerType.ToLowerInvariant());
-         }
+         public static string CannotRemoveParameter(string parameterName, string containerName, string containerType) => 
+            $"Parameter '{parameterName}' is a mandatory parameter of {containerType.ToLowerInvariant()} '{containerName}' and cannot be removed.";
 
          public static string AliasNotUnique(string alias, string formulaName) => $"Alias '{alias}' is not unique in formula '{formulaName}'.";
 
@@ -1722,6 +1722,7 @@ namespace MoBi.Assets
          public static readonly string CopyPath = "Copy Path";
          public static readonly string CopyFormula = "Copy Formula";
          public static readonly string PasteFormula = "Paste Formula";
+         public static readonly string SelectOutputFolder = "Select output folder";
 
          public static string AddBuildingBlocksToModule(string moduleName) => $"Add Building Blocks to Module:  {moduleName}";
          public static string LoadBuildingBlockToModule(string moduleName) => $"Load Building Block to Module:  {moduleName}";

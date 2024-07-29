@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
+using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -75,7 +75,6 @@ namespace MoBi.Presentation
          base.Context();
          _buildingBlock = new ParameterValuesBuildingBlock().WithId("id");
          A.CallTo(() => _context.Get<IEntity>(_buildingBlock.Id)).Returns(null);
-
       }
 
       protected override void Because()
@@ -100,7 +99,6 @@ namespace MoBi.Presentation
          base.Context();
          _distributedParameter = new DistributedParameter().WithId("distParm");
          A.CallTo(() => _context.Get<IEntity>(_distributedParameter.Id)).Returns(_distributedParameter);
-
       }
 
       protected override void Because()

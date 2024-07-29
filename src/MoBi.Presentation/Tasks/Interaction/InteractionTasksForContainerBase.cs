@@ -19,7 +19,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 {
    public abstract class InteractionTasksForContainerBase<TParent> : InteractionTasksForChildren<TParent, IContainer> where TParent : class, IObjectBase
    {
-      private readonly IObjectPathFactory _objectPathFactory;
+      protected readonly IObjectPathFactory _objectPathFactory;
       private readonly IParameterValuesTask _parameterValuesTask;
 
       protected InteractionTasksForContainerBase(
@@ -115,10 +115,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             return;
 
          parameterValuesBuildingBlock.Name = parameterValuesBuildingBlock.Name.Replace(oldName, newName);
-         parameterValuesBuildingBlock.Each(x =>
-         {
-            x.ContainerPath.Replace(oldName, newName);
-         });
+         parameterValuesBuildingBlock.Each(x => { x.ContainerPath.Replace(oldName, newName); });
       }
 
       private ICommand addParameterValues(ParameterValuesBuildingBlock parameterValues, Module module)
