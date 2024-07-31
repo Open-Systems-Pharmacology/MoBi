@@ -1,11 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -15,7 +12,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
@@ -27,14 +23,14 @@ namespace MoBi.Presentation.Presenter
    {
       void UpdateDimension(ParameterValueDTO valueObject, IDimension newDimension);
       void AddNewParameterValue();
-      }
+   }
 
    public class ParameterValuesPresenter
       : ExtendablePathAndValueBuildingBlockPresenter<IParameterValuesView,
             IParameterValuesPresenter,
             ParameterValuesBuildingBlock,
             ParameterValueDTO, ParameterValue>,
-            IParameterValuesPresenter
+         IParameterValuesPresenter
    {
       private readonly IParameterValuesTask _parameterValuesTask;
       private readonly IDisplayUnitRetriever _displayUnitRetriever;
@@ -102,10 +98,11 @@ namespace MoBi.Presentation.Presenter
       public void ShowContextMenu(IViewItem objectRequestingPopup, Point popupLocation) =>
          _viewItemContextMenuFactory.CreateFor(objectRequestingPopup, this).Show(_view, popupLocation);
 
-      public void AddNewParameterValue()  
+      public void AddNewParameterValue()
       {
          _referenceAtParamValuePresenter.Init(null, new List<IObjectBase>(), null);
          _modalPresenter.Encapsulate(_referenceAtParamValuePresenter);
+         _modalPresenter.InitialOkEnabled = false;
          if (!_modalPresenter.Show())
             return;
 

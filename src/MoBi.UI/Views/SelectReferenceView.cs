@@ -60,7 +60,7 @@ namespace MoBi.UI.Views
          layoutItemRadioGroup.AdjustControlHeight(RADIO_GROUP_HEIGHT, layoutControl);
          layoutItemRadioGroup.TextVisible = false;
       }
-      
+
       private RadioGroupItem[] getReferenceTypesForRadioGroup()
       {
          return new[]
@@ -78,7 +78,7 @@ namespace MoBi.UI.Views
 
       public ObjectPathType ObjectPathType
       {
-         get => (ObjectPathType) radioGroupReferenceType.Properties.Items[radioGroupReferenceType.SelectedIndex].Value;
+         get => (ObjectPathType)radioGroupReferenceType.Properties.Items[radioGroupReferenceType.SelectedIndex].Value;
          set => radioGroupReferenceType.SelectedIndex = radioGroupReferenceType.Properties.Items.GetItemIndexByValue(value);
       }
 
@@ -153,7 +153,7 @@ namespace MoBi.UI.Views
 
       public void AddNodes(IEnumerable<ITreeNode> nodes) => addNodes(nodes, clear: false);
 
-      public void AddNode(ITreeNode node) => AddNodes(new[] {node});
+      public void AddNode(ITreeNode node) => AddNodes(new[] { node });
 
       public void Select(IEntity entityToSelect)
       {

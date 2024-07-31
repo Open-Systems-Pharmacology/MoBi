@@ -93,9 +93,7 @@ namespace MoBi.Presentation.Presenter
          BindToView();
       }
 
-
-
-        public bool CanCreateNewFormula
+      public bool CanCreateNewFormula
       {
          set { _view.CanCreateNewFormula = value; }
       }

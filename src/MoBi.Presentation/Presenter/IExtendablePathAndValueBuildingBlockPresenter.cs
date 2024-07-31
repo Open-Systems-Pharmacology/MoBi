@@ -1,13 +1,11 @@
 using MoBi.Core.Events;
 using MoBi.Presentation.DTO;
-using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Events;
 
 namespace MoBi.Presentation.Presenter
 {
-
    public interface IExtendablePathAndValueBuildingBlockPresenter<in TDTO> : IPathAndValueBuildingBlockPresenter<TDTO>, ISubjectPresenter,
       ILatchable,
       IListener<PathAndValueEntitiesBuildingBlockChangedEvent>,

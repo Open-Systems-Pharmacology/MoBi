@@ -1,5 +1,4 @@
 ﻿using MoBi.Core.Domain.Model;
-using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
@@ -15,7 +14,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       public ContextMenuFactoryForParameterValues(IMoBiContext context) => _context = context;
 
       public IContextMenu CreateFor(IViewItem objectRequestingContextMenu, IPresenterWithContextMenu<IViewItem> presenter)
-         => new ContextMenuForParameterValues(_context, presenter.DowncastTo<IParameterValuesPresenter>());
+         => new ContextMenuForParameterValues(_context);
 
       public bool IsSatisfiedBy(IViewItem objectRequestingContextMenu, IPresenterWithContextMenu<IViewItem> presenter)
          => presenter.IsAnImplementationOf<ParameterValuesPresenter>()

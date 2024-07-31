@@ -1,4 +1,5 @@
-﻿using MoBi.Assets;
+﻿using System.Windows;
+using MoBi.Assets;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
@@ -11,7 +12,6 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
-using System.Windows;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
@@ -96,7 +96,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          base.InitializeWith(dto, presenter);
          var container = _context.Get<IContainer>(dto.Id);
-         
+
          if (!dto.Name.IsSpecialName())
          {
             _allMenuItems.Add(CreateAddNewItemFor(container));

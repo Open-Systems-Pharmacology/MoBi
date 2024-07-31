@@ -80,16 +80,13 @@ namespace MoBi.UI.Views
       {
          if (parameterDTO.IsDistributed)
             return _repositoryItemPopupContainerEdit;
-      
+
          return _valueColumn.DefaultRepository();
       }
 
       protected IGridViewAutoBindColumn<TPathAndValueEntity, double?> BindValueColumn(Expression<Func<TPathAndValueEntity, double?>> propertyToBindTo)
       {
-         _valueColumn = _gridViewBinder.
-            AutoBind(propertyToBindTo).
-            WithRepository(valueRepositoryFor).
-            WithEditorConfiguration(ConfigureValueRepository);
+         _valueColumn = _gridViewBinder.AutoBind(propertyToBindTo).WithRepository(valueRepositoryFor).WithEditorConfiguration(ConfigureValueRepository);
          return _valueColumn;
       }
 
@@ -100,7 +97,7 @@ namespace MoBi.UI.Views
             _presenter.EditDistributedParameter(individualParameter);
             return;
          }
-      
+
          _unitControl.UpdateUnitsFor(activeEditor, individualParameter);
       }
 
@@ -273,7 +270,7 @@ namespace MoBi.UI.Views
          _pathElementsColumns[i].XtraColumn.VisibleIndex = previousColumn.XtraColumn.VisibleIndex + 1;
       }
 
-      protected void OnNameSet(TPathAndValueEntity startValueDTO, PropertyValueSetEventArgs<string> eventArgs) 
+      protected void OnNameSet(TPathAndValueEntity startValueDTO, PropertyValueSetEventArgs<string> eventArgs)
          => _presenter.UpdatePathAndValueEntityName(startValueDTO, eventArgs.NewValue);
 
       private void configureGridView()
