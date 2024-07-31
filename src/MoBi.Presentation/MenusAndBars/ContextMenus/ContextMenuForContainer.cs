@@ -118,13 +118,8 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithIcon(ApplicationIcons.PKMLSave));
 
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.Captions.CopyPath)
-            .WithActionCommand(() => CopyCurrentPathToClipBoard(container as IEntity))
+            .WithActionCommand(() => Clipboard.SetText(_entityPathResolver.FullPathFor(container as IEntity)))
             .WithIcon(ApplicationIcons.Copy));
-      }
-
-      public void CopyCurrentPathToClipBoard(IEntity entity)
-      {
-         Clipboard.SetText(_entityPathResolver.FullPathFor(entity));
       }
    }
 

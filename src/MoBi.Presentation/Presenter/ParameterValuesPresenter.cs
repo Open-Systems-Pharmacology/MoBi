@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -14,6 +15,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
@@ -25,14 +27,14 @@ namespace MoBi.Presentation.Presenter
    {
       void UpdateDimension(ParameterValueDTO valueObject, IDimension newDimension);
       void AddNewParameterValue();
-   }
+      }
 
    public class ParameterValuesPresenter
       : ExtendablePathAndValueBuildingBlockPresenter<IParameterValuesView,
             IParameterValuesPresenter,
             ParameterValuesBuildingBlock,
             ParameterValueDTO, ParameterValue>,
-         IParameterValuesPresenter
+            IParameterValuesPresenter
    {
       private readonly IParameterValuesTask _parameterValuesTask;
       private readonly IDisplayUnitRetriever _displayUnitRetriever;
@@ -100,10 +102,9 @@ namespace MoBi.Presentation.Presenter
       public void ShowContextMenu(IViewItem objectRequestingPopup, Point popupLocation) =>
          _viewItemContextMenuFactory.CreateFor(objectRequestingPopup, this).Show(_view, popupLocation);
 
-      public void AddNewParameterValue()
+      public void AddNewParameterValue()  
       {
          _referenceAtParamValuePresenter.Init(null, new List<IObjectBase>(), null);
-
          _modalPresenter.Encapsulate(_referenceAtParamValuePresenter);
          if (!_modalPresenter.Show())
             return;
@@ -116,17 +117,10 @@ namespace MoBi.Presentation.Presenter
       {
          var newParameterValue = _emptyStartValueCreator.CreateEmptyStartValue(_interactionTasksForExtendablePathAndValueEntity.GetDefaultDimension());
          newParameterValue.Path = entityPath;
-
-
-         // newRecord.ContainerPath = entityPath.ContainerPath();
-         // newRecord.Name = entityPath.Last();
-         // newRecord.ParameterValue.Name = entityPath.Last();
-
-
          var newRecord = _valueMapper.MapFrom(newParameterValue, _buildingBlock);
 
          _startValueDTOs.Insert(0, newRecord);
          BindToView();
       }
-    }
+   }
 }

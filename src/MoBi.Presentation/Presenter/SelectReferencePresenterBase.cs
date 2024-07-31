@@ -55,7 +55,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IBuildingBlockRepository _buildingBlockRepository;
       private IUsingFormula _editedObject;
       public Func<IObjectBase, bool> SelectionPredicate { get; set; }
-      public event Action SelectionChangedEvent = delegate { };
+      public event Action SelectionChangedEvent = delegate {  };
 
       protected SelectReferencePresenterBase(ISelectReferenceView view,
          IObjectBaseToObjectBaseDTOMapper objectBaseDTOMapper,
@@ -171,7 +171,7 @@ namespace MoBi.Presentation.Presenter
          };
       }
 
-      public ObjectPath GetSelection()
+      public virtual ObjectPath GetSelection()
       {
          var selection = getSelected<IEntity>();
 
@@ -180,7 +180,7 @@ namespace MoBi.Presentation.Presenter
             _objectPathFactory.CreateRelativeObjectPath(_refObject, selection);
       }
 
-      private T getSelected<T>() where T : class, IObjectBase
+      protected  virtual T getSelected<T>() where T : class, IObjectBase
       {
          var dto = _view.SelectedDTO;
          return dto == null ? null : _context.Get<T>(dto.Id);
@@ -208,7 +208,7 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      public void SelectionChanged(ITreeNode treeNode)
+      public virtual void SelectionChanged(ITreeNode treeNode)
       {
          SelectionChangedEvent();
       }
@@ -244,9 +244,9 @@ namespace MoBi.Presentation.Presenter
          var nodes = spatialStructures.Select(x => _referenceMapper.MapFrom(x).WithText(x.DisplayName));
 
          _view.AddNodes(nodes);
-      }
+      } 
 
-      private bool shouldCreateAbsolutePaths => _view.ObjectPathType.Equals(ObjectPathType.Absolute);
+      protected bool shouldCreateAbsolutePaths => _view.ObjectPathType.Equals(ObjectPathType.Absolute);
 
       protected void AddTimeReference()
       {
