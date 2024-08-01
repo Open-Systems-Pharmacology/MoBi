@@ -23,7 +23,7 @@ namespace MoBi.Presentation.Presenter
 
       public void AddMoleculesSelectionChanged(bool moleculesSelected)
       {
-         if (!moleculesSelected || Module.InitialConditionsCollection.Any())
+         if (!moleculesSelected || (Module?.InitialConditionsCollection != null && Module.InitialConditionsCollection.Any()))
             return;
 
          ContentDTO.WithInitialConditions = true;
