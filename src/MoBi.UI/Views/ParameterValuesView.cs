@@ -88,7 +88,7 @@ namespace MoBi.UI.Views
       private void onGridViewMouseDown(MouseEventArgs e)
       {
          if (e.Button != MouseButtons.Right) return;
-         var location = new Point(e.X, e.Y + 50);
+         var location = new Point(e.X, e.Y);
          ((ParameterValuesPresenter)_presenter).ShowContextMenu(null, location);
       }
 

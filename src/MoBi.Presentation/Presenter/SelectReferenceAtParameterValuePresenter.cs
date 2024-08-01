@@ -43,18 +43,5 @@ namespace MoBi.Presentation.Presenter
       public override bool CanClose => isSelectionParameterType();
 
       private bool isSelectionParameterType() => getSelected<IParameter>() != null;
-
-      public override ObjectPath GetSelection()
-      {
-         var selection = getSelected<IParameter>();
-
-         return ShouldCreateAbsolutePaths ? _objectPathFactory.CreateAbsoluteObjectPath(selection) : _objectPathFactory.CreateRelativeObjectPath(_refObject, selection);
-      }
-
-      protected override T getSelected<T>()
-      {
-         var dto = _view.SelectedDTO;
-         return dto == null ? null : _context.Get<T>(dto.ObjectBase.Id);
-      }
    }
 }

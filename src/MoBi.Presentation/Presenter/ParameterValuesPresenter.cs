@@ -61,8 +61,6 @@ namespace MoBi.Presentation.Presenter
          _viewItemContextMenuFactory = viewItemContextMenuFactory;
          _modalPresenter = modalPresenter;
          _referenceAtParamValuePresenter = selectReferenceAtParameterValuePresenter;
-         _modalPresenter.Encapsulate(this);
-         _modalPresenter.Text = AppConstants.Captions.SelectLocalReferencePoint;
          view.HideIsPresentView();
          view.HideRefreshView();
          view.HideNegativeValuesAllowedView();
@@ -100,24 +98,16 @@ namespace MoBi.Presentation.Presenter
 
       public void AddNewParameterValue()
       {
-         _referenceAtParamValuePresenter.Init(null, new List<IObjectBase>(), null);
+         _modalPresenter.Text = AppConstants.Captions.SelectLocalReferencePoint;
+         //The next 2 lines should not be changed, as they are used to encapsulate the presenter
+         //and to initialize it with the correct data so that the initial state of the OK button is correct
          _modalPresenter.Encapsulate(_referenceAtParamValuePresenter);
-         _modalPresenter.InitialOkEnabled = false;
+         _referenceAtParamValuePresenter.Init(null, new List<IObjectBase>(), null);
          if (!_modalPresenter.Show())
             return;
 
          AddNewEmptyPathAndValueEntity(_referenceAtParamValuePresenter.GetSelection());
          _view.InitializePathColumns();
-      }
-
-      public void AddNewEmptyPathAndValueEntity(ObjectPath entityPath)
-      {
-         var newParameterValue = _emptyStartValueCreator.CreateEmptyStartValue(_interactionTasksForExtendablePathAndValueEntity.GetDefaultDimension());
-         newParameterValue.Path = entityPath;
-         var newRecord = _valueMapper.MapFrom(newParameterValue, _buildingBlock);
-
-         _startValueDTOs.Insert(0, newRecord);
-         BindToView();
       }
    }
 }

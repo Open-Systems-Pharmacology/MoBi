@@ -113,10 +113,6 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithCommandFor<SaveWithIndividualAndExpressionUICommand, IContainer>(container, _container)
             .WithIcon(ApplicationIcons.PKMLSave));
 
-         _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.SaveAsPKML.WithEllipsis())
-            .WithCommandFor<SaveWithIndividualAndExpressionUICommand, IContainer>(container, _container)
-            .WithIcon(ApplicationIcons.PKMLSave));
-
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.Captions.CopyPath)
             .WithActionCommand(() => Clipboard.SetText(_entityPathResolver.FullPathFor(container as IEntity)))
             .WithIcon(ApplicationIcons.Copy));

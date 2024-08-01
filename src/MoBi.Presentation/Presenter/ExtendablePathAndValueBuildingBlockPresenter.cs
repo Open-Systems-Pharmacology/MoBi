@@ -90,7 +90,7 @@ namespace MoBi.Presentation.Presenter
             pathAndValueEntity: _emptyStartValueCreator.CreateEmptyStartValue(_interactionTasksForExtendablePathAndValueEntity.GetDefaultDimension()),
             buildingBlock: _buildingBlock
          ));
-         BindToView();
+         bindToView();
       }
 
       public bool CanCreateNewFormula
@@ -161,13 +161,13 @@ namespace MoBi.Presentation.Presenter
       {
          if (buildingBlock == null) return;
          _startValueDTOs = ValueDTOsFor(buildingBlock).OrderBy(pathAndValueEntity => IsOriginalStartValue(pathAndValueEntity)).ToBindingList();
-         BindToView();
+         bindToView();
          initializeColumns();
       }
 
       protected abstract IReadOnlyList<TStartValueDTO> ValueDTOsFor(TBuildingBlock buildingBlock);
 
-      protected void BindToView()
+      private void bindToView()
       {
          _view.BindTo(_startValueDTOs);
       }
@@ -273,6 +273,16 @@ namespace MoBi.Presentation.Presenter
       {
          _focusedStartValue = PathAndValueEntityFrom(_view.FocusedStartValue);
          _handleChangedEvents = false;
+      }
+
+      public void AddNewEmptyPathAndValueEntity(ObjectPath entityPath)
+      {
+         var newParameterValue = _emptyStartValueCreator.CreateEmptyStartValue(_interactionTasksForExtendablePathAndValueEntity.GetDefaultDimension());
+         newParameterValue.Path = entityPath;
+         var newRecord = _valueMapper.MapFrom(newParameterValue, _buildingBlock);
+
+         _startValueDTOs.Insert(0, newRecord);
+         bindToView();
       }
    }
 }

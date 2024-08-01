@@ -154,7 +154,7 @@ namespace MoBi.Presentation.Presenter
                return createPathFromParameterDummy(objectBaseDTO);
 
             if (objectBaseDTO.IsAnImplementationOf<DummyMoleculeContainerDTO>())
-               return _objectPathCreator.CreateMoleculePath((DummyMoleculeContainerDTO)objectBaseDTO, ShouldCreateAbsolutePaths, _refObject);
+               return _objectPathCreator.CreateMoleculePath((DummyMoleculeContainerDTO)objectBaseDTO, shouldCreateAbsolutePath, _refObject);
 
             return null;
          }
@@ -176,18 +176,18 @@ namespace MoBi.Presentation.Presenter
       {
          var selection = getSelected<IEntity>();
 
-         return ShouldCreateAbsolutePaths ? _objectPathFactory.CreateAbsoluteObjectPath(selection) : _objectPathFactory.CreateRelativeObjectPath(_refObject, selection);
+         return shouldCreateAbsolutePath ? _objectPathFactory.CreateAbsoluteObjectPath(selection) : _objectPathFactory.CreateRelativeObjectPath(_refObject, selection);
       }
 
-      protected virtual T getSelected<T>() where T : class, IObjectBase
+      protected T getSelected<T>() where T : class, IObjectBase
       {
          var dto = _view.SelectedDTO;
-         return dto == null ? null : _context.Get<T>(dto.Id);
+         return dto == null ? null : _context.Get<T>(dto.ObjectBase.Id);
       }
 
       public void CheckPathCreationConfiguration()
       {
-         if (_refObject == null && !ShouldCreateAbsolutePaths)
+         if (_refObject == null && !shouldCreateAbsolutePath)
          {
             GetLocalisationReferences();
             if (_refObject == null)
@@ -246,7 +246,7 @@ namespace MoBi.Presentation.Presenter
          _view.AddNodes(nodes);
       }
 
-      protected bool ShouldCreateAbsolutePaths => _view.ObjectPathType.Equals(ObjectPathType.Absolute);
+      private bool shouldCreateAbsolutePath => _view.ObjectPathType.Equals(ObjectPathType.Absolute);
 
       protected void AddTimeReference()
       {
@@ -405,12 +405,12 @@ namespace MoBi.Presentation.Presenter
 
       private ReferenceDTO createPathFromParameterDummy(ObjectBaseDTO dtoObjectBase)
       {
-         return _objectPathCreator.CreatePathFromParameterDummy(dtoObjectBase, ShouldCreateAbsolutePaths, _refObject, _editedObject);
+         return _objectPathCreator.CreatePathFromParameterDummy(dtoObjectBase, shouldCreateAbsolutePath, _refObject, _editedObject);
       }
 
       private ReferenceDTO createPathsFromEntity(IObjectBase entity)
       {
-         return _objectPathCreator.CreatePathsFromEntity(entity, ShouldCreateAbsolutePaths, _refObject, _editedObject);
+         return _objectPathCreator.CreatePathsFromEntity(entity, shouldCreateAbsolutePath, _refObject, _editedObject);
       }
 
       private IEnumerable<MoleculeBuilder> allMolecules
