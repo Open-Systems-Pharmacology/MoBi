@@ -84,15 +84,6 @@ namespace MoBi.Presentation.Presenter
          _view.InitializePathColumns();
       }
 
-      public void AddNewEmptyPathAndValueEntity()
-      {
-         _startValueDTOs.Insert(0, _valueMapper.MapFrom(
-            pathAndValueEntity: _emptyStartValueCreator.CreateEmptyStartValue(_interactionTasksForExtendablePathAndValueEntity.GetDefaultDimension()),
-            buildingBlock: _buildingBlock
-         ));
-         bindToView();
-      }
-
       public bool CanCreateNewFormula
       {
          set { _view.CanCreateNewFormula = value; }
@@ -275,10 +266,17 @@ namespace MoBi.Presentation.Presenter
          _handleChangedEvents = false;
       }
 
-      public void AddNewEmptyPathAndValueEntity(ObjectPath entityPath)
+      public void AddNewPathAndValueEntity(ObjectPath entityPath) => addNewPathAndValue(entityPath);
+
+      public void AddNewEmptyPathAndValueEntity() => addNewPathAndValue(null);
+
+      private void addNewPathAndValue(ObjectPath entityPath)
       {
          var newParameterValue = _emptyStartValueCreator.CreateEmptyStartValue(_interactionTasksForExtendablePathAndValueEntity.GetDefaultDimension());
-         newParameterValue.Path = entityPath;
+
+         if (entityPath != null)
+            newParameterValue.Path = entityPath;
+
          var newRecord = _valueMapper.MapFrom(newParameterValue, _buildingBlock);
 
          _startValueDTOs.Insert(0, newRecord);

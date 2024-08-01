@@ -106,7 +106,7 @@ namespace MoBi.Presentation.Presenter
          if (!_modalPresenter.Show())
             return;
 
-         AddNewEmptyPathAndValueEntity(_referenceAtParamValuePresenter.GetSelection());
+         AddNewPathAndValueEntity(_referenceAtParamValuePresenter.GetSelection());
          _view.InitializePathColumns();
       }
    }

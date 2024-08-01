@@ -182,7 +182,8 @@ namespace MoBi.Presentation.Presenter
       protected T getSelected<T>() where T : class, IObjectBase
       {
          var dto = _view.SelectedDTO;
-         return dto == null ? null : _context.Get<T>(dto.ObjectBase.Id);
+
+         return dto == null ? null : _context.Get<T>(dto.Id);
       }
 
       public void CheckPathCreationConfiguration()

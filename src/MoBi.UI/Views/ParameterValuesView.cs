@@ -1,11 +1,11 @@
-﻿using System.Drawing;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using DevExpress.XtraBars;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Formatters;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using MoBi.UI.Extensions;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.DataBinding;
@@ -61,7 +61,7 @@ namespace MoBi.UI.Views
          _gridViewBinder.Bind(x => x.Dimension).WithRepository(x => _dimensionComboBoxRepository)
             .WithOnValueUpdating((o, e) => OnEvent(() => onDimensionSet(o, e)));
 
-         _gridViewBinder.GridView.MouseDown += (o, e) => OnEvent(onGridViewMouseDown, e);
+         gridView.MouseDown += (o, e) => OnEvent(onGridViewMouseDown, e);
       }
 
       public override string NameColumnCaption => AppConstants.Captions.ParameterName;
@@ -88,8 +88,7 @@ namespace MoBi.UI.Views
       private void onGridViewMouseDown(MouseEventArgs e)
       {
          if (e.Button != MouseButtons.Right) return;
-         var location = new Point(e.X, e.Y);
-         ((ParameterValuesPresenter)_presenter).ShowContextMenu(null, location);
+         ((ParameterValuesPresenter)_presenter).ShowContextMenu(null, this.CalculateRelativeOffset(e.Location, gridControl));
       }
 
       private IParameterValuesPresenter parameterValuesPresenter => _presenter.DowncastTo<IParameterValuesPresenter>();
