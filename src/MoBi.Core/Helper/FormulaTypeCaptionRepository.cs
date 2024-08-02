@@ -12,6 +12,7 @@ namespace MoBi.Core.Helper
          Add(typeof(ConstantFormula), AppConstants.Captions.ConstantFormula);
          Add(typeof(ExplicitFormula), AppConstants.Captions.ExplicitFormula);
          Add(typeof(TableFormula), AppConstants.Captions.TableFormula);
+         Add(typeof(DistributedTableFormula), AppConstants.Captions.DistributedTableFormula);
          Add(typeof(BlackBoxFormula), AppConstants.Captions.BlackBoxFormula);
          Add(typeof(TableFormulaWithOffset), AppConstants.Captions.TableFormulaWithOffset);
          Add(typeof(TableFormulaWithXArgument), AppConstants.Captions.TableFormulaWithXArgument);

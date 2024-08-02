@@ -1,17 +1,27 @@
 ﻿using OSPSuite.BDDHelper;
 using FakeItEasy;
 using MoBi.Core.Commands;
+using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Services;
+using OSPSuite.Infrastructure.Import.Services;
 
 namespace MoBi.Presentation.Tasks
 {
    public abstract class concern_for_EditValuePointTasksSpecs : ContextSpecification<ITableFormulaTask>
    {
+      private IDialogCreator _dialogCreator;
+      private IDataImporter _dataImporter;
+      private IMoBiContext _context;
+
       protected override void Context()
       {
-         sut = new TableFormulaTask();
+         _dataImporter = A.Fake<IDataImporter>();
+         _context = A.Fake<IMoBiContext>();
+         _dialogCreator = A.Fake<IDialogCreator>();
+         sut = new TableFormulaTask(_dataImporter, _context, _dialogCreator);
       }
    }
 
