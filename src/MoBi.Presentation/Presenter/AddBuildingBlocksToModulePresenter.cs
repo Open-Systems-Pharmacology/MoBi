@@ -34,12 +34,12 @@ namespace MoBi.Presentation.Presenter
 
       public IReadOnlyList<IBuildingBlock> AddBuildingBlocksToModule(Module module)
       {
-         _module = module;
          return addBuildingBlocksToModule(module);
       }
 
       private IReadOnlyList<IBuildingBlock> addBuildingBlocksToModule(Module module, Action<AddBuildingBlocksToModuleDTO> configureDTOAction = null)
       {
+         _module = module;
          _view.Caption = AppConstants.Captions.AddBuildingBlocksToModule(module.Name);
          _view.HideMergeBehaviorGroup();
          _addBuildingBlocksToModuleDTO = _moduleToAddBuildingBlocksToModuleDTOMapper.MapFrom(module);
