@@ -32,11 +32,8 @@ namespace MoBi.Presentation.Presenter
          _moduleToAddBuildingBlocksToModuleDTOMapper = moduleToAddBuildingBlocksToModuleDTOMapper;
       }
 
-      public IReadOnlyList<IBuildingBlock> AddBuildingBlocksToModule(Module module)
-      {
-         return addBuildingBlocksToModule(module);
-      }
-
+      public IReadOnlyList<IBuildingBlock> AddBuildingBlocksToModule(Module module) => addBuildingBlocksToModule(module);
+   
       private IReadOnlyList<IBuildingBlock> addBuildingBlocksToModule(Module module, Action<AddBuildingBlocksToModuleDTO> configureDTOAction = null)
       {
          _module = module;
@@ -54,15 +51,9 @@ namespace MoBi.Presentation.Presenter
          return _addBuildingBlocksToModuleDTOToBuildingBlocksListMapper.MapFrom(_addBuildingBlocksToModuleDTO);
       }
 
-      public IReadOnlyList<IBuildingBlock> AddParameterValuesToModule(Module module)
-      {
-         return addBuildingBlocksToModule(module, dto => dto.AllowOnlyParameterValues = true);
-      }
+      public IReadOnlyList<IBuildingBlock> AddParameterValuesToModule(Module module) => addBuildingBlocksToModule(module, dto => dto.AllowOnlyParameterValues = true);
 
-      public IReadOnlyList<IBuildingBlock> AddInitialConditionsToModule(Module module)
-      {
-         return addBuildingBlocksToModule(module, dto => dto.AllowOnlyInitialConditions = true);
-      }
+      public IReadOnlyList<IBuildingBlock> AddInitialConditionsToModule(Module module) => addBuildingBlocksToModule(module, dto => dto.AllowOnlyInitialConditions = true);
 
       protected override Module Module => _module;
       protected override ModuleContentDTO ContentDTO => _addBuildingBlocksToModuleDTO;
