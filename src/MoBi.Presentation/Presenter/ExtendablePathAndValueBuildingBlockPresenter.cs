@@ -33,9 +33,9 @@ namespace MoBi.Presentation.Presenter
    {
       protected readonly IPathAndValueEntityToPathAndValueEntityDTOMapper<TPathAndValueEntity, TStartValueDTO> _valueMapper;
 
-      protected readonly IInteractionTasksForExtendablePathAndValueEntity<TBuildingBlock, TPathAndValueEntity> _interactionTasksForExtendablePathAndValueEntity;
+      private readonly IInteractionTasksForExtendablePathAndValueEntity<TBuildingBlock, TPathAndValueEntity> _interactionTasksForExtendablePathAndValueEntity;
       protected BindingList<TStartValueDTO> _startValueDTOs;
-      protected readonly IEmptyStartValueCreator<TPathAndValueEntity> _emptyStartValueCreator;
+      private readonly IEmptyStartValueCreator<TPathAndValueEntity> _emptyStartValueCreator;
       protected readonly IMoBiContext _context;
       private bool _handleChangedEvents;
       private TPathAndValueEntity _focusedStartValue;
@@ -268,9 +268,9 @@ namespace MoBi.Presentation.Presenter
 
       public void AddNewPathAndValueEntity(ObjectPath entityPath) => addNewPathAndValue(entityPath);
 
-      public void AddNewEmptyPathAndValueEntity() => addNewPathAndValue(null);
+      public void AddNewEmptyPathAndValueEntity() => addNewPathAndValue();
 
-      private void addNewPathAndValue(ObjectPath entityPath)
+      private void addNewPathAndValue(ObjectPath entityPath = null)
       {
          var newParameterValue = _emptyStartValueCreator.CreateEmptyStartValue(_interactionTasksForExtendablePathAndValueEntity.GetDefaultDimension());
 

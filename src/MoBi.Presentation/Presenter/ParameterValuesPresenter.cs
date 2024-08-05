@@ -98,8 +98,8 @@ namespace MoBi.Presentation.Presenter
 
       public void AddNewParameterValue()
       {
-         _modalPresenter.Text = AppConstants.Captions.SelectLocalReferencePoint;
-         //The next 2 lines should not be changed, as they are used to encapsulate the presenter
+         _modalPresenter.Text = AppConstants.Captions.SelectParameter;
+         //The order of this next 2 lines should not be changed, as they are used to encapsulate the presenter
          //and to initialize it with the correct data so that the initial state of the OK button is correct
          _modalPresenter.Encapsulate(_referenceAtParamValuePresenter);
          _referenceAtParamValuePresenter.Init(null, new List<IObjectBase>(), null);

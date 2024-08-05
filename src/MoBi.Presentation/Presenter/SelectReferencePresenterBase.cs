@@ -174,12 +174,12 @@ namespace MoBi.Presentation.Presenter
 
       public virtual ObjectPath GetSelection()
       {
-         var selection = getSelected<IEntity>();
+         var selection = GetSelected<IEntity>();
 
          return shouldCreateAbsolutePath ? _objectPathFactory.CreateAbsoluteObjectPath(selection) : _objectPathFactory.CreateRelativeObjectPath(_refObject, selection);
       }
 
-      protected T getSelected<T>() where T : class, IObjectBase
+      protected T GetSelected<T>() where T : class, IObjectBase
       {
          var dto = _view.SelectedDTO;
 
@@ -202,7 +202,7 @@ namespace MoBi.Presentation.Presenter
       {
          get
          {
-            var para = getSelected<IObjectBase>();
+            var para = GetSelected<IObjectBase>();
             if (para == null) return false;
             return selectionPredicate(para);
          }

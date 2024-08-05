@@ -37,11 +37,12 @@ namespace MoBi.Presentation.Presenter
 
       public override void SelectionChanged(ITreeNode treeNode)
       {
+         base.SelectionChanged(treeNode);
          OnStatusChanged(null, null);
       }
 
       public override bool CanClose => isSelectionParameterType();
 
-      private bool isSelectionParameterType() => getSelected<IParameter>() != null;
+      private bool isSelectionParameterType() => GetSelected<IParameter>() != null;
    }
 }
