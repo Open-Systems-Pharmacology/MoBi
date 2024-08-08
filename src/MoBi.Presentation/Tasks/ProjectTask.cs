@@ -100,20 +100,18 @@ namespace MoBi.Presentation.Tasks
       private SimulationTransfer loadSimulationFromFileInProject(string fileName)
       {
          var project = _context.CurrentProject;
-         if (project == null) return null;
-
-         if (string.IsNullOrEmpty(fileName))
+         if (project == null || string.IsNullOrEmpty(fileName))
             return null;
 
          SimulationTransfer simulationTransfer = null;
-
          _heavyWorkManager.Start(() => simulationTransfer = LoadSimulationTransferDataFromFile(fileName));
-         if (simulationTransfer == null)
-            return simulationTransfer;
 
-         _context.AddToHistory(addSimulationTransferToProject(simulationTransfer));
-         loadJournalIfNotLoadedAlready(project, simulationTransfer.JournalPath);
-         notifyProjectLoaded();
+         if (simulationTransfer != null)
+         {
+            _context.AddToHistory(addSimulationTransferToProject(simulationTransfer));
+            loadJournalIfNotLoadedAlready(project, simulationTransfer.JournalPath);
+            notifyProjectLoaded();
+         }
 
          return simulationTransfer;
       }
