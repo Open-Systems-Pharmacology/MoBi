@@ -1532,7 +1532,6 @@ namespace MoBi.Assets
          public static readonly string DisplayUnit = "Display Unit";
          public static readonly string DefaultDisplayUnits = "Default Display Units";
          public static readonly string ApplicationSettings = "Application";
-         public static readonly string OutputSelections = "Output Selections";
          public static readonly string StartImport = "Start Import";
          public static readonly string ImportParameterValues = "Import Parameter Values";
          public static readonly string ImportParameterQuantitiesFileFormatHint = "The file format must have at least 4 columns. Columns should be Container Path, Parameter Name, Value, and Units." + Environment.NewLine + "The first row is ignored for import.";

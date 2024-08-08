@@ -1,8 +1,10 @@
 using System.IO;
+using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Services;
+using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
@@ -106,6 +108,11 @@ namespace MoBi.Presentation.Tasks
          _heavyWorkManager.Start(() => simulationTransfer = LoadSimulationTransferDataFromFile(fileName));
          if (simulationTransfer == null)
             return;
+
+         var simulationSettingsTask = _context.Resolve<IInteractionTasksForSimulationSettings>();
+         var simulationSettings = simulationTransfer.Simulation.Settings;
+         simulationSettingsTask.UpdateDefaultSimulationSettingsInProject(simulationSettings.OutputSchema, simulationSettings.Solver);
+         simulationSettingsTask.UpdateDefaultOutputSelectionsInProject(simulationSettings.OutputSelections.ToList());
 
          _context.AddToHistory(addSimulationTransferToProject(simulationTransfer));
          loadJournalIfNotLoadedAlready(project, simulationTransfer.JournalPath);

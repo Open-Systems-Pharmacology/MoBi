@@ -10,6 +10,7 @@ using MoBi.Core.Exceptions;
 using MoBi.Core.Services;
 using MoBi.Helpers;
 using MoBi.Presentation.Tasks;
+using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Assets;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -63,16 +64,18 @@ namespace MoBi.Presentation
       private SimulationTransfer _simulationTransfer;
       private IMoBiSimulation _simulation;
       private PassiveTransportBuildingBlock _newBuildingBlock;
+      private IInteractionTasksForSimulationSettings _interactionTasksForSimulationSettings;
 
       protected override void Context()
       {
          base.Context();
          _project = DomainHelperForSpecs.NewProject();
          _simulationTransfer = A.Fake<SimulationTransfer>();
-         _simulationTransfer.Favorites = new Favorites {"Fav1", "Fav2"};
+         _simulationTransfer.Favorites = new Favorites { "Fav1", "Fav2" };
          _simulation = A.Fake<IMoBiSimulation>();
          _simulationTransfer.Simulation = _simulation;
          _newBuildingBlock = A.Fake<PassiveTransportBuildingBlock>();
+         _interactionTasksForSimulationSettings = A.Fake<IInteractionTasksForSimulationSettings>();
 
          var simulationConfiguration = new SimulationConfiguration();
          A.CallTo(() => _simulation.Configuration).Returns(simulationConfiguration);
@@ -80,6 +83,7 @@ namespace MoBi.Presentation
          A.CallTo(() => _serializationTask.Load<SimulationTransfer>(A<string>._, A<bool>._)).Returns(_simulationTransfer);
          A.CallTo(() => _context.CurrentProject).Returns(_project);
          A.CallTo(() => _nameCorrector.CorrectName(A<IEnumerable<PassiveTransportBuildingBlock>>._, _newBuildingBlock)).Returns(true);
+         A.CallTo(() => _context.Resolve<IInteractionTasksForSimulationSettings>()).Returns(_interactionTasksForSimulationSettings);
       }
 
       protected override void Because()
@@ -109,6 +113,18 @@ namespace MoBi.Presentation
       public void should_update_favorites_in_projects()
       {
          _simulationTransfer.Favorites.Each(favorite => _project.Favorites.ShouldContain(favorite));
+      }
+
+      [Observation]
+      public void should_update_default_simulation_settings_in_project()
+      {
+         A.CallTo(() => _interactionTasksForSimulationSettings.UpdateDefaultSimulationSettingsInProject(_simulationTransfer.Simulation.Settings.OutputSchema, _simulationTransfer.Simulation.Settings.Solver)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_update_default_output_selections_in_project()
+      {
+         A.CallTo(() => _interactionTasksForSimulationSettings.UpdateDefaultOutputSelectionsInProject(A<IReadOnlyList<QuantitySelection>>.Ignored)).MustHaveHappened();
       }
    }
 
