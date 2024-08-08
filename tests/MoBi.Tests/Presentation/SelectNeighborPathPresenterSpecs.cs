@@ -2,6 +2,7 @@
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
+using MoBi.Helpers;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -147,9 +148,11 @@ namespace MoBi.Presentation
       {
          _selectedPathDTO.Path = "A|B";
          var parentContainer = new Container { ParentPath = new ObjectPath("ROOT", "PARENT") };
-         var container = new Container().WithMode(ContainerMode.Physical).Under(parentContainer);
-         _selectContainerInTreePresenter.OnSelectedEntityChanged += Raise.With(new SelectedEntityChangedArgs(container, new ObjectPath("NEW|PATH")));
-         _selectedPathDTO.Path.ShouldBeEqualTo("ROOT|PARENT|NEW|PATH");
+         var container = new Container().WithMode(ContainerMode.Physical).Under(parentContainer).WithName("NEW_CONTAINER");
+         var objectPathFactory = new ObjectPathFactoryForSpecs();
+         var path = objectPathFactory.CreateAbsoluteObjectPath(container);
+         _selectContainerInTreePresenter.OnSelectedEntityChanged += Raise.With(new SelectedEntityChangedArgs(container, objectPathFactory.CreateAbsoluteObjectPath(container)));
+         _selectedPathDTO.Path.ShouldBeEqualTo("ROOT|PARENT|NEW_CONTAINER");
       }
    }
 

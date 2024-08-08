@@ -47,9 +47,7 @@ namespace MoBi.Presentation.Presenter
          if (container.Mode != ContainerMode.Physical)
             return;
 
-         var parentPath = container.RootContainer.ParentPath?.Clone<ObjectPath>() ?? new ObjectPath();
-         containerObjectPath.Each(parentPath.Add);
-         _selectedPathDTO.Path = parentPath.PathAsString;
+         _selectedPathDTO.Path = containerObjectPath.PathAsString;
          ViewChanged();
       }
 
