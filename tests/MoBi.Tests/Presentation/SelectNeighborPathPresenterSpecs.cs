@@ -29,6 +29,7 @@ namespace MoBi.Presentation
       protected ContainerDTO _containerDTO1;
       protected ContainerDTO _containerDTO2;
       private IModuleToModuleAndSpatialStructureDTOMapper _moduleDTOMapper;
+      private IObjectPathFactory _objectPathFactory;
 
       protected override void Context()
       {
@@ -36,11 +37,12 @@ namespace MoBi.Presentation
          _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
          _view = A.Fake<ISelectNeighborPathView>();
          _selectContainerInTreePresenter = A.Fake<ISelectContainerInTreePresenter>();
+         _objectPathFactory = new ObjectPathFactoryForSpecs();
 
          A.CallTo(() => _view.BindTo(A<ObjectPathDTO>._))
             .Invokes(x => _selectedPathDTO = x.GetArgument<ObjectPathDTO>(0));
 
-         sut = new SelectNeighborPathPresenter(_view, _selectContainerInTreePresenter, _moduleDTOMapper, _buildingBlockRepository);
+         sut = new SelectNeighborPathPresenter(_view, _selectContainerInTreePresenter, _moduleDTOMapper, _buildingBlockRepository, _objectPathFactory);
 
          _spatialStructure1 = new MoBiSpatialStructure
          {
@@ -123,7 +125,7 @@ namespace MoBi.Presentation
       public void should_not_update_the_path_if_the_selected_entity_is_not_a_container()
       {
          _selectedPathDTO.Path = "A|B";
-         _selectContainerInTreePresenter.OnSelectedEntityChanged += Raise.With(new SelectedEntityChangedArgs(new Parameter(), new ObjectPath()));
+         _selectContainerInTreePresenter.OnSelectedEntityChanged += Raise.With(new SelectedEntityChangedArgs(new Parameter()));
          _selectedPathDTO.Path.ShouldBeEqualTo("A|B");
       }
 
@@ -131,7 +133,7 @@ namespace MoBi.Presentation
       public void should_not_update_the_path_if_the_selected_entity_is_not_a_physical_container()
       {
          _selectedPathDTO.Path = "A|B";
-         _selectContainerInTreePresenter.OnSelectedEntityChanged += Raise.With(new SelectedEntityChangedArgs(new Container().WithMode(ContainerMode.Logical), new ObjectPath()));
+         _selectContainerInTreePresenter.OnSelectedEntityChanged += Raise.With(new SelectedEntityChangedArgs(new Container().WithMode(ContainerMode.Logical)));
          _selectedPathDTO.Path.ShouldBeEqualTo("A|B");
       }
 
@@ -139,8 +141,8 @@ namespace MoBi.Presentation
       public void should_update_the_path_if_the_selected_entity_is_a_physical_container()
       {
          _selectedPathDTO.Path = "A|B";
-         _selectContainerInTreePresenter.OnSelectedEntityChanged += Raise.With(new SelectedEntityChangedArgs(new Container().WithMode(ContainerMode.Physical), new ObjectPath("NEW|PATH")));
-         _selectedPathDTO.Path.ShouldBeEqualTo("NEW|PATH");
+         _selectContainerInTreePresenter.OnSelectedEntityChanged += Raise.With(new SelectedEntityChangedArgs(new Container().WithName("A").WithMode(ContainerMode.Physical)));
+         _selectedPathDTO.Path.ShouldBeEqualTo("A");
       }
 
       [Observation]
@@ -149,9 +151,7 @@ namespace MoBi.Presentation
          _selectedPathDTO.Path = "A|B";
          var parentContainer = new Container { ParentPath = new ObjectPath("ROOT", "PARENT") };
          var container = new Container().WithMode(ContainerMode.Physical).Under(parentContainer).WithName("NEW_CONTAINER");
-         var objectPathFactory = new ObjectPathFactoryForSpecs();
-         var path = objectPathFactory.CreateAbsoluteObjectPath(container);
-         _selectContainerInTreePresenter.OnSelectedEntityChanged += Raise.With(new SelectedEntityChangedArgs(container, objectPathFactory.CreateAbsoluteObjectPath(container)));
+         _selectContainerInTreePresenter.OnSelectedEntityChanged += Raise.With(new SelectedEntityChangedArgs(container));
          _selectedPathDTO.Path.ShouldBeEqualTo("ROOT|PARENT|NEW_CONTAINER");
       }
    }

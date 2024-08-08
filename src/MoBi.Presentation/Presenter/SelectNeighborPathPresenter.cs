@@ -21,24 +21,27 @@ namespace MoBi.Presentation.Presenter
       private readonly ISelectContainerInTreePresenter _selectContainerInTreePresenter;
       private readonly IModuleToModuleAndSpatialStructureDTOMapper _moduleToModuleDTOMapper;
       private readonly IBuildingBlockRepository _buildingBlockRepository;
+      private readonly IObjectPathFactory _objectPathFactory;
       private readonly ObjectPathDTO _selectedPathDTO = new ObjectPathDTO();
 
       public SelectNeighborPathPresenter(
          ISelectNeighborPathView view,
          ISelectContainerInTreePresenter selectContainerInTreePresenter,
          IModuleToModuleAndSpatialStructureDTOMapper moduleToModuleDTOMapper,
-         IBuildingBlockRepository buildingBlockRepository) : base(view)
+         IBuildingBlockRepository buildingBlockRepository, 
+         IObjectPathFactory objectPathFactory) : base(view)
       {
          _selectContainerInTreePresenter = selectContainerInTreePresenter;
          _moduleToModuleDTOMapper = moduleToModuleDTOMapper;
          _buildingBlockRepository = buildingBlockRepository;
+         _objectPathFactory = objectPathFactory;
          AddSubPresenters(_selectContainerInTreePresenter);
          _view.AddContainerCriteriaView(_selectContainerInTreePresenter.BaseView);
          _view.BindTo(_selectedPathDTO);
-         _selectContainerInTreePresenter.OnSelectedEntityChanged += (o, e) => onSelectedContainerPathChanged(e.Entity, e.Path);
+         _selectContainerInTreePresenter.OnSelectedEntityChanged += (o, e) => onSelectedContainerPathChanged(e.Entity);
       }
 
-      private void onSelectedContainerPathChanged(IEntity entity, ObjectPath containerObjectPath)
+      private void onSelectedContainerPathChanged(IEntity entity)
       {
          if (!(entity is IContainer container))
             return;
@@ -47,7 +50,8 @@ namespace MoBi.Presentation.Presenter
          if (container.Mode != ContainerMode.Physical)
             return;
 
-         _selectedPathDTO.Path = containerObjectPath.PathAsString;
+         var path = _objectPathFactory.CreateAbsoluteObjectPath(container);
+         _selectedPathDTO.Path = path.PathAsString;
          ViewChanged();
       }
 
