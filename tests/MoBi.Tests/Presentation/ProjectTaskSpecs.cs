@@ -60,11 +60,11 @@ namespace MoBi.Presentation
 
    internal class When_loading_a_simulation : concern_for_ProjectTask
    {
-      private MoBiProject _project;
-      private SimulationTransfer _simulationTransfer;
-      private IMoBiSimulation _simulation;
-      private PassiveTransportBuildingBlock _newBuildingBlock;
-      private IInteractionTasksForSimulationSettings _interactionTasksForSimulationSettings;
+      protected MoBiProject _project;
+      protected SimulationTransfer _simulationTransfer;
+      protected IMoBiSimulation _simulation;
+      protected PassiveTransportBuildingBlock _newBuildingBlock;
+      protected IInteractionTasksForSimulationSettings _interactionTasksForSimulationSettings;
 
       protected override void Context()
       {
@@ -79,11 +79,18 @@ namespace MoBi.Presentation
 
          var simulationConfiguration = new SimulationConfiguration();
          A.CallTo(() => _simulation.Configuration).Returns(simulationConfiguration);
-         A.CallTo(() => _dialogCreator.AskForFileToOpen(AppConstants.Dialog.LoadSimulation, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART, null, null)).Returns("File");
          A.CallTo(() => _serializationTask.Load<SimulationTransfer>(A<string>._, A<bool>._)).Returns(_simulationTransfer);
          A.CallTo(() => _context.CurrentProject).Returns(_project);
          A.CallTo(() => _nameCorrector.CorrectName(A<IEnumerable<PassiveTransportBuildingBlock>>._, _newBuildingBlock)).Returns(true);
-         A.CallTo(() => _context.Resolve<IInteractionTasksForSimulationSettings>()).Returns(_interactionTasksForSimulationSettings);
+      }
+   }
+
+   internal class When_loading_a_simulation_into_project : When_loading_a_simulation
+   {
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _dialogCreator.AskForFileToOpen(AppConstants.Dialog.LoadSimulation, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART, null, null)).Returns("File");
       }
 
       protected override void Because()
@@ -113,6 +120,33 @@ namespace MoBi.Presentation
       public void should_update_favorites_in_projects()
       {
          _simulationTransfer.Favorites.Each(favorite => _project.Favorites.ShouldContain(favorite));
+      }
+
+      [Observation]
+      public void should_update_default_simulation_settings_in_project()
+      {
+         A.CallTo(() => _interactionTasksForSimulationSettings.UpdateDefaultSimulationSettingsInProject(_simulationTransfer.Simulation.Settings.OutputSchema, _simulationTransfer.Simulation.Settings.Solver)).MustNotHaveHappened();
+      }
+
+      [Observation]
+      public void should_update_default_output_selections_in_project()
+      {
+         A.CallTo(() => _interactionTasksForSimulationSettings.UpdateDefaultOutputSelectionsInProject(A<IReadOnlyList<QuantitySelection>>.Ignored)).MustNotHaveHappened();
+      }
+   }
+
+   internal class When_opening_a_simulation_as_project : When_loading_a_simulation
+   {
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _dialogCreator.AskForFileToOpen(AppConstants.Dialog.LoadProject, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART, null, null)).Returns("File");
+         A.CallTo(() => _context.Resolve<IInteractionTasksForSimulationSettings>()).Returns(_interactionTasksForSimulationSettings);
+      }
+
+      protected override void Because()
+      {
+         sut.OpenSimulationAsProject();
       }
 
       [Observation]

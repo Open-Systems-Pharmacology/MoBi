@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
@@ -36,12 +37,12 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public override IMoBiCommand GetRemoveCommand(SimulationSettings objectToRemove, MoBiProject parent, IBuildingBlock buildingBlock)
       {
-         throw new System.NotImplementedException();
+         throw new NotImplementedException();
       }
 
       public override IMoBiCommand GetAddCommand(SimulationSettings itemToAdd, MoBiProject parent, IBuildingBlock buildingBlock)
       {
-         throw new System.NotImplementedException();
+         throw new NotImplementedException();
       }
 
       public void LoadDefaultSimulationSettingsInProject()
