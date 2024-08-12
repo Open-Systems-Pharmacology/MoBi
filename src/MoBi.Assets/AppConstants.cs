@@ -881,6 +881,7 @@ namespace MoBi.Assets
          public static readonly string RemoveSelectedResultsFromProject = "Do you really want to remove the selected result(s) from the project";
          public static readonly Size SELECT_SINGLE_SIZE = new Size(475, 160);
          public static readonly string RemoveMultipleModules = "Do you really want to remove the selected Modules?";
+         public static readonly string DoYouWantToLoadSimulationSettingsAsDefaultForCurrentProject = "Do you want to load the simulation settings as default for the current project?";
 
          public static string RemoveSimulationsFromProject(string projectName)
          {
