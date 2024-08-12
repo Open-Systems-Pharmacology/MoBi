@@ -159,12 +159,12 @@ namespace MoBi.Presentation.Tasks
       {
          var fileName = _dialogCreator.AskForFileToOpen(AppConstants.Dialog.LoadSimulation, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART);
          var simulationTransfer = loadSimulationFromFileInProject(fileName);
-         if (simulationTransfer != null)
-         {
-            var response = _dialogCreator.MessageBoxYesNo(AppConstants.Dialog.DoYouWantToLoadSimulationSettingsAsDefaultForCurrentProject);
-            if (response == ViewResult.Yes)
-               loadProjectDefaultsFromSimulationSettings(simulationTransfer);
-         }
+         if (simulationTransfer == null)
+            return;
+
+         var response = _dialogCreator.MessageBoxYesNo(AppConstants.Dialog.DoYouWantToLoadSimulationSettingsAsDefaultForCurrentProject);
+         if (response == ViewResult.Yes)
+            loadProjectDefaultsFromSimulationSettings(simulationTransfer);
       }
 
       public void OpenSBMLModel()
