@@ -4,17 +4,18 @@ using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Assets;
+using System.Runtime.InteropServices;
 
 namespace MoBi.Core.Commands
 {
-   public class SetCreateProcessRateParameterCommand : BuildingBlockChangeCommandBase<IBuildingBlock>
+   public class SetCreateProcessRateParameterCommand<T> : MoBiReversibleCommand where T : class, IBuildingBlock
    {
       private IProcessBuilder _processBuilder;
       private readonly string _processBuilderId;
       private readonly bool _oldCreateProcessRate;
       private readonly bool _createProcessRate;
 
-      public SetCreateProcessRateParameterCommand(bool createProcessRate, IProcessBuilder processBuilder, IBuildingBlock buildingBlock) : base(buildingBlock)
+      public SetCreateProcessRateParameterCommand(bool createProcessRate, IProcessBuilder processBuilder)
       {
          _processBuilder = processBuilder;
          _processBuilderId = processBuilder.Id;
@@ -27,25 +28,22 @@ namespace MoBi.Core.Commands
 
       protected override void ExecuteWith(IMoBiContext context)
       {
-         base.ExecuteWith(context);
          _processBuilder.CreateProcessRateParameter = _createProcessRate;
       }
 
       protected override void ClearReferences()
       {
-         base.ClearReferences();
          _processBuilder = null;
       }
 
       public override void RestoreExecutionData(IMoBiContext context)
       {
-         base.RestoreExecutionData(context);
          _processBuilder = context.Get<IProcessBuilder>(_processBuilderId);
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return new SetCreateProcessRateParameterCommand(_oldCreateProcessRate, _processBuilder, _buildingBlock).AsInverseFor(this);
+         return new SetCreateProcessRateParameterCommand<T>(_oldCreateProcessRate, _processBuilder).AsInverseFor(this);
       }
    }
 }
