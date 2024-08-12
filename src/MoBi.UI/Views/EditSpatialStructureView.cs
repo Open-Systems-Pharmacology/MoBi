@@ -63,7 +63,7 @@ namespace MoBi.UI.Views
       public void SetEditView(IView view)
       {
          if (view == null && splitHierarchyEdit.Panel2.Controls.Count > 0)
-            splitHierarchyEdit.Panel2.Controls.RemoveAt(0);
+            splitHierarchyEdit.Panel2.Controls.Clear();
          
          splitHierarchyEdit.Panel2.FillWith(view);
       }
