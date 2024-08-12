@@ -122,7 +122,7 @@ namespace MoBi.Presentation.Presenter
          _circularReferenceChecker = circularReferenceChecker;
          _context = context;
          _formulaPresenterCache = formulaPresenterCache;
-         _allFormulaType = new HashSet<Type> {typeof(ConstantFormula), typeof(TableFormula), typeof(DistributedTableFormula), typeof(ExplicitFormula), typeof(TableFormulaWithOffset), typeof(TableFormulaWithXArgument), typeof(SumFormula)};
+         _allFormulaType = new HashSet<Type> {typeof(ConstantFormula), typeof(TableFormula), typeof(ExplicitFormula), typeof(TableFormulaWithOffset), typeof(TableFormulaWithXArgument), typeof(SumFormula)};
          _defaultFormulaType = _allFormulaType.First();
       }
 
