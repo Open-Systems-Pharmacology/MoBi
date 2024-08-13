@@ -6,7 +6,6 @@ namespace MoBi.Core.Services
 {
    public interface ISimulationEventsOnlyBuildingBlockVersionUpdater
    {
-      void UpdateBuildingBlockVersion(IBuildingBlock buildingBlock, uint newVersion);
       void UpdateBuildingBlockVersion(IBuildingBlock buildingBlock, bool shouldIncrementVersion);
    }
 
@@ -15,14 +14,17 @@ namespace MoBi.Core.Services
       public SimulationEventsOnlyBuildingBlockVersionUpdater(IMoBiProjectRetriever projectRetriever, IEventPublisher eventPublisher, IDialogCreator dialogCreator) : base(projectRetriever, eventPublisher, dialogCreator)
       {
       }
-
-      public override void UpdateBuildingBlockVersion(IBuildingBlock buildingBlock, uint newVersion)
+      public void UpdateBuildingBlockVersion(IBuildingBlock buildingBlock, bool shouldIncrementVersion)
       {
-         if (buildingBlock == null)
-            return;
+         if (buildingBlock == null) return;
+         var version = buildingBlock.Version;
 
-         buildingBlock.Version = newVersion;
-         publishSimulationStatusChangedEvents(buildingBlock);
+         if (shouldIncrementVersion)
+            version++;
+         else
+            version--;
+
+         UpdateBuildingBlockVersion(buildingBlock, version);
       }
    }
 }
