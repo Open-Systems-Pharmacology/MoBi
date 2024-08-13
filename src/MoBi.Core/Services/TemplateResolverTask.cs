@@ -30,7 +30,7 @@ namespace MoBi.Core.Services
 
          return _buildingBlockRepository.All().Single(x => x.IsTemplateMatchFor(buildingBlock)) as TBuildingBlock;
       }
-      
+
       public Module TemplateModuleFor(Module module) => _moBiProjectRetriever.Current.ModuleByName(module.Name);
    }
 }
