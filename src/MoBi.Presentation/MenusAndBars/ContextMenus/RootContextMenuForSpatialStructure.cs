@@ -13,11 +13,11 @@ using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
-   public class RootContextMenuForSpacialStructure : ContextMenuBase
+   public class RootContextMenuForSpatialStructure : ContextMenuBase
    {
       private readonly IContainer _container;
 
-      public RootContextMenuForSpacialStructure(IContainer container)
+      public RootContextMenuForSpatialStructure(IContainer container)
       {
          _container = container;
       }
@@ -33,18 +33,18 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       }
    }
 
-   public class RootContextMenuForSpacialStructureFactory : IContextMenuSpecificationFactory<IViewItem>
+   public class RootContextMenuForSpatialStructureFactory : IContextMenuSpecificationFactory<IViewItem>
    {
       private readonly IContainer _container;
 
-      public RootContextMenuForSpacialStructureFactory(IContainer container)
+      public RootContextMenuForSpatialStructureFactory(IContainer container)
       {
          _container = container;
       }
 
       public IContextMenu CreateFor(IViewItem objectRequestingContextMenu, IPresenterWithContextMenu<IViewItem> presenter)
       {
-         return new RootContextMenuForSpacialStructure(_container);
+         return new RootContextMenuForSpatialStructure(_container);
       }
 
       public bool IsSatisfiedBy(IViewItem objectRequestingContextMenu, IPresenterWithContextMenu<IViewItem> presenter)
