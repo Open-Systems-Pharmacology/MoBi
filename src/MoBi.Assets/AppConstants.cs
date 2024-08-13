@@ -1922,7 +1922,6 @@ namespace MoBi.Assets
             if (numberOfModules == 1)
                sb.AppendLine("A module could not be deleted");
             else
-               
                sb.AppendLine("Some modules could not be deleted");
 
             sb.AppendLine(namesList(modulesNotRemoved));
