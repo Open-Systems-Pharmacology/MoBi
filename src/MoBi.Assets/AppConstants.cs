@@ -1920,24 +1920,17 @@ namespace MoBi.Assets
             var sb = new StringBuilder();
 
             if (numberOfModules == 1)
-            {
                sb.AppendLine("A module could not be deleted");
-            }
             else
-            {
+               
                sb.AppendLine("Some modules could not be deleted");
-            }
 
             sb.AppendLine(namesList(modulesNotRemoved));
 
             if (numberOfModules == 1)
-            {
                sb.AppendLine("It is used in one ore move simulations");
-            }
             else
-            {
                sb.AppendLine("They are used in one or more simulations");
-            }
 
             return sb.ToString();
          }
