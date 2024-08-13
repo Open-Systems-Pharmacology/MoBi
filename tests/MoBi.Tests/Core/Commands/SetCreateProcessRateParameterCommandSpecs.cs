@@ -20,11 +20,7 @@ namespace MoBi.Core.Commands
       protected override void Context()
       {
          _context = A.Fake<IMoBiContext>();
-         var projectRetriever = A.Fake<IMoBiProjectRetriever>();
-         var eventPublisher = A.Fake<IEventPublisher>();
-         var dialogCreator = A.Fake<IDialogCreator>();
-
-         _simulationEventsOnlyBuildingBlockVersionUpdater = A.Fake<ISimulationEventsOnlyBuildingBlockVersionUpdater>(x => x.CallsBaseMethods());
+         _simulationEventsOnlyBuildingBlockVersionUpdater = A.Fake<ISimulationEventsOnlyBuildingBlockVersionUpdater>();
          _newValue = false;
          _oldValue = true;
          _reaactionBuilder = new ReactionBuilder();
