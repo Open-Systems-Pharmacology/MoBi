@@ -32,7 +32,7 @@ namespace MoBi.Presentation.Tasks
       protected IFormulaFactory _formulaFactory;
       protected IPathAndValueEntityToParameterValueMapper _pathAndValueEntityToParameterValueMapper;
       private IObjectBaseFactory _objectBaseFactory;
-      private IIndividualParameterToParameterMapper _individualParameterToParameterMapper;
+      private IParameterValueToParameterMapper _individualParameterToParameterMapper;
 
       protected override void Context()
       {
@@ -41,7 +41,7 @@ namespace MoBi.Presentation.Tasks
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
          _applicationController = A.Fake<IMoBiApplicationController>();
          _selectIndividualAndExpressionFromProjectPresenter = A.Fake<ISelectFolderAndIndividualAndExpressionFromProjectPresenter>();
-         _individualParameterToParameterMapper = A.Fake<IIndividualParameterToParameterMapper>();
+         _individualParameterToParameterMapper = A.Fake<IParameterValueToParameterMapper>();
          _cloneManager = A.Fake<ICloneManagerForBuildingBlock>();
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
          A.CallTo(() => _objectBaseFactory.Create<ParameterValue>()).ReturnsLazily(() => new ParameterValue());
