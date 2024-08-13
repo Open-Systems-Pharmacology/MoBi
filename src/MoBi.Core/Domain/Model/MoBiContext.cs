@@ -121,6 +121,19 @@ namespace MoBi.Core.Domain.Model
          return id != null ? ObjectBaseFactory.Create<T>(id) : ObjectBaseFactory.Create<T>();
       }
 
+      public ICommand<MoBiContext> RunCommand(ICommand<MoBiContext> command)
+      {
+         if (command.IsAnImplementationOf<BuildingBlockChangeCommandBase>() && !shouldRunModuleConversionCommand(command))
+            return new EmptyCommand<MoBiContext>();
+
+         return command.Run(this);
+      }
+
+      private bool shouldRunModuleConversionCommand(ICommand<MoBiContext> command)
+      {
+         return true;
+      }
+
       public void AddToHistory(ICommand command)
       {
          HistoryManager?.AddCommand(command);
@@ -150,7 +163,7 @@ namespace MoBi.Core.Domain.Model
          CurrentProject = ObjectBaseFactory.Create<MoBiProject>();
          HistoryManager = _historyManagerFactory.Create() as IMoBiHistoryManager;
          LoadFrom(CurrentProject);
-         AddToHistory(new CreateProjectCommand().Run(this));
+         AddToHistory(RunCommand(new CreateProjectCommand()));
       }
 
       public override void Clear()

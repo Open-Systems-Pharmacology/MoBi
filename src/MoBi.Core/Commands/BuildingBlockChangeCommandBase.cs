@@ -4,7 +4,12 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public abstract class BuildingBlockChangeCommandBase<T> : MoBiReversibleCommand where T :  class, IBuildingBlock
+   public abstract class BuildingBlockChangeCommandBase : MoBiReversibleCommand
+   {
+
+   }
+
+   public abstract class BuildingBlockChangeCommandBase<T> : BuildingBlockChangeCommandBase where T :  class, IBuildingBlock
    {
       public bool ShouldIncrementVersion { get; set; }
 
