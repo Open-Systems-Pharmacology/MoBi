@@ -29,7 +29,7 @@ namespace MoBi.Core.Services
          _dialogCreator = dialogCreator;
       }
 
-      public void UpdateBuildingBlockVersion(IBuildingBlock buildingBlock, uint newVersion)
+      public virtual void UpdateBuildingBlockVersion(IBuildingBlock buildingBlock, uint newVersion)
       {
          if (buildingBlock == null)
             return;
@@ -79,7 +79,7 @@ namespace MoBi.Core.Services
          UpdateBuildingBlockVersion(buildingBlock, version);
       }
 
-      private void publishSimulationStatusChangedEvents(IBuildingBlock changedBuildingBlock)
+      protected void publishSimulationStatusChangedEvents(IBuildingBlock changedBuildingBlock)
       {
          var affectedSimulations = _projectRetriever.Current.SimulationsUsing(changedBuildingBlock);
          affectedSimulations.Each(refreshSimulation);

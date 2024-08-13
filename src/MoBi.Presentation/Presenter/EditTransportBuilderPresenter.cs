@@ -153,7 +153,7 @@ namespace MoBi.Presentation.Presenter
 
       public void SetCreateProcessRateParameter(bool createProcessRate)
       {
-         AddCommand(new SetCreateProcessRateParameterCommand<IBuildingBlock>(createProcessRate, _transportBuilder).Run(_context));
+         AddCommand(new SetCreateProcessRateParameterCommand(createProcessRate, _transportBuilder, BuildingBlock).Run(_context));
          _view.EnableDisablePlotProcessRateParameter(createProcessRate);
       }
 

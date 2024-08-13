@@ -2,9 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
@@ -13,12 +10,15 @@ using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Views;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -117,7 +117,7 @@ namespace MoBi.Presentation.Presenter
       private void setUpFormulaEditView()
       {
          _editFormulaPresenter.Init(_reactionBuilder, BuildingBlock);
-         ((ISelectReferenceAtReactionPresenter) _referencePresenter).Init(null, new[] {_reactionBuilder}, _reactionBuilder);
+         ((ISelectReferenceAtReactionPresenter)_referencePresenter).Init(null, new[] { _reactionBuilder }, _reactionBuilder);
       }
 
       public object Subject => _reactionBuilder;
@@ -134,7 +134,7 @@ namespace MoBi.Presentation.Presenter
 
       public void SetCreateProcessRateParameter(bool createProcessRate)
       {
-         AddCommand(new SetCreateProcessRateParameterCommand<IBuildingBlock>(createProcessRate, _reactionBuilder).Run(_context));
+         AddCommand(new SetCreateProcessRateParameterCommand(createProcessRate, _reactionBuilder, BuildingBlock).Run(_context));
          _view.PlotProcessRateParameterEnabled = createProcessRate;
       }
 
