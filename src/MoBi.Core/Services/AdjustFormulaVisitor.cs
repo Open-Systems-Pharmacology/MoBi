@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Events;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -51,11 +52,13 @@ namespace MoBi.Core.Services
          _canceled = false;
          try
          {
+            _context.PublishEvent(new BulkUpdateStartedEvent());
             objectBase.AcceptVisitor(this);
             return (_allCommands, _canceled);
          }
          finally
          {
+            _context.PublishEvent(new BulkUpdateFinishedEvent());
             _buildingBlock = null;
             _formulaCache = null;
             _allCommands = null;
