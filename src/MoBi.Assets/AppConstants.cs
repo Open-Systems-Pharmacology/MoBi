@@ -1914,6 +1914,34 @@ namespace MoBi.Assets
             return $"Select building blocks to clone from {module.Name}";
          }
 
+         public static string CouldNotRemoveModules(List<string> modulesNotRemoved)
+         {
+            var numberOfModules = modulesNotRemoved.Count;
+            var sb = new StringBuilder();
+
+            if (numberOfModules == 1)
+            {
+               sb.AppendLine("A module could not be deleted");
+            }
+            else
+            {
+               sb.AppendLine("Some modules could not be deleted");
+            }
+
+            sb.AppendLine(namesList(modulesNotRemoved));
+
+            if (numberOfModules == 1)
+            {
+               sb.AppendLine("It is used in one ore move simulations");
+            }
+            else
+            {
+               sb.AppendLine("They are used in one or more simulations");
+            }
+
+            return sb.ToString();
+         }
+
          public static string AlsoImportIndividualsAndExpressions(string individualName, IReadOnlyList<string> expressionNames)
          {
             var numberOfIndividuals = string.IsNullOrEmpty(individualName) ? 0 : 1;

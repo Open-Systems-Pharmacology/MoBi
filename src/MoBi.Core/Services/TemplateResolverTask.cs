@@ -28,7 +28,14 @@ namespace MoBi.Core.Services
          if (buildingBlock == null)
             return null;
 
-         return _buildingBlockRepository.All().Single(x => x.IsTemplateMatchFor(buildingBlock)) as TBuildingBlock;
+         try
+         {
+            return _buildingBlockRepository.All().Single(x => x.IsTemplateMatchFor(buildingBlock)) as TBuildingBlock;
+         }
+         catch
+         {
+            return null;
+         }
       }
       
       public Module TemplateModuleFor(Module module) => _moBiProjectRetriever.Current.ModuleByName(module.Name);
