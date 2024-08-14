@@ -1,5 +1,4 @@
 using MoBi.Core.Events;
-using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Services;
@@ -8,15 +7,14 @@ using OSPSuite.Utility.Events;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IEditTableFormulaPresenter : 
-      IEditTypedFormulaPresenter, 
-      IListener<AddedValuePointEvent>, 
-      IListener<RemovedValuePointEvent>, 
-      IListener<TableFormulaUnitChangedEvent>, 
-      IListener<TableFormulaValueChangedEvent>, 
+   public interface IEditTableFormulaPresenter :
+      IEditTypedFormulaPresenter,
+      IListener<AddedValuePointEvent>,
+      IListener<RemovedValuePointEvent>,
+      IListener<TableFormulaUnitChangedEvent>,
+      IListener<TableFormulaValueChangedEvent>,
       IListener<TableFormulaRestartSolverChangedEvent>
    {
-      
    }
 
    public class EditTableFormulaPresenter : EditTypedFormulaPresenter<IEditTableFormulaView, IEditTableFormulaPresenter, TableFormula>, IEditTableFormulaPresenter
@@ -25,9 +23,9 @@ namespace MoBi.Presentation.Presenter
       private readonly ISimpleChartPresenter _simpleChartPresenter;
 
       public EditTableFormulaPresenter(
-         IEditTableFormulaView view, 
-         IDisplayUnitRetriever displayUnitRetriever, 
-         IMoBiTableFormulaPresenter tableFormulaPresenter, 
+         IEditTableFormulaView view,
+         IDisplayUnitRetriever displayUnitRetriever,
+         IMoBiTableFormulaPresenter tableFormulaPresenter,
          ISimpleChartPresenter simpleChartPresenter)
          : base(view, displayUnitRetriever)
       {
