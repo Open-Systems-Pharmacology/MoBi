@@ -26,5 +26,16 @@ namespace MoBi.Core.Services
 
          UpdateBuildingBlockVersion(buildingBlock, version);
       }
+
+      public override void UpdateBuildingBlockVersion(IBuildingBlock buildingBlock, uint newVersion)
+      {
+         if (buildingBlock == null)
+            return;
+
+         buildingBlock.Version = newVersion;
+         publishSimulationStatusChangedEvents(buildingBlock);
+         publishModuleStatusChangedEvents(buildingBlock);
+      }
+
    }
 }

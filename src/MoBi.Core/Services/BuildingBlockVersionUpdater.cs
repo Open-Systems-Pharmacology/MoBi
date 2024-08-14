@@ -52,7 +52,7 @@ namespace MoBi.Core.Services
          return buildingBlock.Module != null && buildingBlock.Module.IsPKSimModule;
       }
 
-      private void publishModuleStatusChangedEvents(IBuildingBlock buildingBlock)
+      protected void publishModuleStatusChangedEvents(IBuildingBlock buildingBlock)
       {
          // Building blocks that are not contained by modules do not need to refresh when modified
          if (!_projectRetriever.Current.Modules.SelectMany(x => x.BuildingBlocks).Contains(buildingBlock))
