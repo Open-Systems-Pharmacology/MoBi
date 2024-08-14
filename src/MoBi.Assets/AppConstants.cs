@@ -881,6 +881,7 @@ namespace MoBi.Assets
          public static readonly string RemoveSelectedResultsFromProject = "Do you really want to remove the selected result(s) from the project";
          public static readonly Size SELECT_SINGLE_SIZE = new Size(475, 160);
          public static readonly string RemoveMultipleModules = "Do you really want to remove the selected Modules?";
+         public static readonly string DoYouWantToLoadSimulationSettingsAsDefaultForCurrentProject = "Do you want to load the simulation settings as default for the current project?";
 
          public static string RemoveSimulationsFromProject(string projectName)
          {
@@ -1532,7 +1533,6 @@ namespace MoBi.Assets
          public static readonly string DisplayUnit = "Display Unit";
          public static readonly string DefaultDisplayUnits = "Default Display Units";
          public static readonly string ApplicationSettings = "Application";
-         public static readonly string OutputSelections = "Output Selections";
          public static readonly string StartImport = "Start Import";
          public static readonly string ImportParameterValues = "Import Parameter Values";
          public static readonly string ImportParameterQuantitiesFileFormatHint = "The file format must have at least 4 columns. Columns should be Container Path, Parameter Name, Value, and Units." + Environment.NewLine + "The first row is ignored for import.";
@@ -1915,6 +1915,26 @@ namespace MoBi.Assets
             return $"Select building blocks to clone from {module.Name}";
          }
 
+         public static string CouldNotRemoveModules(List<string> modulesNotRemoved)
+         {
+            var numberOfModules = modulesNotRemoved.Count;
+            var sb = new StringBuilder();
+
+            if (numberOfModules == 1)
+               sb.AppendLine("A module could not be deleted");
+            else
+               sb.AppendLine("Some modules could not be deleted");
+
+            sb.AppendLine(namesList(modulesNotRemoved));
+
+            if (numberOfModules == 1)
+               sb.AppendLine("It is used in one ore move simulations");
+            else
+               sb.AppendLine("They are used in one or more simulations");
+
+            return sb.ToString();
+         }
+
          public static string AlsoImportIndividualsAndExpressions(string individualName, IReadOnlyList<string> expressionNames)
          {
             var numberOfIndividuals = string.IsNullOrEmpty(individualName) ? 0 : 1;
@@ -2170,8 +2190,7 @@ namespace MoBi.Assets
          "SRND",
          "TAN",
          "TANH",
-         "NEQ",
-         "EVENTS"
+         "NEQ"
       };
 
       public static readonly string None = "<None>";

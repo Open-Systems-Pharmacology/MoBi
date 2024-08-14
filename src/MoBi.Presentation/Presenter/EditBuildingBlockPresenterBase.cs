@@ -87,8 +87,9 @@ namespace MoBi.Presentation.Presenter
       {
          var selectedObject = eventToHandle.ObjectBase;
          var (canHandle, containerObject) = CanHandle(selectedObject);
-         if (!canHandle) return;
-
+         if (!canHandle && selectedObject != null)
+            return;
+         
          selectObjectAndContainer(containerObject, selectedObject);
       }
 
