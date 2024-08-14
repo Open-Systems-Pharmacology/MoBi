@@ -68,10 +68,4 @@ namespace MoBi.Presentation.Presenter
 
       public void Handle(TableFormulaRestartSolverChangedEvent eventToHandle) => handleTableFormulaEvent(eventToHandle);
    }
-
-   public enum ValuePointColumn
-   {
-      X = 0,
-      Y = 1
-   }
 }

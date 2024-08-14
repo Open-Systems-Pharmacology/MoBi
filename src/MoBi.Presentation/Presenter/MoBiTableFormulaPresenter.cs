@@ -28,7 +28,6 @@ namespace MoBi.Presentation.Presenter
       private readonly IMoBiFormulaTask _formulaTask;
       private readonly IMoBiContext _context;
       private IBuildingBlock _buildingBlock;
-      
 
       public MoBiTableFormulaPresenter(ITableFormulaView view, ITableFormulaTask tableFormulaTask, IMoBiFormulaTask formulaTask, IMoBiContext context) : base(view, tableFormulaTask.ImportTableFormula)
       {

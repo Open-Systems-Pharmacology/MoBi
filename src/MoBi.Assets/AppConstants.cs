@@ -1467,7 +1467,6 @@ namespace MoBi.Assets
          public static readonly string IsAdvancedParameter = "Advanced parameter";
          public static readonly string CaseSensitive = "Match case";
          public static readonly string AddValuePoint = "Add Point";
-
          public static readonly string OffsetObjectPath = "Path to offset object";
          public static readonly string XArgumentObjectPath = "Path to X-Argument object";
          public static readonly string TableObjectPath = "Path to table object";
