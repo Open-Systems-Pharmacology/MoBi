@@ -22,7 +22,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IModuleToModuleAndSpatialStructureDTOMapper _moduleToModuleDTOMapper;
       private readonly IBuildingBlockRepository _buildingBlockRepository;
       private readonly ObjectPathDTO _selectedPathDTO = new ObjectPathDTO();
-
+      private bool _physicalContainterSelected;
       public SelectNeighborPathPresenter(
          ISelectNeighborPathView view,
          ISelectContainerInTreePresenter selectContainerInTreePresenter,
@@ -44,7 +44,9 @@ namespace MoBi.Presentation.Presenter
             return;
 
          //Only physical containers can be selected as neighbors
-         if (container.Mode != ContainerMode.Physical)
+         _physicalContainterSelected = container.Mode == ContainerMode.Physical;
+         OnStatusChanged(null, null);
+         if (_physicalContainterSelected == false)
             return;
 
          var parentPath = container.RootContainer.ParentPath?.Clone<ObjectPath>() ?? new ObjectPath();
@@ -73,5 +75,7 @@ namespace MoBi.Presentation.Presenter
       }
 
       public ObjectPath NeighborPath => new ObjectPath(_selectedPathDTO.Path.ToPathArray());
+
+      public override bool CanClose => _physicalContainterSelected;
    }
 }
