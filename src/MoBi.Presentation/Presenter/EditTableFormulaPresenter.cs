@@ -9,10 +9,10 @@ namespace MoBi.Presentation.Presenter
 {
    public interface IEditTableFormulaPresenter :
       IEditTypedFormulaPresenter,
-      IListener<AddedValuePointEvent>,
-      IListener<RemovedValuePointEvent>,
-      IListener<TableFormulaUnitChangedEvent>,
-      IListener<TableFormulaValueChangedEvent>,
+      IListener<AddedValuePointEvent>, 
+      IListener<RemovedValuePointEvent>, 
+      IListener<TableFormulaUnitChangedEvent>, 
+      IListener<TableFormulaValueChangedEvent>, 
       IListener<TableFormulaRestartSolverChangedEvent>
    {
    }
