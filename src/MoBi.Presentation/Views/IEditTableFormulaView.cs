@@ -6,7 +6,6 @@ namespace MoBi.Presentation.Views
 {
    public interface IEditTableFormulaView : IView<IEditTableFormulaPresenter>, IEditTypedFormulaView
    {
-      void BindTo(TableFormulaBuilderDTO dtoTableFormulaBuilder);
       void AddTableView(IView tableView);
       void AddChartView(IView chartView);
    }

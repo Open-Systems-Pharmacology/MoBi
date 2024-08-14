@@ -94,7 +94,7 @@ namespace MoBi.Presentation.Tasks
       {
          var dataImporterSettings = new DataImporterSettings
          {
-            Caption = $"{AppConstants.PRODUCT_NAME_WITH_TRADEMARK} - {"Import Table Formula"}",
+            Caption = $"{AppConstants.PRODUCT_NAME_WITH_TRADEMARK} - {AppConstants.Captions.ImportTableFormula}",
             IconName = ApplicationIcons.Formula.IconName
          };
          dataImporterSettings.AddNamingPatternMetaData("File");

@@ -1622,6 +1622,7 @@ namespace MoBi.Assets
          public static readonly string ExtendMergeBehaviorDescription = "The module containers will be merged recursively using add and update behavior";
          public static readonly string OverwriteMergeBehaviorDescription = "The module containers will be replaced by path";
          public static readonly string DistributedTableFormula = "Distributed Table Formula";
+         public static readonly string ImportTableFormula = "Import Table Formula";
 
          public static string SelectEntitiesThatWillBeReplaced(string entityType) => $"Select {entityType.Pluralize()} that will be replaced";
          public static string SelectEntitiesThatWillBeReplacedDescription(string entityType, string buildingBlockName) => $"<b>Selected <i>{entityType.Pluralize()}</i> will replace existing <i>{entityType.Pluralize()}</i> in the building block <i>{buildingBlockName}</i></b>";
