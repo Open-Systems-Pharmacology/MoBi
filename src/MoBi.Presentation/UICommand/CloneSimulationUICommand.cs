@@ -9,11 +9,13 @@ namespace MoBi.Presentation.UICommand
    {
       private readonly IInteractionTasksForSimulation _interactionTasksForSimulation;
       private readonly ISimulationUpdateTask _simulationUpdateTask;
+      private readonly IMoBiContext _context;
 
-      public CloneSimulationUICommand(IInteractionTasksForSimulation interactionTasksForSimulation, ISimulationUpdateTask simulationUpdateTask)
+      public CloneSimulationUICommand(IInteractionTasksForSimulation interactionTasksForSimulation, ISimulationUpdateTask simulationUpdateTask, IMoBiContext context)
       {
          _interactionTasksForSimulation = interactionTasksForSimulation;
          _simulationUpdateTask = simulationUpdateTask;
+         _context = context;
       }
 
       protected override void PerformExecute()
@@ -22,8 +24,8 @@ namespace MoBi.Presentation.UICommand
 
          if (clonedSimulation == null) 
             return;
-         
-         _simulationUpdateTask.ConfigureSimulation(clonedSimulation);
+
+         _context.AddToHistory(_simulationUpdateTask.ConfigureSimulation(clonedSimulation));
       }
    }
 }
