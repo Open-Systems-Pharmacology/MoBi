@@ -6,7 +6,6 @@ using OSPSuite.Utility.Events;
 
 namespace MoBi.Presentation.Presenter
 {
-
    public interface IExtendablePathAndValueBuildingBlockPresenter<in TDTO> : IPathAndValueBuildingBlockPresenter<TDTO>, ISubjectPresenter,
       ILatchable,
       IListener<PathAndValueEntitiesBuildingBlockChangedEvent>,

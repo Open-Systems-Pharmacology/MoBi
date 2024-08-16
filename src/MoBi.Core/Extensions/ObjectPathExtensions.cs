@@ -6,7 +6,7 @@ namespace MoBi.Core.Extensions
    public static class ObjectPathExtensions
    {
       /// <summary>
-      /// Creates a new object path that does not contain the last entry defined in <paramref name="objectPath"/>
+      ///    Creates a new object path that does not contain the last entry defined in <paramref name="objectPath" />
       /// </summary>
       public static ObjectPath ContainerPath(this IReadOnlyList<string> objectPath)
       {
@@ -15,6 +15,7 @@ namespace MoBi.Core.Extensions
          {
             containerPath.Add(objectPath[i]);
          }
+
          return new ObjectPath(containerPath);
       }
    }
