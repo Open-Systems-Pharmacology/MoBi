@@ -43,7 +43,7 @@ namespace MoBi.Presentation.Tasks.Edit
       private readonly ICloneManagerForBuildingBlock _cloneManager;
       private readonly IPathAndValueEntityToParameterValueMapper _pathAndValueEntityToParameterValueMapper;
       private readonly IFormulaFactory _formulaFactory;
-      private readonly IIndividualParameterToParameterMapper _individualParameterToParameterMapper;
+      private readonly IParameterValueToParameterMapper _individualParameterToParameterMapper;
 
       public EditTaskForContainer(IInteractionTaskContext interactionTaskContext,
          IMoBiSpatialStructureFactory spatialStructureFactory,
@@ -51,7 +51,7 @@ namespace MoBi.Presentation.Tasks.Edit
          ICloneManagerForBuildingBlock cloneManager,
          IPathAndValueEntityToParameterValueMapper pathAndValueEntityToParameterValueMapper,
          IFormulaFactory formulaFactory,
-         IIndividualParameterToParameterMapper individualParameterToParameterMapper) : base(interactionTaskContext)
+         IParameterValueToParameterMapper individualParameterToParameterMapper) : base(interactionTaskContext)
       {
          _spatialStructureFactory = spatialStructureFactory;
          _objectPathFactory = objectPathFactory;

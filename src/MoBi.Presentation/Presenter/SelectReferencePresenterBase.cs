@@ -2,23 +2,23 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Presentation.Nodes;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
 using MoBi.Core.Events;
 using MoBi.Core.Helper;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
-using OSPSuite.Assets;
-using MoBi.Core.Domain.Repository;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -99,6 +99,7 @@ namespace MoBi.Presentation.Presenter
             _view.Localisation = _objectPathFactory.CreateAbsoluteObjectPath(_refObject).PathAsString;
             selectInView(_refObject);
          }
+
          _editedObject = editedObject;
       }
 
@@ -146,14 +147,14 @@ namespace MoBi.Presentation.Presenter
                return timeReference();
 
             var objectBase = _context.Get<IObjectBase>(objectBaseDTO.Id);
-            if(objectBase!=null)
+            if (objectBase != null)
                return createPathsFromEntity(objectBase);
 
             if (objectBaseDTO.IsAnImplementationOf<DummyParameterDTO>())
                return createPathFromParameterDummy(objectBaseDTO);
 
             if (objectBaseDTO.IsAnImplementationOf<DummyMoleculeContainerDTO>())
-               return _objectPathCreator.CreateMoleculePath((DummyMoleculeContainerDTO) objectBaseDTO, shouldCreateAbsolutePaths, _refObject);
+               return _objectPathCreator.CreateMoleculePath((DummyMoleculeContainerDTO)objectBaseDTO, shouldCreateAbsolutePath, _refObject);
 
             return null;
          }
@@ -167,28 +168,27 @@ namespace MoBi.Presentation.Presenter
       {
          return new ReferenceDTO
          {
-            Path = new TimePath {TimeDimension = _context.DimensionFactory.Dimension(Constants.Dimension.TIME)}
+            Path = new TimePath { TimeDimension = _context.DimensionFactory.Dimension(Constants.Dimension.TIME) }
          };
       }
 
-      public ObjectPath GetSelection()
+      public virtual ObjectPath GetSelection()
       {
-         var selection = getSelected<IEntity>();
+         var selection = GetSelected<IEntity>();
 
-         return shouldCreateAbsolutePaths ? 
-            _objectPathFactory.CreateAbsoluteObjectPath(selection) : 
-            _objectPathFactory.CreateRelativeObjectPath(_refObject, selection);
+         return shouldCreateAbsolutePath ? _objectPathFactory.CreateAbsoluteObjectPath(selection) : _objectPathFactory.CreateRelativeObjectPath(_refObject, selection);
       }
 
-      private T getSelected<T>() where T : class, IObjectBase
+      protected T GetSelected<T>() where T : class, IObjectBase
       {
          var dto = _view.SelectedDTO;
+
          return dto == null ? null : _context.Get<T>(dto.Id);
       }
 
       public void CheckPathCreationConfiguration()
       {
-         if (_refObject == null && !shouldCreateAbsolutePaths)
+         if (_refObject == null && !shouldCreateAbsolutePath)
          {
             GetLocalisationReferences();
             if (_refObject == null)
@@ -202,13 +202,13 @@ namespace MoBi.Presentation.Presenter
       {
          get
          {
-            var para = getSelected<IObjectBase>();
+            var para = GetSelected<IObjectBase>();
             if (para == null) return false;
             return selectionPredicate(para);
          }
       }
 
-      public void SelectionChanged(ITreeNode treeNode)
+      public virtual void SelectionChanged(ITreeNode treeNode)
       {
          SelectionChangedEvent();
       }
@@ -233,6 +233,7 @@ namespace MoBi.Presentation.Presenter
          {
             selectInView(entityToSelect.ParentContainer);
          }
+
          _view.Select(entityToSelect);
       }
 
@@ -246,7 +247,7 @@ namespace MoBi.Presentation.Presenter
          _view.AddNodes(nodes);
       }
 
-      private bool shouldCreateAbsolutePaths => _view.ObjectPathType.Equals(ObjectPathType.Absolute);
+      private bool shouldCreateAbsolutePath => _view.ObjectPathType.Equals(ObjectPathType.Absolute);
 
       protected void AddTimeReference()
       {
@@ -405,12 +406,12 @@ namespace MoBi.Presentation.Presenter
 
       private ReferenceDTO createPathFromParameterDummy(ObjectBaseDTO dtoObjectBase)
       {
-         return _objectPathCreator.CreatePathFromParameterDummy(dtoObjectBase, shouldCreateAbsolutePaths, _refObject, _editedObject);
+         return _objectPathCreator.CreatePathFromParameterDummy(dtoObjectBase, shouldCreateAbsolutePath, _refObject, _editedObject);
       }
 
       private ReferenceDTO createPathsFromEntity(IObjectBase entity)
       {
-         return _objectPathCreator.CreatePathsFromEntity(entity, shouldCreateAbsolutePaths, _refObject, _editedObject);
+         return _objectPathCreator.CreatePathsFromEntity(entity, shouldCreateAbsolutePath, _refObject, _editedObject);
       }
 
       private IEnumerable<MoleculeBuilder> allMolecules
@@ -434,7 +435,7 @@ namespace MoBi.Presentation.Presenter
 
       protected void AddMolecule()
       {
-         var dummyMolecule = new DummyParameterDTO(null) {Name = ObjectPathKeywords.MOLECULE, Id = ObjectPathKeywords.MOLECULE};
+         var dummyMolecule = new DummyParameterDTO(null) { Name = ObjectPathKeywords.MOLECULE, Id = ObjectPathKeywords.MOLECULE };
          _view.AddNode(_referenceMapper.MapFrom(dummyMolecule));
       }
 

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Drawing;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
@@ -12,13 +13,16 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Presenters.ContextMenus;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IParameterValuesPresenter : IExtendablePathAndValueBuildingBlockPresenter<ParameterValueDTO>, IEditPresenter<ParameterValuesBuildingBlock>
+   public interface IParameterValuesPresenter : IExtendablePathAndValueBuildingBlockPresenter<ParameterValueDTO>, IEditPresenter<ParameterValuesBuildingBlock>, IPresenterWithContextMenu<IViewItem>
    {
       void UpdateDimension(ParameterValueDTO valueObject, IDimension newDimension);
+      void AddNewParameterValue();
    }
 
    public class ParameterValuesPresenter
@@ -31,6 +35,9 @@ namespace MoBi.Presentation.Presenter
       private readonly IParameterValuesTask _parameterValuesTask;
       private readonly IDisplayUnitRetriever _displayUnitRetriever;
       private readonly IParameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper _parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper;
+      private readonly IViewItemContextMenuFactory _viewItemContextMenuFactory;
+      private readonly IModalPresenter _modalPresenter;
+      private readonly ISelectReferenceAtParameterValuePresenter _referenceAtParamValuePresenter;
 
       public ParameterValuesPresenter(
          IParameterValuesView view,
@@ -43,12 +50,17 @@ namespace MoBi.Presentation.Presenter
          IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper,
          IParameterValueDistributedPathAndValueEntityPresenter distributedParameterPresenter,
          IParameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper,
-         IDimensionFactory dimensionFactory)
-         : base(view, valueMapper, parameterValuesTask, parameterValuesCreator, context, deletePathAndValueEntityPresenter, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
+         IDimensionFactory dimensionFactory,
+         IViewItemContextMenuFactory viewItemContextMenuFactory,
+         IModalPresenter modalPresenter,
+         ISelectReferenceAtParameterValuePresenter selectReferenceAtParameterValuePresenter) : base(view, valueMapper, parameterValuesTask, parameterValuesCreator, context, deletePathAndValueEntityPresenter, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
       {
          _parameterValuesTask = parameterValuesTask;
          _displayUnitRetriever = displayUnitRetriever;
          _parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper = parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper;
+         _viewItemContextMenuFactory = viewItemContextMenuFactory;
+         _modalPresenter = modalPresenter;
+         _referenceAtParamValuePresenter = selectReferenceAtParameterValuePresenter;
          view.HideIsPresentView();
          view.HideRefreshView();
          view.HideNegativeValuesAllowedView();
@@ -79,6 +91,23 @@ namespace MoBi.Presentation.Presenter
          macroCommand.AddCommand(_parameterValuesTask.SetDisplayValueWithUnit(pathAndValueEntity, value, _displayUnitRetriever.PreferredUnitFor(pathAndValueEntity), _buildingBlock));
 
          AddCommand(macroCommand);
+      }
+
+      public void ShowContextMenu(IViewItem objectRequestingPopup, Point popupLocation) =>
+         _viewItemContextMenuFactory.CreateFor(objectRequestingPopup, this).Show(_view, popupLocation);
+
+      public void AddNewParameterValue()
+      {
+         _modalPresenter.Text = AppConstants.Captions.SelectParameter;
+         //The order of this next 2 lines should not be changed, as they are used to encapsulate the presenter
+         //and to initialize it with the correct data so that the initial state of the OK button is correct
+         _modalPresenter.Encapsulate(_referenceAtParamValuePresenter);
+         _referenceAtParamValuePresenter.Init(null, new List<IObjectBase>(), null);
+         if (!_modalPresenter.Show())
+            return;
+
+         AddNewPathAndValueEntity(_referenceAtParamValuePresenter.GetSelection());
+         _view.InitializePathColumns();
       }
    }
 }

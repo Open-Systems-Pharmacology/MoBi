@@ -36,7 +36,7 @@ namespace MoBi.Presentation
          _moduleDTOMapper = A.Fake<IModuleToModuleAndSpatialStructureDTOMapper>();
          _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
          _view = A.Fake<ISelectNeighborPathView>();
-         _selectContainerInTreePresenter = A.Fake<ISelectContainerInTreePresenter>();
+         _selectContainerInTreePresenter = A.Fake<ISelectContainerInTreePresenter>(options => options.CallsBaseMethods());
          _objectPathFactory = new ObjectPathFactoryForSpecs();
 
          A.CallTo(() => _view.BindTo(A<ObjectPathDTO>._))
@@ -77,7 +77,6 @@ namespace MoBi.Presentation
          {
             SpatialStructure = _organismDTO2
          };
-
          A.CallTo(() => _buildingBlockRepository.SpatialStructureCollection).Returns(new[] { _spatialStructure1, _spatialStructure2 });
          A.CallTo(() => _moduleDTOMapper.MapFrom(_spatialStructure1.Module)).Returns(_moduleAndSpatialStructureDTO1);
          A.CallTo(() => _moduleDTOMapper.MapFrom(_spatialStructure2.Module)).Returns(_moduleAndSpatialStructureDTO2);
@@ -97,6 +96,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
+         _selectContainerInTreePresenter.SelectObjectBaseDTO(null);
          sut.Init("label");
       }
 
@@ -176,6 +176,40 @@ namespace MoBi.Presentation
       public void should_return_the_path_from_the_selected_path_dto_even_if_the_tree_selection_is_pointing_to_another_object()
       {
          _result.PathAsString.ShouldBeEqualTo("A|B|C");
+      }
+   }
+
+   public class When_selected_container_path_changes_with_physical : concern_for_SelectNeighborPathPresenter
+   {
+      protected override void Because()
+      {
+         var entity = A.Fake<IContainer>();
+         entity.Mode = ContainerMode.Physical;
+         var containerPath = new ObjectPath("Some|Path");
+         _selectContainerInTreePresenter.OnSelectedEntityChanged += Raise.With(new SelectedEntityChangedArgs(entity, containerPath));
+      }
+
+      [Observation]
+      public void can_close_should_be_true()
+      {
+         sut.CanClose.ShouldBeTrue();
+      }
+   }
+
+   public class When_selected_container_path_changes_with_logical : concern_for_SelectNeighborPathPresenter
+   {
+      protected override void Because()
+      {
+         var entity = A.Fake<IContainer>();
+         entity.Mode = ContainerMode.Logical;
+         var containerPath = new ObjectPath("Some|Path");
+         _selectContainerInTreePresenter.OnSelectedEntityChanged += Raise.With(new SelectedEntityChangedArgs(entity, containerPath));
+      }
+
+      [Observation]
+      public void can_close_should_be_false()
+      {
+         sut.CanClose.ShouldBeFalse();
       }
    }
 }
