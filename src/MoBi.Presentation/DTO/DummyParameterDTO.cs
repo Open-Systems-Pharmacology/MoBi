@@ -12,7 +12,8 @@ namespace MoBi.Presentation.DTO
       public DummyParameterDTO(IParameter parameter) : base(parameter)
       {
          Parameter = parameter;
-         Id = ShortGuid.NewGuid();
+         if (Id == null)
+            Id = ShortGuid.NewGuid();
       }
    }
 }

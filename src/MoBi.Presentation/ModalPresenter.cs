@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Drawing;
-using OSPSuite.Utility.Events;
 using MoBi.Presentation.Views;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Events;
 
 namespace MoBi.Presentation
 {

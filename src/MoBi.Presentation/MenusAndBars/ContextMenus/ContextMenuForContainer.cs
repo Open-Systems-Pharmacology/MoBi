@@ -1,4 +1,5 @@
-﻿using MoBi.Assets;
+﻿using System.Windows;
+using MoBi.Assets;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
@@ -84,15 +85,18 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
    public class ContextMenuForContainer : ContextMenuForContainerBase<IContainer>
    {
-      public ContextMenuForContainer(IMoBiContext context, IObjectTypeResolver objectTypeResolver, OSPSuite.Utility.Container.IContainer container) : base(context, objectTypeResolver, container)
+      private readonly IEntityPathResolver _entityPathResolver;
+
+      public ContextMenuForContainer(IMoBiContext context, IObjectTypeResolver objectTypeResolver, OSPSuite.Utility.Container.IContainer container, IEntityPathResolver entityPathResolver) : base(context, objectTypeResolver, container)
       {
+         _entityPathResolver = entityPathResolver;
       }
 
       public override IContextMenu InitializeWith(ObjectBaseDTO dto, IPresenter presenter)
       {
          base.InitializeWith(dto, presenter);
          var container = _context.Get<IContainer>(dto.Id);
-         
+
          if (!dto.Name.IsSpecialName())
          {
             _allMenuItems.Add(CreateAddNewItemFor(container));
@@ -108,8 +112,11 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.SaveAsPKML.WithEllipsis())
             .WithCommandFor<SaveWithIndividualAndExpressionUICommand, IContainer>(container, _container)
             .WithIcon(ApplicationIcons.PKMLSave));
-      }
 
+         _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.Captions.CopyPath)
+            .WithActionCommand(() => Clipboard.SetText(_entityPathResolver.FullPathFor(container)))
+            .WithIcon(ApplicationIcons.Copy));
+      }
    }
 
    public class ContextMenuForContainerInEventGroups : ContextMenuForContainerBase<IContainer>
