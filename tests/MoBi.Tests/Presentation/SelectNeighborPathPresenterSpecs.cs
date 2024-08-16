@@ -185,8 +185,7 @@ namespace MoBi.Presentation
       {
          var entity = A.Fake<IContainer>();
          entity.Mode = ContainerMode.Physical;
-         var containerPath = new ObjectPath("Some|Path");
-         _selectContainerInTreePresenter.OnSelectedEntityChanged += Raise.With(new SelectedEntityChangedArgs(entity, containerPath));
+         _selectContainerInTreePresenter.OnSelectedEntityChanged += Raise.With(new SelectedEntityChangedArgs(entity));
       }
 
       [Observation]
@@ -202,8 +201,7 @@ namespace MoBi.Presentation
       {
          var entity = A.Fake<IContainer>();
          entity.Mode = ContainerMode.Logical;
-         var containerPath = new ObjectPath("Some|Path");
-         _selectContainerInTreePresenter.OnSelectedEntityChanged += Raise.With(new SelectedEntityChangedArgs(entity, containerPath));
+         _selectContainerInTreePresenter.OnSelectedEntityChanged += Raise.With(new SelectedEntityChangedArgs(entity));
       }
 
       [Observation]
