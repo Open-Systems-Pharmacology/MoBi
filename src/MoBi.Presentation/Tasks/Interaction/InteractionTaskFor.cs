@@ -28,6 +28,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       TChild CreateNewEntity(TParent parent);
       string AskForPKMLFileToOpen();
+      IReadOnlyList<TChild> LoadFromPKML();
    }
 
    public abstract class InteractionTasksForChildren<TParent, TChild> : InteractionTasksForChildren<TParent, TChild, IEditTaskFor<TChild>>
@@ -149,6 +150,12 @@ namespace MoBi.Presentation.Tasks.Interaction
       public string AskForPKMLFileToOpen()
       {
          return InteractionTask.AskForFileToOpen(AppConstants.Dialog.Load(_editTask.ObjectName), Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART);
+      }
+
+      public IReadOnlyList<TChild> LoadFromPKML()
+      {
+         var filename = AskForPKMLFileToOpen();
+         return (string.IsNullOrEmpty(filename) ? Enumerable.Empty<TChild>() : LoadItems(filename)).ToList();
       }
 
       public IMoBiCommand AddExistingTemplate(TParent parent, IBuildingBlock buildingBlockWithFormulaCache)
