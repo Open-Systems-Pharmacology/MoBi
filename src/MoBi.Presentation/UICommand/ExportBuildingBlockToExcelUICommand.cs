@@ -16,12 +16,12 @@ namespace MoBi.Presentation.UICommand
    {
       private readonly IMoBiProjectRetriever _projectRetriever;
       private readonly IDialogCreator _dialogCreator;
-      private readonly IMapper<T, DataTable> _mapper;
+      private readonly IMapper<T, List<DataTable>> _mapper;
 
       protected ExportBuildingBlockToExcelUICommand(
          IMoBiProjectRetriever projectRetriever,
          IDialogCreator dialogCreator,
-         IMapper<T, DataTable> mapper)
+         IMapper<T, List<DataTable>> mapper)
       {
          _projectRetriever = projectRetriever;
          _dialogCreator = dialogCreator;
@@ -42,8 +42,7 @@ namespace MoBi.Presentation.UICommand
             return;
 
          var mappedValues = _mapper.MapFrom(Subject);
-         var dataTables = new List<DataTable> { mappedValues };
-         ExportToExcelTask.ExportDataTablesToExcel(dataTables, excelFileName, openExcel: true);
+         ExportToExcelTask.ExportDataTablesToExcel(mappedValues, excelFileName, openExcel: true);
       }
    }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using MoBi.Assets;
@@ -9,7 +10,7 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Mappers
 {
-   public interface IInitialConditionsBuildingBlockToDataTableMapper : IMapper<InitialConditionsBuildingBlock, DataTable>
+   public interface IInitialConditionsBuildingBlockToDataTableMapper : IMapper<InitialConditionsBuildingBlock, List<DataTable>>
    {
    }
 
@@ -23,10 +24,10 @@ namespace MoBi.Core.Mappers
       private static readonly string _scaleDivisor = AppConstants.Captions.ScaleDivisor;
       private static readonly string _negativeValuesAllowed = AppConstants.Captions.NegativeValuesAllowed;
 
-      public DataTable MapFrom(InitialConditionsBuildingBlock input) =>
+      public List<DataTable> MapFrom(InitialConditionsBuildingBlock input) =>
          parameterValuesToParametersDataTable(input);
 
-      private DataTable parameterValuesToParametersDataTable(InitialConditionsBuildingBlock input)
+      private List<DataTable> parameterValuesToParametersDataTable(InitialConditionsBuildingBlock input)
       {
          var dt = generateEmptyMoleculeParameterDataTable();
          var parameterValues = input.Select(x => x);
@@ -42,7 +43,7 @@ namespace MoBi.Core.Mappers
             row[_negativeValuesAllowed] = parameterValue.NegativeValuesAllowed;
          }
 
-         return dt;
+         return new List<DataTable> { dt };
       }
 
       private DataTable generateEmptyMoleculeParameterDataTable()
@@ -55,7 +56,7 @@ namespace MoBi.Core.Mappers
          dt.AddColumn(_scaleDivisor);
          dt.AddColumn(_unit);
          dt.AddColumn<bool>(_negativeValuesAllowed);
-         dt.TableName = AppConstants.Captions.ParameterValue;
+         dt.TableName = AppConstants.Captions.InitialConditions;
          return dt;
       }
    }

@@ -1,22 +1,7 @@
-﻿using MoBi.Assets;
-using OSPSuite.Core.Services;
-using OSPSuite.Utility.Extensions;
-using MoBi.Core.Domain.Model;
+﻿using MoBi.Core.Mappers;
 using MoBi.Core.Services;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Presentation.UICommands;
-using OSPSuite.Infrastructure.Export;
-using System.Collections.Generic;
-using System.Data;
-using System.Reflection;
-using System;
-using System.Linq;
-using MoBi.Core.Mappers;
-using MoBi.Presentation.DTO;
-using MoBi.Presentation.Mappers;
-using MoBi.Presentation.Presenter;
-using OSPSuite.Utility;
+using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.UICommand
 {

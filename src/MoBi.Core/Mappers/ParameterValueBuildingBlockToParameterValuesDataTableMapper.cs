@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using MoBi.Assets;
@@ -9,7 +10,7 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Mappers
 {
-   public interface IParameterValueBuildingBlockToParameterValuesDataTableMapper : IMapper<ParameterValuesBuildingBlock, DataTable>
+   public interface IParameterValueBuildingBlockToParameterValuesDataTableMapper : IMapper<ParameterValuesBuildingBlock, List<DataTable>>
    {
    }
 
@@ -20,10 +21,10 @@ namespace MoBi.Core.Mappers
       private static readonly string _value = AppConstants.Captions.Value;
       private static readonly string _unit = AppConstants.Captions.Unit;
 
-      public DataTable MapFrom(ParameterValuesBuildingBlock input) =>
+      public List<DataTable> MapFrom(ParameterValuesBuildingBlock input) =>
          parameterValuesToParametersDataTable(input);
 
-      private DataTable parameterValuesToParametersDataTable(ParameterValuesBuildingBlock input)
+      private List<DataTable> parameterValuesToParametersDataTable(ParameterValuesBuildingBlock input)
       {
          var dt = generateEmptyMoleculeParameterDataTable();
          var parameterValues = input.Select(x => x);
@@ -36,7 +37,7 @@ namespace MoBi.Core.Mappers
             row[_unit] = parameterValue.DisplayUnit;
          }
 
-         return dt;
+         return new List<DataTable> { dt };
       }
 
       private DataTable generateEmptyMoleculeParameterDataTable()

@@ -5,12 +5,12 @@ using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.UICommand
 {
-   public class ExportInitialConditionsBuildingBlockToExcelUICommand : ExportBuildingBlockToExcelUICommand<InitialConditionsBuildingBlock>
+   public class ExportExpressionProfilesBuildingBlockToExcelUICommand : ExportBuildingBlockToExcelUICommand<ExpressionProfileBuildingBlock>
    {
-      public ExportInitialConditionsBuildingBlockToExcelUICommand(
+      public ExportExpressionProfilesBuildingBlockToExcelUICommand(
          IMoBiProjectRetriever projectRetriever,
          IDialogCreator dialogCreator,
-         IInitialConditionsBuildingBlockToDataTableMapper mapper)
+         IExpressionProfileBuildingBlockToDataTableMapper mapper)
          : base(projectRetriever, dialogCreator, mapper)
       {
       }
