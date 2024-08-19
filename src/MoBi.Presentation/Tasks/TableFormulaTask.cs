@@ -35,7 +35,7 @@ namespace MoBi.Presentation.Tasks
       IMoBiCommand SetXValuePoint(TableFormula tableFormula, ValuePoint valuePoint, double newValueInDisplayUnit, IBuildingBlock buildingBlock);
       IMoBiCommand SetYValuePoint(TableFormula tableFormula, ValuePoint valuePoint, double newValueInDisplayUnit, IBuildingBlock buildingBlock);
       IMoBiCommand SetRestartSolver(TableFormula formula, ValuePoint valuePoint, bool newRestartSolverValue, IBuildingBlock buildingBlock);
-      TableFormula ImportTableFormula();
+      DataRepository ImportTablePointsFor(TableFormula editedFormula);
    }
 
    public class TableFormulaTask : ITableFormulaTask
@@ -90,7 +90,7 @@ namespace MoBi.Presentation.Tasks
          return new SetRestartSolverInValuePointCommand(formula, valuePoint, newRestartSolverValue, buildingBlock);
       }
 
-      public TableFormula ImportTableFormula()
+      public DataRepository ImportTablePointsFor(TableFormula tableFormula)
       {
          var dataImporterSettings = new DataImporterSettings
          {
@@ -99,40 +99,38 @@ namespace MoBi.Presentation.Tasks
          };
          dataImporterSettings.AddNamingPatternMetaData("File");
 
-         var importedFormula = _dataImporter.ImportDataSets(
+         return _dataImporter.ImportDataSets(
             new List<MetaDataCategory>(),
-            _dataImporter.ColumnInfosForObservedData(),
+            getColumnInfos(tableFormula),
             dataImporterSettings,
             _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, DirectoryKey.OBSERVED_DATA)
          ).DataRepositories.FirstOrDefault();
-         return importedFormula == null ? null : formulaFrom(importedFormula);
       }
 
-      private TableFormula formulaFrom(DataRepository dataRepository)
+      private IReadOnlyList<ColumnInfo> getColumnInfos(TableFormula tableFormula)
       {
-         var baseGrid = dataRepository.BaseGrid;
-         var valueColumn = dataRepository.AllButBaseGrid().Single();
-         var formula = newTableFormula();
+         var columns = new List<ColumnInfo>();
 
-         formula.XDisplayUnit = baseGrid.Dimension.Unit(baseGrid.DataInfo.DisplayUnitName);
-         formula.YDisplayUnit = valueColumn.Dimension.Unit(valueColumn.DataInfo.DisplayUnitName);
-
-         foreach (var timeValue in baseGrid.Values)
+         var xColumn = new ColumnInfo
          {
-            formula.AddPoint(timeValue, valueColumn.GetValue(timeValue).ToDouble());
-         }
+            DefaultDimension = tableFormula.XDimension,
+            Name = tableFormula.XName,
+            IsMandatory = true,
+         };
+         xColumn.SupportedDimensions.Add(tableFormula.XDimension);
+         columns.Add(xColumn);
 
-         return formula;
-      }
+         var yColumn = new ColumnInfo
+         {
+            DefaultDimension = tableFormula.Dimension,
+            Name = tableFormula.YName,
+            IsMandatory = true,
+            BaseGridName = xColumn.Name,
+         };
+         yColumn.SupportedDimensions.Add(tableFormula.Dimension);
+         columns.Add(yColumn);
 
-      private TableFormula newTableFormula()
-      {
-         var tableFormula = _context.Create<TableFormula>();
-         tableFormula.XDimension = _context.DimensionFactory.Dimension(TIME);
-         tableFormula.XName = TIME;
-         tableFormula.Dimension = _context.DimensionFactory.Dimension(AppConstants.DimensionNames.FRACTION);
-
-         return tableFormula;
+         return columns;
       }
    }
 }

@@ -80,13 +80,20 @@ namespace MoBi.Presentation.Tasks
    public class When_importing_new_table_formula_value_points : concern_for_TableFormulaTask
    {
       private (IReadOnlyList<DataRepository> DataRepositories, ImporterConfiguration Configuration) _dataRepositories;
-      private TableFormula _formula;
+      private DataRepository _tablePoints;
       private DataColumn _dataColumn;
       private BaseGrid _baseGrid;
+      private TableFormula _tableFormula;
 
       protected override void Context()
       {
          base.Context();
+         _tableFormula = new TableFormula(new LinearInterpolation())
+         {
+            XDimension = DimensionFactoryForSpecs.TimeDimension,
+            Dimension = DimensionFactoryForSpecs.MassDimension
+         };
+
          _dataRepositories = (new List<DataRepository>
          {
             new DataRepository("data_repository_id")
@@ -110,7 +117,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         _formula = sut.ImportTableFormula();
+         _tablePoints = sut.ImportTablePointsFor(_tableFormula);
       }
 
       [Observation]
@@ -126,11 +133,11 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void the_formula_should_have_corresponding_value_points()
       {
-         _formula.AllPoints.Count.ShouldBeEqualTo(2);
-         _formula.AllPoints[0].X.ShouldBeEqualTo(0.0);
-         _formula.AllPoints[0].Y.ShouldBeEqualTo(10.0);
-         _formula.AllPoints[1].X.ShouldBeEqualTo(1.0);
-         _formula.AllPoints[1].Y.ShouldBeEqualTo(11.0);
+         _tablePoints.BaseGrid.Count.ShouldBeEqualTo(2);
+         _tablePoints.BaseGrid[0].ShouldBeEqualTo(0.0f);
+         _tablePoints.AllButBaseGrid().Single()[0].ShouldBeEqualTo(10.0f);
+         _tablePoints.BaseGrid[1].ShouldBeEqualTo(1.0f);
+         _tablePoints.AllButBaseGrid().Single()[1].ShouldBeEqualTo(11.0f);
       }
    }
 }

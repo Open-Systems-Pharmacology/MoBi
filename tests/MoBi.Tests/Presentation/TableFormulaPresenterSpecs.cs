@@ -1,11 +1,15 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using FakeItEasy;
+using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
+using MoBi.Helpers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks;
 using OSPSuite.BDDHelper;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Views.Parameters;
@@ -135,15 +139,25 @@ namespace MoBi.Presentation
 
    public class When_importing_a_table_formula : concern_for_TableFormulaPresenter
    {
-      private TableFormula _tableFormula, _importedTableFormula;
-
+      private TableFormula _tableFormula;
+      private DataRepository _importedTablePoints;
       protected override void Context()
       {
          base.Context();
-         _importedTableFormula = new TableFormula();
-         _importedTableFormula.AddPoint(0, 0);
-         _importedTableFormula.AddPoint(1, 1);
-         _importedTableFormula.AddPoint(3, 3);
+         var baseGrid = new BaseGrid("baseGrid", "baseGrid", DimensionFactoryForSpecs.TimeDimension);
+         var dataColumn = new DataColumn("column", DimensionFactoryForSpecs.MassDimension, baseGrid)
+         {
+            Values = new List<float>()
+         };
+
+         _importedTablePoints = new DataRepository
+         {
+            baseGrid,
+            dataColumn
+         };
+
+         baseGrid.InternalValues.AddRange(new[] {0.0f, 1.0f, 3.0f});
+         dataColumn.InternalValues.AddRange(new[] { 0.0f, 1.0f, 3.0f });
 
          _tableFormula = new TableFormula();
          _tableFormula.AddPoint(0, 0);
@@ -151,7 +165,7 @@ namespace MoBi.Presentation
 
          sut.Edit(_tableFormula, _spatialStructure);
 
-         A.CallTo(() => _tableFormulaTask.ImportTableFormula()).Returns(_importedTableFormula);
+         A.CallTo(() => _tableFormulaTask.ImportTablePointsFor(_tableFormula)).Returns(_importedTablePoints);
       }
 
       protected override void Because()
@@ -168,7 +182,7 @@ namespace MoBi.Presentation
       [Observation]
       public void new_points_should_be_added_by_task()
       {
-         A.CallTo(() => _moBiFormulaTask.AddValuePoint(_tableFormula, A<ValuePoint>._, _spatialStructure)).MustHaveHappened(_importedTableFormula.AllPoints.Count, Times.Exactly);
+         A.CallTo(() => _moBiFormulaTask.AddValuePoint(_tableFormula, A<ValuePoint>._, _spatialStructure)).MustHaveHappened(_importedTablePoints.BaseGrid.Count, Times.Exactly);
       }
    }
 
