@@ -5,7 +5,7 @@ namespace MoBi.Presentation.Mappers
 {
    public interface IPathAndValueEntityToPathAndValueEntityDTOMapper<TPathAndValueEntity, out TPathAndValueEntityDTO> where TPathAndValueEntity : PathAndValueEntity
    {
-      TPathAndValueEntityDTO MapFrom(TPathAndValueEntity pathAndValueEntity, IBuildingBlock<TPathAndValueEntity> buildingBlock);
+      TPathAndValueEntityDTO MapFrom(TPathAndValueEntity parameterValue, IBuildingBlock<TPathAndValueEntity> buildingBlock);
    }
 
    public interface IInitialConditionToInitialConditionDTOMapper : IPathAndValueEntityToPathAndValueEntityDTOMapper<InitialCondition, InitialConditionDTO>
@@ -21,12 +21,12 @@ namespace MoBi.Presentation.Mappers
          _formulaMapper = formulaMapper;
       }
 
-      public InitialConditionDTO MapFrom(InitialCondition initialCondition, IBuildingBlock<InitialCondition> buildingBlock)
+      public InitialConditionDTO MapFrom(InitialCondition parameterValue, IBuildingBlock<InitialCondition> buildingBlock)
       {
-         var dto = new InitialConditionDTO(initialCondition, buildingBlock)
+         var dto = new InitialConditionDTO(parameterValue, buildingBlock)
          {
-            ContainerPath = initialCondition.ContainerPath,
-            Formula = _formulaMapper.MapFrom(initialCondition.Formula)
+            ContainerPath = parameterValue.ContainerPath,
+            Formula = _formulaMapper.MapFrom(parameterValue.Formula)
          };
          return dto;
       }

@@ -87,7 +87,7 @@ namespace MoBi.Presentation.Presenter
       public void AddNewEmptyPathAndValueEntity()
       {
          _startValueDTOs.Insert(0, _valueMapper.MapFrom(
-            pathAndValueEntity: _emptyStartValueCreator.CreateEmptyStartValue(_interactionTasksForExtendablePathAndValueEntity.GetDefaultDimension()),
+            parameterValue: _emptyStartValueCreator.CreateEmptyStartValue(_interactionTasksForExtendablePathAndValueEntity.GetDefaultDimension()),
             buildingBlock: _buildingBlock
          ));
          bindToView();

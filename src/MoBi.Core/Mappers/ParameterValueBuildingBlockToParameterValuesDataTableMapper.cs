@@ -1,0 +1,53 @@
+using System;
+using System.Data;
+using System.Linq;
+using MoBi.Assets;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
+
+namespace MoBi.Core.Mappers
+{
+   public interface IParameterValueBuildingBlockToParameterValuesDataTableMapper : IMapper<ParameterValuesBuildingBlock, DataTable>
+   {
+   }
+
+   public class ParameterValueBuildingBlockToParameterValuesDataTableMapper : IParameterValueBuildingBlockToParameterValuesDataTableMapper
+   {
+      private static readonly string _name = AppConstants.Captions.ParameterName;
+      private static readonly string _path = AppConstants.Captions.ContainerPath;
+      private static readonly string _value = AppConstants.Captions.Value;
+      private static readonly string _unit = AppConstants.Captions.Unit;
+
+      public DataTable MapFrom(ParameterValuesBuildingBlock input) =>
+         parameterValuesToParametersDataTable(input);
+
+      private DataTable parameterValuesToParametersDataTable(ParameterValuesBuildingBlock input)
+      {
+         var dt = generateEmptyMoleculeParameterDataTable();
+         var parameterValues = input.Select(x => x);
+         foreach (var parameterValue in parameterValues)
+         {
+            var row = dt.Rows.Add();
+            row[_path] = parameterValue.ContainerPath;
+            row[_name] = parameterValue.Name;
+            row[_value] = parameterValue.Value != null ? (object)parameterValue.ConvertToDisplayUnit(parameterValue.Value) : DBNull.Value;
+            row[_unit] = parameterValue.DisplayUnit;
+         }
+
+         return dt;
+      }
+
+      private DataTable generateEmptyMoleculeParameterDataTable()
+      {
+         var dt = new DataTable();
+         dt.AddColumn(_path);
+         dt.AddColumn<string>(_name);
+         dt.AddColumn<double>(_value);
+         dt.AddColumn(_unit);
+         dt.TableName = AppConstants.Captions.ParameterValue;
+         return dt;
+      }
+   }
+}

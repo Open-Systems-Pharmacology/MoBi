@@ -1121,6 +1121,7 @@ namespace MoBi.Assets
          public static readonly string OutputSelections = "Output Selections";
          public static readonly string SettingsAndSchema = "Output Intervals and Solver Settings";
          public static readonly string MergeBehavior = "Merge Behavior";
+         public static readonly string ExportToExcel = "Export to Excel®...";
 
          public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
 
@@ -1621,7 +1622,7 @@ namespace MoBi.Assets
          public static readonly string MergeBehavior = "Merge Behavior";
          public static readonly string ExtendMergeBehaviorDescription = "The module containers will be merged recursively using add and update behavior";
          public static readonly string OverwriteMergeBehaviorDescription = "The module containers will be replaced by path";
-
+         public static readonly string ExportToExcel = "Export to Excel®";
          public static string SelectEntitiesThatWillBeReplaced(string entityType) => $"Select {entityType.Pluralize()} that will be replaced";
          public static string SelectEntitiesThatWillBeReplacedDescription(string entityType, string buildingBlockName) => $"<b>Selected <i>{entityType.Pluralize()}</i> will replace existing <i>{entityType.Pluralize()}</i> in the building block <i>{buildingBlockName}</i></b>";
          public static string ExportContainerDescription(string exportedContainerPath) => $"<b>Select a <i>file path</i> and optional <i>individual</i> and <i>expression profiles</i> for container export. Parameters from the <i>individual</i> and <i>expression profiles</i> that match the path {exportedContainerPath} will be added to the container before exporting.</b>";
@@ -2266,9 +2267,19 @@ namespace MoBi.Assets
                                                                       "After changing the PK-Sim installation path, please restart MoBi.";
       }
 
+      public static string DefaultFileNameForBuildingBlockExport(string projectName, string simulationName)
+      {
+         return $"{projectName}_{simulationName}_Building_Block";
+      }
+
       public static string DefaultFileNameForModelPartsExport(string projectName, string simulationName)
       {
          return $"{projectName}_{simulationName}_Model_Parts";
+      }
+
+      public static string DefaultFileNameForParameterValuesExport(string projectName, string simulationName)
+      {
+         return $"{projectName}_{simulationName}_Parameter_Values";
       }
 
       public static string CannotRemoveModuleFromProject(string buildingBlockName, IEnumerable<string> referringBuildingBlockNames)
