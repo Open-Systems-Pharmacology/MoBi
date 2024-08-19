@@ -36,7 +36,7 @@ namespace MoBi.Presentation
          _moduleDTOMapper = A.Fake<IModuleToModuleAndSpatialStructureDTOMapper>();
          _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
          _view = A.Fake<ISelectNeighborPathView>();
-         _selectContainerInTreePresenter = A.Fake<ISelectContainerInTreePresenter>(options => options.CallsBaseMethods());
+         _selectContainerInTreePresenter = A.Fake<ISelectContainerInTreePresenter>();
          _objectPathFactory = new ObjectPathFactoryForSpecs();
 
          A.CallTo(() => _view.BindTo(A<ObjectPathDTO>._))
@@ -183,8 +183,10 @@ namespace MoBi.Presentation
    {
       protected override void Because()
       {
-         var entity = A.Fake<IContainer>();
-         entity.Mode = ContainerMode.Physical;
+         var entity = new Container
+         {
+            Mode = ContainerMode.Physical
+         };
          _selectContainerInTreePresenter.OnSelectedEntityChanged += Raise.With(new SelectedEntityChangedArgs(entity));
       }
 
@@ -199,8 +201,10 @@ namespace MoBi.Presentation
    {
       protected override void Because()
       {
-         var entity = A.Fake<IContainer>();
-         entity.Mode = ContainerMode.Logical;
+         var entity = new Container
+         {
+            Mode = ContainerMode.Logical
+         };
          _selectContainerInTreePresenter.OnSelectedEntityChanged += Raise.With(new SelectedEntityChangedArgs(entity));
       }
 

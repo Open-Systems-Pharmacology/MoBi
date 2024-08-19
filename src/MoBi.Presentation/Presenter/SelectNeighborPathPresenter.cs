@@ -23,7 +23,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IBuildingBlockRepository _buildingBlockRepository;
       private readonly IObjectPathFactory _objectPathFactory;
       private readonly ObjectPathDTO _selectedPathDTO = new ObjectPathDTO();
-      private bool _physicalContainterSelected;
+      private bool _physicalContainerSelected;
       public SelectNeighborPathPresenter(
          ISelectNeighborPathView view,
          ISelectContainerInTreePresenter selectContainerInTreePresenter,
@@ -47,9 +47,9 @@ namespace MoBi.Presentation.Presenter
             return;
 
          //Only physical containers can be selected as neighbors
-         _physicalContainterSelected = container.Mode == ContainerMode.Physical;
+         _physicalContainerSelected = container.Mode == ContainerMode.Physical;
          OnStatusChanged(null, null);
-         if (_physicalContainterSelected == false)
+         if (_physicalContainerSelected == false)
             return;
 
          var path = _objectPathFactory.CreateAbsoluteObjectPath(container);
@@ -78,6 +78,6 @@ namespace MoBi.Presentation.Presenter
 
       public ObjectPath NeighborPath => new ObjectPath(_selectedPathDTO.Path.ToPathArray());
 
-      public override bool CanClose => _physicalContainterSelected;
+      public override bool CanClose => _physicalContainerSelected;
    }
 }
