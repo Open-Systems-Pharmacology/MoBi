@@ -52,8 +52,7 @@ namespace MoBi.Presentation.Presenter
          if (_physicalContainerSelected == false)
             return;
 
-         var path = _objectPathFactory.CreateAbsoluteObjectPath(container);
-         _selectedPathDTO.Path = path.PathAsString;
+         _selectedPathDTO.Path = _objectPathFactory.CreateAbsoluteObjectPath(container).PathAsString;
          ViewChanged();
       }
 
