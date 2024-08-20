@@ -16,12 +16,10 @@ namespace MoBi.Presentation.Presenter
    public class SelectedEntityChangedArgs : EventArgs
    {
       public IEntity Entity { get; }
-      public ObjectPath Path { get; }
 
-      public SelectedEntityChangedArgs(IEntity entity, ObjectPath path)
+      public SelectedEntityChangedArgs(IEntity entity)
       {
          Entity = entity;
-         Path = path;
       }
    }
 
@@ -62,9 +60,7 @@ namespace MoBi.Presentation.Presenter
       {
          var entity = EntityFrom(dto);
 
-         // if the selected node is not an entity, then use null as the selected entity to indicate
-         // that no entity is selected. This happens when a module node is clicked for example.
-         OnSelectedEntityChanged(this, new SelectedEntityChangedArgs(entity, entity == null ? null : _objectPathFactory.CreateAbsoluteObjectPath(entity)));
+         OnSelectedEntityChanged(this, new SelectedEntityChangedArgs(entity));
       }
 
       public void SelectById(string id) => _view.SelectNodeById(id);

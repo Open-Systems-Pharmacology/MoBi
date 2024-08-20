@@ -116,9 +116,11 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public void LoadBuildingBlocksFromTemplateToModule(Module module) => loadBuildingBlocksToModule(module, openTemplateFile);
 
+      private IReadOnlyList<IMoBiSimulation> simulationsUsing(Module module) => Context.CurrentProject.SimulationsUsing(module).ToList();
+
       public override IMoBiCommand Remove(Module module, MoBiProject parent, IBuildingBlock buildingBlock, bool silent = false)
       {
-         var referringSimulations = Context.CurrentProject.SimulationsUsing(module);
+         var referringSimulations = simulationsUsing(module);
          if (referringSimulations.Any())
             throw new MoBiException(AppConstants.CannotRemoveModuleFromProject(module.Name, referringSimulations.AllNames()));
 
@@ -151,8 +153,20 @@ namespace MoBi.Presentation.Tasks.Interaction
             CommandType = AppConstants.Commands.DeleteCommand
          };
 
-         modulesToRemove.Each(x => macroCommand.Add(GetRemoveCommand(x, null, null)));
+         var modulesRemoved = modulesToRemove.Where(x => !simulationsUsing(x).Any()).ToList();
+         modulesRemoved.Each(x => macroCommand.Add(GetRemoveCommand(x, null, null)));
+
+         var modulesSkipped = modulesToRemove.Except(modulesRemoved).ToList();
+         if (modulesSkipped.Any()) 
+            showCouldNotRemoveMessage(modulesSkipped.ToList());
+
          context.AddToHistory(macroCommand.Run(context));
+      }
+
+      private void showCouldNotRemoveMessage(IReadOnlyList<Module> modulesNotRemoved)
+      {
+
+         _interactionTaskContext.DialogCreator.MessageBoxInfo(AppConstants.Captions.CouldNotRemoveModules(modulesNotRemoved.AllNames().ToList()));
       }
 
       private void loadBuildingBlocksToModule(Module module, Func<string> getFilename)
