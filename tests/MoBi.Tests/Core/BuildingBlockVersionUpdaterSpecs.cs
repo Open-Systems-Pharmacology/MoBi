@@ -58,6 +58,7 @@ namespace MoBi.Core
          _module = new Module {_changeBuildingBlock};
          _module.PKSimVersion = "1";
          _module.ModuleImportVersion = _module.Version;
+         _module.IsPKSimModule = true;
          project.AddModule(_module);
          A.CallTo(() => _projectRetriever.Current).Returns(project);
       }
