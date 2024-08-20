@@ -30,14 +30,14 @@ namespace MoBi.Core.Mappers
       private List<DataTable> parameterValuesToParametersDataTable(InitialConditionsBuildingBlock input)
       {
          var dt = generateEmptyMoleculeParameterDataTable();
-         var parameterValues = input.Select(x => x);
+         var parameterValues = input.Select(x => x).Where(x => x.Value != null); 
          foreach (var parameterValue in parameterValues)
          {
             var row = dt.Rows.Add();
             row[_path] = parameterValue.ContainerPath;
             row[_moleculeName] = parameterValue.Name;
             row[_isPresent] = parameterValue.IsPresent;
-            row[_value] = parameterValue.Value != null ? (object)parameterValue.ConvertToDisplayUnit(parameterValue.Value) : DBNull.Value;
+            row[_value] = (object)parameterValue.ConvertToDisplayUnit(parameterValue.Value);
             row[_scaleDivisor] = parameterValue.ScaleDivisor;
             row[_unit] = parameterValue.DisplayUnit;
             row[_negativeValuesAllowed] = parameterValue.NegativeValuesAllowed;
