@@ -102,7 +102,7 @@ namespace MoBi.Assets
             "Fraction excreted",
             "Whole Blood",
             "Interstitial Unbound",
-            "Intracellular Unbound", 
+            "Intracellular Unbound",
             "Whole Organ",
             "Fraction of oral drug mass absorbed into mucosa segment"
          };
@@ -269,7 +269,6 @@ namespace MoBi.Assets
 
          public static string UpdateSimulationSolverSettingsAndSchemaInSimulation(string simulationName) => $"Update simulation solver settings and output schema in simulation {simulationName}";
 
-
          public static string DeleteResultsFromSimulation(string simulationName)
          {
             return $"Delete all results from simulation '{simulationName}'";
@@ -297,6 +296,7 @@ namespace MoBi.Assets
          {
             return $"Solver reports {warningsCount} Warnings";
          }
+
          public static string AddBuildingBlocksToModule(string moduleName)
          {
             return $"Add selected building blocks to {moduleName}";
@@ -653,7 +653,7 @@ namespace MoBi.Assets
             return $"Creating new formula named '{formulaName}'";
          }
 
-         public static string SetConstantValueFormula(string objectType,  string newValueInDisplayUnits, string oldValueInDisplayUnits, string ownerIdentifier)
+         public static string SetConstantValueFormula(string objectType, string newValueInDisplayUnits, string oldValueInDisplayUnits, string ownerIdentifier)
          {
             return string.Format("Value of {3} '{2}' set from '{1}' to '{0}'", newValueInDisplayUnits, oldValueInDisplayUnits, ownerIdentifier, objectType.ToLowerInvariant());
          }
@@ -668,7 +668,7 @@ namespace MoBi.Assets
             return $"Update dimension for parameter '{parameterPath}' from '{oldDimensionName}' to '{newDimensionName}'";
          }
 
-         public static string UpdateAssignmentObjectPath(string assignmentPath, string path) => 
+         public static string UpdateAssignmentObjectPath(string assignmentPath, string path) =>
             $"Update object path for assignment '{assignmentPath}' to '{path}'";
 
          public static string UpdateParentPath(string containerPath, string parentPath) =>
@@ -1129,7 +1129,7 @@ namespace MoBi.Assets
          public static string AddExisting(string objectTypeName) => $"Load {objectTypeName}...";
 
          public static string AddExistingFromTemplate(string objectTypeName) => $"Load {objectTypeName} from Template...";
-         
+
          public static string AddModuleWithBuildingBlocks = "Create Module";
          public static string EditDefaultSimulationSettings = "Edit Default Simulation Settings";
          public static string SaveProjectSimulationSettings = "Save Default Simulation Settings";
@@ -1293,7 +1293,7 @@ namespace MoBi.Assets
 
          public static string CouldNotFindDimension(string dimension) => $"Could not find the dimension: {dimension}";
 
-         public static string CannotRemoveParameter(string parameterName, string containerName, string containerType) => 
+         public static string CannotRemoveParameter(string parameterName, string containerName, string containerType) =>
             $"Parameter '{parameterName}' is a mandatory parameter of {containerType.ToLowerInvariant()} '{containerName}' and cannot be removed.";
 
          public static string AliasNotUnique(string alias, string formulaName) => $"Alias '{alias}' is not unique in formula '{formulaName}'.";
@@ -1724,6 +1724,7 @@ namespace MoBi.Assets
          public static readonly string CopyFormula = "Copy Formula";
          public static readonly string PasteFormula = "Paste Formula";
          public static readonly string SelectOutputFolder = "Select output folder";
+         public static readonly string SelectParameter = "Select parameter";
 
          public static string AddBuildingBlocksToModule(string moduleName) => $"Add Building Blocks to Module:  {moduleName}";
          public static string LoadBuildingBlockToModule(string moduleName) => $"Load Building Block to Module:  {moduleName}";
@@ -1940,9 +1941,9 @@ namespace MoBi.Assets
             var numberOfIndividuals = string.IsNullOrEmpty(individualName) ? 0 : 1;
             var numberOfExpressions = expressionNames.Count;
             var sb = new StringBuilder();
-            
+
             var expression = $"Expression Profile".PluralizeIf(numberOfExpressions);
-               
+
             if (numberOfExpressions == 0)
                return $"Also import individual {individualName}?";
 
@@ -2115,7 +2116,7 @@ namespace MoBi.Assets
       public static readonly string BrowseForFile = "Select File";
       public static readonly string Undefined = "Undefined";
       public static readonly string PleaseSelectCurveInChartEditor = "Please select a curve from the chart editor to be displayed in the chart";
-      public static readonly IReadOnlyList<string> DefaultObservedDataCategories = new[] { Constants.ObservedData.MOLECULE, Constants.ObservedData.COMPARTMENT, Constants.ObservedData.ORGAN};
+      public static readonly IReadOnlyList<string> DefaultObservedDataCategories = new[] { Constants.ObservedData.MOLECULE, Constants.ObservedData.COMPARTMENT, Constants.ObservedData.ORGAN };
       public static readonly string Clone = "Clone";
       public static readonly string Endosome = "Endosome";
 
@@ -2262,6 +2263,7 @@ namespace MoBi.Assets
          public static readonly string PopulationSimulationArgument = "/pop";
          public static readonly string JournalFileArgument = "/j";
          public static readonly string NotInstalled = "PK-Sim was not found on current system. Please make sure that PK-Sim was installed using the provided setup.\nAlternatively, you can specify where PK-Sim is installed on your system under Utilities -> Options";
+
          public static readonly string IncompatibleVersionInstalled = "PK-Sim was found on the system, but it was not compatible with this feature. Please make sure that a compatible version of PK-Sim was installed using the provided setup.\n" +
                                                                       "Alternatively, you can specify where PK-Sim is installed on your system under Utilities -> Options -> Application tab\n" +
                                                                       "After changing the PK-Sim installation path, please restart MoBi.";
@@ -2286,6 +2288,7 @@ namespace MoBi.Assets
       {
          return cannotRemoveTypeFromProject("module", buildingBlockName, referringBuildingBlockNames);
       }
+
       public static string CannotRemoveBuildingBlockFromProject(string buildingBlockName, IEnumerable<string> referringBuildingBlockNames)
       {
          return cannotRemoveTypeFromProject("building block", buildingBlockName, referringBuildingBlockNames);
@@ -2312,6 +2315,5 @@ namespace MoBi.Assets
       {
          public static readonly string Data = "Data";
       }
-
    }
 }

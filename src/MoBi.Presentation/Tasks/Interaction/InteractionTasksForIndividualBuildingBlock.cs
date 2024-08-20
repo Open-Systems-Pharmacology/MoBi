@@ -15,10 +15,10 @@ namespace MoBi.Presentation.Tasks.Interaction
 
    public class InteractionTasksForIndividualBuildingBlock : InteractionTasksForProjectPathAndValueEntityBuildingBlocks<IndividualBuildingBlock, IndividualParameter>, IInteractionTasksForIndividualBuildingBlock
    {
-      public InteractionTasksForIndividualBuildingBlock(IInteractionTaskContext interactionTaskContext, 
-         IEditTasksForIndividualBuildingBlock editTask, 
-         IMoBiFormulaTask moBiFormulaTask, 
-         IParameterFactory parameterFactory) : 
+      public InteractionTasksForIndividualBuildingBlock(IInteractionTaskContext interactionTaskContext,
+         IEditTasksForIndividualBuildingBlock editTask,
+         IMoBiFormulaTask moBiFormulaTask,
+         IParameterFactory parameterFactory) :
          base(interactionTaskContext, editTask, moBiFormulaTask, parameterFactory)
       {
       }

@@ -7,7 +7,7 @@ namespace MoBi.Presentation.Presenter
 {
    public interface IEditParameterValuesPresenter : ISingleStartPresenter<ParameterValuesBuildingBlock>
    {
-      void AddNewEmptyParameterValue();
+      void AddNewParameterValue();
    }
 
    public class EditParameterValuesPresenter : EditBuildingBlockPresenterBase<IEditParameterValuesView, IEditParameterValuesPresenter, ParameterValuesBuildingBlock, ParameterValue>,
@@ -41,9 +41,9 @@ namespace MoBi.Presentation.Presenter
 
       public override object Subject => _parameterValues;
 
-      public void AddNewEmptyParameterValue()
+      public void AddNewParameterValue()
       {
-         _parameterValuesPresenter.AddNewEmptyPathAndValueEntity();
+         _parameterValuesPresenter.AddNewParameterValue();
       }
    }
 }

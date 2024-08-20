@@ -249,42 +249,53 @@ namespace MoBi.Presentation.Tasks
 
          foreach (var dataSet in reloadDataSets.OverwrittenDataSets)
          {
-            //TODO this here should be tested
-            var existingDataSet = findDataRepositoryInList(observedDataFromSameFile, dataSet);
+            replaceData(dataSet, findDataRepositoryInList(observedDataFromSameFile, dataSet));
+         }
+      }
 
-            foreach (var column in dataSet.Columns)
+      private void replaceData(DataRepository dataSet, DataRepository existingDataSet)
+      {
+         if(existingDataSet == null)
+            return;
+
+         _context.ProjectChanged();
+
+         foreach (var column in dataSet.Columns)
+         {
+            var dataColumn = new DataColumn(column.Id, column.Name, column.Dimension, column.BaseGrid)
             {
-               var datacolumn = new DataColumn(column.Id, column.Name, column.Dimension, column.BaseGrid)
-               {
-                  QuantityInfo = column.QuantityInfo,
-                  DataInfo = column.DataInfo,
-                  IsInternal = column.IsInternal,
-                  Values = column.Values
-               };
+               QuantityInfo = column.QuantityInfo,
+               DataInfo = column.DataInfo,
+               IsInternal = column.IsInternal,
+               Values = column.Values
+            };
 
-               if (column.IsBaseGrid())
-               {
-                  existingDataSet.BaseGrid.Values = datacolumn.Values;
-               }
+            if (column.IsBaseGrid())
+            {
+               existingDataSet.BaseGrid.Values = dataColumn.Values;
+            }
+            else
+            {
+               var existingColumn = existingDataSet.FirstOrDefault(x => x.Name == column.Name);
+               if (existingColumn == null)
+                  existingDataSet.Add(column);
                else
-               {
-                  var existingColumn = existingDataSet.FirstOrDefault(x => x.Name == column.Name);
-                  if (existingColumn == null)
-                     existingDataSet.Add(column);
-                  else
-                     existingColumn.Values = column.Values;
-               }
+                  existingColumn.Values = column.Values;
             }
          }
       }
 
       private DataRepository findDataRepositoryInList(IEnumerable<DataRepository> dataRepositoryList, DataRepository targetDataRepository)
       {
-         return (from dataRepo in dataRepositoryList
-            let result = targetDataRepository.ExtendedProperties.KeyValues.All(keyValuePair =>
-               dataRepo.ExtendedProperties[keyValuePair.Key].ValueAsObject.ToString() == keyValuePair.Value.ValueAsObject.ToString())
-            where result
-            select dataRepo).FirstOrDefault();
+         return dataRepositoryList.FirstOrDefault(dataRepo => targetDataRepository.ExtendedProperties.KeyValues.All(keyValuePair => propertyMatches(dataRepo, keyValuePair)));
+      }
+
+      private static bool propertyMatches(DataRepository dataRepo, KeyValuePair<string, IExtendedProperty> keyValuePair)
+      {
+         if (!dataRepo.ExtendedProperties.Contains(keyValuePair.Key))
+            return false;
+
+         return dataRepo.ExtendedProperties[keyValuePair.Key].ValueAsObject.ToString() == keyValuePair.Value.ValueAsObject.ToString();
       }
 
       private IEnumerable<DataRepository> getObservedDataFromImporter(ImporterConfiguration configuration)

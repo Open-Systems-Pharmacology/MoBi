@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using DevExpress.XtraEditors.Controls;
+using DevExpress.XtraLayout.Utils;
 using MoBi.Assets;
 using MoBi.Core.Domain;
 using MoBi.Presentation.DTO;
@@ -59,7 +60,7 @@ namespace MoBi.UI.Views
          layoutItemRadioGroup.AdjustControlHeight(RADIO_GROUP_HEIGHT, layoutControl);
          layoutItemRadioGroup.TextVisible = false;
       }
-      
+
       private RadioGroupItem[] getReferenceTypesForRadioGroup()
       {
          return new[]
@@ -77,7 +78,7 @@ namespace MoBi.UI.Views
 
       public ObjectPathType ObjectPathType
       {
-         get => (ObjectPathType) radioGroupReferenceType.Properties.Items[radioGroupReferenceType.SelectedIndex].Value;
+         get => (ObjectPathType)radioGroupReferenceType.Properties.Items[radioGroupReferenceType.SelectedIndex].Value;
          set => radioGroupReferenceType.SelectedIndex = radioGroupReferenceType.Properties.Items.GetItemIndexByValue(value);
       }
 
@@ -143,12 +144,16 @@ namespace MoBi.UI.Views
             _changeLocalisationAllowed = value;
             btEditSelectLocalisation.Properties.Buttons[0].Enabled = _changeLocalisationAllowed;
             btEditSelectLocalisation.Properties.Buttons[0].Visible = _changeLocalisationAllowed;
+
+            var localisationVisibility = value ? LayoutVisibility.Always : LayoutVisibility.Never;
+            layoutItemRadioGroup.Visibility = localisationVisibility;
+            layoutItemLocalisation.Visibility = localisationVisibility;
          }
       }
 
       public void AddNodes(IEnumerable<ITreeNode> nodes) => addNodes(nodes, clear: false);
 
-      public void AddNode(ITreeNode node) => AddNodes(new[] {node});
+      public void AddNode(ITreeNode node) => AddNodes(new[] { node });
 
       public void Select(IEntity entityToSelect)
       {

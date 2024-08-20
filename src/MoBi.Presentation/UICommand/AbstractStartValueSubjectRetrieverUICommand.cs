@@ -5,7 +5,7 @@ using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.UICommand
 {
-   internal abstract class AbstractStartValueSubjectRetrieverUICommand<T, TPathAndValueEntity> : ActiveObjectUICommand<T> where T : PathAndValueEntityBuildingBlock<TPathAndValueEntity> where TPathAndValueEntity : PathAndValueEntity
+   public abstract class AbstractStartValueSubjectRetrieverUICommand<T, TPathAndValueEntity> : ActiveObjectUICommand<T> where T : PathAndValueEntityBuildingBlock<TPathAndValueEntity> where TPathAndValueEntity : PathAndValueEntity
    {
       protected readonly IInteractionTasksForExtendablePathAndValueEntity<T, TPathAndValueEntity> _startValueTasks;
       protected readonly IActiveSubjectRetriever _activeSubjectRetriever;

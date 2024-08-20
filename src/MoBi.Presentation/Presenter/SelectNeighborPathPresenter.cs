@@ -21,37 +21,38 @@ namespace MoBi.Presentation.Presenter
       private readonly ISelectContainerInTreePresenter _selectContainerInTreePresenter;
       private readonly IModuleToModuleAndSpatialStructureDTOMapper _moduleToModuleDTOMapper;
       private readonly IBuildingBlockRepository _buildingBlockRepository;
+      private readonly IObjectPathFactory _objectPathFactory;
       private readonly ObjectPathDTO _selectedPathDTO = new ObjectPathDTO();
-      private bool _physicalContainterSelected;
+      private bool _physicalContainerSelected;
       public SelectNeighborPathPresenter(
          ISelectNeighborPathView view,
          ISelectContainerInTreePresenter selectContainerInTreePresenter,
          IModuleToModuleAndSpatialStructureDTOMapper moduleToModuleDTOMapper,
-         IBuildingBlockRepository buildingBlockRepository) : base(view)
+         IBuildingBlockRepository buildingBlockRepository, 
+         IObjectPathFactory objectPathFactory) : base(view)
       {
          _selectContainerInTreePresenter = selectContainerInTreePresenter;
          _moduleToModuleDTOMapper = moduleToModuleDTOMapper;
          _buildingBlockRepository = buildingBlockRepository;
+         _objectPathFactory = objectPathFactory;
          AddSubPresenters(_selectContainerInTreePresenter);
          _view.AddContainerCriteriaView(_selectContainerInTreePresenter.BaseView);
          _view.BindTo(_selectedPathDTO);
-         _selectContainerInTreePresenter.OnSelectedEntityChanged += (o, e) => onSelectedContainerPathChanged(e.Entity, e.Path);
+         _selectContainerInTreePresenter.OnSelectedEntityChanged += (o, e) => onSelectedContainerPathChanged(e.Entity);
       }
 
-      private void onSelectedContainerPathChanged(IEntity entity, ObjectPath containerObjectPath)
+      private void onSelectedContainerPathChanged(IEntity entity)
       {
          if (!(entity is IContainer container))
             return;
 
          //Only physical containers can be selected as neighbors
-         _physicalContainterSelected = container.Mode == ContainerMode.Physical;
+         _physicalContainerSelected = container.Mode == ContainerMode.Physical;
          OnStatusChanged(null, null);
-         if (_physicalContainterSelected == false)
+         if (_physicalContainerSelected == false)
             return;
 
-         var parentPath = container.RootContainer.ParentPath?.Clone<ObjectPath>() ?? new ObjectPath();
-         containerObjectPath.Each(parentPath.Add);
-         _selectedPathDTO.Path = parentPath.PathAsString;
+         _selectedPathDTO.Path = _objectPathFactory.CreateAbsoluteObjectPath(container).PathAsString;
          ViewChanged();
       }
 
@@ -76,6 +77,6 @@ namespace MoBi.Presentation.Presenter
 
       public ObjectPath NeighborPath => new ObjectPath(_selectedPathDTO.Path.ToPathArray());
 
-      public override bool CanClose => _physicalContainterSelected;
+      public override bool CanClose => _physicalContainerSelected;
    }
 }
