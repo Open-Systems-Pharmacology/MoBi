@@ -21,6 +21,7 @@ namespace MoBi.Core.Commands
       protected override void Context()
       {
          _module = new Module().WithId("moduleId");
+         _module.IsPKSimModule = true;
          _withIdRepository = new WithIdRepository();
          _registrationTask = new RegisterTask(_withIdRepository);
          sut = new AddModuleCommand(_module);
