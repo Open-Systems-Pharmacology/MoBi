@@ -170,7 +170,10 @@ namespace MoBi.Presentation.Tasks.Edit
          addIndividualParametersToContainerAndSubContainers(individual, clonedEntity);
 
          if (expressionProfileBuildingBlocks != null)
-            entitiesToExport.AddRange(expressionProfileBuildingBlocks.SelectMany(x => pathAndValueEntitiesForContainer(x, clonedEntity, x.MoleculeName)));
+         {
+            entitiesToExport.AddRange(expressionProfileBuildingBlocks.SelectMany(x => pathAndValueEntitiesForContainer(x.ExpressionParameters.ToList(), clonedEntity, x.MoleculeName)));
+            entitiesToExport.AddRange(expressionProfileBuildingBlocks.SelectMany(x => pathAndValueEntitiesForContainer(x.InitialConditions.ToList(), clonedEntity, x.MoleculeName)));
+         }
 
          var existingSpatialStructure = _interactionTaskContext.Active<MoBiSpatialStructure>();
          if (existingSpatialStructure != null)
@@ -203,12 +206,12 @@ namespace MoBi.Presentation.Tasks.Edit
          return container.ParentPath ?? (container.ParentContainer == null ? new ObjectPath() : _objectPathFactory.CreateAbsoluteObjectPath(container.ParentContainer));
       }
 
-      private IEnumerable<TPathAndValueEntity> pathAndValueEntitiesForContainer<TPathAndValueEntity>(PathAndValueEntityBuildingBlock<TPathAndValueEntity> buildingBlock, IContainer container, string moleculeName = null) where TPathAndValueEntity : PathAndValueEntity
+      private IEnumerable<TPathAndValueEntity> pathAndValueEntitiesForContainer<TPathAndValueEntity>(IReadOnlyList<TPathAndValueEntity> buildingBlock, IContainer container, string moleculeName = null) where TPathAndValueEntity : PathAndValueEntity
       {
          if (buildingBlock == null || !buildingBlock.Any())
             return Enumerable.Empty<TPathAndValueEntity>();
 
-         var containerPath = new ObjectPath(container.ParentPath, _objectPathFactory.CreateAbsoluteObjectPath(container));
+         var containerPath = _objectPathFactory.CreateAbsoluteObjectPath(container);
          var parametersToExport = buildingBlock.Where(x => x.ContainerPath.StartsWith(containerPath)).ToList();
 
          // export parameter values for container and its existing sub-containers

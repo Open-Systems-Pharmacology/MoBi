@@ -4,6 +4,7 @@ using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Serialization.Exchange;
 using MoBi.Helpers;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -97,6 +98,8 @@ namespace MoBi.Presentation.Tasks
       private Parameter _replacedParameter;
       private IndividualParameter _parameterWithoutContainer;
       protected ParameterValuesBuildingBlock _parameterValuesBuildingBlock;
+      private List<ExpressionProfileBuildingBlock> _expressionProfiles;
+      private SpatialStructureTransfer _transfer;
 
       protected override void Context()
       {
@@ -129,6 +132,16 @@ namespace MoBi.Presentation.Tasks
          _replacedParameter = new Parameter().WithName("ShouldBeReplaced");
          _clonedContainer.Add(_replacedParameter);
 
+         var expressionProfileBuildingBlock = new ExpressionProfileBuildingBlock
+         {
+            new InitialCondition { ContainerPath = new ObjectPath("Parent", "Container1") }.WithName("initialCondition1"),
+            new ExpressionParameter { ContainerPath = new ObjectPath("Parent", "Container1") }.WithName("expression1")
+         };
+
+         _expressionProfiles = new List<ExpressionProfileBuildingBlock>
+         {
+            expressionProfileBuildingBlock
+         };
 
          _parameterValuesBuildingBlock = new ParameterValuesBuildingBlock();
 
@@ -137,16 +150,26 @@ namespace MoBi.Presentation.Tasks
             NeighborhoodsContainer = new Container().WithName(Constants.NEIGHBORHOODS)
          };
 
-         A.CallTo(() => _selectIndividualAndExpressionFromProjectPresenter.GetPathIndividualAndExpressionsForExport(_containerToSave)).Returns(("FilePath", _individual, null));
+         A.CallTo(() => _selectIndividualAndExpressionFromProjectPresenter.GetPathIndividualAndExpressionsForExport(_containerToSave)).Returns(("FilePath", _individual, _expressionProfiles));
          A.CallTo(() => _spatialStructureFactory.Create()).Returns(_tmpSpatialStructure);
          A.CallTo(() => _cloneManager.Clone(_containerToSave, _tmpSpatialStructure.FormulaCache)).Returns(_clonedContainer);
          A.CallTo(() => _formulaFactory.ConstantFormula(replacementIndividualParameter.Value.Value, replacementIndividualParameter.Dimension)).ReturnsLazily(x => new ConstantFormula(x.Arguments.Get<double>(0)));
          A.CallTo(() => _interactionTaskContext.Context.Create<ParameterValuesBuildingBlock>()).Returns(_parameterValuesBuildingBlock);
+         A.CallTo(() => _interactionTask.Save(A<SpatialStructureTransfer>._, A<string>._)).Invokes(x => _transfer = x.Arguments.Get<SpatialStructureTransfer>(0));
       }
 
       protected override void Because()
       {
          sut.SaveWithIndividualAndExpression(_containerToSave);
+      }
+
+      [Observation]
+      public void transfer_must_contain_objects_to_export()
+      {
+         _transfer.ParameterValues.ShouldBeEqualTo(_parameterValuesBuildingBlock);
+         _transfer.ParameterValues.FindByPath("Parent|Container1|expression1").ShouldNotBeNull();
+         _transfer.ParameterValues.FindByPath("Parent|Container1|initialCondition1").ShouldNotBeNull();
+         _transfer.SpatialStructure.ShouldBeEqualTo(_tmpSpatialStructure);
       }
 
       [Observation]
