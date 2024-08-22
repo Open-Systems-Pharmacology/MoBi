@@ -165,14 +165,15 @@ namespace MoBi.Presentation.Tasks.Edit
 
          tmpSpatialStructure.AddTopContainer(clonedEntity);
 
-         var entitiesToExport = new List<PathAndValueEntity>();
+         var expressionParametersToExport = new List<ExpressionParameter>();
+         var initialConditionsToExport = new List<InitialCondition>();
 
          addIndividualParametersToContainerAndSubContainers(individual, clonedEntity);
 
          if (expressionProfileBuildingBlocks != null)
          {
-            entitiesToExport.AddRange(expressionProfileBuildingBlocks.SelectMany(x => pathAndValueEntitiesForContainer(x.ExpressionParameters.ToList(), clonedEntity, x.MoleculeName)));
-            entitiesToExport.AddRange(expressionProfileBuildingBlocks.SelectMany(x => pathAndValueEntitiesForContainer(x.InitialConditions.ToList(), clonedEntity, x.MoleculeName)));
+            expressionParametersToExport.AddRange(expressionProfileBuildingBlocks.SelectMany(x => pathAndValueEntitiesForContainer(x.ExpressionParameters.ToList(), clonedEntity, x.MoleculeName)));
+            initialConditionsToExport.AddRange(expressionProfileBuildingBlocks.SelectMany(x => pathAndValueEntitiesForContainer(x.InitialConditions.ToList(), clonedEntity, x.MoleculeName)));
          }
 
          var existingSpatialStructure = _interactionTaskContext.Active<MoBiSpatialStructure>();
@@ -184,20 +185,23 @@ namespace MoBi.Presentation.Tasks.Edit
                tmpSpatialStructure.DiagramModel = existingSpatialStructure.DiagramModel.CreateCopy(container.Id);
          }
 
-         if(!entitiesToExport.Any())
+         if(!expressionParametersToExport.Any() && !initialConditionsToExport.Any())
             _interactionTask.Save(tmpSpatialStructure, fileName);
          else
-            exportSpatialStructureTransfer(tmpSpatialStructure, fileName, entitiesToExport.MapAllUsing(_pathAndValueEntityToParameterValueMapper), container.Name);
+            exportSpatialStructureTransfer(tmpSpatialStructure, fileName, expressionParametersToExport, initialConditionsToExport, container.Name);
       }
 
-      private void exportSpatialStructureTransfer(MoBiSpatialStructure tmpSpatialStructure, string fileName, IEnumerable<ParameterValue> entitiesToExport, string containerName)
+      private void exportSpatialStructureTransfer(MoBiSpatialStructure tmpSpatialStructure, string fileName, IReadOnlyList<ExpressionParameter> expressionParametersToExport, IReadOnlyList<InitialCondition> initialConditionsToExport, string containerName)
       {
          var spatialStructureTransfer = new SpatialStructureTransfer
          {
             ParameterValues = _interactionTaskContext.Context.Create<ParameterValuesBuildingBlock>().WithName(containerName),
+            InitialConditions = _interactionTaskContext.Context.Create<InitialConditionsBuildingBlock>().WithName(containerName),
             SpatialStructure = tmpSpatialStructure
          };
-         entitiesToExport.Each(x => spatialStructureTransfer.ParameterValues.Add(x));
+         expressionParametersToExport.MapAllUsing(_pathAndValueEntityToParameterValueMapper).Each(x => spatialStructureTransfer.ParameterValues.Add(x));
+         initialConditionsToExport.Select(x => _cloneManager.Clone(x, spatialStructureTransfer.InitialConditions.FormulaCache)).Each(x => spatialStructureTransfer.InitialConditions.Add(x));
+
          _interactionTask.Save(spatialStructureTransfer, fileName);
       }
 

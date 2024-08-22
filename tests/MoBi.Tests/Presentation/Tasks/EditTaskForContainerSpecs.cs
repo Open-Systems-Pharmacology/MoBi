@@ -156,6 +156,15 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _formulaFactory.ConstantFormula(replacementIndividualParameter.Value.Value, replacementIndividualParameter.Dimension)).ReturnsLazily(x => new ConstantFormula(x.Arguments.Get<double>(0)));
          A.CallTo(() => _interactionTaskContext.Context.Create<ParameterValuesBuildingBlock>()).Returns(_parameterValuesBuildingBlock);
          A.CallTo(() => _interactionTask.Save(A<SpatialStructureTransfer>._, A<string>._)).Invokes(x => _transfer = x.Arguments.Get<SpatialStructureTransfer>(0));
+         A.CallTo(() => _cloneManager.Clone(A<InitialCondition>._, A<FormulaCache>._)).ReturnsLazily(x => newInitialCondition(x.Arguments.Get<InitialCondition>(0)));
+      }
+
+      private static InitialCondition newInitialCondition(InitialCondition oldInitialCondition)
+      {
+         return new InitialCondition
+         {
+            Path = oldInitialCondition.Path
+         };
       }
 
       protected override void Because()
@@ -168,7 +177,7 @@ namespace MoBi.Presentation.Tasks
       {
          _transfer.ParameterValues.ShouldBeEqualTo(_parameterValuesBuildingBlock);
          _transfer.ParameterValues.FindByPath("Parent|Container1|expression1").ShouldNotBeNull();
-         _transfer.ParameterValues.FindByPath("Parent|Container1|initialCondition1").ShouldNotBeNull();
+         _transfer.InitialConditions.FindByPath("Parent|Container1|initialCondition1").ShouldNotBeNull();
          _transfer.SpatialStructure.ShouldBeEqualTo(_tmpSpatialStructure);
       }
 
