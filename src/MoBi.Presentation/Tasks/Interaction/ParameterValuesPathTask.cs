@@ -29,6 +29,11 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          ConfigureTargetPath(indexToUpdate, newValue, targetPath);
 
+         return SetContainerPathCommand(buildingBlock, pathAndValueEntity, targetPath);
+      }
+
+      public override IMoBiCommand SetContainerPathCommand(ILookupBuildingBlock<ParameterValue> buildingBlock, ParameterValue pathAndValueEntity, ObjectPath targetPath)
+      {
          return new EditParameterValuePathCommand(buildingBlock, pathAndValueEntity, targetPath);
       }
    }

@@ -19,6 +19,8 @@ namespace MoBi.Presentation.Views
       ObjectPathType ObjectPathType { get; set; }
       string Localisation { get; set; }
       bool ChangeLocalisationAllowed { get; set; }
+      bool EnableMultiSelect { set; get; }
+      IReadOnlyList<ObjectBaseDTO> AllSelectedDTOs { get; }
 
       /// <summary>
       ///    Add nodes to the view

@@ -266,21 +266,15 @@ namespace MoBi.Presentation.Presenter
          _handleChangedEvents = false;
       }
 
-      public void AddNewPathAndValueEntity(ObjectPath entityPath) => addNewPathAndValue(entityPath);
-
-      public void AddNewEmptyPathAndValueEntity() => addNewPathAndValue();
-
-      private void addNewPathAndValue(ObjectPath entityPath = null)
+      public TStartValueDTO AddNewEmptyPathAndValueEntity()
       {
          var newParameterValue = _emptyStartValueCreator.CreateEmptyStartValue(_interactionTasksForExtendablePathAndValueEntity.GetDefaultDimension());
-
-         if (entityPath != null)
-            newParameterValue.Path = entityPath;
-
          var newRecord = _valueMapper.MapFrom(newParameterValue, _buildingBlock);
 
          _startValueDTOs.Insert(0, newRecord);
          bindToView();
+
+         return newRecord;
       }
    }
 }

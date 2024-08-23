@@ -60,7 +60,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void should_add_new_parameter_value()
       {
-         A.CallTo(() => _editPresenter.AddNewParameterValue()).MustHaveHappened();
+         A.CallTo(() => _editPresenter.AddNewParameterValues()).MustHaveHappened();
       }
    }
 }
