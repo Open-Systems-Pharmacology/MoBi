@@ -78,18 +78,21 @@ namespace MoBi.Presentation.Presenter
 
       public override object Subject => _spatialStructure;
 
-      protected override (bool canHandle, IContainer containerObject) SpecificCanHandle(IObjectBase selectedObject)
+      protected override (bool canHandle, IContainer containerObject) SpecificCanHandle(EntitySelectedEvent entitySelectedEvent)
       {
-         return (shouldHandleSelection(selectedObject as IEntity), null);
+         if(entitySelectedEvent.ObjectBase == null && entitySelectedEvent.Sender == _hierarchicalSpatialStructurePresenter)
+            return (canHandle:true, containerObject: null);
+
+         return (shouldHandleSelection(entitySelectedEvent.ObjectBase as IEntity), null);
       }
 
-      internal override (bool canHandle, IContainer containerObject) CanHandle(IObjectBase selectedObject)
+      internal override (bool canHandle, IContainer containerObject) CanHandle(EntitySelectedEvent entitySelectedEvent)
       {
-         var specificCanHandle = SpecificCanHandle(selectedObject);
+         var specificCanHandle = SpecificCanHandle(entitySelectedEvent);
          if (specificCanHandle.Item1)
             return specificCanHandle;
 
-         return base.CanHandle(selectedObject);
+         return base.CanHandle(entitySelectedEvent);
       }
 
       protected override void EnsureItemsVisibility(IContainer parentObject, IParameter parameter = null)
