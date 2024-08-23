@@ -39,7 +39,7 @@ namespace MoBi.Core.Services
 
          buildingBlock.Version = newVersion;
 
-         if(shouldConvertPKSimModule)
+         if (shouldConvertPKSimModule)
             buildingBlock.Module.IsPKSimModule = false;
 
          publishSimulationStatusChangedEvents(buildingBlock);
