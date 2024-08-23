@@ -23,11 +23,11 @@ namespace MoBi.Core.Commands
          CommandType = AppConstants.Commands.EditCommand;
          ObjectType = processBuilder.IsAnImplementationOf<ReactionBuilder>() ? ObjectTypes.Reaction : ObjectTypes.ApplicationTransport;
          Description = AppConstants.Commands.EditDescription(ObjectType, AppConstants.Captions.CreateProcessRateParameter, _oldCreateProcessRate.ToString(), _createProcessRate.ToString(), _processBuilder.Name);
+         ShouldConvertPKSimModule = false;
       }
 
       protected override void ExecuteWith(IMoBiContext context)
       {
-         ShouldConvertPKSimModule = false;
          base.ExecuteWith(context);
          _processBuilder.CreateProcessRateParameter = _createProcessRate;
       }

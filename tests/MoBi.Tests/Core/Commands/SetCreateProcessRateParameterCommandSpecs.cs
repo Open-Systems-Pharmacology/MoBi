@@ -48,7 +48,7 @@ namespace MoBi.Core.Commands
       }
 
       [Observation]
-      public void the_module_is_not_pk_sim_module()
+      public void the_module_remains_a_pk_sim_module()
       {
          _buildingBlock.Module.IsPKSimModule.ShouldBeTrue();
       }

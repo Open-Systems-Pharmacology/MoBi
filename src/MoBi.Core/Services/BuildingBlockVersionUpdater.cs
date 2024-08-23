@@ -29,18 +29,15 @@ namespace MoBi.Core.Services
          _dialogCreator = dialogCreator;
       }
 
-      public virtual void UpdateBuildingBlockVersion(IBuildingBlock buildingBlock, uint newVersion, bool shouldConvertPKSimModule)
+      public void UpdateBuildingBlockVersion(IBuildingBlock buildingBlock, uint newVersion, bool shouldConvertPKSimModule)
       {
          if (buildingBlock == null)
             return;
 
-         if (shouldConvertPKSimModule && shouldShowModuleConversionWarning(buildingBlock))
+         if (shouldShowModuleConversionWarning(buildingBlock, shouldConvertPKSimModule))
             showModuleConversionWarning(buildingBlock);
 
          buildingBlock.Version = newVersion;
-
-         if (shouldConvertPKSimModule)
-            buildingBlock.Module.IsPKSimModule = false;
 
          publishSimulationStatusChangedEvents(buildingBlock);
          publishModuleStatusChangedEvents(buildingBlock);
@@ -51,9 +48,15 @@ namespace MoBi.Core.Services
          _dialogCreator.MessageBoxInfo(AppConstants.Captions.TheModuleWillBeConvertedFromPKSimToExtensionModule(buildingBlock.Module.Name));
       }
 
-      private bool shouldShowModuleConversionWarning(IBuildingBlock buildingBlock)
+      private bool shouldShowModuleConversionWarning(IBuildingBlock buildingBlock, bool shouldConvertPKSimModule)
       {
-         return buildingBlock.Module != null && buildingBlock.Module.IsPKSimModule;
+         if (buildingBlock.Module?.IsPKSimModule == true && shouldConvertPKSimModule == true)
+         {
+            buildingBlock.Module.IsPKSimModule = false;
+            return true;
+         }
+
+         return false;
       }
 
       protected void publishModuleStatusChangedEvents(IBuildingBlock buildingBlock)
@@ -83,7 +86,7 @@ namespace MoBi.Core.Services
          UpdateBuildingBlockVersion(buildingBlock, version, shouldConvertPKSimModule);
       }
 
-      protected void publishSimulationStatusChangedEvents(IBuildingBlock changedBuildingBlock)
+      private void publishSimulationStatusChangedEvents(IBuildingBlock changedBuildingBlock)
       {
          var affectedSimulations = _projectRetriever.Current.SimulationsUsing(changedBuildingBlock);
          affectedSimulations.Each(refreshSimulation);
