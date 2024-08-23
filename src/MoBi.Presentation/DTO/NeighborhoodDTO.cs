@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 
 namespace MoBi.Presentation.DTO
@@ -7,6 +8,7 @@ namespace MoBi.Presentation.DTO
    {
       public NeighborhoodDTO(Neighborhood neighborhood) : base(neighborhood)
       {
+         Icon = ApplicationIcons.Neighborhood;
       }
 
       public IEnumerable<TransportDTO> Transports { get; set; }

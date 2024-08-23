@@ -55,7 +55,6 @@ namespace MoBi.Presentation.Presenter
          return dimensionMode == ReactionDimensionMode.AmountBased ? AppConstants.Captions.Amount : AppConstants.Captions.Concentration;
       }
 
-    
       public override void ReleaseFrom(IEventPublisher eventPublisher)
       {
          base.ReleaseFrom(eventPublisher);

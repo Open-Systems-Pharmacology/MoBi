@@ -19,8 +19,6 @@ namespace MoBi.UI.Views
          {
             components.Dispose();
          }
-         _gridBinder.Dispose();
-         _screenBinder.Dispose();
          base.Dispose(disposing);
       }
 
@@ -33,30 +31,24 @@ namespace MoBi.UI.Views
       private void InitializeComponent()
       {
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
+         this.splitContainerControl = new DevExpress.XtraEditors.SplitContainerControl();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
-         this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
-         this.gridView = new MoBi.UI.Views.UxGridView();
-         this.layoutControlItemValueGrid = new DevExpress.XtraLayout.LayoutControlItem();
-         this.btnAddValuePoint = new DevExpress.XtraEditors.SimpleButton();
-         this.layoutItemAddValuePoint = new DevExpress.XtraLayout.LayoutControlItem();
-         this.chkUseDerivedValues = new UxCheckEdit();
-         this.layoutControlItemUseDerivedValues = new DevExpress.XtraLayout.LayoutControlItem();
+         this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+         ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
          this.layoutControl.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl.Panel1)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl.Panel2)).BeginInit();
+         this.splitContainerControl.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.gridControl)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.gridView)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemValueGrid)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemAddValuePoint)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.chkUseDerivedValues.Properties)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemUseDerivedValues)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
          this.SuspendLayout();
          // 
-         // layoutControl1
+         // layoutControl
          // 
-         this.layoutControl.Controls.Add(this.chkUseDerivedValues);
-         this.layoutControl.Controls.Add(this.btnAddValuePoint);
-         this.layoutControl.Controls.Add(this.gridControl);
+         this.layoutControl.AllowCustomization = false;
+         this.layoutControl.Controls.Add(this.splitContainerControl);
          this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
          this.layoutControl.Location = new System.Drawing.Point(0, 0);
          this.layoutControl.Name = "layoutControl";
@@ -65,96 +57,41 @@ namespace MoBi.UI.Views
          this.layoutControl.TabIndex = 0;
          this.layoutControl.Text = "layoutControl1";
          // 
+         // splitContainerControl
+         // 
+         this.splitContainerControl.Horizontal = false;
+         this.splitContainerControl.Location = new System.Drawing.Point(12, 12);
+         this.splitContainerControl.Name = "splitContainerControl";
+         // 
+         // splitContainerControl.splitContainerControl_Panel1
+         // 
+         this.splitContainerControl.Panel1.Text = "Panel1";
+         // 
+         // splitContainerControl.splitContainerControl_Panel2
+         // 
+         this.splitContainerControl.Panel2.Text = "Panel2";
+         this.splitContainerControl.Size = new System.Drawing.Size(308, 269);
+         this.splitContainerControl.TabIndex = 8;
+         // 
          // layoutControlGroup1
          // 
          this.layoutControlGroup1.CustomizationFormText = "layoutControlGroup1";
          this.layoutControlGroup1.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
          this.layoutControlGroup1.GroupBordersVisible = false;
          this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlItemValueGrid,
-            this.layoutItemAddValuePoint,
-            this.layoutControlItemUseDerivedValues});
-         this.layoutControlGroup1.Location = new System.Drawing.Point(0, 0);
+            this.layoutControlItem1});
          this.layoutControlGroup1.Name = "layoutControlGroup1";
          this.layoutControlGroup1.Size = new System.Drawing.Size(332, 293);
-         this.layoutControlGroup1.Text = "layoutControlGroup1";
          this.layoutControlGroup1.TextVisible = false;
          // 
-         // grdValues
+         // layoutControlItem1
          // 
-         this.gridControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                     | System.Windows.Forms.AnchorStyles.Left)
-                     | System.Windows.Forms.AnchorStyles.Right)));
-         this.gridControl.Location = new System.Drawing.Point(12, 38);
-         this.gridControl.MainView = this.gridView;
-         this.gridControl.Name = "gridControl";
-         this.gridControl.Size = new System.Drawing.Size(308, 243);
-         this.gridControl.TabIndex = 5;
-         this.gridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.gridView});
-         // 
-         // grdValuesView
-         // 
-         this.gridView.GridControl = this.gridControl;
-         this.gridView.Name = "gridView";
-         this.gridView.OptionsBehavior.EditorShowMode = DevExpress.Utils.EditorShowMode.MouseDown;
-         this.gridView.OptionsNavigation.AutoFocusNewRow = true;
-         this.gridView.OptionsSelection.EnableAppearanceFocusedCell = false;
-         this.gridView.OptionsView.ShowGroupPanel = false;
-         // 
-         // layoutControlItemValueGrid
-         // 
-         this.layoutControlItemValueGrid.Control = this.gridControl;
-         this.layoutControlItemValueGrid.CustomizationFormText = "layoutControlItemValueGrid";
-         this.layoutControlItemValueGrid.Location = new System.Drawing.Point(0, 26);
-         this.layoutControlItemValueGrid.Name = "layoutControlItemValueGrid";
-         this.layoutControlItemValueGrid.Size = new System.Drawing.Size(312, 247);
-         this.layoutControlItemValueGrid.Text = "layoutControlItemValueGrid";
-         this.layoutControlItemValueGrid.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutControlItemValueGrid.TextToControlDistance = 0;
-         this.layoutControlItemValueGrid.TextVisible = false;
-         // 
-         // btAddValuePoint
-         // 
-         this.btnAddValuePoint.Location = new System.Drawing.Point(168, 12);
-         this.btnAddValuePoint.Name = "btnAddValuePoint";
-         this.btnAddValuePoint.Size = new System.Drawing.Size(152, 22);
-         this.btnAddValuePoint.StyleController = this.layoutControl;
-         this.btnAddValuePoint.TabIndex = 6;
-         this.btnAddValuePoint.Text = "simpleButton1";
-         // 
-         // layoutControlItemAddValuePoint
-         // 
-         this.layoutItemAddValuePoint.Control = this.btnAddValuePoint;
-         this.layoutItemAddValuePoint.CustomizationFormText = "layoutControlItemAddValuePoint";
-         this.layoutItemAddValuePoint.Location = new System.Drawing.Point(156, 0);
-         this.layoutItemAddValuePoint.Name = "layoutItemAddValuePoint";
-         this.layoutItemAddValuePoint.Size = new System.Drawing.Size(156, 26);
-         this.layoutItemAddValuePoint.Text = "layoutControlItemAddValuePoint";
-         this.layoutItemAddValuePoint.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutItemAddValuePoint.TextToControlDistance = 0;
-         this.layoutItemAddValuePoint.TextVisible = false;
-         // 
-         // ckUseDerivedValues
-         // 
-         this.chkUseDerivedValues.Location = new System.Drawing.Point(12, 12);
-         this.chkUseDerivedValues.Name = "chkUseDerivedValues";
-         this.chkUseDerivedValues.Properties.Caption = "checkEdit1";
-         this.chkUseDerivedValues.Size = new System.Drawing.Size(152, 19);
-         this.chkUseDerivedValues.StyleController = this.layoutControl;
-         this.chkUseDerivedValues.TabIndex = 7;
-         // 
-         // layoutControlItemUseDerivedValues
-         // 
-         this.layoutControlItemUseDerivedValues.Control = this.chkUseDerivedValues;
-         this.layoutControlItemUseDerivedValues.CustomizationFormText = "layoutControlItemUseDerivedValues";
-         this.layoutControlItemUseDerivedValues.Location = new System.Drawing.Point(0, 0);
-         this.layoutControlItemUseDerivedValues.Name = "layoutControlItemUseDerivedValues";
-         this.layoutControlItemUseDerivedValues.Size = new System.Drawing.Size(156, 26);
-         this.layoutControlItemUseDerivedValues.Text = "layoutControlItemUseDerivedValues";
-         this.layoutControlItemUseDerivedValues.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutControlItemUseDerivedValues.TextToControlDistance = 0;
-         this.layoutControlItemUseDerivedValues.TextVisible = false;
+         this.layoutControlItem1.Control = this.splitContainerControl;
+         this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
+         this.layoutControlItem1.Name = "layoutControlItem1";
+         this.layoutControlItem1.Size = new System.Drawing.Size(312, 273);
+         this.layoutControlItem1.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutControlItem1.TextVisible = false;
          // 
          // EditTableFormulaView
          // 
@@ -163,15 +100,15 @@ namespace MoBi.UI.Views
          this.Controls.Add(this.layoutControl);
          this.Name = "EditTableFormulaView";
          this.Size = new System.Drawing.Size(332, 293);
+         ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
          this.layoutControl.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl.Panel1)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl.Panel2)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl)).EndInit();
+         this.splitContainerControl.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.gridControl)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.gridView)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemValueGrid)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemAddValuePoint)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.chkUseDerivedValues.Properties)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemUseDerivedValues)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
          this.ResumeLayout(false);
 
       }
@@ -180,13 +117,7 @@ namespace MoBi.UI.Views
 
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
-      private DevExpress.XtraEditors.CheckEdit chkUseDerivedValues;
-      private DevExpress.XtraEditors.SimpleButton btnAddValuePoint;
-      private DevExpress.XtraGrid.GridControl gridControl;
-      private UxGridView gridView;
-      private DevExpress.XtraLayout.LayoutControlItem layoutControlItemValueGrid;
-      private DevExpress.XtraLayout.LayoutControlItem layoutItemAddValuePoint;
-      private DevExpress.XtraLayout.LayoutControlItem layoutControlItemUseDerivedValues;
-
+      private DevExpress.XtraEditors.SplitContainerControl splitContainerControl;
+      private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
    }
 }
