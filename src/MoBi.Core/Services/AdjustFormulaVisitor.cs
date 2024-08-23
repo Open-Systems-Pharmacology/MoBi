@@ -148,7 +148,7 @@ namespace MoBi.Core.Services
 
       public bool AreEqualBlackBoxFormula(BlackBoxFormula usedFormula, BlackBoxFormula alreadyUsedFormula)
       {
-         return alreadyUsedFormula != null && usedFormula != null;
+         return alreadyUsedFormula != null && usedFormula != null && string.Equals(alreadyUsedFormula.Name, usedFormula.Name);
       }
 
       public bool AreEqualTableFormula(TableFormula formula, TableFormula alreadyUsedFormula)
