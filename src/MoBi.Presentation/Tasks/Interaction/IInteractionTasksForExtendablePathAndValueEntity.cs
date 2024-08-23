@@ -103,5 +103,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       ///    Creates a clone of the <paramref name="buildingBlockToClone" /> and adds it to <paramref name="parentModule" />
       /// </summary>
       ICommand CloneAndAddToParent(TBuildingBlock buildingBlockToClone, Module parentModule);
+
+      IMoBiCommand AddOrExtendWith(TBuildingBlock buildingBlock, Module spatialStructureModule);
    }
 }

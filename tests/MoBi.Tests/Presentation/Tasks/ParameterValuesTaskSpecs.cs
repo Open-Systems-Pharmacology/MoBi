@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FakeItEasy;
 using MoBi.Assets;
@@ -20,6 +21,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using IComparable = System.IComparable;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -32,6 +34,7 @@ namespace MoBi.Presentation.Tasks
       private IEditTasksForBuildingBlock<ParameterValuesBuildingBlock> _editTasks;
       protected IParameterResolver _parameterResolver;
       private IParameterFactory _parameterFactory;
+      private IObjectTypeResolver _objectTypeResolver;
 
       protected override void Context()
       {
@@ -42,10 +45,12 @@ namespace MoBi.Presentation.Tasks
          _parameterValueBuildingBlock = new ParameterValuesBuildingBlock();
          _parameterResolver = A.Fake<IParameterResolver>();
          _parameterFactory = A.Fake<IParameterFactory>();
+         _objectTypeResolver = A.Fake<IObjectTypeResolver>();
+
          sut = new ParameterValuesTask(_context, _editTasks,
             _cloneManagerForBuildingBlock,
             new ImportedQuantityToParameterValueMapper(_parameterValuesCreator), A.Fake<IParameterValueBuildingBlockExtendManager>(),
-            A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(), new ParameterValuePathTask(A.Fake<IFormulaTask>(), _context.Context), _parameterValuesCreator, _parameterFactory);
+            A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(), new ParameterValuePathTask(A.Fake<IFormulaTask>(), _context.Context), _parameterValuesCreator, _parameterFactory, _objectTypeResolver);
       }
    }
 
@@ -331,6 +336,108 @@ namespace MoBi.Presentation.Tasks
       public void the_selection_presenter_is_used_to_find_colliding_entities_and_allow_the_user_to_replace_existing()
       {
          A.CallTo(() => _pathAndValueEntitySelectionPresenter.SelectReplacementEntities(A<IReadOnlyList<ParameterValue>>._, _parameterValueBuildingBlock)).MustHaveHappened();
+      }
+   }
+
+   public class When_adding_or_extending_and_the_user_selects_add : concern_for_ParameterValuesTask
+   {
+      private ISelectSinglePresenter<ParameterValuesBuildingBlock> _selectSinglePresenter;
+      private Module _module;
+      private List<ParameterValuesBuildingBlock> _allItems;
+      private ParameterValuesBuildingBlock _clonedBuildingBlock;
+
+      protected override void Context()
+      {
+         base.Context();
+         _module = new Module
+         {
+            new ParameterValuesBuildingBlock()
+         };
+         _clonedBuildingBlock = new ParameterValuesBuildingBlock();
+         _selectSinglePresenter = A.Fake<ISelectSinglePresenter<ParameterValuesBuildingBlock>>();
+         _parameterValueBuildingBlock.Add(new ParameterValue());
+         A.CallTo(() => _context.ApplicationController.Start<ISelectSinglePresenter<ParameterValuesBuildingBlock>>()).Returns(_selectSinglePresenter);
+         A.CallTo(() => _selectSinglePresenter.Selection).ReturnsLazily(() => _allItems.First(x => !_module.Contains(x)));
+         A.CallTo(() => _selectSinglePresenter.InitializeWith(A<IEnumerable<ParameterValuesBuildingBlock>>._, A<Func<ParameterValuesBuildingBlock, IComparable>>._)).Invokes(x => _allItems = x.Arguments.Get<IEnumerable<ParameterValuesBuildingBlock>>(0).ToList());
+         A.CallTo(() => _context.InteractionTask.Clone(_parameterValueBuildingBlock)).Returns(_clonedBuildingBlock);
+      }
+
+      protected override void Because()
+      {
+         sut.AddOrExtendWith(_parameterValueBuildingBlock, _module);
+      }
+
+      [Observation]
+      public void the_task_should_add_a_new_building_block_to_the_module()
+      {
+         _module.ParameterValuesCollection.ShouldContain(_clonedBuildingBlock);
+      }
+   }
+
+   public class When_adding_or_extending_and_there_are_no_building_blocks_to_extend : concern_for_ParameterValuesTask
+   {
+      private Module _module;
+      private ParameterValuesBuildingBlock _clonedBuildingBlock;
+
+      protected override void Context()
+      {
+         base.Context();
+         _module = new Module();
+         _clonedBuildingBlock = new ParameterValuesBuildingBlock();
+         _parameterValueBuildingBlock.Add(new ParameterValue());
+         A.CallTo(() => _context.InteractionTask.Clone(_parameterValueBuildingBlock)).Returns(_clonedBuildingBlock);
+      }
+
+      protected override void Because()
+      {
+         sut.AddOrExtendWith(_parameterValueBuildingBlock, _module);
+      }
+
+      [Observation]
+      public void the_user_should_not_be_prompted()
+      {
+         A.CallTo(() => _context.ApplicationController.Start<ISelectSinglePresenter<ParameterValuesBuildingBlock>>()).MustNotHaveHappened();
+      }
+
+      [Observation]
+      public void the_task_should_add_a_new_building_block_to_the_module()
+      {
+         _module.ParameterValuesCollection.ShouldContain(_clonedBuildingBlock);
+      }
+   }
+
+   public class When_adding_or_extending_and_the_user_selects_extend : concern_for_ParameterValuesTask
+   {
+      private ISelectSinglePresenter<ParameterValuesBuildingBlock> _selectSinglePresenter;
+      private Module _module;
+      private ParameterValuesBuildingBlock _clonedBuildingBlock;
+      private ParameterValuesBuildingBlock _existingParameterValuesBuildingBlock;
+
+      protected override void Context()
+      {
+         base.Context();
+         _existingParameterValuesBuildingBlock = new ParameterValuesBuildingBlock();
+         _module = new Module
+         {
+            _existingParameterValuesBuildingBlock
+         };
+         _clonedBuildingBlock = new ParameterValuesBuildingBlock();
+         _selectSinglePresenter = A.Fake<ISelectSinglePresenter<ParameterValuesBuildingBlock>>();
+         _parameterValueBuildingBlock.Add(new ParameterValue());
+         A.CallTo(() => _context.ApplicationController.Start<ISelectSinglePresenter<ParameterValuesBuildingBlock>>()).Returns(_selectSinglePresenter);
+         A.CallTo(() => _selectSinglePresenter.Selection).Returns(_parameterValueBuildingBlock);
+         A.CallTo(() => _context.InteractionTask.Clone(_parameterValueBuildingBlock)).Returns(_clonedBuildingBlock);
+      }
+
+      protected override void Because()
+      {
+         sut.AddOrExtendWith(_parameterValueBuildingBlock, _module);
+      }
+
+      [Observation]
+      public void the_task_should_add_a_new_building_block_to_the_module()
+      {
+         _parameterValueBuildingBlock.Count().ShouldBeEqualTo(1);
       }
    }
 }

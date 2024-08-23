@@ -8,6 +8,5 @@ namespace MoBi.Presentation.DTO
    {
       public static InitialConditionsBuildingBlock NullInitialConditions { get; } = new InitialConditionsBuildingBlock().WithName(AppConstants.Captions.NoInitialConditions);
       public static ParameterValuesBuildingBlock NullParameterValues { get; } = new ParameterValuesBuildingBlock().WithName(AppConstants.Captions.NoParameterValues);
-      public static ParameterValuesBuildingBlock NewParameterValues { get; } = new ParameterValuesBuildingBlock().WithName(AppConstants.Captions.NewParameterValuesBuildingBlock);
    }
 }

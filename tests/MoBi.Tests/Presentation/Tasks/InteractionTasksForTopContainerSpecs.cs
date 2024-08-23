@@ -25,16 +25,18 @@ namespace MoBi.Presentation.Tasks
       private IObjectPathFactory _objectPathFactory;
       protected IInteractionTasksForChildren<IContainer, IContainer> _interactionTaskForNeighborhood;
       protected IParameterValuesTask _parameterValuesTask;
+      private IInitialConditionsTask<InitialConditionsBuildingBlock> _initialConditionsTask;
 
       protected override void Context()
       {
          _objectPathFactory = new ObjectPathFactoryForSpecs();
          _parameterValuesTask = A.Fake<IParameterValuesTask>();
+         _initialConditionsTask = A.Fake<IInitialConditionsTask<InitialConditionsBuildingBlock>>();
          _editTask = A.Fake<IEditTaskForContainer>();
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
          _interactionTaskForNeighborhood = A.Fake<IInteractionTasksForChildren<IContainer, IContainer>>();
 
-         sut = new InteractionTasksForTopContainer(_interactionTaskContext, _editTask, _objectPathFactory, _interactionTaskForNeighborhood, _parameterValuesTask);
+         sut = new InteractionTasksForTopContainer(_interactionTaskContext, _editTask, _objectPathFactory, _interactionTaskForNeighborhood, _parameterValuesTask, _initialConditionsTask);
       }
    }
 
@@ -45,13 +47,11 @@ namespace MoBi.Presentation.Tasks
       private MoBiSpatialStructure _newSpatialStructure;
       private ParameterValuesBuildingBlock _parameterValuesBuildingBlock;
       private Module _module;
-      private ISelectSinglePresenter<ParameterValuesBuildingBlock> _selectManyPresenter;
       private ParameterValuesBuildingBlock _existingParameterValuesBuildingBlock;
 
       protected override void Context()
       {
          base.Context();
-         _selectManyPresenter = A.Fake<ISelectSinglePresenter<ParameterValuesBuildingBlock>>();
          _spatialStructure = new MoBiSpatialStructure().WithName("Organism");
          _newSpatialStructure = new MoBiSpatialStructure().WithName("New");
          _module = new Module().WithName("Module");
@@ -75,8 +75,6 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _interactionTaskContext.InteractionTask.LoadTransfer<SpatialStructureTransfer>(filePath)).Returns(_spatialStructureTransfer);
          A.CallTo(() => _interactionTaskContext.Context.Clone(_newSpatialStructure)).Returns(_newSpatialStructure);
          A.CallTo(() => _interactionTaskContext.Context.Clone(_parameterValuesBuildingBlock)).Returns(_parameterValuesBuildingBlock);
-         A.CallTo(() => _interactionTaskContext.ApplicationController.Start<ISelectSinglePresenter<ParameterValuesBuildingBlock>>()).Returns(_selectManyPresenter);
-         A.CallTo(() => _selectManyPresenter.Selection).Returns(_existingParameterValuesBuildingBlock);
       }
 
       protected override void Because()
@@ -87,7 +85,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void the_extend_should_be_used_to_combine_building_blocks()
       {
-         A.CallTo(() => _parameterValuesTask.ExtendBuildingBlockWith(_existingParameterValuesBuildingBlock, A<IReadOnlyList<ParameterValue>>.That.Contains(_parameterValuesBuildingBlock.First()))).MustHaveHappened();
+         A.CallTo(() => _parameterValuesTask.AddOrExtendWith(_parameterValuesBuildingBlock, _existingParameterValuesBuildingBlock.Module)).MustHaveHappened();
       }
    }
 
