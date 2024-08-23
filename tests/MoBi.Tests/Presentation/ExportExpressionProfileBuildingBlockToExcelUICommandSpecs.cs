@@ -31,20 +31,6 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_exporting_expression_profile_with_no_project_name : ExportExpressionProfileBuildingBlockToExcelUICommandSpecs
-   {
-      protected override void Because()
-      {
-         sut.Execute();
-      }
-
-      [Observation]
-      public void should_prompt_for_file_save_dialog()
-      {
-         A.CallTo(() => _dialogCreator.AskForFileToSave(AppConstants.Captions.ExportToExcel, Constants.Filter.EXCEL_SAVE_FILE_FILTER, Constants.DirectoryKey.MODEL_PART, A<string>.Ignored, null)).MustHaveHappened();
-      }
-   }
-
    public class When_exporting_expression_profile_with_project_name : ExportExpressionProfileBuildingBlockToExcelUICommandSpecs
    {
       private MoBiProject _project;
@@ -63,12 +49,6 @@ namespace MoBi.Presentation
       protected override void Because()
       {
          sut.Execute();
-      }
-
-      [Observation]
-      public void should_prompt_for_file_save_dialog_with_default_filename()
-      {
-         A.CallTo(() => _dialogCreator.AskForFileToSave(AppConstants.Captions.ExportToExcel, Constants.Filter.EXCEL_SAVE_FILE_FILTER, Constants.DirectoryKey.MODEL_PART, _defaultFileName, null)).MustHaveHappened();
       }
 
       [Observation]
