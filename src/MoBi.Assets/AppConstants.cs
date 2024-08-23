@@ -1468,7 +1468,6 @@ namespace MoBi.Assets
          public static readonly string IsAdvancedParameter = "Advanced parameter";
          public static readonly string CaseSensitive = "Match case";
          public static readonly string AddValuePoint = "Add Point";
-         public static readonly string UseDerivedValues = "Use derivative values";
          public static readonly string OffsetObjectPath = "Path to offset object";
          public static readonly string XArgumentObjectPath = "Path to X-Argument object";
          public static readonly string TableObjectPath = "Path to table object";
@@ -1623,6 +1622,9 @@ namespace MoBi.Assets
          public static readonly string ExtendMergeBehaviorDescription = "The module containers will be merged recursively using add and update behavior";
          public static readonly string OverwriteMergeBehaviorDescription = "The module containers will be replaced by path";
          public static readonly string ExportToExcel = "Export to Excel®";
+         public static readonly string DistributedTableFormula = "Distributed Table Formula";
+         public static readonly string ImportTableFormula = "Import Table Formula";
+
          public static string SelectEntitiesThatWillBeReplaced(string entityType) => $"Select {entityType.Pluralize()} that will be replaced";
          public static string SelectEntitiesThatWillBeReplacedDescription(string entityType, string buildingBlockName) => $"<b>Selected <i>{entityType.Pluralize()}</i> will replace existing <i>{entityType.Pluralize()}</i> in the building block <i>{buildingBlockName}</i></b>";
          public static string ExportContainerDescription(string exportedContainerPath) => $"<b>Select a <i>file path</i> and optional <i>individual</i> and <i>expression profiles</i> for container export. Parameters from the <i>individual</i> and <i>expression profiles</i> that match the path {exportedContainerPath} will be added to the container before exporting.</b>";

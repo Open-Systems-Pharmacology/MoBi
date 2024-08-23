@@ -169,12 +169,20 @@ namespace MoBi.Core
       private bool _result1;
       private bool _result2;
       private bool _result3;
+      private bool _result4;
 
       protected override void Because()
       {
          _result1 = sut.AreEqualBlackBoxFormula(null, A.Fake<BlackBoxFormula>());
          _result2 = sut.AreEqualBlackBoxFormula(A.Fake<BlackBoxFormula>(), null);
          _result3 = sut.AreEqualBlackBoxFormula(A.Fake<BlackBoxFormula>(), A.Fake<BlackBoxFormula>());
+         _result4 = sut.AreEqualBlackBoxFormula(A.Fake<BlackBoxFormula>().WithName("aname"), A.Fake<BlackBoxFormula>().WithName("bname"));
+      }
+
+      [Observation]
+      public void should_return_false_when_the_names_are_different()
+      {
+         _result4.ShouldBeFalse();
       }
 
       [Observation]
@@ -190,6 +198,7 @@ namespace MoBi.Core
          _result3.ShouldBeTrue();
       }
    }
+
 
    public class When_adjusting_Formulas_at_a_totally_new_object : concern_for_AdjustFormulaVisitor
    {

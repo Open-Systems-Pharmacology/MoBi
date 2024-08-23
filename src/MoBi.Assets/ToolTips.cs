@@ -193,13 +193,9 @@ namespace MoBi.Assets
          public static readonly string ConstantValue = "Set a numeric value";
          public static readonly string X = "Point in time";
          public static readonly string Y = "Formula value at t=X";
-         public static readonly string RestartSolver = "Select to mark solver restart at t=X. Increases numerical accuracy  but may reduce solver speed";
-         public static readonly string AddPoint = "Add a new point to the list";
-         public static readonly string DeletePoint = "Delete the point from the list";
          public static readonly string ReferenceAlias = "Sort by Alias \n \n Alias is the identifier of the reference for use in the formula";
          public static readonly string ReferencePath = "Sort by Path \n \n The Path describes where the referenced object is located";
          public static readonly string ReferenceDimension = "Sort by Dimension \n \n Dimension defines the class of unit of measurement of the referenced object";
-         public static readonly string UseDerivedValues = "If checked, the first derivative of the entered table values is used";
       }
 
       public static class ReferenceSelector

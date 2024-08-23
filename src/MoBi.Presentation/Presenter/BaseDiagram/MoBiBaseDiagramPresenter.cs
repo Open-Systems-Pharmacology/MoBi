@@ -102,7 +102,7 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
          if (DiagramManager == null)
             return;
 
-         if (!DiagramManager.MustHandleExisting(eventToHandle.ObjectBase.Id))
+         if (!DiagramManager.MustHandleExisting(eventToHandle?.ObjectBase?.Id))
             return;
 
          var baseNode = DiagramModel.GetNode(eventToHandle.ObjectBase.Id);
