@@ -62,9 +62,9 @@
   <ItemGroup>
     <PackageReference Include="OSPSuite.Core" Version="12.0.314" />
     <PackageReference Include="OSPSuite.DevExpress" Version="21.2.3" />
-    <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.67" GeneratePathProperty="true" />
+    <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.68" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.59" GeneratePathProperty="true" />
-    <PackageReference Include="OSPSuite.SimModelSolver_CVODES" Version="4.1.0.9" GeneratePathProperty="true" />
+    <PackageReference Include="OSPSuite.SimModelSolver_CVODES" Version="4.1.0.10" GeneratePathProperty="true" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.112" GeneratePathProperty="true" />
   </ItemGroup>
 

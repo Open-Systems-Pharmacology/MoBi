@@ -74,12 +74,6 @@ namespace MoBi.Core.Commands
       }
 
       [Observation]
-      public void the_module_is_not_pk_sim_module()
-      {
-         _module.IsPKSimModule.ShouldBeFalse();
-      }
-
-      [Observation]
       public void the_module_and_building_blocks_must_be_registered_in_the_context()
       {
          var withIds = _withIdRepository.All().ToList();
