@@ -8,6 +8,7 @@ using MoBi.Presentation.UICommand;
 using OSPSuite.Core.Domain;
 using MoBi.Core.Mappers;
 using OSPSuite.Core.Domain.Builder;
+using MoBi.Presentation.Tasks.Interaction;
 
 namespace MoBi.Presentation
 {
@@ -26,7 +27,7 @@ namespace MoBi.Presentation
          _mapper = A.Fake<IParameterValueBuildingBlockToParameterValuesDataTableMapper>();
 
          A.CallTo(() => _buildingBlock.Name).Returns("ParameterValues");
-         sut = new ExportParameterValuesBuildingBlockToExcelUICommand(_projectRetriever, _dialogCreator, _mapper) { Subject = _buildingBlock };
+         sut = new ExportParameterValuesBuildingBlockToExcelUICommand(A.Fake<IParameterValuesTask>() , _mapper) { Subject = _buildingBlock };
       }
    }
 

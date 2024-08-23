@@ -1,9 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
@@ -14,33 +12,15 @@ namespace MoBi.Core.Mappers
    {
    }
 
-   public class ParameterValueBuildingBlockToParameterValuesDataTableMapper : IParameterValueBuildingBlockToParameterValuesDataTableMapper
+   public class ParameterValueBuildingBlockToParameterValuesDataTableMapper : BaseBuildingBlockToDataTableMapper<ParameterValuesBuildingBlock>, IParameterValueBuildingBlockToParameterValuesDataTableMapper
    {
       private static readonly string _name = AppConstants.Captions.ParameterName;
-      private static readonly string _path = AppConstants.Captions.ContainerPath;
-      private static readonly string _value = AppConstants.Captions.Value;
       private static readonly string _unit = AppConstants.Captions.Unit;
 
-      public List<DataTable> MapFrom(ParameterValuesBuildingBlock input) =>
-         parameterValuesToParametersDataTable(input);
+      protected override IEnumerable<PathAndValueEntity> GetElements(ParameterValuesBuildingBlock buildingBlock) =>
+         buildingBlock.Select(x => x).Where(x => x.Value != null);
 
-      private List<DataTable> parameterValuesToParametersDataTable(ParameterValuesBuildingBlock input)
-      {
-         var dt = generateEmptyMoleculeParameterDataTable();
-         var parameterValues = input.Select(x => x).Where(x=> x.Value != null);
-         foreach (var parameterValue in parameterValues)
-         {
-            var row = dt.Rows.Add();
-            row[_path] = parameterValue.ContainerPath;
-            row[_name] = parameterValue.Name;
-            row[_value] = (object)parameterValue.ConvertToDisplayUnit(parameterValue.Value);
-            row[_unit] = parameterValue.DisplayUnit;
-         }
-
-         return new List<DataTable> { dt };
-      }
-
-      private DataTable generateEmptyMoleculeParameterDataTable()
+      protected override DataTable GenerateEmptyDataTable()
       {
          var dt = new DataTable();
          dt.AddColumn(_path);
@@ -49,6 +29,12 @@ namespace MoBi.Core.Mappers
          dt.AddColumn(_unit);
          dt.TableName = AppConstants.Captions.ParameterValue;
          return dt;
+      }
+
+      protected override void SetSpecificColumns(DataRow row, PathAndValueEntity element)
+      {
+         row[_name] = element.Name;
+         row[_unit] = element.DisplayUnit;
       }
    }
 }

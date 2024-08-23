@@ -1,20 +1,27 @@
 ﻿using System.Collections.Generic;
+using System.Data;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Helper;
 using MoBi.Presentation.Tasks.Edit;
+using NPOI.SS.Formula.Functions;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Services;
+using OSPSuite.Infrastructure.Export;
+using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
    public interface IInteractionTasksForPathAndValueEntity<in TBuildingBlock, in TBuilder>
    {
+
       /// <summary>
       ///    Adds a new formula to the building block formula cache and assigns it to the builder
       /// </summary>
@@ -61,6 +68,13 @@ namespace MoBi.Presentation.Tasks.Interaction
       ICommand SetValueOrigin(TBuildingBlock buildingBlock, ValueOrigin valueOrigin, TBuilder pathAndValueEntity);
 
       IMoBiCommand ConvertDistributedParameterToConstantParameter(TBuilder distributedParameter, TBuildingBlock buildingBlock, IReadOnlyList<TBuilder> subParameters);
+
+      /// <summary>
+      /// Exports the building block to an excel file
+      /// </summary>
+      /// <param name="subject">Building Block to export.</param>
+      /// <param name="mappedValues">values to Export.</param>
+      void ExportExcel(IBuildingBlock subject, List<DataTable> mappedValues);
    }
 
    public abstract class InteractionTasksForPathAndValueEntity<TParent, TBuildingBlock, TBuilder> : InteractionTasksForEnumerableBuildingBlock<TParent, TBuildingBlock, TBuilder>, IInteractionTasksForPathAndValueEntity<TBuildingBlock, TBuilder>
@@ -69,14 +83,17 @@ namespace MoBi.Presentation.Tasks.Interaction
    {
       protected readonly IMoBiFormulaTask _moBiFormulaTask;
       private readonly IParameterFactory _parameterFactory;
+      private readonly IDialogCreator _dialogCreator;
 
       protected InteractionTasksForPathAndValueEntity(IInteractionTaskContext interactionTaskContext,
          IEditTasksForBuildingBlock<TBuildingBlock> editTask,
          IMoBiFormulaTask moBiFormulaTask,
-         IParameterFactory parameterFactory) : base(interactionTaskContext, editTask)
+         IParameterFactory parameterFactory,
+         IDialogCreator dialogCreator) : base(interactionTaskContext, editTask)
       {
          _moBiFormulaTask = moBiFormulaTask;
          _parameterFactory = parameterFactory;
+         _dialogCreator = dialogCreator;
       }
 
       public ICommand SetValueOrigin(TBuildingBlock buildingBlock, ValueOrigin valueOrigin, TBuilder pathAndValueEntity)
@@ -110,6 +127,22 @@ namespace MoBi.Presentation.Tasks.Interaction
          moBiMacroCommand.Add(new PathAndValueEntityValueOrUnitChangedCommand<TBuilder, TBuildingBlock>(distributedParameter, temporaryParameter.Value, temporaryParameter.DisplayUnit, buildingBlock));
 
          return moBiMacroCommand.Run(Context);
+      }
+
+      public void ExportExcel(IBuildingBlock subject, List<DataTable> mappedValues)
+      {
+         var currentProject = Context.CurrentProject;
+         var projectName = currentProject.Name;
+         if (string.IsNullOrEmpty(projectName))
+            projectName = AppConstants.Undefined;
+
+         var defaultFileName = AppConstants.DefaultFileNameForBuildingBlockExport(projectName, subject);
+         var excelFileName = _dialogCreator.AskForFileToSave(AppConstants.Captions.ExportToExcel, Constants.Filter.EXCEL_SAVE_FILE_FILTER, Constants.DirectoryKey.MODEL_PART, defaultFileName);
+
+         if (string.IsNullOrEmpty(excelFileName))
+            return;
+         
+         ExportToExcelTask.ExportDataTablesToExcel(mappedValues, excelFileName, openExcel: false);
       }
 
       private IDistributedParameter createTemporaryParameter(TBuilder distributedEntity, DistributionType distributionType)

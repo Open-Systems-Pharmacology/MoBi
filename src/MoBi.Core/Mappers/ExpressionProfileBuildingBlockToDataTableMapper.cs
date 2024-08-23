@@ -6,6 +6,7 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Mappers
 {
+
    public interface IExpressionProfileBuildingBlockToDataTableMapper : IMapper<ExpressionProfileBuildingBlock, List<DataTable>>
    {
    }

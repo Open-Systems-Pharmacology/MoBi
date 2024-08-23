@@ -14,39 +14,18 @@ namespace MoBi.Core.Mappers
    {
    }
 
-   public class InitialConditionsBuildingBlockToDataTableMapper : IInitialConditionsBuildingBlockToDataTableMapper
+   public class InitialConditionsBuildingBlockToDataTableMapper : BaseBuildingBlockToDataTableMapper<InitialConditionsBuildingBlock>, IInitialConditionsBuildingBlockToDataTableMapper
    {
-      private static readonly string _path = AppConstants.Captions.ContainerPath;
       private static readonly string _moleculeName = AppConstants.Captions.MoleculeName;
       private static readonly string _isPresent = AppConstants.Captions.IsPresent;
-      private static readonly string _value = AppConstants.Captions.Value;
       private static readonly string _unit = AppConstants.Captions.Unit;
       private static readonly string _scaleDivisor = AppConstants.Captions.ScaleDivisor;
       private static readonly string _negativeValuesAllowed = AppConstants.Captions.NegativeValuesAllowed;
 
-      public List<DataTable> MapFrom(InitialConditionsBuildingBlock input) =>
-         parameterValuesToParametersDataTable(input);
+      protected override IEnumerable<PathAndValueEntity> GetElements(InitialConditionsBuildingBlock buildingBlock) =>
+         buildingBlock.Select(x => x).Where(x => x.Value != null);
 
-      private List<DataTable> parameterValuesToParametersDataTable(InitialConditionsBuildingBlock input)
-      {
-         var dt = generateEmptyMoleculeParameterDataTable();
-         var parameterValues = input.Select(x => x).Where(x => x.Value != null); 
-         foreach (var parameterValue in parameterValues)
-         {
-            var row = dt.Rows.Add();
-            row[_path] = parameterValue.ContainerPath;
-            row[_moleculeName] = parameterValue.Name;
-            row[_isPresent] = parameterValue.IsPresent;
-            row[_value] = (object)parameterValue.ConvertToDisplayUnit(parameterValue.Value);
-            row[_scaleDivisor] = parameterValue.ScaleDivisor;
-            row[_unit] = parameterValue.DisplayUnit;
-            row[_negativeValuesAllowed] = parameterValue.NegativeValuesAllowed;
-         }
-
-         return new List<DataTable> { dt };
-      }
-
-      private DataTable generateEmptyMoleculeParameterDataTable()
+      protected override DataTable GenerateEmptyDataTable()
       {
          var dt = new DataTable();
          dt.AddColumn(_path);
@@ -58,6 +37,15 @@ namespace MoBi.Core.Mappers
          dt.AddColumn<bool>(_negativeValuesAllowed);
          dt.TableName = AppConstants.Captions.InitialConditions;
          return dt;
+      }
+
+      protected override void SetSpecificColumns(DataRow row, PathAndValueEntity element)
+      {
+         var initialCondition = (InitialCondition)element;
+         row[_moleculeName] = initialCondition.Name;
+         row[_isPresent] = initialCondition.IsPresent;
+         row[_scaleDivisor] = initialCondition.ScaleDivisor;
+         row[_negativeValuesAllowed] = initialCondition.NegativeValuesAllowed;
       }
    }
 }

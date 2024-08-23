@@ -8,15 +8,15 @@ using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public interface IInteractionTasksForIndividualBuildingBlock : IInteractionTasksForProjectBuildingBlock<IndividualBuildingBlock>,
-      IInteractionTasksForProjectPathAndValueEntityBuildingBlocks<IndividualBuildingBlock, IndividualParameter>,
+   public interface IInteractionTasksForParameterValueBuildingBlock : IInteractionTasksForProjectBuildingBlock<ParameterValuesBuildingBlock>,
+      IInteractionTasksForProjectPathAndValueEntityBuildingBlocks<ParameterValuesBuildingBlock, ParameterValue>,
       IInteractionTasksForProjectBuildingBlock
    {
    }
 
-   public class InteractionTasksForIndividualBuildingBlock : InteractionTasksForProjectPathAndValueEntityBuildingBlocks<IndividualBuildingBlock, IndividualParameter>, IInteractionTasksForIndividualBuildingBlock
+   public class InteractionTasksForParameterValueBuildingBlock : InteractionTasksForProjectPathAndValueEntityBuildingBlocks<IndividualBuildingBlock, IndividualParameter>, IInteractionTasksForIndividualBuildingBlock
    {
-      public InteractionTasksForIndividualBuildingBlock(IInteractionTaskContext interactionTaskContext,
+      public InteractionTasksForParameterValueBuildingBlock(IInteractionTaskContext interactionTaskContext,
          IEditTasksForIndividualBuildingBlock editTask,
          IMoBiFormulaTask moBiFormulaTask,
          IParameterFactory parameterFactory,

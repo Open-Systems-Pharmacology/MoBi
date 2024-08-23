@@ -2269,19 +2269,14 @@ namespace MoBi.Assets
                                                                       "After changing the PK-Sim installation path, please restart MoBi.";
       }
 
-      public static string DefaultFileNameForBuildingBlockExport(string projectName, string simulationName)
+      public static string DefaultFileNameForBuildingBlockExport(string projectName, IBuildingBlock buildingBlock)
       {
-         return $"{projectName}_{simulationName}_Building_Block";
+         return $"{projectName}_{buildingBlock.Name}";
       }
 
       public static string DefaultFileNameForModelPartsExport(string projectName, string simulationName)
       {
          return $"{projectName}_{simulationName}_Model_Parts";
-      }
-
-      public static string DefaultFileNameForParameterValuesExport(string projectName, string simulationName)
-      {
-         return $"{projectName}_{simulationName}_Parameter_Values";
       }
 
       public static string CannotRemoveModuleFromProject(string buildingBlockName, IEnumerable<string> referringBuildingBlockNames)

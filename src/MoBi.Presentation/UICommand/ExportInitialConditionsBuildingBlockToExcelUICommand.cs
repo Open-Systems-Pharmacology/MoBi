@@ -1,17 +1,17 @@
 ﻿using MoBi.Core.Mappers;
 using MoBi.Core.Services;
+using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.UICommand
 {
-   public class ExportInitialConditionsBuildingBlockToExcelUICommand : ExportBuildingBlockToExcelUICommand<InitialConditionsBuildingBlock>
+   public class ExportInitialConditionsBuildingBlockToExcelUICommand : ExportBuildingBlockToExcelUICommand<InitialConditionsBuildingBlock, InitialCondition>
    {
       public ExportInitialConditionsBuildingBlockToExcelUICommand(
-         IMoBiProjectRetriever projectRetriever,
-         IDialogCreator dialogCreator,
+         IInitialConditionsTask<InitialConditionsBuildingBlock> interactionTask,
          IInitialConditionsBuildingBlockToDataTableMapper mapper)
-         : base(projectRetriever, dialogCreator, mapper)
+         : base(interactionTask, mapper)
       {
       }
    }

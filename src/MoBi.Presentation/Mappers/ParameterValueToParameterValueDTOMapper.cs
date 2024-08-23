@@ -16,15 +16,11 @@ namespace MoBi.Presentation.Mappers
          _formulaMapper = formulaMapper;
       }
 
-      public ParameterValueDTO MapFrom(ParameterValue parameterValue, IBuildingBlock<ParameterValue> buildingBlock)
-      {
-         var dto = new ParameterValueDTO(parameterValue, buildingBlock)
+      public ParameterValueDTO MapFrom(ParameterValue parameterValue, IBuildingBlock<ParameterValue> buildingBlock) =>
+         new ParameterValueDTO(parameterValue, buildingBlock)
          {
             ContainerPath = parameterValue.ContainerPath,
             Formula = _formulaMapper.MapFrom(parameterValue.Formula)
          };
-
-         return dto;
-      }
    }
 }

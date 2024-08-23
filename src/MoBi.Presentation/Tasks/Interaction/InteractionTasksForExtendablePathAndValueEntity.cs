@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
@@ -8,6 +9,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Helper;
+using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
@@ -17,6 +19,8 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Services;
+using OSPSuite.Infrastructure.Export;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
@@ -38,8 +42,10 @@ namespace MoBi.Presentation.Tasks.Interaction
          IExtendPathAndValuesManager<TPathAndValueEntity> extendManager, ICloneManagerForBuildingBlock cloneManagerForBuildingBlock,
          IMoBiFormulaTask moBiFormulaTask, ISpatialStructureFactory spatialStructureFactory, IMapper<ImportedQuantityDTO, TPathAndValueEntity> dtoToQuantityToParameterValueMapper,
          IPathAndValueEntityPathTask<ILookupBuildingBlock<TPathAndValueEntity>, TPathAndValueEntity> entityPathTask,
-         IParameterFactory parameterFactory)
-         : base(interactionTaskContext, editTask, moBiFormulaTask, parameterFactory)
+         IParameterFactory parameterFactory,
+         IDialogCreator dialogCreator
+         )
+         : base(interactionTaskContext, editTask, moBiFormulaTask, parameterFactory, dialogCreator)
       {
          _extendManager = extendManager;
          _cloneManagerForBuildingBlock = cloneManagerForBuildingBlock;
@@ -47,6 +53,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          _dtoToQuantityToParameterValueMapper = dtoToQuantityToParameterValueMapper;
          _entityPathTask = entityPathTask;
       }
+
 
       protected override double? ValueFromBuilder(TPathAndValueEntity builder)
       {

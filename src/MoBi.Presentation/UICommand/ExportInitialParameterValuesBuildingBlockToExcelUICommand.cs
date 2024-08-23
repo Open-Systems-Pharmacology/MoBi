@@ -1,17 +1,17 @@
 ﻿using MoBi.Core.Mappers;
 using MoBi.Core.Services;
+using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.UICommand
 {
-   public class ExportParameterValuesBuildingBlockToExcelUICommand : ExportBuildingBlockToExcelUICommand<ParameterValuesBuildingBlock>
+   public class ExportParameterValuesBuildingBlockToExcelUICommand : ExportBuildingBlockToExcelUICommand<ParameterValuesBuildingBlock, ParameterValue>
    {
       public ExportParameterValuesBuildingBlockToExcelUICommand(
-         IMoBiProjectRetriever projectRetriever,
-         IDialogCreator dialogCreator,
+         IParameterValuesTask interactionTask,
          IParameterValueBuildingBlockToParameterValuesDataTableMapper mapper)
-         : base(projectRetriever, dialogCreator, mapper)
+         : base(interactionTask, mapper)
       {
       }
    }

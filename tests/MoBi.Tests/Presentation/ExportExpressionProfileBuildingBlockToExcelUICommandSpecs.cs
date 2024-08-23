@@ -3,6 +3,7 @@ using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Mappers;
 using MoBi.Core.Services;
+using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.UICommand;
 using OSPSuite.BDDHelper;
 using OSPSuite.Core.Domain;
@@ -26,7 +27,7 @@ namespace MoBi.Presentation
          _mapper = A.Fake<IExpressionProfileBuildingBlockToDataTableMapper>();
 
          A.CallTo(() => _buildingBlock.Name).Returns("ExpressionProfile");
-         sut = new ExportExpressionProfilesBuildingBlockToExcelUICommand(_projectRetriever, _dialogCreator, _mapper) { Subject = _buildingBlock };
+         sut = new ExportExpressionProfilesBuildingBlockToExcelUICommand(A.Fake<IInteractionTasksForExpressionProfileBuildingBlock>() , _mapper) { Subject = _buildingBlock };
       }
    }
 

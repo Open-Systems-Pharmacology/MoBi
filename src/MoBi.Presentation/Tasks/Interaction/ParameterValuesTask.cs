@@ -4,6 +4,7 @@ using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Services;
+using MoBi.Core.Mappers;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -14,6 +15,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
@@ -37,8 +39,10 @@ namespace MoBi.Presentation.Tasks.Interaction
          IMoBiSpatialStructureFactory spatialStructureFactory,
          IParameterValuePathTask parameterValuePathTask,
          IParameterValuesCreator parameterValuesCreator, 
-         IParameterFactory parameterFactory)
-         : base(interactionTaskContext, editTask, parameterValuesExtendManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoToQuantityToParameterValueMapper, parameterValuePathTask, parameterFactory)
+         IParameterFactory parameterFactory,
+         IDialogCreator dialogCreator
+         )
+         : base(interactionTaskContext, editTask, parameterValuesExtendManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoToQuantityToParameterValueMapper, parameterValuePathTask, parameterFactory, dialogCreator)
       {
          _parameterValuesCreator = parameterValuesCreator;
       }

@@ -11,6 +11,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks
@@ -28,7 +29,7 @@ namespace MoBi.Presentation.Tasks
          _editTasksForIndividualBuildingBlock = A.Fake<IEditTasksForIndividualBuildingBlock>();
          _moBiFormulaTask = A.Fake<IMoBiFormulaTask>();
          _parameterFactory = A.Fake<IParameterFactory>();
-         sut = new InteractionTasksForIndividualBuildingBlock(_interactionTaskContext, _editTasksForIndividualBuildingBlock, _moBiFormulaTask, _parameterFactory);
+         sut = new InteractionTasksForIndividualBuildingBlock(_interactionTaskContext, _editTasksForIndividualBuildingBlock, _moBiFormulaTask, _parameterFactory, A.Fake<IDialogCreator>());
          A.CallTo(() => _parameterFactory.CreateDistributedParameter(A<string>._, A<DistributionType>._, A<double?>._, A<IDimension>._, A<string>._, A<Unit>._)).ReturnsLazily(newDistributedParameterFrom);
          A.CallTo(() => _parameterFactory.CreateParameter(A<string>._,A<double?>._, A<IDimension>._, A<string>._, A<IFormula>._, A<Unit>._)).ReturnsLazily(newParameterFrom);
       }

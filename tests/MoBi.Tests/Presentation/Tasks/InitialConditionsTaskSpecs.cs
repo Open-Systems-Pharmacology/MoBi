@@ -24,6 +24,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks
@@ -58,7 +59,8 @@ namespace MoBi.Presentation.Tasks
 
          _formulaTask = A.Fake<IFormulaTask>();
          sut = new InitialConditionsTask<InitialConditionsBuildingBlock>(_context, _editTask, A.Fake<IInitialConditionsBuildingBlockExtendManager>(), _cloneManagerForBuildingBlock, A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(),
-            new ImportedQuantityToInitialConditionMapper(_initialConditionsCreator), new InitialConditionPathTask(_formulaTask, _context.Context), _reactionDimensionRetriever, _initialConditionsCreator, _parameterFactory, _nameCorrector);
+            new ImportedQuantityToInitialConditionMapper(_initialConditionsCreator), 
+            new InitialConditionPathTask(_formulaTask, _context.Context), _reactionDimensionRetriever, _initialConditionsCreator, _parameterFactory, _nameCorrector, A.Fake<IDialogCreator>());
       }
    }
 

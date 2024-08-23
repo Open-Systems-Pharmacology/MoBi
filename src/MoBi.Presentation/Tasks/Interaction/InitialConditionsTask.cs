@@ -6,6 +6,7 @@ using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Events;
+using MoBi.Core.Mappers;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -18,6 +19,7 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
@@ -58,9 +60,11 @@ namespace MoBi.Presentation.Tasks.Interaction
          IReactionDimensionRetriever dimensionRetriever,
          IInitialConditionsCreator initialConditionsCreator, 
          IParameterFactory parameterFactory,
-         INameCorrector nameCorrector) : 
-         base(interactionTaskContext, editTask, extendManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoMapper, initialConditionPathTask, parameterFactory)
+         INameCorrector nameCorrector,
+         IDialogCreator dialogCreator) : 
+         base(interactionTaskContext, editTask, extendManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoMapper, initialConditionPathTask, parameterFactory, dialogCreator)
       {
+       
          _dimensionRetriever = dimensionRetriever;
          _initialConditionsCreator = initialConditionsCreator;
          _nameCorrector = nameCorrector;

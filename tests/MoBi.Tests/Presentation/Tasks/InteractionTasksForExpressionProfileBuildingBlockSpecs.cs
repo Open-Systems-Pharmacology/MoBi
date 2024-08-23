@@ -15,6 +15,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks
@@ -40,7 +41,7 @@ namespace MoBi.Presentation.Tasks
          _containerTask = new ContainerTask(A.Fake<IObjectBaseFactory>(), A.Fake<IEntityPathResolver>(), A.Fake<IObjectPathFactory>());
          _parameterFactory = A.Fake<IParameterFactory>();
 
-         sut = new InteractionTasksForExpressionProfileBuildingBlock(_interactionTaskContext, _editTask, _formulaTask, _pkSimStarter, _containerTask, _parameterFactory);
+         sut = new InteractionTasksForExpressionProfileBuildingBlock(_interactionTaskContext, _editTask, _formulaTask, _pkSimStarter, _containerTask, _parameterFactory, A.Fake<IDialogCreator>());
 
          _formula = new ExplicitFormula("y=mx+b");
          _expressionParameter = GetExpressionParameter();
