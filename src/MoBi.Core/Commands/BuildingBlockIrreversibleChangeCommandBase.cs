@@ -23,7 +23,7 @@ namespace MoBi.Core.Commands
       {
          if (_buildingBlock == null) return;
          var buildingBlockVersionUpdater = context.Resolve<IBuildingBlockVersionUpdater>();
-         buildingBlockVersionUpdater.UpdateBuildingBlockVersion(_buildingBlock, shouldIncrementVersion: true);
+         buildingBlockVersionUpdater.UpdateBuildingBlockVersion(_buildingBlock, shouldIncrementVersion: true, shouldConvertPKSimModule: true);
       }
    }
 }

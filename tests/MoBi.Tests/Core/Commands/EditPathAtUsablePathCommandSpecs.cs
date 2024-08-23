@@ -51,7 +51,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void should_increment_the_building_block_version()
       {
-         A.CallTo(() => _buildingBlockVersionUpdater.UpdateBuildingBlockVersion(_buildingBlock, A<bool>._)).MustHaveHappened();
+         A.CallTo(() => _buildingBlockVersionUpdater.UpdateBuildingBlockVersion(_buildingBlock, A<bool>._, A<bool>._)).MustHaveHappened();
       }
    }
 

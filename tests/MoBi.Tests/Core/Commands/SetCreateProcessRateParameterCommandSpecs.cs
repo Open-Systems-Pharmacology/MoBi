@@ -1,11 +1,8 @@
 ﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Services;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Services;
-using OSPSuite.Utility.Events;
 
 namespace MoBi.Core.Commands
 {
@@ -14,20 +11,20 @@ namespace MoBi.Core.Commands
       protected bool _newValue;
       protected bool _oldValue;
       protected ReactionBuilder _reaactionBuilder;
-      protected ISimulationEventsOnlyBuildingBlockVersionUpdater _simulationEventsOnlyBuildingBlockVersionUpdater;
       protected IMoBiContext _context;
+      protected IBuildingBlock _buildingBlock;
 
       protected override void Context()
       {
          _context = A.Fake<IMoBiContext>();
-         _simulationEventsOnlyBuildingBlockVersionUpdater = A.Fake<ISimulationEventsOnlyBuildingBlockVersionUpdater>();
+         _buildingBlock = A.Fake<IBuildingBlock>();
+         _buildingBlock.Module.IsPKSimModule = true;
          _newValue = false;
          _oldValue = true;
          _reaactionBuilder = new ReactionBuilder();
          _reaactionBuilder.CreateProcessRateParameter = _oldValue;
          _reaactionBuilder.ProcessRateParameterPersistable = true;
-         A.CallTo(() => _context.Resolve<ISimulationEventsOnlyBuildingBlockVersionUpdater>()).Returns(_simulationEventsOnlyBuildingBlockVersionUpdater);
-         sut = new SetCreateProcessRateParameterCommand(_newValue, _reaactionBuilder, A.Fake<IBuildingBlock>());
+         sut = new SetCreateProcessRateParameterCommand(_newValue, _reaactionBuilder, _buildingBlock);
       }
    }
 
@@ -51,9 +48,9 @@ namespace MoBi.Core.Commands
       }
 
       [Observation]
-      public void should_call_simulation_events_only_building_block_version_updater()
+      public void the_module_is_not_pk_sim_module()
       {
-         A.CallTo(() => _simulationEventsOnlyBuildingBlockVersionUpdater.UpdateBuildingBlockVersion(A<IBuildingBlock>.Ignored, true)).MustHaveHappened();
+         _buildingBlock.Module.IsPKSimModule.ShouldBeTrue();
       }
    }
 }

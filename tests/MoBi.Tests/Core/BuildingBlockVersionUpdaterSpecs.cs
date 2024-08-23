@@ -65,7 +65,7 @@ namespace MoBi.Core
 
       protected override void Because()
       {
-         sut.UpdateBuildingBlockVersion(_changeBuildingBlock, true);
+         sut.UpdateBuildingBlockVersion(_changeBuildingBlock, true, true);
       }
 
       [Observation]

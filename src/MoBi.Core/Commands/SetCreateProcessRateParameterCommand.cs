@@ -1,10 +1,9 @@
 using MoBi.Assets;
-using MoBi.Core.Domain.Model;
-using MoBi.Core.Services;
-using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility.Extensions;
+using MoBi.Core.Domain.Model;
+using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Assets;
 
 namespace MoBi.Core.Commands
 {
@@ -28,12 +27,8 @@ namespace MoBi.Core.Commands
 
       protected override void ExecuteWith(IMoBiContext context)
       {
-         if (_buildingBlock == null) return;
-
-         var buildingBlockVersionUpdater = context.Resolve<ISimulationEventsOnlyBuildingBlockVersionUpdater>();
-
-         buildingBlockVersionUpdater.UpdateBuildingBlockVersion(_buildingBlock, ShouldIncrementVersion);
-
+         ShouldConvertPKSimModule = false;
+         base.ExecuteWith(context);
          _processBuilder.CreateProcessRateParameter = _createProcessRate;
       }
 

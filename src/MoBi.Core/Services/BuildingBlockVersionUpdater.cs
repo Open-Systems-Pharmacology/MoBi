@@ -12,8 +12,8 @@ namespace MoBi.Core.Services
 {
    public interface IBuildingBlockVersionUpdater
    {
-      void UpdateBuildingBlockVersion(IBuildingBlock buildingBlock, uint newVersion);
-      void UpdateBuildingBlockVersion(IBuildingBlock buildingBlock, bool shouldIncrementVersion);
+      void UpdateBuildingBlockVersion(IBuildingBlock buildingBlock, uint newVersion, bool shouldConvertPKSimModule);
+      void UpdateBuildingBlockVersion(IBuildingBlock buildingBlock, bool shouldIncrementVersion, bool shouldConvertPKSimModule);
    }
 
    public class BuildingBlockVersionUpdater : IBuildingBlockVersionUpdater
@@ -29,16 +29,18 @@ namespace MoBi.Core.Services
          _dialogCreator = dialogCreator;
       }
 
-      public virtual void UpdateBuildingBlockVersion(IBuildingBlock buildingBlock, uint newVersion)
+      public virtual void UpdateBuildingBlockVersion(IBuildingBlock buildingBlock, uint newVersion, bool shouldConvertPKSimModule)
       {
          if (buildingBlock == null)
             return;
 
-         if (shouldShowModuleConversionWarning(buildingBlock))
+         if (shouldConvertPKSimModule && shouldShowModuleConversionWarning(buildingBlock))
             showModuleConversionWarning(buildingBlock);
 
          buildingBlock.Version = newVersion;
-         buildingBlock.Module.IsPKSimModule = false;
+
+         if(shouldConvertPKSimModule)
+            buildingBlock.Module.IsPKSimModule = false;
 
          publishSimulationStatusChangedEvents(buildingBlock);
          publishModuleStatusChangedEvents(buildingBlock);
@@ -68,7 +70,7 @@ namespace MoBi.Core.Services
          _eventPublisher.PublishEvent(new ModuleStatusChangedEvent(module));
       }
 
-      public void UpdateBuildingBlockVersion(IBuildingBlock buildingBlock, bool shouldIncrementVersion)
+      public void UpdateBuildingBlockVersion(IBuildingBlock buildingBlock, bool shouldIncrementVersion, bool shouldConvertPKSimModule)
       {
          if (buildingBlock == null) return;
          var version = buildingBlock.Version;
@@ -78,7 +80,7 @@ namespace MoBi.Core.Services
          else
             version--;
 
-         UpdateBuildingBlockVersion(buildingBlock, version);
+         UpdateBuildingBlockVersion(buildingBlock, version, shouldConvertPKSimModule);
       }
 
       protected void publishSimulationStatusChangedEvents(IBuildingBlock changedBuildingBlock)

@@ -7,6 +7,7 @@ namespace MoBi.Core.Commands
    public abstract class BuildingBlockChangeCommandBase<T> : MoBiReversibleCommand where T :  class, IBuildingBlock
    {
       public bool ShouldIncrementVersion { get; set; }
+      public bool ShouldConvertPKSimModule { get; set; } = true;
 
       protected T _buildingBlock;
       protected string _buildingBlockId;
@@ -23,7 +24,7 @@ namespace MoBi.Core.Commands
       {
          if (_buildingBlock == null) return;
          var buildingBlockVersionUpdater = context.Resolve<IBuildingBlockVersionUpdater>();
-         buildingBlockVersionUpdater.UpdateBuildingBlockVersion(_buildingBlock, ShouldIncrementVersion);
+         buildingBlockVersionUpdater.UpdateBuildingBlockVersion(_buildingBlock, ShouldIncrementVersion, ShouldConvertPKSimModule);
       }
 
       protected override void ClearReferences()

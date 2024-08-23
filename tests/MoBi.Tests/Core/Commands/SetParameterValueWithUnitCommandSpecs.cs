@@ -71,7 +71,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void should_have_set_parameter_start_values_building_block_to_changed()
       {
-         A.CallTo(() => _buildingBlockVersionUpdater.UpdateBuildingBlockVersion(_buildingBlock, true)).MustHaveHappened();
+         A.CallTo(() => _buildingBlockVersionUpdater.UpdateBuildingBlockVersion(_buildingBlock, true, true)).MustHaveHappened();
       }
    }
 

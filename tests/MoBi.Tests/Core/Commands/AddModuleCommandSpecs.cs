@@ -21,7 +21,6 @@ namespace MoBi.Core.Commands
       protected override void Context()
       {
          _module = new Module().WithId("moduleId");
-         _module.IsPKSimModule = true;
          _withIdRepository = new WithIdRepository();
          _registrationTask = new RegisterTask(_withIdRepository);
          sut = new AddModuleCommand(_module);
@@ -71,6 +70,12 @@ namespace MoBi.Core.Commands
       protected override void Because()
       {
          sut.Execute(_context);
+      }
+
+      [Observation]
+      public void the_module_is_not_pk_sim_module()
+      {
+         _module.IsPKSimModule.ShouldBeFalse();
       }
 
       [Observation]
