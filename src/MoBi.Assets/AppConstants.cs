@@ -1991,11 +1991,6 @@ namespace MoBi.Assets
          {
             return $"The PK-Sim module '{moduleName}' will be converted to an extension module";
          }
-
-         public static string NewEntitiesBuildingBlock(string typeFor)
-         {
-            throw new NotImplementedException();
-         }
       }
 
       public static class Validation
