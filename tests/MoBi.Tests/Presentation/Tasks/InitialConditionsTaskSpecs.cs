@@ -40,6 +40,7 @@ namespace MoBi.Presentation.Tasks
       protected IParameterFactory _parameterFactory;
       protected INameCorrector _nameCorrector;
       protected IFormulaTask _formulaTask;
+      private IObjectTypeResolver _objectTypeResolver;
 
       protected override void Context()
       {
@@ -48,6 +49,7 @@ namespace MoBi.Presentation.Tasks
          _initialConditionsCreator = A.Fake<IInitialConditionsCreator>();
          _cloneManagerForBuildingBlock = A.Fake<ICloneManagerForBuildingBlock>();
          _nameCorrector = A.Fake<INameCorrector>();
+         _objectTypeResolver = A.Fake<IObjectTypeResolver>();
          _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock
          {
             Module = new Module()
@@ -58,7 +60,7 @@ namespace MoBi.Presentation.Tasks
 
          _formulaTask = A.Fake<IFormulaTask>();
          sut = new InitialConditionsTask<InitialConditionsBuildingBlock>(_context, _editTask, A.Fake<IInitialConditionsBuildingBlockExtendManager>(), _cloneManagerForBuildingBlock, A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(),
-            new ImportedQuantityToInitialConditionMapper(_initialConditionsCreator), new InitialConditionPathTask(_formulaTask, _context.Context), _reactionDimensionRetriever, _initialConditionsCreator, _parameterFactory, _nameCorrector);
+            new ImportedQuantityToInitialConditionMapper(_initialConditionsCreator), new InitialConditionPathTask(_formulaTask, _context.Context), _reactionDimensionRetriever, _initialConditionsCreator, _parameterFactory, _nameCorrector, _objectTypeResolver);
       }
    }
 

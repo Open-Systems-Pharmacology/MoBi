@@ -1618,9 +1618,8 @@ namespace MoBi.Assets
          public static readonly string AddExpressionDescription = "<b>The building block will be extended with expression parameter values for selected <i>molecules</i> in the selected <i>organ</i> </b>";
          public static readonly string AddDefaultCurveForNewSimulations = "Add default curve for new simulations";
          public static readonly string ChangeDefaultCurveForNewSimulations = "Change default curve for new simulations";
-         public static readonly string SelectTheBuildingBlockWhereParameterValuesWillBeAddedOrUpdated = "Select the building block where parameter values will be added or updated";
-         public static readonly string SelectParameterValuesBuildingBlock = "Select Parameter Values Building Block";
-         public static readonly string NewParameterValuesBuildingBlock = "New Parameter Values Building Block";
+         public static string SelectTheBuildingBlockWhereEntitiesWillBeAddedOrUpdated(string typeBeingAdded) => $"Select the building block where {typeBeingAdded} will be added or updated";
+         public static readonly string SelectBuildingBlock = "Select Building Block";
          public static readonly string MakeDefault = "Make defaults";
          public static readonly string LoadFromDefaults = "Load from defaults";
          public static readonly string MergeBehavior = "Merge Behavior";
@@ -1628,7 +1627,6 @@ namespace MoBi.Assets
          public static readonly string OverwriteMergeBehaviorDescription = "The module containers will be replaced by path";
          public static readonly string DistributedTableFormula = "Distributed Table Formula";
          public static readonly string ImportTableFormula = "Import Table Formula";
-
          public static string SelectEntitiesThatWillBeReplaced(string entityType) => $"Select {entityType.Pluralize()} that will be replaced";
          public static string SelectEntitiesThatWillBeReplacedDescription(string entityType, string buildingBlockName) => $"<b>Selected <i>{entityType.Pluralize()}</i> will replace existing <i>{entityType.Pluralize()}</i> in the building block <i>{buildingBlockName}</i></b>";
          public static string ExportContainerDescription(string exportedContainerPath) => $"<b>Select a <i>file path</i> and optional <i>individual</i> and <i>expression profiles</i> for container export. Parameters from the <i>individual</i> and <i>expression profiles</i> that match the path {exportedContainerPath} will be added to the container before exporting.</b>";

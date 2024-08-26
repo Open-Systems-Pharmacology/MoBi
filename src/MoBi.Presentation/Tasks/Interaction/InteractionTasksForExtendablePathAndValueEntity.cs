@@ -11,6 +11,7 @@ using MoBi.Core.Helper;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
+using OSPSuite.Assets.Extensions;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -24,8 +25,7 @@ using OSPSuite.Utility.Extensions;
 namespace MoBi.Presentation.Tasks.Interaction
 {
    public abstract class InteractionTasksForExtendablePathAndValueEntity<TBuildingBlock, TPathAndValueEntity> : InteractionTasksForPathAndValueEntity<Module, TBuildingBlock, TPathAndValueEntity>, IInteractionTasksForExtendablePathAndValueEntity<TBuildingBlock, TPathAndValueEntity>
-      where TBuildingBlock : class, ILookupBuildingBlock<TPathAndValueEntity>, IBuildingBlock
-      where TPathAndValueEntity : PathAndValueEntity
+      where TBuildingBlock : class, ILookupBuildingBlock<TPathAndValueEntity>, IBuildingBlock, new() where TPathAndValueEntity : PathAndValueEntity
    {
       protected IExtendPathAndValuesManager<TPathAndValueEntity> _extendManager;
       protected readonly ICloneManagerForBuildingBlock _cloneManagerForBuildingBlock;
@@ -34,11 +34,14 @@ namespace MoBi.Presentation.Tasks.Interaction
       private readonly IMapper<ImportedQuantityDTO, TPathAndValueEntity> _dtoToQuantityToParameterValueMapper;
       protected readonly IPathAndValueEntityPathTask<ILookupBuildingBlock<TPathAndValueEntity>, TPathAndValueEntity> _entityPathTask;
 
+      private readonly TBuildingBlock _newBuildingBlock ;
+      private readonly IObjectTypeResolver _objectTypeResolver;
+
       protected InteractionTasksForExtendablePathAndValueEntity(IInteractionTaskContext interactionTaskContext, IEditTasksForBuildingBlock<TBuildingBlock> editTask,
          IExtendPathAndValuesManager<TPathAndValueEntity> extendManager, ICloneManagerForBuildingBlock cloneManagerForBuildingBlock,
          IMoBiFormulaTask moBiFormulaTask, ISpatialStructureFactory spatialStructureFactory, IMapper<ImportedQuantityDTO, TPathAndValueEntity> dtoToQuantityToParameterValueMapper,
          IPathAndValueEntityPathTask<ILookupBuildingBlock<TPathAndValueEntity>, TPathAndValueEntity> entityPathTask,
-         IParameterFactory parameterFactory)
+         IParameterFactory parameterFactory, IObjectTypeResolver objectTypeResolver)
          : base(interactionTaskContext, editTask, moBiFormulaTask, parameterFactory)
       {
          _extendManager = extendManager;
@@ -46,6 +49,8 @@ namespace MoBi.Presentation.Tasks.Interaction
          _spatialStructureFactory = spatialStructureFactory;
          _dtoToQuantityToParameterValueMapper = dtoToQuantityToParameterValueMapper;
          _entityPathTask = entityPathTask;
+         _objectTypeResolver = objectTypeResolver;
+         _newBuildingBlock = new TBuildingBlock().WithName(AppConstants.Captions.NewWindow(_objectTypeResolver.TypeFor<TBuildingBlock>()));
       }
 
       protected override double? ValueFromBuilder(TPathAndValueEntity builder)
@@ -103,7 +108,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       protected T BuildingBlockById<T>(string buildingBlockId) where T : class, IBuildingBlock
       {
          if (!Context.ObjectRepository.ContainsObjectWithId(buildingBlockId))
-            throw new MoBiException(AppConstants.Exceptions.SourceBuildingBlockNotInProject(new ObjectTypeResolver().TypeFor<T>()));
+            throw new MoBiException(AppConstants.Exceptions.SourceBuildingBlockNotInProject(_objectTypeResolver.TypeFor<T>()));
 
          return Context.Get<T>(buildingBlockId);
       }
@@ -319,5 +324,60 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
          return moleculeBlockCollection.Count > 1 || moleculeBlockCollection.Any(x => x.Count() > 1);
       }
+
+      public IMoBiCommand AddOrExtendWith(TBuildingBlock buildingBlock, Module module)
+      {
+         if (buildingBlock == null || !buildingBlock.Any())
+            return new MoBiEmptyCommand();
+
+         var buildingBlockToAddTo = buildingBlockToAdd(module);
+
+         if (buildingBlockToAddTo != null)
+            return ExtendBuildingBlockWith(buildingBlockToAddTo, buildingBlock.ToList());
+
+         return new AddBuildingBlockToModuleCommand<TBuildingBlock>(_interactionTaskContext.InteractionTask.Clone(buildingBlock), module).Run(_interactionTaskContext.Context);
+      }
+
+      public IMoBiCommand ExtendBuildingBlockWith(TBuildingBlock buildingBlock, IReadOnlyList<TPathAndValueEntity> newEntities)
+      {
+         var newStartValues = FilterEntitiesToRetain(buildingBlock, newEntities);
+         return Extend(newStartValues, buildingBlock, retainConflictingEntities: false);
+      }
+
+      public IReadOnlyList<TPathAndValueEntity> FilterEntitiesToRetain(TBuildingBlock originalBuildingBlock, IReadOnlyList<TPathAndValueEntity> newEntities)
+      {
+         using (var pathSelectionPresenter = Context.Resolve<IPathAndValueEntitySelectionPresenter>())
+         {
+            return pathSelectionPresenter.SelectReplacementEntities(newEntities, originalBuildingBlock);
+         }
+      }
+
+      private TBuildingBlock buildingBlockToAdd(Module module)
+      {
+         var moduleBuildingBlocks = module.BuildingBlocks.OfType<TBuildingBlock>().ToList();
+
+         // If there are no existing building blocks, then you can only add as a new building block
+         if (!moduleBuildingBlocks.Any())
+            return null;
+
+         using (var modal = ApplicationController.Start<IModalPresenter>())
+         {
+            var presenter = ApplicationController.Start<ISelectSinglePresenter<TBuildingBlock>>();
+            presenter.SetDescription(AppConstants.Captions.SelectTheBuildingBlockWhereEntitiesWillBeAddedOrUpdated(new ObjectTypeResolver().TypeFor<TPathAndValueEntity>().Pluralize()));
+            modal.Text = AppConstants.Captions.SelectBuildingBlock;
+            modal.Encapsulate(presenter);
+
+            var allItems = new List<TBuildingBlock>(moduleBuildingBlocks)
+            {
+               _newBuildingBlock
+            };
+            presenter.InitializeWith(allItems, x => !ReferenceEquals(_newBuildingBlock, x));
+            modal.CanCancel = false;
+            modal.Show(AppConstants.Dialog.SELECT_SINGLE_SIZE);
+            return existingBuildingBlockSelected(presenter.Selection) ? presenter.Selection : null;
+         }
+      }
+
+      private bool existingBuildingBlockSelected(TBuildingBlock selectedBuildingBlock) => !ReferenceEquals(_newBuildingBlock, selectedBuildingBlock);
    }
 }
