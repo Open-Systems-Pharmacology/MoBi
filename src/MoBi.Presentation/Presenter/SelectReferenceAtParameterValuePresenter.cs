@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
@@ -6,7 +5,6 @@ using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Nodes;
 
 namespace MoBi.Presentation.Presenter
 {
