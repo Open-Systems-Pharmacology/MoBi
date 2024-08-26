@@ -20,15 +20,13 @@ namespace MoBi.Presentation.Tasks.Interaction
    public interface IParameterValuesTask : IInteractionTasksForExtendablePathAndValueEntity<ParameterValuesBuildingBlock, ParameterValue>
    {
       void AddStartValueExpression(ParameterValuesBuildingBlock buildingBlock);
-      IMoBiCommand ExtendBuildingBlockWith(ParameterValuesBuildingBlock buildingBlock, IReadOnlyList<ParameterValue> newParameterValues);
    }
 
    public class ParameterValuesTask : InteractionTasksForExtendablePathAndValueEntity<ParameterValuesBuildingBlock, ParameterValue>, IParameterValuesTask
    {
       private readonly IParameterValuesCreator _parameterValuesCreator;
 
-      public ParameterValuesTask(
-         IInteractionTaskContext interactionTaskContext,
+      public ParameterValuesTask(IInteractionTaskContext interactionTaskContext,
          IEditTasksForBuildingBlock<ParameterValuesBuildingBlock> editTask,
          ICloneManagerForBuildingBlock cloneManagerForBuildingBlock,
          IImportedQuantityToParameterValueMapper dtoToQuantityToParameterValueMapper,
@@ -36,9 +34,10 @@ namespace MoBi.Presentation.Tasks.Interaction
          IMoBiFormulaTask moBiFormulaTask,
          IMoBiSpatialStructureFactory spatialStructureFactory,
          IParameterValuePathTask parameterValuePathTask,
-         IParameterValuesCreator parameterValuesCreator, 
-         IParameterFactory parameterFactory)
-         : base(interactionTaskContext, editTask, parameterValuesExtendManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoToQuantityToParameterValueMapper, parameterValuePathTask, parameterFactory)
+         IParameterValuesCreator parameterValuesCreator,
+         IParameterFactory parameterFactory, 
+         IObjectTypeResolver objectTypeResolver)
+         : base(interactionTaskContext, editTask, parameterValuesExtendManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoToQuantityToParameterValueMapper, parameterValuePathTask, parameterFactory, objectTypeResolver)
       {
          _parameterValuesCreator = parameterValuesCreator;
       }
@@ -91,20 +90,6 @@ namespace MoBi.Presentation.Tasks.Interaction
          var newParameterValues = createExpressionBasedOn(organ, molecules);
 
          AddCommand(ExtendBuildingBlockWith(buildingBlock, newParameterValues));
-      }
-
-      public IMoBiCommand ExtendBuildingBlockWith(ParameterValuesBuildingBlock buildingBlock, IReadOnlyList<ParameterValue> newParameterValues)
-      {
-         var newStartValues = FilterEntitiesToRetain(buildingBlock, newParameterValues);
-         return Extend(newStartValues, buildingBlock, retainConflictingEntities: false);
-      }
-
-      public IReadOnlyList<ParameterValue> FilterEntitiesToRetain(ParameterValuesBuildingBlock originalBuildingBlock, IReadOnlyList<ParameterValue> newParameterValues)
-      {
-         using (var pathSelectionPresenter = Context.Resolve<IPathAndValueEntitySelectionPresenter>())
-         {
-            return pathSelectionPresenter.SelectReplacementEntities(newParameterValues, originalBuildingBlock);
-         }
       }
 
       private IReadOnlyList<ParameterValue> createExpressionBasedOn(IContainer organ, IReadOnlyList<MoleculeBuilder> molecules) => _parameterValuesCreator.CreateExpressionFrom(organ, molecules);
