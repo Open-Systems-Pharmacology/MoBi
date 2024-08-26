@@ -6,6 +6,7 @@ using MoBi.Presentation.DTO;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
+using static MoBi.Core.Mappers.ColumnIndexes;
 
 namespace MoBi.Presentation.Mappers
 {
@@ -17,20 +18,6 @@ namespace MoBi.Presentation.Mappers
    public class DataTableToImportQuantityDTOMapperForMolecules : AbstractDataTableProviderToQuantityDTOMapper<PathAndValueEntityBuildingBlock<InitialCondition>>, IDataTableToImportQuantityDTOMapperForMolecules
    {
       private readonly IReactionDimensionRetriever _reactionDimensionRetriever;
-
-      private static class DataTableRowIndexes
-      {
-         public const int PATH = 0;
-         public const int MOLECULE = 1;
-         public const int IS_PRESENT = 2;
-         public const int VALUE = 3;
-         public const int UNIT = 4;
-         public const int SCALE_DIVISOR = 5;
-         public const int NEGATIVE_VALUES_ALLOWED = 6;
-         //optional dimension column to use
-         public const int DIMENSION = 7;
-         public const int COLUMNS = 7;
-      }
 
       public DataTableToImportQuantityDTOMapperForMolecules(IMoBiDimensionFactory dimensionFactory, IReactionDimensionRetriever reactionDimensionRetriever) : base(dimensionFactory)
       {
@@ -103,43 +90,43 @@ namespace MoBi.Presentation.Mappers
 
       protected override ImportedQuantityDTO MapQuantityFromRow(DataTable table, DataRow row, int rowIndex)
       {
-         if (row.ItemArray.Count() < DataTableRowIndexes.COLUMNS)
-            throw new ImportQuantityDTOsFromDataTablesMapperException(row, rowIndex, AppConstants.Exceptions.TableShouldBeNColumns(DataTableRowIndexes.COLUMNS));
+         if (row.ItemArray.Count() < InitialConditionsRowIndexes.COLUMNS)
+            throw new ImportQuantityDTOsFromDataTablesMapperException(row, rowIndex, AppConstants.Exceptions.TableShouldBeNColumns(InitialConditionsRowIndexes.COLUMNS));
 
-         var path = GetPath(row, DataTableRowIndexes.PATH);
+         var path = GetPath(row, InitialConditionsRowIndexes.PATH);
 
-         var moleculeName = GetQuantityName(row, DataTableRowIndexes.MOLECULE);
+         var moleculeName = GetQuantityName(row, InitialConditionsRowIndexes.MOLECULE);
 
          var msv = new ImportedQuantityDTO
          {
             ContainerPath = new ObjectPath(path),
             Name = moleculeName,
             IsPresent = getIsPresent(row),
-            IsScaleDivisorSpecified = getIsValueSpecified(row, DataTableRowIndexes.SCALE_DIVISOR),
-            IsQuantitySpecified = getIsValueSpecified(row, DataTableRowIndexes.VALUE),
+            IsScaleDivisorSpecified = getIsValueSpecified(row, InitialConditionsRowIndexes.SCALE_DIVISOR),
+            IsQuantitySpecified = getIsValueSpecified(row, InitialConditionsRowIndexes.VALUE),
             NegativeValuesAllowed = getNegativeValuesAllowed(row)
          };
          msv.ScaleDivisor = msv.IsScaleDivisorSpecified ? getScaleFactor(table, rowIndex) : double.NaN;
 
          if (!msv.IsQuantitySpecified) return msv;
 
-         var dimension = GetDimension(table, rowIndex, DataTableRowIndexes.UNIT, DataTableRowIndexes.DIMENSION);
+         var dimension = GetDimension(table, rowIndex, InitialConditionsRowIndexes.UNIT, InitialConditionsRowIndexes.DIMENSION);
          msv.Dimension = dimension;
-         msv.DisplayUnit = dimension.Unit(row[DataTableRowIndexes.UNIT].ToString());
+         msv.DisplayUnit = dimension.Unit(row[InitialConditionsRowIndexes.UNIT].ToString());
 
-         msv.QuantityInBaseUnit = msv.IsQuantitySpecified ? msv.ConvertToBaseUnit(GetQuantity(table, rowIndex, DataTableRowIndexes.VALUE)) : double.NaN;
+         msv.QuantityInBaseUnit = msv.IsQuantitySpecified ? msv.ConvertToBaseUnit(GetQuantity(table, rowIndex, InitialConditionsRowIndexes.VALUE)) : double.NaN;
 
          return msv;
       }
 
       private double getScaleFactor(DataTable table, int rowIndex)
       {
-         return GetDouble(table, rowIndex, DataTableRowIndexes.SCALE_DIVISOR);
+         return GetDouble(table, rowIndex, InitialConditionsRowIndexes.SCALE_DIVISOR);
       }
 
       private bool getNegativeValuesAllowed(DataRow row)
       {
-         return GetBool(row, DataTableRowIndexes.NEGATIVE_VALUES_ALLOWED);
+         return GetBool(row, InitialConditionsRowIndexes.NEGATIVE_VALUES_ALLOWED);
       }
 
       private bool getIsValueSpecified(DataRow row, int index)
@@ -149,7 +136,7 @@ namespace MoBi.Presentation.Mappers
 
       private bool getIsPresent(DataRow row)
       {
-         return GetBool(row, DataTableRowIndexes.IS_PRESENT);
+         return GetBool(row, InitialConditionsRowIndexes.IS_PRESENT);
       }
    }
 }

@@ -20,21 +20,20 @@ namespace MoBi.Core.Mappers
       protected override IEnumerable<PathAndValueEntity> GetElements(ParameterValuesBuildingBlock buildingBlock) =>
          buildingBlock.Select(x => x).Where(x => x.Value != null);
 
-      protected override DataTable GenerateEmptyDataTable()
+      protected override void AddSpecificColumns(DataTable dataTable)
       {
-         var dt = new DataTable();
-         dt.AddColumn(_path);
-         dt.AddColumn<string>(_name);
-         dt.AddColumn<double>(_value);
-         dt.AddColumn(_unit);
-         dt.TableName = AppConstants.Captions.ParameterValue;
-         return dt;
       }
 
       protected override void SetSpecificColumns(DataRow row, PathAndValueEntity element)
       {
-         row[_name] = element.Name;
-         row[_unit] = element.DisplayUnit;
       }
+
+      protected override int GetColumnIndexForPath() => ColumnIndexes.ParameterRowIndexes.CONTAINER_PATH;
+
+      protected override int GetColumnIndexForValue() => ColumnIndexes.ParameterRowIndexes.VALUE;
+
+      protected override int GetColumnIndexForName() => ColumnIndexes.ParameterRowIndexes.NAME;
+
+      protected override int GetColumnIndexForUnit() => ColumnIndexes.ParameterRowIndexes.UNIT;
    }
 }

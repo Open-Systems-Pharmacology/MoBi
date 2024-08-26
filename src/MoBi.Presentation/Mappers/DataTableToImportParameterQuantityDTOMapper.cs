@@ -3,8 +3,10 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.UnitSystem;
 using MoBi.Presentation.DTO;
+using NPOI.SS.Formula.Functions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
+using static MoBi.Core.Mappers.ColumnIndexes;
 
 namespace MoBi.Presentation.Mappers
 {
@@ -14,34 +16,23 @@ namespace MoBi.Presentation.Mappers
          : base(dimensionFactory)
       {
       }
-
-      protected static class DataTableRowIndexes
-      {
-         public const int CONTAINER_PATH = 0;
-         public const int NAME = 1;
-         public const int VALUE = 2;
-         public const int UNIT = 3;
-         //optional dimension column
-         public const int DIMENSION = 4;
-         public const int COLUMNS = 4;
-      }
-
+      
       protected override ImportedQuantityDTO MapQuantityFromRow(DataTable table, DataRow row, int rowIndex)
       {
-         if (row.ItemArray.Count() < DataTableRowIndexes.COLUMNS)
-            throw new ImportQuantityDTOsFromDataTablesMapperException(row, rowIndex, AppConstants.Exceptions.TableShouldBeNColumns(DataTableRowIndexes.COLUMNS));
+         if (row.ItemArray.Count() < ParameterRowIndexes.COLUMNS)
+            throw new ImportQuantityDTOsFromDataTablesMapperException(row, rowIndex, AppConstants.Exceptions.TableShouldBeNColumns(ParameterRowIndexes.COLUMNS));
 
-         var dimension = GetDimension(table, rowIndex, DataTableRowIndexes.UNIT, DataTableRowIndexes.DIMENSION);
-         var containerPath = GetPath(row, DataTableRowIndexes.CONTAINER_PATH);
-         var quantity = GetQuantity(table, rowIndex, DataTableRowIndexes.VALUE);
-         var parameterName = GetQuantityName(row, DataTableRowIndexes.NAME);
+         var dimension = GetDimension(table, rowIndex, ParameterRowIndexes.UNIT, ParameterRowIndexes.DIMENSION);
+         var containerPath = GetPath(row, ParameterRowIndexes.CONTAINER_PATH);
+         var quantity = GetQuantity(table, rowIndex, ParameterRowIndexes.VALUE);
+         var parameterName = GetQuantityName(row, ParameterRowIndexes.NAME);
 
          var dto = new ImportedQuantityDTO
          {
             Dimension = dimension,
             ContainerPath = new ObjectPath(containerPath),
             Name = parameterName,
-            DisplayUnit = dimension.Unit(row[DataTableRowIndexes.UNIT].ToString()),
+            DisplayUnit = dimension.Unit(row[ParameterRowIndexes.UNIT].ToString()),
             IsQuantitySpecified = true,
             IsScaleDivisorSpecified = false
          };
