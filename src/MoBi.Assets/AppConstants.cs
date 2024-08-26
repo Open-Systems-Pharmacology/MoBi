@@ -646,7 +646,7 @@ namespace MoBi.Assets
 
          public static string EditPathAndName(string objectType, ObjectPath originalPath, ObjectPath newPath, string originalName, string newName)
          {
-            return $"Changing {objectType} original name from {originalName} to {newName} and original path {originalPath} to new path {newPath}";
+            return $"Changing {objectType} original name from {originalName} to {newName} and original path from {originalPath} to {newPath}";
          }
 
          public static string UpdateDimensions(string objectName, string objectType, IDimension oldDimension, IDimension newDimension, string buildingBlockName)
