@@ -1,10 +1,10 @@
+using System.Linq;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
-using OSPSuite.Presentation.Nodes;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -26,23 +26,28 @@ namespace MoBi.Presentation.Presenter
          : base(view, objectBaseDTOMapper, context, userSettings,
             objectBaseToMoleculeDummyMapper, dummyParameterDTOMapper, referenceMapper, objectPathCreator, Localisations.ContainerOnly, buildingBlockRepository)
       {
+         view.EnableMultiSelect = true;
       }
 
       protected override void AddSpecificInitialObjects()
       {
          AddSpatialStructures();
-
          _view.ChangeLocalisationAllowed = false;
       }
 
-      public override void SelectionChanged(ITreeNode treeNode)
+      public override void SelectionChanged()
       {
-         base.SelectionChanged(treeNode);
+         base.SelectionChanged();
          OnStatusChanged(null, null);
       }
 
       public override bool CanClose => isSelectionParameterType();
 
-      private bool isSelectionParameterType() => GetSelected<IParameter>() != null;
+      private bool isSelectionParameterType()
+      {
+         var allSelected = GetAllSelected<IObjectBase>().ToList();
+         var allSelectedAreParameters = allSelected.All(x => x is IParameter);
+         return allSelectedAreParameters && allSelected.Any();
+      }
    }
 }

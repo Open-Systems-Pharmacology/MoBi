@@ -51,6 +51,8 @@ namespace MoBi.Presentation.Tasks.Interaction
       /// <param name="targetFormula">The formula being evaluated</param>
       /// <returns>True if the formula is equivalent to the start value formula</returns>
       bool HasEquivalentFormula(PathAndValueEntity pathAndValueEntity, IFormula targetFormula);
+
+      IMoBiCommand SetContainerPathCommand(ILookupBuildingBlock<TPathAndValueEntity> buildingBlock, TPathAndValueEntity pathAndValueEntity, ObjectPath targetPath);
    }
 
    public abstract class AbstractPathAndValueEntityPathTask<TBuildingBlock, TPathAndValueEntity> : IPathAndValueEntityPathTask<TBuildingBlock, TPathAndValueEntity> where TBuildingBlock : ILookupBuildingBlock<TPathAndValueEntity> where TPathAndValueEntity : PathAndValueEntity
@@ -76,6 +78,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public abstract IMoBiCommand UpdateNameCommand(ILookupBuildingBlock<TPathAndValueEntity> startValues, TPathAndValueEntity pathAndValueEntity, string newName);
       public abstract IMoBiCommand UpdateContainerPathCommand(ILookupBuildingBlock<TPathAndValueEntity> buildingBlock, TPathAndValueEntity pathAndValueEntity, int indexToUpdate, string newValue);
+      public abstract IMoBiCommand SetContainerPathCommand(ILookupBuildingBlock<TPathAndValueEntity> buildingBlock, TPathAndValueEntity pathAndValueEntity, ObjectPath targetPath);
 
       public static void ConfigureTargetPath(int indexToUpdate, string newValue, ObjectPath targetPath)
       {

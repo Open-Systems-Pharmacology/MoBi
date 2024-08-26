@@ -27,7 +27,7 @@ namespace MoBi.Presentation.UICommand
       protected override void PerformExecute()
       {
          var presenter = _applicationController.Open<IEditParameterValuesPresenter, ParameterValuesBuildingBlock>(Subject, _moBiHistoryManager);
-         presenter.AddNewParameterValue();
+         presenter.AddNewParameterValues();
       }
    }
 }

@@ -36,8 +36,9 @@ namespace MoBi.Presentation.Presenter
       void CheckPathCreationConfiguration();
       Func<IObjectBase, bool> SelectionPredicate { get; set; }
       bool LegalObjectSelected { get; }
-      void SelectionChanged(ITreeNode treeNode);
+      void SelectionChanged();
       event Action SelectionChangedEvent;
+      IReadOnlyList<ObjectPath> GetAllSelections();
    }
 
    public abstract class SelectReferencePresenterBase : AbstractCommandCollectorPresenter<ISelectReferenceView, ISelectReferencePresenter>, ISelectReferencePresenter
@@ -176,14 +177,29 @@ namespace MoBi.Presentation.Presenter
       {
          var selection = GetSelected<IEntity>();
 
+         return createPathFor(selection);
+      }
+
+      private ObjectPath createPathFor(IEntity selection)
+      {
          return shouldCreateAbsolutePath ? _objectPathFactory.CreateAbsoluteObjectPath(selection) : _objectPathFactory.CreateRelativeObjectPath(_refObject, selection);
+      }
+
+      public virtual IReadOnlyList<ObjectPath> GetAllSelections()
+      {
+         return GetAllSelected<IEntity>().Select(createPathFor).ToList();
       }
 
       protected T GetSelected<T>() where T : class, IObjectBase
       {
          var dto = _view.SelectedDTO;
-
+         
          return dto == null ? null : _context.Get<T>(dto.Id);
+      }
+
+      protected IEnumerable<T> GetAllSelected<T>() where T : class, IObjectBase
+      {
+         return _view.AllSelectedDTOs.Select(dto => _context.Get<T>(dto.Id));
       }
 
       public void CheckPathCreationConfiguration()
@@ -208,7 +224,7 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      public virtual void SelectionChanged(ITreeNode treeNode)
+      public virtual void SelectionChanged()
       {
          SelectionChangedEvent();
       }

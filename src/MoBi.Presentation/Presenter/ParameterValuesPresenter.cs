@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
@@ -22,7 +23,7 @@ namespace MoBi.Presentation.Presenter
    public interface IParameterValuesPresenter : IExtendablePathAndValueBuildingBlockPresenter<ParameterValueDTO>, IEditPresenter<ParameterValuesBuildingBlock>, IPresenterWithContextMenu<IViewItem>
    {
       void UpdateDimension(ParameterValueDTO valueObject, IDimension newDimension);
-      void AddNewParameterValue();
+      void AddNewParameterValues();
    }
 
    public class ParameterValuesPresenter
@@ -38,6 +39,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IViewItemContextMenuFactory _viewItemContextMenuFactory;
       private readonly IModalPresenter _modalPresenter;
       private readonly ISelectReferenceAtParameterValuePresenter _referenceAtParamValuePresenter;
+      private readonly IDialogCreator _dialogCreator;
 
       public ParameterValuesPresenter(
          IParameterValuesView view,
@@ -53,7 +55,8 @@ namespace MoBi.Presentation.Presenter
          IDimensionFactory dimensionFactory,
          IViewItemContextMenuFactory viewItemContextMenuFactory,
          IModalPresenter modalPresenter,
-         ISelectReferenceAtParameterValuePresenter selectReferenceAtParameterValuePresenter) : base(view, valueMapper, parameterValuesTask, parameterValuesCreator, context, deletePathAndValueEntityPresenter, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
+         ISelectReferenceAtParameterValuePresenter selectReferenceAtParameterValuePresenter,
+         IDialogCreator dialogCreator) : base(view, valueMapper, parameterValuesTask, parameterValuesCreator, context, deletePathAndValueEntityPresenter, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
       {
          _parameterValuesTask = parameterValuesTask;
          _displayUnitRetriever = displayUnitRetriever;
@@ -61,6 +64,7 @@ namespace MoBi.Presentation.Presenter
          _viewItemContextMenuFactory = viewItemContextMenuFactory;
          _modalPresenter = modalPresenter;
          _referenceAtParamValuePresenter = selectReferenceAtParameterValuePresenter;
+         _dialogCreator = dialogCreator;
          view.HideIsPresentView();
          view.HideRefreshView();
          view.HideNegativeValuesAllowedView();
@@ -96,7 +100,7 @@ namespace MoBi.Presentation.Presenter
       public void ShowContextMenu(IViewItem objectRequestingPopup, Point popupLocation) =>
          _viewItemContextMenuFactory.CreateFor(objectRequestingPopup, this).Show(_view, popupLocation);
 
-      public void AddNewParameterValue()
+      public void AddNewParameterValues()
       {
          _modalPresenter.Text = AppConstants.Captions.SelectParameter;
          //The order of this next 2 lines should not be changed, as they are used to encapsulate the presenter
@@ -106,8 +110,41 @@ namespace MoBi.Presentation.Presenter
          if (!_modalPresenter.Show())
             return;
 
-         AddNewPathAndValueEntity(_referenceAtParamValuePresenter.GetSelection());
-         _view.InitializePathColumns();
+         var allSelected = _referenceAtParamValuePresenter.GetAllSelections();
+
+         _context.AddToHistory(addParameterValuesForObjectPaths(allSelected, _buildingBlock));
+      }
+
+      private IMoBiCommand addParameterValuesForObjectPaths(IReadOnlyList<ObjectPath> objectPaths, ParameterValuesBuildingBlock buildingBlockToAddTo)
+      {
+         var allSkipped = objectPaths.Where(x => alreadyIn(x, buildingBlockToAddTo)).ToList();
+
+         var objectPathsToAdd = objectPaths.Except(allSkipped).ToList();
+
+         var macroCommand = new MoBiMacroCommand
+         {
+            ObjectType = new ObjectTypeResolver().TypeFor<ParameterValue>(),
+            CommandType = AppConstants.Commands.AddCommand,
+            Description = AppConstants.Commands.AddNewParameterValues(buildingBlockToAddTo.DisplayName)
+         };
+
+         macroCommand.AddRange(objectPathsToAdd.Select(entityPath => addAndUpdatePath(buildingBlockToAddTo, entityPath)));
+
+         if (allSkipped.Any())
+            _dialogCreator.MessageBoxInfo(AppConstants.Captions.BuildingBlockAlreadyContains(allSkipped.Select(x => x.PathAsString).ToList()));
+
+         return macroCommand;
+      }
+
+      private IMoBiCommand addAndUpdatePath(ParameterValuesBuildingBlock buildingBlockToAddTo, ObjectPath entityPath)
+      {
+         var addedDTO = AddNewEmptyPathAndValueEntity();
+         return _parameterValuesTask.SetFullPath(addedDTO.ParameterValue, entityPath, buildingBlockToAddTo);
+      }
+
+      private bool alreadyIn(ObjectPath objectPath, ParameterValuesBuildingBlock buildingBlock)
+      {
+         return buildingBlock.FindByPath(objectPath) != null;
       }
    }
 }

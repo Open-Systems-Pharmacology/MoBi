@@ -264,6 +264,7 @@ namespace MoBi.Assets
          public static readonly string UpdateProjectDefaultSimulationSettings = "Update project default simulation settings";
          public static readonly string RemoveTrackedQuantityChanges = "Remove tracked quantity changes";
          public static readonly string AddedMultipleBuildingBlocksFromFile = "Added multiple building blocks from file";
+         public static string AddNewParameterValues(string buildingBlockName) => $"Add new Parameter Values to {buildingBlockName}";
 
          public static string ConvertDistributedPathAndValueEntityToConstantValue(string type, string path) => $"Convert distributed {type} '{path}' to constant value";
 
@@ -641,6 +642,11 @@ namespace MoBi.Assets
          public static string EditPath(string objectType, ObjectPath originalPath, ObjectPath newPath)
          {
             return $"Changing {objectType} original path {originalPath} to new path {newPath}";
+         }
+
+         public static string EditPathAndName(string objectType, ObjectPath originalPath, ObjectPath newPath, string originalName, string newName)
+         {
+            return $"Changing {objectType} original name from {originalName} to {newName} and original path from {originalPath} to {newPath}";
          }
 
          public static string UpdateDimensions(string objectName, string objectType, IDimension oldDimension, IDimension newDimension, string buildingBlockName)
@@ -1990,6 +1996,26 @@ namespace MoBi.Assets
          public static string TheModuleWillBeConvertedFromPKSimToExtensionModule(string moduleName)
          {
             return $"The PK-Sim module '{moduleName}' will be converted to an extension module";
+         }
+
+         public static string BuildingBlockAlreadyContains(IReadOnlyList<string> paths)
+         {
+            var pathsNotAdded = paths.Count;
+            var sb = new StringBuilder();
+
+            if (pathsNotAdded == 1)
+               sb.AppendLine("A Parameter Value could not be added");
+            else
+               sb.AppendLine("Some parameter values could not be added");
+
+            sb.AppendLine(namesList(paths));
+
+            if (pathsNotAdded == 1)
+               sb.AppendLine("It already exists in the building block");
+            else
+               sb.AppendLine("They already exist in the building block");
+
+            return sb.ToString();
          }
       }
 

@@ -32,7 +32,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       protected readonly ISpatialStructureFactory _spatialStructureFactory;
       private readonly IMapper<ImportedQuantityDTO, TPathAndValueEntity> _dtoToQuantityToParameterValueMapper;
-      private readonly IPathAndValueEntityPathTask<ILookupBuildingBlock<TPathAndValueEntity>, TPathAndValueEntity> _entityPathTask;
+      protected readonly IPathAndValueEntityPathTask<ILookupBuildingBlock<TPathAndValueEntity>, TPathAndValueEntity> _entityPathTask;
 
       private readonly TBuildingBlock _newBuildingBlock ;
       private readonly IObjectTypeResolver _objectTypeResolver;
