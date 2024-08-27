@@ -41,12 +41,27 @@ namespace MoBi.UI.Views
          _treeView.StateImageList = imageListRetriever.AllImages16x16;
          btEditSelectLocalisation.Properties.ReadOnly = true;
          _treeView.SelectedNodeChanged += selectionChanged;
+         _treeView.SelectionChanged += selectionChanged;
          radioGroupReferenceType.Properties.Items.AddRange(getReferenceTypesForRadioGroup());
+      }
+
+      private void selectionChanged(object sender, EventArgs e)
+      {
+         // We need this event to fire after the selection has been changed, not after the focus changes
+         // when operating in multi select mode
+         if(EnableMultiSelect)
+            _presenter.SelectionChanged();
       }
 
       private void selectionChanged(ITreeNode treeNode)
       {
-         _presenter.SelectionChanged(treeNode);
+         _presenter.SelectionChanged();
+      }
+
+      public bool EnableMultiSelect
+      {
+         set => _treeView.OptionsSelection.MultiSelect = value;
+         get => _treeView.OptionsSelection.MultiSelect;
       }
 
       public override void InitializeResources()
@@ -123,6 +138,7 @@ namespace MoBi.UI.Views
          });
       }
 
+      public IReadOnlyList<ObjectBaseDTO> AllSelectedDTOs => _treeView.Selection?.Select(x => _treeView.NodeFrom(x)?.TagAsObject as ObjectBaseDTO).Where(x => x != null).ToList();
       public ObjectBaseDTO SelectedDTO => _treeView.SelectedNode?.TagAsObject as ObjectBaseDTO;
 
       private void btEditSelectLocalisation_ButtonClick(object sender, ButtonPressedEventArgs e)

@@ -10,7 +10,12 @@ namespace MoBi.Presentation.Tasks.Interaction
 {
    public class InteractionTasksForContainer : InteractionTasksForContainerBase<IContainer>
    {
-      public InteractionTasksForContainer(IInteractionTaskContext interactionTaskContext, IEditTaskFor<IContainer> editTask, IObjectPathFactory objectPathFactory, IParameterValuesTask parameterValuesTask) : base(interactionTaskContext, editTask, objectPathFactory, parameterValuesTask)
+      public InteractionTasksForContainer(
+         IInteractionTaskContext interactionTaskContext, 
+         IEditTaskFor<IContainer> editTask, 
+         IObjectPathFactory objectPathFactory, 
+         IParameterValuesTask parameterValuesTask, 
+         IInitialConditionsTask<InitialConditionsBuildingBlock> initialConditionsTask) : base(interactionTaskContext, editTask, objectPathFactory, parameterValuesTask, initialConditionsTask)
       {
       }
 

@@ -43,7 +43,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       IMoBiCommand RefreshInitialConditionsFromBuildingBlocks(TBuildingBlock buildingBlock, IReadOnlyList<InitialCondition> initialConditions);
    }
 
-   public class InitialConditionsTask<TBuildingBlock> : InteractionTasksForExtendablePathAndValueEntity<TBuildingBlock, InitialCondition>, IInitialConditionsTask<TBuildingBlock> where TBuildingBlock : class, ILookupBuildingBlock<InitialCondition>
+   public class InitialConditionsTask<TBuildingBlock> : InteractionTasksForExtendablePathAndValueEntity<TBuildingBlock, InitialCondition>, IInitialConditionsTask<TBuildingBlock> where TBuildingBlock : class, ILookupBuildingBlock<InitialCondition>, new()
    {
       private readonly IReactionDimensionRetriever _dimensionRetriever;
       protected readonly IInitialConditionsCreator _initialConditionsCreator;
@@ -58,11 +58,13 @@ namespace MoBi.Presentation.Tasks.Interaction
          IImportedQuantityToInitialConditionMapper dtoMapper,
          IInitialConditionPathTask initialConditionPathTask,
          IReactionDimensionRetriever dimensionRetriever,
-         IInitialConditionsCreator initialConditionsCreator, 
+         IInitialConditionsCreator initialConditionsCreator,
          IParameterFactory parameterFactory,
+         INameCorrector nameCorrector, 
+         IObjectTypeResolver objectTypeResolver,
          INameCorrector nameCorrector,
          IDialogCreator dialogCreator) : 
-         base(interactionTaskContext, editTask, extendManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoMapper, initialConditionPathTask, parameterFactory, dialogCreator)
+         base(interactionTaskContext, editTask, extendManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoMapper, initialConditionPathTask, parameterFactory, dialogCreator, objectTypeResolver)
       {
        
          _dimensionRetriever = dimensionRetriever;

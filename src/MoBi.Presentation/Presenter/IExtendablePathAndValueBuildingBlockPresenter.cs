@@ -6,7 +6,7 @@ using OSPSuite.Utility.Events;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IExtendablePathAndValueBuildingBlockPresenter<in TDTO> : IPathAndValueBuildingBlockPresenter<TDTO>, ISubjectPresenter,
+   public interface IExtendablePathAndValueBuildingBlockPresenter<TDTO> : IPathAndValueBuildingBlockPresenter<TDTO>, ISubjectPresenter,
       ILatchable,
       IListener<PathAndValueEntitiesBuildingBlockChangedEvent>,
       IListener<BulkUpdateFinishedEvent>,
@@ -38,7 +38,7 @@ namespace MoBi.Presentation.Presenter
       /// <summary>
       ///    Adds a new empty path and value entity to the view
       /// </summary>
-      void AddNewEmptyPathAndValueEntity();
+      TDTO AddNewEmptyPathAndValueEntity();
 
       /// <summary>
       ///    Sets if new formula can be created. Default is true
