@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
@@ -44,6 +45,14 @@ namespace MoBi.UI.Views
       }
 
       public ObjectBaseDTO Selected => _treeView.SelectedNode?.TagAsObject as ObjectBaseDTO;
+
+      public IReadOnlyList<ObjectBaseDTO> AllSelected => _treeView.Selection.Select(x => _treeView.NodeFrom(x).TagAsObject as ObjectBaseDTO).ToList();
+
+      public bool AllowMultiSelect
+      { 
+         get => _treeView.OptionsSelection.MultiSelect;
+         set => _treeView.OptionsSelection.MultiSelect = value;
+      }
 
       public override bool HasError => !_presenter.IsValidSelection(Selected);
 

@@ -311,7 +311,7 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _context.Context.Resolve<ISelectOrganAndProteinsPresenter>()).Returns(_selectOrganAndProteinsPresenter);
          A.CallTo(() => _context.Context.Resolve<IPathAndValueEntitySelectionPresenter>()).Returns(_pathAndValueEntitySelectionPresenter);
 
-         A.CallTo(() => _selectOrganAndProteinsPresenter.SelectedOrgan).Returns(_selectedOrgan);
+         A.CallTo(() => _selectOrganAndProteinsPresenter.SelectedContainers).Returns(new[] { _selectedOrgan });
          A.CallTo(() => _selectOrganAndProteinsPresenter.SelectedMolecules).Returns(_selectedMolecules);
       }
 

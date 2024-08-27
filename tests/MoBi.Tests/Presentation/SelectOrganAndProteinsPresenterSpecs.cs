@@ -3,6 +3,7 @@ using FakeItEasy;
 using FluentNHibernate.Utils;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
+using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
@@ -11,6 +12,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility;
+using System.Linq;
 
 namespace MoBi.Presentation
 {
@@ -65,8 +67,80 @@ namespace MoBi.Presentation
       [Observation]
       public void the_selections_should_be_cleared()
       {
-         sut.SelectedOrgan.ShouldBeNull();
+         sut.SelectedContainers.ShouldBeNull();
          sut.SelectedMolecules.ShouldBeEmpty();
+      }
+   }
+
+   public class When_selecting_multiple_containers_with_not_matching_type : concern_for_SelectOrganAndProteinsPresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _selectContainerInTreePresenter.SelectedContainers).Returns(new[] { new Container().WithContainerType(ContainerType.Organ), new Container().WithContainerType(ContainerType.Organism) });
+         A.CallTo(() => _selectMoleculesPresenter.SelectedMolecules).Returns(new[] { new MoleculeSelectionDTO(new MoleculeBuilder()) });
+
+         A.CallTo(() => _selectMoleculesPresenter.CanClose).Returns(true);
+         A.CallTo(() => _selectContainerInTreePresenter.CanClose).Returns(true);
+      }
+
+      protected override void Because()
+      {
+         sut.SelectSelectOrganAndProteins(_module);
+      }
+
+      [Observation]
+      public void the_presenter_should_not_allow_the_selection()
+      {
+         sut.CanClose.ShouldBeFalse();
+      }
+   }
+
+   public class When_selecting_multiple_containers_without_molecule_selection : concern_for_SelectOrganAndProteinsPresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _selectContainerInTreePresenter.SelectedContainers).Returns(new[] { new Container().WithContainerType(ContainerType.Organ), new Container().WithContainerType(ContainerType.Organ) });
+         A.CallTo(() => _selectMoleculesPresenter.SelectedMolecules).Returns(Enumerable.Empty<MoleculeSelectionDTO>().ToList());
+
+         A.CallTo(() => _selectMoleculesPresenter.CanClose).Returns(true);
+         A.CallTo(() => _selectContainerInTreePresenter.CanClose).Returns(true);
+      }
+
+      protected override void Because()
+      {
+         sut.SelectSelectOrganAndProteins(_module);
+      }
+
+      [Observation]
+      public void the_presenter_should_not_allow_the_selection()
+      {
+         sut.CanClose.ShouldBeFalse();
+      }
+   }
+
+   public class When_selecting_multiple_containers_with_matching_type : concern_for_SelectOrganAndProteinsPresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _selectContainerInTreePresenter.SelectedContainers).Returns(new[] { new Container().WithContainerType(ContainerType.Organ), new Container().WithContainerType(ContainerType.Organ) });
+         A.CallTo(() => _selectMoleculesPresenter.SelectedMolecules).Returns(new[] { new MoleculeSelectionDTO(new MoleculeBuilder()) });
+
+         A.CallTo(() => _selectMoleculesPresenter.CanClose).Returns(true);
+         A.CallTo(() => _selectContainerInTreePresenter.CanClose).Returns(true);
+      }
+
+      protected override void Because()
+      {
+         sut.SelectSelectOrganAndProteins(_module);
+      }
+
+      [Observation]
+      public void the_presenter_should_allow_the_selection()
+      {
+         sut.CanClose.ShouldBeTrue();
       }
    }
 
