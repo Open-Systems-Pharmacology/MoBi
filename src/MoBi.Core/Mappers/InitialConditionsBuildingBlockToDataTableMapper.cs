@@ -12,7 +12,7 @@ namespace MoBi.Core.Mappers
    {
    }
 
-   public class InitialConditionsBuildingBlockToDataTableMapper : PathAndValueBuildingBlockToDataTableMapper<InitialConditionsBuildingBlock, InitialCondition>, IInitialConditionsBuildingBlockToDataTableMapper
+   public class InitialConditionsBuildingBlockToDataTableMapper : PathAndValuesToDataTableMapper<InitialCondition>, IInitialConditionsBuildingBlockToDataTableMapper
    {
       private string isPresent => AppConstants.Captions.IsPresent;
       private string scaleDivisor => AppConstants.Captions.ScaleDivisor;
