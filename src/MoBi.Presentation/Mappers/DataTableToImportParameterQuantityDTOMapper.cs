@@ -19,20 +19,20 @@ namespace MoBi.Presentation.Mappers
       
       protected override ImportedQuantityDTO MapQuantityFromRow(DataTable table, DataRow row, int rowIndex)
       {
-         if (row.ItemArray.Count() < ParameterRowIndexes.COLUMNS)
-            throw new ImportQuantityDTOsFromDataTablesMapperException(row, rowIndex, AppConstants.Exceptions.TableShouldBeNColumns(ParameterRowIndexes.COLUMNS));
+         if (row.ItemArray.Count() < Parameters.COLUMNS)
+            throw new ImportQuantityDTOsFromDataTablesMapperException(row, rowIndex, AppConstants.Exceptions.TableShouldBeNColumns(Parameters.COLUMNS));
 
-         var dimension = GetDimension(table, rowIndex, ParameterRowIndexes.UNIT, ParameterRowIndexes.DIMENSION);
-         var containerPath = GetPath(row, ParameterRowIndexes.CONTAINER_PATH);
-         var quantity = GetQuantity(table, rowIndex, ParameterRowIndexes.VALUE);
-         var parameterName = GetQuantityName(row, ParameterRowIndexes.NAME);
+         var dimension = GetDimension(table, rowIndex, Parameters.UNIT, Parameters.DIMENSION);
+         var containerPath = GetPath(row, Parameters.CONTAINER_PATH);
+         var quantity = GetQuantity(table, rowIndex, Parameters.VALUE);
+         var parameterName = GetQuantityName(row, Parameters.NAME);
 
          var dto = new ImportedQuantityDTO
          {
             Dimension = dimension,
             ContainerPath = new ObjectPath(containerPath),
             Name = parameterName,
-            DisplayUnit = dimension.Unit(row[ParameterRowIndexes.UNIT].ToString()),
+            DisplayUnit = dimension.Unit(row[Parameters.UNIT].ToString()),
             IsQuantitySpecified = true,
             IsScaleDivisorSpecified = false
          };

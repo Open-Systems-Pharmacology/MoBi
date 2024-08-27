@@ -8,7 +8,7 @@ namespace MoBi.Core.Mappers
 {
    public static class ColumnIndexes
    {
-      public static class InitialConditionsRowIndexes
+      public static class InitialConditions
       {
          public const int PATH = 0;
          public const int MOLECULE = 1;
@@ -22,7 +22,7 @@ namespace MoBi.Core.Mappers
          public const int COLUMNS = 7;
       }
 
-      public static class ParameterRowIndexes
+      public static class Parameters
       {
          public const int CONTAINER_PATH = 0;
          public const int NAME = 1;

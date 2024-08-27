@@ -58,11 +58,10 @@ namespace MoBi.Presentation.Tasks
          _parameterFactory = A.Fake<IParameterFactory>();
          _reactionDimensionRetriever = A.Fake<IReactionDimensionRetriever>();
          _moleculeBuilderTask = A.Fake<IInteractionTasksForMoleculeBuilder>();
-
          _formulaTask = A.Fake<IFormulaTask>();
          sut = new InitialConditionsTask<InitialConditionsBuildingBlock>(_context, _editTask, A.Fake<IInitialConditionsBuildingBlockExtendManager>(), _cloneManagerForBuildingBlock, A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(),
             new ImportedQuantityToInitialConditionMapper(_initialConditionsCreator),
-            new InitialConditionPathTask(_formulaTask, _context.Context), _reactionDimensionRetriever, _initialConditionsCreator, _parameterFactory, _objectTypeResolver, _nameCorrector);
+            new InitialConditionPathTask(_formulaTask, _context.Context), _reactionDimensionRetriever, _initialConditionsCreator, _parameterFactory, _objectTypeResolver, _nameCorrector, A.Fake<IExportDataTableToExcelTask>());
       }
    }
 

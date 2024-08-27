@@ -80,16 +80,19 @@ namespace MoBi.Presentation.Tasks.Interaction
       protected readonly IMoBiFormulaTask _moBiFormulaTask;
       private readonly IParameterFactory _parameterFactory;
       private readonly IInteractionTaskContext _interactionTaskContext;
+      private readonly IExportDataTableToExcelTask _exportDataTableToExcelTask;
 
       protected InteractionTasksForPathAndValueEntity(IInteractionTaskContext interactionTaskContext,
          IEditTasksForBuildingBlock<TBuildingBlock> editTask,
          IMoBiFormulaTask moBiFormulaTask,
-         IParameterFactory parameterFactory)
+         IParameterFactory parameterFactory,
+         IExportDataTableToExcelTask exportDataTableToExcelTask)
          : base(interactionTaskContext, editTask)
       {
          _moBiFormulaTask = moBiFormulaTask;
          _parameterFactory = parameterFactory;
          _interactionTaskContext = interactionTaskContext;
+         _exportDataTableToExcelTask = exportDataTableToExcelTask;
       }
 
       public ICommand SetValueOrigin(TBuildingBlock buildingBlock, ValueOrigin valueOrigin, TBuilder pathAndValueEntity)
@@ -138,7 +141,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (string.IsNullOrEmpty(excelFileName))
             return;
 
-         ExportToExcelTask.ExportDataTablesToExcel(mappedValues, excelFileName, openExcel: false);
+         _exportDataTableToExcelTask.ExportDataTablesToExcel(mappedValues, excelFileName, openExcel: false);
       }
 
       private IDistributedParameter createTemporaryParameter(TBuilder distributedEntity, DistributionType distributionType)

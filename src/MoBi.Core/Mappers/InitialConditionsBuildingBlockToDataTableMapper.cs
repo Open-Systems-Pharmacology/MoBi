@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using MoBi.Assets;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Mappers
 {
@@ -26,32 +28,17 @@ namespace MoBi.Core.Mappers
          AddColumn(_dt, negativeValuesAllowed, typeof(bool));
       }
 
-      protected override void SetColumnOrdinals()
-      {
-         var columnIndexes = getColumnIndexes();
-
-         foreach (var columnName in columnIndexes.Keys)
-         {
-            int index = columnIndexes[columnName];
-
-            if (index >= 0 && index < _dt.Columns.Count)
-            {
-               _dt.Columns[columnName].SetOrdinal(index);
-            }
-         }
-      }
-
-      private Dictionary<string, int> getColumnIndexes()
+      protected override Dictionary<string, int> GetColumnIndexes()
       {
          return new Dictionary<string, int>
          {
-            { Path, ColumnIndexes.InitialConditionsRowIndexes.PATH },
-            { Name, ColumnIndexes.InitialConditionsRowIndexes.MOLECULE },
-            { isPresent, ColumnIndexes.InitialConditionsRowIndexes.IS_PRESENT },
-            { Value, ColumnIndexes.InitialConditionsRowIndexes.VALUE },
-            { Unit, ColumnIndexes.InitialConditionsRowIndexes.UNIT },
-            { scaleDivisor, ColumnIndexes.InitialConditionsRowIndexes.SCALE_DIVISOR },
-            { negativeValuesAllowed, ColumnIndexes.InitialConditionsRowIndexes.NEGATIVE_VALUES_ALLOWED }
+            { Path, ColumnIndexes.InitialConditions.PATH },
+            { Name, ColumnIndexes.InitialConditions.MOLECULE },
+            { isPresent, ColumnIndexes.InitialConditions.IS_PRESENT },
+            { Value, ColumnIndexes.InitialConditions.VALUE },
+            { Unit, ColumnIndexes.InitialConditions.UNIT },
+            { scaleDivisor, ColumnIndexes.InitialConditions.SCALE_DIVISOR },
+            { negativeValuesAllowed, ColumnIndexes.InitialConditions.NEGATIVE_VALUES_ALLOWED }
          };
       }
 

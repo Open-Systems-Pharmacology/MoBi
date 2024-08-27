@@ -57,6 +57,22 @@ namespace MoBi.Core.Mappers
          row[Unit] = element.DisplayUnit;
       }
 
-      protected abstract void SetColumnOrdinals();
+      protected void SetColumnOrdinals()
+      {
+         var columnIndexes = GetColumnIndexes();
+
+         columnIndexes.Each(pair =>
+         {
+            var columnName = pair.Key;
+            var index = pair.Value;
+
+            if (index >= 0 && index < _dt.Columns.Count)
+            {
+               _dt.Columns[columnName].SetOrdinal(index);
+            }
+         });
+      }
+
+      protected abstract Dictionary<string, int> GetColumnIndexes();
    }
 }

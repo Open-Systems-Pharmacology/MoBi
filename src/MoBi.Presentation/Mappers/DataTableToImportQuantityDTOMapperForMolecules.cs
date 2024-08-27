@@ -90,43 +90,43 @@ namespace MoBi.Presentation.Mappers
 
       protected override ImportedQuantityDTO MapQuantityFromRow(DataTable table, DataRow row, int rowIndex)
       {
-         if (row.ItemArray.Count() < InitialConditionsRowIndexes.COLUMNS)
-            throw new ImportQuantityDTOsFromDataTablesMapperException(row, rowIndex, AppConstants.Exceptions.TableShouldBeNColumns(InitialConditionsRowIndexes.COLUMNS));
+         if (row.ItemArray.Count() < InitialConditions.COLUMNS)
+            throw new ImportQuantityDTOsFromDataTablesMapperException(row, rowIndex, AppConstants.Exceptions.TableShouldBeNColumns(InitialConditions.COLUMNS));
 
-         var path = GetPath(row, InitialConditionsRowIndexes.PATH);
+         var path = GetPath(row, InitialConditions.PATH);
 
-         var moleculeName = GetQuantityName(row, InitialConditionsRowIndexes.MOLECULE);
+         var moleculeName = GetQuantityName(row, InitialConditions.MOLECULE);
 
          var msv = new ImportedQuantityDTO
          {
             ContainerPath = new ObjectPath(path),
             Name = moleculeName,
             IsPresent = getIsPresent(row),
-            IsScaleDivisorSpecified = getIsValueSpecified(row, InitialConditionsRowIndexes.SCALE_DIVISOR),
-            IsQuantitySpecified = getIsValueSpecified(row, InitialConditionsRowIndexes.VALUE),
+            IsScaleDivisorSpecified = getIsValueSpecified(row, InitialConditions.SCALE_DIVISOR),
+            IsQuantitySpecified = getIsValueSpecified(row, InitialConditions.VALUE),
             NegativeValuesAllowed = getNegativeValuesAllowed(row)
          };
          msv.ScaleDivisor = msv.IsScaleDivisorSpecified ? getScaleFactor(table, rowIndex) : double.NaN;
 
          if (!msv.IsQuantitySpecified) return msv;
 
-         var dimension = GetDimension(table, rowIndex, InitialConditionsRowIndexes.UNIT, InitialConditionsRowIndexes.DIMENSION);
+         var dimension = GetDimension(table, rowIndex, InitialConditions.UNIT, InitialConditions.DIMENSION);
          msv.Dimension = dimension;
-         msv.DisplayUnit = dimension.Unit(row[InitialConditionsRowIndexes.UNIT].ToString());
+         msv.DisplayUnit = dimension.Unit(row[InitialConditions.UNIT].ToString());
 
-         msv.QuantityInBaseUnit = msv.IsQuantitySpecified ? msv.ConvertToBaseUnit(GetQuantity(table, rowIndex, InitialConditionsRowIndexes.VALUE)) : double.NaN;
+         msv.QuantityInBaseUnit = msv.IsQuantitySpecified ? msv.ConvertToBaseUnit(GetQuantity(table, rowIndex, InitialConditions.VALUE)) : double.NaN;
 
          return msv;
       }
 
       private double getScaleFactor(DataTable table, int rowIndex)
       {
-         return GetDouble(table, rowIndex, InitialConditionsRowIndexes.SCALE_DIVISOR);
+         return GetDouble(table, rowIndex, InitialConditions.SCALE_DIVISOR);
       }
 
       private bool getNegativeValuesAllowed(DataRow row)
       {
-         return GetBool(row, InitialConditionsRowIndexes.NEGATIVE_VALUES_ALLOWED);
+         return GetBool(row, InitialConditions.NEGATIVE_VALUES_ALLOWED);
       }
 
       private bool getIsValueSpecified(DataRow row, int index)
@@ -136,7 +136,7 @@ namespace MoBi.Presentation.Mappers
 
       private bool getIsPresent(DataRow row)
       {
-         return GetBool(row, InitialConditionsRowIndexes.IS_PRESENT);
+         return GetBool(row, InitialConditions.IS_PRESENT);
       }
    }
 }

@@ -23,7 +23,8 @@ namespace MoBi.Presentation.Tasks.Interaction
       protected InteractionTasksForProjectPathAndValueEntityBuildingBlocks(IInteractionTaskContext interactionTaskContext, 
          IEditTasksForBuildingBlock<TBuildingBlock> editTask, 
          IMoBiFormulaTask moBiFormulaTask,
-         IParameterFactory parameterFactory) : base(interactionTaskContext, editTask, moBiFormulaTask, parameterFactory)
+         IParameterFactory parameterFactory, 
+         IExportDataTableToExcelTask exportDataTableToExcelTask) : base(interactionTaskContext, editTask, moBiFormulaTask, parameterFactory, exportDataTableToExcelTask)
       {
       }
 

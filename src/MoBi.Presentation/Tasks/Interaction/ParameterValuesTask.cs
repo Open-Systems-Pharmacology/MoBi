@@ -39,8 +39,9 @@ namespace MoBi.Presentation.Tasks.Interaction
          IParameterValuePathTask parameterValuePathTask,
          IParameterValuesCreator parameterValuesCreator,
          IParameterFactory parameterFactory,
-         IObjectTypeResolver objectTypeResolver)
-         : base(interactionTaskContext, editTask, parameterValuesExtendManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoToQuantityToParameterValueMapper, parameterValuePathTask, parameterFactory, objectTypeResolver)
+         IObjectTypeResolver objectTypeResolver,
+         IExportDataTableToExcelTask exportDataTableToExcelTask)
+         : base(interactionTaskContext, editTask, parameterValuesExtendManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoToQuantityToParameterValueMapper, parameterValuePathTask, parameterFactory, objectTypeResolver, exportDataTableToExcelTask)
       {
          _parameterValuesCreator = parameterValuesCreator;
       }
