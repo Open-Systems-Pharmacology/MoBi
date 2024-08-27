@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using MoBi.Assets;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility;
@@ -11,36 +10,25 @@ namespace MoBi.Core.Mappers
    {
    }
 
-   public class InitialConditionsBuildingBlockToDataTableMapper : BaseBuildingBlockToDataTableMapper<InitialConditionsBuildingBlock>, IInitialConditionsBuildingBlockToDataTableMapper
+   public class InitialConditionsBuildingBlockToDataTableMapper : PathAndValueBuildingBlockToDataTableMapper<InitialConditionsBuildingBlock, InitialCondition>, IInitialConditionsBuildingBlockToDataTableMapper
    {
-      private static readonly string _isPresent = AppConstants.Captions.IsPresent;
-      private static readonly string _scaleDivisor = AppConstants.Captions.ScaleDivisor;
-      private static readonly string _negativeValuesAllowed = AppConstants.Captions.NegativeValuesAllowed;
+      private string isPresent => AppConstants.Captions.IsPresent;
+      private string scaleDivisor => AppConstants.Captions.ScaleDivisor;
+      private string negativeValuesAllowed => AppConstants.Captions.NegativeValuesAllowed;
+
+      protected override string Name => AppConstants.Captions.MoleculeName;
 
       protected override void AddColumnsToDataTable()
       {
          base.AddColumnsToDataTable();
-         AddColumn(_dt, _isPresent, typeof(bool));
-         AddColumn(_dt, _scaleDivisor, typeof(string));
-         AddColumn(_dt, _negativeValuesAllowed, typeof(bool));
-      }
-
-      protected override void AddDataFromBuildingBlockToDataTable(InitialConditionsBuildingBlock buildingBlock)
-      {
-         base.AddDataFromBuildingBlockToDataTable(buildingBlock);
-         var elements = GetElements(buildingBlock).ToList();
-
-         for (int i = 0; i < elements.Count; i++)
-         {
-            var row = _dt.Rows[i];
-            var element = elements[i];
-            setSpecificColumns(row, element);
-         }
+         AddColumn(_dt, isPresent, typeof(bool));
+         AddColumn(_dt, scaleDivisor, typeof(string));
+         AddColumn(_dt, negativeValuesAllowed, typeof(bool));
       }
 
       protected override void SetColumnOrdinals()
       {
-         var columnIndexes = GetColumnIndexes();
+         var columnIndexes = getColumnIndexes();
 
          foreach (var columnName in columnIndexes.Keys)
          {
@@ -53,29 +41,26 @@ namespace MoBi.Core.Mappers
          }
       }
 
-      protected override Dictionary<string, int> GetColumnIndexes()
+      private Dictionary<string, int> getColumnIndexes()
       {
          return new Dictionary<string, int>
          {
-            { _path, ColumnIndexes.InitialConditionsRowIndexes.PATH },
-            { _name, ColumnIndexes.InitialConditionsRowIndexes.MOLECULE },
-            { _isPresent, ColumnIndexes.InitialConditionsRowIndexes.IS_PRESENT },
-            { _value, ColumnIndexes.InitialConditionsRowIndexes.VALUE },
-            { _unit, ColumnIndexes.InitialConditionsRowIndexes.UNIT },
-            { _scaleDivisor, ColumnIndexes.InitialConditionsRowIndexes.SCALE_DIVISOR },
-            { _negativeValuesAllowed, ColumnIndexes.InitialConditionsRowIndexes.NEGATIVE_VALUES_ALLOWED }
+            { Path, ColumnIndexes.InitialConditionsRowIndexes.PATH },
+            { Name, ColumnIndexes.InitialConditionsRowIndexes.MOLECULE },
+            { isPresent, ColumnIndexes.InitialConditionsRowIndexes.IS_PRESENT },
+            { Value, ColumnIndexes.InitialConditionsRowIndexes.VALUE },
+            { Unit, ColumnIndexes.InitialConditionsRowIndexes.UNIT },
+            { scaleDivisor, ColumnIndexes.InitialConditionsRowIndexes.SCALE_DIVISOR },
+            { negativeValuesAllowed, ColumnIndexes.InitialConditionsRowIndexes.NEGATIVE_VALUES_ALLOWED }
          };
       }
 
-      protected override IEnumerable<PathAndValueEntity> GetElements(InitialConditionsBuildingBlock buildingBlock) =>
-         buildingBlock.Select(x => x).Where(x => x.Value != null);
-
-      private void setSpecificColumns(DataRow row, PathAndValueEntity element)
+      protected override void SetSpecificColumns(DataRow row, InitialCondition element)
       {
-         var initialCondition = (InitialCondition)element;
-         row[_isPresent] = initialCondition.IsPresent;
-         row[_scaleDivisor] = initialCondition.ScaleDivisor;
-         row[_negativeValuesAllowed] = initialCondition.NegativeValuesAllowed;
+         base.SetSpecificColumns(row, element);
+         row[isPresent] = element.IsPresent;
+         row[scaleDivisor] = element.ScaleDivisor;
+         row[negativeValuesAllowed] = element.NegativeValuesAllowed;
       }
    }
 }

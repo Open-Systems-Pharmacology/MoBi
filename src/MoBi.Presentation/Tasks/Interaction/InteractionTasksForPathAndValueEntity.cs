@@ -79,17 +79,17 @@ namespace MoBi.Presentation.Tasks.Interaction
    {
       protected readonly IMoBiFormulaTask _moBiFormulaTask;
       private readonly IParameterFactory _parameterFactory;
-      private readonly IDialogCreator _dialogCreator;
+      private readonly IInteractionTaskContext _interactionTaskContext;
 
       protected InteractionTasksForPathAndValueEntity(IInteractionTaskContext interactionTaskContext,
          IEditTasksForBuildingBlock<TBuildingBlock> editTask,
          IMoBiFormulaTask moBiFormulaTask,
-         IParameterFactory parameterFactory,
-         IDialogCreator dialogCreator) : base(interactionTaskContext, editTask)
+         IParameterFactory parameterFactory)
+         : base(interactionTaskContext, editTask)
       {
          _moBiFormulaTask = moBiFormulaTask;
          _parameterFactory = parameterFactory;
-         _dialogCreator = dialogCreator;
+         _interactionTaskContext = interactionTaskContext;
       }
 
       public ICommand SetValueOrigin(TBuildingBlock buildingBlock, ValueOrigin valueOrigin, TBuilder pathAndValueEntity)
@@ -133,7 +133,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             projectName = AppConstants.Undefined;
 
          var defaultFileName = AppConstants.DefaultFileNameForBuildingBlockExport(projectName, subject);
-         var excelFileName = _dialogCreator.AskForFileToSave(AppConstants.Captions.ExportToExcel, Constants.Filter.EXCEL_SAVE_FILE_FILTER, Constants.DirectoryKey.MODEL_PART, defaultFileName);
+         var excelFileName = _interactionTaskContext.DialogCreator.AskForFileToSave(AppConstants.Captions.ExportToExcel, Constants.Filter.EXCEL_SAVE_FILE_FILTER, Constants.DirectoryKey.MODEL_PART, defaultFileName);
 
          if (string.IsNullOrEmpty(excelFileName))
             return;

@@ -4,7 +4,6 @@ using MoBi.Core.Domain.Services;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
@@ -19,9 +18,8 @@ namespace MoBi.Presentation.Tasks.Interaction
       public InteractionTasksForIndividualBuildingBlock(IInteractionTaskContext interactionTaskContext,
          IEditTasksForIndividualBuildingBlock editTask,
          IMoBiFormulaTask moBiFormulaTask,
-         IParameterFactory parameterFactory,
-         IDialogCreator dialogCreator) :
-         base(interactionTaskContext, editTask, moBiFormulaTask, parameterFactory, dialogCreator)
+         IParameterFactory parameterFactory) :
+         base(interactionTaskContext, editTask, moBiFormulaTask, parameterFactory)
       {
       }
 

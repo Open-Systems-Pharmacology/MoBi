@@ -10,7 +10,6 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
@@ -32,9 +31,8 @@ namespace MoBi.Presentation.Tasks.Interaction
          IMoBiFormulaTask formulaTask,
          IPKSimStarter pkSimStarter,
          IContainerTask containerTask,
-         IParameterFactory parameterFactory,
-         IDialogCreator dialogCreator) :
-         base(interactionTaskContext, editTask, formulaTask, parameterFactory, dialogCreator)
+         IParameterFactory parameterFactory) :
+         base(interactionTaskContext, editTask, formulaTask, parameterFactory)
       {
          _editTaskForExpressionProfileBuildingBlock = editTask;
          _pkSimStarter = pkSimStarter;

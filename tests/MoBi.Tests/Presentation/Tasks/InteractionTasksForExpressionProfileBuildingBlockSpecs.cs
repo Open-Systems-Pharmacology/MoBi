@@ -15,7 +15,6 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks
@@ -41,7 +40,7 @@ namespace MoBi.Presentation.Tasks
          _containerTask = new ContainerTask(A.Fake<IObjectBaseFactory>(), A.Fake<IEntityPathResolver>(), A.Fake<IObjectPathFactory>());
          _parameterFactory = A.Fake<IParameterFactory>();
 
-         sut = new InteractionTasksForExpressionProfileBuildingBlock(_interactionTaskContext, _editTask, _formulaTask, _pkSimStarter, _containerTask, _parameterFactory, A.Fake<IDialogCreator>());
+         sut = new InteractionTasksForExpressionProfileBuildingBlock(_interactionTaskContext, _editTask, _formulaTask, _pkSimStarter, _containerTask, _parameterFactory);
 
          _formula = new ExplicitFormula("y=mx+b");
          _expressionParameter = GetExpressionParameter();
@@ -185,13 +184,10 @@ namespace MoBi.Presentation.Tasks
          {
             _expressionParameter.Value.ShouldBeEqualTo(double.NaN);
          }
-
-
       }
 
       public class When_setting_a_value_in_a_building_block : concern_for_InteractionTasksForExpressionProfileBuildingBlock
       {
-
          protected override void Because()
          {
             sut.SetValue(_buildingBlock, 1.0, _expressionParameter);

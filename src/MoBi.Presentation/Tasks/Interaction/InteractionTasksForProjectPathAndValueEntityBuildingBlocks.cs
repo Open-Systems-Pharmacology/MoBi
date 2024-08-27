@@ -23,8 +23,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       protected InteractionTasksForProjectPathAndValueEntityBuildingBlocks(IInteractionTaskContext interactionTaskContext, 
          IEditTasksForBuildingBlock<TBuildingBlock> editTask, 
          IMoBiFormulaTask moBiFormulaTask,
-         IParameterFactory parameterFactory,
-         IDialogCreator dialogCreator) : base(interactionTaskContext, editTask, moBiFormulaTask, parameterFactory, dialogCreator)
+         IParameterFactory parameterFactory) : base(interactionTaskContext, editTask, moBiFormulaTask, parameterFactory)
       {
       }
 

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
+using MoBi.Assets;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility;
 
@@ -10,11 +10,13 @@ namespace MoBi.Core.Mappers
    {
    }
 
-   public class ParameterValueBuildingBlockToParameterValuesDataTableMapper : BaseBuildingBlockToDataTableMapper<ParameterValuesBuildingBlock>, IParameterValueBuildingBlockToParameterValuesDataTableMapper
+   public class ParameterValueBuildingBlockToParameterValuesDataTableMapper : PathAndValueBuildingBlockToDataTableMapper<ParameterValuesBuildingBlock, ParameterValue>, IParameterValueBuildingBlockToParameterValuesDataTableMapper
    {
+      protected override string Name => AppConstants.Captions.ParameterName;
+
       protected override void SetColumnOrdinals()
       {
-         var columnIndexes = GetColumnIndexes();
+         var columnIndexes = getColumnIndexes();
 
          foreach (var columnName in columnIndexes.Keys)
          {
@@ -27,18 +29,15 @@ namespace MoBi.Core.Mappers
          }
       }
 
-      protected override Dictionary<string, int> GetColumnIndexes()
+      private Dictionary<string, int> getColumnIndexes()
       {
          return new Dictionary<string, int>
          {
-            { _path, ColumnIndexes.ParameterRowIndexes.CONTAINER_PATH },
-            { _name, ColumnIndexes.ParameterRowIndexes.NAME },
-            { _value, ColumnIndexes.ParameterRowIndexes.VALUE },
-            { _unit, ColumnIndexes.ParameterRowIndexes.UNIT }
+            { Path, ColumnIndexes.ParameterRowIndexes.CONTAINER_PATH },
+            { Name, ColumnIndexes.ParameterRowIndexes.NAME },
+            { Value, ColumnIndexes.ParameterRowIndexes.VALUE },
+            { Unit, ColumnIndexes.ParameterRowIndexes.UNIT }
          };
       }
-
-      protected override IEnumerable<PathAndValueEntity> GetElements(ParameterValuesBuildingBlock buildingBlock) =>
-         buildingBlock.Select(x => x).Where(x => x.Value != null);
    }
 }

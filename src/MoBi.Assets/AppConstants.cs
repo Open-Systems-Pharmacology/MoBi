@@ -1338,7 +1338,6 @@ namespace MoBi.Assets
          public static readonly string NewInitialConditions = "Create New Initial Conditions";
          public static readonly string NewParameterValues = "Create New Parameter values";
          public static readonly string ExportHistory = "Export History";
-         public static readonly string MoleculeNames = "Molecule Name";
          public static readonly string StoichiometricCoefficient = "Stoichiometric Coefficient";
          public static readonly string FormulaType = "Formula Type";
          public static readonly string FormulaName = "Formula Name";
