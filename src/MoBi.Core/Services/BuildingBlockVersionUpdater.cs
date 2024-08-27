@@ -34,7 +34,7 @@ namespace MoBi.Core.Services
          if (buildingBlock == null)
             return;
 
-         if (shouldShowModuleConversionWarning(buildingBlock))
+         if (shouldConvertModule(buildingBlock))
          {
             showModuleConversionWarning(buildingBlock);
             buildingBlock.Module.IsPKSimModule = false;
@@ -51,7 +51,7 @@ namespace MoBi.Core.Services
          _dialogCreator.MessageBoxInfo(AppConstants.Captions.TheModuleWillBeConvertedFromPKSimToExtensionModule(buildingBlock.Module.Name));
       }
 
-      private bool shouldShowModuleConversionWarning(IBuildingBlock buildingBlock) =>
+      private bool shouldConvertModule(IBuildingBlock buildingBlock) =>
          buildingBlock.Module?.IsPKSimModule ?? false;
 
       protected void publishModuleStatusChangedEvents(IBuildingBlock buildingBlock)
