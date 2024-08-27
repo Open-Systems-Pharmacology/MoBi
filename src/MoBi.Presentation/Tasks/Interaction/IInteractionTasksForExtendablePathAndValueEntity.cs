@@ -1,14 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Data;
 using MoBi.Core.Commands;
 using MoBi.Presentation.DTO;
-using NPOI.SS.Formula.Functions;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
@@ -54,7 +51,8 @@ namespace MoBi.Presentation.Tasks.Interaction
       IMoBiCommand SetDisplayValueWithUnit(TPathAndValueEntity pathAndValueEntity, double? newDisplayValue, Unit unit, TBuildingBlock buildingBlock);
 
       /// <summary>
-      ///    Returns a command that can be used to remove the path and value entities contained in <paramref name="pathAndValueEntity" />
+      ///    Returns a command that can be used to remove the path and value entities contained in
+      ///    <paramref name="pathAndValueEntity" />
       ///    from
       ///    <paramref name="buildingBlock" />
       /// </summary>

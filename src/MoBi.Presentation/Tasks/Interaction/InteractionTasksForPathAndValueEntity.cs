@@ -6,22 +6,18 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Helper;
 using MoBi.Presentation.Tasks.Edit;
-using NPOI.SS.Formula.Functions;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Export;
-using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
    public interface IInteractionTasksForPathAndValueEntity<in TBuildingBlock, in TBuilder>
    {
-
       /// <summary>
       ///    Adds a new formula to the building block formula cache and assigns it to the builder
       /// </summary>
@@ -70,7 +66,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       IMoBiCommand ConvertDistributedParameterToConstantParameter(TBuilder distributedParameter, TBuildingBlock buildingBlock, IReadOnlyList<TBuilder> subParameters);
 
       /// <summary>
-      /// Exports the building block to an excel file
+      ///    Exports the building block to an excel file
       /// </summary>
       /// <param name="subject">Building Block to export.</param>
       /// <param name="mappedValues">values to Export.</param>
@@ -141,7 +137,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          if (string.IsNullOrEmpty(excelFileName))
             return;
-         
+
          ExportToExcelTask.ExportDataTablesToExcel(mappedValues, excelFileName, openExcel: false);
       }
 
