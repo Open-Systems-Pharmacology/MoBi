@@ -1,14 +1,12 @@
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using MoBi.Assets;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility;
-using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Mappers
 {
-   public interface IInitialConditionsBuildingBlockToDataTableMapper : IMapper<InitialConditionsBuildingBlock, List<DataTable>>
+   public interface IInitialConditionsBuildingBlockToDataTableMapper : IMapper<IEnumerable<InitialCondition>, List<DataTable>>
    {
    }
 
@@ -19,6 +17,7 @@ namespace MoBi.Core.Mappers
       private string negativeValuesAllowed => AppConstants.Captions.NegativeValuesAllowed;
 
       protected override string Name => AppConstants.Captions.MoleculeName;
+      protected override string TableName => AppConstants.Captions.InitialConditions;
 
       protected override void AddColumnsToDataTable()
       {

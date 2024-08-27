@@ -21,7 +21,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          IMoBiFormulaTask moBiFormulaTask,
          IParameterFactory parameterFactory,
          IExportDataTableToExcelTask exportDataTableToExcelTask) :
-         base(interactionTaskContext, editTask, moBiFormulaTask, parameterFactory, exportDataTableToExcelTask)
+         base(interactionTaskContext, editTask, moBiFormulaTask, parameterFactory, exportDataTableToExcelTask, null)
       {
       }
 

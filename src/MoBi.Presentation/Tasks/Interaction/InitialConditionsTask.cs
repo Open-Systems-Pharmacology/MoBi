@@ -6,6 +6,7 @@ using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Events;
+using MoBi.Core.Mappers;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -60,9 +61,21 @@ namespace MoBi.Presentation.Tasks.Interaction
          IInitialConditionsCreator initialConditionsCreator,
          IParameterFactory parameterFactory,
          IObjectTypeResolver objectTypeResolver,
-         INameCorrector nameCorrector, 
-         IExportDataTableToExcelTask exportDataTableToExcelTask) :
-         base(interactionTaskContext, editTask, extendManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoMapper, initialConditionPathTask, parameterFactory, objectTypeResolver, exportDataTableToExcelTask)
+         INameCorrector nameCorrector,
+         IExportDataTableToExcelTask exportDataTableToExcelTask,
+         IInitialConditionsBuildingBlockToDataTableMapper mapper) :
+         base(interactionTaskContext,
+            editTask,
+            extendManager,
+            cloneManagerForBuildingBlock,
+            moBiFormulaTask,
+            spatialStructureFactory,
+            dtoMapper,
+            initialConditionPathTask,
+            parameterFactory,
+            objectTypeResolver,
+            exportDataTableToExcelTask,
+            mapper)
       {
          _dimensionRetriever = dimensionRetriever;
          _initialConditionsCreator = initialConditionsCreator;

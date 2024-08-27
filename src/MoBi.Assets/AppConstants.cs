@@ -1730,7 +1730,7 @@ namespace MoBi.Assets
          public static readonly string PasteFormula = "Paste Formula";
          public static readonly string SelectOutputFolder = "Select output folder";
          public static readonly string SelectParameter = "Select parameter";
-
+         public static readonly string ExpressionParameters = "Expression Parameters";
          public static string AddBuildingBlocksToModule(string moduleName) => $"Add Building Blocks to Module:  {moduleName}";
          public static string LoadBuildingBlockToModule(string moduleName) => $"Load Building Block to Module:  {moduleName}";
 

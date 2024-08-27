@@ -12,7 +12,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
-using OSPSuite.Infrastructure.Export;
+using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
@@ -69,8 +69,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       ///    Exports the building block to an excel file
       /// </summary>
       /// <param name="subject">Building Block to export.</param>
-      /// <param name="mappedValues">values to Export.</param>
-      void ExportExcel(IBuildingBlock subject, List<DataTable> mappedValues);
+      void ExportExcel(TBuildingBlock subject);
    }
 
    public abstract class InteractionTasksForPathAndValueEntity<TParent, TBuildingBlock, TBuilder> : InteractionTasksForEnumerableBuildingBlock<TParent, TBuildingBlock, TBuilder>, IInteractionTasksForPathAndValueEntity<TBuildingBlock, TBuilder>
@@ -81,18 +80,21 @@ namespace MoBi.Presentation.Tasks.Interaction
       private readonly IParameterFactory _parameterFactory;
       private readonly IInteractionTaskContext _interactionTaskContext;
       private readonly IExportDataTableToExcelTask _exportDataTableToExcelTask;
+      private readonly IMapper<TBuildingBlock, List<DataTable>> _mapper;
 
       protected InteractionTasksForPathAndValueEntity(IInteractionTaskContext interactionTaskContext,
          IEditTasksForBuildingBlock<TBuildingBlock> editTask,
          IMoBiFormulaTask moBiFormulaTask,
          IParameterFactory parameterFactory,
-         IExportDataTableToExcelTask exportDataTableToExcelTask)
+         IExportDataTableToExcelTask exportDataTableToExcelTask,
+         IMapper<TBuildingBlock, List<DataTable>> mapper)
          : base(interactionTaskContext, editTask)
       {
          _moBiFormulaTask = moBiFormulaTask;
          _parameterFactory = parameterFactory;
          _interactionTaskContext = interactionTaskContext;
          _exportDataTableToExcelTask = exportDataTableToExcelTask;
+         _mapper = mapper;
       }
 
       public ICommand SetValueOrigin(TBuildingBlock buildingBlock, ValueOrigin valueOrigin, TBuilder pathAndValueEntity)
@@ -128,7 +130,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return moBiMacroCommand.Run(Context);
       }
 
-      public void ExportExcel(IBuildingBlock subject, List<DataTable> mappedValues)
+      public void ExportExcel(TBuildingBlock subject)
       {
          var currentProject = Context.CurrentProject;
          var projectName = currentProject.Name;
@@ -141,6 +143,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (string.IsNullOrEmpty(excelFileName))
             return;
 
+         var mappedValues = _mapper.MapFrom(subject);
          _exportDataTableToExcelTask.ExportDataTablesToExcel(mappedValues, excelFileName, openExcel: false);
       }
 

@@ -3,6 +3,7 @@ using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
+using MoBi.Core.Mappers;
 using MoBi.Core.Services;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Assets;
@@ -33,8 +34,9 @@ namespace MoBi.Presentation.Tasks.Interaction
          IPKSimStarter pkSimStarter,
          IContainerTask containerTask,
          IParameterFactory parameterFactory,
-         IExportDataTableToExcelTask exportDataTableToExcelTask) :
-         base(interactionTaskContext, editTask, formulaTask, parameterFactory, exportDataTableToExcelTask)
+         IExportDataTableToExcelTask exportDataTableToExcelTask,
+         IExpressionProfileBuildingBlockToDataTableMapper mapper) :
+         base(interactionTaskContext, editTask, formulaTask, parameterFactory, exportDataTableToExcelTask, mapper)
       {
          _editTaskForExpressionProfileBuildingBlock = editTask;
          _pkSimStarter = pkSimStarter;

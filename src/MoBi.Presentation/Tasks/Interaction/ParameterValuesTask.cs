@@ -5,6 +5,7 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Helper;
+using MoBi.Core.Mappers;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -40,8 +41,9 @@ namespace MoBi.Presentation.Tasks.Interaction
          IParameterValuesCreator parameterValuesCreator,
          IParameterFactory parameterFactory,
          IObjectTypeResolver objectTypeResolver,
-         IExportDataTableToExcelTask exportDataTableToExcelTask)
-         : base(interactionTaskContext, editTask, parameterValuesExtendManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoToQuantityToParameterValueMapper, parameterValuePathTask, parameterFactory, objectTypeResolver, exportDataTableToExcelTask)
+         IExportDataTableToExcelTask exportDataTableToExcelTask,
+         IParameterValuesToParameterValuesDataTableMapper mapper)
+         : base(interactionTaskContext, editTask, parameterValuesExtendManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoToQuantityToParameterValueMapper, parameterValuePathTask, parameterFactory, objectTypeResolver, exportDataTableToExcelTask, mapper)
       {
          _parameterValuesCreator = parameterValuesCreator;
       }

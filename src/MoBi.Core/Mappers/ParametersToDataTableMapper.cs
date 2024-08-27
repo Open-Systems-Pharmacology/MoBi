@@ -1,17 +1,10 @@
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Collections.Generic;
 using MoBi.Assets;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Utility;
-using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Mappers
 {
-   public interface IParameterValueBuildingBlockToParameterValuesDataTableMapper : IMapper<ParameterValuesBuildingBlock, List<DataTable>>
-   {
-   }
-
-   public class ParameterValueBuildingBlockToParameterValuesDataTableMapper : PathAndValueBuildingBlockToDataTableMapper<ParameterValuesBuildingBlock, ParameterValue>, IParameterValueBuildingBlockToParameterValuesDataTableMapper
+   public abstract class ParametersToDataTableMapper<TBuilder> : PathAndValuesToDataTableMapper<TBuilder> where TBuilder : PathAndValueEntity
    {
       protected override string Name => AppConstants.Captions.ParameterName;
 

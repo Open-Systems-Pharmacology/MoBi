@@ -10,8 +10,7 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Mappers
 {
-   public abstract class PathAndValueBuildingBlockToDataTableMapper<TBuildingBlock, TBuilder> : IMapper<TBuildingBlock, List<DataTable>>
-      where TBuildingBlock : PathAndValueEntityBuildingBlock<TBuilder>
+   public abstract class PathAndValuesToDataTableMapper<TBuilder> : IMapper<IEnumerable<TBuilder>, List<DataTable>>
       where TBuilder : PathAndValueEntity
    {
       protected DataTable _dt;
@@ -19,12 +18,14 @@ namespace MoBi.Core.Mappers
       protected string Value => AppConstants.Captions.Value;
       protected string Unit => AppConstants.Captions.Unit;
       protected abstract string Name { get; }
+      protected abstract string TableName { get; }
 
-      public List<DataTable> MapFrom(TBuildingBlock buildingBlock)
+      public List<DataTable> MapFrom(IEnumerable<TBuilder> builders)
       {
          _dt = new DataTable();
+         _dt.TableName = TableName;
          AddColumnsToDataTable();
-         buildingBlock.Where(x => x.Value != null).Each(AddDataFromBuildingBlockToDataTable);
+         builders.Where(x => x.Value != null).Each(AddDataFromBuildingBlockToDataTable);
          SetColumnOrdinals();
          return new List<DataTable> { _dt };
       }

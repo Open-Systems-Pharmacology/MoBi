@@ -9,9 +9,8 @@ namespace MoBi.Presentation.UICommand
    public class ExportInitialConditionsBuildingBlockToExcelUICommand : ExportBuildingBlockToExcelUICommand<InitialConditionsBuildingBlock, InitialCondition>
    {
       public ExportInitialConditionsBuildingBlockToExcelUICommand(
-         IInitialConditionsTask<InitialConditionsBuildingBlock> interactionTask,
-         IInitialConditionsBuildingBlockToDataTableMapper mapper)
-         : base(interactionTask, mapper)
+         IInitialConditionsTask<InitialConditionsBuildingBlock> interactionTask)
+         : base(interactionTask)
       {
       }
    }

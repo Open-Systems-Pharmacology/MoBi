@@ -9,9 +9,8 @@ namespace MoBi.Presentation.UICommand
    public class ExportParameterValuesBuildingBlockToExcelUICommand : ExportBuildingBlockToExcelUICommand<ParameterValuesBuildingBlock, ParameterValue>
    {
       public ExportParameterValuesBuildingBlockToExcelUICommand(
-         IParameterValuesTask interactionTask,
-         IParameterValueBuildingBlockToParameterValuesDataTableMapper mapper)
-         : base(interactionTask, mapper)
+         IParameterValuesTask interactionTask)
+         : base(interactionTask)
       {
       }
    }
