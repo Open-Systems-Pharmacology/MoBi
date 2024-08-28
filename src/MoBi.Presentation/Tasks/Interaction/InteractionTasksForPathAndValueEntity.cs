@@ -78,23 +78,21 @@ namespace MoBi.Presentation.Tasks.Interaction
    {
       protected readonly IMoBiFormulaTask _moBiFormulaTask;
       private readonly IParameterFactory _parameterFactory;
-      private readonly IInteractionTaskContext _interactionTaskContext;
       private readonly IExportDataTableToExcelTask _exportDataTableToExcelTask;
-      private readonly IMapper<TBuildingBlock, List<DataTable>> _mapper;
+      private readonly IMapper<TBuildingBlock, List<DataTable>> _dataTableMapper;
 
       protected InteractionTasksForPathAndValueEntity(IInteractionTaskContext interactionTaskContext,
          IEditTasksForBuildingBlock<TBuildingBlock> editTask,
          IMoBiFormulaTask moBiFormulaTask,
          IParameterFactory parameterFactory,
          IExportDataTableToExcelTask exportDataTableToExcelTask,
-         IMapper<TBuildingBlock, List<DataTable>> mapper)
+         IMapper<TBuildingBlock, List<DataTable>> dataTableMapper)
          : base(interactionTaskContext, editTask)
       {
          _moBiFormulaTask = moBiFormulaTask;
          _parameterFactory = parameterFactory;
-         _interactionTaskContext = interactionTaskContext;
          _exportDataTableToExcelTask = exportDataTableToExcelTask;
-         _mapper = mapper;
+         _dataTableMapper = dataTableMapper;
       }
 
       public ICommand SetValueOrigin(TBuildingBlock buildingBlock, ValueOrigin valueOrigin, TBuilder pathAndValueEntity)
@@ -143,7 +141,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (string.IsNullOrEmpty(excelFileName))
             return;
 
-         var mappedValues = _mapper.MapFrom(subject);
+         var mappedValues = _dataTableMapper.MapFrom(subject);
          _exportDataTableToExcelTask.ExportDataTablesToExcel(mappedValues, excelFileName, openExcel: false);
       }
 

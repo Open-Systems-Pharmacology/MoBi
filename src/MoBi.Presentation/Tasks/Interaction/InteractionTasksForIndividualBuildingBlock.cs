@@ -16,6 +16,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
    public class InteractionTasksForIndividualBuildingBlock : InteractionTasksForProjectPathAndValueEntityBuildingBlocks<IndividualBuildingBlock, IndividualParameter>, IInteractionTasksForIndividualBuildingBlock
    {
+      //The parameter for the mapper is set to null since we still haven`t implemented it for IndividualBuildinbBlock
       public InteractionTasksForIndividualBuildingBlock(IInteractionTaskContext interactionTaskContext,
          IEditTasksForIndividualBuildingBlock editTask,
          IMoBiFormulaTask moBiFormulaTask,

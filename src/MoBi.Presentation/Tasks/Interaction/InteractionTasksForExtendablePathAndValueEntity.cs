@@ -44,8 +44,8 @@ namespace MoBi.Presentation.Tasks.Interaction
          IMoBiFormulaTask moBiFormulaTask, ISpatialStructureFactory spatialStructureFactory, IMapper<ImportedQuantityDTO, TPathAndValueEntity> dtoToQuantityToParameterValueMapper,
          IPathAndValueEntityPathTask<ILookupBuildingBlock<TPathAndValueEntity>, TPathAndValueEntity> entityPathTask,
          IParameterFactory parameterFactory, IObjectTypeResolver objectTypeResolver, IExportDataTableToExcelTask exportDataTableToExcelTask,
-         IMapper<IEnumerable<TPathAndValueEntity>, List<DataTable>> mapper)
-         : base(interactionTaskContext, editTask, moBiFormulaTask, parameterFactory, exportDataTableToExcelTask, mapper)
+         IMapper<IEnumerable<TPathAndValueEntity>, List<DataTable>> dataTableMapper)
+         : base(interactionTaskContext, editTask, moBiFormulaTask, parameterFactory, exportDataTableToExcelTask, dataTableMapper)
       {
          _extendManager = extendManager;
          _cloneManagerForBuildingBlock = cloneManagerForBuildingBlock;

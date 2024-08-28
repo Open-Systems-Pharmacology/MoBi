@@ -26,7 +26,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          IMoBiFormulaTask moBiFormulaTask,
          IParameterFactory parameterFactory,
          IExportDataTableToExcelTask exportDataTableToExcelTask,
-         IMapper<TBuildingBlock, List<DataTable>> mapper) : base(interactionTaskContext, editTask, moBiFormulaTask, parameterFactory, exportDataTableToExcelTask, mapper)
+         IMapper<TBuildingBlock, List<DataTable>> dataTableMapper) : base(interactionTaskContext, editTask, moBiFormulaTask, parameterFactory, exportDataTableToExcelTask, dataTableMapper)
       {
       }
 
