@@ -13,7 +13,12 @@ namespace MoBi.Presentation.Mappers
    {
       public ValueFormulaDTO MapFrom(IFormula formula)
       {
-         return formula is ExplicitFormula explicitFormula ? new ValueFormulaDTO(explicitFormula) : new EmptyFormulaDTO();
+         return formula is ExplicitFormula explicitFormula ? new ValueFormulaDTO(explicitFormula) : emptyFormulaFor(formula);
+      }
+
+      private static EmptyFormulaDTO emptyFormulaFor(IFormula formula)
+      {
+         return formula == null ? new EmptyFormulaDTO() : new EmptyFormulaDTO { FormulaString = formula.Name };
       }
    }
 }
