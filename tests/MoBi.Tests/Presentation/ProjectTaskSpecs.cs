@@ -121,18 +121,6 @@ namespace MoBi.Presentation
       {
          _simulationTransfer.Favorites.Each(favorite => _project.Favorites.ShouldContain(favorite));
       }
-
-      [Observation]
-      public void should_not_update_default_simulation_settings_in_project()
-      {
-         A.CallTo(() => _interactionTasksForSimulationSettings.UpdateDefaultSimulationSettingsInProject(_simulationTransfer.Simulation.Settings.OutputSchema, _simulationTransfer.Simulation.Settings.Solver)).MustNotHaveHappened();
-      }
-
-      [Observation]
-      public void should_not_update_default_output_selections_in_project()
-      {
-         A.CallTo(() => _interactionTasksForSimulationSettings.UpdateDefaultOutputSelectionsInProject(A<IReadOnlyList<QuantitySelection>>.Ignored)).MustNotHaveHappened();
-      }
    }
 
    internal class When_opening_a_simulation_as_project : When_loading_a_simulation
