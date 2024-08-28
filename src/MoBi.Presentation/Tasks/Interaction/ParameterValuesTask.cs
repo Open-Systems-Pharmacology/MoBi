@@ -85,13 +85,18 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public void AddStartValueExpression(ParameterValuesBuildingBlock buildingBlock)
       {
-         var (organ, molecules) = selectOrganAndProteins(buildingBlock.Module);
-         if (organ == null || molecules == null || !molecules.Any())
+         var (organs, molecules) = selectOrganAndProteins(buildingBlock.Module);
+         if (organs == null || molecules == null || !molecules.Any())
             return;
 
-         var newParameterValues = createExpressionBasedOn(organ, molecules);
+         var newParameterValues = createExpressionBasedOn(organs, molecules);
 
-         AddCommand(ExtendBuildingBlockWith(buildingBlock, newParameterValues));
+         var allSkipped = newParameterValues.Where(x => buildingBlock.FindByPath(x.Path) != null).ToList();
+
+         if (allSkipped.Any())
+            _interactionTaskContext.DialogCreator.MessageBoxInfo(AppConstants.Captions.BuildingBlockAlreadyContains(allSkipped.Select(x => x.Path.PathAsString).ToList()));
+
+         AddCommand(ExtendBuildingBlockWith(buildingBlock, newParameterValues.Except(allSkipped).ToList()));
       }
 
       public IMoBiCommand SetFullPath(ParameterValue parameterValue, ObjectPath entityPath, ParameterValuesBuildingBlock buildingBlock)
@@ -113,9 +118,9 @@ namespace MoBi.Presentation.Tasks.Interaction
          return macroCommand;
       }
 
-      private IReadOnlyList<ParameterValue> createExpressionBasedOn(IContainer organ, IReadOnlyList<MoleculeBuilder> molecules) => _parameterValuesCreator.CreateExpressionFrom(organ, molecules);
+      private IReadOnlyList<ParameterValue> createExpressionBasedOn(IReadOnlyList<IContainer> organs, IReadOnlyList<MoleculeBuilder> molecules) => organs.SelectMany(x => _parameterValuesCreator.CreateExpressionFrom(x, molecules)).ToList();
 
-      private (IContainer organ, IReadOnlyList<MoleculeBuilder> molecules) selectOrganAndProteins(Module commonModule)
+      private (IReadOnlyList<IContainer> organs, IReadOnlyList<MoleculeBuilder> molecules) selectOrganAndProteins(Module commonModule)
       {
          var moleculeBlockCollection = _interactionTaskContext.BuildingBlockRepository.MoleculeBlockCollection;
          var spatialStructureCollection = _interactionTaskContext.BuildingBlockRepository.SpatialStructureCollection;
@@ -126,7 +131,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          using (var selectorPresenter = Context.Resolve<ISelectOrganAndProteinsPresenter>())
          {
             selectorPresenter.SelectSelectOrganAndProteins(commonModule);
-            return (selectorPresenter.SelectedOrgan, selectorPresenter.SelectedMolecules);
+            return (selectorPresenter.SelectedContainers, selectorPresenter.SelectedMolecules);
          }
       }
 
