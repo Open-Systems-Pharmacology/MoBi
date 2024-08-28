@@ -62,7 +62,7 @@ namespace MoBi.Presentation.Tasks
          _formulaTask = A.Fake<IFormulaTask>();
          sut = new InitialConditionsTask<InitialConditionsBuildingBlock>(_context, _editTask, A.Fake<IInitialConditionsBuildingBlockExtendManager>(), _cloneManagerForBuildingBlock, A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(),
             new ImportedQuantityToInitialConditionMapper(_initialConditionsCreator),
-            new InitialConditionPathTask(_formulaTask, _context.Context), _reactionDimensionRetriever, _initialConditionsCreator, _parameterFactory, _objectTypeResolver, _nameCorrector, A.Fake<IExportDataTableToExcelTask>(), A.Fake<IInitialConditionsBuildingBlockToDataTableMapper>());
+            new InitialConditionPathTask(_formulaTask, _context.Context), _reactionDimensionRetriever, _initialConditionsCreator, _parameterFactory, _objectTypeResolver, _nameCorrector, A.Fake<IExportDataTableToExcelTask>(), A.Fake<IInitialConditionsToDataTableMapper>());
       }
    }
 

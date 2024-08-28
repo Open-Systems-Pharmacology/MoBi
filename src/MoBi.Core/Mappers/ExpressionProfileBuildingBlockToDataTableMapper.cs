@@ -11,11 +11,11 @@ namespace MoBi.Core.Mappers
 
    public class ExpressionProfileBuildingBlockToDataTableMapper : IExpressionProfileBuildingBlockToDataTableMapper
    {
-      private readonly IInitialConditionsBuildingBlockToDataTableMapper _initialConditionsMapper;
+      private readonly IInitialConditionsToDataTableMapper _initialConditionsMapper;
       private readonly IExpressionParametersToExpressionParametersDataTableMapper _expressionParametersMapper;
 
       public ExpressionProfileBuildingBlockToDataTableMapper(
-         IInitialConditionsBuildingBlockToDataTableMapper initialConditionsMapper,
+         IInitialConditionsToDataTableMapper initialConditionsMapper,
          IExpressionParametersToExpressionParametersDataTableMapper expressionParametersMapper)
       {
          _initialConditionsMapper = initialConditionsMapper;

@@ -63,7 +63,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          IObjectTypeResolver objectTypeResolver,
          INameCorrector nameCorrector,
          IExportDataTableToExcelTask exportDataTableToExcelTask,
-         IInitialConditionsBuildingBlockToDataTableMapper mapper) :
+         IInitialConditionsToDataTableMapper dataTableMapper) :
          base(interactionTaskContext,
             editTask,
             extendManager,
@@ -75,7 +75,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             parameterFactory,
             objectTypeResolver,
             exportDataTableToExcelTask,
-            mapper)
+            dataTableMapper)
       {
          _dimensionRetriever = dimensionRetriever;
          _initialConditionsCreator = initialConditionsCreator;

@@ -11,14 +11,14 @@ using OSPSuite.Core.Domain.UnitSystem;
 
 namespace MoBi.Core.Mapper
 {
-   public abstract class concern_for_InitialConditionsBuildingBlockToDataTableMapper : ContextSpecification<InitialConditionsBuildingBlockToDataTableMapper>
+   public abstract class concern_for_InitialConditionsBuildingBlockToDataTableMapper : ContextSpecification<InitialConditionsToDataTableMapper>
    {
       protected IEnumerable<InitialCondition> _entities;
       protected List<DataTable> _result;
 
       protected override void Context()
       {
-         sut = new InitialConditionsBuildingBlockToDataTableMapper();
+         sut = new InitialConditionsToDataTableMapper();
          _entities = getEntities();
       }
 

@@ -6,11 +6,11 @@ using OSPSuite.Utility;
 
 namespace MoBi.Core.Mappers
 {
-   public interface IInitialConditionsBuildingBlockToDataTableMapper : IMapper<IEnumerable<InitialCondition>, List<DataTable>>
+   public interface IInitialConditionsToDataTableMapper : IMapper<IEnumerable<InitialCondition>, List<DataTable>>
    {
    }
 
-   public class InitialConditionsBuildingBlockToDataTableMapper : PathAndValuesToDataTableMapper<InitialCondition>, IInitialConditionsBuildingBlockToDataTableMapper
+   public class InitialConditionsToDataTableMapper : PathAndValuesToDataTableMapper<InitialCondition>, IInitialConditionsToDataTableMapper
    {
       private string isPresent => AppConstants.Captions.IsPresent;
       private string scaleDivisor => AppConstants.Captions.ScaleDivisor;
