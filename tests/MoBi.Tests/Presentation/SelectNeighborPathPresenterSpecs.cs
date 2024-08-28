@@ -127,6 +127,7 @@ namespace MoBi.Presentation
          _selectedPathDTO.Path = "A|B";
          _selectContainerInTreePresenter.OnSelectedEntityChanged += Raise.With(new SelectedEntityChangedArgs(new Parameter()));
          _selectedPathDTO.Path.ShouldBeEqualTo("A|B");
+         sut.CanClose.ShouldBeFalse();
       }
 
       [Observation]
@@ -143,6 +144,7 @@ namespace MoBi.Presentation
          _selectedPathDTO.Path = "A|B";
          _selectContainerInTreePresenter.OnSelectedEntityChanged += Raise.With(new SelectedEntityChangedArgs(new Container().WithName("A").WithMode(ContainerMode.Physical)));
          _selectedPathDTO.Path.ShouldBeEqualTo("A");
+         sut.CanClose.ShouldBeTrue();
       }
 
       [Observation]

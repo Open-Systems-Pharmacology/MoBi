@@ -44,15 +44,16 @@ namespace MoBi.Presentation.Presenter
       private void onSelectedContainerPathChanged(IEntity entity)
       {
          if (!(entity is IContainer container))
-            return;
-
-         //Only physical containers can be selected as neighbors
-         _physicalContainerSelected = container.Mode == ContainerMode.Physical;
-         OnStatusChanged(null, null);
-         if (_physicalContainerSelected == false)
-            return;
-
-         _selectedPathDTO.Path = _objectPathFactory.CreateAbsoluteObjectPath(container).PathAsString;
+         {
+            _physicalContainerSelected = false;
+         }
+         else
+         {         
+            //Only physical containers can be selected as neighbors
+            _physicalContainerSelected = container.Mode == ContainerMode.Physical;
+            if (_physicalContainerSelected)
+               _selectedPathDTO.Path = _objectPathFactory.CreateAbsoluteObjectPath(container).PathAsString;
+         }
          ViewChanged();
       }
 
@@ -68,6 +69,7 @@ namespace MoBi.Presentation.Presenter
 
          _selectContainerInTreePresenter.InitTreeStructure(modules);
          _selectedPathDTO.Path = defaultSelection ?? string.Empty;
+         ViewChanged();
       }
 
       private ObjectBaseDTO mapModuleDTO(Module module)
