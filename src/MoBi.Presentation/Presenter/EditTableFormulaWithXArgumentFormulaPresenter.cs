@@ -89,6 +89,7 @@ namespace MoBi.Presentation.Presenter
          using (var presenter = _applicationController.Start<ISelectFormulaUsablePathPresenter>())
          {
             var referencePresenter = _selectReferencePresenterFactory.ReferenceAtParameterFor(UsingObject?.ParentContainer);
+            referencePresenter.DisableTimeSelection();
             presenter.Init(predicate, UsingObject, UsingObject == null ? Enumerable.Empty<IObjectBase>() : new[] {UsingObject.RootContainer}, caption, referencePresenter);
             return presenter.GetSelection();
          }
