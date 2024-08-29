@@ -6,6 +6,7 @@ using MoBi.Core.Services;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Events;
+using MoBi.Core.Domain;
 
 namespace MoBi.Core.Commands
 {
@@ -86,7 +87,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void the_building_block_version_updater_should_update_the_building_block_version()
       {
-         A.CallTo(() => _buildingBlockVersionUpdater.UpdateBuildingBlockVersion(_simulationSettings, true, true)).MustHaveHappened();
+         A.CallTo(() => _buildingBlockVersionUpdater.UpdateBuildingBlockVersion(_simulationSettings, true, PKSimModuleConversion.SetAsExtensionModule)).MustHaveHappened();
       }
    }
 }

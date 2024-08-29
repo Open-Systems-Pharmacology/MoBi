@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using FakeItEasy;
 using MoBi.Assets;
+using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Services;
@@ -65,7 +66,7 @@ namespace MoBi.Core
 
       protected override void Because()
       {
-         sut.UpdateBuildingBlockVersion(_changeBuildingBlock, true, true);
+         sut.UpdateBuildingBlockVersion(_changeBuildingBlock, true, PKSimModuleConversion.SetAsExtensionModule);
       }
 
       [Observation]

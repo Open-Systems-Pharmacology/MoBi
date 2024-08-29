@@ -7,6 +7,7 @@ using MoBi.Core.Services;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
+using MoBi.Core.Domain;
 
 
 namespace MoBi.Core.Commands
@@ -71,7 +72,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void should_have_set_parameter_start_values_building_block_to_changed()
       {
-         A.CallTo(() => _buildingBlockVersionUpdater.UpdateBuildingBlockVersion(_buildingBlock, true, true)).MustHaveHappened();
+         A.CallTo(() => _buildingBlockVersionUpdater.UpdateBuildingBlockVersion(_buildingBlock, true, PKSimModuleConversion.SetAsExtensionModule)).MustHaveHappened();
       }
    }
 

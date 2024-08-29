@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using MoBi.Assets;
+using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using OSPSuite.Core.Domain;
@@ -12,8 +13,8 @@ namespace MoBi.Core.Services
 {
    public interface IBuildingBlockVersionUpdater
    {
-      void UpdateBuildingBlockVersion(IBuildingBlock buildingBlock, uint newVersion, bool shouldConvertPKSimModule);
-      void UpdateBuildingBlockVersion(IBuildingBlock buildingBlock, bool shouldIncrementVersion, bool shouldConvertPKSimModule);
+      void UpdateBuildingBlockVersion(IBuildingBlock buildingBlock, uint newVersion, PKSimModuleConversion conversionOption);
+      void UpdateBuildingBlockVersion(IBuildingBlock buildingBlock, bool shouldIncrementVersion, PKSimModuleConversion conversionOption);
    }
 
    public class BuildingBlockVersionUpdater : IBuildingBlockVersionUpdater
@@ -29,16 +30,19 @@ namespace MoBi.Core.Services
          _dialogCreator = dialogCreator;
       }
 
-      public void UpdateBuildingBlockVersion(IBuildingBlock buildingBlock, uint newVersion, bool shouldConvertPKSimModule)
+      public void UpdateBuildingBlockVersion(IBuildingBlock buildingBlock, uint newVersion, PKSimModuleConversion conversionOption)
       {
          if (buildingBlock == null)
             return;
 
-         if (shouldConvertModule(buildingBlock))
+         if (shouldConvertToExtensionModule(buildingBlock, conversionOption))
          {
             showModuleConversionWarning(buildingBlock);
             buildingBlock.Module.IsPKSimModule = false;
          }
+
+         if (shouldConvertToPKSimModule(buildingBlock, conversionOption))
+            buildingBlock.Module.IsPKSimModule = true;
 
          buildingBlock.Version = newVersion;
 
@@ -51,8 +55,11 @@ namespace MoBi.Core.Services
          _dialogCreator.MessageBoxInfo(AppConstants.Captions.TheModuleWillBeConvertedFromPKSimToExtensionModule(buildingBlock.Module.Name));
       }
 
-      private bool shouldConvertModule(IBuildingBlock buildingBlock) =>
-         buildingBlock.Module?.IsPKSimModule ?? false;
+      private bool shouldConvertToExtensionModule(IBuildingBlock buildingBlock, PKSimModuleConversion conversionOption) =>
+         (buildingBlock.Module?.IsPKSimModule ?? false) && conversionOption == PKSimModuleConversion.SetAsExtensionModule;
+
+      private bool shouldConvertToPKSimModule(IBuildingBlock buildingBlock, PKSimModuleConversion conversionOption) =>
+         buildingBlock.Module != null && conversionOption == PKSimModuleConversion.SetAsPKSimModule;
 
       protected void publishModuleStatusChangedEvents(IBuildingBlock buildingBlock)
       {
@@ -68,7 +75,7 @@ namespace MoBi.Core.Services
          _eventPublisher.PublishEvent(new ModuleStatusChangedEvent(module));
       }
 
-      public void UpdateBuildingBlockVersion(IBuildingBlock buildingBlock, bool shouldIncrementVersion, bool shouldConvertPKSimModule)
+      public void UpdateBuildingBlockVersion(IBuildingBlock buildingBlock, bool shouldIncrementVersion, PKSimModuleConversion conversionOption)
       {
          if (buildingBlock == null) return;
          var version = buildingBlock.Version;
@@ -78,7 +85,7 @@ namespace MoBi.Core.Services
          else
             version--;
 
-         UpdateBuildingBlockVersion(buildingBlock, version, shouldConvertPKSimModule);
+         UpdateBuildingBlockVersion(buildingBlock, version, conversionOption);
       }
 
       private void publishSimulationStatusChangedEvents(IBuildingBlock changedBuildingBlock)

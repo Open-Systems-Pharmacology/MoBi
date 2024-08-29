@@ -1,3 +1,4 @@
+using MoBi.Core.Domain;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain.Builder;
 
@@ -9,7 +10,23 @@ namespace MoBi.Core.Commands
       {
          CommandExtensions.AsInverseFor(inverseCommand, originalCommand);
          inverseCommand.ShouldIncrementVersion = !originalCommand.ShouldIncrementVersion;
+         inverseCommand.ConversionOption = getReverseConversionOption(originalCommand.ConversionOption);
          return inverseCommand;
+      }
+
+      private static PKSimModuleConversion getReverseConversionOption(PKSimModuleConversion conversionOption)
+      {
+         switch (conversionOption)
+         {
+            case PKSimModuleConversion.NoChange:
+               return PKSimModuleConversion.NoChange;
+            case PKSimModuleConversion.SetAsExtensionModule:
+               return PKSimModuleConversion.SetAsPKSimModule;
+            case PKSimModuleConversion.SetAsPKSimModule:
+               return PKSimModuleConversion.SetAsExtensionModule;
+            default:
+               return PKSimModuleConversion.NoChange;
+         }
       }
    }
 }
