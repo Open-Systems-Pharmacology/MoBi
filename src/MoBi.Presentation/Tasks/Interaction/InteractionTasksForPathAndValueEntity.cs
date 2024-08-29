@@ -69,7 +69,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       ///    Exports the building block to an excel file
       /// </summary>
       /// <param name="subject">Building Block to export.</param>
-      void ExportExcel(TBuildingBlock subject);
+      void ExportToExcel(TBuildingBlock subject);
    }
 
    public abstract class InteractionTasksForPathAndValueEntity<TParent, TBuildingBlock, TBuilder> : InteractionTasksForEnumerableBuildingBlock<TParent, TBuildingBlock, TBuilder>, IInteractionTasksForPathAndValueEntity<TBuildingBlock, TBuilder>
@@ -128,7 +128,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return moBiMacroCommand.Run(Context);
       }
 
-      public void ExportExcel(TBuildingBlock subject)
+      public void ExportToExcel(TBuildingBlock subject)
       {
          var currentProject = Context.CurrentProject;
          var projectName = currentProject.Name;

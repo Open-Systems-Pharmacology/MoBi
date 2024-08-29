@@ -14,6 +14,6 @@ namespace MoBi.Presentation.UICommand
          _interactionTasks = interactionTasks;
       }
 
-      protected override void PerformExecute() => _interactionTasks.ExportExcel(Subject);
+      protected override void PerformExecute() => _interactionTasks.ExportToExcel(Subject);
    }
 }
