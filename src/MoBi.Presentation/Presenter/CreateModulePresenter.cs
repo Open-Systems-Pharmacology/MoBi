@@ -7,7 +7,6 @@ using OSPSuite.Core.Domain;
 
 namespace MoBi.Presentation.Presenter
 {
-
    public interface ICreateModulePresenter : IAddContentToModulePresenter
    {
       Module CreateModule();
