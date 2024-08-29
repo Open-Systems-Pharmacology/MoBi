@@ -1,7 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using DevExpress.XtraEditors.Repository;
 using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
@@ -23,7 +20,6 @@ namespace MoBi.Presentation
    {
       protected IParameterValuesView _parameterValuesView;
       protected IModalPresenter _modalPresenter;
-      protected ISelectReferenceAtParameterValuePresenter _selectReferenceAtParameterValuePresenter;
       protected ParameterValuesBuildingBlock _parameterValuesBuildingBlock;
       private IParameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper _parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper;
       protected IParameterValuesTask _parameterValuesTask;
@@ -33,7 +29,6 @@ namespace MoBi.Presentation
       {
          _parameterValuesView = A.Fake<IParameterValuesView>();
          _modalPresenter = A.Fake<IModalPresenter>();
-         _selectReferenceAtParameterValuePresenter = A.Fake<ISelectReferenceAtParameterValuePresenter>();
          _parameterValuesBuildingBlock = new ParameterValuesBuildingBlock();
 
          _parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper = new ParameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper(new ParameterValueToParameterValueDTOMapper(A.Fake<IFormulaToValueFormulaDTOMapper>()));
@@ -53,7 +48,6 @@ namespace MoBi.Presentation
             A.Fake<IDimensionFactory>(),
             A.Fake<IViewItemContextMenuFactory>(),
             _modalPresenter,
-            _selectReferenceAtParameterValuePresenter,
             _dialogCreator);
 
          sut.Edit(_parameterValuesBuildingBlock);
@@ -81,15 +75,13 @@ namespace MoBi.Presentation
          };
 
          A.CallTo(() => _modalPresenter.Show(null)).Returns(true);
-         A.CallTo(() => _selectReferenceAtParameterValuePresenter.GetAllSelections()).Returns(_addedPaths);
+         A.CallTo(() => _parameterValuesTask.GetNewPaths()).Returns(_addedPaths);
       }
 
       protected override void Because()
       {
          sut.AddNewParameterValues();
       }
-
-
    }
 
    internal class When_creating_parameter_values_and_none_are_in_the_building_block : When_creating_new_parameter_values
