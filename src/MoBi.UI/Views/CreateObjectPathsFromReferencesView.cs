@@ -37,22 +37,13 @@ namespace MoBi.UI.Views
          memoEditObjectPaths.SizeChanged += (o, ev) => OnEvent(memoEditObjectPaths.AutoScrollBars);
       }
 
-      public void AttachPresenter(ICreateObjectPathsFromReferencesPresenter presenter)
-      {
-         _presenter = presenter;
-      }
+      public void AttachPresenter(ICreateObjectPathsFromReferencesPresenter presenter) => _presenter = presenter;
 
-      public void AddReferenceSelectionView(IView view)
-      {
-         referenceSelectionPanel.FillWith(view);
-      }
+      public void AddReferenceSelectionView(IView view) => referenceSelectionPanel.FillWith(view);
 
       public IReadOnlyList<string> AllPaths => memoEditObjectPaths.Lines;
 
-      public void CanAdd(bool canAdd)
-      {
-         btnAdd.Enabled = canAdd;
-      }
+      public void CanAdd(bool canAdd) => btnAdd.Enabled = canAdd;
 
       public void AddSelectedPaths(IReadOnlyList<string> pathsToAdd)
       {

@@ -27,30 +27,15 @@ namespace MoBi.Presentation.Presenter
          _selectReferencePresenter.SelectionChangedEvent += enableDisableButtons;
       }
 
-      private void enableDisableButtons()
-      {
-         _view.CanAdd(_selectReferencePresenter.CanClose);
-      }
+      private void enableDisableButtons() => _view.CanAdd(_selectReferencePresenter.CanClose);
 
-      public void Init(IEntity localReferencePoint, IEnumerable<IObjectBase> contextSpecificEntitiesToAddToReferenceTree, IUsingFormula editedObject)
-      {
-         _selectReferencePresenter.Init(localReferencePoint, contextSpecificEntitiesToAddToReferenceTree, editedObject);
-      }
+      public void Init(IEntity localReferencePoint, IEnumerable<IObjectBase> contextSpecificEntitiesToAddToReferenceTree, IUsingFormula editedObject) => _selectReferencePresenter.Init(localReferencePoint, contextSpecificEntitiesToAddToReferenceTree, editedObject);
 
-      public IReadOnlyList<ObjectPath> GetAllSelections()
-      {
-         return convertTextToObjectPaths(_view.AllPaths.Where(x => !string.IsNullOrWhiteSpace(x)).ToList());
-      }
+      public IReadOnlyList<ObjectPath> GetAllSelections() => convertTextToObjectPaths(_view.AllPaths.Where(x => !string.IsNullOrWhiteSpace(x)).ToList());
 
-      public void AddSelection()
-      {
-         _view.AddSelectedPaths(_selectReferencePresenter.GetAllSelections().Select(x => x.PathAsString).ToList());
-      }
+      public void AddSelection() => _view.AddSelectedPaths(_selectReferencePresenter.GetAllSelections().Select(x => x.PathAsString).ToList());
 
-      private IReadOnlyList<ObjectPath> convertTextToObjectPaths(IReadOnlyList<string> pathsAsString)
-      {
-         return pathsAsString.Select(x => new ObjectPath(x.ToPathArray())).ToList();
-      }
+      private IReadOnlyList<ObjectPath> convertTextToObjectPaths(IReadOnlyList<string> pathsAsString) => pathsAsString.Select(x => new ObjectPath(x.ToPathArray())).ToList();
 
       public override bool CanClose => true;
    }
