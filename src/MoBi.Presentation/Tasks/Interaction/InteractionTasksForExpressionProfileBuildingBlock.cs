@@ -3,6 +3,7 @@ using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
+using MoBi.Core.Mappers;
 using MoBi.Core.Services;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Assets;
@@ -10,6 +11,7 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
@@ -31,8 +33,10 @@ namespace MoBi.Presentation.Tasks.Interaction
          IMoBiFormulaTask formulaTask,
          IPKSimStarter pkSimStarter,
          IContainerTask containerTask,
-         IParameterFactory parameterFactory) :
-         base(interactionTaskContext, editTask, formulaTask, parameterFactory)
+         IParameterFactory parameterFactory,
+         IExportDataTableToExcelTask exportDataTableToExcelTask,
+         IExpressionProfileBuildingBlockToDataTableMapper mapper) :
+         base(interactionTaskContext, editTask, formulaTask, parameterFactory, exportDataTableToExcelTask, mapper)
       {
          _editTaskForExpressionProfileBuildingBlock = editTask;
          _pkSimStarter = pkSimStarter;

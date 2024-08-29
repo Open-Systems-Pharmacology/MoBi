@@ -51,7 +51,8 @@ namespace MoBi.Presentation.Tasks.Interaction
       IMoBiCommand SetDisplayValueWithUnit(TPathAndValueEntity pathAndValueEntity, double? newDisplayValue, Unit unit, TBuildingBlock buildingBlock);
 
       /// <summary>
-      ///    Returns a command that can be used to remove the path and value entities contained in <paramref name="pathAndValueEntity" />
+      ///    Returns a command that can be used to remove the path and value entities contained in
+      ///    <paramref name="pathAndValueEntity" />
       ///    from
       ///    <paramref name="buildingBlock" />
       /// </summary>

@@ -8,6 +8,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Events;
 using MoBi.Core.Exceptions;
+using MoBi.Core.Mappers;
 using MoBi.Core.Services;
 using MoBi.Helpers;
 using MoBi.Presentation.DTO;
@@ -24,6 +25,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks
@@ -57,10 +59,10 @@ namespace MoBi.Presentation.Tasks
          _parameterFactory = A.Fake<IParameterFactory>();
          _reactionDimensionRetriever = A.Fake<IReactionDimensionRetriever>();
          _moleculeBuilderTask = A.Fake<IInteractionTasksForMoleculeBuilder>();
-
          _formulaTask = A.Fake<IFormulaTask>();
          sut = new InitialConditionsTask<InitialConditionsBuildingBlock>(_context, _editTask, A.Fake<IInitialConditionsBuildingBlockExtendManager>(), _cloneManagerForBuildingBlock, A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(),
-            new ImportedQuantityToInitialConditionMapper(_initialConditionsCreator), new InitialConditionPathTask(_formulaTask, _context.Context), _reactionDimensionRetriever, _initialConditionsCreator, _parameterFactory, _nameCorrector, _objectTypeResolver);
+            new ImportedQuantityToInitialConditionMapper(_initialConditionsCreator),
+            new InitialConditionPathTask(_formulaTask, _context.Context), _reactionDimensionRetriever, _initialConditionsCreator, _parameterFactory, _objectTypeResolver, _nameCorrector, A.Fake<IExportDataTableToExcelTask>(), A.Fake<IInitialConditionsToDataTableMapper>());
       }
    }
 

@@ -29,6 +29,10 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithIcon(ApplicationIcons.ParameterValuesImport)
             .WithCommandFor<ImportParameterValuesUICommand, IBuildingBlock>(buildingBlock, _container));
 
+         _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.ExportToExcel)
+            .WithIcon(ApplicationIcons.ExportToExcel)
+            .WithCommandFor<ExportParameterValuesBuildingBlockToExcelUICommand, ParameterValuesBuildingBlock>(buildingBlock, _container));
+
          return this;
       }
 

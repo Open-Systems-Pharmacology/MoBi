@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
@@ -18,6 +19,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
@@ -34,15 +36,16 @@ namespace MoBi.Presentation.Tasks.Interaction
       private readonly IMapper<ImportedQuantityDTO, TPathAndValueEntity> _dtoToQuantityToParameterValueMapper;
       protected readonly IPathAndValueEntityPathTask<ILookupBuildingBlock<TPathAndValueEntity>, TPathAndValueEntity> _entityPathTask;
 
-      private readonly TBuildingBlock _newBuildingBlock ;
+      private readonly TBuildingBlock _newBuildingBlock;
       private readonly IObjectTypeResolver _objectTypeResolver;
 
       protected InteractionTasksForExtendablePathAndValueEntity(IInteractionTaskContext interactionTaskContext, IEditTasksForBuildingBlock<TBuildingBlock> editTask,
          IExtendPathAndValuesManager<TPathAndValueEntity> extendManager, ICloneManagerForBuildingBlock cloneManagerForBuildingBlock,
          IMoBiFormulaTask moBiFormulaTask, ISpatialStructureFactory spatialStructureFactory, IMapper<ImportedQuantityDTO, TPathAndValueEntity> dtoToQuantityToParameterValueMapper,
          IPathAndValueEntityPathTask<ILookupBuildingBlock<TPathAndValueEntity>, TPathAndValueEntity> entityPathTask,
-         IParameterFactory parameterFactory, IObjectTypeResolver objectTypeResolver)
-         : base(interactionTaskContext, editTask, moBiFormulaTask, parameterFactory)
+         IParameterFactory parameterFactory, IObjectTypeResolver objectTypeResolver, IExportDataTableToExcelTask exportDataTableToExcelTask,
+         IMapper<IEnumerable<TPathAndValueEntity>, List<DataTable>> dataTableMapper)
+         : base(interactionTaskContext, editTask, moBiFormulaTask, parameterFactory, exportDataTableToExcelTask, dataTableMapper)
       {
          _extendManager = extendManager;
          _cloneManagerForBuildingBlock = cloneManagerForBuildingBlock;
@@ -126,7 +129,8 @@ namespace MoBi.Presentation.Tasks.Interaction
       }
 
       /// <summary>
-      ///    Checks that the formula is equivalent for the path and value entity. This includes evaluation of constant formula to a double
+      ///    Checks that the formula is equivalent for the path and value entity. This includes evaluation of constant formula to
+      ///    a double
       /// </summary>
       /// <param name="pathAndValueEntity">The path and value entity to check</param>
       /// <param name="targetFormula">The formula being evaluated</param>
@@ -287,9 +291,9 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new AddBuildingBlockToModuleCommand<TBuildingBlock>(itemToAdd, parent);
       }
 
-      private (SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules) selectBuildingBlocksForExtend(MoleculeBuildingBlock defaultMolecules, SpatialStructure defaultSpatialStructure) => 
+      private (SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules) selectBuildingBlocksForExtend(MoleculeBuildingBlock defaultMolecules, SpatialStructure defaultSpatialStructure) =>
          selectBuildingBlocks(x => x.SelectBuildingBlocksForExtend(defaultMolecules, defaultSpatialStructure));
-      
+
       protected (SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules) SelectBuildingBlocksForRefresh(MoleculeBuildingBlock defaultMolecules, SpatialStructure defaultSpatialStructure, IReadOnlyList<string> selectableBuilders) =>
          selectBuildingBlocks(x => x.SelectMoleculesForRefresh(defaultMolecules, selectableBuilders));
 

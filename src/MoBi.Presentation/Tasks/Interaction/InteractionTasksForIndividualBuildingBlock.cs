@@ -1,9 +1,11 @@
 ﻿using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
+using MoBi.Core.Mappers;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
@@ -15,11 +17,14 @@ namespace MoBi.Presentation.Tasks.Interaction
 
    public class InteractionTasksForIndividualBuildingBlock : InteractionTasksForProjectPathAndValueEntityBuildingBlocks<IndividualBuildingBlock, IndividualParameter>, IInteractionTasksForIndividualBuildingBlock
    {
+      //The parameter for the mapper is set to null since we still haven`t implemented it for IndividualBuildingBlock
       public InteractionTasksForIndividualBuildingBlock(IInteractionTaskContext interactionTaskContext,
          IEditTasksForIndividualBuildingBlock editTask,
          IMoBiFormulaTask moBiFormulaTask,
-         IParameterFactory parameterFactory) :
-         base(interactionTaskContext, editTask, moBiFormulaTask, parameterFactory)
+         IParameterFactory parameterFactory,
+         IExportDataTableToExcelTask exportDataTableToExcelTask,
+         IIndividualParametersToIndividualParametersDataTableMapper dataTableMapper) :
+         base(interactionTaskContext, editTask, moBiFormulaTask, parameterFactory, exportDataTableToExcelTask, dataTableMapper)
       {
       }
 

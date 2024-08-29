@@ -5,6 +5,7 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Helper;
+using MoBi.Core.Mappers;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -15,6 +16,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
@@ -37,9 +39,11 @@ namespace MoBi.Presentation.Tasks.Interaction
          IMoBiSpatialStructureFactory spatialStructureFactory,
          IParameterValuePathTask parameterValuePathTask,
          IParameterValuesCreator parameterValuesCreator,
-         IParameterFactory parameterFactory, 
-         IObjectTypeResolver objectTypeResolver)
-         : base(interactionTaskContext, editTask, parameterValuesExtendManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoToQuantityToParameterValueMapper, parameterValuePathTask, parameterFactory, objectTypeResolver)
+         IParameterFactory parameterFactory,
+         IObjectTypeResolver objectTypeResolver,
+         IExportDataTableToExcelTask exportDataTableToExcelTask,
+         IParameterValuesToParameterValuesDataTableMapper dataTableMapper)
+         : base(interactionTaskContext, editTask, parameterValuesExtendManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoToQuantityToParameterValueMapper, parameterValuePathTask, parameterFactory, objectTypeResolver, exportDataTableToExcelTask, dataTableMapper)
       {
          _parameterValuesCreator = parameterValuesCreator;
       }

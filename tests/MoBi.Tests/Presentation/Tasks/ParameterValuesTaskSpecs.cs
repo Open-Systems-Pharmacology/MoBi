@@ -7,6 +7,7 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
+using MoBi.Core.Mappers;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -21,6 +22,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Services;
 using IComparable = System.IComparable;
 
 namespace MoBi.Presentation.Tasks
@@ -47,10 +49,10 @@ namespace MoBi.Presentation.Tasks
          _parameterFactory = A.Fake<IParameterFactory>();
          _objectTypeResolver = A.Fake<IObjectTypeResolver>();
 
-         sut = new ParameterValuesTask(_context, _editTasks,
-            _cloneManagerForBuildingBlock,
+         sut = new ParameterValuesTask(_context, _editTasks, _cloneManagerForBuildingBlock,
             new ImportedQuantityToParameterValueMapper(_parameterValuesCreator), A.Fake<IParameterValueBuildingBlockExtendManager>(),
-            A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(), new ParameterValuePathTask(A.Fake<IFormulaTask>(), _context.Context), _parameterValuesCreator, _parameterFactory, _objectTypeResolver);
+            A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(), new ParameterValuePathTask(A.Fake<IFormulaTask>(), _context.Context),
+            _parameterValuesCreator, _parameterFactory, _objectTypeResolver, A.Fake<IExportDataTableToExcelTask>(), A.Fake<IParameterValuesToParameterValuesDataTableMapper>());
       }
    }
 

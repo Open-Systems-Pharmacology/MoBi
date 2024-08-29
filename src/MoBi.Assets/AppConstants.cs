@@ -1126,6 +1126,7 @@ namespace MoBi.Assets
          public static readonly string OutputSelections = "Output Selections";
          public static readonly string SettingsAndSchema = "Output Intervals and Solver Settings";
          public static readonly string MergeBehavior = "Merge Behavior";
+         public static readonly string ExportToExcel = "Export to Excel®...";
 
          public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
 
@@ -1336,7 +1337,6 @@ namespace MoBi.Assets
          public static readonly string NewInitialConditions = "Create New Initial Conditions";
          public static readonly string NewParameterValues = "Create New Parameter values";
          public static readonly string ExportHistory = "Export History";
-         public static readonly string MoleculeNames = "Molecule Name";
          public static readonly string StoichiometricCoefficient = "Stoichiometric Coefficient";
          public static readonly string FormulaType = "Formula Type";
          public static readonly string FormulaName = "Formula Name";
@@ -1617,6 +1617,7 @@ namespace MoBi.Assets
          public static readonly string AddExpressionDescription = "<b>The building block will be extended with expression parameter values for selected <i>molecules</i> in the selected <i>organ</i> </b>";
          public static readonly string AddDefaultCurveForNewSimulations = "Add default curve for new simulations";
          public static readonly string ChangeDefaultCurveForNewSimulations = "Change default curve for new simulations";
+         public static readonly string IndividualParameters = "Individual Parameters";
          public static string SelectTheBuildingBlockWhereEntitiesWillBeAddedOrUpdated(string typeBeingAdded) => $"Select the building block where {typeBeingAdded} will be added or updated";
          public static readonly string SelectBuildingBlock = "Select Building Block";
          public static readonly string MakeDefault = "Make defaults";
@@ -1624,6 +1625,7 @@ namespace MoBi.Assets
          public static readonly string MergeBehavior = "Merge Behavior";
          public static readonly string ExtendMergeBehaviorDescription = "The module containers will be merged recursively using add and update behavior";
          public static readonly string OverwriteMergeBehaviorDescription = "The module containers will be replaced by path";
+         public static readonly string ExportToExcel = "Export to Excel®";
          public static readonly string DistributedTableFormula = "Distributed Table Formula";
          public static readonly string ImportTableFormula = "Import Table Formula";
          public static string SelectEntitiesThatWillBeReplaced(string entityType) => $"Select {entityType.Pluralize()} that will be replaced";
@@ -1728,7 +1730,7 @@ namespace MoBi.Assets
          public static readonly string PasteFormula = "Paste Formula";
          public static readonly string SelectOutputFolder = "Select output folder";
          public static readonly string SelectParameter = "Select parameter";
-
+         public static readonly string ExpressionParameters = "Expression Parameters";
          public static string AddBuildingBlocksToModule(string moduleName) => $"Add Building Blocks to Module:  {moduleName}";
          public static string LoadBuildingBlockToModule(string moduleName) => $"Load Building Block to Module:  {moduleName}";
 
@@ -2290,6 +2292,11 @@ namespace MoBi.Assets
          public static readonly string IncompatibleVersionInstalled = "PK-Sim was found on the system, but it was not compatible with this feature. Please make sure that a compatible version of PK-Sim was installed using the provided setup.\n" +
                                                                       "Alternatively, you can specify where PK-Sim is installed on your system under Utilities -> Options -> Application tab\n" +
                                                                       "After changing the PK-Sim installation path, please restart MoBi.";
+      }
+
+      public static string DefaultFileNameForBuildingBlockExport(string projectName, IBuildingBlock buildingBlock)
+      {
+         return $"{projectName}_{buildingBlock.Name}";
       }
 
       public static string DefaultFileNameForModelPartsExport(string projectName, string simulationName)

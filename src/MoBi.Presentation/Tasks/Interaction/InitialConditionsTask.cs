@@ -6,6 +6,7 @@ using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Events;
+using MoBi.Core.Mappers;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -18,6 +19,7 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
@@ -58,9 +60,22 @@ namespace MoBi.Presentation.Tasks.Interaction
          IReactionDimensionRetriever dimensionRetriever,
          IInitialConditionsCreator initialConditionsCreator,
          IParameterFactory parameterFactory,
-         INameCorrector nameCorrector, 
-         IObjectTypeResolver objectTypeResolver) : 
-         base(interactionTaskContext, editTask, extendManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoMapper, initialConditionPathTask, parameterFactory, objectTypeResolver)
+         IObjectTypeResolver objectTypeResolver,
+         INameCorrector nameCorrector,
+         IExportDataTableToExcelTask exportDataTableToExcelTask,
+         IInitialConditionsToDataTableMapper dataTableMapper) :
+         base(interactionTaskContext,
+            editTask,
+            extendManager,
+            cloneManagerForBuildingBlock,
+            moBiFormulaTask,
+            spatialStructureFactory,
+            dtoMapper,
+            initialConditionPathTask,
+            parameterFactory,
+            objectTypeResolver,
+            exportDataTableToExcelTask,
+            dataTableMapper)
       {
          _dimensionRetriever = dimensionRetriever;
          _initialConditionsCreator = initialConditionsCreator;
@@ -164,27 +179,27 @@ namespace MoBi.Presentation.Tasks.Interaction
          initialConditions.Each(initialCondition =>
          {
             var moleculeBuilder = molecules.FindByName(initialCondition.MoleculeName);
-            if (moleculeBuilder == null) 
+            if (moleculeBuilder == null)
                return;
-         
+
             var originalInitialCondition = moleculeBuilder.GetDefaultInitialCondition();
             var originalUnit = moleculeBuilder.DisplayUnit;
-         
+
             if (!ValueComparer.AreValuesEqual(Constants.DEFAULT_SCALE_DIVISOR, initialCondition.ScaleDivisor))
             {
                macroCommand.Add(UpdateInitialConditionScaleDivisor(buildingBlock, initialCondition, Constants.DEFAULT_SCALE_DIVISOR, initialCondition.ScaleDivisor));
             }
-         
+
             if (!HasEquivalentDimension(initialCondition, moleculeBuilder))
             {
                macroCommand.Add(UpdatePathAndValueEntityDimension(buildingBlock, initialCondition, moleculeBuilder.Dimension));
             }
-         
+
             if (!HasEquivalentPathAndValueEntity(initialCondition, originalInitialCondition))
             {
                macroCommand.Add(SetValueWithUnit(initialCondition, originalInitialCondition, originalUnit, buildingBlock));
             }
-         
+
             if (!HasEquivalentFormula(initialCondition, moleculeBuilder.DefaultStartFormula))
             {
                updateFormulaUsages(buildingBlock, initialConditions, initialCondition, macroCommand, moleculeBuilder);
@@ -197,7 +212,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       private void updateFormulaUsages(TBuildingBlock buildingBlock, IReadOnlyList<InitialCondition> initialConditions, InitialCondition initialCondition, MoBiMacroCommand macroCommand, MoleculeBuilder moleculeBuilder)
       {
          // If all usages of a formula are being refreshed, then we can remove the existing formula from the formula cache
-         if(canRemoveFormula(buildingBlock, initialConditions, initialCondition.Formula))
+         if (canRemoveFormula(buildingBlock, initialConditions, initialCondition.Formula))
             macroCommand.Add(new RemoveFormulaFromFormulaCacheCommand(buildingBlock, initialCondition.Formula).Run(Context));
 
          // The clone manager can return an existing formula from the formula cache if it is present and equivalent to the formula being cloned

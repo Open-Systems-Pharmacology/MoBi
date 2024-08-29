@@ -30,6 +30,10 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithIcon(ApplicationIcons.InitialConditionsImport)
             .WithCommandFor<ImportInitialConditionsUICommand, IBuildingBlock>(buildingBlock, _container));
 
+         _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.ExportToExcel)
+            .WithIcon(ApplicationIcons.ExportToExcel)
+            .WithCommandFor<ExportInitialConditionsBuildingBlockToExcelUICommand, InitialConditionsBuildingBlock>(buildingBlock, _container));
+
          return this;
       }
 
