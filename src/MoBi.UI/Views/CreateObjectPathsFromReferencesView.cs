@@ -27,7 +27,6 @@ namespace MoBi.UI.Views
          memoEditObjectPaths.Properties.WordWrap = false;
          btnAdd.Click += (sender, args) => _presenter.AddSelection();
 
-         // referenceSelectionGroup.Text = AppConstants.Captions.SelectParameters;
          pathsToBeAddedGroup.Text = AppConstants.Captions.ParameterPathsToAdd;
       }
 
