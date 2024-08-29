@@ -57,7 +57,7 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _view.AllPaths).Returns(new[] { "A|Path" });
+         A.CallTo(() => _view.AllPaths).Returns(new[] { "   ", "A|Path", "", string.Empty});
       }
 
       protected override void Because()
@@ -70,6 +70,12 @@ namespace MoBi.Presentation
       {
          _result[0].ElementAt(0).ShouldBeEqualTo("A");
          _result[0].ElementAt(1).ShouldBeEqualTo("Path");
+      }
+
+      [Observation]
+      public void empty_lines_should_be_rejected()
+      {
+         _result.Count.ShouldBeEqualTo(1);
       }
    }
 

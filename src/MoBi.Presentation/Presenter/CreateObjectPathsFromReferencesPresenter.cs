@@ -39,7 +39,7 @@ namespace MoBi.Presentation.Presenter
 
       public IReadOnlyList<ObjectPath> GetAllSelections()
       {
-         return convertTextToObjectPaths(_view.AllPaths);
+         return convertTextToObjectPaths(_view.AllPaths.Where(x => !string.IsNullOrWhiteSpace(x)).ToList());
       }
 
       public void AddSelection()
