@@ -7,7 +7,7 @@ using OSPSuite.Core.Domain;
 
 namespace MoBi.Presentation.Presenter
 {
-  
+
    public interface ICreateModulePresenter : IAddContentToModulePresenter
    {
       Module CreateModule();
@@ -31,11 +31,11 @@ namespace MoBi.Presentation.Presenter
          _module = _context.Create<Module>();
          _view.Caption = AppConstants.Captions.NewWindow(_context.TypeFor(_module));
 
-         _createModuleDTO = new ModuleContentDTO();
+         _createModuleDTO = new ModuleContentDTO { MergeBehavior = MergeBehavior.Extend };
          _createModuleDTO.AddUsedNames(_context.CurrentProject.Modules.AllNames());
          _view.BindTo(_createModuleDTO);
          _view.Display();
-         
+
          return _view.Canceled ? null : _createModuleDTOToModuleMapper.MapFrom(_createModuleDTO);
       }
 
