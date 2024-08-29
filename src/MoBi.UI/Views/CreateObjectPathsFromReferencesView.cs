@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MoBi.Assets;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using MoBi.UI.Extensions;
@@ -25,6 +26,9 @@ namespace MoBi.UI.Views
          layoutItemBtnAdd.AsAddButton();
          memoEditObjectPaths.Properties.WordWrap = false;
          btnAdd.Click += (sender, args) => _presenter.AddSelection();
+
+         // referenceSelectionGroup.Text = AppConstants.Captions.SelectParameters;
+         pathsToBeAddedGroup.Text = AppConstants.Captions.ParameterPathsToAdd;
       }
 
       protected override void OnLoad(EventArgs e)

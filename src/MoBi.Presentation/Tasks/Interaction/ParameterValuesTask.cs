@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
@@ -135,7 +136,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             modalPresenter.Encapsulate(referenceAtParamValuePresenter);
             referenceAtParamValuePresenter.Init(null, new List<IObjectBase>(), null);
 
-            return !modalPresenter.Show() ? Enumerable.Empty<ObjectPath>().ToList() : referenceAtParamValuePresenter.GetAllSelections();
+            return !modalPresenter.Show(AppConstants.Dialog.PARAMETER_SELECTION_SIZE) ? Enumerable.Empty<ObjectPath>().ToList() : referenceAtParamValuePresenter.GetAllSelections();
          }
       }
 
