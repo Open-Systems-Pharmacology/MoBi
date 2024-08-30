@@ -14,9 +14,9 @@ namespace MoBi.Core.Commands
          return inverseCommand;
       }
 
-      private static PKSimModuleConversion getReverseConversionOption(PKSimModuleConversion conversionOption, bool hastChangedModuleType)
+      private static PKSimModuleConversion getReverseConversionOption(PKSimModuleConversion conversionOption, bool hasChangedModuleType)
       {
-         if (!hastChangedModuleType)
+         if (!hasChangedModuleType)
             return PKSimModuleConversion.NoChange;
 
          switch (conversionOption)
