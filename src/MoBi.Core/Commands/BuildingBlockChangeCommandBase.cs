@@ -24,9 +24,11 @@ namespace MoBi.Core.Commands
 
       protected override void ExecuteWith(IMoBiContext context)
       {
+         var originalPkSimModuleState = _buildingBlock.Module?.IsPKSimModule ?? false;
          if (_buildingBlock == null) return;
          var buildingBlockVersionUpdater = context.Resolve<IBuildingBlockVersionUpdater>();
-         HasChangedModuleType = buildingBlockVersionUpdater.UpdateBuildingBlockVersion(_buildingBlock, ShouldIncrementVersion, ConversionOption);
+         buildingBlockVersionUpdater.UpdateBuildingBlockVersion(_buildingBlock, ShouldIncrementVersion, ConversionOption);
+         HasChangedModuleType = originalPkSimModuleState != (_buildingBlock.Module?.IsPKSimModule ?? false);
       }
 
       protected override void ClearReferences()
