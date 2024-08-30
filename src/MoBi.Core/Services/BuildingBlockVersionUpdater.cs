@@ -14,7 +14,7 @@ namespace MoBi.Core.Services
    public interface IBuildingBlockVersionUpdater
    {
       void UpdateBuildingBlockVersion(IBuildingBlock buildingBlock, uint newVersion, PKSimModuleConversion conversionOption);
-      void UpdateBuildingBlockVersion(IBuildingBlock buildingBlock, bool shouldIncrementVersion, PKSimModuleConversion conversionOption);
+      bool UpdateBuildingBlockVersion(IBuildingBlock buildingBlock, bool shouldIncrementVersion, PKSimModuleConversion conversionOption);
    }
 
    public class BuildingBlockVersionUpdater : IBuildingBlockVersionUpdater
@@ -75,9 +75,10 @@ namespace MoBi.Core.Services
          _eventPublisher.PublishEvent(new ModuleStatusChangedEvent(module));
       }
 
-      public void UpdateBuildingBlockVersion(IBuildingBlock buildingBlock, bool shouldIncrementVersion, PKSimModuleConversion conversionOption)
+      public bool UpdateBuildingBlockVersion(IBuildingBlock buildingBlock, bool shouldIncrementVersion, PKSimModuleConversion conversionOption)
       {
-         if (buildingBlock == null) return;
+         var originalPkSimModuleState = buildingBlock.Module?.IsPKSimModule ?? false;
+         if (buildingBlock == null) return false;
          var version = buildingBlock.Version;
 
          if (shouldIncrementVersion)
@@ -86,6 +87,7 @@ namespace MoBi.Core.Services
             version--;
 
          UpdateBuildingBlockVersion(buildingBlock, version, conversionOption);
+         return originalPkSimModuleState != (buildingBlock.Module?.IsPKSimModule ?? false);
       }
 
       private void publishSimulationStatusChangedEvents(IBuildingBlock changedBuildingBlock)

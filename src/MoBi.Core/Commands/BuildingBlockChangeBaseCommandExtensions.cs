@@ -10,16 +10,17 @@ namespace MoBi.Core.Commands
       {
          CommandExtensions.AsInverseFor(inverseCommand, originalCommand);
          inverseCommand.ShouldIncrementVersion = !originalCommand.ShouldIncrementVersion;
-         inverseCommand.ConversionOption = getReverseConversionOption(originalCommand.ConversionOption);
+         inverseCommand.ConversionOption = getReverseConversionOption(originalCommand.ConversionOption, originalCommand.HasChangedModuleType);
          return inverseCommand;
       }
 
-      private static PKSimModuleConversion getReverseConversionOption(PKSimModuleConversion conversionOption)
+      private static PKSimModuleConversion getReverseConversionOption(PKSimModuleConversion conversionOption, bool hastChangedModuleType)
       {
+         if (!hastChangedModuleType)
+            return PKSimModuleConversion.NoChange;
+
          switch (conversionOption)
          {
-            case PKSimModuleConversion.NoChange:
-               return PKSimModuleConversion.NoChange;
             case PKSimModuleConversion.SetAsExtensionModule:
                return PKSimModuleConversion.SetAsPKSimModule;
             case PKSimModuleConversion.SetAsPKSimModule:
