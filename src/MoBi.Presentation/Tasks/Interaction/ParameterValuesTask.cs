@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
@@ -24,6 +25,7 @@ namespace MoBi.Presentation.Tasks.Interaction
    {
       void AddStartValueExpression(ParameterValuesBuildingBlock buildingBlock);
       IMoBiCommand SetFullPath(ParameterValue parameterValue, ObjectPath entityPath, ParameterValuesBuildingBlock buildingBlock);
+      IReadOnlyList<ObjectPath> GetNewPaths();
    }
 
    public class ParameterValuesTask : InteractionTasksForExtendablePathAndValueEntity<ParameterValuesBuildingBlock, ParameterValue>, IParameterValuesTask
@@ -120,6 +122,22 @@ namespace MoBi.Presentation.Tasks.Interaction
          macroCommand.Add(_entityPathTask.UpdateNameCommand(buildingBlock, parameterValue, newName).Run(Context));
 
          return macroCommand;
+      }
+
+      public IReadOnlyList<ObjectPath> GetNewPaths()
+      {
+         using (var modalPresenter = ApplicationController.Start<IModalPresenter>())
+         {
+            var referenceAtParamValuePresenter = ApplicationController.Start<ICreateObjectPathsFromReferencesPresenter>();
+
+            modalPresenter.Text = AppConstants.Captions.SelectParameter;
+            //The order of this next 2 lines should not be changed, as they are used to encapsulate the presenter
+            //and to initialize it with the correct data so that the initial state of the OK button is correct
+            modalPresenter.Encapsulate(referenceAtParamValuePresenter);
+            referenceAtParamValuePresenter.Init(null, new List<IObjectBase>(), null);
+
+            return !modalPresenter.Show(AppConstants.Dialog.PARAMETER_SELECTION_SIZE) ? Enumerable.Empty<ObjectPath>().ToList() : referenceAtParamValuePresenter.GetAllSelections();
+         }
       }
 
       private IReadOnlyList<ParameterValue> createExpressionBasedOn(IReadOnlyList<IContainer> organs, IReadOnlyList<MoleculeBuilder> molecules) => organs.SelectMany(x => _parameterValuesCreator.CreateExpressionFrom(x, molecules)).ToList();

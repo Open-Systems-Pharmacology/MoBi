@@ -37,8 +37,6 @@ namespace MoBi.Presentation.Presenter
       private readonly IDisplayUnitRetriever _displayUnitRetriever;
       private readonly IParameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper _parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper;
       private readonly IViewItemContextMenuFactory _viewItemContextMenuFactory;
-      private readonly IModalPresenter _modalPresenter;
-      private readonly ISelectReferenceAtParameterValuePresenter _referenceAtParamValuePresenter;
       private readonly IDialogCreator _dialogCreator;
 
       public ParameterValuesPresenter(
@@ -55,15 +53,12 @@ namespace MoBi.Presentation.Presenter
          IDimensionFactory dimensionFactory,
          IViewItemContextMenuFactory viewItemContextMenuFactory,
          IModalPresenter modalPresenter,
-         ISelectReferenceAtParameterValuePresenter selectReferenceAtParameterValuePresenter,
          IDialogCreator dialogCreator) : base(view, valueMapper, parameterValuesTask, parameterValuesCreator, context, deletePathAndValueEntityPresenter, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
       {
          _parameterValuesTask = parameterValuesTask;
          _displayUnitRetriever = displayUnitRetriever;
          _parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper = parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper;
          _viewItemContextMenuFactory = viewItemContextMenuFactory;
-         _modalPresenter = modalPresenter;
-         _referenceAtParamValuePresenter = selectReferenceAtParameterValuePresenter;
          _dialogCreator = dialogCreator;
          view.HideIsPresentView();
          view.HideRefreshView();
@@ -102,17 +97,12 @@ namespace MoBi.Presentation.Presenter
 
       public void AddNewParameterValues()
       {
-         _modalPresenter.Text = AppConstants.Captions.SelectParameter;
-         //The order of this next 2 lines should not be changed, as they are used to encapsulate the presenter
-         //and to initialize it with the correct data so that the initial state of the OK button is correct
-         _modalPresenter.Encapsulate(_referenceAtParamValuePresenter);
-         _referenceAtParamValuePresenter.Init(null, new List<IObjectBase>(), null);
-         if (!_modalPresenter.Show())
-            return;
-
-         var allSelected = _referenceAtParamValuePresenter.GetAllSelections();
-
+         var allSelected = _parameterValuesTask.GetNewPaths();
+         var buildingBlockWasEmpty = !_buildingBlock.Any();
          _context.AddToHistory(addParameterValuesForObjectPaths(allSelected, _buildingBlock));
+
+         if (buildingBlockWasEmpty)
+            _view.InitializePathColumns();
       }
 
       private IMoBiCommand addParameterValuesForObjectPaths(IReadOnlyList<ObjectPath> objectPaths, ParameterValuesBuildingBlock buildingBlockToAddTo)

@@ -100,7 +100,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class When_retrieving_default_dimension_for_Parameters : concern_for_ParameterValuesTask
+   public class When_retrieving_default_dimension_for_parameters : concern_for_ParameterValuesTask
    {
       private IDimension _result;
 
@@ -129,9 +129,9 @@ namespace MoBi.Presentation.Tasks
          _firstStartValueRef = new ParameterValue { ContainerPath = new ObjectPath("this", "path"), Name = "Name", Value = -1.0, DisplayUnit = unit };
          _parameterValue = new List<ImportedQuantityDTO>
          {
-            new ImportedQuantityDTO { Name = "Name", ContainerPath = new ObjectPath(new[] { "this", "path" }), QuantityInBaseUnit = 1.0, DisplayUnit = unit },
-            new ImportedQuantityDTO { Name = "Name", ContainerPath = new ObjectPath(new[] { "that", "path" }), QuantityInBaseUnit = 2.0, DisplayUnit = unit },
-            new ImportedQuantityDTO { Name = "Name", ContainerPath = new ObjectPath(new[] { "the", "path" }), QuantityInBaseUnit = 3.0, DisplayUnit = unit }
+            new ImportedQuantityDTO { Name = "Name", ContainerPath = new ObjectPath("this", "path"), QuantityInBaseUnit = 1.0, DisplayUnit = unit },
+            new ImportedQuantityDTO { Name = "Name", ContainerPath = new ObjectPath("that", "path"), QuantityInBaseUnit = 2.0, DisplayUnit = unit },
+            new ImportedQuantityDTO { Name = "Name", ContainerPath = new ObjectPath("the", "path"), QuantityInBaseUnit = 3.0, DisplayUnit = unit }
          };
 
          _parameterValueBuildingBlock.Add(_firstStartValueRef);
