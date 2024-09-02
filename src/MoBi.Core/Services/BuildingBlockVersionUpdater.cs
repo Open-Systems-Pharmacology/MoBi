@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain;
+using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using OSPSuite.Core.Domain;
@@ -56,7 +57,7 @@ namespace MoBi.Core.Services
       }
 
       private bool shouldConvertToExtensionModule(IBuildingBlock buildingBlock, PKSimModuleConversion conversionOption) =>
-         (buildingBlock.Module?.IsPKSimModule ?? false) && conversionOption == PKSimModuleConversion.SetAsExtensionModule;
+         (buildingBlock.IsPkSimModule()) && conversionOption == PKSimModuleConversion.SetAsExtensionModule;
 
       private bool shouldConvertToPKSimModule(IBuildingBlock buildingBlock, PKSimModuleConversion conversionOption) =>
          buildingBlock.Module != null && conversionOption == PKSimModuleConversion.SetAsPKSimModule;

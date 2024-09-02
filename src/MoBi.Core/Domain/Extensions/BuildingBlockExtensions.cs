@@ -39,7 +39,7 @@ namespace MoBi.Core.Domain.Extensions
       }
 
       /// <summary>
-      /// Checks that the names, types, and names of the containing module (if any) match <paramref name="name"/>
+      ///    Checks that the names, types, and names of the containing module (if any) match <paramref name="name" />
       /// </summary>
       public static bool IsTemplateMatchFor(this IBuildingBlock buildingBlock, IBuildingBlock templateBuildingBlock, string name)
       {
@@ -47,7 +47,7 @@ namespace MoBi.Core.Domain.Extensions
       }
 
       /// <summary>
-      /// Checks that the names, types, and names of the containing module (if any) match
+      ///    Checks that the names, types, and names of the containing module (if any) match
       /// </summary>
       public static bool IsTemplateMatchFor(this IBuildingBlock buildingBlock, IBuildingBlock templateBuildingBlock)
       {
@@ -71,6 +71,9 @@ namespace MoBi.Core.Domain.Extensions
       {
          return module1 != null && module2.IsNamed(module1.Name);
       }
+
+      public static bool IsPkSimModule(this IBuildingBlock buildingBlock) =>
+         buildingBlock.Module?.IsPKSimModule ?? false;
    }
 
    public static class MoleculeBuildingBlockExtensions
