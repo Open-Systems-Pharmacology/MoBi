@@ -73,7 +73,7 @@ namespace MoBi.Core.Domain.Extensions
       }
 
       public static bool IsPkSimModule(this IBuildingBlock buildingBlock) =>
-         buildingBlock.Module?.IsPKSimModule ?? false;
+         buildingBlock?.Module?.IsPKSimModule ?? false;
    }
 
    public static class MoleculeBuildingBlockExtensions
