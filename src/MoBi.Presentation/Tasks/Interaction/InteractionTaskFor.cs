@@ -190,6 +190,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             Description = AppConstants.Commands.AddMany(_editTask.ObjectName)
          };
 
+         Context.PublishEvent(new BulkUpdateStartedEvent());
          foreach (var existingItem in itemsToAdd)
          {
             var command = AddTo(existingItem, parent, buildingBlockWithFormulaCache);
@@ -198,6 +199,8 @@ namespace MoBi.Presentation.Tasks.Interaction
 
             macroCommand.Add(command);
          }
+
+         Context.PublishEvent(new BulkUpdateFinishedEvent());
 
          return macroCommand;
       }
