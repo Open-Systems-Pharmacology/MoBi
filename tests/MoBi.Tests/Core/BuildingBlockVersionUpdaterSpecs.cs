@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using FakeItEasy;
 using MoBi.Assets;
+using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Services;
@@ -22,10 +23,10 @@ namespace MoBi.Core
 
       protected override void Context()
       {
-         _projectRetriever= A.Fake<IMoBiProjectRetriever>();
-         _eventPublisher= A.Fake<IEventPublisher>();
+         _projectRetriever = A.Fake<IMoBiProjectRetriever>();
+         _eventPublisher = A.Fake<IEventPublisher>();
          _dialogCreator = A.Fake<IDialogCreator>();
-         sut = new BuildingBlockVersionUpdater(_projectRetriever,_eventPublisher, _dialogCreator);
+         sut = new BuildingBlockVersionUpdater(_projectRetriever, _eventPublisher, _dialogCreator);
       }
    }
 
@@ -46,7 +47,7 @@ namespace MoBi.Core
          _affectedSimulations = new List<IModelCoreSimulation>();
          _affectedSimulation = A.Fake<IMoBiSimulation>();
          A.CallTo(() => _affectedSimulation.Uses(_changeBuildingBlock)).Returns(true);
-         
+
          A.CallTo(() => _eventPublisher.PublishEvent(A<SimulationStatusChangedEvent>._)).Invokes((call =>
          {
             var statusEvent = call.GetArgument<SimulationStatusChangedEvent>(0);
@@ -55,7 +56,7 @@ namespace MoBi.Core
 
          var project = DomainHelperForSpecs.NewProject();
          project.AddSimulation(_affectedSimulation);
-         _module = new Module {_changeBuildingBlock};
+         _module = new Module { _changeBuildingBlock };
          _module.PKSimVersion = "1";
          _module.ModuleImportVersion = _module.Version;
          _module.IsPKSimModule = true;
@@ -65,7 +66,7 @@ namespace MoBi.Core
 
       protected override void Because()
       {
-         sut.UpdateBuildingBlockVersion(_changeBuildingBlock, true);
+         sut.UpdateBuildingBlockVersion(_changeBuildingBlock, true, PKSimModuleConversion.SetAsExtensionModule);
       }
 
       [Observation]
@@ -92,5 +93,11 @@ namespace MoBi.Core
       {
          A.CallTo(() => _dialogCreator.MessageBoxInfo(AppConstants.Captions.TheModuleWillBeConvertedFromPKSimToExtensionModule(_module.Name))).MustHaveHappened();
       }
+
+      [Observation]
+      public void module_is_pksim_property_should_be_changed_to_false()
+      {
+         _module.IsPKSimModule.ShouldBeFalse();
+      }
    }
-}	
+}
