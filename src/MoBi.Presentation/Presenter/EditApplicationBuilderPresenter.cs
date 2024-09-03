@@ -141,7 +141,7 @@ namespace MoBi.Presentation.Presenter
          using (var presenter = _applicationController.Start<ISelectFormulaUsablePathPresenter>())
          {
             var selectionPresenter = _applicationController.Start<ISelectReferencePresenterAtApplicationBuilder>();
-            presenter.Init(ob => ob.IsAnImplementationOf<IEntityContainer>(), _applicationBuilder, _applicationBuilder.RootContainer, AppConstants.Captions.RelativeContainerPath, selectionPresenter);
+            presenter.Init(ob => ob.IsAnImplementationOf<IEntityContainer>(), _applicationBuilder, _applicationBuilder.RootContainer.ToList(), AppConstants.Captions.RelativeContainerPath, selectionPresenter);
             var path = presenter.GetSelection();
             if (path == null)
                return;

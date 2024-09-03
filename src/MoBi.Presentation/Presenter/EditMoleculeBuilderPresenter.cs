@@ -96,7 +96,7 @@ namespace MoBi.Presentation.Presenter
       {
          _moleculeBuilder = moleculeBuilder;
          _editMoleculeParameters.Edit(moleculeBuilder);
-         _referencePresenter.Init(null, Enumerable.Empty<IObjectBase>(), null);
+         _referencePresenter.Init(null, Enumerable.Empty<IObjectBase>().ToList(), null);
          setUpFormulaEditView();
          var dto = _moleculeBuilderDTOMapper.MapFrom(moleculeBuilder);
          dto.AddUsedNames(_editTasks.GetForbiddenNamesWithoutSelf(moleculeBuilder, existingObjectsInParent));

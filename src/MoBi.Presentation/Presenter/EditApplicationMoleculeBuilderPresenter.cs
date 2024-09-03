@@ -69,7 +69,7 @@ namespace MoBi.Presentation.Presenter
       {
          _applicationMoleculeBuilder = applicationMoleculeBuilder;
          _editFormulaPresenter.Init(_applicationMoleculeBuilder, BuildingBlock);
-         _selectItemPresenter.Init(_applicationMoleculeBuilder.ParentContainer, getEventGroupBuilding(BuildingBlock), applicationMoleculeBuilder);
+         _selectItemPresenter.Init(_applicationMoleculeBuilder.ParentContainer, getEventGroupBuilding(BuildingBlock).ToList(), applicationMoleculeBuilder);
          var dto = _applicationMoleculeMapper.MapFrom(_applicationMoleculeBuilder);
          _view.Show(dto);
       }

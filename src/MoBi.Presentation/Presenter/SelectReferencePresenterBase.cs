@@ -28,7 +28,7 @@ namespace MoBi.Presentation.Presenter
    {
       void GetLocalisationReferences();
 
-      void Init(IEntity localReferencePoint, IEnumerable<IObjectBase> contextSpecificEntitiesToAddToReferenceTree, IUsingFormula editedObject);
+      void Init(IEntity localReferencePoint, IReadOnlyList<IObjectBase> contextSpecificEntitiesToAddToReferenceTree, IUsingFormula editedObject);
 
       IEnumerable<ObjectBaseDTO> GetChildObjects(ObjectBaseDTO dto);
       ReferenceDTO GetReferenceObjectFrom(ObjectBaseDTO objectBaseDTO);
@@ -87,13 +87,14 @@ namespace MoBi.Presentation.Presenter
          SelectionPredicate = parameter => true;
       }
 
-      public virtual void Init(IEntity localReferencePoint, IEnumerable<IObjectBase> contextSpecificEntitiesToAddToReferenceTree, IUsingFormula editedObject)
+      public virtual void Init(IEntity localReferencePoint, IReadOnlyList<IObjectBase> contextSpecificEntitiesToAddToReferenceTree, IUsingFormula editedObject)
       {
          if (localReferencePoint != null)
             _refObject = localReferencePoint;
 
-         _view.Show(contextSpecificEntitiesToAddToReferenceTree.MapAllUsing(_referenceMapper));
+         _view.Clear();
          addInitialObjects();
+         _view.Show(contextSpecificEntitiesToAddToReferenceTree.Where(x => !alreadyInView(x)).MapAllUsing(_referenceMapper), false);
 
          if (_refObject != null)
          {
@@ -102,6 +103,11 @@ namespace MoBi.Presentation.Presenter
          }
 
          _editedObject = editedObject;
+      }
+
+      private bool alreadyInView(IObjectBase objectBase)
+      {
+         return _view.GetNodes(objectBase).Any();
       }
 
       private void addInitialObjects()

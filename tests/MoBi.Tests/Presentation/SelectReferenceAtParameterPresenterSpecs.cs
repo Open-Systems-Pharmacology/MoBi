@@ -8,6 +8,7 @@ using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
 using OSPSuite.Core.Domain;
 using System.Collections.Generic;
+using System.Linq;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using OSPSuite.Presentation.Nodes;
@@ -37,7 +38,7 @@ namespace MoBi.Presentation
    internal class When_time_selection_is_disabled : concern_for_SelectReferenceAtParameterPresenter
    {
       private IEntity _localReferencePoint;
-      private IEnumerable<IObjectBase> _contextSpecificEntitiesToAddToReferenceTree;
+      private IReadOnlyList<IObjectBase> _contextSpecificEntitiesToAddToReferenceTree;
       private IUsingFormula _editedObject;
 
       protected override void Context()
@@ -45,7 +46,7 @@ namespace MoBi.Presentation
          base.Context();
          sut.DisableTimeSelection();
          _localReferencePoint = new Container();
-         _contextSpecificEntitiesToAddToReferenceTree = A.CollectionOfFake<IObjectBase>(3);
+         _contextSpecificEntitiesToAddToReferenceTree = A.CollectionOfFake<IObjectBase>(3).ToList();
          _editedObject = new Parameter();
       }
 

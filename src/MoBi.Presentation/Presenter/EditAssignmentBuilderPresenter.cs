@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
@@ -71,7 +72,7 @@ namespace MoBi.Presentation.Presenter
       public override void Edit(EventAssignmentBuilder eventAssignmentBuilder, IReadOnlyList<IObjectBase> existingObjectsInParent)
       {
          _eventAssignmentBuilder = eventAssignmentBuilder;
-         _selectReferencePresenter.Init(eventAssignmentBuilder, _contextSpecificReferencesRetriever.RetrieveFor(_eventAssignmentBuilder), eventAssignmentBuilder);
+         _selectReferencePresenter.Init(eventAssignmentBuilder, _contextSpecificReferencesRetriever.RetrieveFor(_eventAssignmentBuilder).ToList(), eventAssignmentBuilder);
          _eventAssignmentBuilderDTO = _eventAssignmentToDTOAssignmentMapper.MapFrom(_eventAssignmentBuilder);
          _eventAssignmentBuilderDTO.AddUsedNames(_editTasksForAssignment.GetForbiddenNamesWithoutSelf(eventAssignmentBuilder, existingObjectsInParent));
          bindToView();

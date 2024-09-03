@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using FakeItEasy;
 using FakeItEasy.Core;
 using MoBi.Core.Domain.Model;
@@ -113,14 +114,14 @@ namespace MoBi.Presentation
    internal class When_initializing_parameterValuePresenter : concern_for_SelectReferenceAtParameterValuePresenter
    {
       private IEntity _localReferencePoint;
-      private IEnumerable<IObjectBase> _contextSpecificEntities;
+      private IReadOnlyList<IObjectBase> _contextSpecificEntities;
       private IUsingFormula _editedObject;
 
       protected override void Context()
       {
          base.Context();
          _localReferencePoint = A.Fake<IEntity>();
-         _contextSpecificEntities = A.CollectionOfFake<IObjectBase>(5);
+         _contextSpecificEntities = A.CollectionOfFake<IObjectBase>(5).ToList();
          _editedObject = A.Fake<IUsingFormula>();
       }
 
