@@ -38,12 +38,15 @@ namespace MoBi.Presentation.Presenter.Main
       IListener<AddedEvent<Module>>,
       IListener<AddedEvent<IndividualBuildingBlock>>,
       IListener<AddedEvent<ExpressionProfileBuildingBlock>>,
-      IListener<ModuleStatusChangedEvent>
+      IListener<ModuleStatusChangedEvent>,
+      IListener<BulkUpdateStartedEvent>,
+      IListener<BulkUpdateFinishedEvent>
 
    {
       private readonly IObservedDataInExplorerPresenter _observedDataInExplorerPresenter;
       private readonly IEditBuildingBlockStarter _editBuildingBlockStarter;
       private readonly IInteractionTasksForModule _interactionTaskForModule;
+      private bool _editSinglesOnLoad = true;
 
       public ModuleExplorerPresenter(IModuleExplorerView view, IRegionResolver regionResolver, ITreeNodeFactory treeNodeFactory,
          IViewItemContextMenuFactory viewItemContextMenuFactory, IMoBiContext context, IClassificationPresenter classificationPresenter,
@@ -175,7 +178,8 @@ namespace MoBi.Presentation.Presenter.Main
             _view.NodeByType(MoBiRootNodeTypes.ModulesFolder)
          });
 
-         editSingleBuildingBlockModule(moduleToAdd);
+         if(_editSinglesOnLoad)
+            editSingleBuildingBlockModule(moduleToAdd);
       }
 
       public void Handle(AddedEvent<IndividualBuildingBlock> eventToHandle)
@@ -372,6 +376,16 @@ namespace MoBi.Presentation.Presenter.Main
       private void refreshModuleIcon(Module module)
       {
          _view.NodeById(module.Id).Icon = ApplicationIcons.IconByName(module.Icon);
+      }
+
+      public void Handle(BulkUpdateStartedEvent eventToHandle)
+      {
+         _editSinglesOnLoad = false;
+      }
+
+      public void Handle(BulkUpdateFinishedEvent eventToHandle)
+      {
+         _editSinglesOnLoad = true;
       }
    }
 }
