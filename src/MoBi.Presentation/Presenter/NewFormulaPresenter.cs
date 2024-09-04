@@ -42,7 +42,7 @@ namespace MoBi.Presentation.Presenter
          var formulaCache = buildingBlock.FormulaCache;
          dto.AddUsedNames(formulaCache.Select(f => f.Name));
          _view.BindTo(dto);
-         _referencePresenter.Init(parameter, Enumerable.Empty<IObjectBase>(), parameter);
+         _referencePresenter.Init(parameter, Enumerable.Empty<IObjectBase>().ToList(), parameter);
          _view.Display();
          formula.Name = dto.Name;
          return !_view.Canceled;

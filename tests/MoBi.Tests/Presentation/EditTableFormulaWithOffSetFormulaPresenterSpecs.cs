@@ -69,7 +69,7 @@ namespace MoBi.Presentation
          _selectReferenceAtParameterPresenter = A.Fake<ISelectReferenceAtParameterPresenter>();
          A.CallTo(_selectReferencePresenterFactory).WithReturnType<ISelectReferenceAtParameterPresenter>().Returns(_selectReferenceAtParameterPresenter);
 
-         A.CallTo(() => _selectFormulaUsablePathPresenter.Init(A<Func<IObjectBase, bool>>._, _usingFormula, A<IEnumerable<IObjectBase>>._, A<string>._, _selectReferenceAtParameterPresenter))
+         A.CallTo(() => _selectFormulaUsablePathPresenter.Init(A<Func<IObjectBase, bool>>._, _usingFormula, A<IReadOnlyList<IObjectBase>>._, A<string>._, _selectReferenceAtParameterPresenter))
             .Invokes(x => _predicate = x.GetArgument<Func<IObjectBase, bool>>(0));
       }
    }

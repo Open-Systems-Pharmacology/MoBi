@@ -125,7 +125,12 @@ namespace MoBi.UI.Views
          _presenter = presenter;
       }
 
-      public void Show(IEnumerable<ITreeNode> nodes) => addNodes(nodes, clear: true);
+      public void Show(IEnumerable<ITreeNode> nodes, bool clear = true) => addNodes(nodes, clear);
+
+      public void Clear()
+      {
+         _treeView.Clear();
+      }
 
       private void addNodes(IEnumerable<ITreeNode> nodes, bool clear)
       {

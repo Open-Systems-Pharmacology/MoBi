@@ -210,7 +210,7 @@ namespace MoBi.Presentation.Presenter
          _parameter = parameter;
          _editValueFormulaPresenter.Init(_parameter, BuildingBlock);
          _editValueFormulaPresenter.ReferencePresenter.Init(_contextSpecificReferencesRetriever.RetrieveLocalReferencePoint(parameter),
-            _contextSpecificReferencesRetriever.RetrieveFor(_parameter, BuildingBlock), _parameter);
+            _contextSpecificReferencesRetriever.RetrieveFor(_parameter, BuildingBlock).ToList(), _parameter);
          _editValueOriginPresenter.Edit(parameter);
 
          if (hasRHS(parameter))
@@ -247,7 +247,7 @@ namespace MoBi.Presentation.Presenter
       {
          _editRHSFormulaPresenter.Init(_parameter, BuildingBlock);
          _editRHSFormulaPresenter.ReferencePresenter.Init(_contextSpecificReferencesRetriever.RetrieveLocalReferencePoint(_parameter),
-            _contextSpecificReferencesRetriever.RetrieveFor(_parameter, BuildingBlock), _parameter);
+            _contextSpecificReferencesRetriever.RetrieveFor(_parameter, BuildingBlock).ToList(), _parameter);
       }
 
       public override object Subject => _parameter;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Services;
@@ -90,7 +91,7 @@ namespace MoBi.Presentation.Presenter
          {
             var referencePresenter = _selectReferencePresenterFactory.ReferenceAtParameterFor(UsingObject?.ParentContainer);
             referencePresenter.DisableTimeSelection();
-            presenter.Init(predicate, UsingObject, UsingObject == null ? Enumerable.Empty<IObjectBase>() : new[] {UsingObject.RootContainer}, caption, referencePresenter);
+            presenter.Init(predicate, UsingObject, UsingObject == null ? Enumerable.Empty<IObjectBase>().ToList() : new List<IObjectBase> {UsingObject.RootContainer}, caption, referencePresenter);
             return presenter.GetSelection();
          }
       }

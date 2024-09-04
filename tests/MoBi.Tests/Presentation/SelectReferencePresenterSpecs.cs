@@ -261,12 +261,14 @@ namespace MoBi.Presentation
          base.Context();
          _moBiSpatialStructure = new MoBiSpatialStructure
          {
-            Name = "MoBiSpatialStructure 1", Id = ShortGuid.NewGuid(),
+            Name = "MoBiSpatialStructure 1",
+            Id = ShortGuid.NewGuid(),
             Module = new Module { Name = "Module 1" }
          };
          _unselectedSpatialStructure = new MoBiSpatialStructure
          {
-            Name = "MoBiSpatialStructure 2", Id = ShortGuid.NewGuid(),
+            Name = "MoBiSpatialStructure 2",
+            Id = ShortGuid.NewGuid(),
             Module = new Module { Name = "Module 2" }
          };
          _moBiSpatialStructures = new[] { _unselectedSpatialStructure, _moBiSpatialStructure };
@@ -275,14 +277,21 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.Init(null, new List<IObjectBase>(), A.Fake<IUsingFormula>());
+         sut.Init(null, new List<IObjectBase> { _moBiSpatialStructure }, A.Fake<IUsingFormula>());
+      }
+
+      [Observation]
+      public void do_not_add_nodes_when_already_present()
+      {
+         var moBiSpatialStructureNodes = _view.GetNodes(_moBiSpatialStructure);
+         moBiSpatialStructureNodes.Count.ShouldBeEqualTo(1);
       }
 
       [Observation]
       public void should_return_nodes_with_specific_properties()
       {
-         var moBiSpatialStructureNodes = _view.GetNodes(_moBiSpatialStructure as IObjectBase);
-         var unselectedSpatialStructureNodes = _view.GetNodes(_unselectedSpatialStructure as IObjectBase);
+         var moBiSpatialStructureNodes = _view.GetNodes(_moBiSpatialStructure);
+         var unselectedSpatialStructureNodes = _view.GetNodes(_unselectedSpatialStructure);
 
          var moBiSpatialStructureNode = moBiSpatialStructureNodes.FirstOrDefault();
          var unselectedSpatialStructureNode = unselectedSpatialStructureNodes.FirstOrDefault();

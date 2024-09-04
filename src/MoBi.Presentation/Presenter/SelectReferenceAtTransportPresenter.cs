@@ -15,7 +15,7 @@ namespace MoBi.Presentation.Presenter
 {
    public interface ISelectReferenceAtTransportPresenter : ISelectReferencePresenter
    {
-      void Init(IEntity refObjectBase, IEnumerable<IObjectBase> entities, TransportBuilder transportBuilder);
+      void Init(IEntity refObjectBase, IReadOnlyList<IObjectBase> entities, TransportBuilder transportBuilder);
    }
 
    internal class SelectReferenceAtTransportPresenter : SelectReferencePresenterBase, ISelectReferenceAtTransportPresenter
@@ -43,7 +43,7 @@ namespace MoBi.Presentation.Presenter
       }
 
 
-      public void Init(IEntity refObjectBase, IEnumerable<IObjectBase> entities, TransportBuilder transportBuilder)
+      public void Init(IEntity refObjectBase, IReadOnlyList<IObjectBase> entities, TransportBuilder transportBuilder)
       {
          //Necessary to create correct paths
          _objectPathCreatorAtTransport.Transport = transportBuilder; 
