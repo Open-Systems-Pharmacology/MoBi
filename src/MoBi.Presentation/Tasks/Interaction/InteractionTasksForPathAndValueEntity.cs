@@ -177,6 +177,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          {
             var editFormulaPresenter = Context.Resolve<IEditFormulaInPathAndValuesPresenter>();
             modalPresenter.Encapsulate(editFormulaPresenter);
+            modalPresenter.Text = AppConstants.Captions.EditFormula;
             editFormulaPresenter.Init(builder, buildingBlock, new UsingFormulaDecoder(), macroCommand);
 
             if (!modalPresenter.Show())
