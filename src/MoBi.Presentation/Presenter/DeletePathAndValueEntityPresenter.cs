@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using MoBi.Assets;
 using MoBi.Presentation.Views;
+using OSPSuite.Assets;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -10,8 +11,8 @@ namespace MoBi.Presentation.Presenter
 
    public class DeletePathAndValueEntityPresenter : ApplyToSelectionPresenter, IDeletePathAndValueEntityPresenter
    {
-      public DeletePathAndValueEntityPresenter(IApplyToSelectionView view)
-         : base(view, SelectOption.DeleteSelected, AppConstants.Captions.DeleteValues)
+      public DeletePathAndValueEntityPresenter(IApplyToSelectionButtonView view)
+         : base(view, SelectOption.DeleteSelected, AppConstants.Captions.DeleteSelected)
       {
       }
 

@@ -10,11 +10,11 @@ namespace MoBi.Presentation.Presenter
 
    public class RefreshInitialConditionsPresenter : ApplyToSelectionPresenter, IRefreshInitialConditionsPresenter
    {
-      public RefreshInitialConditionsPresenter(IApplyToSelectionView view)
-         : base(view, SelectOption.RefreshAll, AppConstants.Captions.RefreshValues)
+      public RefreshInitialConditionsPresenter(IApplyToSelectionButtonView view)
+         : base(view, SelectOption.RefreshSelected, AppConstants.Captions.RefreshSelected)
       {
       }
 
-      public override IEnumerable<SelectOption> AvailableSelectOptions => new[] { SelectOption.RefreshAll, SelectOption.RefreshSelected };
+      public override IEnumerable<SelectOption> AvailableSelectOptions => new[] { SelectOption.RefreshSelected };
    }
 }

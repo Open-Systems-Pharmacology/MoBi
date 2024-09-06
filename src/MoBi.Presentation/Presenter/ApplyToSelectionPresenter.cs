@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using MoBi.Presentation.Views;
+using OSPSuite.Assets;
 using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation.Presenter
@@ -28,15 +29,18 @@ namespace MoBi.Presentation.Presenter
       Action<SelectOption> ApplySelectionAction { get; set; }
    }
 
-   public abstract class ApplyToSelectionPresenter : AbstractPresenter<IApplyToSelectionView, IApplyToSelectionPresenter>, IApplyToSelectionPresenter
+   public abstract class ApplyToSelectionPresenter : AbstractPresenter<IApplyToSelectionButtonView, IApplyToSelectionPresenter>, IApplyToSelectionPresenter
    {
       public Action<SelectOption> ApplySelectionAction { get; set; }
       public SelectOption CurrentSelection { get; set; }
 
-      protected ApplyToSelectionPresenter(IApplyToSelectionView view, SelectOption defaultSelection, string caption) : base(view)
+      protected ApplyToSelectionPresenter(IApplyToSelectionButtonView view, SelectOption defaultSelection, string caption, ApplicationIcon icon = null) : base(view)
       {
          CurrentSelection = defaultSelection;
          view.Caption = caption;
+         if(icon!=null)
+            view.SetButonIcon(icon);
+
          view.BindToSelection();
       }
 

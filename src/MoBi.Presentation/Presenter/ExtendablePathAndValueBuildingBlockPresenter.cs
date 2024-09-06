@@ -65,6 +65,7 @@ namespace MoBi.Presentation.Presenter
          _originalStartValues = new List<TPathAndValueEntity>();
 
          deletePathAndValueEntityPresenter.ApplySelectionAction = performDeleteAction;
+
          _view.AddDeleteStartValuesView(deletePathAndValueEntityPresenter.BaseView);
 
          AddSubPresenters(deletePathAndValueEntityPresenter);
