@@ -16,7 +16,7 @@ namespace MoBi.Presentation
 {
    public class concern_for_EditFormulaInPathAndValuesPresenter : ContextSpecification<EditFormulaInPathAndValuesPresenter>
    {
-      private IEditFormulaInPathAndValues _editFormulaInPathAndValues;
+      private IEditFormulaInPathAndValuesView _editFormulaInPathAndValues;
       private IFormulaPresenterCache _formulaPresenterCache;
       private IMoBiContext _moBiContext;
       private IFormulaToFormulaInfoDTOMapper _formulaToFormulaInfoDTOMapper;
@@ -28,7 +28,7 @@ namespace MoBi.Presentation
 
       protected override void Context()
       {
-         _editFormulaInPathAndValues = A.Fake<IEditFormulaInPathAndValues>();
+         _editFormulaInPathAndValues = A.Fake<IEditFormulaInPathAndValuesView>();
          _formulaPresenterCache = A.Fake<IFormulaPresenterCache>();
          _moBiContext = A.Fake<IMoBiContext>();
          _formulaToFormulaInfoDTOMapper = A.Fake<IFormulaToFormulaInfoDTOMapper>();

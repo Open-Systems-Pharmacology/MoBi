@@ -18,12 +18,12 @@ namespace MoBi.Presentation.Presenter
       void Init<TBuilder>(TBuilder formulaOwner, IBuildingBlock buildingBlock, UsingFormulaDecoder formulaDecoder, MoBiMacroCommand macroCommand) where TBuilder : PathAndValueEntity, IUsingFormula, IWithDisplayUnit;
    }
 
-   public class EditFormulaInPathAndValuesPresenter : EditFormulaPresenter<IEditFormulaInPathAndValues, IEditFormulaInPathAndValuesPresenter>, IEditFormulaInPathAndValuesPresenter
+   public class EditFormulaInPathAndValuesPresenter : EditFormulaPresenter<IEditFormulaInPathAndValuesView, IEditFormulaInPathAndValuesPresenter>, IEditFormulaInPathAndValuesPresenter
    {
       private readonly IInteractionTaskContext _interactionTaskContext;
       private MoBiMacroCommand _localMacroCommand;
 
-      public EditFormulaInPathAndValuesPresenter(IEditFormulaInPathAndValues view, 
+      public EditFormulaInPathAndValuesPresenter(IEditFormulaInPathAndValuesView view, 
          IFormulaPresenterCache formulaPresenterCache, 
          IMoBiContext context,
          IFormulaToFormulaInfoDTOMapper formulaDTOMapper, 

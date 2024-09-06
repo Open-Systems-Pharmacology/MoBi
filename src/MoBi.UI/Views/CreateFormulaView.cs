@@ -7,7 +7,7 @@ using OSPSuite.DataBinding.DevExpress;
 
 namespace MoBi.UI.Views
 {
-   public class EditFormulaInPathAndValues : EditFormulaView<IEditFormulaInPathAndValuesPresenter>, IEditFormulaInPathAndValues
+   public class EditFormulaInPathAndValuesView : EditFormulaView<IEditFormulaInPathAndValuesPresenter>, IEditFormulaInPathAndValuesView
    {
       public bool IsNamedFormulaView
       {

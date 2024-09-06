@@ -20,7 +20,7 @@ namespace MoBi.Presentation.Views
 
    }
 
-   public interface IEditFormulaInPathAndValues : IView<IEditFormulaInPathAndValuesPresenter>, IFormulaEditView
+   public interface IEditFormulaInPathAndValuesView : IView<IEditFormulaInPathAndValuesPresenter>, IFormulaEditView
    {
 
    }
