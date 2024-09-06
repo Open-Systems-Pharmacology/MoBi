@@ -30,7 +30,9 @@ namespace MoBi.Presentation.Presenter
          IDimensionFactory dimensionFactory,
          IInitialConditionsDistributedInExpressionProfilePresenter distributedParameterPresenter,
          IExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper buildingBlockMapper, 
-         IRefreshInitialConditionsPresenter refreshInitialConditionsPresenter) : 
+         IRefreshInitialConditionsPresenter refreshInitialConditionsPresenter,
+         IMoleculeNegativeValuesNotAllowedSelectionPresenter negativeStartValuesNotAllowedSelectionPresenter,
+         IMoleculeIsNotPresentSelectionPresenter moleculeIsNotPresentSelectionPresenter) : 
          base(view, 
             dtoMapper, 
             initialConditionsTask, 
@@ -41,7 +43,10 @@ namespace MoBi.Presentation.Presenter
             dimensionFactory, 
             refreshInitialConditionsPresenter,
             isPresentSelectionPresenter, 
-            negativeStartValuesAllowedSelectionPresenter, distributedParameterPresenter)
+            negativeStartValuesAllowedSelectionPresenter, 
+            distributedParameterPresenter,
+            negativeStartValuesNotAllowedSelectionPresenter,
+            moleculeIsNotPresentSelectionPresenter)
       {
          _buildingBlockMapper = buildingBlockMapper;
          HideDeleteColumn();

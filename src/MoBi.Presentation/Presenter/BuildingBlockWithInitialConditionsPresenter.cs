@@ -35,6 +35,12 @@ namespace MoBi.Presentation.Presenter
       ///    <paramref name="negativeValuesAllowed" />
       /// </summary>
       void SetNegativeValuesAllowed(InitialConditionDTO dto, bool negativeValuesAllowed);
+
+      /// <summary>
+      ///    Sets the NegativeValuesAllowed property of the start value <paramref name="dto" /> to
+      ///    <paramref name="negativeValuesAllowed" />
+      /// </summary>
+      void SetNegativeValuesNotAllowed(InitialConditionDTO dto, bool negativeValuesAllowed);
    }
 
    public interface IBuildingBlockWithInitialConditionsPresenter<TBuildingBlock> : IBuildingBlockWithInitialConditionsPresenter, IEditPresenter<TBuildingBlock>
@@ -55,8 +61,10 @@ namespace MoBi.Presentation.Presenter
          IDimensionFactory dimensionFactory,
          IRefreshInitialConditionsPresenter refreshInitialConditionsPresenter,
          IMoleculeIsPresentSelectionPresenter isPresentSelectionPresenter,
-         IMoleculeNegativeValuesAllowedSelectionPresenter negativeStartValuesAllowedSelectionPresenter, 
-         IDistributedPathAndValueEntityPresenter<InitialConditionDTO, TBuildingBlock> distributedParameterPresenter) : 
+         IMoleculeNegativeValuesAllowedSelectionPresenter negativeStartValuesAllowedSelectionPresenter,
+         IDistributedPathAndValueEntityPresenter<InitialConditionDTO, TBuildingBlock> distributedParameterPresenter,
+         IMoleculeNegativeValuesNotAllowedSelectionPresenter negativeStartValuesNotAllowedSelectionPresenter,
+         IMoleculeIsNotPresentSelectionPresenter moleculeIsNotPresentSelectionPresenter) : 
          base(view, dtoMapper, initialConditionsTask, msvCreator, context, deletePathAndValueEntityPresenter, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
       {
          _initialConditionsTask = initialConditionsTask;
@@ -64,10 +72,14 @@ namespace MoBi.Presentation.Presenter
          _view.AddIsPresentSelectionView(isPresentSelectionPresenter.BaseView);
          _view.AddNegativeValuesAllowedSelectionView(negativeStartValuesAllowedSelectionPresenter.BaseView);
          _view.AddRefreshSelectionView(refreshInitialConditionsPresenter.BaseView);
+         _view.AddNegativeValuesNotAllowedSelectionView(negativeStartValuesNotAllowedSelectionPresenter.BaseView);
+         _view.AddIsNotPresentSelectionView(moleculeIsNotPresentSelectionPresenter.BaseView);
 
          AddSubPresenters(refreshInitialConditionsPresenter);
          isPresentSelectionPresenter.ApplySelectionAction = performIsPresentAction;
          negativeStartValuesAllowedSelectionPresenter.ApplySelectionAction = performNegativeValuesAllowedAction;
+         negativeStartValuesNotAllowedSelectionPresenter.ApplySelectionAction = performNegativeValuesNotAllowedAction;
+         moleculeIsNotPresentSelectionPresenter.ApplySelectionAction = performIsNotPresentAction;
       }
 
       private void performRefreshAction(SelectOption option)
@@ -96,13 +108,17 @@ namespace MoBi.Presentation.Presenter
 
       public void SetIsPresent(InitialConditionDTO dto, bool isPresent) => setIsPresent(new[] { dto.InitialCondition }, isPresent);
 
+      public void SetIsNotPresent(InitialConditionDTO dto, bool isPresent) => setIsPresent(new[] { dto.InitialCondition }, false);
+
       private void setIsPresent(IEnumerable<InitialCondition> startValuesToUpdate, bool isPresent)
       {
          AddCommand(() => _initialConditionsTask.SetIsPresent(_buildingBlock, startValuesToUpdate, isPresent));
          _view.RefreshData();
       }
 
-      public void SetNegativeValuesAllowed(InitialConditionDTO dto, bool negativeValuesAllowed) => setNegativeValuesAllowed(new[] { dto.InitialCondition }, negativeValuesAllowed);
+      public void SetNegativeValuesAllowed(InitialConditionDTO dto, bool negativeValuesAllowed) => setNegativeValuesAllowed(new[] { dto.InitialCondition }, true);
+
+      public void SetNegativeValuesNotAllowed(InitialConditionDTO dto, bool negativeValuesAllowed) => setNegativeValuesAllowed(new[] { dto.InitialCondition }, false);
 
       protected void DisablePathColumns() => _view.DisablePathColumns();
 
@@ -116,10 +132,18 @@ namespace MoBi.Presentation.Presenter
 
       private void performIsPresentAction(SelectOption option) => performSetFlagValueAction(setIsPresent, option);
 
+      private void performIsNotPresentAction(SelectOption option) => performSetFlagValueAction(setIsPresent, option);
+
       private void performNegativeValuesAllowedAction(SelectOption option) => performSetFlagValueAction(setNegativeValuesAllowed, option);
+
+      private void performNegativeValuesNotAllowedAction(SelectOption option) => performSetFlagValueAction(setNegativeValuesAllowed, option);
 
       private void performSetFlagValueAction(Action<IEnumerable<InitialCondition>, bool> selectionAction, SelectOption option)
       {
+
+         if (option.IsOneOf(SelectOption.SelectedNegativeValuesNotAllowed))
+            selectionAction(SelectedStartValues, false);
+
          if (option.IsOneOf(SelectOption.SelectedNegativeValuesAllowed, SelectOption.AllNegativeValuesAllowed))
             selectionAction(SelectedStartValues, true);
 

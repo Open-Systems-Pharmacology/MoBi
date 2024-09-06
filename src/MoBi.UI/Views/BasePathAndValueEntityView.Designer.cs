@@ -38,10 +38,12 @@ namespace MoBi.UI.Views
          this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
          this.gridView = new MoBi.UI.Views.UxGridView();
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
-         this.panelRefresh = new DevExpress.XtraEditors.PanelControl();
-         this.panelDeleteStartValues = new DevExpress.XtraEditors.PanelControl();
-         this.panelIsPresent = new DevExpress.XtraEditors.PanelControl();
+         this.panelNegativeValuesNotAllowed = new DevExpress.XtraEditors.PanelControl();
          this.panelNegativeValuesAllowed = new DevExpress.XtraEditors.PanelControl();
+         this.panelIsNotPresent = new DevExpress.XtraEditors.PanelControl();
+         this.panelDeleteStartValues = new DevExpress.XtraEditors.PanelControl();
+         this.panelRefresh = new DevExpress.XtraEditors.PanelControl();
+         this.panelIsPresent = new DevExpress.XtraEditors.PanelControl();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemGridView = new DevExpress.XtraLayout.LayoutControlItem();
          this.tabbedControlGroup1 = new DevExpress.XtraLayout.TabbedControlGroup();
@@ -50,16 +52,20 @@ namespace MoBi.UI.Views
          this.layoutItemNegativeValuesAllowed = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemIsPresent = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemRefresh = new DevExpress.XtraLayout.LayoutControlItem();
+         this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+         this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
          this.emptySpaceItem = new DevExpress.XtraLayout.EmptySpaceItem();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridControl)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridView)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
          this.layoutControl.SuspendLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.panelRefresh)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.panelDeleteStartValues)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.panelIsPresent)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.panelNegativeValuesNotAllowed)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.panelNegativeValuesAllowed)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.panelIsNotPresent)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.panelDeleteStartValues)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.panelRefresh)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.panelIsPresent)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemGridView)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.tabbedControlGroup1)).BeginInit();
@@ -68,6 +74,8 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemNegativeValuesAllowed)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemIsPresent)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemRefresh)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem)).BeginInit();
          this.SuspendLayout();
          // 
@@ -87,24 +95,27 @@ namespace MoBi.UI.Views
          // gridView
          // 
          this.gridView.AllowsFiltering = true;
-         this.gridView.DetailHeight = 431;
          this.gridView.EnableColumnContextMenu = true;
          this.gridView.GridControl = this.gridControl;
-         this.gridView.MultiSelect = false;
+         this.gridView.MultiSelect = true;
          this.gridView.Name = "gridView";
          this.gridView.OptionsBehavior.EditorShowMode = DevExpress.Utils.EditorShowMode.MouseDown;
          this.gridView.OptionsNavigation.AutoFocusNewRow = true;
          this.gridView.OptionsSelection.EnableAppearanceFocusedCell = false;
          this.gridView.OptionsSelection.EnableAppearanceFocusedRow = false;
+         this.gridView.OptionsSelection.MultiSelect = true;
+         this.gridView.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CellSelect;
          // 
          // layoutControl
          // 
          this.layoutControl.AllowCustomization = false;
-         this.layoutControl.Controls.Add(this.panelRefresh);
-         this.layoutControl.Controls.Add(this.panelDeleteStartValues);
-         this.layoutControl.Controls.Add(this.panelIsPresent);
-         this.layoutControl.Controls.Add(this.gridControl);
+         this.layoutControl.Controls.Add(this.panelNegativeValuesNotAllowed);
          this.layoutControl.Controls.Add(this.panelNegativeValuesAllowed);
+         this.layoutControl.Controls.Add(this.panelIsNotPresent);
+         this.layoutControl.Controls.Add(this.panelDeleteStartValues);
+         this.layoutControl.Controls.Add(this.panelRefresh);
+         this.layoutControl.Controls.Add(this.gridControl);
+         this.layoutControl.Controls.Add(this.panelIsPresent);
          this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
          this.layoutControl.Location = new System.Drawing.Point(0, 0);
          this.layoutControl.Margin = new System.Windows.Forms.Padding(4);
@@ -115,37 +126,53 @@ namespace MoBi.UI.Views
          this.layoutControl.TabIndex = 1;
          this.layoutControl.Text = "layoutControl1";
          // 
-         // panelRefresh
+         // panelNegativeValuesNotAllowed
          // 
-         this.panelRefresh.Location = new System.Drawing.Point(414, 59);
-         this.panelRefresh.Margin = new System.Windows.Forms.Padding(4);
-         this.panelRefresh.Name = "panelRefresh";
-         this.panelRefresh.Size = new System.Drawing.Size(396, 27);
-         this.panelRefresh.TabIndex = 9;
+         this.panelNegativeValuesNotAllowed.Location = new System.Drawing.Point(894, 59);
+         this.panelNegativeValuesNotAllowed.Margin = new System.Windows.Forms.Padding(4);
+         this.panelNegativeValuesNotAllowed.Name = "panelNegativeValuesNotAllowed";
+         this.panelNegativeValuesNotAllowed.Size = new System.Drawing.Size(436, 27);
+         this.panelNegativeValuesNotAllowed.TabIndex = 10;
+         // 
+         // panelNegativeValuesAllowed
+         // 
+         this.panelNegativeValuesAllowed.Location = new System.Drawing.Point(894, 28);
+         this.panelNegativeValuesAllowed.Margin = new System.Windows.Forms.Padding(4);
+         this.panelNegativeValuesAllowed.Name = "panelNegativeValuesAllowed";
+         this.panelNegativeValuesAllowed.Size = new System.Drawing.Size(436, 27);
+         this.panelNegativeValuesAllowed.TabIndex = 10;
+         // 
+         // panelIsNotPresent
+         // 
+         this.panelIsNotPresent.Location = new System.Drawing.Point(454, 59);
+         this.panelIsNotPresent.Margin = new System.Windows.Forms.Padding(4);
+         this.panelIsNotPresent.Name = "panelIsNotPresent";
+         this.panelIsNotPresent.Size = new System.Drawing.Size(436, 27);
+         this.panelIsNotPresent.TabIndex = 9;
          // 
          // panelDeleteStartValues
          // 
          this.panelDeleteStartValues.Location = new System.Drawing.Point(14, 28);
          this.panelDeleteStartValues.Margin = new System.Windows.Forms.Padding(4);
          this.panelDeleteStartValues.Name = "panelDeleteStartValues";
-         this.panelDeleteStartValues.Size = new System.Drawing.Size(396, 27);
+         this.panelDeleteStartValues.Size = new System.Drawing.Size(436, 27);
          this.panelDeleteStartValues.TabIndex = 8;
+         // 
+         // panelRefresh
+         // 
+         this.panelRefresh.Location = new System.Drawing.Point(14, 59);
+         this.panelRefresh.Margin = new System.Windows.Forms.Padding(4);
+         this.panelRefresh.Name = "panelRefresh";
+         this.panelRefresh.Size = new System.Drawing.Size(436, 27);
+         this.panelRefresh.TabIndex = 6;
          // 
          // panelIsPresent
          // 
-         this.panelIsPresent.Location = new System.Drawing.Point(14, 59);
+         this.panelIsPresent.Location = new System.Drawing.Point(454, 28);
          this.panelIsPresent.Margin = new System.Windows.Forms.Padding(4);
          this.panelIsPresent.Name = "panelIsPresent";
-         this.panelIsPresent.Size = new System.Drawing.Size(396, 27);
-         this.panelIsPresent.TabIndex = 6;
-         // 
-         // panelNegativeValuesAllowed
-         // 
-         this.panelNegativeValuesAllowed.Location = new System.Drawing.Point(414, 28);
-         this.panelNegativeValuesAllowed.Margin = new System.Windows.Forms.Padding(4);
-         this.panelNegativeValuesAllowed.Name = "panelNegativeValuesAllowed";
-         this.panelNegativeValuesAllowed.Size = new System.Drawing.Size(396, 27);
-         this.panelNegativeValuesAllowed.TabIndex = 8;
+         this.panelIsPresent.Size = new System.Drawing.Size(436, 27);
+         this.panelIsPresent.TabIndex = 8;
          // 
          // layoutControlGroup1
          // 
@@ -185,9 +212,11 @@ namespace MoBi.UI.Views
          this.layoutGroupPanel.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutItemDelete,
             this.layoutItemNegativeValuesAllowed,
-            this.emptySpaceItem,
             this.layoutItemIsPresent,
-            this.layoutItemRefresh});
+            this.layoutItemRefresh,
+            this.layoutControlItem1,
+            this.layoutControlItem2,
+            this.emptySpaceItem});
          this.layoutGroupPanel.Location = new System.Drawing.Point(0, 0);
          this.layoutGroupPanel.Name = "layoutGroupPanel";
          this.layoutGroupPanel.Size = new System.Drawing.Size(1874, 62);
@@ -200,20 +229,20 @@ namespace MoBi.UI.Views
          this.layoutItemDelete.MaxSize = new System.Drawing.Size(440, 31);
          this.layoutItemDelete.MinSize = new System.Drawing.Size(220, 31);
          this.layoutItemDelete.Name = "layoutItemDelete";
-         this.layoutItemDelete.Size = new System.Drawing.Size(400, 31);
+         this.layoutItemDelete.Size = new System.Drawing.Size(440, 31);
          this.layoutItemDelete.SizeConstraintsType = DevExpress.XtraLayout.SizeConstraintsType.Custom;
          this.layoutItemDelete.TextSize = new System.Drawing.Size(0, 0);
          this.layoutItemDelete.TextVisible = false;
          // 
          // layoutItemNegativeValuesAllowed
          // 
-         this.layoutItemNegativeValuesAllowed.Control = this.panelNegativeValuesAllowed;
+         this.layoutItemNegativeValuesAllowed.Control = this.panelIsPresent;
          this.layoutItemNegativeValuesAllowed.CustomizationFormText = "layoutItemDelete";
-         this.layoutItemNegativeValuesAllowed.Location = new System.Drawing.Point(400, 0);
+         this.layoutItemNegativeValuesAllowed.Location = new System.Drawing.Point(440, 0);
          this.layoutItemNegativeValuesAllowed.MaxSize = new System.Drawing.Size(440, 31);
          this.layoutItemNegativeValuesAllowed.MinSize = new System.Drawing.Size(220, 31);
          this.layoutItemNegativeValuesAllowed.Name = "layoutItemNegativeValuesAllowed";
-         this.layoutItemNegativeValuesAllowed.Size = new System.Drawing.Size(400, 31);
+         this.layoutItemNegativeValuesAllowed.Size = new System.Drawing.Size(440, 31);
          this.layoutItemNegativeValuesAllowed.SizeConstraintsType = DevExpress.XtraLayout.SizeConstraintsType.Custom;
          this.layoutItemNegativeValuesAllowed.Text = "layoutItemDelete";
          this.layoutItemNegativeValuesAllowed.TextSize = new System.Drawing.Size(0, 0);
@@ -221,35 +250,59 @@ namespace MoBi.UI.Views
          // 
          // layoutItemIsPresent
          // 
-         this.layoutItemIsPresent.Control = this.panelIsPresent;
+         this.layoutItemIsPresent.Control = this.panelRefresh;
          this.layoutItemIsPresent.CustomizationFormText = "layoutItemIsPresent";
          this.layoutItemIsPresent.Location = new System.Drawing.Point(0, 31);
          this.layoutItemIsPresent.MaxSize = new System.Drawing.Size(440, 31);
          this.layoutItemIsPresent.MinSize = new System.Drawing.Size(220, 31);
          this.layoutItemIsPresent.Name = "layoutItemIsPresent";
-         this.layoutItemIsPresent.Size = new System.Drawing.Size(400, 31);
+         this.layoutItemIsPresent.Size = new System.Drawing.Size(440, 31);
          this.layoutItemIsPresent.SizeConstraintsType = DevExpress.XtraLayout.SizeConstraintsType.Custom;
          this.layoutItemIsPresent.TextSize = new System.Drawing.Size(0, 0);
          this.layoutItemIsPresent.TextVisible = false;
          // 
          // layoutItemRefresh
          // 
-         this.layoutItemRefresh.Control = this.panelRefresh;
-         this.layoutItemRefresh.Location = new System.Drawing.Point(400, 31);
+         this.layoutItemRefresh.Control = this.panelIsNotPresent;
+         this.layoutItemRefresh.Location = new System.Drawing.Point(440, 31);
          this.layoutItemRefresh.MaxSize = new System.Drawing.Size(440, 31);
          this.layoutItemRefresh.MinSize = new System.Drawing.Size(220, 31);
          this.layoutItemRefresh.Name = "layoutItemRefresh";
-         this.layoutItemRefresh.Size = new System.Drawing.Size(400, 31);
+         this.layoutItemRefresh.Size = new System.Drawing.Size(440, 31);
          this.layoutItemRefresh.SizeConstraintsType = DevExpress.XtraLayout.SizeConstraintsType.Custom;
          this.layoutItemRefresh.TextSize = new System.Drawing.Size(0, 0);
          this.layoutItemRefresh.TextVisible = false;
          // 
+         // layoutControlItem1
+         // 
+         this.layoutControlItem1.Control = this.panelNegativeValuesAllowed;
+         this.layoutControlItem1.Location = new System.Drawing.Point(880, 0);
+         this.layoutControlItem1.MaxSize = new System.Drawing.Size(440, 31);
+         this.layoutControlItem1.MinSize = new System.Drawing.Size(220, 31);
+         this.layoutControlItem1.Name = "layoutControlItem1";
+         this.layoutControlItem1.Size = new System.Drawing.Size(440, 31);
+         this.layoutControlItem1.SizeConstraintsType = DevExpress.XtraLayout.SizeConstraintsType.Custom;
+         this.layoutControlItem1.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutControlItem1.TextVisible = false;
+         // 
+         // layoutControlItem2
+         // 
+         this.layoutControlItem2.Control = this.panelNegativeValuesNotAllowed;
+         this.layoutControlItem2.Location = new System.Drawing.Point(880, 31);
+         this.layoutControlItem2.MaxSize = new System.Drawing.Size(440, 31);
+         this.layoutControlItem2.MinSize = new System.Drawing.Size(220, 31);
+         this.layoutControlItem2.Name = "layoutControlItem2";
+         this.layoutControlItem2.Size = new System.Drawing.Size(440, 31);
+         this.layoutControlItem2.SizeConstraintsType = DevExpress.XtraLayout.SizeConstraintsType.Custom;
+         this.layoutControlItem2.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutControlItem2.TextVisible = false;
+         // 
          // emptySpaceItem
          // 
          this.emptySpaceItem.AllowHotTrack = false;
-         this.emptySpaceItem.Location = new System.Drawing.Point(800, 0);
+         this.emptySpaceItem.Location = new System.Drawing.Point(1320, 0);
          this.emptySpaceItem.Name = "emptySpaceItem";
-         this.emptySpaceItem.Size = new System.Drawing.Size(1074, 62);
+         this.emptySpaceItem.Size = new System.Drawing.Size(554, 62);
          this.emptySpaceItem.TextSize = new System.Drawing.Size(0, 0);
          // 
          // BasePathAndValueEntityView
@@ -265,10 +318,12 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.gridView)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
          this.layoutControl.ResumeLayout(false);
-         ((System.ComponentModel.ISupportInitialize)(this.panelRefresh)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.panelDeleteStartValues)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.panelIsPresent)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.panelNegativeValuesNotAllowed)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.panelNegativeValuesAllowed)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.panelIsNotPresent)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.panelDeleteStartValues)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.panelRefresh)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.panelIsPresent)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemGridView)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.tabbedControlGroup1)).EndInit();
@@ -277,6 +332,8 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemNegativeValuesAllowed)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemIsPresent)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemRefresh)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem)).EndInit();
          this.ResumeLayout(false);
 
@@ -287,17 +344,21 @@ namespace MoBi.UI.Views
       protected OSPSuite.UI.Controls.UxLayoutControl layoutControl;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
       protected DevExpress.XtraLayout.LayoutControlItem layoutItemGridView;
-      protected DevExpress.XtraEditors.PanelControl panelIsPresent;
-      private DevExpress.XtraEditors.PanelControl panelDeleteStartValues;
-      protected DevExpress.XtraEditors.PanelControl panelNegativeValuesAllowed;
-      protected UxGridControl gridControl;
       protected DevExpress.XtraEditors.PanelControl panelRefresh;
+      private DevExpress.XtraEditors.PanelControl panelDeleteStartValues;
+      protected DevExpress.XtraEditors.PanelControl panelIsPresent;
+      protected UxGridControl gridControl;
+      protected DevExpress.XtraEditors.PanelControl panelIsNotPresent;
       private DevExpress.XtraLayout.TabbedControlGroup tabbedControlGroup1;
       private DevExpress.XtraLayout.LayoutControlGroup layoutGroupPanel;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemDelete;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemNegativeValuesAllowed;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemIsPresent;
+      protected DevExpress.XtraEditors.PanelControl panelNegativeValuesNotAllowed;
+      protected DevExpress.XtraEditors.PanelControl panelNegativeValuesAllowed;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemRefresh;
+      private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
+      private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
       private DevExpress.XtraLayout.EmptySpaceItem emptySpaceItem;
    }
 }

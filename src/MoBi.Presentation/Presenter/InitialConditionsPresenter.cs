@@ -36,8 +36,10 @@ namespace MoBi.Presentation.Presenter
          IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper,
          IDimensionFactory dimensionFactory,
          IInitialConditionsDistributedPathAndValueEntityPresenter distributedParameterPresenter,
-         IInitialConditionsBuildingBlockToInitialConditionsBuildingBlockDTOMapper buildingBlockMapper)
-         : base(view, dtoMapper, initialConditionsTask, msvCreator, context, deletePathAndValueEntityPresenter, formulaToValueFormulaDTOMapper, dimensionFactory, refreshInitialConditionsPresenter, isPresentSelectionPresenter, negativeStartValuesAllowedSelectionPresenter, distributedParameterPresenter)
+         IInitialConditionsBuildingBlockToInitialConditionsBuildingBlockDTOMapper buildingBlockMapper,
+         IMoleculeNegativeValuesNotAllowedSelectionPresenter negativeStartValuesNotAllowedSelectionPresenter,
+         IMoleculeIsNotPresentSelectionPresenter moleculeIsNotPresentSelectionPresenter)
+         : base(view, dtoMapper, initialConditionsTask, msvCreator, context, deletePathAndValueEntityPresenter, formulaToValueFormulaDTOMapper, dimensionFactory, refreshInitialConditionsPresenter, isPresentSelectionPresenter, negativeStartValuesAllowedSelectionPresenter, distributedParameterPresenter, negativeStartValuesNotAllowedSelectionPresenter, moleculeIsNotPresentSelectionPresenter)
       {
          _buildingBlockMapper = buildingBlockMapper;
       }

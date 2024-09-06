@@ -62,7 +62,11 @@ namespace MoBi.UI.Views
       public override string NameColumnCaption => AppConstants.Captions.MoleculeName;
 
       public void HideIsPresentColumn() => _isPresentColumn.AsHidden().WithShowInColumnChooser(true);
-
+      
+      public void AddNegativeValuesNotAllowedSelectionView(IView view) => panelNegativeValuesNotAllowed.FillWith(view);
+      
+      public void AddIsNotPresentSelectionView(IView view)  => panelIsNotPresent.FillWith(view);
+      
       private void onSetIsPresent(InitialConditionDTO dto, bool isPresent) => InitialConditionPresenter.SetIsPresent(dto, isPresent);
 
       private void onSetNegativeValueAllowed(InitialConditionDTO dto, bool negativeValuesAllowed) => InitialConditionPresenter.SetNegativeValuesAllowed(dto, negativeValuesAllowed);
