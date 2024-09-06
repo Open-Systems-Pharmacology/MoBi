@@ -15,20 +15,15 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IEditFormulaPresenter : ICommandCollectorPresenter, ISubjectPresenter
+   public interface IEditFormulaPresenter
    {
-      /// <summary>
-      ///    Get the available formula types that can be edited by the presenter. By default, only Constant, Table and
-      ///    Explicit
-      /// </summary>
-      IEnumerable<Type> AllFormulaTypes();
-
       /// <summary>
       ///    Remove a formula type that should be used in the context of the container presenter (for instance table and constant
       ///    for observer builder)
@@ -70,66 +65,73 @@ namespace MoBi.Presentation.Presenter
       void Init(IUsingFormula formulaOwner, IBuildingBlock buildingBlock);
 
       bool BlackBoxAllowed { set; }
-      string DisplayFor(Type formulaType);
-      void FormulaSelectionChanged(string formulaName);
-      void NamedFormulaSelectionChanged();
+
       ISelectReferencePresenter ReferencePresenter { get; set; }
 
       /// <summary>
-      ///    Triggers the use case to create a new formula
-      /// </summary>
-      void AddNewFormula();
-
-      /// <summary>
       ///    set the default formula type to be used when creating a formula for the first time If the value is not set
-      ///    explicitely, the first value in the list of available types will be used
+      ///    explicitly, the first value in the list of available types will be used
       /// </summary>
       void SetDefaultFormulaType<TFormulaType>();
 
-      IEnumerable<string> DisplayFormulaNames();
       bool IsRHS { set; get; }
+
+      IEnumerable<string> DisplayFormulaNames();
+
+      void NamedFormulaSelectionChanged();
+
+      /// <summary>
+      ///    Get the available formula types that can be edited by the presenter. By default, only Constant, Table and
+      ///    Explicit
+      /// </summary>
+      IEnumerable<Type> AllFormulaTypes();
+
+      string DisplayFor(Type formulaType);
+
+      void FormulaTypeSelectionChanged(string formulaName);
    }
 
-   public class EditFormulaPresenter : AbstractCommandCollectorPresenter<IEditFormulaView, IEditFormulaPresenter>, IEditFormulaPresenter,
-      IListener<RemovedEvent>,
-      IListener<FormulaChangedEvent>
+   public abstract class EditFormulaPresenter<TView, TPresenter> : AbstractCommandCollectorPresenter<TView, TPresenter> where TView : IView<TPresenter>, IFormulaEditView where TPresenter : IPresenter
    {
-      private readonly IFormulaPresenterCache _formulaPresenterCache;
-      private IFormula _formula;
-      private IEditTypedFormulaPresenter _formulaPresenter;
-      private IEntity _formulaOwner;
-      private readonly IMoBiContext _context;
-      private IBuildingBlock _buildingBlock;
-      private readonly IFormulaToFormulaInfoDTOMapper _formulaDTOMapper;
+      protected IFormulaPresenterCache _formulaPresenterCache;
+      protected IFormula _formula;
+      protected IEditTypedFormulaPresenter _formulaPresenter;
+      protected IEntity _formulaOwner;
+      protected IMoBiContext _context;
+      protected IBuildingBlock _buildingBlock;
+      protected IFormulaToFormulaInfoDTOMapper _formulaDTOMapper;
+      protected FormulaInfoDTO _formulaDTO;
+      protected ISelectReferencePresenter _referencePresenter;
+      protected HashSet<Type> _allFormulaType;
+      protected FormulaTypeCaptionRepository _formulaTypeCaptionRepository;
+      protected readonly IMoBiFormulaTask _formulaTask;
+      protected readonly ICircularReferenceChecker _circularReferenceChecker;
+      protected Type _defaultFormulaType;
       private IFormula _constantFormula;
-      private FormulaInfoDTO _formulaDTO;
-      private ISelectReferencePresenter _referencePresenter;
-      private readonly HashSet<Type> _allFormulaType;
-      private Type _defaultFormulaType;
-      private readonly FormulaTypeCaptionRepository _formulaTypeCaptionRepository;
       private bool _isRHS;
-      private readonly IMoBiFormulaTask _formulaTask;
-      private readonly ICircularReferenceChecker _circularReferenceChecker;
       private FormulaDecoder _formulaDecoder;
 
-      public EditFormulaPresenter(IEditFormulaView view, IFormulaPresenterCache formulaPresenterCache, IMoBiContext context,
-         IFormulaToFormulaInfoDTOMapper formulaDTOMapper, FormulaTypeCaptionRepository formulaTypeCaptionRepository,
-         IMoBiFormulaTask formulaTask, ICircularReferenceChecker circularReferenceChecker) : base(view)
+      protected EditFormulaPresenter(TView view, IFormulaPresenterCache formulaPresenterCache, IMoBiContext context, IFormulaToFormulaInfoDTOMapper formulaDTOMapper, IMoBiFormulaTask formulaTask, FormulaTypeCaptionRepository formulaTypeCaptionRepository, ICircularReferenceChecker circularReferenceChecker) : base(view)
       {
+         _formulaPresenterCache = formulaPresenterCache;
+         _context = context;
          _formulaDTOMapper = formulaDTOMapper;
          _formulaTypeCaptionRepository = formulaTypeCaptionRepository;
          _formulaTask = formulaTask;
          _circularReferenceChecker = circularReferenceChecker;
-         _context = context;
-         _formulaPresenterCache = formulaPresenterCache;
-         _allFormulaType = new HashSet<Type> {typeof(ConstantFormula), typeof(TableFormula), typeof(ExplicitFormula), typeof(TableFormulaWithOffset), typeof(TableFormulaWithXArgument), typeof(SumFormula)};
+         _allFormulaType = new HashSet<Type> { typeof(ConstantFormula), typeof(TableFormula), typeof(ExplicitFormula), typeof(TableFormulaWithOffset), typeof(TableFormulaWithXArgument), typeof(SumFormula) };
          _defaultFormulaType = _allFormulaType.First();
       }
 
-      public void RemoveAllFormulaTypes()
-      {
-         _allFormulaType.Clear();
-      }
+      public object Subject => _formula;
+
+      public void RemoveAllFormulaTypes() => _allFormulaType.Clear();
+
+      public IEnumerable<Type> AllFormulaTypes() => _allFormulaType;
+
+      public void RemoveFormulaType<TFormulaType>() => _allFormulaType.Remove(typeof(TFormulaType));
+
+      public string DisplayFor(Type formulaType) => _formulaTypeCaptionRepository[formulaType];
 
       public void Init<TObjectWithFormula>(TObjectWithFormula formulaOwner, IBuildingBlock buildingBlock, FormulaDecoder<TObjectWithFormula> formulaDecoder)
          where TObjectWithFormula : IEntity, IWithDimension
@@ -139,7 +141,7 @@ namespace MoBi.Presentation.Presenter
          _formula = formulaDecoder.GetFormula(formulaOwner);
          _buildingBlock = buildingBlock;
          _constantFormula = null;
-         updateFormula();
+         UpdateFormula();
       }
 
       public void Init(IParameter parameter, IBuildingBlock buildingBlock)
@@ -150,10 +152,7 @@ namespace MoBi.Presentation.Presenter
             Init(parameter.DowncastTo<IUsingFormula>(), buildingBlock);
       }
 
-      public void Init(IUsingFormula formulaOwner, IBuildingBlock buildingBlock)
-      {
-         Init(formulaOwner, buildingBlock, new UsingFormulaDecoder());
-      }
+      public void Init(IUsingFormula formulaOwner, IBuildingBlock buildingBlock) => Init(formulaOwner, buildingBlock, new UsingFormulaDecoder());
 
       public override void ReleaseFrom(IEventPublisher eventPublisher)
       {
@@ -162,12 +161,12 @@ namespace MoBi.Presentation.Presenter
          _formulaPresenterCache.ReleaseFrom(eventPublisher);
       }
 
-      private void updateFormula()
+      protected void UpdateFormula()
       {
          //this call creates a default formula and set it in _formula
          if (_formula == null)
          {
-            selectFormulaByTypeAndName(defaultFormulaType(), string.Empty);
+            SelectFormulaByTypeAndName(DefaultFormulaType, string.Empty);
             _view.ClearFormulaView();
          }
          if (_formula == null) return;
@@ -177,16 +176,14 @@ namespace MoBi.Presentation.Presenter
          _view.BindTo(_formulaDTO);
          _view.IsComplexFormulaView = isComplexFormula(_formula);
          _view.IsNamedFormulaView = isNamedFormula(_formula);
+
+         ViewChanged();
       }
 
-      private Type defaultFormulaType()
-      {
-         if (_allFormulaType.Contains(_defaultFormulaType))
-            return _defaultFormulaType;
-         return _allFormulaType.First();
-      }
+      protected Type DefaultFormulaType => 
+         _allFormulaType.Contains(_defaultFormulaType) ? _defaultFormulaType : _allFormulaType.First();
 
-      private IDimension formulaDimension
+      protected IDimension FormulaDimension
       {
          get
          {
@@ -202,12 +199,9 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      private IDimension rhsDimensionFor(IWithDimension withDimension)
-      {
-         return _context.DimensionFactory.GetOrAddRHSDimensionFor(withDimension.Dimension);
-      }
+      private IDimension rhsDimensionFor(IWithDimension withDimension) => _context.DimensionFactory.GetOrAddRHSDimensionFor(withDimension.Dimension);
 
-      private void selectFormulaByTypeAndName(Type formulaType, string formulaName)
+      protected void SelectFormulaByTypeAndName(Type formulaType, string formulaName)
       {
          var newFormula = needsName(formulaType)
             ? getFormulaFromFormulaCache(formulaType, formulaName)
@@ -215,12 +209,12 @@ namespace MoBi.Presentation.Presenter
 
          //only the first time that a new formula is created from an empty formula cache
          if (newFormula == null)
-            _formula = _formulaTask.CreateNewFormula(formulaType, formulaDimension);
+            _formula = _formulaTask.CreateNewFormula(formulaType, FormulaDimension);
          else
-            selectFormula(newFormula);
+            SelectFormula(newFormula);
       }
 
-      private void selectFormula(IFormula formula)
+      protected void SelectFormula(IFormula formula)
       {
          if (formula != null)
          {
@@ -235,33 +229,23 @@ namespace MoBi.Presentation.Presenter
          _formula = formula;
       }
 
-      private bool hasCircularReference(FormulaUsablePath path)
-      {
-         return _formulaOwner != null && !IsRHS && _circularReferenceChecker.HasCircularReference(path, _formulaOwner);
-      }
+      private bool hasCircularReference(FormulaUsablePath path) => 
+         _formulaOwner != null && !IsRHS && _circularReferenceChecker.HasCircularReference(path, _formulaOwner);
 
-      private void setFormulaInOwner(IFormula newFormula)
-      {
+      private void setFormulaInOwner(IFormula newFormula) => 
          AddCommand(_formulaTask.UpdateFormula(_formulaOwner, _formula, newFormula, _formulaDecoder, _buildingBlock));
-      }
 
-      private bool formulaIsDefined()
-      {
-         return _formula != null && _context.ObjectRepository.ContainsObjectWithId(_formula.Id);
-      }
+      private bool formulaIsDefined() => _formula != null && _context.ObjectRepository.ContainsObjectWithId(_formula.Id);
 
-      private bool needsName(Type type)
-      {
-         return !(type == typeof(ConstantFormula) || type == typeof(DistributionFormula));
-      }
+      private bool needsName(Type type) => !(type == typeof(ConstantFormula) || type == typeof(DistributionFormula));
 
       private IFormula getConstantFormula()
       {
          if (_constantFormula == null)
          {
-            _constantFormula = _formulaTask.CreateNewFormula<ConstantFormula>(formulaDimension);
+            _constantFormula = _formulaTask.CreateNewFormula<ConstantFormula>(FormulaDimension);
             //it is important to register the constant formula in the repository here otherwise it won't be found
-            //when rollbacking commands
+            //when rolling back commands
             _context.ObjectRepository.Register(_constantFormula);
          }
          return _constantFormula;
@@ -273,7 +257,7 @@ namespace MoBi.Presentation.Presenter
          return _buildingBlock.FormulaCache
             .Where(formula => formula.IsAnImplementationOf(_formulaDTO.Type))
             .Where(formula => formula.Dimension != null)
-            .Where(formula => formula.Dimension.IsEquivalentTo(formulaDimension))
+            .Where(formula => formula.Dimension.IsEquivalentTo(FormulaDimension))
             .Select(formula => formula.Name)
             .OrderBy(x => x);
       }
@@ -301,12 +285,6 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      public void FormulaSelectionChanged(string formulaName)
-      {
-         selectFormulaByTypeAndName(_formulaDTO.Type, formulaName);
-         updateFormula();
-      }
-
       public bool BlackBoxAllowed
       {
          set
@@ -320,7 +298,7 @@ namespace MoBi.Presentation.Presenter
 
       public void NamedFormulaSelectionChanged()
       {
-         selectFormulaByTypeAndName(_formulaDTO.Type, _formulaDTO.Name);
+         SelectFormulaByTypeAndName(_formulaDTO.Type, _formulaDTO.Name);
          rebind();
       }
 
@@ -334,33 +312,12 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      public void AddNewFormula()
-      {
-         var formulaType = _formulaDTO == null ? defaultFormulaType() : _formulaDTO.Type;
-         (var command, var formula) = _formulaTask.CreateNewFormulaInBuildingBlock(formulaType, formulaDimension, allFormulaNames(), _buildingBlock);
-         if (formula == null)
-            return;
-
-         AddCommand(command);
-
-         selectFormula(formula);
-         updateFormula();
-
-         //once setup has been performed, raise the change event to notify presenters that formula was added
-         OnStatusChanged();
-      }
-
-      private IEnumerable<string> allFormulaNames()
-      {
-         return _buildingBlock.FormulaCache.Where(isNamedFormula)
+      protected IEnumerable<string> AllFormulaNames =>
+         _buildingBlock.FormulaCache.Where(isNamedFormula)
             .Select(formula => formula.Name)
             .OrderBy(x => x);
-      }
 
-      public void SetDefaultFormulaType<TFormulaType>()
-      {
-         _defaultFormulaType = typeof(TFormulaType);
-      }
+      public void SetDefaultFormulaType<TFormulaType>() => _defaultFormulaType = typeof(TFormulaType);
 
       private IFormula getFormulaFromFormulaCache(Type type, string formulaName)
       {
@@ -369,20 +326,11 @@ namespace MoBi.Presentation.Presenter
             .FindByName(formulaName);
       }
 
-      public void AddFormulaType<TFormulaType>()
-      {
-         _allFormulaType.Add(typeof(TFormulaType));
-      }
+      public void AddFormulaType<TFormulaType>() => _allFormulaType.Add(typeof(TFormulaType));
 
-      private bool isComplexFormula(IFormula formula)
-      {
-         return (formula.IsExplicit() || formula.IsBlackBox());
-      }
+      private bool isComplexFormula(IFormula formula) => (formula.IsExplicit() || formula.IsBlackBox());
 
-      private bool isNamedFormula(IFormula formula)
-      {
-         return !(formula.IsConstant() || formula.IsDistributed());
-      }
+      private bool isNamedFormula(IFormula formula) => !(formula.IsConstant() || formula.IsDistributed());
 
       private void rebind()
       {
@@ -403,41 +351,22 @@ namespace MoBi.Presentation.Presenter
             _formulaPresenter.InitializeWith(CommandCollector);
          }
          _formulaPresenter.IsRHS = IsRHS;
-         _view.SetEditFormualInstanceView(_formulaPresenter.BaseView);
+         _view.SetEditFormulaInstanceView(_formulaPresenter.BaseView);
          _formulaPresenter.Edit(_formula, _formulaOwner);
       }
 
-      private void formulaPresenterChanged(object sender, EventArgs e)
-      {
-         ViewChanged();
-      }
-
-      public IEnumerable<Type> AllFormulaTypes()
-      {
-         return _allFormulaType;
-      }
-
-      public void RemoveFormulaType<TFormulaType>()
-      {
-         _allFormulaType.Remove(typeof(TFormulaType));
-      }
-
-      public string DisplayFor(Type formulaType)
-      {
-         return _formulaTypeCaptionRepository[formulaType];
-      }
-
-      public object Subject => _formula;
+      private void formulaPresenterChanged(object sender, EventArgs e) => ViewChanged();
 
       public void Handle(RemovedEvent eventToHandle)
       {
          if (_formula == null) return;
          var formulas = eventToHandle.RemovedObjects.Where(x => x.IsAnImplementationOf<IFormula>()).Cast<IFormula>();
          var formulasToRemove = formulas.Where(_buildingBlock.FormulaCache.Contains).ToList();
-         if (!formulasToRemove.Contains(_formula)) return;
+         if (!formulasToRemove.Contains(_formula))
+            return;
 
          _formula = null;
-         updateFormula();
+         UpdateFormula();
       }
 
       public void Handle(FormulaChangedEvent formulaChangedEvent)
@@ -445,12 +374,9 @@ namespace MoBi.Presentation.Presenter
          if (!canHandle(formulaChangedEvent))
             return;
 
-         updateFormula();
+         UpdateFormula();
       }
 
-      private bool canHandle(FormulaChangedEvent formulaChangedEvent)
-      {
-         return Equals(formulaChangedEvent.Formula, _formula);
-      }
+      private bool canHandle(FormulaChangedEvent formulaChangedEvent) => Equals(formulaChangedEvent.Formula, _formula);
    }
 }

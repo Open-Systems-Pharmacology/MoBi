@@ -20,7 +20,7 @@ namespace MoBi.Presentation
       protected IEditTransportBuilderView _view;
       private IFormulaToFormulaBuilderDTOMapper _formulaMapper;
       protected IEditParametersInContainerPresenter _parameterPresenter;
-      private IEditFormulaPresenter _formulaPresenter;
+      private IEditFormulaInContainerPresenter _formulaPresenter;
       private ISelectReferenceAtTransportPresenter _referencePresenter;
       private IMoBiContext _context;
       private IMoleculeDependentBuilderPresenter _moleculeDepdendentBuilderPresenter;
@@ -35,7 +35,7 @@ namespace MoBi.Presentation
          _view= A.Fake<IEditTransportBuilderView>();
          _formulaMapper = A.Fake<IFormulaToFormulaBuilderDTOMapper>();
          _parameterPresenter = A.Fake<IEditParametersInContainerPresenter>();
-         _formulaPresenter = A.Fake<IEditFormulaPresenter>();
+         _formulaPresenter = A.Fake<IEditFormulaInContainerPresenter>();
          _referencePresenter= A.Fake<ISelectReferenceAtTransportPresenter>();
          _context = A.Fake<IMoBiContext>();
          _moleculeDepdendentBuilderPresenter= A.Fake<IMoleculeDependentBuilderPresenter>();

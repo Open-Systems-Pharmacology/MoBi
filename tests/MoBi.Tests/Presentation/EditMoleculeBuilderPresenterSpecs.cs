@@ -19,7 +19,7 @@ namespace MoBi.Presentation
       protected IMoleculeBuilderToMoleculeBuilderDTOMapper _moleculeBuilderDTOMapper;
       protected IEditParametersInContainerPresenter _editMoleculeParameters;
       protected IEditTaskFor<MoleculeBuilder> _editTasks;
-      protected IEditFormulaPresenter _editFormulaPresenter;
+      protected IEditFormulaInContainerPresenter _editFormulaPresenter;
       protected IMoBiContext _context;
       protected ISelectReferenceAtMoleculePresenter _selectReferencePresenter;
       protected IReactionDimensionRetriever _dimensionRetriever;
@@ -31,7 +31,7 @@ namespace MoBi.Presentation
          _moleculeBuilderDTOMapper = A.Fake<IMoleculeBuilderToMoleculeBuilderDTOMapper>();
          _editMoleculeParameters = A.Fake<IEditParametersInContainerPresenter>();
          _editTasks = A.Fake<IEditTaskFor<MoleculeBuilder>>();
-         _editFormulaPresenter = A.Fake<IEditFormulaPresenter>();
+         _editFormulaPresenter = A.Fake<IEditFormulaInContainerPresenter>();
          _context = A.Fake<IMoBiContext>();
          _selectReferencePresenter = A.Fake<ISelectReferenceAtMoleculePresenter>();
          _dimensionRetriever = A.Fake<IReactionDimensionRetriever>();

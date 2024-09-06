@@ -91,9 +91,12 @@ namespace MoBi.Presentation.Presenter
          {
             var referencePresenter = _selectReferencePresenterFactory.ReferenceAtParameterFor(UsingObject?.ParentContainer);
             referencePresenter.DisableTimeSelection();
-            presenter.Init(predicate, UsingObject, UsingObject == null ? Enumerable.Empty<IObjectBase>().ToList() : new List<IObjectBase> {UsingObject.RootContainer}, caption, referencePresenter);
+            presenter.Init(predicate, UsingObject, contextList(UsingObject), caption, referencePresenter);
             return presenter.GetSelection();
          }
       }
+
+      private IReadOnlyList<IObjectBase> contextList(IUsingFormula usingObject) =>
+         usingObject?.RootContainer != null ? new List<IObjectBase> { usingObject.RootContainer } : Enumerable.Empty<IObjectBase>().ToList();
    }
 }
