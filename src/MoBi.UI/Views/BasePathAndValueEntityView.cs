@@ -113,11 +113,11 @@ namespace MoBi.UI.Views
 
       public abstract string NameColumnCaption { get; }
 
-      public void HideRefreshView() => layoutItemRefresh.Visibility = LayoutVisibility.Never;
+      public void HideRefreshView() => layoutItemIsNotPresent.Visibility = LayoutVisibility.Never;
 
-      public void HideIsPresentView() => layoutItemIsPresent.Visibility = LayoutVisibility.Never;
+      public void HideIsPresentView() => layoutItemRefresh.Visibility = LayoutVisibility.Never;
 
-      public void HideNegativeValuesAllowedView() => layoutItemNegativeValuesAllowed.Visibility = LayoutVisibility.Never;
+      public void HideNegativeValuesAllowedView() => layoutItemIsPresent.Visibility = LayoutVisibility.Never;
 
       public IReadOnlyList<TPathAndValueEntity> SelectedStartValues
       {
