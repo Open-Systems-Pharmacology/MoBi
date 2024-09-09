@@ -47,8 +47,12 @@ namespace MoBi.UI.Views
 
       public void AddSelectedPaths(IReadOnlyList<string> pathsToAdd)
       {
-         var pathsSkipped = pathsToAdd.Where(x => memoEditObjectPaths.Lines.Contains(x));
-         memoEditObjectPaths.AppendText(string.Join(Environment.NewLine, pathsToAdd.Except(pathsSkipped)));
+         var allLines = pathsToAdd.Where(x => !memoEditObjectPaths.Lines.Contains(x));
+         
+         if (!string.IsNullOrEmpty(memoEditObjectPaths.Text))
+            allLines = allLines.Prepend(memoEditObjectPaths.Text);
+
+         memoEditObjectPaths.Text = string.Join(Environment.NewLine, allLines);
       }
    }
 }
