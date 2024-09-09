@@ -14,11 +14,6 @@ namespace MoBi.Presentation.Presenter
       SelectOption CurrentSelection { get; set; }
 
       /// <summary>
-      ///    The list of valid SelectOptions
-      /// </summary>
-      IEnumerable<SelectOption> AvailableSelectOptions { get; }
-
-      /// <summary>
       ///    Called when the action should be run using CurrentSelection
       /// </summary>
       void PerformSelectionHandler();
@@ -43,8 +38,6 @@ namespace MoBi.Presentation.Presenter
 
          view.BindToSelection();
       }
-
-      public abstract IEnumerable<SelectOption> AvailableSelectOptions { get; }
 
       public void PerformSelectionHandler()
       {

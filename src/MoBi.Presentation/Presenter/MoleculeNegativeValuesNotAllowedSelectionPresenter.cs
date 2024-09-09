@@ -14,10 +14,5 @@ namespace MoBi.Presentation.Presenter
          : base(view, SelectOption.SelectedNegativeValuesNotAllowed, AppConstants.Captions.MarkNegativeValuesNotAllowed)
       {
       }
-
-      public override IEnumerable<SelectOption> AvailableSelectOptions
-      {
-         get { return new[] { SelectOption.AllNegativeValuesAllowed, SelectOption.AllNegativeValuesNotAllowed, SelectOption.SelectedNegativeValuesAllowed, SelectOption.SelectedNegativeValuesNotAllowed }; }
-      }
    }
 }

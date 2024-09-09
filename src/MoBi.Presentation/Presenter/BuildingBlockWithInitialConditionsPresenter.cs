@@ -88,10 +88,6 @@ namespace MoBi.Presentation.Presenter
          {
             refreshInitialConditions(SelectedStartValues);
          }
-         else if (option == SelectOption.RefreshAll)
-         {
-            refreshInitialConditions(VisibleStartValues);
-         }
       }
 
       private void refreshInitialConditions(IEnumerable<InitialCondition> initialConditions)
@@ -107,8 +103,6 @@ namespace MoBi.Presentation.Presenter
       public void SetScaleDivisor(InitialConditionDTO dto, double newScaleDivisor) => AddCommand(() => _initialConditionsTask.UpdateInitialConditionScaleDivisor(_buildingBlock, dto.InitialCondition, newScaleDivisor, dto.InitialCondition.ScaleDivisor));
 
       public void SetIsPresent(InitialConditionDTO dto, bool isPresent) => setIsPresent(new[] { dto.InitialCondition }, isPresent);
-
-      public void SetIsNotPresent(InitialConditionDTO dto, bool isPresent) => setIsPresent(new[] { dto.InitialCondition }, false);
 
       private void setIsPresent(IEnumerable<InitialCondition> startValuesToUpdate, bool isPresent)
       {
@@ -140,7 +134,6 @@ namespace MoBi.Presentation.Presenter
 
       private void performSetFlagValueAction(Action<IEnumerable<InitialCondition>, bool> selectionAction, SelectOption option)
       {
-
          if (option.Equals(SelectOption.SelectedNegativeValuesNotAllowed))
             selectionAction(SelectedStartValues, false);
 

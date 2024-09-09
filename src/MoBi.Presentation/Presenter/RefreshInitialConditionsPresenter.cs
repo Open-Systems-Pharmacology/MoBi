@@ -14,7 +14,5 @@ namespace MoBi.Presentation.Presenter
          : base(view, SelectOption.RefreshSelected, AppConstants.Captions.RefreshValues)
       {
       }
-
-      public override IEnumerable<SelectOption> AvailableSelectOptions => new[] { SelectOption.RefreshSelected };
    }
 }

@@ -15,10 +15,5 @@ namespace MoBi.Presentation.Presenter
          : base(view, SelectOption.SelectedNotPresent, AppConstants.Captions.MarkAsNotPresent)
       {
       }
-
-      public override IEnumerable<SelectOption> AvailableSelectOptions
-      {
-         get { return new[] {SelectOption.AllPresent, SelectOption.AllNotPresent, SelectOption.SelectedPresent, SelectOption.SelectedNotPresent}; }
-      }
    }
 }

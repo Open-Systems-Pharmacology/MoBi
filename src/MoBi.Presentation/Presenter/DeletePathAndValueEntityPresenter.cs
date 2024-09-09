@@ -15,10 +15,5 @@ namespace MoBi.Presentation.Presenter
          : base(view, SelectOption.DeleteSelected, AppConstants.Captions.DeleteValues)
       {
       }
-
-      public override IEnumerable<SelectOption> AvailableSelectOptions
-      {
-         get { return new[] { SelectOption.DeleteSelected }; }
-      }
    }
 }

@@ -42,7 +42,6 @@ namespace MoBi.UI.Views
          _screenBinder.Bind(x => x.CurrentSelection)
             .To(cbSelection)
             .WithImages(x => ApplicationIcons.IconIndex(x.Icon))
-            .WithValues(x => _presenter.AvailableSelectOptions)
             .AndDisplays(x => x.Caption);
 
          btnSelection.Click += (o, e) => OnEvent(_presenter.PerformSelectionHandler);
