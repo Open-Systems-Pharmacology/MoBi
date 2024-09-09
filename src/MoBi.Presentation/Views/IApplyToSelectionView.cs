@@ -4,11 +4,6 @@ using OSPSuite.Presentation.Views;
 
 namespace MoBi.Presentation.Views
 {
-   public interface IApplyToSelectionView : IView<IApplyToSelectionPresenter>
-   {
-      void BindToSelection();
-   }
-
    public interface IApplyToSelectionButtonView : IView<IApplyToSelectionPresenter>
    {
       void BindToSelection();

@@ -1,7 +1,5 @@
-using System.Collections.Generic;
 using MoBi.Assets;
 using MoBi.Presentation.Views;
-using OSPSuite.Assets;
 
 namespace MoBi.Presentation.Presenter
 {

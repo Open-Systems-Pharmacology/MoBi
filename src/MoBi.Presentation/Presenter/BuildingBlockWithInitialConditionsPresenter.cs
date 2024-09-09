@@ -10,7 +10,6 @@ using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Views;
 
@@ -64,7 +63,7 @@ namespace MoBi.Presentation.Presenter
          IMoleculeNegativeValuesAllowedSelectionPresenter negativeStartValuesAllowedSelectionPresenter,
          IDistributedPathAndValueEntityPresenter<InitialConditionDTO, TBuildingBlock> distributedParameterPresenter,
          IMoleculeNegativeValuesNotAllowedSelectionPresenter negativeStartValuesNotAllowedSelectionPresenter,
-         IMoleculeIsNotPresentSelectionPresenter moleculeIsNotPresentSelectionPresenter) : 
+         IMoleculeIsNotPresentSelectionPresenter moleculeIsNotPresentSelectionPresenter) :
          base(view, dtoMapper, initialConditionsTask, msvCreator, context, deletePathAndValueEntityPresenter, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
       {
          _initialConditionsTask = initialConditionsTask;

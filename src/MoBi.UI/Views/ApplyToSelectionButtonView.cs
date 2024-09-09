@@ -1,14 +1,9 @@
-﻿using MoBi.Assets;
-using MoBi.Presentation.Presenter;
+﻿using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using OSPSuite.Assets;
 using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
-using OSPSuite.UI.Services;
-using System.Drawing;
 
 namespace MoBi.UI.Views
 {
@@ -27,7 +22,7 @@ namespace MoBi.UI.Views
       {
          set => btnSelection.Text = value;
       }
-      
+
       public override void InitializeBinding()
       {
          btnSelection.Click += (o, e) => OnEvent(_presenter.PerformSelectionHandler);

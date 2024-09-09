@@ -11,7 +11,7 @@ using OSPSuite.UI.Services;
 
 namespace MoBi.UI.Views
 {
-   public partial class ApplyToSelectionView : BaseUserControl, IApplyToSelectionView
+   public partial class ApplyToSelectionView : BaseUserControl, IApplyToSelectionButtonView
    {
       protected IApplyToSelectionPresenter _presenter;
       protected readonly ScreenBinder<IApplyToSelectionPresenter> _screenBinder;
@@ -55,6 +55,11 @@ namespace MoBi.UI.Views
       public void BindToSelection()
       {
          _screenBinder.BindToSource(_presenter);
+      }
+
+      public void SetButonIcon(ApplicationIcon icon)
+      {
+         btnSelection.InitWithImage(icon);
       }
    }
 }

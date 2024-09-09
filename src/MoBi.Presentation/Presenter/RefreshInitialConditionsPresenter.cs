@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using MoBi.Assets;
+﻿using MoBi.Assets;
 using MoBi.Presentation.Views;
 
 namespace MoBi.Presentation.Presenter

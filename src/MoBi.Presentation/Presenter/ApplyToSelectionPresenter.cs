@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using MoBi.Presentation.Views;
 using OSPSuite.Assets;
 using OSPSuite.Presentation.Presenters;
@@ -33,7 +32,7 @@ namespace MoBi.Presentation.Presenter
       {
          CurrentSelection = defaultSelection;
          view.Caption = caption;
-         if(icon!=null)
+         if (icon != null)
             view.SetButonIcon(icon);
 
          view.BindToSelection();

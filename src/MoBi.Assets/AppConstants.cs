@@ -1623,7 +1623,7 @@ namespace MoBi.Assets
          public static readonly string AddDefaultCurveForNewSimulations = "Add default curve for new simulations";
          public static readonly string ChangeDefaultCurveForNewSimulations = "Change default curve for new simulations";
          public static readonly string IndividualParameters = "Individual Parameters";
-         public static readonly string ParameterPathsToAdd= "Parameter Paths to Add";
+         public static readonly string ParameterPathsToAdd = "Parameter Paths to Add";
          public static string SelectTheBuildingBlockWhereEntitiesWillBeAddedOrUpdated(string typeBeingAdded) => $"Select the building block where {typeBeingAdded} will be added or updated";
          public static readonly string SelectBuildingBlock = "Select Building Block";
          public static readonly string MakeDefault = "Make defaults";
