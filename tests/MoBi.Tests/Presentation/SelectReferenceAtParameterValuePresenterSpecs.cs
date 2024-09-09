@@ -12,11 +12,12 @@ using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Nodes;
 
 namespace MoBi.Presentation
 {
-   public abstract class concern_for_SelectReferenceAtParameterValuePresenter : ContextSpecification<ISelectReferenceAtParameterValuePresenter>
+   public abstract class concern_for_SelectReferenceAtParameterValuePresenter : ContextSpecification<SelectReferenceAtParameterValuePresenter>
    {
       protected ISelectReferenceView _view;
       protected IMoBiContext _context;
@@ -141,6 +142,84 @@ namespace MoBi.Presentation
       public void should_not_allow_localisation_change()
       {
          _view.ChangeLocalisationAllowed.ShouldBeFalse();
+      }
+   }
+
+   public class When_getting_child_objects_for_a_path_and_value_building_block : concern_for_SelectReferenceAtParameterValuePresenter
+   {
+      private ObjectBaseDTO _objectBaseDTO;
+      private List<ObjectBaseDTO> _children;
+      private IndividualBuildingBlock _individualBuildingBlock;
+
+      protected override void Context()
+      {
+         base.Context();
+         _individualBuildingBlock = new IndividualBuildingBlock().WithId("1");
+         var pathAndValueEntity = new IndividualParameter().WithId("2");
+         pathAndValueEntity.Path = new ObjectPath("Root", "Container", "named parameter");
+         _individualBuildingBlock.Add(pathAndValueEntity);
+
+         _objectBaseDTO = new ObjectBaseDTO(_individualBuildingBlock);
+
+         A.CallTo(() => _context.ObjectRepository.ContainsObjectWithId(_individualBuildingBlock.Id)).Returns(true);
+         A.CallTo(() => _context.Get<IndividualBuildingBlock>(_individualBuildingBlock.Id)).Returns(_individualBuildingBlock);
+         A.CallTo(() => _context.Get<ExpressionProfileBuildingBlock>(A<string>._)).Returns(null);
+         A.CallTo(() => _objectBaseDTOMapper.MapFrom(A<IObjectBase>._)).ReturnsLazily(x => new ObjectBaseDTO(x.Arguments.Get<IObjectBase>(0)));
+      }
+
+      protected override void Because()
+      {
+         _children = sut.GetChildObjects(_objectBaseDTO).ToList();
+      }
+
+      [Observation]
+      public void the_child_objects_added_to_the_view_should_contain_the_individual_parameters()
+      {
+         _children.Count.ShouldBeEqualTo(1);
+         _children[0].ObjectBase.Name.ShouldBeEqualTo("Root");
+         var container = _children[0].ObjectBase as Container;
+         container.Single().Name.ShouldBeEqualTo("Container");
+         (container.Single() as Container).Single().Name.ShouldBeEqualTo("named parameter");
+      }
+   }
+
+   public class When_getting_child_objects_for_a_path : concern_for_SelectReferenceAtParameterValuePresenter
+   {
+      private ObjectBaseDTO _objectBaseDTO;
+      private IndividualBuildingBlock _individualBuildingBlock;
+      private ObjectBaseDTO _pathChild;
+      private List<ObjectBaseDTO> _children;
+
+      protected override void Context()
+      {
+         base.Context();
+         _individualBuildingBlock = new IndividualBuildingBlock().WithId("1");
+         var pathAndValueEntity = new IndividualParameter().WithId("2");
+         pathAndValueEntity.Path = new ObjectPath("Root", "Container", "named parameter");
+         _individualBuildingBlock.Add(pathAndValueEntity);
+
+         _objectBaseDTO = new ObjectBaseDTO(_individualBuildingBlock);
+
+         A.CallTo(() => _context.ObjectRepository.ContainsObjectWithId(_individualBuildingBlock.Id)).Returns(true);
+         A.CallTo(() => _context.Get<IndividualBuildingBlock>(_individualBuildingBlock.Id)).Returns(_individualBuildingBlock);
+         A.CallTo(() => _context.Get<ExpressionProfileBuildingBlock>(A<string>._)).Returns(null);
+         A.CallTo(() => _objectBaseDTOMapper.MapFrom(A<IObjectBase>._)).ReturnsLazily(x => new ObjectBaseDTO(x.Arguments.Get<IObjectBase>(0)));
+
+         _pathChild = sut.GetChildObjects(_objectBaseDTO).ToList().Single();
+
+      }
+
+      protected override void Because()
+      {
+         _children = sut.GetChildObjects(_pathChild).ToList();
+      }
+
+      [Observation]
+      public void the_children_resolved_should_reflect_the_path_structure_of_the_container()
+      {
+         _children[0].ObjectBase.Name.ShouldBeEqualTo("Container");
+         var entity = (_children[0].ObjectBase as Container).Single();
+         entity.Name.ShouldBeEqualTo("named parameter");
       }
    }
 }

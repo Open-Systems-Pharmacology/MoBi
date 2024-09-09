@@ -53,7 +53,7 @@ namespace MoBi.Presentation.Presenter
       protected IEntity _refObject;
       private readonly IObjectPathCreator _objectPathCreator;
       private readonly Localisations _localisation;
-      private readonly IBuildingBlockRepository _buildingBlockRepository;
+      protected readonly IBuildingBlockRepository _buildingBlockRepository;
       private IUsingFormula _editedObject;
       public Func<IObjectBase, bool> SelectionPredicate { get; set; }
       public event Action SelectionChangedEvent = delegate { };
@@ -199,7 +199,7 @@ namespace MoBi.Presentation.Presenter
       protected T GetSelected<T>() where T : class, IObjectBase
       {
          var dto = _view.SelectedDTO;
-         
+
          return dto == null ? null : _context.Get<T>(dto.Id);
       }
 
@@ -323,7 +323,7 @@ namespace MoBi.Presentation.Presenter
          }
          else
          {
-            //This is a local molecule container . We add local Molecules Properties defined in Molecule BB only if container is defined in a physical cotnainer
+            //This is a local molecule container . We add local Molecules Properties defined in Molecule BB only if container is defined in a physical container
             if (moleculePropertiesContainer.ParentContainer.Mode == ContainerMode.Physical)
             {
                parameterDTOs.AddRange(getAllMoleculeChildren<IParameter>(dummyMolecule)
@@ -387,7 +387,7 @@ namespace MoBi.Presentation.Presenter
 
          if (container.IsNamed(Constants.MOLECULE_PROPERTIES))
          {
-            //Improve a "generic" Moelcule Layer
+            //Improve a "generic" Molecule Layer
             var molecules = allMolecules
                .Distinct(new NameComparer<MoleculeBuilder>())
                .ToEnumerable<MoleculeBuilder, IObjectBase>();

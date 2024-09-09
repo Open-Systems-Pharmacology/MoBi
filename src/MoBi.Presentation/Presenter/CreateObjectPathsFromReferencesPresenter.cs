@@ -29,7 +29,8 @@ namespace MoBi.Presentation.Presenter
 
       private void enableDisableButtons() => _view.CanAdd(_selectReferencePresenter.CanClose);
 
-      public void Init(IEntity localReferencePoint, IReadOnlyList<IObjectBase> contextSpecificEntitiesToAddToReferenceTree, IUsingFormula editedObject) => _selectReferencePresenter.Init(localReferencePoint, contextSpecificEntitiesToAddToReferenceTree, editedObject);
+      public void Init(IEntity localReferencePoint, IReadOnlyList<IObjectBase> contextSpecificEntitiesToAddToReferenceTree, IUsingFormula editedObject) => 
+         _selectReferencePresenter.Init(localReferencePoint, contextSpecificEntitiesToAddToReferenceTree, editedObject);
 
       public IReadOnlyList<ObjectPath> GetAllSelections() => convertTextToObjectPaths(_view.AllPaths.Where(x => !string.IsNullOrWhiteSpace(x)).ToList());
 

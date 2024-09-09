@@ -8,11 +8,9 @@ using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
-using NHibernate.Util;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
-using OSPSuite.Serializer.Attributes;
 
 namespace MoBi.Presentation
 {
