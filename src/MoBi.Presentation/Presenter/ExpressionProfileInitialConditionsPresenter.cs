@@ -50,8 +50,6 @@ namespace MoBi.Presentation.Presenter
       {
          _buildingBlockMapper = buildingBlockMapper;
          HideDeleteColumn();
-         HideIsPresentView();
-         HideDeleteView();
          HideIsPresentColumn();
          HideValueOriginColumn();
          DisablePathColumns();
