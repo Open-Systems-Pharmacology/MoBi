@@ -11,7 +11,7 @@ namespace MoBi.Presentation.Presenter
    public class RefreshInitialConditionsPresenter : ApplyToSelectionPresenter, IRefreshInitialConditionsPresenter
    {
       public RefreshInitialConditionsPresenter(IApplyToSelectionButtonView view)
-         : base(view, SelectOption.RefreshSelected, AppConstants.Captions.RefreshSelected)
+         : base(view, SelectOption.RefreshSelected, AppConstants.Captions.RefreshValues)
       {
       }
 

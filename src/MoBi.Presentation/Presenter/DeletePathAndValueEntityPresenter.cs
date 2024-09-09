@@ -12,7 +12,7 @@ namespace MoBi.Presentation.Presenter
    public class DeletePathAndValueEntityPresenter : ApplyToSelectionPresenter, IDeletePathAndValueEntityPresenter
    {
       public DeletePathAndValueEntityPresenter(IApplyToSelectionButtonView view)
-         : base(view, SelectOption.DeleteSelected, AppConstants.Captions.DeleteSelected)
+         : base(view, SelectOption.DeleteSelected, AppConstants.Captions.DeleteValues)
       {
       }
 

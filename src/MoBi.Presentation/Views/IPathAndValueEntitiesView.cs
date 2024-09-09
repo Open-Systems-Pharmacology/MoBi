@@ -35,7 +35,8 @@ namespace MoBi.Presentation.Views
       void HideNegativeValuesAllowedView();
       void HideValueOriginColumn();
       void DisablePathColumns();
-
+      void HideNegativeValuesNotAllowedView();
+      void HideIsNotPresentView();
       void RefreshData();
       TStartValueDTO FocusedStartValue { get; set; }
       bool CanCreateNewFormula { set; }

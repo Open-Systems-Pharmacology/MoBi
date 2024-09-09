@@ -11,7 +11,7 @@ namespace MoBi.Presentation.Presenter
    public class MoleculeNegativeValuesNotAllowedSelectionPresenter : ApplyToSelectionPresenter, IMoleculeNegativeValuesNotAllowedSelectionPresenter
    {
       public MoleculeNegativeValuesNotAllowedSelectionPresenter(IApplyToSelectionButtonView view)
-         : base(view, SelectOption.SelectedNegativeValuesNotAllowed, AppConstants.Captions.SelectedNegativeValuesNotAllowed)
+         : base(view, SelectOption.SelectedNegativeValuesNotAllowed, AppConstants.Captions.MarkNegativeValuesNotAllowed)
       {
       }
 

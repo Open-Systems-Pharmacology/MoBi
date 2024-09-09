@@ -62,7 +62,6 @@ namespace MoBi.UI.Views
          _pathRepositoryItemComboBox.SelectedValueChanged += (o, e) => gridView.PostEditor();
          _repositoryItemPopupContainerEdit.PopupControl = _popupControl;
          _repositoryItemPopupContainerEdit.QueryDisplayText += (o, e) => OnEvent(queryText, e);
-
          gridView.HiddenEditor += (o, e) => hideEditor();
       }
 
@@ -113,11 +112,14 @@ namespace MoBi.UI.Views
 
       public abstract string NameColumnCaption { get; }
 
-      public void HideRefreshView() => layoutItemIsNotPresent.Visibility = LayoutVisibility.Never;
+      public void HideRefreshView() => layoutItemRefresh.Visibility = LayoutVisibility.Never;
+      
+      public void HideIsPresentView() => layoutItemIsPresent.Visibility = LayoutVisibility.Never;
 
-      public void HideIsPresentView() => layoutItemRefresh.Visibility = LayoutVisibility.Never;
+      public void HideNegativeValuesAllowedView() => layoutItemNegativeValuesAllowed.Visibility = LayoutVisibility.Never;
+      public void HideNegativeValuesNotAllowedView() => layoutItemNegativeValuesNotAllowed.Visibility = LayoutVisibility.Never;
+      public void HideIsNotPresentView() => layoutItemIsNotPresent.Visibility = LayoutVisibility.Never;
 
-      public void HideNegativeValuesAllowedView() => layoutItemIsPresent.Visibility = LayoutVisibility.Never;
 
       public IReadOnlyList<TPathAndValueEntity> SelectedStartValues
       {

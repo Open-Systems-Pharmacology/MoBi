@@ -1450,13 +1450,17 @@ namespace MoBi.Assets
          public static readonly string MoleculeName = "Molecule Name";
          public static readonly string ParameterName = "Parameter Name";
          public static readonly string AllPresent = "Mark all as present";
+         public static readonly string MarkAsPresent = "Mark as present";
+         public static readonly string MarkAsNotPresent = "Mark as not present";
          public static readonly string AllNotPresent = "Mark all as not present";
          public static readonly string SelectedNotPresent = "Mark selected as not present";
          public static readonly string SelectedPresent = "Mark selected as present";
          public static readonly string AllNegativeValuesAllowed = "Mark all as allowing neg. values";
          public static readonly string AllNegativeValuesNotAllowed = "Mark all as not allowing neg. values";
          public static readonly string SelectedNegativeValuesAllowed = "Mark selected as allowing neg. values";
+         public static readonly string MarkNegativeValuesAllowed = "Mark as allowing negative values";
          public static readonly string SelectedNegativeValuesNotAllowed = "Mark selected as not allowing neg. values";
+         public static readonly string MarkNegativeValuesNotAllowed = "Mark as not allowing negative values";
          public static readonly string Apply = "Apply";
          public static readonly string SimulationConfiguration = "Configuration";
          public static readonly string Search = "Search";

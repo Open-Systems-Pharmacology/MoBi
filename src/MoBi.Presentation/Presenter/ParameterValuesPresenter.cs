@@ -63,6 +63,8 @@ namespace MoBi.Presentation.Presenter
          view.HideIsPresentView();
          view.HideRefreshView();
          view.HideNegativeValuesAllowedView();
+         view.HideNegativeValuesNotAllowedView();
+         view.HideIsNotPresentView();
       }
 
       protected override string RemoveCommandDescription()

@@ -12,7 +12,7 @@ namespace MoBi.Presentation.Presenter
    public class MoleculeIsNotPresentSelectionPresenter : ApplyToSelectionPresenter, IMoleculeIsNotPresentSelectionPresenter
    {
       public MoleculeIsNotPresentSelectionPresenter(IApplyToSelectionButtonView view)
-         : base(view, SelectOption.SelectedNotPresent, AppConstants.Captions.SelectedNotPresent)
+         : base(view, SelectOption.SelectedNotPresent, AppConstants.Captions.MarkAsNotPresent)
       {
       }
 

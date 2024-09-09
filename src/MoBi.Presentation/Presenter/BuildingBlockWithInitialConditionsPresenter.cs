@@ -141,19 +141,16 @@ namespace MoBi.Presentation.Presenter
       private void performSetFlagValueAction(Action<IEnumerable<InitialCondition>, bool> selectionAction, SelectOption option)
       {
 
-         if (option.IsOneOf(SelectOption.SelectedNegativeValuesNotAllowed))
+         if (option.Equals(SelectOption.SelectedNegativeValuesNotAllowed))
             selectionAction(SelectedStartValues, false);
 
-         if (option.IsOneOf(SelectOption.SelectedNegativeValuesAllowed, SelectOption.AllNegativeValuesAllowed))
+         if (option.Equals(SelectOption.SelectedNegativeValuesAllowed))
             selectionAction(SelectedStartValues, true);
 
-         else if (option.IsOneOf(SelectOption.AllNotPresent, SelectOption.AllNegativeValuesNotAllowed))
-            selectionAction(VisibleStartValues, false);
-
-         else if (option.IsOneOf(SelectOption.SelectedPresent, SelectOption.SelectedNegativeValuesAllowed))
+         else if (option.Equals(SelectOption.SelectedPresent))
             selectionAction(SelectedStartValues, true);
 
-         else if (option.IsOneOf(SelectOption.SelectedNotPresent, SelectOption.SelectedNegativeValuesNotAllowed))
+         else if (option.Equals(SelectOption.SelectedNotPresent))
             selectionAction(SelectedStartValues, false);
       }
    }

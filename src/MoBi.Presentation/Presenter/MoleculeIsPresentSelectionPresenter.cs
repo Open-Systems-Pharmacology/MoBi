@@ -12,7 +12,7 @@ namespace MoBi.Presentation.Presenter
    public class MoleculeIsPresentSelectionPresenter : ApplyToSelectionPresenter, IMoleculeIsPresentSelectionPresenter
    {
       public MoleculeIsPresentSelectionPresenter(IApplyToSelectionButtonView view)
-         : base(view, SelectOption.SelectedPresent, AppConstants.Captions.SelectedPresent)
+         : base(view, SelectOption.SelectedPresent, AppConstants.Captions.MarkAsPresent)
       {
       }
 
