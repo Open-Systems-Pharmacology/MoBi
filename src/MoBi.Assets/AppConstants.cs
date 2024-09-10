@@ -221,7 +221,7 @@ namespace MoBi.Assets
          public static readonly string RenameCommand = Command.CommandTypeRename;
          public static readonly string SetToDefaultDefaultDescription = "Sets Values to Defaults defined in Molecules and Spatial Structure";
          public static readonly string SetToDefaultDefaultType = "Set To Default";
-         public static readonly string ExtendDescription = "Adding new values from Molecules and Spatial Structure";
+         public static readonly string ExtendDescription = "Adding new values";
          public static readonly string AddManyMoleculesDescription = "Add some Molecules to Reaction Diagram";
          public static readonly string MergeCommand = "Merge";
          public static readonly string AddParameterIdentificationResults = "Add parameter identification results to start values collection";
@@ -1133,6 +1133,7 @@ namespace MoBi.Assets
 
          public static string AddExistingAs(string objectTypeName, string targetTypeName) => $"Load {objectTypeName} as {targetTypeName}...";
          public static string AddExisting(string objectTypeName) => $"Load {objectTypeName}...";
+         public static string ExtendFrom(string objectTypeName) => $"Extend from {objectTypeName}...";
 
          public static string AddExistingFromTemplate(string objectTypeName) => $"Load {objectTypeName} from Template...";
 

@@ -173,7 +173,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return moBiMacroCommand;
       }
 
-      protected IMoBiCommand Extend(IReadOnlyList<TPathAndValueEntity> pathAndValueEntities, ILookupBuildingBlock<TPathAndValueEntity> buildingBlockToExtend, bool retainConflictingEntities = true)
+      public IMoBiCommand Extend(IReadOnlyList<TPathAndValueEntity> pathAndValueEntities, ILookupBuildingBlock<TPathAndValueEntity> buildingBlockToExtend, bool retainConflictingEntities = true)
       {
          var macro = CreateExtendMacroCommand(_interactionTaskContext.GetTypeFor(buildingBlockToExtend));
 

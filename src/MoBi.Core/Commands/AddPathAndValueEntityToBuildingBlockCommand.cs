@@ -12,7 +12,6 @@ namespace MoBi.Core.Commands
    {
       private T _pathAndValueEntity;
       private readonly ObjectPath _objectPath;
-      private byte[] _serializedPathAndValueEntity;
 
       public AddPathAndValueEntityToBuildingBlockCommand(ILookupBuildingBlock<T> buildingBlock, T pathAndValueEntity)
          : base(buildingBlock)
@@ -27,7 +26,7 @@ namespace MoBi.Core.Commands
       public override void RestoreExecutionData(IMoBiContext context)
       {
          base.RestoreExecutionData(context);
-         _pathAndValueEntity = context.Deserialize<T>(_serializedPathAndValueEntity);
+         _pathAndValueEntity = _buildingBlock.ByPath(_objectPath);
       }
 
       protected override void ClearReferences()
@@ -39,7 +38,6 @@ namespace MoBi.Core.Commands
       protected override void ExecuteWith(IMoBiContext context)
       {
          base.ExecuteWith(context);
-         _serializedPathAndValueEntity = context.Serialize(_pathAndValueEntity);
          _buildingBlock.Add(_pathAndValueEntity);
          if (_pathAndValueEntity.Formula != null)
             _buildingBlock.AddFormula(_pathAndValueEntity.Formula);
