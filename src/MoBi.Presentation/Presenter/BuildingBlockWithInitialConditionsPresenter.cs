@@ -58,37 +58,19 @@ namespace MoBi.Presentation.Presenter
          IDeletePathAndValueEntityPresenter deletePathAndValueEntityPresenter,
          IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper,
          IDimensionFactory dimensionFactory,
-         IRefreshInitialConditionsPresenter refreshInitialConditionsPresenter,
-         IMoleculeIsPresentSelectionPresenter isPresentSelectionPresenter,
-         IMoleculeNegativeValuesAllowedSelectionPresenter negativeStartValuesAllowedSelectionPresenter,
-         IDistributedPathAndValueEntityPresenter<InitialConditionDTO, TBuildingBlock> distributedParameterPresenter,
-         IMoleculeNegativeValuesNotAllowedSelectionPresenter negativeStartValuesNotAllowedSelectionPresenter,
-         IMoleculeIsNotPresentSelectionPresenter moleculeIsNotPresentSelectionPresenter) :
-         base(view, dtoMapper, initialConditionsTask, msvCreator, context, deletePathAndValueEntityPresenter, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
+         IDistributedPathAndValueEntityPresenter<InitialConditionDTO, TBuildingBlock> distributedParameterPresenter) :
+         base(view, dtoMapper, initialConditionsTask, msvCreator, context, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
       {
          _initialConditionsTask = initialConditionsTask;
-         refreshInitialConditionsPresenter.ApplySelectionAction = performRefreshAction;
-         _view.AddIsPresentSelectionView(isPresentSelectionPresenter.BaseView);
-         _view.AddNegativeValuesAllowedSelectionView(negativeStartValuesAllowedSelectionPresenter.BaseView);
-         _view.AddRefreshSelectionView(refreshInitialConditionsPresenter.BaseView);
-         _view.AddNegativeValuesNotAllowedSelectionView(negativeStartValuesNotAllowedSelectionPresenter.BaseView);
-         _view.AddIsNotPresentSelectionView(moleculeIsNotPresentSelectionPresenter.BaseView);
 
-         AddSubPresenters(refreshInitialConditionsPresenter);
-         isPresentSelectionPresenter.ApplySelectionAction = performIsPresentAction;
-         negativeStartValuesAllowedSelectionPresenter.ApplySelectionAction = performNegativeValuesAllowedAction;
-         negativeStartValuesNotAllowedSelectionPresenter.ApplySelectionAction = performNegativeValuesNotAllowedAction;
-         moleculeIsNotPresentSelectionPresenter.ApplySelectionAction = performIsNotPresentAction;
+         _view.RefreshAction += performRefreshAction;
+         _view.NegativeValuesNotAllowedAction += () => performNegativeValuesNotAllowedAction(SelectOption.SelectedNegativeValuesNotAllowed);
+         _view.NegativeValuesAllowedAction += () => performNegativeValuesNotAllowedAction(SelectOption.SelectedNegativeValuesAllowed);
+         _view.IsPresentAction += () => performIsPresentAction(SelectOption.SelectedPresent);
+         _view.IsNotPresentAction += () => performIsNotPresentAction(SelectOption.SelectedNotPresent);
       }
 
-      private void performRefreshAction(SelectOption option)
-      {
-         if (option == SelectOption.RefreshSelected)
-         {
-            refreshInitialConditions(SelectedStartValues);
-         }
-      }
-
+      private void performRefreshAction() => refreshInitialConditions(SelectedStartValues);
       private void refreshInitialConditions(IEnumerable<InitialCondition> initialConditions)
       {
          AddCommand(

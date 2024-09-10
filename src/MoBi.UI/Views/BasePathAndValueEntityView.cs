@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
@@ -9,12 +10,12 @@ using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid;
-using DevExpress.XtraLayout.Utils;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Formatters;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using MoBi.UI.Properties;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.DataBinding;
@@ -46,6 +47,12 @@ namespace MoBi.UI.Views
 
       private IGridViewColumn<TPathAndValueEntity> _deleteColumn;
       public bool CanCreateNewFormula { get; set; }
+      public event Action IsPresentAction;
+      public event Action IsNotPresentAction;
+      public event Action NegativeValuesAllowedAction;
+      public event Action NegativeValuesNotAllowedAction;
+      public event Action RefreshAction;
+      public event Action DeleteAction;
       private readonly PopupContainerControl _popupControl = new PopupContainerControl();
       private readonly RepositoryItemPopupContainerEdit _repositoryItemPopupContainerEdit = new RepositoryItemPopupContainerEdit();
       private IGridViewAutoBindColumn<TPathAndValueEntity, double?> _valueColumn;
@@ -63,6 +70,12 @@ namespace MoBi.UI.Views
          _repositoryItemPopupContainerEdit.PopupControl = _popupControl;
          _repositoryItemPopupContainerEdit.QueryDisplayText += (o, e) => OnEvent(queryText, e);
          gridView.HiddenEditor += (o, e) => hideEditor();
+
+         btnNotAllowNegativeValues.ImageOptions.SetImage(ApplicationIcons.Search);
+         btnRefresh.ImageOptions.SetImage(ApplicationIcons.Search);
+         btnDelete.ImageOptions.SetImage(ApplicationIcons.Search);
+          
+
       }
 
       private void hideEditor() => _unitControl.Hide();
@@ -112,14 +125,12 @@ namespace MoBi.UI.Views
 
       public abstract string NameColumnCaption { get; }
 
-      public void HideRefreshView() => layoutItemRefresh.Visibility = LayoutVisibility.Never;
-      
-      public void HideIsPresentView() => layoutItemIsPresent.Visibility = LayoutVisibility.Never;
-
-      public void HideNegativeValuesAllowedView() => layoutItemNegativeValuesAllowed.Visibility = LayoutVisibility.Never;
-      public void HideNegativeValuesNotAllowedView() => layoutItemNegativeValuesNotAllowed.Visibility = LayoutVisibility.Never;
-      public void HideIsNotPresentView() => layoutItemIsNotPresent.Visibility = LayoutVisibility.Never;
-
+      public void HideRefreshButton() => btnRefresh.Visibility = BarItemVisibility.Never;
+      public void HideIsPresentButton() => btnPresent.Visibility = BarItemVisibility.Never;
+      public void HideNegativeValuesAllowedButton() => btnAllowNegativeValues.Visibility = BarItemVisibility.Never;
+      public void HideNegativeValuesNotAllowedButton() => btnNotAllowNegativeValues.Visibility = BarItemVisibility.Never;
+      public void HideIsNotPresentButton() => btnNotPresent.Visibility = BarItemVisibility.Never;
+      public void HideDeleteButton() => btnDelete.Visibility = BarItemVisibility.Never;
 
       public IReadOnlyList<TPathAndValueEntity> SelectedStartValues
       {
@@ -128,23 +139,18 @@ namespace MoBi.UI.Views
 
       public IReadOnlyList<TPathAndValueEntity> VisibleStartValues => gridView.DataController.GetAllFilteredAndSortedRows().Cast<TPathAndValueEntity>().ToList();
 
-      public void AddDeleteStartValuesView(IView view) => panelDeleteStartValues.FillWith(view);
-
       public void DisablePathColumns()
       {
          _pathElementsColumns.Each(x => x.AsReadOnly());
          _colName.AsReadOnly();
       }
 
-      public void HideDeleteView() => layoutItemDelete.Visibility = LayoutVisibility.Never;
+      public void AddDeleteValuesPresenter(IApplyToSelectionPresenter presenter)
+      {
+         btnDelete.ItemClick += (s, e) => { presenter.PerformSelectionHandler(); };
+      }
 
       public void HideDeleteColumn() => _deleteColumn.AsHidden();
-
-      public void HideSubPresenterGrouping()
-      {
-         emptySpaceItem.Visibility = LayoutVisibility.Never;
-         layoutGroupPanel.GroupBordersVisible = false;
-      }
 
       public void RefreshData() => gridView.RefreshData();
 
@@ -305,5 +311,17 @@ namespace MoBi.UI.Views
 
          return repository;
       }
+
+      private void btnPresent_ItemClick(object sender, ItemClickEventArgs e) => IsPresentAction?.Invoke();
+
+      private void btnDelete_ItemClick(object sender, ItemClickEventArgs e) => DeleteAction?.Invoke();
+
+      private void btnNotPresent_ItemClick(object sender, ItemClickEventArgs e) => IsNotPresentAction?.Invoke();
+
+      private void btnAllowNegativeValues_ItemClick(object sender, ItemClickEventArgs e) => NegativeValuesAllowedAction?.Invoke();
+
+      private void btnNotAllowNegativeValues_ItemClick(object sender, ItemClickEventArgs e) => NegativeValuesNotAllowedAction?.Invoke();
+
+      private void btnRefresh_ItemClick(object sender, ItemClickEventArgs e) => RefreshAction?.Invoke();
    }
 }

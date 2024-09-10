@@ -31,11 +31,6 @@ namespace MoBi.Presentation.Presenter
       protected ApplyToSelectionPresenter(IApplyToSelectionButtonView view, SelectOption defaultSelection, string caption, ApplicationIcon icon = null) : base(view)
       {
          CurrentSelection = defaultSelection;
-         view.Caption = caption;
-         if (icon != null)
-            view.SetButonIcon(icon);
-
-         view.BindToSelection();
       }
 
       public void PerformSelectionHandler()

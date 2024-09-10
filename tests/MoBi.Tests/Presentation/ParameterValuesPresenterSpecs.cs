@@ -47,7 +47,6 @@ namespace MoBi.Presentation
             _parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper,
             A.Fake<IDimensionFactory>(),
             A.Fake<IViewItemContextMenuFactory>(),
-            _modalPresenter,
             _dialogCreator);
 
          sut.Edit(_parameterValuesBuildingBlock);

@@ -1,18 +1,15 @@
-﻿using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.UI.RepositoryItems;
-using OSPSuite.Assets;
-using OSPSuite.Utility.Extensions;
-using MoBi.Assets;
+﻿using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Formatters;
 using MoBi.Presentation.Presenter;
+using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Presentation.Views;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.UI.Binders;
-using OSPSuite.UI.Extensions;
-using MoBi.Presentation.Views;
+using OSPSuite.UI.RepositoryItems;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.UI.Views
 {
@@ -20,7 +17,7 @@ namespace MoBi.UI.Views
    {
       private readonly UxRepositoryItemCheckEdit _checkItemRepository;
       private IGridViewBoundColumn<InitialConditionDTO, bool> _isPresentColumn;
-      
+
       public InitialConditionsView(ValueOriginBinder<InitialConditionDTO> valueOriginBinder) : base(valueOriginBinder)
       {
          InitializeComponent();
@@ -62,11 +59,7 @@ namespace MoBi.UI.Views
       public override string NameColumnCaption => AppConstants.Captions.MoleculeName;
 
       public void HideIsPresentColumn() => _isPresentColumn.AsHidden().WithShowInColumnChooser(true);
-      
-      public void AddNegativeValuesNotAllowedSelectionView(IView view) => panelNegativeValuesNotAllowed.FillWith(view);
-      
-      public void AddIsNotPresentSelectionView(IView view)  => panelIsNotPresent.FillWith(view);
-      
+
       private void onSetIsPresent(InitialConditionDTO dto, bool isPresent) => InitialConditionPresenter.SetIsPresent(dto, isPresent);
 
       private void onSetNegativeValueAllowed(InitialConditionDTO dto, bool negativeValuesAllowed) => InitialConditionPresenter.SetNegativeValuesAllowed(dto, negativeValuesAllowed);
@@ -82,14 +75,6 @@ namespace MoBi.UI.Views
 
       public IBuildingBlockWithInitialConditionsPresenter InitialConditionPresenter => _presenter.DowncastTo<IBuildingBlockWithInitialConditionsPresenter>();
 
-      public void AddRefreshSelectionView(IView view) => panelRefresh.FillWith(view);
-
-      public void AddIsPresentSelectionView(IView view) => panelIsPresent.FillWith(view);
-
-      public void AddNegativeValuesAllowedSelectionView(IView view) => panelNegativeValuesAllowed.FillWith(view);
-
       public void AttachPresenter(IBuildingBlockWithInitialConditionsPresenter presenter) => _presenter = presenter;
-
-      public override ApplicationIcon ApplicationIcon => ApplicationIcons.InitialConditions;
    }
 }

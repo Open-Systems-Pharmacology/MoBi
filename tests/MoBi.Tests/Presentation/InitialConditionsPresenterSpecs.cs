@@ -60,9 +60,8 @@ namespace MoBi.Presentation
          _moleculeIsNotPresentSelectionPresenter = A.Fake<IMoleculeIsNotPresentSelectionPresenter>();
 
       sut = new InitialConditionsPresenter(
-            _view, _mapper, _isPresentSelectionPresenter, _refreshInitialConditionsPresenter, _negativeStartValuesAllowedSelectionPresenter, _initialConditionTask,
-            _initialConditionsCreator, _context, _deletePathAndValueEntityPresenter, _formulaToValueFormulaDTOMapper, _dimensionFactory, _distributedParameterPresenter, _buildingBlockMapper,
-            _negativeStartValuesNotAllowedSelectionPresenter, _moleculeIsNotPresentSelectionPresenter);
+            _view, _mapper, _initialConditionTask,
+            _initialConditionsCreator, _context, _deletePathAndValueEntityPresenter, _formulaToValueFormulaDTOMapper, _dimensionFactory, _distributedParameterPresenter, _buildingBlockMapper);
          _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock();
 
          sut.InitializeWith(_commandCollector);

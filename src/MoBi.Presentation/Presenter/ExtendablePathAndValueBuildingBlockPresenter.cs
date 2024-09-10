@@ -50,7 +50,6 @@ namespace MoBi.Presentation.Presenter
          IInteractionTasksForExtendablePathAndValueEntity<TBuildingBlock, TPathAndValueEntity> interactionTasksForExtendablePathAndValueEntity,
          IEmptyStartValueCreator<TPathAndValueEntity> emptyStartValueCreator,
          IMoBiContext context,
-         IDeletePathAndValueEntityPresenter deletePathAndValueEntityPresenter,
          IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper,
          IDimensionFactory dimensionFactory,
          IDistributedPathAndValueEntityPresenter<TStartValueDTO, TBuildingBlock> distributedPathAndValuePresenter)
@@ -64,11 +63,7 @@ namespace MoBi.Presentation.Presenter
          _context = context;
          _originalStartValues = new List<TPathAndValueEntity>();
 
-         deletePathAndValueEntityPresenter.ApplySelectionAction = performDeleteAction;
-
-         _view.AddDeleteStartValuesView(deletePathAndValueEntityPresenter.BaseView);
-
-         AddSubPresenters(deletePathAndValueEntityPresenter);
+         _view.DeleteAction +=deleteSelected;
          _handleChangedEvents = true;
          CanCreateNewFormula = true;
       }
@@ -101,12 +96,6 @@ namespace MoBi.Presentation.Presenter
       protected IEnumerable<TPathAndValueEntity> StartValuesFrom(IEnumerable<TStartValueDTO> selectedStartValueDTOs)
       {
          return selectedStartValueDTOs.Select(x => x.PathWithValueObject);
-      }
-
-      private void performDeleteAction(SelectOption selectOption)
-      {
-         if (selectOption == SelectOption.DeleteSelected)
-            deleteSelected();
       }
 
       private void deleteSelected()
@@ -235,7 +224,7 @@ namespace MoBi.Presentation.Presenter
 
       public void HideDeleteView()
       {
-         _view.HideDeleteView();
+         _view.HideDeleteButton();
       }
 
       public void HideDeleteColumn()
@@ -245,12 +234,12 @@ namespace MoBi.Presentation.Presenter
 
       public void HideIsPresentView()
       {
-         _view.HideIsPresentView();
+         _view.HideIsPresentButton();
       }
 
-      public void HideNegativeValuesAllowedView()
+      public void HideIsNotPresentView()
       {
-         _view.HideNegativeValuesAllowedView();
+         _view.HideIsNotPresentButton();
       }
 
       public void Handle(BulkUpdateFinishedEvent eventToHandle)

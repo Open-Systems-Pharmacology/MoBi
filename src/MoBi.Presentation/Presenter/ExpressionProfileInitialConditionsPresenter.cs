@@ -29,10 +29,7 @@ namespace MoBi.Presentation.Presenter
          IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper,
          IDimensionFactory dimensionFactory,
          IInitialConditionsDistributedInExpressionProfilePresenter distributedParameterPresenter,
-         IExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper buildingBlockMapper, 
-         IRefreshInitialConditionsPresenter refreshInitialConditionsPresenter,
-         IMoleculeNegativeValuesNotAllowedSelectionPresenter negativeStartValuesNotAllowedSelectionPresenter,
-         IMoleculeIsNotPresentSelectionPresenter moleculeIsNotPresentSelectionPresenter) : 
+         IExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper buildingBlockMapper) : 
          base(view, 
             dtoMapper, 
             initialConditionsTask, 
@@ -41,14 +38,12 @@ namespace MoBi.Presentation.Presenter
             deletePathAndValueEntityPresenter, 
             formulaToValueFormulaDTOMapper, 
             dimensionFactory, 
-            refreshInitialConditionsPresenter,
-            isPresentSelectionPresenter, 
-            negativeStartValuesAllowedSelectionPresenter, 
-            distributedParameterPresenter,
-            negativeStartValuesNotAllowedSelectionPresenter,
-            moleculeIsNotPresentSelectionPresenter)
+            distributedParameterPresenter)
       {
          _buildingBlockMapper = buildingBlockMapper;
+         HideIsPresentView();
+         HideIsNotPresentView();
+         HideDeleteView();
          HideDeleteColumn();
          HideIsPresentColumn();
          HideValueOriginColumn();

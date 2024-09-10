@@ -52,19 +52,18 @@ namespace MoBi.Presentation.Presenter
          IParameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper,
          IDimensionFactory dimensionFactory,
          IViewItemContextMenuFactory viewItemContextMenuFactory,
-         IModalPresenter modalPresenter,
-         IDialogCreator dialogCreator) : base(view, valueMapper, parameterValuesTask, parameterValuesCreator, context, deletePathAndValueEntityPresenter, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
+         IDialogCreator dialogCreator) : base(view, valueMapper, parameterValuesTask, parameterValuesCreator, context, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
       {
          _parameterValuesTask = parameterValuesTask;
          _displayUnitRetriever = displayUnitRetriever;
          _parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper = parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper;
          _viewItemContextMenuFactory = viewItemContextMenuFactory;
          _dialogCreator = dialogCreator;
-         view.HideIsPresentView();
-         view.HideRefreshView();
-         view.HideNegativeValuesAllowedView();
-         view.HideNegativeValuesNotAllowedView();
-         view.HideIsNotPresentView();
+         view.HideIsPresentButton();
+         view.HideRefreshButton();
+         view.HideNegativeValuesAllowedButton();
+         view.HideNegativeValuesNotAllowedButton();
+         view.HideIsNotPresentButton();
       }
 
       protected override string RemoveCommandDescription()
