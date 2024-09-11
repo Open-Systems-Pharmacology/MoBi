@@ -74,10 +74,6 @@ namespace MoBi.UI.Views
          ribbonControl1.ShowQatLocationSelector = false;
          ribbonControl1.Minimized = true;
 
-         btnNotAllowNegativeValues.ImageOptions. SetImage(ApplicationIcons.Close, IconSizes.Size16x16);
-         btnAllowNegativeValues.ImageOptions.SetImage(ApplicationIcons.Close);
-         btnPresent.ImageOptions.SetImage(ApplicationIcons.Close);
-         btnNotPresent.ImageOptions.SetImage(ApplicationIcons.Close);
          btnRefresh.ImageOptions.SetImage(ApplicationIcons.Refresh);
          btnDelete.ImageOptions.SetImage(ApplicationIcons.Delete);
       }

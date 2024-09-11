@@ -199,6 +199,7 @@ namespace MoBi.UI.Views
          // 
          // ribbonGroupNegativeValues
          // 
+         this.ribbonGroupNegativeValues.AllowTextClipping = false;
          this.ribbonGroupNegativeValues.ItemLinks.Add(this.btnAllowNegativeValues);
          this.ribbonGroupNegativeValues.ItemLinks.Add(this.btnNotAllowNegativeValues);
          this.ribbonGroupNegativeValues.Name = "ribbonGroupNegativeValues";
@@ -206,20 +207,16 @@ namespace MoBi.UI.Views
          // 
          // btnAllowNegativeValues
          // 
-         this.btnAllowNegativeValues.Caption = "Allow Negative Values";
+         this.btnAllowNegativeValues.Caption = "Allow";
          this.btnAllowNegativeValues.Id = 5;
          this.btnAllowNegativeValues.Name = "btnAllowNegativeValues";
-         this.btnAllowNegativeValues.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
-            | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
          this.btnAllowNegativeValues.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnAllowNegativeValues_ItemClick);
          // 
          // btnNotAllowNegativeValues
          // 
-         this.btnNotAllowNegativeValues.Caption = "Not Allow Negative Values";
+         this.btnNotAllowNegativeValues.Caption = "Dissallow";
          this.btnNotAllowNegativeValues.Id = 6;
          this.btnNotAllowNegativeValues.Name = "btnNotAllowNegativeValues";
-         this.btnNotAllowNegativeValues.RibbonStyle = ((DevExpress.XtraBars.Ribbon.RibbonItemStyles)(((DevExpress.XtraBars.Ribbon.RibbonItemStyles.Large | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithText) 
-            | DevExpress.XtraBars.Ribbon.RibbonItemStyles.SmallWithoutText)));
          this.btnNotAllowNegativeValues.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnNotAllowNegativeValues_ItemClick);
          // 
          // layoutControlGroup1
