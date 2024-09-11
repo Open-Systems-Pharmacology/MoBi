@@ -153,15 +153,15 @@ namespace MoBi.Presentation.Presenter
             if (string.Equals(objectBaseDTO.Id, AppConstants.Time))
                return timeReference();
 
-            var objectBase = _context.Get<IObjectBase>(objectBaseDTO.Id);
-            if (objectBase != null)
-               return createPathsFromEntity(objectBase);
-
             if (objectBaseDTO.IsAnImplementationOf<DummyParameterDTO>())
                return createPathFromParameterDummy(objectBaseDTO);
 
             if (objectBaseDTO.IsAnImplementationOf<DummyMoleculeContainerDTO>())
                return _objectPathCreator.CreateMoleculePath((DummyMoleculeContainerDTO)objectBaseDTO, shouldCreateAbsolutePath, _refObject);
+
+            var objectBase = _context.Get<IObjectBase>(objectBaseDTO.Id);
+            if (objectBase != null)
+               return createPathsFromEntity(objectBase);
 
             return null;
          }
