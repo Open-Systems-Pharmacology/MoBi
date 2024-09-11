@@ -160,10 +160,8 @@ namespace MoBi.Presentation.Presenter
                return _objectPathCreator.CreateMoleculePath((DummyMoleculeContainerDTO)objectBaseDTO, shouldCreateAbsolutePath, _refObject);
 
             var objectBase = _context.Get<IObjectBase>(objectBaseDTO.Id);
-            if (objectBase != null)
-               return createPathsFromEntity(objectBase);
 
-            return null;
+            return objectBase != null ? createPathsFromEntity(objectBase) : null;
          }
          catch (InvalidCastException)
          {
