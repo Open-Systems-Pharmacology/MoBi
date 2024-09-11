@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using DevExpress.Text.Interop;
-using System.Windows.Media.Media3D;
 using DevExpress.XtraBars;
+using DevExpress.XtraBars.Ribbon;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
@@ -17,7 +16,6 @@ using MoBi.Presentation.DTO;
 using MoBi.Presentation.Formatters;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
-using MoBi.UI.Properties;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.DataBinding;
@@ -72,18 +70,16 @@ namespace MoBi.UI.Views
          _repositoryItemPopupContainerEdit.PopupControl = _popupControl;
          _repositoryItemPopupContainerEdit.QueryDisplayText += (o, e) => OnEvent(queryText, e);
          gridView.HiddenEditor += (o, e) => hideEditor();
-         ribbonControl1.ShowPageHeadersMode = DevExpress.XtraBars.Ribbon.ShowPageHeadersMode.Hide;
+         ribbonControl1.ShowPageHeadersMode = ShowPageHeadersMode.Hide;
          ribbonControl1.ShowQatLocationSelector = false;
          ribbonControl1.Minimized = true;
 
-         btnNotAllowNegativeValues.ImageOptions.SetImage(ApplicationIcons.Close);
+         btnNotAllowNegativeValues.ImageOptions. SetImage(ApplicationIcons.Close, IconSizes.Size16x16);
          btnAllowNegativeValues.ImageOptions.SetImage(ApplicationIcons.Close);
          btnPresent.ImageOptions.SetImage(ApplicationIcons.Close);
          btnNotPresent.ImageOptions.SetImage(ApplicationIcons.Close);
          btnRefresh.ImageOptions.SetImage(ApplicationIcons.Refresh);
          btnDelete.ImageOptions.SetImage(ApplicationIcons.Delete);
-          
-
       }
 
       private void hideEditor() => _unitControl.Hide();

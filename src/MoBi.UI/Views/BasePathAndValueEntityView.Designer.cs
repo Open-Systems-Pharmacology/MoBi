@@ -43,33 +43,35 @@ namespace MoBi.UI.Views
          this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
          this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
          this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
-         this.uxGridView1 = new OSPSuite.UI.Controls.UxGridView();
          this.gridView = new OSPSuite.UI.Controls.UxGridView();
+         this.uxGridView1 = new OSPSuite.UI.Controls.UxGridView();
          this.ribbonPage1 = new DevExpress.XtraBars.Ribbon.RibbonPage();
-         this.ribbonGroupNegativeValues = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
-         this.ribbonGroupPresence = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
          this.ribbonGroupEdit = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
          this.btnDelete = new DevExpress.XtraBars.BarButtonItem();
          this.btnRefresh = new DevExpress.XtraBars.BarButtonItem();
+         this.ribbonGroupPresence = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
          this.btnPresent = new DevExpress.XtraBars.BarButtonItem();
          this.btnNotPresent = new DevExpress.XtraBars.BarButtonItem();
+         this.ribbonGroupNegativeValues = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
          this.btnAllowNegativeValues = new DevExpress.XtraBars.BarButtonItem();
          this.btnNotAllowNegativeValues = new DevExpress.XtraBars.BarButtonItem();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
+         this.layoutControlGroup2 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.lc1 = new DevExpress.XtraLayout.LayoutControlItem();
+         this.ribbonControl1 = new DevExpress.XtraBars.Ribbon.RibbonControl();
          this.layoutItemGridView = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
-         this.ribbonControl1 = new DevExpress.XtraBars.Ribbon.RibbonControl();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridControl)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.uxGridView1)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridView)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.uxGridView1)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup2)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.lc1)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.ribbonControl1)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemGridView)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
          this.layoutControl.SuspendLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.ribbonControl1)).BeginInit();
          this.SuspendLayout();
          // 
          // barDockControlTop
@@ -108,14 +110,28 @@ namespace MoBi.UI.Views
          // 
          this.gridControl.Cursor = System.Windows.Forms.Cursors.Default;
          this.gridControl.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(5);
-         this.gridControl.Location = new System.Drawing.Point(2, 142);
+         this.gridControl.Location = new System.Drawing.Point(2, 129);
          this.gridControl.MainView = this.gridView;
          this.gridControl.Margin = new System.Windows.Forms.Padding(4);
          this.gridControl.Name = "gridControl";
-         this.gridControl.Size = new System.Drawing.Size(1894, 543);
+         this.gridControl.Size = new System.Drawing.Size(1894, 556);
          this.gridControl.TabIndex = 0;
          this.gridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.gridView});
+            this.gridView,
+            this.uxGridView1});
+         // 
+         // gridView
+         // 
+         this.gridView.AllowsFiltering = true;
+         this.gridView.EnableColumnContextMenu = true;
+         this.gridView.GridControl = this.gridControl;
+         this.gridView.MultiSelect = true;
+         this.gridView.Name = "gridView";
+         this.gridView.OptionsBehavior.EditorShowMode = DevExpress.Utils.EditorShowMode.MouseDown;
+         this.gridView.OptionsNavigation.AutoFocusNewRow = true;
+         this.gridView.OptionsSelection.EnableAppearanceFocusedCell = false;
+         this.gridView.OptionsSelection.EnableAppearanceFocusedRow = false;
+         this.gridView.OptionsSelection.MultiSelect = true;
          // 
          // uxGridView1
          // 
@@ -131,19 +147,6 @@ namespace MoBi.UI.Views
          this.uxGridView1.OptionsSelection.MultiSelect = true;
          this.uxGridView1.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CellSelect;
          // 
-         // gridView
-         // 
-         this.gridView.AllowsFiltering = true;
-         this.gridView.EnableColumnContextMenu = true;
-         this.gridView.GridControl = this.gridControl;
-         this.gridView.MultiSelect = true;
-         this.gridView.Name = "gridView";
-         this.gridView.OptionsBehavior.EditorShowMode = DevExpress.Utils.EditorShowMode.MouseDown;
-         this.gridView.OptionsNavigation.AutoFocusNewRow = true;
-         this.gridView.OptionsSelection.EnableAppearanceFocusedCell = false;
-         this.gridView.OptionsSelection.EnableAppearanceFocusedRow = false;
-         this.gridView.OptionsSelection.MultiSelect = true;
-         // 
          // ribbonPage1
          // 
          this.ribbonPage1.Groups.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPageGroup[] {
@@ -151,20 +154,6 @@ namespace MoBi.UI.Views
             this.ribbonGroupPresence,
             this.ribbonGroupNegativeValues});
          this.ribbonPage1.Name = "ribbonPage1";
-         // 
-         // ribbonGroupNegativeValues
-         // 
-         this.ribbonGroupNegativeValues.ItemLinks.Add(this.btnAllowNegativeValues);
-         this.ribbonGroupNegativeValues.ItemLinks.Add(this.btnNotAllowNegativeValues);
-         this.ribbonGroupNegativeValues.Name = "ribbonGroupNegativeValues";
-         this.ribbonGroupNegativeValues.Text = "Negative Values";
-         // 
-         // ribbonGroupPresence
-         // 
-         this.ribbonGroupPresence.ItemLinks.Add(this.btnPresent);
-         this.ribbonGroupPresence.ItemLinks.Add(this.btnNotPresent);
-         this.ribbonGroupPresence.Name = "ribbonGroupPresence";
-         this.ribbonGroupPresence.Text = "Presence";
          // 
          // ribbonGroupEdit
          // 
@@ -187,6 +176,13 @@ namespace MoBi.UI.Views
          this.btnRefresh.Name = "btnRefresh";
          this.btnRefresh.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnRefresh_ItemClick);
          // 
+         // ribbonGroupPresence
+         // 
+         this.ribbonGroupPresence.ItemLinks.Add(this.btnPresent);
+         this.ribbonGroupPresence.ItemLinks.Add(this.btnNotPresent);
+         this.ribbonGroupPresence.Name = "ribbonGroupPresence";
+         this.ribbonGroupPresence.Text = "Presence";
+         // 
          // btnPresent
          // 
          this.btnPresent.Caption = "Mark as Present";
@@ -200,6 +196,13 @@ namespace MoBi.UI.Views
          this.btnNotPresent.Id = 4;
          this.btnNotPresent.Name = "btnNotPresent";
          this.btnNotPresent.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnNotPresent_ItemClick);
+         // 
+         // ribbonGroupNegativeValues
+         // 
+         this.ribbonGroupNegativeValues.ItemLinks.Add(this.btnAllowNegativeValues);
+         this.ribbonGroupNegativeValues.ItemLinks.Add(this.btnNotAllowNegativeValues);
+         this.ribbonGroupNegativeValues.Name = "ribbonGroupNegativeValues";
+         this.ribbonGroupNegativeValues.Text = "Negative Values";
          // 
          // btnAllowNegativeValues
          // 
@@ -225,49 +228,34 @@ namespace MoBi.UI.Views
          this.layoutControlGroup1.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
          this.layoutControlGroup1.GroupBordersVisible = false;
          this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutItemGridView,
-            this.lc1});
+            this.layoutControlGroup2,
+            this.layoutItemGridView});
          this.layoutControlGroup1.Name = "Root";
          this.layoutControlGroup1.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
          this.layoutControlGroup1.Size = new System.Drawing.Size(1898, 687);
          this.layoutControlGroup1.TextVisible = false;
+         // 
+         // layoutControlGroup2
+         // 
+         this.layoutControlGroup2.CustomizationFormText = "MenuRoot";
+         this.layoutControlGroup2.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
+         this.layoutControlGroup2.GroupBordersVisible = false;
+         this.layoutControlGroup2.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.lc1});
+         this.layoutControlGroup2.Location = new System.Drawing.Point(0, 0);
+         this.layoutControlGroup2.Name = "MenuRoot";
+         this.layoutControlGroup2.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
+         this.layoutControlGroup2.Size = new System.Drawing.Size(1898, 127);
+         this.layoutControlGroup2.TextVisible = false;
          // 
          // lc1
          // 
          this.lc1.Control = this.ribbonControl1;
          this.lc1.Location = new System.Drawing.Point(0, 0);
          this.lc1.Name = "lc1";
-         this.lc1.Size = new System.Drawing.Size(1898, 140);
+         this.lc1.Size = new System.Drawing.Size(1894, 123);
          this.lc1.TextSize = new System.Drawing.Size(0, 0);
          this.lc1.TextVisible = false;
-         // 
-         // layoutItemGridView
-         // 
-         this.layoutItemGridView.ContentHorzAlignment = DevExpress.Utils.HorzAlignment.Near;
-         this.layoutItemGridView.ContentVertAlignment = DevExpress.Utils.VertAlignment.Top;
-         this.layoutItemGridView.Control = this.gridControl;
-         this.layoutItemGridView.CustomizationFormText = "layoutItemGridView";
-         this.layoutItemGridView.Location = new System.Drawing.Point(0, 140);
-         this.layoutItemGridView.Name = "layoutItemGridView";
-         this.layoutItemGridView.Size = new System.Drawing.Size(1898, 547);
-         this.layoutItemGridView.SizeConstraintsType = DevExpress.XtraLayout.SizeConstraintsType.SupportHorzAlignment;
-         this.layoutItemGridView.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutItemGridView.TextVisible = false;
-         // 
-         // layoutControl
-         // 
-         this.layoutControl.AllowCustomization = false;
-         this.layoutControl.Controls.Add(this.gridControl);
-         this.layoutControl.Controls.Add(this.ribbonControl1);
-         this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.layoutControl.Location = new System.Drawing.Point(0, 0);
-         this.layoutControl.Margin = new System.Windows.Forms.Padding(4);
-         this.layoutControl.Name = "layoutControl";
-         this.layoutControl.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(379, -1065, 1628, 744);
-         this.layoutControl.Root = this.layoutControlGroup1;
-         this.layoutControl.Size = new System.Drawing.Size(1898, 687);
-         this.layoutControl.TabIndex = 1;
-         this.layoutControl.Text = "layoutControl1";
          // 
          // ribbonControl1
          // 
@@ -287,7 +275,7 @@ namespace MoBi.UI.Views
             this.btnNotPresent,
             this.btnAllowNegativeValues,
             this.btnNotAllowNegativeValues});
-         this.ribbonControl1.Location = new System.Drawing.Point(2, 2);
+         this.ribbonControl1.Location = new System.Drawing.Point(4, 4);
          this.ribbonControl1.MaxItemId = 8;
          this.ribbonControl1.Name = "ribbonControl1";
          this.ribbonControl1.Pages.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPage[] {
@@ -297,11 +285,41 @@ namespace MoBi.UI.Views
          this.ribbonControl1.ShowDisplayOptionsMenuButton = DevExpress.Utils.DefaultBoolean.False;
          this.ribbonControl1.ShowExpandCollapseButton = DevExpress.Utils.DefaultBoolean.False;
          this.ribbonControl1.ShowItemCaptionsInCaptionBar = true;
+         this.ribbonControl1.ShowPageHeadersInFormCaption = DevExpress.Utils.DefaultBoolean.False;
+         this.ribbonControl1.ShowPageHeadersMode = DevExpress.XtraBars.Ribbon.ShowPageHeadersMode.Hide;
          this.ribbonControl1.ShowQatLocationSelector = false;
          this.ribbonControl1.ShowToolbarCustomizeItem = false;
-         this.ribbonControl1.Size = new System.Drawing.Size(1894, 153);
+         this.ribbonControl1.Size = new System.Drawing.Size(1890, 122);
          this.ribbonControl1.Toolbar.ShowCustomizeItem = false;
          this.ribbonControl1.ToolbarLocation = DevExpress.XtraBars.Ribbon.RibbonQuickAccessToolbarLocation.Hidden;
+         // 
+         // layoutItemGridView
+         // 
+         this.layoutItemGridView.ContentHorzAlignment = DevExpress.Utils.HorzAlignment.Near;
+         this.layoutItemGridView.ContentVertAlignment = DevExpress.Utils.VertAlignment.Top;
+         this.layoutItemGridView.Control = this.gridControl;
+         this.layoutItemGridView.CustomizationFormText = "layoutItemGridView";
+         this.layoutItemGridView.Location = new System.Drawing.Point(0, 127);
+         this.layoutItemGridView.Name = "layoutItemGridView";
+         this.layoutItemGridView.Size = new System.Drawing.Size(1898, 560);
+         this.layoutItemGridView.SizeConstraintsType = DevExpress.XtraLayout.SizeConstraintsType.SupportHorzAlignment;
+         this.layoutItemGridView.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutItemGridView.TextVisible = false;
+         // 
+         // layoutControl
+         // 
+         this.layoutControl.AllowCustomization = false;
+         this.layoutControl.Controls.Add(this.gridControl);
+         this.layoutControl.Controls.Add(this.ribbonControl1);
+         this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.layoutControl.Location = new System.Drawing.Point(0, 0);
+         this.layoutControl.Margin = new System.Windows.Forms.Padding(4);
+         this.layoutControl.Name = "layoutControl";
+         this.layoutControl.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(379, -1065, 1628, 744);
+         this.layoutControl.Root = this.layoutControlGroup1;
+         this.layoutControl.Size = new System.Drawing.Size(1898, 687);
+         this.layoutControl.TabIndex = 1;
+         this.layoutControl.Text = "layoutControl1";
          // 
          // BasePathAndValueEntityView
          // 
@@ -317,15 +335,16 @@ namespace MoBi.UI.Views
          this.Size = new System.Drawing.Size(1898, 687);
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridControl)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.uxGridView1)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridView)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.uxGridView1)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup2)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.lc1)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.ribbonControl1)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemGridView)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
          this.layoutControl.ResumeLayout(false);
          this.layoutControl.PerformLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.ribbonControl1)).EndInit();
          this.ResumeLayout(false);
          this.PerformLayout();
 
@@ -351,6 +370,7 @@ namespace MoBi.UI.Views
       private DevExpress.XtraBars.BarButtonItem btnAllowNegativeValues;
       private DevExpress.XtraBars.BarButtonItem btnNotAllowNegativeValues;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
+      private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup2;
       protected DevExpress.XtraLayout.LayoutControlItem layoutItemGridView;
       private DevExpress.XtraLayout.LayoutControlItem lc1;
       private DevExpress.XtraBars.Ribbon.RibbonControl ribbonControl1;
