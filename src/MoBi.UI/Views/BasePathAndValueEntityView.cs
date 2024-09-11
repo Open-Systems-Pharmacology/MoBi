@@ -74,7 +74,6 @@ namespace MoBi.UI.Views
          gridView.HiddenEditor += (o, e) => hideEditor();
          ribbonControl1.ShowPageHeadersMode = DevExpress.XtraBars.Ribbon.ShowPageHeadersMode.Hide;
          ribbonControl1.ShowQatLocationSelector = false;
-
          ribbonControl1.Minimized = true;
 
          btnNotAllowNegativeValues.ImageOptions.SetImage(ApplicationIcons.Close);
