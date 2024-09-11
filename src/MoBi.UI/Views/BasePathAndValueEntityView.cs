@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using DevExpress.Text.Interop;
+using System.Windows.Media.Media3D;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
@@ -70,10 +72,17 @@ namespace MoBi.UI.Views
          _repositoryItemPopupContainerEdit.PopupControl = _popupControl;
          _repositoryItemPopupContainerEdit.QueryDisplayText += (o, e) => OnEvent(queryText, e);
          gridView.HiddenEditor += (o, e) => hideEditor();
+         ribbonControl1.ShowPageHeadersMode = DevExpress.XtraBars.Ribbon.ShowPageHeadersMode.Hide;
+         ribbonControl1.ShowQatLocationSelector = false;
 
-         btnNotAllowNegativeValues.ImageOptions.SetImage(ApplicationIcons.Search);
-         btnRefresh.ImageOptions.SetImage(ApplicationIcons.Search);
-         btnDelete.ImageOptions.SetImage(ApplicationIcons.Search);
+         ribbonControl1.Minimized = true;
+
+         btnNotAllowNegativeValues.ImageOptions.SetImage(ApplicationIcons.Close);
+         btnAllowNegativeValues.ImageOptions.SetImage(ApplicationIcons.Close);
+         btnPresent.ImageOptions.SetImage(ApplicationIcons.Close);
+         btnNotPresent.ImageOptions.SetImage(ApplicationIcons.Close);
+         btnRefresh.ImageOptions.SetImage(ApplicationIcons.Refresh);
+         btnDelete.ImageOptions.SetImage(ApplicationIcons.Delete);
           
 
       }
@@ -129,8 +138,11 @@ namespace MoBi.UI.Views
       public void HideIsPresentButton() => btnPresent.Visibility = BarItemVisibility.Never;
       public void HideNegativeValuesAllowedButton() => btnAllowNegativeValues.Visibility = BarItemVisibility.Never;
       public void HideNegativeValuesNotAllowedButton() => btnNotAllowNegativeValues.Visibility = BarItemVisibility.Never;
-      public void HideIsNotPresentButton() => btnNotPresent.Visibility = BarItemVisibility.Never;
+      public void HideIsNotPresentButton() => ribbonGroupPresence.Visible = false;
       public void HideDeleteButton() => btnDelete.Visibility = BarItemVisibility.Never;
+      public void HideNegativeValuesRibbon() => ribbonGroupNegativeValues.Visible = false;
+      public void HidePresenceRibbon() => ribbonGroupPresence.Visible = false;
+      public void HideEditRibbon() => ribbonGroupEdit.Visible = false;
 
       public IReadOnlyList<TPathAndValueEntity> SelectedStartValues
       {

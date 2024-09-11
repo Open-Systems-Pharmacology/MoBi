@@ -59,11 +59,9 @@ namespace MoBi.Presentation.Presenter
          _parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper = parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper;
          _viewItemContextMenuFactory = viewItemContextMenuFactory;
          _dialogCreator = dialogCreator;
-         view.HideIsPresentButton();
          view.HideRefreshButton();
-         view.HideNegativeValuesAllowedButton();
-         view.HideNegativeValuesNotAllowedButton();
-         view.HideIsNotPresentButton();
+         view.HidePresenceRibbon();
+         view.HideNegativeValuesRibbon();
       }
 
       protected override string RemoveCommandDescription()
