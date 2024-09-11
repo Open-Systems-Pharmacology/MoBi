@@ -9,11 +9,13 @@ using OSPSuite.Core.Domain.UnitSystem;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public interface IInteractionTasksForExtendablePathAndValueEntity<TBuildingBlock, in TPathAndValueEntity> : IInteractionTasksForBuildingBlock<Module, TBuildingBlock>, IInteractionTasksForPathAndValueEntity<TBuildingBlock, TPathAndValueEntity>
+   public interface IInteractionTasksForExtendablePathAndValueEntity<TBuildingBlock, TPathAndValueEntity> : IInteractionTasksForBuildingBlock<Module, TBuildingBlock>, IInteractionTasksForPathAndValueEntity<TBuildingBlock, TPathAndValueEntity>
       where TBuildingBlock : class, IBuildingBlock<TPathAndValueEntity>
       where TPathAndValueEntity : PathAndValueEntity
    {
       void ExtendPathAndValueEntityBuildingBlock(TBuildingBlock buildingBlock);
+
+      IMoBiCommand Extend(IReadOnlyList<TPathAndValueEntity> pathAndValueEntities, ILookupBuildingBlock<TPathAndValueEntity> buildingBlockToExtend, bool retainConflictingEntities = true);
 
       /// <summary>
       ///    Generates a command that will add the pathAndValueEntity to the building block
