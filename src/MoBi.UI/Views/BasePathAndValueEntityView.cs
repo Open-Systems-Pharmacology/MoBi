@@ -78,11 +78,6 @@ namespace MoBi.UI.Views
       {
          base.InitializeResources();
 
-         // this.svgImageCollection.Add("actions_addcircled", "image://svgimages/icon builder/actions_addcircled.svg");
-         // this.svgImageCollection.Add("expandcollapse", "image://svgimages/outlook inspired/expandcollapse.svg");
-         // this.svgImageCollection.Add("actions_checkcircled", "image://svgimages/icon builder/actions_checkcircled.svg");
-         // this.svgImageCollection.Add("actions_deletecircled", "image://svgimages/icon builder/actions_deletecircled.svg");
-
          btnAllowNegativeValues.Caption = AppConstants.Captions.Allowed;
          btnAllowNegativeValues.RibbonStyle = RibbonItemStyles.SmallWithText;
          btnAllowNegativeValues.ImageOptions.SvgImage = svgImageCollection["expandcollapse"];
@@ -111,11 +106,6 @@ namespace MoBi.UI.Views
 
          ribbonGroupEdit.Text = Captions.Edit;
 
-         FixRibbonLayoutHeight();
-      }
-
-      protected void FixRibbonLayoutHeight()
-      {
          layoutItemRibbon.SizeConstraintsType = SizeConstraintsType.Custom;
          layoutItemRibbon.MaxSize = new Size(0, ribbonControl.Size.Height);
          layoutItemRibbon.MinSize = new Size(0, ribbonControl.Size.Height);
