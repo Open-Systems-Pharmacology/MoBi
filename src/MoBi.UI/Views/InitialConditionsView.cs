@@ -56,6 +56,16 @@ namespace MoBi.UI.Views
             .WithOnValueUpdating((o, e) => InitialConditionPresenter.SetFormula(o, e.NewValue.Formula));
       }
 
+      public override void InitializeResources()
+      {
+         base.InitializeResources();
+         btnRefresh.ItemClick += (o,e) => OnEvent(() => InitialConditionPresenter.Refresh(selectedStartValues));
+         btnPresent.ItemClick += (o,e) => OnEvent(() => InitialConditionPresenter.AsPresent(selectedStartValues));
+         btnNotPresent.ItemClick += (o,e) => OnEvent(() => InitialConditionPresenter.AsNotPresent(selectedStartValues));
+         btnAllowNegativeValues.ItemClick += (o,e) => OnEvent(() => InitialConditionPresenter.AllowNegativeValues(selectedStartValues));
+         btnNotAllowNegativeValues.ItemClick += (o,e) => OnEvent(() => InitialConditionPresenter.DoNotAllowNegativeValues(selectedStartValues));
+      }
+
       public override string NameColumnCaption => AppConstants.Captions.MoleculeName;
 
       public void HideIsPresentColumn() => _isPresentColumn.AsHidden().WithShowInColumnChooser(true);

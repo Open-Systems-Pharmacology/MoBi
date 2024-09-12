@@ -46,7 +46,6 @@ namespace MoBi.Presentation.Presenter
          IParameterValuesCreator parameterValuesCreator,
          IMoBiContext context,
          IDisplayUnitRetriever displayUnitRetriever,
-         IDeletePathAndValueEntityPresenter deletePathAndValueEntityPresenter,
          IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper,
          IParameterValueDistributedPathAndValueEntityPresenter distributedParameterPresenter,
          IParameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper,

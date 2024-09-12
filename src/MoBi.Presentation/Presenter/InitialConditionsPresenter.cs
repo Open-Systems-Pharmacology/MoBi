@@ -29,12 +29,11 @@ namespace MoBi.Presentation.Presenter
          IInitialConditionsTask<InitialConditionsBuildingBlock> initialConditionsTask,
          IInitialConditionsCreator msvCreator,
          IMoBiContext context,
-         IDeletePathAndValueEntityPresenter deletePathAndValueEntityPresenter,
          IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper,
          IDimensionFactory dimensionFactory,
          IInitialConditionsDistributedPathAndValueEntityPresenter distributedParameterPresenter,
          IInitialConditionsBuildingBlockToInitialConditionsBuildingBlockDTOMapper buildingBlockMapper)
-         : base(view, dtoMapper, initialConditionsTask, msvCreator, context, deletePathAndValueEntityPresenter, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
+         : base(view, dtoMapper, initialConditionsTask, msvCreator, context, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
       {
          _buildingBlockMapper = buildingBlockMapper;
       }

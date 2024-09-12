@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using MoBi.Presentation.Presenter;
 using OSPSuite.Presentation.Views;
 
 namespace MoBi.Presentation.Views
@@ -27,30 +25,18 @@ namespace MoBi.Presentation.Views
       void AddPathItems(IEnumerable<string> pathValues);
 
       void ClearPathItems();
-      IReadOnlyList<TStartValueDTO> SelectedStartValues { get; }
-      IReadOnlyList<TStartValueDTO> VisibleStartValues { get; }
+
       void HideDeleteButton();
-      void HideDeleteColumn();
-      void HideIsPresentButton();
       void HideRefreshButton();
-      void HideNegativeValuesAllowedButton();
+      void HideDeleteColumn();
       void HideValueOriginColumn();
       void DisablePathColumns();
-      void HideNegativeValuesNotAllowedButton();
-      void HideIsNotPresentButton();
       void HideNegativeValuesRibbon();
       void HidePresenceRibbon();
-      void HideEditRibbon();
+      void HideButtonRibbon();
 
       void RefreshData();
       TStartValueDTO FocusedStartValue { get; set; }
       bool CanCreateNewFormula { set; }
-
-      event Action IsPresentAction;
-      event Action IsNotPresentAction;
-      event Action NegativeValuesAllowedAction;
-      event Action NegativeValuesNotAllowedAction;
-      event Action RefreshAction;
-      event Action DeleteAction;
    }
 }

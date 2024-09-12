@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Linq.Expressions;
 using DevExpress.XtraBars;
@@ -11,6 +12,7 @@ using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid;
+using DevExpress.XtraLayout;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Formatters;
@@ -47,12 +49,6 @@ namespace MoBi.UI.Views
 
       private IGridViewColumn<TPathAndValueEntity> _deleteColumn;
       public bool CanCreateNewFormula { get; set; }
-      public event Action IsPresentAction;
-      public event Action IsNotPresentAction;
-      public event Action NegativeValuesAllowedAction;
-      public event Action NegativeValuesNotAllowedAction;
-      public event Action RefreshAction;
-      public event Action DeleteAction;
       private readonly PopupContainerControl _popupControl = new PopupContainerControl();
       private readonly RepositoryItemPopupContainerEdit _repositoryItemPopupContainerEdit = new RepositoryItemPopupContainerEdit();
       private IGridViewAutoBindColumn<TPathAndValueEntity, double?> _valueColumn;
@@ -70,12 +66,59 @@ namespace MoBi.UI.Views
          _repositoryItemPopupContainerEdit.PopupControl = _popupControl;
          _repositoryItemPopupContainerEdit.QueryDisplayText += (o, e) => OnEvent(queryText, e);
          gridView.HiddenEditor += (o, e) => hideEditor();
-         ribbonControl1.ShowPageHeadersMode = ShowPageHeadersMode.Hide;
-         ribbonControl1.ShowQatLocationSelector = false;
-         ribbonControl1.Minimized = true;
+         ribbonControl.ShowPageHeadersMode = ShowPageHeadersMode.Hide;
+         ribbonControl.ShowQatLocationSelector = false;
+         ribbonControl.Minimized = true;
 
          btnRefresh.ImageOptions.SetImage(ApplicationIcons.Refresh);
          btnDelete.ImageOptions.SetImage(ApplicationIcons.Delete);
+      }
+
+      public override void InitializeResources()
+      {
+         base.InitializeResources();
+
+         // this.svgImageCollection.Add("actions_addcircled", "image://svgimages/icon builder/actions_addcircled.svg");
+         // this.svgImageCollection.Add("expandcollapse", "image://svgimages/outlook inspired/expandcollapse.svg");
+         // this.svgImageCollection.Add("actions_checkcircled", "image://svgimages/icon builder/actions_checkcircled.svg");
+         // this.svgImageCollection.Add("actions_deletecircled", "image://svgimages/icon builder/actions_deletecircled.svg");
+
+         btnAllowNegativeValues.Caption = AppConstants.Captions.Allowed;
+         btnAllowNegativeValues.RibbonStyle = RibbonItemStyles.SmallWithText;
+         btnAllowNegativeValues.ImageOptions.SvgImage = svgImageCollection["expandcollapse"];
+
+         btnNotAllowNegativeValues.Caption = AppConstants.Captions.NotAllowed;
+         btnNotAllowNegativeValues.RibbonStyle = RibbonItemStyles.SmallWithText;
+         btnNotAllowNegativeValues.ImageOptions.SvgImage = svgImageCollection["actions_addcircled"];
+         
+         ribbonGroupNegativeValues.Text = AppConstants.Captions.NegativeValues;
+
+         btnPresent.Caption = AppConstants.Captions.Present;
+         btnPresent.RibbonStyle = RibbonItemStyles.SmallWithText;
+         btnPresent.ImageOptions.SvgImage = svgImageCollection["actions_checkcircled"];
+
+         btnNotPresent.Caption = AppConstants.Captions.NotPresent;
+         btnNotPresent.RibbonStyle = RibbonItemStyles.SmallWithText;
+         btnNotPresent.ImageOptions.SvgImage = svgImageCollection["actions_deletecircled"];
+
+         ribbonGroupPresence.Text = AppConstants.Captions.Presence;
+
+         btnRefresh.RibbonStyle = RibbonItemStyles.SmallWithText;
+         btnRefresh.Caption = AppConstants.Captions.RefreshValues;
+
+         btnDelete.RibbonStyle = RibbonItemStyles.SmallWithText;
+         btnDelete.Caption = Captions.Delete;
+
+         ribbonGroupEdit.Text = Captions.Edit;
+
+         FixRibbonLayoutHeight();
+      }
+
+      protected void FixRibbonLayoutHeight()
+      {
+         layoutItemRibbon.SizeConstraintsType = SizeConstraintsType.Custom;
+         layoutItemRibbon.MaxSize = new Size(0, ribbonControl.Size.Height);
+         layoutItemRibbon.MinSize = new Size(0, ribbonControl.Size.Height);
       }
 
       private void hideEditor() => _unitControl.Hide();
@@ -126,16 +169,16 @@ namespace MoBi.UI.Views
       public abstract string NameColumnCaption { get; }
 
       public void HideRefreshButton() => btnRefresh.Visibility = BarItemVisibility.Never;
-      public void HideIsPresentButton() => btnPresent.Visibility = BarItemVisibility.Never;
-      public void HideNegativeValuesAllowedButton() => btnAllowNegativeValues.Visibility = BarItemVisibility.Never;
-      public void HideNegativeValuesNotAllowedButton() => btnNotAllowNegativeValues.Visibility = BarItemVisibility.Never;
-      public void HideIsNotPresentButton() => ribbonGroupPresence.Visible = false;
       public void HideDeleteButton() => btnDelete.Visibility = BarItemVisibility.Never;
-      public void HideNegativeValuesRibbon() => ribbonGroupNegativeValues.Visible = false;
       public void HidePresenceRibbon() => ribbonGroupPresence.Visible = false;
-      public void HideEditRibbon() => ribbonGroupEdit.Visible = false;
+      public void HideButtonRibbon()
+      {
+         layoutItemRibbon.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
+      }
 
-      public IReadOnlyList<TPathAndValueEntity> SelectedStartValues
+      public void HideNegativeValuesRibbon() => ribbonGroupNegativeValues.Visible = false;
+
+      protected IReadOnlyList<TPathAndValueEntity> selectedStartValues
       {
          get { return gridView.GetSelectedRows().Select(rowHandle => _gridViewBinder.ElementAt(rowHandle)).ToList(); }
       }
@@ -146,11 +189,6 @@ namespace MoBi.UI.Views
       {
          _pathElementsColumns.Each(x => x.AsReadOnly());
          _colName.AsReadOnly();
-      }
-
-      public void AddDeleteValuesPresenter(IApplyToSelectionPresenter presenter)
-      {
-         btnDelete.ItemClick += (s, e) => { presenter.PerformSelectionHandler(); };
       }
 
       public void HideDeleteColumn() => _deleteColumn.AsHidden();
@@ -315,16 +353,9 @@ namespace MoBi.UI.Views
          return repository;
       }
 
-      private void btnPresent_ItemClick(object sender, ItemClickEventArgs e) => IsPresentAction?.Invoke();
-
-      private void btnDelete_ItemClick(object sender, ItemClickEventArgs e) => DeleteAction?.Invoke();
-
-      private void btnNotPresent_ItemClick(object sender, ItemClickEventArgs e) => IsNotPresentAction?.Invoke();
-
-      private void btnAllowNegativeValues_ItemClick(object sender, ItemClickEventArgs e) => NegativeValuesAllowedAction?.Invoke();
-
-      private void btnNotAllowNegativeValues_ItemClick(object sender, ItemClickEventArgs e) => NegativeValuesNotAllowedAction?.Invoke();
-
-      private void btnRefresh_ItemClick(object sender, ItemClickEventArgs e) => RefreshAction?.Invoke();
+      private void btnDeleteClick(object sender, ItemClickEventArgs e)
+      {
+         _presenter.Delete(selectedStartValues);
+      }
    }
 }

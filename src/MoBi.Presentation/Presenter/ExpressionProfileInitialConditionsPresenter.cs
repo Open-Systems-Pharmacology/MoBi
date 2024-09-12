@@ -20,12 +20,9 @@ namespace MoBi.Presentation.Presenter
 
       public ExpressionProfileInitialConditionsPresenter(IInitialConditionsView view,
          IInitialConditionToInitialConditionDTOMapper dtoMapper,
-         IMoleculeIsPresentSelectionPresenter isPresentSelectionPresenter,
-         IMoleculeNegativeValuesAllowedSelectionPresenter negativeStartValuesAllowedSelectionPresenter,
          IInitialConditionsTask<ExpressionProfileBuildingBlock> initialConditionsTask,
          IInitialConditionsCreator msvCreator,
          IMoBiContext context,
-         IDeletePathAndValueEntityPresenter deletePathAndValueEntityPresenter,
          IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper,
          IDimensionFactory dimensionFactory,
          IInitialConditionsDistributedInExpressionProfilePresenter distributedParameterPresenter,
@@ -35,14 +32,12 @@ namespace MoBi.Presentation.Presenter
             initialConditionsTask, 
             msvCreator, 
             context, 
-            deletePathAndValueEntityPresenter, 
             formulaToValueFormulaDTOMapper, 
             dimensionFactory, 
             distributedParameterPresenter)
       {
          _buildingBlockMapper = buildingBlockMapper;
-         HideIsPresentView();
-         HideIsNotPresentView();
+         HideIsPresent();
          HideDeleteView();
          HideDeleteColumn();
          HideIsPresentColumn();
