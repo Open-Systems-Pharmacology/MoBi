@@ -34,11 +34,11 @@ namespace MoBi.Presentation.Presenter
       /// </summary>
       void SetNegativeValuesAllowed(InitialConditionDTO dto, bool negativeValuesAllowed);
 
-      void Refresh(IReadOnlyList<InitialConditionDTO> selectedStartValues);
-      void AsPresent(IReadOnlyList<InitialConditionDTO> selectedStartValues);
-      void AsNotPresent(IReadOnlyList<InitialConditionDTO> selectedStartValues);
-      void AllowNegativeValues(IReadOnlyList<InitialConditionDTO> selectedStartValues);
-      void DoNotAllowNegativeValues(IReadOnlyList<InitialConditionDTO> selectedStartValues);
+      void Refresh(IReadOnlyList<InitialConditionDTO> initialConditionDTOs);
+      void AsPresent(IReadOnlyList<InitialConditionDTO> initialConditionDTOs);
+      void AsNotPresent(IReadOnlyList<InitialConditionDTO> initialConditionDTOs);
+      void AllowNegativeValues(IReadOnlyList<InitialConditionDTO> initialConditionDTOs);
+      void DoNotAllowNegativeValues(IReadOnlyList<InitialConditionDTO> initialConditionDTOs);
    }
 
    public interface IBuildingBlockWithInitialConditionsPresenter<TBuildingBlock> : IBuildingBlockWithInitialConditionsPresenter, IEditPresenter<TBuildingBlock>
@@ -93,27 +93,25 @@ namespace MoBi.Presentation.Presenter
          return initialConditionDTOs.Select(x => x.InitialCondition).ToList();
       }
 
-      public void AsPresent(IReadOnlyList<InitialConditionDTO> selectedStartValues)
+      public void AsPresent(IReadOnlyList<InitialConditionDTO> initialConditionDTOs)
       {
-         setIsPresent(initialConditionsFromDTO(selectedStartValues), isPresent: true);
+         setIsPresent(initialConditionsFromDTO(initialConditionDTOs), isPresent: true);
       }
 
-      public void AsNotPresent(IReadOnlyList<InitialConditionDTO> selectedStartValues)
+      public void AsNotPresent(IReadOnlyList<InitialConditionDTO> initialConditionDTOs)
       {
-         setIsPresent(initialConditionsFromDTO(selectedStartValues), isPresent: false);
+         setIsPresent(initialConditionsFromDTO(initialConditionDTOs), isPresent: false);
       }
 
-      public void AllowNegativeValues(IReadOnlyList<InitialConditionDTO> selectedStartValues)
+      public void AllowNegativeValues(IReadOnlyList<InitialConditionDTO> initialConditionDTOs)
       {
-         setNegativeValuesAllowed(initialConditionsFromDTO(selectedStartValues), negativeValuesAllowed: true);
+         setNegativeValuesAllowed(initialConditionsFromDTO(initialConditionDTOs), negativeValuesAllowed: true);
       }
 
-      public void DoNotAllowNegativeValues(IReadOnlyList<InitialConditionDTO> selectedStartValues)
+      public void DoNotAllowNegativeValues(IReadOnlyList<InitialConditionDTO> initialConditionDTOs)
       {
-         setNegativeValuesAllowed(initialConditionsFromDTO(selectedStartValues), negativeValuesAllowed: false);
+         setNegativeValuesAllowed(initialConditionsFromDTO(initialConditionDTOs), negativeValuesAllowed: false);
       }
-
-      public void SetNegativeValuesNotAllowed(InitialConditionDTO dto, bool negativeValuesAllowed) => setNegativeValuesAllowed(new[] { dto.InitialCondition }, false);
 
       protected void DisablePathColumns() => _view.DisablePathColumns();
 
