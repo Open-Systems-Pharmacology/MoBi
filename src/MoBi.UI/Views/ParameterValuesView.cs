@@ -43,6 +43,8 @@ namespace MoBi.UI.Views
 
       public override void InitializeResources()
       {
+         // Make changes that affect the height before calling the base method
+         // where the layout item height will be fixed
          ribbonControl.DrawGroupCaptions = DefaultBoolean.False;
          base.InitializeResources();
       }
