@@ -37,12 +37,12 @@ namespace MoBi.Presentation.Presenter
             distributedParameterPresenter)
       {
          _buildingBlockMapper = buildingBlockMapper;
-         HideIsPresent();
-         HideDeleteView();
-         HideDeleteColumn();
-         HideIsPresentColumn();
-         HideValueOriginColumn();
+         HideElement(HideableElement.PresenceRibbon);
+         HideElement(HideableElement.DeleteButton);
+         HideElement(HideableElement.DeleteColumn);
+         HideElement(HideableElement.ValueOriginColumn);
          DisablePathColumns();
+         HideIsPresentColumn();
       }
 
       protected override IReadOnlyList<InitialConditionDTO> ValueDTOsFor(ExpressionProfileBuildingBlock buildingBlock) => _buildingBlockMapper.MapFrom(buildingBlock).InitialConditionDTOs;

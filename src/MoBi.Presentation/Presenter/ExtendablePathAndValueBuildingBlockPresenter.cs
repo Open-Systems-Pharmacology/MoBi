@@ -201,25 +201,9 @@ namespace MoBi.Presentation.Presenter
          if (_handleChangedEvents)
             HandleBuildingBlockEvent(eventToHandle);
       }
-
-      public void HideValueOriginColumn()
+      public void HideElement(HideableElement element)
       {
-         _view.HideElement(HideableElement.ValueOriginColumn);
-      }
-
-      public void HideDeleteView()
-      {
-         _view.HideElement(HideableElement.DeleteButton);
-      }
-
-      public void HideDeleteColumn()
-      {
-         _view.HideElement(HideableElement.DeleteColumn);
-      }
-
-      public void HideIsPresent()
-      {
-         _view.HideElement(HideableElement.PresenceRibbon);
+         _view.HideElement(element);
       }
 
       public void Handle(BulkUpdateFinishedEvent eventToHandle)
