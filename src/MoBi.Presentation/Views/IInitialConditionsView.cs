@@ -6,6 +6,5 @@ namespace MoBi.Presentation.Views
 {
    public interface IInitialConditionsView : IView<IBuildingBlockWithInitialConditionsPresenter>, IPathAndValueEntitiesView<InitialConditionDTO>
    {
-      void HideIsPresentColumn();
    }
 }

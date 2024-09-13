@@ -115,8 +115,6 @@ namespace MoBi.Presentation.Presenter
 
       protected void DisablePathColumns() => _view.DisablePathColumns();
 
-      public void HideIsPresentColumn() => _view.HideIsPresentColumn();
-
       private void setNegativeValuesAllowed(IEnumerable<InitialCondition> startValuesToUpdate, bool negativeValuesAllowed)
       {
          AddCommand(() => _initialConditionsTask.SetNegativeValuesAllowed(_buildingBlock, startValuesToUpdate, negativeValuesAllowed));

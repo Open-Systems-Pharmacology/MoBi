@@ -160,7 +160,7 @@ namespace MoBi.UI.Views
 
       public abstract string NameColumnCaption { get; }
 
-      protected IReadOnlyList<TPathAndValueEntity> selectedStartValues
+      protected IReadOnlyList<TPathAndValueEntity> SelectedStartValues
       {
          get { return gridView.GetSelectedRows().Select(rowHandle => _gridViewBinder.ElementAt(rowHandle)).ToList(); }
       }
@@ -173,27 +173,27 @@ namespace MoBi.UI.Views
          _colName.AsReadOnly();
       }
 
-      public void HideElements(HideableElement elementsToHide)
+      public virtual void HideElements(HidablePathAndValuesViewElement elementsToHide)
       {
-         if (elementsToHide.IsSet(HideableElement.ValueOriginColumn)) _valueOriginBinder.ValueOriginColumn.AsHidden().WithShowInColumnChooser(true);
+         if (elementsToHide.IsSet(HidablePathAndValuesViewElement.ValueOriginColumn)) _valueOriginBinder.ValueOriginColumn.AsHidden().WithShowInColumnChooser(true);
 
-         if (elementsToHide.IsSet(HideableElement.DeleteColumn)) 
+         if (elementsToHide.IsSet(HidablePathAndValuesViewElement.DeleteColumn)) 
             _deleteColumn.AsHidden();
 
-         if (elementsToHide.IsSet(HideableElement.RefreshButton)) 
+         if (elementsToHide.IsSet(HidablePathAndValuesViewElement.RefreshButton)) 
             btnRefresh.Visibility = BarItemVisibility.Never;
          
-         if (elementsToHide.IsSet(HideableElement.DeleteButton)) 
+         if (elementsToHide.IsSet(HidablePathAndValuesViewElement.DeleteButton)) 
             btnDelete.Visibility = BarItemVisibility.Never;
 
-         if (elementsToHide.IsSet(HideableElement.PresenceRibbon)) 
+         if (elementsToHide.IsSet(HidablePathAndValuesViewElement.PresenceRibbon)) 
             ribbonGroupPresence.Visible = false;
          
-         if (elementsToHide.IsSet(HideableElement.ButtonRibbon))
+         if (elementsToHide.IsSet(HidablePathAndValuesViewElement.ButtonRibbon))
             layoutItemRibbon.Visibility = LayoutVisibility.Never;
 
-         if (elementsToHide.IsSet(HideableElement.NegativeValuesRibbon))
-            ribbonGroupNegativeValues.Visible = false;
+         if (elementsToHide.IsSet(HidablePathAndValuesViewElement.NegativeValuesRibbon))
+            ribbonGroupNegativeValues.Visible = false;       
       }
 
       public void RefreshData() => gridView.RefreshData();
@@ -356,7 +356,7 @@ namespace MoBi.UI.Views
 
       private void btnDeleteClick(object sender, ItemClickEventArgs e)
       {
-         _presenter.Delete(selectedStartValues);
+         _presenter.Delete(SelectedStartValues);
       }
    }
 }

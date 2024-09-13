@@ -3,6 +3,7 @@ using MoBi.Presentation.DTO;
 using MoBi.Presentation.Formatters;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using MoBi.UI.Extensions;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.DataBinding.DevExpress;
@@ -59,16 +60,14 @@ namespace MoBi.UI.Views
       public override void InitializeResources()
       {
          base.InitializeResources();
-         btnRefresh.ItemClick += (o,e) => OnEvent(() => InitialConditionPresenter.Refresh(selectedStartValues));
-         btnPresent.ItemClick += (o,e) => OnEvent(() => InitialConditionPresenter.AsPresent(selectedStartValues));
-         btnNotPresent.ItemClick += (o,e) => OnEvent(() => InitialConditionPresenter.AsNotPresent(selectedStartValues));
-         btnAllowNegativeValues.ItemClick += (o,e) => OnEvent(() => InitialConditionPresenter.AllowNegativeValues(selectedStartValues));
-         btnNotAllowNegativeValues.ItemClick += (o,e) => OnEvent(() => InitialConditionPresenter.DoNotAllowNegativeValues(selectedStartValues));
+         btnRefresh.ItemClick += (o,e) => OnEvent(() => InitialConditionPresenter.Refresh(SelectedStartValues));
+         btnPresent.ItemClick += (o,e) => OnEvent(() => InitialConditionPresenter.AsPresent(SelectedStartValues));
+         btnNotPresent.ItemClick += (o,e) => OnEvent(() => InitialConditionPresenter.AsNotPresent(SelectedStartValues));
+         btnAllowNegativeValues.ItemClick += (o,e) => OnEvent(() => InitialConditionPresenter.AllowNegativeValues(SelectedStartValues));
+         btnNotAllowNegativeValues.ItemClick += (o,e) => OnEvent(() => InitialConditionPresenter.DoNotAllowNegativeValues(SelectedStartValues));
       }
 
       public override string NameColumnCaption => AppConstants.Captions.MoleculeName;
-
-      public void HideIsPresentColumn() => _isPresentColumn.AsHidden().WithShowInColumnChooser(true);
 
       private void onSetIsPresent(InitialConditionDTO dto, bool isPresent) => InitialConditionPresenter.SetIsPresent(dto, isPresent);
 
@@ -81,6 +80,13 @@ namespace MoBi.UI.Views
             gridView.CloseEditor();
             InitialConditionPresenter.SetUnit(initialCondition, unit);
          });
+      }
+
+      public override void HideElements(HidablePathAndValuesViewElement elementsToHide)
+      {
+         base.HideElements(elementsToHide);
+         if (elementsToHide.IsSet(HidablePathAndValuesViewElement.IsPresentColumn))
+            _isPresentColumn.AsHidden().WithShowInColumnChooser(true);
       }
 
       public IBuildingBlockWithInitialConditionsPresenter InitialConditionPresenter => _presenter.DowncastTo<IBuildingBlockWithInitialConditionsPresenter>();

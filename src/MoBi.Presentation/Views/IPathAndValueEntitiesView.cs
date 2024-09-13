@@ -11,7 +11,7 @@ namespace MoBi.Presentation.Views
    }
 
    [Flags]
-   public enum HideableElement
+   public enum HidablePathAndValuesViewElement
    {
       None = 0,
       ValueOriginColumn = 1,
@@ -20,7 +20,8 @@ namespace MoBi.Presentation.Views
       DeleteButton = 8,
       PresenceRibbon = 16,
       ButtonRibbon = 32,
-      NegativeValuesRibbon = 64
+      NegativeValuesRibbon = 64,
+      IsPresentColumn = 128
    }
 
    public interface IPathAndValueEntitiesView<TStartValueDTO> : IPathAndValueEntitiesView
@@ -42,7 +43,7 @@ namespace MoBi.Presentation.Views
 
       void DisablePathColumns();
 
-      void HideElements(HideableElement elementsToHide);
+      void HideElements(HidablePathAndValuesViewElement elementsToHide);
       void RefreshData();
       TStartValueDTO FocusedStartValue { get; set; }
       bool CanCreateNewFormula { set; }
