@@ -158,15 +158,7 @@ namespace MoBi.UI.Views
 
       public abstract string NameColumnCaption { get; }
 
-      public void HideRefreshButton() => btnRefresh.Visibility = BarItemVisibility.Never;
-      public void HideDeleteButton() => btnDelete.Visibility = BarItemVisibility.Never;
-      public void HidePresenceRibbon() => ribbonGroupPresence.Visible = false;
-      public void HideButtonRibbon()
-      {
-         layoutItemRibbon.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
-      }
-
-      public void HideNegativeValuesRibbon() => ribbonGroupNegativeValues.Visible = false;
+   
 
       protected IReadOnlyList<TPathAndValueEntity> selectedStartValues
       {
@@ -181,7 +173,40 @@ namespace MoBi.UI.Views
          _colName.AsReadOnly();
       }
 
-      public void HideDeleteColumn() => _deleteColumn.AsHidden();
+      public void HideElement(HideableElement elementToHide)
+      {
+         switch (elementToHide)
+         {
+            case HideableElement.ValueOriginColumn:
+               _valueOriginBinder.ValueOriginColumn.AsHidden().WithShowInColumnChooser(true);
+               break;
+
+            case HideableElement.DeleteColumn:
+               _deleteColumn.AsHidden();
+               break;
+
+            case HideableElement.RefreshButton:
+               btnRefresh.Visibility = BarItemVisibility.Never;
+               break;
+
+            case HideableElement.DeleteButton:
+               btnDelete.Visibility = BarItemVisibility.Never;
+               break;
+
+            case HideableElement.PresenceRibbon:
+               ribbonGroupPresence.Visible = false;
+               break;
+
+            case HideableElement.ButtonRibbon:
+               layoutItemRibbon.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
+               break;
+
+            case HideableElement.NegativeValuesRibbon:
+               ribbonGroupNegativeValues.Visible = false;
+               break;
+         }
+
+      }
 
       public void RefreshData() => gridView.RefreshData();
 
@@ -227,8 +252,6 @@ namespace MoBi.UI.Views
       }
 
       public void AddDistributedParameterView(IView view) => _popupControl.FillWith(view);
-
-      public void HideValueOriginColumn() => _valueOriginBinder.ValueOriginColumn.AsHidden().WithShowInColumnChooser(true);
 
       public void RefreshForUpdatedEntity()
       {

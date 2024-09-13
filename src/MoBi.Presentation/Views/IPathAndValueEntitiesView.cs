@@ -9,6 +9,17 @@ namespace MoBi.Presentation.Views
       void RefreshForUpdatedEntity();
    }
 
+   public enum HideableElement
+   {
+      ValueOriginColumn,
+      DeleteColumn,
+      RefreshButton,
+      DeleteButton,
+      PresenceRibbon,
+      ButtonRibbon,
+      NegativeValuesRibbon
+   }
+
    public interface IPathAndValueEntitiesView<TStartValueDTO> : IPathAndValueEntitiesView
    {
       void BindTo(IEnumerable<TStartValueDTO> startValueDTOs);
@@ -26,15 +37,9 @@ namespace MoBi.Presentation.Views
 
       void ClearPathItems();
 
-      void HideDeleteButton();
-      void HideRefreshButton();
-      void HideDeleteColumn();
-      void HideValueOriginColumn();
       void DisablePathColumns();
-      void HideNegativeValuesRibbon();
-      void HidePresenceRibbon();
-      void HideButtonRibbon();
 
+      void HideElement(HideableElement elementToHide);
       void RefreshData();
       TStartValueDTO FocusedStartValue { get; set; }
       bool CanCreateNewFormula { set; }

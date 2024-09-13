@@ -204,22 +204,22 @@ namespace MoBi.Presentation.Presenter
 
       public void HideValueOriginColumn()
       {
-         _view.HideValueOriginColumn();
+         _view.HideElement(HideableElement.ValueOriginColumn);
       }
 
       public void HideDeleteView()
       {
-         _view.HideDeleteButton();
+         _view.HideElement(HideableElement.DeleteButton);
       }
 
       public void HideDeleteColumn()
       {
-         _view.HideDeleteColumn();
+         _view.HideElement(HideableElement.DeleteColumn);
       }
 
       public void HideIsPresent()
       {
-         _view.HidePresenceRibbon();
+         _view.HideElement(HideableElement.PresenceRibbon);
       }
 
       public void Handle(BulkUpdateFinishedEvent eventToHandle)
