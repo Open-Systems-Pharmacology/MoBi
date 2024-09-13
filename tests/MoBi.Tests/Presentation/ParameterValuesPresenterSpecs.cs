@@ -41,13 +41,11 @@ namespace MoBi.Presentation
             A.Fake<IParameterValuesCreator>(),
             A.Fake<IMoBiContext>(),
             A.Fake<IDisplayUnitRetriever>(),
-            A.Fake<IDeletePathAndValueEntityPresenter>(),
             A.Fake<IFormulaToValueFormulaDTOMapper>(),
             A.Fake<IParameterValueDistributedPathAndValueEntityPresenter>(),
             _parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper,
             A.Fake<IDimensionFactory>(),
             A.Fake<IViewItemContextMenuFactory>(),
-            _modalPresenter,
             _dialogCreator);
 
          sut.Edit(_parameterValuesBuildingBlock);

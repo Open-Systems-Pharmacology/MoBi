@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Linq.Expressions;
+using DevExpress.XtraBars;
+using DevExpress.XtraBars.Ribbon;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
@@ -9,12 +12,14 @@ using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid;
+using DevExpress.XtraLayout;
 using DevExpress.XtraLayout.Utils;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Formatters;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using MoBi.UI.Extensions;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.DataBinding;
@@ -62,8 +67,50 @@ namespace MoBi.UI.Views
          _pathRepositoryItemComboBox.SelectedValueChanged += (o, e) => gridView.PostEditor();
          _repositoryItemPopupContainerEdit.PopupControl = _popupControl;
          _repositoryItemPopupContainerEdit.QueryDisplayText += (o, e) => OnEvent(queryText, e);
-
          gridView.HiddenEditor += (o, e) => hideEditor();
+         ribbonControl.ShowPageHeadersMode = ShowPageHeadersMode.Hide;
+         ribbonControl.ShowQatLocationSelector = false;
+         ribbonControl.Minimized = true;
+
+         btnRefresh.ImageOptions.SetImage(ApplicationIcons.Refresh);
+         btnDelete.ImageOptions.SetImage(ApplicationIcons.Delete);
+      }
+
+      public override void InitializeResources()
+      {
+         base.InitializeResources();
+
+         btnAllowNegativeValues.Caption = AppConstants.Captions.Allowed;
+         btnAllowNegativeValues.RibbonStyle = RibbonItemStyles.SmallWithText;
+         btnAllowNegativeValues.ImageOptions.SvgImage = svgImageCollection["expandcollapse"];
+
+         btnNotAllowNegativeValues.Caption = AppConstants.Captions.NotAllowed;
+         btnNotAllowNegativeValues.RibbonStyle = RibbonItemStyles.SmallWithText;
+         btnNotAllowNegativeValues.ImageOptions.SvgImage = svgImageCollection["actions_addcircled"];
+
+         ribbonGroupNegativeValues.Text = AppConstants.Captions.NegativeValues;
+
+         btnPresent.Caption = AppConstants.Captions.Present;
+         btnPresent.RibbonStyle = RibbonItemStyles.SmallWithText;
+         btnPresent.ImageOptions.SvgImage = svgImageCollection["actions_checkcircled"];
+
+         btnNotPresent.Caption = AppConstants.Captions.NotPresent;
+         btnNotPresent.RibbonStyle = RibbonItemStyles.SmallWithText;
+         btnNotPresent.ImageOptions.SvgImage = svgImageCollection["actions_deletecircled"];
+
+         ribbonGroupPresence.Text = AppConstants.Captions.Presence;
+
+         btnRefresh.RibbonStyle = RibbonItemStyles.SmallWithText;
+         btnRefresh.Caption = AppConstants.Captions.RefreshValues;
+
+         btnDelete.RibbonStyle = RibbonItemStyles.SmallWithText;
+         btnDelete.Caption = Captions.Delete;
+
+         ribbonGroupEdit.Text = Captions.Edit;
+
+         layoutItemRibbon.SizeConstraintsType = SizeConstraintsType.Custom;
+         layoutItemRibbon.MaxSize = new Size(0, ribbonControl.Size.Height);
+         layoutItemRibbon.MinSize = new Size(0, ribbonControl.Size.Height);
       }
 
       private void hideEditor() => _unitControl.Hide();
@@ -113,20 +160,12 @@ namespace MoBi.UI.Views
 
       public abstract string NameColumnCaption { get; }
 
-      public void HideRefreshView() => layoutItemRefresh.Visibility = LayoutVisibility.Never;
-
-      public void HideIsPresentView() => layoutItemIsPresent.Visibility = LayoutVisibility.Never;
-
-      public void HideNegativeValuesAllowedView() => layoutItemNegativeValuesAllowed.Visibility = LayoutVisibility.Never;
-
-      public IReadOnlyList<TPathAndValueEntity> SelectedStartValues
+      protected IReadOnlyList<TPathAndValueEntity> SelectedStartValues
       {
          get { return gridView.GetSelectedRows().Select(rowHandle => _gridViewBinder.ElementAt(rowHandle)).ToList(); }
       }
 
       public IReadOnlyList<TPathAndValueEntity> VisibleStartValues => gridView.DataController.GetAllFilteredAndSortedRows().Cast<TPathAndValueEntity>().ToList();
-
-      public void AddDeleteStartValuesView(IView view) => panelDeleteStartValues.FillWith(view);
 
       public void DisablePathColumns()
       {
@@ -134,14 +173,27 @@ namespace MoBi.UI.Views
          _colName.AsReadOnly();
       }
 
-      public void HideDeleteView() => layoutItemDelete.Visibility = LayoutVisibility.Never;
-
-      public void HideDeleteColumn() => _deleteColumn.AsHidden();
-
-      public void HideSubPresenterGrouping()
+      public virtual void HideElements(HidablePathAndValuesViewElement elementsToHide)
       {
-         emptySpaceItem.Visibility = LayoutVisibility.Never;
-         layoutGroupPanel.GroupBordersVisible = false;
+         if (elementsToHide.IsSet(HidablePathAndValuesViewElement.ValueOriginColumn)) _valueOriginBinder.ValueOriginColumn.AsHidden().WithShowInColumnChooser(true);
+
+         if (elementsToHide.IsSet(HidablePathAndValuesViewElement.DeleteColumn)) 
+            _deleteColumn.AsHidden();
+
+         if (elementsToHide.IsSet(HidablePathAndValuesViewElement.RefreshButton)) 
+            btnRefresh.Visibility = BarItemVisibility.Never;
+         
+         if (elementsToHide.IsSet(HidablePathAndValuesViewElement.DeleteButton)) 
+            btnDelete.Visibility = BarItemVisibility.Never;
+
+         if (elementsToHide.IsSet(HidablePathAndValuesViewElement.PresenceRibbon)) 
+            ribbonGroupPresence.Visible = false;
+         
+         if (elementsToHide.IsSet(HidablePathAndValuesViewElement.ButtonRibbon))
+            layoutItemRibbon.Visibility = LayoutVisibility.Never;
+
+         if (elementsToHide.IsSet(HidablePathAndValuesViewElement.NegativeValuesRibbon))
+            ribbonGroupNegativeValues.Visible = false;       
       }
 
       public void RefreshData() => gridView.RefreshData();
@@ -188,8 +240,6 @@ namespace MoBi.UI.Views
       }
 
       public void AddDistributedParameterView(IView view) => _popupControl.FillWith(view);
-
-      public void HideValueOriginColumn() => _valueOriginBinder.ValueOriginColumn.AsHidden().WithShowInColumnChooser(true);
 
       public void RefreshForUpdatedEntity()
       {
@@ -302,6 +352,11 @@ namespace MoBi.UI.Views
          }
 
          return repository;
+      }
+
+      private void btnDeleteClick(object sender, ItemClickEventArgs e)
+      {
+         _presenter.Delete(SelectedStartValues);
       }
    }
 }

@@ -1,5 +1,7 @@
 ﻿using System.Windows.Forms;
+using DevExpress.Utils;
 using DevExpress.XtraBars;
+using DevExpress.XtraBars.Ribbon;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Formatters;
@@ -37,6 +39,14 @@ namespace MoBi.UI.Views
       public void AttachPresenter(IParameterValuesPresenter presenter)
       {
          _presenter = presenter;
+      }
+
+      public override void InitializeResources()
+      {
+         // Make changes that affect the height before calling the base method
+         // where the layout item height will be fixed
+         ribbonControl.DrawGroupCaptions = DefaultBoolean.False;
+         base.InitializeResources();
       }
 
       protected override void DoInitializeBinding()

@@ -1,18 +1,16 @@
-﻿using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.UI.RepositoryItems;
-using OSPSuite.Assets;
-using OSPSuite.Utility.Extensions;
-using MoBi.Assets;
+﻿using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Formatters;
 using MoBi.Presentation.Presenter;
+using MoBi.Presentation.Views;
+using MoBi.UI.Extensions;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Presentation.Views;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.UI.Binders;
-using OSPSuite.UI.Extensions;
-using MoBi.Presentation.Views;
+using OSPSuite.UI.RepositoryItems;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.UI.Views
 {
@@ -20,7 +18,7 @@ namespace MoBi.UI.Views
    {
       private readonly UxRepositoryItemCheckEdit _checkItemRepository;
       private IGridViewBoundColumn<InitialConditionDTO, bool> _isPresentColumn;
-      
+
       public InitialConditionsView(ValueOriginBinder<InitialConditionDTO> valueOriginBinder) : base(valueOriginBinder)
       {
          InitializeComponent();
@@ -59,9 +57,17 @@ namespace MoBi.UI.Views
             .WithOnValueUpdating((o, e) => InitialConditionPresenter.SetFormula(o, e.NewValue.Formula));
       }
 
-      public override string NameColumnCaption => AppConstants.Captions.MoleculeName;
+      public override void InitializeResources()
+      {
+         base.InitializeResources();
+         btnRefresh.ItemClick += (o,e) => OnEvent(() => InitialConditionPresenter.Refresh(SelectedStartValues));
+         btnPresent.ItemClick += (o,e) => OnEvent(() => InitialConditionPresenter.AsPresent(SelectedStartValues));
+         btnNotPresent.ItemClick += (o,e) => OnEvent(() => InitialConditionPresenter.AsNotPresent(SelectedStartValues));
+         btnAllowNegativeValues.ItemClick += (o,e) => OnEvent(() => InitialConditionPresenter.AllowNegativeValues(SelectedStartValues));
+         btnNotAllowNegativeValues.ItemClick += (o,e) => OnEvent(() => InitialConditionPresenter.DoNotAllowNegativeValues(SelectedStartValues));
+      }
 
-      public void HideIsPresentColumn() => _isPresentColumn.AsHidden().WithShowInColumnChooser(true);
+      public override string NameColumnCaption => AppConstants.Captions.MoleculeName;
 
       private void onSetIsPresent(InitialConditionDTO dto, bool isPresent) => InitialConditionPresenter.SetIsPresent(dto, isPresent);
 
@@ -76,16 +82,15 @@ namespace MoBi.UI.Views
          });
       }
 
+      public override void HideElements(HidablePathAndValuesViewElement elementsToHide)
+      {
+         base.HideElements(elementsToHide);
+         if (elementsToHide.IsSet(HidablePathAndValuesViewElement.IsPresentColumn))
+            _isPresentColumn.AsHidden().WithShowInColumnChooser(true);
+      }
+
       public IBuildingBlockWithInitialConditionsPresenter InitialConditionPresenter => _presenter.DowncastTo<IBuildingBlockWithInitialConditionsPresenter>();
 
-      public void AddRefreshSelectionView(IView view) => panelRefresh.FillWith(view);
-
-      public void AddIsPresentSelectionView(IView view) => panelIsPresent.FillWith(view);
-
-      public void AddNegativeValuesAllowedSelectionView(IView view) => panelNegativeValuesAllowed.FillWith(view);
-
       public void AttachPresenter(IBuildingBlockWithInitialConditionsPresenter presenter) => _presenter = presenter;
-
-      public override ApplicationIcon ApplicationIcon => ApplicationIcons.InitialConditions;
    }
 }
