@@ -19,6 +19,7 @@ using MoBi.Presentation.DTO;
 using MoBi.Presentation.Formatters;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using MoBi.UI.Extensions;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.DataBinding;
@@ -174,40 +175,25 @@ namespace MoBi.UI.Views
 
       public void HideElements(HideableElement elementsToHide)
       {
-         if ((elementsToHide & HideableElement.ValueOriginColumn) == HideableElement.ValueOriginColumn)
-         {
-            _valueOriginBinder.ValueOriginColumn.AsHidden().WithShowInColumnChooser(true);
-         }
+         if (elementsToHide.IsSet(HideableElement.ValueOriginColumn)) _valueOriginBinder.ValueOriginColumn.AsHidden().WithShowInColumnChooser(true);
 
-         if ((elementsToHide & HideableElement.DeleteColumn) == HideableElement.DeleteColumn)
-         {
+         if (elementsToHide.IsSet(HideableElement.DeleteColumn)) 
             _deleteColumn.AsHidden();
-         }
 
-         if ((elementsToHide & HideableElement.RefreshButton) == HideableElement.RefreshButton)
-         {
+         if (elementsToHide.IsSet(HideableElement.RefreshButton)) 
             btnRefresh.Visibility = BarItemVisibility.Never;
-         }
-
-         if ((elementsToHide & HideableElement.DeleteButton) == HideableElement.DeleteButton)
-         {
+         
+         if (elementsToHide.IsSet(HideableElement.DeleteButton)) 
             btnDelete.Visibility = BarItemVisibility.Never;
-         }
 
-         if ((elementsToHide & HideableElement.PresenceRibbon) == HideableElement.PresenceRibbon)
-         {
+         if (elementsToHide.IsSet(HideableElement.PresenceRibbon)) 
             ribbonGroupPresence.Visible = false;
-         }
-
-         if ((elementsToHide & HideableElement.ButtonRibbon) == HideableElement.ButtonRibbon)
-         {
+         
+         if (elementsToHide.IsSet(HideableElement.ButtonRibbon))
             layoutItemRibbon.Visibility = LayoutVisibility.Never;
-         }
 
-         if ((elementsToHide & HideableElement.NegativeValuesRibbon) == HideableElement.NegativeValuesRibbon)
-         {
+         if (elementsToHide.IsSet(HideableElement.NegativeValuesRibbon))
             ribbonGroupNegativeValues.Visible = false;
-         }
       }
 
       public void RefreshData() => gridView.RefreshData();
