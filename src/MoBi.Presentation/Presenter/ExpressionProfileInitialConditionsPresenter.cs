@@ -37,10 +37,7 @@ namespace MoBi.Presentation.Presenter
             distributedParameterPresenter)
       {
          _buildingBlockMapper = buildingBlockMapper;
-         HideElement(HideableElement.PresenceRibbon);
-         HideElement(HideableElement.DeleteButton);
-         HideElement(HideableElement.DeleteColumn);
-         HideElement(HideableElement.ValueOriginColumn);
+         HideElements(HideableElement.PresenceRibbon | HideableElement.DeleteButton | HideableElement.DeleteColumn | HideableElement.ValueOriginColumn);
          DisablePathColumns();
          HideIsPresentColumn();
       }

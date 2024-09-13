@@ -13,6 +13,7 @@ using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraLayout;
+using DevExpress.XtraLayout.Utils;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Formatters;
@@ -85,7 +86,7 @@ namespace MoBi.UI.Views
          btnNotAllowNegativeValues.Caption = AppConstants.Captions.NotAllowed;
          btnNotAllowNegativeValues.RibbonStyle = RibbonItemStyles.SmallWithText;
          btnNotAllowNegativeValues.ImageOptions.SvgImage = svgImageCollection["actions_addcircled"];
-         
+
          ribbonGroupNegativeValues.Text = AppConstants.Captions.NegativeValues;
 
          btnPresent.Caption = AppConstants.Captions.Present;
@@ -158,8 +159,6 @@ namespace MoBi.UI.Views
 
       public abstract string NameColumnCaption { get; }
 
-   
-
       protected IReadOnlyList<TPathAndValueEntity> selectedStartValues
       {
          get { return gridView.GetSelectedRows().Select(rowHandle => _gridViewBinder.ElementAt(rowHandle)).ToList(); }
@@ -173,39 +172,42 @@ namespace MoBi.UI.Views
          _colName.AsReadOnly();
       }
 
-      public void HideElement(HideableElement elementToHide)
+      public void HideElements(HideableElement elementsToHide)
       {
-         switch (elementToHide)
+         if ((elementsToHide & HideableElement.ValueOriginColumn) == HideableElement.ValueOriginColumn)
          {
-            case HideableElement.ValueOriginColumn:
-               _valueOriginBinder.ValueOriginColumn.AsHidden().WithShowInColumnChooser(true);
-               break;
-
-            case HideableElement.DeleteColumn:
-               _deleteColumn.AsHidden();
-               break;
-
-            case HideableElement.RefreshButton:
-               btnRefresh.Visibility = BarItemVisibility.Never;
-               break;
-
-            case HideableElement.DeleteButton:
-               btnDelete.Visibility = BarItemVisibility.Never;
-               break;
-
-            case HideableElement.PresenceRibbon:
-               ribbonGroupPresence.Visible = false;
-               break;
-
-            case HideableElement.ButtonRibbon:
-               layoutItemRibbon.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
-               break;
-
-            case HideableElement.NegativeValuesRibbon:
-               ribbonGroupNegativeValues.Visible = false;
-               break;
+            _valueOriginBinder.ValueOriginColumn.AsHidden().WithShowInColumnChooser(true);
          }
 
+         if ((elementsToHide & HideableElement.DeleteColumn) == HideableElement.DeleteColumn)
+         {
+            _deleteColumn.AsHidden();
+         }
+
+         if ((elementsToHide & HideableElement.RefreshButton) == HideableElement.RefreshButton)
+         {
+            btnRefresh.Visibility = BarItemVisibility.Never;
+         }
+
+         if ((elementsToHide & HideableElement.DeleteButton) == HideableElement.DeleteButton)
+         {
+            btnDelete.Visibility = BarItemVisibility.Never;
+         }
+
+         if ((elementsToHide & HideableElement.PresenceRibbon) == HideableElement.PresenceRibbon)
+         {
+            ribbonGroupPresence.Visible = false;
+         }
+
+         if ((elementsToHide & HideableElement.ButtonRibbon) == HideableElement.ButtonRibbon)
+         {
+            layoutItemRibbon.Visibility = LayoutVisibility.Never;
+         }
+
+         if ((elementsToHide & HideableElement.NegativeValuesRibbon) == HideableElement.NegativeValuesRibbon)
+         {
+            ribbonGroupNegativeValues.Visible = false;
+         }
       }
 
       public void RefreshData() => gridView.RefreshData();

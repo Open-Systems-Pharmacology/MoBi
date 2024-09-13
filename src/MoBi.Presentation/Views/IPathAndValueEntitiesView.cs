@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using OSPSuite.Presentation.Views;
 
@@ -9,15 +10,17 @@ namespace MoBi.Presentation.Views
       void RefreshForUpdatedEntity();
    }
 
+   [Flags]
    public enum HideableElement
    {
-      ValueOriginColumn,
-      DeleteColumn,
-      RefreshButton,
-      DeleteButton,
-      PresenceRibbon,
-      ButtonRibbon,
-      NegativeValuesRibbon
+      None = 0,
+      ValueOriginColumn = 1,
+      DeleteColumn = 2,
+      RefreshButton = 4,
+      DeleteButton = 8,
+      PresenceRibbon = 16,
+      ButtonRibbon = 32,
+      NegativeValuesRibbon = 64
    }
 
    public interface IPathAndValueEntitiesView<TStartValueDTO> : IPathAndValueEntitiesView
@@ -39,7 +42,7 @@ namespace MoBi.Presentation.Views
 
       void DisablePathColumns();
 
-      void HideElement(HideableElement elementToHide);
+      void HideElements(HideableElement elementsToHide);
       void RefreshData();
       TStartValueDTO FocusedStartValue { get; set; }
       bool CanCreateNewFormula { set; }

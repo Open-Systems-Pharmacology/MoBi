@@ -201,9 +201,10 @@ namespace MoBi.Presentation.Presenter
          if (_handleChangedEvents)
             HandleBuildingBlockEvent(eventToHandle);
       }
-      public void HideElement(HideableElement element)
+
+      public void HideElements(HideableElement elementsToHide)
       {
-         _view.HideElement(element);
+         _view.HideElements(elementsToHide);
       }
 
       public void Handle(BulkUpdateFinishedEvent eventToHandle)
