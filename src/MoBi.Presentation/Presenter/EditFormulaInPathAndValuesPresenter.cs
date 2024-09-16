@@ -1,13 +1,14 @@
-﻿using System.Linq;
+﻿using System;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Helper;
 using MoBi.Presentation.Mappers;
-using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 
@@ -15,13 +16,17 @@ namespace MoBi.Presentation.Presenter
 {
    public interface IEditFormulaInPathAndValuesPresenter : ICommandCollectorPresenter, ISubjectPresenter, IEditFormulaPresenter
    {
-      void Init<TBuilder>(TBuilder formulaOwner, IBuildingBlock buildingBlock, UsingFormulaDecoder formulaDecoder, MoBiMacroCommand macroCommand) where TBuilder : PathAndValueEntity, IUsingFormula, IWithDisplayUnit;
+      void Init<TBuildingBlock, TBuilder>(TBuilder formulaOwner, TBuildingBlock buildingBlock, UsingFormulaDecoder formulaDecoder) 
+         where TBuilder : PathAndValueEntity, IUsingFormula, IWithDisplayUnit
+         where TBuildingBlock : class, IBuildingBlock<TBuilder>;
+
+      IFormula Formula { get; }
    }
 
    public class EditFormulaInPathAndValuesPresenter : EditFormulaPresenter<IEditFormulaInPathAndValuesView, IEditFormulaInPathAndValuesPresenter>, IEditFormulaInPathAndValuesPresenter
    {
-      private readonly IInteractionTaskContext _interactionTaskContext;
-      private MoBiMacroCommand _localMacroCommand;
+      private readonly ICloneManagerForBuildingBlock _cloneManager;
+      private PathAndValueEntity _clonedBuilder;
 
       public EditFormulaInPathAndValuesPresenter(IEditFormulaInPathAndValuesView view, 
          IFormulaPresenterCache formulaPresenterCache, 
@@ -30,41 +35,46 @@ namespace MoBi.Presentation.Presenter
          FormulaTypeCaptionRepository formulaTypeCaptionRepository,
          IMoBiFormulaTask formulaTask, 
          ICircularReferenceChecker circularReferenceChecker,
-         IInteractionTaskContext interactionTaskContext,
-         ISelectReferenceAtParameterValuePresenter referencePresenter) : base(view, formulaPresenterCache, context, formulaDTOMapper, formulaTask, formulaTypeCaptionRepository, circularReferenceChecker)
+         ISelectReferenceAtParameterValuePresenter referencePresenter, 
+         ICloneManagerForBuildingBlock cloneManager) : base(view, formulaPresenterCache, context, formulaDTOMapper, formulaTask, formulaTypeCaptionRepository, circularReferenceChecker)
       {
-         _interactionTaskContext = interactionTaskContext;
+         _cloneManager = cloneManager;
          ReferencePresenter = referencePresenter;
+         
       }
 
       public void FormulaTypeSelectionChanged(string formulaName)
       {
-         rollBackChanges();
-
-         var (command, newFormula) = _formulaTask.CreateNewFormulaInBuildingBlock(_formulaDTO.Type, FormulaDimension, AllFormulaNames, _buildingBlock, formulaName);
+         var (_, newFormula) = _formulaTask.CreateNewFormulaInBuildingBlock(_formulaDTO.Type, FormulaDimension, AllFormulaNames, _buildingBlock, formulaName);
          if (newFormula == null)
             return;
 
-         AddCommand(command);
          SelectFormula(newFormula);
          UpdateFormula();
       }
 
-      private void rollBackChanges()
-      {
-         if (_localMacroCommand.IsEmpty) 
-            return;
 
-         _interactionTaskContext.CancelCommand(_localMacroCommand);
-         _localMacroCommand.Clear();
+      public void Init<TBuildingBlock, TBuilder>(TBuilder formulaOwner, TBuildingBlock buildingBlock, UsingFormulaDecoder formulaDecoder) where TBuilder : PathAndValueEntity, IUsingFormula, IWithDisplayUnit where TBuildingBlock : class, IBuildingBlock<TBuilder>
+      {
+         InitializeWith(new MoBiMacroCommand());
+
+         var clonedBuildingBlock = _cloneManager.Clone(buildingBlock);
+         _clonedBuilder = clonedBuildingBlock.FindByName(formulaOwner.Name);
+
+         ReferencePresenter.Init(null, Array.Empty<IObjectBase>(), _clonedBuilder);
+         Initialize(_clonedBuilder, clonedBuildingBlock, formulaDecoder);
       }
 
-      public void Init<TBuilder>(TBuilder formulaOwner, IBuildingBlock buildingBlock, UsingFormulaDecoder formulaDecoder, MoBiMacroCommand macroCommand) where TBuilder : PathAndValueEntity, IUsingFormula, IWithDisplayUnit
+      public IFormula Formula => _clonedBuilder?.Formula;
+
+      protected override bool ShouldUpdateOwner()
       {
-         _localMacroCommand = macroCommand;
-         ReferencePresenter.Init(null, Enumerable.Empty<IObjectBase>().ToList(), formulaOwner);
-         InitializeWith(_localMacroCommand);
-         Init(formulaOwner, buildingBlock, formulaDecoder);
+         return true;
+      }
+
+      protected override ConstantFormula CreateNewConstantFormula()
+      {
+         return _formulaTask.CreateNewFormula<ConstantFormula>(FormulaDimension);
       }
    }
 }

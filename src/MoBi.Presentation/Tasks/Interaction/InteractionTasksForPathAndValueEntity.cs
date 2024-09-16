@@ -178,13 +178,16 @@ namespace MoBi.Presentation.Tasks.Interaction
             var editFormulaPresenter = Context.Resolve<IEditFormulaInPathAndValuesPresenter>();
             modalPresenter.Encapsulate(editFormulaPresenter);
             modalPresenter.Text = AppConstants.Captions.EditFormula;
-            editFormulaPresenter.Init(builder, buildingBlock, new UsingFormulaDecoder(), macroCommand);
+            var usingFormulaDecoder = new UsingFormulaDecoder();
+            editFormulaPresenter.Init(builder, buildingBlock, usingFormulaDecoder);
 
             if (!modalPresenter.Show())
-               return CancelCommand(macroCommand);
+               return new MoBiEmptyCommand();
+               
+            macroCommand.Add(_interactionTaskContext.MoBiFormulaTask.UpdateFormula(builder, builder.Formula, editFormulaPresenter.Formula, usingFormulaDecoder, buildingBlock));
+            macroCommand.Add(_interactionTaskContext.MoBiFormulaTask.AddFormulaToCacheOrFixReferenceCommand(buildingBlock, builder).Run(_interactionTaskContext.Context));
+            return macroCommand;
          }
-
-         return macroCommand;
       }
 
       public IMoBiCommand SetFormula(TBuildingBlock buildingBlock, TBuilder builder, IFormula formula)

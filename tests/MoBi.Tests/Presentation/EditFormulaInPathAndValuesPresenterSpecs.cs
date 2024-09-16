@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System.Linq;
+using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
@@ -8,8 +9,10 @@ using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation
@@ -19,12 +22,13 @@ namespace MoBi.Presentation
       private IEditFormulaInPathAndValuesView _editFormulaInPathAndValues;
       private IFormulaPresenterCache _formulaPresenterCache;
       private IMoBiContext _moBiContext;
-      private IFormulaToFormulaInfoDTOMapper _formulaToFormulaInfoDTOMapper;
+      protected IFormulaToFormulaInfoDTOMapper _formulaToFormulaInfoDTOMapper;
       private FormulaTypeCaptionRepository _formulaTypeCaptionRepository;
       private IMoBiFormulaTask _moBiFormulaTask;
       private ICircularReferenceChecker _circularReferenceChecker;
       protected IInteractionTaskContext _interactionTaskContext;
       private ISelectReferenceAtParameterValuePresenter _selectReferenceAtParameterValuePresenter;
+      protected ICloneManagerForBuildingBlock _cloneManager;
 
       protected override void Context()
       {
@@ -37,6 +41,7 @@ namespace MoBi.Presentation
          _circularReferenceChecker = A.Fake<ICircularReferenceChecker>();
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
          _selectReferenceAtParameterValuePresenter = A.Fake<ISelectReferenceAtParameterValuePresenter>();
+         _cloneManager = A.Fake<ICloneManagerForBuildingBlock>();
 
          sut = new EditFormulaInPathAndValuesPresenter(_editFormulaInPathAndValues, 
             _formulaPresenterCache, 
@@ -45,74 +50,43 @@ namespace MoBi.Presentation
             _formulaTypeCaptionRepository, 
             _moBiFormulaTask, 
             _circularReferenceChecker, 
-            _interactionTaskContext, 
-            _selectReferenceAtParameterValuePresenter);
+            _selectReferenceAtParameterValuePresenter, _cloneManager);
       }
    }
 
    public class When_initializing_the_presenter : concern_for_EditFormulaInPathAndValuesPresenter
    {
-      private ParameterValue _parameterValue;
-      private ParameterValuesBuildingBlock _parameterValuesBuildingBlock;
-      private UsingFormulaDecoder _usingFormulaDecoder;
-      private MoBiMacroCommand _moBiMacroCommand;
+      private ParameterValue _entity;
+      private ParameterValuesBuildingBlock _buildingBlock;
+      private ParameterValuesBuildingBlock _clonedBuildingBlock;
 
       protected override void Context()
       {
          base.Context();
-         _parameterValue = new ParameterValue();
-         _parameterValuesBuildingBlock = new ParameterValuesBuildingBlock { _parameterValue };
-         _usingFormulaDecoder = new UsingFormulaDecoder();
-         _moBiMacroCommand = new MoBiMacroCommand();
+         _entity = new ParameterValue().WithName("parameter").WithFormula(new ExplicitFormula().WithName("explicit"));
+         _buildingBlock = new ParameterValuesBuildingBlock { _entity };
+         _clonedBuildingBlock = new ParameterValuesBuildingBlock
+         {
+            new ParameterValue().WithName("parameter").WithFormula(new ExplicitFormula().WithName("explicit"))
+         };
+         A.CallTo(() => _cloneManager.Clone(_buildingBlock)).Returns(_clonedBuildingBlock);
       }
 
       protected override void Because()
       {
-         sut.Init(_parameterValue, _parameterValuesBuildingBlock, _usingFormulaDecoder, _moBiMacroCommand);
+         sut.Init(_entity, _buildingBlock, new UsingFormulaDecoder());
       }
 
       [Observation]
-      public void the_command_collector_should_be_the_macro_command()
+      public void the_clone_manager_should_clone_the_building_block()
       {
-         sut.CommandCollector.ShouldBeEqualTo(_moBiMacroCommand);
-      }
-   }
-
-   public class When_changing_formula_type : concern_for_EditFormulaInPathAndValuesPresenter
-   {
-      private string _formulaName;
-      private MoBiMacroCommand _moBiMacroCommand;
-      private MoBiMacroCommand _subCommand;
-
-      protected override void Context()
-      {
-         base.Context();
-         _formulaName = "FormulaName";
-
-         var parameterValue = new ParameterValue();
-         var parameterValuesBuildingBlock = new ParameterValuesBuildingBlock { parameterValue };
-
-         _moBiMacroCommand = new MoBiMacroCommand();
-         _subCommand = new MoBiMacroCommand();
-         _moBiMacroCommand.Add(_subCommand);
-         sut.Init(parameterValue, parameterValuesBuildingBlock, new UsingFormulaDecoder(), _moBiMacroCommand);
-      }
-
-      protected override void Because()
-      {
-         sut.FormulaTypeSelectionChanged(_formulaName);
+         A.CallTo(() => _cloneManager.Clone(_buildingBlock)).MustHaveHappened();
       }
 
       [Observation]
-      public void the_macro_command_should_be_cleared_of_previous_commands()
+      public void the_presenter_and_view_are_using_a_clone()
       {
-         _moBiMacroCommand.All().ShouldNotContain(_subCommand);
-      }
-
-      [Observation]
-      public void existing_commands_should_be_canceled()
-      {
-         A.CallTo(() => _interactionTaskContext.CancelCommand(_moBiMacroCommand)).MustHaveHappened();
+         A.CallTo(() => _formulaToFormulaInfoDTOMapper.MapFrom(_clonedBuildingBlock.First().Formula)).MustHaveHappened();
       }
    }
 }

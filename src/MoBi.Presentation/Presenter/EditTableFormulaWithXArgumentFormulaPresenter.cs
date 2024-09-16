@@ -97,6 +97,6 @@ namespace MoBi.Presentation.Presenter
       }
 
       private IReadOnlyList<IObjectBase> contextList(IUsingFormula usingObject) =>
-         usingObject?.RootContainer != null ? new List<IObjectBase> { usingObject.RootContainer } : Enumerable.Empty<IObjectBase>().ToList();
+         usingObject?.RootContainer != null ? new[] { usingObject.RootContainer } : Array.Empty<IObjectBase>();
    }
 }

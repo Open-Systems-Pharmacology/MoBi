@@ -41,29 +41,6 @@ namespace MoBi.Presentation.Presenter
       /// </summary>
       void RemoveAllFormulaTypes();
 
-      /// <summary>
-      ///    Initializes the editor with <paramref name="formulaOwner" /> and a method to retrieve the formula
-      ///    <paramref name="formulaDecoder" />
-      /// </summary>
-      /// <typeparam name="TObjectWithFormula"></typeparam>
-      /// <param name="formulaOwner">The object which contains the reference to the formula to be edited</param>
-      /// <param name="buildingBlock">The building block that the formula belongs in</param>
-      /// <param name="formulaDecoder">The decoder which can retrieve the formula from the owner</param>
-      void Init<TObjectWithFormula>(TObjectWithFormula formulaOwner, IBuildingBlock buildingBlock, FormulaDecoder<TObjectWithFormula> formulaDecoder)
-         where TObjectWithFormula : IEntity, IWithDimension;
-
-      /// <summary>
-      ///    Initializes the editor with <paramref name="parameter" />
-      /// </summary>
-      void Init(IParameter parameter, IBuildingBlock buildingBlock);
-
-      /// <summary>
-      ///    Initializes the editor with the <paramref name="formulaOwner" />
-      /// </summary>
-      /// <param name="formulaOwner">The object which contains the reference to the formula to be edited</param>
-      /// <param name="buildingBlock">The building block that the formula belongs in</param>
-      void Init(IUsingFormula formulaOwner, IBuildingBlock buildingBlock);
-
       bool BlackBoxAllowed { set; }
 
       ISelectReferencePresenter ReferencePresenter { get; set; }
@@ -133,8 +110,7 @@ namespace MoBi.Presentation.Presenter
 
       public string DisplayFor(Type formulaType) => _formulaTypeCaptionRepository[formulaType];
 
-      public void Init<TObjectWithFormula>(TObjectWithFormula formulaOwner, IBuildingBlock buildingBlock, FormulaDecoder<TObjectWithFormula> formulaDecoder)
-         where TObjectWithFormula : IEntity, IWithDimension
+      protected void Initialize<TObjectWithFormula>(TObjectWithFormula formulaOwner, IBuildingBlock buildingBlock, FormulaDecoder<TObjectWithFormula> formulaDecoder) where TObjectWithFormula : IEntity, IWithDimension
       {
          _formulaOwner = formulaOwner;
          _formulaDecoder = formulaDecoder;
@@ -143,16 +119,6 @@ namespace MoBi.Presentation.Presenter
          _constantFormula = null;
          UpdateFormula();
       }
-
-      public void Init(IParameter parameter, IBuildingBlock buildingBlock)
-      {
-         if (IsRHS)
-            Init(parameter, buildingBlock, new RHSFormulaDecoder());
-         else
-            Init(parameter.DowncastTo<IUsingFormula>(), buildingBlock);
-      }
-
-      public void Init(IUsingFormula formulaOwner, IBuildingBlock buildingBlock) => Init(formulaOwner, buildingBlock, new UsingFormulaDecoder());
 
       public override void ReleaseFrom(IEventPublisher eventPublisher)
       {
@@ -222,7 +188,7 @@ namespace MoBi.Presentation.Presenter
                throw new OSPSuiteException(AppConstants.Exceptions.CircularReferenceFormulaException(formula));
          }
 
-         if (!formulaIsDefined())
+         if (!ShouldUpdateOwner())
             _formula = null;
 
          setFormulaInOwner(formula);
@@ -235,21 +201,16 @@ namespace MoBi.Presentation.Presenter
       private void setFormulaInOwner(IFormula newFormula) => 
          AddCommand(_formulaTask.UpdateFormula(_formulaOwner, _formula, newFormula, _formulaDecoder, _buildingBlock));
 
-      private bool formulaIsDefined() => _formula != null && _context.ObjectRepository.ContainsObjectWithId(_formula.Id);
+      protected abstract bool ShouldUpdateOwner();
 
       private bool needsName(Type type) => !(type == typeof(ConstantFormula) || type == typeof(DistributionFormula));
 
       private IFormula getConstantFormula()
       {
-         if (_constantFormula == null)
-         {
-            _constantFormula = _formulaTask.CreateNewFormula<ConstantFormula>(FormulaDimension);
-            //it is important to register the constant formula in the repository here otherwise it won't be found
-            //when rolling back commands
-            _context.ObjectRepository.Register(_constantFormula);
-         }
-         return _constantFormula;
+         return _constantFormula ?? (_constantFormula = CreateNewConstantFormula());
       }
+
+      protected abstract ConstantFormula CreateNewConstantFormula();
 
       public IEnumerable<string> DisplayFormulaNames()
       {
@@ -334,7 +295,7 @@ namespace MoBi.Presentation.Presenter
 
       private void rebind()
       {
-         if (!formulaIsDefined())
+         if (!ShouldUpdateOwner())
          {
             _view.ClearFormulaView();
             return;
