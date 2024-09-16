@@ -50,7 +50,6 @@ namespace MoBi.Presentation.Presenter
          IInteractionTasksForExtendablePathAndValueEntity<TBuildingBlock, TPathAndValueEntity> interactionTasksForExtendablePathAndValueEntity,
          IEmptyStartValueCreator<TPathAndValueEntity> emptyStartValueCreator,
          IMoBiContext context,
-         IDeletePathAndValueEntityPresenter deletePathAndValueEntityPresenter,
          IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper,
          IDimensionFactory dimensionFactory,
          IDistributedPathAndValueEntityPresenter<TStartValueDTO, TBuildingBlock> distributedPathAndValuePresenter)
@@ -63,11 +62,6 @@ namespace MoBi.Presentation.Presenter
          _emptyStartValueCreator = emptyStartValueCreator;
          _context = context;
          _originalStartValues = new List<TPathAndValueEntity>();
-
-         deletePathAndValueEntityPresenter.ApplySelectionAction = performDeleteAction;
-         _view.AddDeleteStartValuesView(deletePathAndValueEntityPresenter.BaseView);
-
-         AddSubPresenters(deletePathAndValueEntityPresenter);
          _handleChangedEvents = true;
          CanCreateNewFormula = true;
       }
@@ -89,28 +83,9 @@ namespace MoBi.Presentation.Presenter
          set { _view.CanCreateNewFormula = value; }
       }
 
-      protected IReadOnlyList<TStartValueDTO> SelectedStartValueDTOs => _view.SelectedStartValues;
-
-      protected IEnumerable<TPathAndValueEntity> SelectedStartValues => StartValuesFrom(SelectedStartValueDTOs);
-
-      protected IReadOnlyList<TStartValueDTO> VisibleStartValueDTOs => _view.VisibleStartValues;
-
-      protected IEnumerable<TPathAndValueEntity> VisibleStartValues => StartValuesFrom(VisibleStartValueDTOs);
-
-      protected IEnumerable<TPathAndValueEntity> StartValuesFrom(IEnumerable<TStartValueDTO> selectedStartValueDTOs)
+      public void Delete(IReadOnlyList<TStartValueDTO> selectedStartValues)
       {
-         return selectedStartValueDTOs.Select(x => x.PathWithValueObject);
-      }
-
-      private void performDeleteAction(SelectOption selectOption)
-      {
-         if (selectOption == SelectOption.DeleteSelected)
-            deleteSelected();
-      }
-
-      private void deleteSelected()
-      {
-         bulkRemove(_view.SelectedStartValues);
+         bulkRemove(selectedStartValues);
       }
 
       private void bulkRemove(IReadOnlyList<TStartValueDTO> startValuesToRemove)
@@ -227,30 +202,6 @@ namespace MoBi.Presentation.Presenter
             HandleBuildingBlockEvent(eventToHandle);
       }
 
-      public void HideValueOriginColumn()
-      {
-         _view.HideValueOriginColumn();
-      }
-
-      public void HideDeleteView()
-      {
-         _view.HideDeleteView();
-      }
-
-      public void HideDeleteColumn()
-      {
-         _view.HideDeleteColumn();
-      }
-
-      public void HideIsPresentView()
-      {
-         _view.HideIsPresentView();
-      }
-
-      public void HideNegativeValuesAllowedView()
-      {
-         _view.HideNegativeValuesAllowedView();
-      }
 
       public void Handle(BulkUpdateFinishedEvent eventToHandle)
       {

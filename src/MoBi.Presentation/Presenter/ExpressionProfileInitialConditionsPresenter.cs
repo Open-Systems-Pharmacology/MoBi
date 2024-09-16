@@ -20,35 +20,24 @@ namespace MoBi.Presentation.Presenter
 
       public ExpressionProfileInitialConditionsPresenter(IInitialConditionsView view,
          IInitialConditionToInitialConditionDTOMapper dtoMapper,
-         IMoleculeIsPresentSelectionPresenter isPresentSelectionPresenter,
-         IMoleculeNegativeValuesAllowedSelectionPresenter negativeStartValuesAllowedSelectionPresenter,
          IInitialConditionsTask<ExpressionProfileBuildingBlock> initialConditionsTask,
          IInitialConditionsCreator msvCreator,
          IMoBiContext context,
-         IDeletePathAndValueEntityPresenter deletePathAndValueEntityPresenter,
          IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper,
          IDimensionFactory dimensionFactory,
          IInitialConditionsDistributedInExpressionProfilePresenter distributedParameterPresenter,
-         IExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper buildingBlockMapper, 
-         IRefreshInitialConditionsPresenter refreshInitialConditionsPresenter) : 
+         IExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper buildingBlockMapper) : 
          base(view, 
             dtoMapper, 
             initialConditionsTask, 
             msvCreator, 
             context, 
-            deletePathAndValueEntityPresenter, 
             formulaToValueFormulaDTOMapper, 
             dimensionFactory, 
-            refreshInitialConditionsPresenter,
-            isPresentSelectionPresenter, 
-            negativeStartValuesAllowedSelectionPresenter, distributedParameterPresenter)
+            distributedParameterPresenter)
       {
          _buildingBlockMapper = buildingBlockMapper;
-         HideDeleteColumn();
-         HideIsPresentView();
-         HideDeleteView();
-         HideIsPresentColumn();
-         HideValueOriginColumn();
+         view.HideElements(HidablePathAndValuesViewElement.PresenceRibbon | HidablePathAndValuesViewElement.DeleteButton | HidablePathAndValuesViewElement.DeleteColumn | HidablePathAndValuesViewElement.ValueOriginColumn | HidablePathAndValuesViewElement.IsPresentColumn);
          DisablePathColumns();
       }
 

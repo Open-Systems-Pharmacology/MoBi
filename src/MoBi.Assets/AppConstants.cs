@@ -221,7 +221,7 @@ namespace MoBi.Assets
          public static readonly string RenameCommand = Command.CommandTypeRename;
          public static readonly string SetToDefaultDefaultDescription = "Sets Values to Defaults defined in Molecules and Spatial Structure";
          public static readonly string SetToDefaultDefaultType = "Set To Default";
-         public static readonly string ExtendDescription = "Adding new values from Molecules and Spatial Structure";
+         public static readonly string ExtendDescription = "Adding new values";
          public static readonly string AddManyMoleculesDescription = "Add some Molecules to Reaction Diagram";
          public static readonly string MergeCommand = "Merge";
          public static readonly string AddParameterIdentificationResults = "Add parameter identification results to start values collection";
@@ -1133,6 +1133,7 @@ namespace MoBi.Assets
 
          public static string AddExistingAs(string objectTypeName, string targetTypeName) => $"Load {objectTypeName} as {targetTypeName}...";
          public static string AddExisting(string objectTypeName) => $"Load {objectTypeName}...";
+         public static string ExtendFrom(string objectTypeName) => $"Extend from {objectTypeName}...";
 
          public static string AddExistingFromTemplate(string objectTypeName) => $"Load {objectTypeName} from Template...";
 
@@ -1446,17 +1447,9 @@ namespace MoBi.Assets
          public static readonly string ScaleDivisor = "Scale Divisor";
          public static readonly string IsPresent = "Is Present";
          public static readonly string NegativeValuesAllowed = "Neg. Values Allowed";
-         public static readonly string NegativeValues = "Neg. Values";
+         public static readonly string NegativeValues = "Negative Values";
          public static readonly string MoleculeName = "Molecule Name";
          public static readonly string ParameterName = "Parameter Name";
-         public static readonly string AllPresent = "Mark all as present";
-         public static readonly string AllNotPresent = "Mark all as not present";
-         public static readonly string SelectedNotPresent = "Mark selected as not present";
-         public static readonly string SelectedPresent = "Mark selected as present";
-         public static readonly string AllNegativeValuesAllowed = "Mark all as allowing neg. values";
-         public static readonly string AllNegativeValuesNotAllowed = "Mark all as not allowing neg. values";
-         public static readonly string SelectedNegativeValuesAllowed = "Mark selected as allowing neg. values";
-         public static readonly string SelectedNegativeValuesNotAllowed = "Mark selected as not allowing neg. values";
          public static readonly string Apply = "Apply";
          public static readonly string SimulationConfiguration = "Configuration";
          public static readonly string Search = "Search";
@@ -1561,8 +1554,6 @@ namespace MoBi.Assets
          public static readonly string CalculateScaleDivisor = "Calculate Scale Divisor";
          public static readonly string CreatePKSimMoleculeFromTemplate = "Create PK-Sim Molecule From Template";
          public static readonly string RefreshValues = "Refresh Values";
-         public static readonly string RefreshAll = "Refresh all from source";
-         public static readonly string RefreshSelected = "Refresh selected from source";
          public static readonly string SaveUnitsToFile = "Save Units";
          public static readonly string LoadUnitsFromFile = "Load Units";
          public static readonly string SaveUnits = "Save Units";
@@ -1619,7 +1610,12 @@ namespace MoBi.Assets
          public static readonly string AddDefaultCurveForNewSimulations = "Add default curve for new simulations";
          public static readonly string ChangeDefaultCurveForNewSimulations = "Change default curve for new simulations";
          public static readonly string IndividualParameters = "Individual Parameters";
-         public static readonly string ParameterPathsToAdd= "Parameter Paths to Add";
+         public static readonly string ParameterPathsToAdd = "Parameter Paths to Add";
+         public static readonly string Allowed = "Allowed";
+         public static readonly string NotAllowed = "Not Allowed";
+         public static readonly string Presence = "Presence";
+         public static readonly string Present = "Present";
+         public static readonly string NotPresent = "Not Present";
          public static readonly string EditFormula = "Edit Formula";
          
          public static string SelectTheBuildingBlockWhereEntitiesWillBeAddedOrUpdated(string typeBeingAdded) => $"Select the building block where {typeBeingAdded} will be added or updated";
@@ -1672,7 +1668,6 @@ namespace MoBi.Assets
          public static readonly string OpenLayoutFromFile = OSPSuite.Assets.Captions.OpenLayoutFromFile;
          public static readonly string SaveChanges = "Save Changes";
          public static readonly string EnableEditing = "Enable Editing";
-         public static readonly string DeleteSelected = "Delete Selected";
          public static readonly string DeleteSourceNotDefined = "Delete Source Not Defined";
          public static readonly string DeleteValues = "Delete Values";
          public static readonly string DeleteLinksFromMoleculesFirst = "Delete links from molecules first";

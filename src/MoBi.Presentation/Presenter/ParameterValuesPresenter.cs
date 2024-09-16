@@ -46,23 +46,19 @@ namespace MoBi.Presentation.Presenter
          IParameterValuesCreator parameterValuesCreator,
          IMoBiContext context,
          IDisplayUnitRetriever displayUnitRetriever,
-         IDeletePathAndValueEntityPresenter deletePathAndValueEntityPresenter,
          IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper,
          IParameterValueDistributedPathAndValueEntityPresenter distributedParameterPresenter,
          IParameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper,
          IDimensionFactory dimensionFactory,
          IViewItemContextMenuFactory viewItemContextMenuFactory,
-         IModalPresenter modalPresenter,
-         IDialogCreator dialogCreator) : base(view, valueMapper, parameterValuesTask, parameterValuesCreator, context, deletePathAndValueEntityPresenter, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
+         IDialogCreator dialogCreator) : base(view, valueMapper, parameterValuesTask, parameterValuesCreator, context, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
       {
          _parameterValuesTask = parameterValuesTask;
          _displayUnitRetriever = displayUnitRetriever;
          _parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper = parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper;
          _viewItemContextMenuFactory = viewItemContextMenuFactory;
          _dialogCreator = dialogCreator;
-         view.HideIsPresentView();
-         view.HideRefreshView();
-         view.HideNegativeValuesAllowedView();
+         view.HideElements(HidablePathAndValuesViewElement.RefreshButton | HidablePathAndValuesViewElement.PresenceRibbon | HidablePathAndValuesViewElement.NegativeValuesRibbon);
       }
 
       protected override string RemoveCommandDescription()

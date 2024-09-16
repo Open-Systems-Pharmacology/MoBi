@@ -26,39 +26,30 @@ namespace MoBi.Presentation
       protected IInitialConditionsView _view;
       protected IInitialConditionToInitialConditionDTOMapper _mapper;
       private IMoBiContext _context;
-      protected IMoleculeIsPresentSelectionPresenter _isPresentSelectionPresenter;
       protected IInitialConditionsTask<InitialConditionsBuildingBlock> _initialConditionTask;
       protected ICommandCollector _commandCollector;
       protected InitialConditionsBuildingBlock _initialConditionsBuildingBlock;
-      protected IDeletePathAndValueEntityPresenter _deletePathAndValueEntityPresenter;
-      private IMoleculeNegativeValuesAllowedSelectionPresenter _negativeStartValuesAllowedSelectionPresenter;
       protected IInitialConditionsCreator _initialConditionsCreator;
       private IFormulaToValueFormulaDTOMapper _formulaToValueFormulaDTOMapper;
       private IDimensionFactory _dimensionFactory;
       private IInitialConditionsDistributedPathAndValueEntityPresenter _distributedParameterPresenter;
       private IInitialConditionsBuildingBlockToInitialConditionsBuildingBlockDTOMapper _buildingBlockMapper;
-      private IRefreshInitialConditionsPresenter _refreshInitialConditionsPresenter;
-
       protected override void Context()
       {
          _view = A.Fake<IInitialConditionsView>();
          _mapper = A.Fake<IInitialConditionToInitialConditionDTOMapper>();
          _context = A.Fake<IMoBiContext>();
-         _isPresentSelectionPresenter = A.Fake<IMoleculeIsPresentSelectionPresenter>();
-         _refreshInitialConditionsPresenter = A.Fake<IRefreshInitialConditionsPresenter>();
-         _negativeStartValuesAllowedSelectionPresenter = A.Fake<IMoleculeNegativeValuesAllowedSelectionPresenter>();
          _initialConditionTask = A.Fake<IInitialConditionsTask<InitialConditionsBuildingBlock>>();
          _commandCollector = A.Fake<ICommandCollector>();
-         _deletePathAndValueEntityPresenter = A.Fake<IDeletePathAndValueEntityPresenter>();
          _dimensionFactory = A.Fake<IDimensionFactory>();
          _initialConditionsCreator = A.Fake<IInitialConditionsCreator>();
          _distributedParameterPresenter = A.Fake<IInitialConditionsDistributedPathAndValueEntityPresenter>();
          _formulaToValueFormulaDTOMapper = new FormulaToValueFormulaDTOMapper();
          _buildingBlockMapper = new InitialConditionsBuildingBlockToInitialConditionsBuildingBlockDTOMapper(_mapper);
 
-         sut = new InitialConditionsPresenter(
-            _view, _mapper, _isPresentSelectionPresenter, _refreshInitialConditionsPresenter, _negativeStartValuesAllowedSelectionPresenter, _initialConditionTask,
-            _initialConditionsCreator, _context, _deletePathAndValueEntityPresenter, _formulaToValueFormulaDTOMapper, _dimensionFactory, _distributedParameterPresenter, _buildingBlockMapper);
+      sut = new InitialConditionsPresenter(
+            _view, _mapper, _initialConditionTask,
+            _initialConditionsCreator, _context, _formulaToValueFormulaDTOMapper, _dimensionFactory, _distributedParameterPresenter, _buildingBlockMapper);
          _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock();
 
          sut.InitializeWith(_commandCollector);
@@ -119,24 +110,6 @@ namespace MoBi.Presentation
          A.CallTo(() => _initialConditionTask.RemovePathAndValueEntityFromBuildingBlockCommand(_startValue1, _initialConditionsBuildingBlock)).MustHaveHappened();
          A.CallTo(() => _initialConditionTask.RemovePathAndValueEntityFromBuildingBlockCommand(_startValue2, _initialConditionsBuildingBlock)).MustHaveHappened();
          A.CallTo(() => _initialConditionTask.RemovePathAndValueEntityFromBuildingBlockCommand(_startValue3, _initialConditionsBuildingBlock)).MustNotHaveHappened();
-      }
-   }
-
-   internal class When_deleting_selected_start_values_from_building_block : When_deleting_start_values_from_building_block
-   {
-      protected override void Context()
-      {
-         base.Context();
-         A.CallTo(() => _view.SelectedStartValues).Returns(new[]
-         {
-            new InitialConditionDTO(_startValue1, _initialConditionsBuildingBlock),
-            new InitialConditionDTO(_startValue2, _initialConditionsBuildingBlock)
-         });
-      }
-
-      protected override void Because()
-      {
-         _deletePathAndValueEntityPresenter.ApplySelectionAction(SelectOption.DeleteSelected);
       }
    }
 
@@ -215,54 +188,6 @@ namespace MoBi.Presentation
       {
          var explicitFormula = _resultFormulas.FirstOrDefault(dto => _explicitFormula.Equals(dto.Formula));
          explicitFormula.ShouldNotBeNull();
-      }
-   }
-
-   public class When_setting_all_molecule_start_values_to_is_present : concern_for_InitialConditionsPresenter
-   {
-      private IMoBiCommand _command;
-
-      protected override void Context()
-      {
-         base.Context();
-         _command = A.Fake<IMoBiCommand>();
-         A.CallTo(() => _initialConditionTask.SetIsPresent(_initialConditionsBuildingBlock, A<IEnumerable<InitialCondition>>._, true)).Returns(_command);
-         sut.Edit(_initialConditionsBuildingBlock);
-      }
-
-      protected override void Because()
-      {
-         _isPresentSelectionPresenter.ApplySelectionAction(SelectOption.AllPresent);
-      }
-
-      [Observation]
-      public void should_add_the_resulting_command_to_the_command_manager()
-      {
-         A.CallTo(() => _commandCollector.AddCommand(_command)).MustHaveHappened();
-      }
-   }
-
-   public class When_setting_all_molecule_start_values_to_not_is_present : concern_for_InitialConditionsPresenter
-   {
-      private IMoBiCommand _command;
-
-      protected override void Context()
-      {
-         base.Context();
-         _command = A.Fake<IMoBiCommand>();
-         A.CallTo(() => _initialConditionTask.SetIsPresent(_initialConditionsBuildingBlock, A<IEnumerable<InitialCondition>>._, false)).Returns(_command);
-         sut.Edit(_initialConditionsBuildingBlock);
-      }
-
-      protected override void Because()
-      {
-         _isPresentSelectionPresenter.ApplySelectionAction(SelectOption.AllNotPresent);
-      }
-
-      [Observation]
-      public void should_add_the_resulting_command_to_the_command_manager()
-      {
-         A.CallTo(() => _commandCollector.AddCommand(_command)).MustHaveHappened();
       }
    }
 

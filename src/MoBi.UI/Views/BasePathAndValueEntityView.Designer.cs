@@ -1,7 +1,4 @@
 ﻿using OSPSuite.UI.Controls;
-using DevExpress.XtraLayout.Utils;
-using OSPSuite.Utility.Reflection;
-using OSPSuite.Utility.Validation;
 
 namespace MoBi.UI.Views
 {
@@ -35,247 +32,330 @@ namespace MoBi.UI.Views
       /// </summary>
       private void InitializeComponent()
       {
+         this.components = new System.ComponentModel.Container();
+         this.barDockControlTop = new DevExpress.XtraBars.BarDockControl();
+         this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
+         this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
+         this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
          this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
-         this.gridView = new MoBi.UI.Views.UxGridView();
-         this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
-         this.panelRefresh = new DevExpress.XtraEditors.PanelControl();
-         this.panelDeleteStartValues = new DevExpress.XtraEditors.PanelControl();
-         this.panelIsPresent = new DevExpress.XtraEditors.PanelControl();
-         this.panelNegativeValuesAllowed = new DevExpress.XtraEditors.PanelControl();
-         this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
-         this.layoutItemGridView = new DevExpress.XtraLayout.LayoutControlItem();
-         this.layoutGroupPanel = new DevExpress.XtraLayout.LayoutControlGroup();
-         this.layoutItemDelete = new DevExpress.XtraLayout.LayoutControlItem();
-         this.layoutItemIsPresent = new DevExpress.XtraLayout.LayoutControlItem();
-         this.layoutItemNegativeValuesAllowed = new DevExpress.XtraLayout.LayoutControlItem();
-         this.emptySpaceItem = new DevExpress.XtraLayout.EmptySpaceItem();
-         this.layoutItemRefresh = new DevExpress.XtraLayout.LayoutControlItem();
+         this.gridView = new OSPSuite.UI.Controls.UxGridView();
+         this.uxGridView1 = new OSPSuite.UI.Controls.UxGridView();
+         this.ribbonPage = new DevExpress.XtraBars.Ribbon.RibbonPage();
+         this.ribbonGroupEdit = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
+         this.btnDelete = new DevExpress.XtraBars.BarButtonItem();
+         this.btnRefresh = new DevExpress.XtraBars.BarButtonItem();
+         this.ribbonGroupPresence = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
+         this.btnPresent = new DevExpress.XtraBars.BarButtonItem();
+         this.btnNotPresent = new DevExpress.XtraBars.BarButtonItem();
+         this.ribbonGroupNegativeValues = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
+         this.btnAllowNegativeValues = new DevExpress.XtraBars.BarButtonItem();
+         this.btnNotAllowNegativeValues = new DevExpress.XtraBars.BarButtonItem();
+         this.ribbonControl = new DevExpress.XtraBars.Ribbon.RibbonControl();
+         this.uxLayoutControl1 = new OSPSuite.UI.Controls.UxLayoutControl();
+         this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
+         this.layoutItemRibbon = new DevExpress.XtraLayout.LayoutControlItem();
+         this.layoutItemGrid = new DevExpress.XtraLayout.LayoutControlItem();
+         this.svgImageCollection = new DevExpress.Utils.SvgImageCollection(this.components);
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridControl)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridView)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
-         this.layoutControl.SuspendLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.panelRefresh)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.panelDeleteStartValues)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.panelIsPresent)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.panelNegativeValuesAllowed)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemGridView)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutGroupPanel)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemDelete)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemIsPresent)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemNegativeValuesAllowed)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemRefresh)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.uxGridView1)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.ribbonControl)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.uxLayoutControl1)).BeginInit();
+         this.uxLayoutControl1.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemRibbon)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemGrid)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.svgImageCollection)).BeginInit();
          this.SuspendLayout();
+         // 
+         // barDockControlTop
+         // 
+         this.barDockControlTop.CausesValidation = false;
+         this.barDockControlTop.Dock = System.Windows.Forms.DockStyle.Top;
+         this.barDockControlTop.Location = new System.Drawing.Point(0, 0);
+         this.barDockControlTop.Manager = null;
+         this.barDockControlTop.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+         this.barDockControlTop.Size = new System.Drawing.Size(1627, 0);
+         // 
+         // barDockControlBottom
+         // 
+         this.barDockControlBottom.CausesValidation = false;
+         this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
+         this.barDockControlBottom.Location = new System.Drawing.Point(0, 1115);
+         this.barDockControlBottom.Manager = null;
+         this.barDockControlBottom.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+         this.barDockControlBottom.Size = new System.Drawing.Size(1627, 0);
+         // 
+         // barDockControlLeft
+         // 
+         this.barDockControlLeft.CausesValidation = false;
+         this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
+         this.barDockControlLeft.Location = new System.Drawing.Point(0, 0);
+         this.barDockControlLeft.Manager = null;
+         this.barDockControlLeft.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+         this.barDockControlLeft.Size = new System.Drawing.Size(0, 1115);
+         // 
+         // barDockControlRight
+         // 
+         this.barDockControlRight.CausesValidation = false;
+         this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
+         this.barDockControlRight.Location = new System.Drawing.Point(1627, 0);
+         this.barDockControlRight.Manager = null;
+         this.barDockControlRight.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+         this.barDockControlRight.Size = new System.Drawing.Size(0, 1115);
          // 
          // gridControl
          // 
          this.gridControl.Cursor = System.Windows.Forms.Cursors.Default;
-         this.gridControl.Location = new System.Drawing.Point(2, 76);
+         this.gridControl.Location = new System.Drawing.Point(12, 145);
          this.gridControl.MainView = this.gridView;
          this.gridControl.Name = "gridControl";
-         this.gridControl.Size = new System.Drawing.Size(1623, 480);
+         this.gridControl.Size = new System.Drawing.Size(1603, 958);
          this.gridControl.TabIndex = 0;
          this.gridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.gridView});
+            this.gridView,
+            this.uxGridView1});
          // 
          // gridView
          // 
          this.gridView.AllowsFiltering = true;
+         this.gridView.DetailHeight = 284;
          this.gridView.EnableColumnContextMenu = true;
          this.gridView.GridControl = this.gridControl;
-         this.gridView.MultiSelect = false;
+         this.gridView.MultiSelect = true;
          this.gridView.Name = "gridView";
          this.gridView.OptionsBehavior.EditorShowMode = DevExpress.Utils.EditorShowMode.MouseDown;
          this.gridView.OptionsNavigation.AutoFocusNewRow = true;
          this.gridView.OptionsSelection.EnableAppearanceFocusedCell = false;
          this.gridView.OptionsSelection.EnableAppearanceFocusedRow = false;
+         this.gridView.OptionsSelection.MultiSelect = true;
          // 
-         // layoutControl
+         // uxGridView1
          // 
-         this.layoutControl.AllowCustomization = false;
-         this.layoutControl.Controls.Add(this.panelRefresh);
-         this.layoutControl.Controls.Add(this.panelDeleteStartValues);
-         this.layoutControl.Controls.Add(this.panelIsPresent);
-         this.layoutControl.Controls.Add(this.gridControl);
-         this.layoutControl.Controls.Add(this.panelNegativeValuesAllowed);
-         this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.layoutControl.Location = new System.Drawing.Point(0, 0);
-         this.layoutControl.Name = "layoutControl";
-         this.layoutControl.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(1195, 272, 412, 432);
-         this.layoutControl.Root = this.layoutControlGroup1;
-         this.layoutControl.Size = new System.Drawing.Size(1627, 558);
-         this.layoutControl.TabIndex = 1;
-         this.layoutControl.Text = "layoutControl1";
+         this.uxGridView1.AllowsFiltering = true;
+         this.uxGridView1.DetailHeight = 284;
+         this.uxGridView1.EnableColumnContextMenu = true;
+         this.uxGridView1.GridControl = this.gridControl;
+         this.uxGridView1.MultiSelect = true;
+         this.uxGridView1.Name = "uxGridView1";
+         this.uxGridView1.OptionsBehavior.EditorShowMode = DevExpress.Utils.EditorShowMode.MouseDown;
+         this.uxGridView1.OptionsNavigation.AutoFocusNewRow = true;
+         this.uxGridView1.OptionsSelection.EnableAppearanceFocusedCell = false;
+         this.uxGridView1.OptionsSelection.EnableAppearanceFocusedRow = false;
+         this.uxGridView1.OptionsSelection.MultiSelect = true;
+         this.uxGridView1.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CellSelect;
          // 
-         // panelRefresh
+         // ribbonPage
          // 
-         this.panelRefresh.Location = new System.Drawing.Point(391, 39);
-         this.panelRefresh.Name = "panelRefresh";
-         this.panelRefresh.Size = new System.Drawing.Size(373, 21);
-         this.panelRefresh.TabIndex = 9;
+         this.ribbonPage.Groups.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPageGroup[] {
+            this.ribbonGroupEdit,
+            this.ribbonGroupPresence,
+            this.ribbonGroupNegativeValues});
+         this.ribbonPage.Name = "ribbonPage";
          // 
-         // panelDeleteStartValues
+         // ribbonGroupEdit
          // 
-         this.panelDeleteStartValues.Location = new System.Drawing.Point(14, 14);
-         this.panelDeleteStartValues.Name = "panelDeleteStartValues";
-         this.panelDeleteStartValues.Size = new System.Drawing.Size(373, 21);
-         this.panelDeleteStartValues.TabIndex = 8;
+         this.ribbonGroupEdit.ItemLinks.Add(this.btnDelete);
+         this.ribbonGroupEdit.ItemLinks.Add(this.btnRefresh);
+         this.ribbonGroupEdit.Name = "ribbonGroupEdit";
+         this.ribbonGroupEdit.Text = "ribbonGroupEdit";
          // 
-         // panelIsPresent
+         // btnDelete
          // 
-         this.panelIsPresent.Location = new System.Drawing.Point(14, 39);
-         this.panelIsPresent.Name = "panelIsPresent";
-         this.panelIsPresent.Size = new System.Drawing.Size(373, 21);
-         this.panelIsPresent.TabIndex = 6;
+         this.btnDelete.Caption = "btnDelete";
+         this.btnDelete.Id = 1;
+         this.btnDelete.Name = "btnDelete";
+         this.btnDelete.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnDeleteClick);
          // 
-         // panelNegativeValuesAllowed
+         // btnRefresh
          // 
-         this.panelNegativeValuesAllowed.Location = new System.Drawing.Point(391, 14);
-         this.panelNegativeValuesAllowed.Name = "panelNegativeValuesAllowed";
-         this.panelNegativeValuesAllowed.Size = new System.Drawing.Size(373, 21);
-         this.panelNegativeValuesAllowed.TabIndex = 8;
+         this.btnRefresh.Caption = "btnRefresh";
+         this.btnRefresh.Id = 2;
+         this.btnRefresh.Name = "btnRefresh";
          // 
-         // layoutControlGroup1
+         // ribbonGroupPresence
          // 
-         this.layoutControlGroup1.CustomizationFormText = "Root";
-         this.layoutControlGroup1.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
-         this.layoutControlGroup1.GroupBordersVisible = false;
-         this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutItemGridView,
-            this.layoutGroupPanel});
-         this.layoutControlGroup1.Name = "Root";
-         this.layoutControlGroup1.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
-         this.layoutControlGroup1.Size = new System.Drawing.Size(1627, 558);
-         this.layoutControlGroup1.TextVisible = false;
+         this.ribbonGroupPresence.ItemLinks.Add(this.btnPresent);
+         this.ribbonGroupPresence.ItemLinks.Add(this.btnNotPresent);
+         this.ribbonGroupPresence.Name = "ribbonGroupPresence";
+         this.ribbonGroupPresence.Text = "ribbonGroupPresence";
          // 
-         // layoutItemGridView
+         // btnPresent
          // 
-         this.layoutItemGridView.Control = this.gridControl;
-         this.layoutItemGridView.CustomizationFormText = "layoutItemGridView";
-         this.layoutItemGridView.Location = new System.Drawing.Point(0, 74);
-         this.layoutItemGridView.Name = "layoutItemGridView";
-         this.layoutItemGridView.Size = new System.Drawing.Size(1627, 484);
-         this.layoutItemGridView.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutItemGridView.TextVisible = false;
+         this.btnPresent.Caption = "btnPresent";
+         this.btnPresent.Id = 3;
+         this.btnPresent.Name = "btnPresent";
          // 
-         // layoutGroupPanel
+         // btnNotPresent
          // 
-         this.layoutGroupPanel.CustomizationFormText = "layoutGroupPanel";
-         this.layoutGroupPanel.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutItemDelete,
-            this.layoutItemIsPresent,
-            this.layoutItemNegativeValuesAllowed,
-            this.emptySpaceItem,
-            this.layoutItemRefresh});
-         this.layoutGroupPanel.Location = new System.Drawing.Point(0, 0);
-         this.layoutGroupPanel.Name = "layoutGroupPanel";
-         this.layoutGroupPanel.Size = new System.Drawing.Size(1627, 74);
-         this.layoutGroupPanel.TextVisible = false;
+         this.btnNotPresent.Caption = "btnNotPresent";
+         this.btnNotPresent.Id = 4;
+         this.btnNotPresent.Name = "btnNotPresent";
          // 
-         // layoutItemDelete
+         // ribbonGroupNegativeValues
          // 
-         this.layoutItemDelete.Control = this.panelDeleteStartValues;
-         this.layoutItemDelete.Location = new System.Drawing.Point(0, 0);
-         this.layoutItemDelete.MaxSize = new System.Drawing.Size(377, 25);
-         this.layoutItemDelete.MinSize = new System.Drawing.Size(377, 25);
-         this.layoutItemDelete.Name = "layoutItemDelete";
-         this.layoutItemDelete.Size = new System.Drawing.Size(377, 25);
-         this.layoutItemDelete.SizeConstraintsType = DevExpress.XtraLayout.SizeConstraintsType.Custom;
-         this.layoutItemDelete.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutItemDelete.TextVisible = false;
+         this.ribbonGroupNegativeValues.AllowTextClipping = false;
+         this.ribbonGroupNegativeValues.ItemLinks.Add(this.btnAllowNegativeValues);
+         this.ribbonGroupNegativeValues.ItemLinks.Add(this.btnNotAllowNegativeValues);
+         this.ribbonGroupNegativeValues.Name = "ribbonGroupNegativeValues";
+         this.ribbonGroupNegativeValues.Text = "ribbonGroupNegativeValues";
          // 
-         // layoutItemIsPresent
+         // btnAllowNegativeValues
          // 
-         this.layoutItemIsPresent.Control = this.panelIsPresent;
-         this.layoutItemIsPresent.CustomizationFormText = "layoutItemIsPresent";
-         this.layoutItemIsPresent.Location = new System.Drawing.Point(0, 25);
-         this.layoutItemIsPresent.MaxSize = new System.Drawing.Size(377, 25);
-         this.layoutItemIsPresent.MinSize = new System.Drawing.Size(377, 25);
-         this.layoutItemIsPresent.Name = "layoutItemIsPresent";
-         this.layoutItemIsPresent.Size = new System.Drawing.Size(377, 25);
-         this.layoutItemIsPresent.SizeConstraintsType = DevExpress.XtraLayout.SizeConstraintsType.Custom;
-         this.layoutItemIsPresent.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutItemIsPresent.TextVisible = false;
+         this.btnAllowNegativeValues.Caption = "btnAllowNegativeValues";
+         this.btnAllowNegativeValues.Id = 5;
+         this.btnAllowNegativeValues.Name = "btnAllowNegativeValues";
          // 
-         // layoutItemNegativeValuesAllowed
+         // btnNotAllowNegativeValues
          // 
-         this.layoutItemNegativeValuesAllowed.Control = this.panelNegativeValuesAllowed;
-         this.layoutItemNegativeValuesAllowed.CustomizationFormText = "layoutItemDelete";
-         this.layoutItemNegativeValuesAllowed.Location = new System.Drawing.Point(377, 0);
-         this.layoutItemNegativeValuesAllowed.MaxSize = new System.Drawing.Size(377, 25);
-         this.layoutItemNegativeValuesAllowed.MinSize = new System.Drawing.Size(377, 25);
-         this.layoutItemNegativeValuesAllowed.Name = "layoutItemNegativeValuesAllowed";
-         this.layoutItemNegativeValuesAllowed.Size = new System.Drawing.Size(377, 25);
-         this.layoutItemNegativeValuesAllowed.SizeConstraintsType = DevExpress.XtraLayout.SizeConstraintsType.Custom;
-         this.layoutItemNegativeValuesAllowed.Text = "layoutItemDelete";
-         this.layoutItemNegativeValuesAllowed.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutItemNegativeValuesAllowed.TextVisible = false;
+         this.btnNotAllowNegativeValues.Caption = "btnNotAllowNegativeValues";
+         this.btnNotAllowNegativeValues.Id = 6;
+         this.btnNotAllowNegativeValues.Name = "btnNotAllowNegativeValues";
          // 
-         // emptySpaceItem
+         // ribbonControl
          // 
-         this.emptySpaceItem.AllowHotTrack = false;
-         this.emptySpaceItem.Location = new System.Drawing.Point(754, 0);
-         this.emptySpaceItem.Name = "emptySpaceItem";
-         this.emptySpaceItem.Size = new System.Drawing.Size(849, 50);
-         this.emptySpaceItem.TextSize = new System.Drawing.Size(0, 0);
+         this.ribbonControl.AllowMinimizeRibbon = false;
+         this.ribbonControl.AllowTrimPageText = false;
+         this.ribbonControl.ApplicationButtonDropDownControl = this.barDockControlTop;
+         this.ribbonControl.ApplicationButtonText = null;
+         this.ribbonControl.AutoSizeItems = true;
+         this.ribbonControl.Dock = System.Windows.Forms.DockStyle.None;
+         this.ribbonControl.EmptyAreaImageOptions.ImagePadding = new System.Windows.Forms.Padding(26, 24, 26, 24);
+         this.ribbonControl.ExpandCollapseItem.Id = 0;
+         this.ribbonControl.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
+            this.ribbonControl.ExpandCollapseItem,
+            this.ribbonControl.SearchEditItem,
+            this.btnDelete,
+            this.btnRefresh,
+            this.btnPresent,
+            this.btnNotPresent,
+            this.btnAllowNegativeValues,
+            this.btnNotAllowNegativeValues});
+         this.ribbonControl.Location = new System.Drawing.Point(12, 12);
+         this.ribbonControl.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+         this.ribbonControl.MaxItemId = 8;
+         this.ribbonControl.Name = "ribbonControl";
+         this.ribbonControl.OptionsMenuMinWidth = 283;
+         this.ribbonControl.Pages.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPage[] {
+            this.ribbonPage});
+         this.ribbonControl.RibbonStyle = DevExpress.XtraBars.Ribbon.RibbonControlStyle.MacOffice;
+         this.ribbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.False;
+         this.ribbonControl.ShowDisplayOptionsMenuButton = DevExpress.Utils.DefaultBoolean.False;
+         this.ribbonControl.ShowExpandCollapseButton = DevExpress.Utils.DefaultBoolean.False;
+         this.ribbonControl.ShowItemCaptionsInCaptionBar = true;
+         this.ribbonControl.ShowPageHeadersInFormCaption = DevExpress.Utils.DefaultBoolean.False;
+         this.ribbonControl.ShowPageHeadersMode = DevExpress.XtraBars.Ribbon.ShowPageHeadersMode.Hide;
+         this.ribbonControl.ShowQatLocationSelector = false;
+         this.ribbonControl.ShowToolbarCustomizeItem = false;
+         this.ribbonControl.Size = new System.Drawing.Size(1603, 83);
+         this.ribbonControl.Toolbar.ShowCustomizeItem = false;
+         this.ribbonControl.ToolbarLocation = DevExpress.XtraBars.Ribbon.RibbonQuickAccessToolbarLocation.Hidden;
          // 
-         // layoutItemRefresh
+         // uxLayoutControl1
          // 
-         this.layoutItemRefresh.Control = this.panelRefresh;
-         this.layoutItemRefresh.Location = new System.Drawing.Point(377, 25);
-         this.layoutItemRefresh.MaxSize = new System.Drawing.Size(377, 25);
-         this.layoutItemRefresh.MinSize = new System.Drawing.Size(377, 25);
-         this.layoutItemRefresh.Name = "layoutItemRefresh";
-         this.layoutItemRefresh.Size = new System.Drawing.Size(377, 25);
-         this.layoutItemRefresh.SizeConstraintsType = DevExpress.XtraLayout.SizeConstraintsType.Custom;
-         this.layoutItemRefresh.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutItemRefresh.TextVisible = false;
+         this.uxLayoutControl1.AllowCustomization = false;
+         this.uxLayoutControl1.Controls.Add(this.gridControl);
+         this.uxLayoutControl1.Controls.Add(this.ribbonControl);
+         this.uxLayoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.uxLayoutControl1.Location = new System.Drawing.Point(0, 0);
+         this.uxLayoutControl1.Name = "uxLayoutControl1";
+         this.uxLayoutControl1.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(1603, 587, 1178, 843);
+         this.uxLayoutControl1.Root = this.Root;
+         this.uxLayoutControl1.Size = new System.Drawing.Size(1627, 1115);
+         this.uxLayoutControl1.TabIndex = 6;
+         this.uxLayoutControl1.Text = "uxLayoutControl1";
+         // 
+         // Root
+         // 
+         this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
+         this.Root.GroupBordersVisible = false;
+         this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.layoutItemRibbon,
+            this.layoutItemGrid});
+         this.Root.Name = "Root";
+         this.Root.Size = new System.Drawing.Size(1627, 1115);
+         this.Root.TextVisible = false;
+         // 
+         // layoutItemRibbon
+         // 
+         this.layoutItemRibbon.Control = this.ribbonControl;
+         this.layoutItemRibbon.Location = new System.Drawing.Point(0, 0);
+         this.layoutItemRibbon.Name = "layoutItemRibbon";
+         this.layoutItemRibbon.Size = new System.Drawing.Size(1607, 133);
+         this.layoutItemRibbon.SizeConstraintsType = DevExpress.XtraLayout.SizeConstraintsType.SupportHorzAlignment;
+         this.layoutItemRibbon.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutItemRibbon.TextVisible = false;
+         // 
+         // layoutItemGrid
+         // 
+         this.layoutItemGrid.Control = this.gridControl;
+         this.layoutItemGrid.Location = new System.Drawing.Point(0, 133);
+         this.layoutItemGrid.Name = "layoutItemGrid";
+         this.layoutItemGrid.Size = new System.Drawing.Size(1607, 962);
+         this.layoutItemGrid.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutItemGrid.TextVisible = false;
+         // 
+         // svgImageCollection
+         // 
+         this.svgImageCollection.Add("actions_addcircled", "image://svgimages/icon builder/actions_addcircled.svg");
+         this.svgImageCollection.Add("expandcollapse", "image://svgimages/outlook inspired/expandcollapse.svg");
+         this.svgImageCollection.Add("actions_checkcircled", "image://svgimages/icon builder/actions_checkcircled.svg");
+         this.svgImageCollection.Add("actions_deletecircled", "image://svgimages/icon builder/actions_deletecircled.svg");
          // 
          // BasePathAndValueEntityView
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-         this.Controls.Add(this.layoutControl);
+         this.Controls.Add(this.uxLayoutControl1);
+         this.Controls.Add(this.barDockControlLeft);
+         this.Controls.Add(this.barDockControlRight);
+         this.Controls.Add(this.barDockControlBottom);
+         this.Controls.Add(this.barDockControlTop);
+         this.Margin = new System.Windows.Forms.Padding(4);
          this.Name = "BasePathAndValueEntityView";
-         this.Size = new System.Drawing.Size(1627, 558);
+         this.Size = new System.Drawing.Size(1627, 1115);
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridControl)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.gridView)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
-         this.layoutControl.ResumeLayout(false);
-         ((System.ComponentModel.ISupportInitialize)(this.panelRefresh)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.panelDeleteStartValues)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.panelIsPresent)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.panelNegativeValuesAllowed)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemGridView)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutGroupPanel)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemDelete)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemIsPresent)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemNegativeValuesAllowed)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemRefresh)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.uxGridView1)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.ribbonControl)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.uxLayoutControl1)).EndInit();
+         this.uxLayoutControl1.ResumeLayout(false);
+         this.uxLayoutControl1.PerformLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemRibbon)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemGrid)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.svgImageCollection)).EndInit();
          this.ResumeLayout(false);
+         this.PerformLayout();
 
       }
 
       #endregion
-      protected MoBi.UI.Views.UxGridView gridView;
-      protected OSPSuite.UI.Controls.UxLayoutControl layoutControl;
-      private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
-      protected DevExpress.XtraLayout.LayoutControlItem layoutItemGridView;
-      protected DevExpress.XtraEditors.PanelControl panelIsPresent;
-      private DevExpress.XtraLayout.LayoutControlGroup layoutGroupPanel;
-      private DevExpress.XtraLayout.LayoutControlItem layoutItemIsPresent;
-      private DevExpress.XtraEditors.PanelControl panelDeleteStartValues;
-      private DevExpress.XtraLayout.LayoutControlItem layoutItemDelete;
-      protected DevExpress.XtraEditors.PanelControl panelNegativeValuesAllowed;
-      private DevExpress.XtraLayout.LayoutControlItem layoutItemNegativeValuesAllowed;
-      private DevExpress.XtraLayout.EmptySpaceItem emptySpaceItem;
+      
+      private DevExpress.XtraBars.BarDockControl barDockControlTop;
+      private DevExpress.XtraBars.BarDockControl barDockControlBottom;
+      private DevExpress.XtraBars.BarDockControl barDockControlLeft;
+      private DevExpress.XtraBars.BarDockControl barDockControlRight;
       protected UxGridControl gridControl;
-      protected DevExpress.XtraEditors.PanelControl panelRefresh;
-      private DevExpress.XtraLayout.LayoutControlItem layoutItemRefresh;
+      protected OSPSuite.UI.Controls.UxGridView gridView;
+      private OSPSuite.UI.Controls.UxGridView uxGridView1;
+      private DevExpress.XtraBars.Ribbon.RibbonPage ribbonPage;
+      protected DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonGroupEdit;
+      private DevExpress.XtraBars.BarButtonItem btnDelete;
+      protected DevExpress.XtraBars.BarButtonItem btnRefresh;
+      private DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonGroupPresence;
+      protected DevExpress.XtraBars.BarButtonItem btnPresent;
+      protected DevExpress.XtraBars.BarButtonItem btnNotPresent;
+      private DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonGroupNegativeValues;
+      protected DevExpress.XtraBars.BarButtonItem btnAllowNegativeValues;
+      protected DevExpress.XtraBars.BarButtonItem btnNotAllowNegativeValues;
+      protected DevExpress.XtraBars.Ribbon.RibbonControl ribbonControl;
+      private UxLayoutControl uxLayoutControl1;
+      private DevExpress.XtraLayout.LayoutControlGroup Root;
+      private DevExpress.XtraLayout.LayoutControlItem layoutItemRibbon;
+      private DevExpress.XtraLayout.LayoutControlItem layoutItemGrid;
+      private DevExpress.Utils.SvgImageCollection svgImageCollection;
    }
 }

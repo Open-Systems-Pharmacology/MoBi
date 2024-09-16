@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
@@ -10,7 +9,6 @@ using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Views;
 
@@ -35,13 +33,23 @@ namespace MoBi.Presentation.Presenter
       ///    <paramref name="negativeValuesAllowed" />
       /// </summary>
       void SetNegativeValuesAllowed(InitialConditionDTO dto, bool negativeValuesAllowed);
+
+      void Refresh(IReadOnlyList<InitialConditionDTO> initialConditionDTOs);
+      void AsPresent(IReadOnlyList<InitialConditionDTO> initialConditionDTOs);
+      void AsNotPresent(IReadOnlyList<InitialConditionDTO> initialConditionDTOs);
+      void AllowNegativeValues(IReadOnlyList<InitialConditionDTO> initialConditionDTOs);
+      void DoNotAllowNegativeValues(IReadOnlyList<InitialConditionDTO> initialConditionDTOs);
    }
 
    public interface IBuildingBlockWithInitialConditionsPresenter<TBuildingBlock> : IBuildingBlockWithInitialConditionsPresenter, IEditPresenter<TBuildingBlock>
    {
    }
 
-   public abstract class BuildingBlockWithInitialConditionsPresenter<TView, TPresenter, TBuildingBlock> : ExtendablePathAndValueBuildingBlockPresenter<TView, TPresenter, TBuildingBlock, InitialConditionDTO, InitialCondition> where TView : IInitialConditionsView, IPathAndValueEntitiesView<InitialConditionDTO>, IView<TPresenter> where TPresenter : IPresenter where TBuildingBlock : class, IBuildingBlock<InitialCondition>
+   public abstract class BuildingBlockWithInitialConditionsPresenter<TView, TPresenter, TBuildingBlock> :
+      ExtendablePathAndValueBuildingBlockPresenter<TView, TPresenter, TBuildingBlock, InitialConditionDTO, InitialCondition>, IBuildingBlockWithInitialConditionsPresenter<TBuildingBlock>
+      where TView : IInitialConditionsView, IPathAndValueEntitiesView<InitialConditionDTO>, IView<TPresenter>
+      where TPresenter : IPresenter
+      where TBuildingBlock : class, IBuildingBlock<InitialCondition>
    {
       private readonly IInitialConditionsTask<TBuildingBlock> _initialConditionsTask;
 
@@ -50,44 +58,12 @@ namespace MoBi.Presentation.Presenter
          IInitialConditionsTask<TBuildingBlock> initialConditionsTask,
          IInitialConditionsCreator msvCreator,
          IMoBiContext context,
-         IDeletePathAndValueEntityPresenter deletePathAndValueEntityPresenter,
          IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper,
          IDimensionFactory dimensionFactory,
-         IRefreshInitialConditionsPresenter refreshInitialConditionsPresenter,
-         IMoleculeIsPresentSelectionPresenter isPresentSelectionPresenter,
-         IMoleculeNegativeValuesAllowedSelectionPresenter negativeStartValuesAllowedSelectionPresenter, 
-         IDistributedPathAndValueEntityPresenter<InitialConditionDTO, TBuildingBlock> distributedParameterPresenter) : 
-         base(view, dtoMapper, initialConditionsTask, msvCreator, context, deletePathAndValueEntityPresenter, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
+         IDistributedPathAndValueEntityPresenter<InitialConditionDTO, TBuildingBlock> distributedParameterPresenter) :
+         base(view, dtoMapper, initialConditionsTask, msvCreator, context, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
       {
          _initialConditionsTask = initialConditionsTask;
-         refreshInitialConditionsPresenter.ApplySelectionAction = performRefreshAction;
-         _view.AddIsPresentSelectionView(isPresentSelectionPresenter.BaseView);
-         _view.AddNegativeValuesAllowedSelectionView(negativeStartValuesAllowedSelectionPresenter.BaseView);
-         _view.AddRefreshSelectionView(refreshInitialConditionsPresenter.BaseView);
-
-         AddSubPresenters(refreshInitialConditionsPresenter);
-         isPresentSelectionPresenter.ApplySelectionAction = performIsPresentAction;
-         negativeStartValuesAllowedSelectionPresenter.ApplySelectionAction = performNegativeValuesAllowedAction;
-      }
-
-      private void performRefreshAction(SelectOption option)
-      {
-         if (option == SelectOption.RefreshSelected)
-         {
-            refreshInitialConditions(SelectedStartValues);
-         }
-         else if (option == SelectOption.RefreshAll)
-         {
-            refreshInitialConditions(VisibleStartValues);
-         }
-      }
-
-      private void refreshInitialConditions(IEnumerable<InitialCondition> initialConditions)
-      {
-         AddCommand(
-            _initialConditionsTask.RefreshInitialConditionsFromBuildingBlocks(
-               _buildingBlock,
-               initialConditions.ToList()));
       }
 
       protected override string RemoveCommandDescription() => AppConstants.Commands.RemoveMultipleInitialConditions;
@@ -102,35 +78,47 @@ namespace MoBi.Presentation.Presenter
          _view.RefreshData();
       }
 
-      public void SetNegativeValuesAllowed(InitialConditionDTO dto, bool negativeValuesAllowed) => setNegativeValuesAllowed(new[] { dto.InitialCondition }, negativeValuesAllowed);
+      public void SetNegativeValuesAllowed(InitialConditionDTO dto, bool negativeValuesAllowed) => setNegativeValuesAllowed(new[] { dto.InitialCondition }, true);
+
+      public void Refresh(IReadOnlyList<InitialConditionDTO> initialConditionDTOs)
+      {
+         AddCommand(
+            _initialConditionsTask.RefreshInitialConditionsFromBuildingBlocks(
+               _buildingBlock,
+               initialConditionsFromDTO(initialConditionDTOs)));
+      }
+
+      private static List<InitialCondition> initialConditionsFromDTO(IReadOnlyList<InitialConditionDTO> initialConditionDTOs)
+      {
+         return initialConditionDTOs.Select(x => x.InitialCondition).ToList();
+      }
+
+      public void AsPresent(IReadOnlyList<InitialConditionDTO> initialConditionDTOs)
+      {
+         setIsPresent(initialConditionsFromDTO(initialConditionDTOs), isPresent: true);
+      }
+
+      public void AsNotPresent(IReadOnlyList<InitialConditionDTO> initialConditionDTOs)
+      {
+         setIsPresent(initialConditionsFromDTO(initialConditionDTOs), isPresent: false);
+      }
+
+      public void AllowNegativeValues(IReadOnlyList<InitialConditionDTO> initialConditionDTOs)
+      {
+         setNegativeValuesAllowed(initialConditionsFromDTO(initialConditionDTOs), negativeValuesAllowed: true);
+      }
+
+      public void DoNotAllowNegativeValues(IReadOnlyList<InitialConditionDTO> initialConditionDTOs)
+      {
+         setNegativeValuesAllowed(initialConditionsFromDTO(initialConditionDTOs), negativeValuesAllowed: false);
+      }
 
       protected void DisablePathColumns() => _view.DisablePathColumns();
-
-      public void HideIsPresentColumn() => _view.HideIsPresentColumn();
 
       private void setNegativeValuesAllowed(IEnumerable<InitialCondition> startValuesToUpdate, bool negativeValuesAllowed)
       {
          AddCommand(() => _initialConditionsTask.SetNegativeValuesAllowed(_buildingBlock, startValuesToUpdate, negativeValuesAllowed));
          _view.RefreshData();
-      }
-
-      private void performIsPresentAction(SelectOption option) => performSetFlagValueAction(setIsPresent, option);
-
-      private void performNegativeValuesAllowedAction(SelectOption option) => performSetFlagValueAction(setNegativeValuesAllowed, option);
-
-      private void performSetFlagValueAction(Action<IEnumerable<InitialCondition>, bool> selectionAction, SelectOption option)
-      {
-         if (option.IsOneOf(SelectOption.AllPresent, SelectOption.AllNegativeValuesAllowed))
-            selectionAction(VisibleStartValues, true);
-
-         else if (option.IsOneOf(SelectOption.AllNotPresent, SelectOption.AllNegativeValuesNotAllowed))
-            selectionAction(VisibleStartValues, false);
-
-         else if (option.IsOneOf(SelectOption.SelectedPresent, SelectOption.SelectedNegativeValuesAllowed))
-            selectionAction(SelectedStartValues, true);
-
-         else if (option.IsOneOf(SelectOption.SelectedNotPresent, SelectOption.SelectedNegativeValuesNotAllowed))
-            selectionAction(SelectedStartValues, false);
       }
    }
 }
