@@ -20,7 +20,7 @@ namespace MoBi.Presentation
       private IEventAssignmentBuilderToEventAssignmentDTOMapper _mapper;
       private IEditTaskFor<EventAssignmentBuilder> _editTasksForAssignment;
       private IFormulaToFormulaBuilderDTOMapper _formulaMapper;
-      private IEditFormulaPresenter _editFormulaPresenter;
+      private IEditFormulaInContainerPresenter _editFormulaPresenter;
       private IMoBiContext _context;
       private ISelectReferenceAtEventAssignmentPresenter _referencePresenter;
       private IContextSpecificReferencesRetriever _contextReferenceRetriever;
@@ -35,7 +35,7 @@ namespace MoBi.Presentation
          _mapper = A.Fake<IEventAssignmentBuilderToEventAssignmentDTOMapper>();
          _editTasksForAssignment = A.Fake<IEditTaskFor<EventAssignmentBuilder>>();
          _formulaMapper = A.Fake<IFormulaToFormulaBuilderDTOMapper>();
-         _editFormulaPresenter = A.Fake<IEditFormulaPresenter>();
+         _editFormulaPresenter = A.Fake<IEditFormulaInContainerPresenter>();
          _context = A.Fake<IMoBiContext>();
          _referencePresenter = A.Fake<ISelectReferenceAtEventAssignmentPresenter>();
          _contextReferenceRetriever = A.Fake<IContextSpecificReferencesRetriever>();

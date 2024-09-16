@@ -28,14 +28,14 @@ namespace MoBi.Presentation.Presenter
       private ApplicationMoleculeBuilder _applicationMoleculeBuilder;
       private readonly IEditTaskFor<ApplicationMoleculeBuilder> _editTask;
       private readonly IApplicationMoleculeBuilderToApplicationMoleculeBuilderDTOMapper _applicationMoleculeMapper;
-      private readonly IEditFormulaPresenter _editFormulaPresenter;
+      private readonly IEditFormulaInContainerPresenter _editFormulaPresenter;
       private readonly IFormulaToFormulaBuilderDTOMapper _formulaToDTOFormulaMapper;
       private readonly IMoBiContext _context;
       private readonly ISelectReferencePresenterAtApplicationBuilder _selectItemPresenter;
 
       public EditApplicationMoleculeBuilderPresenter(IEditApplicationMoleculeBuilderView view, IEditTaskFor<ApplicationMoleculeBuilder> editTask,
          IApplicationMoleculeBuilderToApplicationMoleculeBuilderDTOMapper applicationMoleculeMapper, IFormulaToFormulaBuilderDTOMapper formulaToDTOFormulaMapper,
-         IEditFormulaPresenter editFormulaPresenter, IMoBiContext context, ISelectReferencePresenterAtApplicationBuilder selectItemPresenter)
+         IEditFormulaInContainerPresenter editFormulaPresenter, IMoBiContext context, ISelectReferencePresenterAtApplicationBuilder selectItemPresenter)
          : base(view)
       {
          _editTask = editTask;
@@ -47,15 +47,6 @@ namespace MoBi.Presentation.Presenter
          _formulaToDTOFormulaMapper = formulaToDTOFormulaMapper;
          _applicationMoleculeMapper = applicationMoleculeMapper;
          AddSubPresenters(_editFormulaPresenter, _selectItemPresenter);
-      }
-
-      private ApplicationBuilder getParent(ApplicationMoleculeBuilder applicationMoleculeBuilder, IBuildingBlock buildingBlock)
-      {
-         var eventGroupBuilding = getEventGroupBuilding(buildingBlock);
-
-         return eventGroupBuilding.Select(x => x.GetAllContainersAndSelf<ApplicationBuilder>()
-            .FirstOrDefault(ab => ab.Molecules.Contains(applicationMoleculeBuilder)))
-            .FirstOrDefault(applicationBuilder => applicationBuilder != null);
       }
 
       private EventGroupBuildingBlock getEventGroupBuilding(IBuildingBlock buildingBlockWithFormulaCache)

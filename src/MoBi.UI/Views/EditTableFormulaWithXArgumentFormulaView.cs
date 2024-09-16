@@ -44,16 +44,16 @@ namespace MoBi.UI.Views
          showTableObjectPath(tableFormulaWithXArgumentDTO.TableObjectPath);
       }
 
-      private void showXArgumentObjectPath(FormulaUsablePathDTO forrmulaUsablePathDTO)
+      private void showXArgumentObjectPath(FormulaUsablePathDTO formulaUsablePathDTO)
       {
-         if (forrmulaUsablePathDTO != null)
-            btEditXArgumentObjectPath.Text = forrmulaUsablePathDTO.Path;
+         if (formulaUsablePathDTO != null)
+            btEditXArgumentObjectPath.Text = formulaUsablePathDTO.Path;
       }
 
-      private void showTableObjectPath(FormulaUsablePathDTO forrmulaUsablePathDTO)
+      private void showTableObjectPath(FormulaUsablePathDTO formulaUsablePathDTO)
       {
-         if (forrmulaUsablePathDTO != null)
-            btEditTableObjectPath.Text = forrmulaUsablePathDTO.Path;
+         if (formulaUsablePathDTO != null)
+            btEditTableObjectPath.Text = formulaUsablePathDTO.Path;
       }
    }
 }

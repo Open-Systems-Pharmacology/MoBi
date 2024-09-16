@@ -1616,6 +1616,8 @@ namespace MoBi.Assets
          public static readonly string Presence = "Presence";
          public static readonly string Present = "Present";
          public static readonly string NotPresent = "Not Present";
+         public static readonly string EditFormula = "Edit Formula";
+         
          public static string SelectTheBuildingBlockWhereEntitiesWillBeAddedOrUpdated(string typeBeingAdded) => $"Select the building block where {typeBeingAdded} will be added or updated";
          public static readonly string SelectBuildingBlock = "Select Building Block";
          public static readonly string MakeDefault = "Make defaults";

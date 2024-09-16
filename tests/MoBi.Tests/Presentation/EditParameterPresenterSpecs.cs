@@ -23,9 +23,9 @@ namespace MoBi.Presentation
    public abstract class concern_for_EditParameterPresenter : ContextSpecification<IEditParameterPresenter>
    {
       protected IEditParameterView _view;
-      protected IEditFormulaPresenter _editFormulaPresenter;
+      protected IEditFormulaInContainerPresenter _editFormulaPresenter;
       protected IParameterToParameterDTOMapper _parameterMapper;
-      protected IEditFormulaPresenter _editRHSPresenter;
+      protected IEditFormulaInContainerPresenter _editRHSPresenter;
       protected IInteractionTaskContext _interactionTasksContext;
       protected IGroupRepository _groupRepository;
       private IEditTaskFor<IParameter> _editTasks;
@@ -42,9 +42,9 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          _view = A.Fake<IEditParameterView>();
-         _editFormulaPresenter = A.Fake<IEditFormulaPresenter>();
+         _editFormulaPresenter = A.Fake<IEditFormulaInContainerPresenter>();
          _parameterMapper = A.Fake<IParameterToParameterDTOMapper>();
-         _editRHSPresenter = A.Fake<IEditFormulaPresenter>();
+         _editRHSPresenter = A.Fake<IEditFormulaInContainerPresenter>();
          _interactionTasksContext = A.Fake<IInteractionTaskContext>();
          _groupRepository = A.Fake<IGroupRepository>();
          _editTasks = A.Fake<IEditTaskFor<IParameter>>();

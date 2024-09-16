@@ -5,13 +5,23 @@ using OSPSuite.Presentation.Views;
 
 namespace MoBi.Presentation.Views
 {
-   public interface IEditFormulaView : IView<IEditFormulaPresenter>
+   public interface IFormulaEditView
    {
-      void SetEditFormualInstanceView(IView subView);
+      void SetEditFormulaInstanceView(IView subView);
       void ClearFormulaView();
       void BindTo(FormulaInfoDTO dtoFormulaInfo);
       bool IsComplexFormulaView { set; }
       bool IsNamedFormulaView { set; }
       void SetReferenceView(ISelectReferenceView view);
+   }
+
+   public interface IEditFormulaInContainerView : IView<IEditFormulaInContainerPresenter>, IFormulaEditView
+   {
+
+   }
+
+   public interface IEditFormulaInPathAndValuesView : IView<IEditFormulaInPathAndValuesPresenter>, IFormulaEditView
+   {
+
    }
 }

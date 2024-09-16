@@ -5,6 +5,7 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Helper;
+using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
@@ -19,13 +20,14 @@ namespace MoBi.Presentation.Tasks.Interaction
    public interface IInteractionTasksForPathAndValueEntity<in TBuildingBlock, in TBuilder>
    {
       /// <summary>
-      ///    Adds a new formula to the building block formula cache and assigns it to the builder
+      ///    Edits a formula to the building block formula cache and assigns it to the builder. If the formula is not set,
+      ///    the formula is created for editing.
       /// </summary>
       /// <param name="buildingBlock">The building block that has the formula added and contains the builder</param>
       /// <param name="builder">the builder being updated with a new formula</param>
       /// <param name="referenceParameter"></param>
       /// <returns>The command used to modify the building block and builders</returns>
-      ICommand<IMoBiContext> AddNewFormulaAtBuildingBlock(TBuildingBlock buildingBlock, TBuilder builder, IParameter referenceParameter);
+      ICommand<IMoBiContext> EditFormulaAtBuildingBlock(TBuildingBlock buildingBlock, TBuilder builder, IParameter referenceParameter);
 
       /// <summary>
       ///    Sets the display unit of a builder
@@ -162,25 +164,30 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       protected abstract IReadOnlyCollection<IObjectBase> GetNamedObjectsInParent(TBuildingBlock buildingBlockToClone);
 
-      protected IMoBiCommand AddFormulaToFormulaCacheAndSetOnBuilder<TFormula>(TBuildingBlock buildingBlock, TBuilder builder, IParameter referenceParameter)
-         where TFormula : IFormula
+      protected IMoBiCommand EditFormulaAndSetOnBuilder(TBuildingBlock buildingBlock, TBuilder builder, IParameter referenceParameter)
       {
          var macroCommand = new MoBiMacroCommand
          {
             CommandType = AppConstants.Commands.AddCommand,
             Description = AppConstants.Commands.AddFormulaToBuildingBlock,
-            ObjectType = _interactionTaskContext.GetTypeFor<TFormula>()
+            ObjectType = _interactionTaskContext.GetTypeFor<TBuilder>()
          };
 
-         var newFormula = _moBiFormulaTask.CreateNewFormula<TFormula>(builder.Dimension);
+         using (var modalPresenter = ApplicationController.Start<IModalPresenter>())
+         {
+            var editFormulaPresenter = Context.Resolve<IEditFormulaInPathAndValuesPresenter>();
+            modalPresenter.Encapsulate(editFormulaPresenter);
+            modalPresenter.Text = AppConstants.Captions.EditFormula;
+            var usingFormulaDecoder = new UsingFormulaDecoder();
+            editFormulaPresenter.Init(builder, buildingBlock, usingFormulaDecoder);
 
-         macroCommand.AddCommand(new AddFormulaToFormulaCacheCommand(buildingBlock, newFormula).Run(Context));
-
-         if (!_moBiFormulaTask.EditNewFormula(newFormula, macroCommand, buildingBlock, referenceParameter))
-            return CancelCommand(macroCommand);
-
-         macroCommand.Add(SetFormula(buildingBlock, builder, newFormula, shouldClearValue: ValueFromBuilder(builder).HasValue));
-         return macroCommand;
+            if (!modalPresenter.Show())
+               return new MoBiEmptyCommand();
+               
+            macroCommand.Add(_interactionTaskContext.MoBiFormulaTask.UpdateFormula(builder, builder.Formula, editFormulaPresenter.Formula, usingFormulaDecoder, buildingBlock));
+            macroCommand.Add(_interactionTaskContext.MoBiFormulaTask.AddFormulaToCacheOrFixReferenceCommand(buildingBlock, builder).Run(_interactionTaskContext.Context));
+            return macroCommand;
+         }
       }
 
       public IMoBiCommand SetFormula(TBuildingBlock buildingBlock, TBuilder builder, IFormula formula)
@@ -240,7 +247,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return setValue(builder, builder.ConvertToDisplayUnit(ValueFromBuilder(builder)), newUnit, buildingBlock);
       }
 
-      public virtual ICommand<IMoBiContext> AddNewFormulaAtBuildingBlock(TBuildingBlock buildingBlock, TBuilder builder, IParameter referenceParameter)
+      public virtual ICommand<IMoBiContext> EditFormulaAtBuildingBlock(TBuildingBlock buildingBlock, TBuilder builder, IParameter referenceParameter)
       {
          var macroCommand = new MoBiMacroCommand
          {
@@ -249,7 +256,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             Description = AppConstants.Commands.SetValueAndFormula
          };
 
-         macroCommand.Add(AddFormulaToFormulaCacheAndSetOnBuilder<ExplicitFormula>(buildingBlock, builder, referenceParameter));
+         macroCommand.Add(EditFormulaAndSetOnBuilder(buildingBlock, builder, referenceParameter));
 
          return macroCommand;
       }

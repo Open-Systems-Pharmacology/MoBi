@@ -86,9 +86,9 @@ namespace MoBi.Presentation.Presenter
    public class EditParameterPresenter : AbstractEntityEditPresenter<IEditParameterView, IEditParameterPresenter, IParameter>, IEditParameterPresenter
    {
       private IParameter _parameter;
-      private readonly IEditFormulaPresenter _editRHSFormulaPresenter;
+      private readonly IEditFormulaInContainerPresenter _editRHSFormulaPresenter;
       private readonly IInteractionTaskContext _interactionTaskContext;
-      private readonly IEditFormulaPresenter _editValueFormulaPresenter;
+      private readonly IEditFormulaInContainerPresenter _editValueFormulaPresenter;
       private readonly IParameterToParameterDTOMapper _parameterMapper;
       private ParameterDTO _parameterDTO;
       public IBuildingBlock BuildingBlock { get; set; }
@@ -106,9 +106,9 @@ namespace MoBi.Presentation.Presenter
       private readonly IDescriptorConditionListPresenter<IParameter> _containerCriteriaPresenter;
 
       public EditParameterPresenter(IEditParameterView view,
-         IEditFormulaPresenter editValueFormulaPresenter,
+         IEditFormulaInContainerPresenter editValueFormulaPresenter,
          IParameterToParameterDTOMapper parameterMapper,
-         IEditFormulaPresenter editRhsFormulaPresenter,
+         IEditFormulaInContainerPresenter editRhsFormulaPresenter,
          IInteractionTaskContext interactionTaskContext,
          IGroupRepository groupRepository,
          IEditTaskFor<IParameter> editTasks,

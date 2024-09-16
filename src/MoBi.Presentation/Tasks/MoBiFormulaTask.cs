@@ -238,15 +238,22 @@ namespace MoBi.Presentation.Tasks
          return macroCommand;
       }
 
-      public (IMoBiCommand command, IFormula formula) CreateNewFormulaInBuildingBlock(Type formulaType, IDimension formulaDimension, IEnumerable<string> existingFormulaNames, IBuildingBlock buildingBlock)
+      public (IMoBiCommand command, IFormula formula) CreateNewFormulaInBuildingBlock(Type formulaType, IDimension formulaDimension, IEnumerable<string> existingFormulaNames, IBuildingBlock buildingBlock, string newFormulaName = null)
       {
-         var newName = _namingTask.NewName(AppConstants.Captions.NewName, AppConstants.Captions.EnterNewFormulaName, string.Empty, existingFormulaNames);
-         if (string.IsNullOrEmpty(newName))
+         if(shouldNameFormula(newFormulaName, buildingBlock.FormulaCache.AllNames()))
+            newFormulaName = _namingTask.NewName(AppConstants.Captions.NewName, AppConstants.Captions.EnterNewFormulaName, string.Empty, existingFormulaNames);
+
+         if (string.IsNullOrEmpty(newFormulaName))
             return (new MoBiEmptyCommand(), null);
 
-         var formula = CreateNewFormula(formulaType, formulaDimension).WithName(newName);
+         var formula = CreateNewFormula(formulaType, formulaDimension).WithName(newFormulaName);
 
          return (new AddFormulaToFormulaCacheCommand(buildingBlock, formula).Run(_context), formula);
+      }
+
+      private static bool shouldNameFormula(string newFormulaName, IReadOnlyList<string> forbiddenNames)
+      {
+         return string.IsNullOrEmpty(newFormulaName) || forbiddenNames.Contains(newFormulaName);
       }
 
       public IFormula CreateNewFormula(Type formulaType, IDimension formulaDimension)

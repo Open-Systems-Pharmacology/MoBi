@@ -23,7 +23,7 @@ namespace MoBi.Presentation
       protected IEditObserverBuilderView _editObserverBuilderView;
       protected AmountObserverBuilder _observerBuilder;
       protected ObserverBuildingBlock _buildingBlock;
-      protected IEditFormulaPresenter _editFormulaPresenter;
+      protected IEditFormulaInContainerPresenter _editFormulaPresenter;
       private ICommandCollector _commandCollector;
       private IObserverBuilderToDTOObserverBuilderMapper _observerMapper;
 
@@ -32,7 +32,7 @@ namespace MoBi.Presentation
          _observerBuilder = A.Fake<AmountObserverBuilder>();
          _editObserverBuilderView = A.Fake<IEditObserverBuilderView>();
          _buildingBlock= new ObserverBuildingBlock();
-         _editFormulaPresenter= A.Fake<IEditFormulaPresenter>();
+         _editFormulaPresenter= A.Fake<IEditFormulaInContainerPresenter>();
          _commandCollector= A.Fake<ICommandCollector>();
          _observerMapper = A.Fake<IObserverBuilderToDTOObserverBuilderMapper>();
 
