@@ -56,7 +56,7 @@ namespace MoBi.Presentation.Presenter
       public EditTransportBuilderPresenter(IEditTransportBuilderView view, ITransportBuilderToTransportBuilderDTOMapper transportBuilderToDTOTransportBuilderMapper,
          IEditTaskFor<TransportBuilder> editTasks, IViewItemContextMenuFactory viewItemContextMenuFactory,
          IFormulaToFormulaBuilderDTOMapper formulaToDTOFormulaBuilderMapper, IEditParametersInContainerPresenter editParametersInContainerPresenter,
-         IEditFormulaPresenter editFormulaPresenter, ISelectReferenceAtTransportPresenter selectReferencePresenter, IMoBiContext context,
+         IEditFormulaInContainerPresenter editFormulaPresenter, ISelectReferenceAtTransportPresenter selectReferencePresenter, IMoBiContext context,
          IMoleculeDependentBuilderPresenter moleculeListPresenter, IDescriptorConditionListPresenter<TransportBuilder> sourceCriteriaPresenter,
          IDescriptorConditionListPresenter<TransportBuilder> targetCriteriaPresenter)
          : base(view, editFormulaPresenter, selectReferencePresenter)

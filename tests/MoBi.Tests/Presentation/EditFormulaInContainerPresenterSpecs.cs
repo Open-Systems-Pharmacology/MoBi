@@ -20,9 +20,9 @@ using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation
 {
-   public abstract class concern_for_EditFormulaPresenter : ContextSpecification<IEditFormulaPresenter>
+   public abstract class concern_for_EditFormulaInContainerPresenter : ContextSpecification<EditFormulaInContainerPresenter>
    {
-      protected IEditFormulaView _editFormulaView;
+      protected IEditFormulaInContainerView _editFormulaView;
       protected IFormulaPresenterCache _formulaPresenterCache;
       protected IMoBiContext _context;
       protected IFormulaToFormulaInfoDTOMapper _formulaToDTOInfoMapper;
@@ -32,19 +32,19 @@ namespace MoBi.Presentation
 
       protected override void Context()
       {
-         _editFormulaView = A.Fake<IEditFormulaView>();
+         _editFormulaView = A.Fake<IEditFormulaInContainerView>();
          _context = A.Fake<IMoBiContext>();
          _formulaPresenterCache = A.Fake<IFormulaPresenterCache>();
          _formulaToDTOInfoMapper = new FormulaToFormulaInfoDTOMapper();
          _formulaTask = A.Fake<IMoBiFormulaTask>();
          _circularReferenceChecker = A.Fake<ICircularReferenceChecker>();
-         sut = new EditFormulaPresenter(_editFormulaView, _formulaPresenterCache, _context, _formulaToDTOInfoMapper, new FormulaTypeCaptionRepository(), _formulaTask, _circularReferenceChecker);
+         sut = new EditFormulaInContainerPresenter(_editFormulaView, _formulaPresenterCache, _context, _formulaToDTOInfoMapper, new FormulaTypeCaptionRepository(), _formulaTask, _circularReferenceChecker);
          _commandCollector = A.Fake<ICommandCollector>();
          sut.InitializeWith(_commandCollector);
       }
    }
 
-   internal class When_selecting_named_Formula_type : concern_for_EditFormulaPresenter
+   internal class When_selecting_named_Formula_type : concern_for_EditFormulaInContainerPresenter
    {
       private IParameter _parameter;
       private IBuildingBlock _buidingBlockWithFormulaCache;
@@ -68,7 +68,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.FormulaSelectionChanged(string.Empty);
+         sut.FormulaTypeSelectionChanged(string.Empty);
       }
 
       [Observation]
@@ -91,7 +91,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_selecting_an_constant_formula : concern_for_EditFormulaPresenter
+   public class When_selecting_an_constant_formula : concern_for_EditFormulaInContainerPresenter
    {
       private IParameter _parameter;
       private IBuildingBlock _buidingBlockWithFormulaCache;
@@ -119,7 +119,7 @@ namespace MoBi.Presentation
       }
    }
 
-   internal class When_adding_a_named_Formula_after_selecting_named_Formula_type : concern_for_EditFormulaPresenter
+   internal class When_adding_a_named_Formula_after_selecting_named_Formula_type : concern_for_EditFormulaInContainerPresenter
    {
       private IParameter _parameter;
       private IBuildingBlock _buidingBlockWithFormulaCache;
@@ -144,7 +144,7 @@ namespace MoBi.Presentation
          //add so that it will be found when setting the value in the parameter
          _buidingBlockWithFormulaCache.AddFormula(_explicitFormula);
 
-         A.CallTo(() => _formulaTask.CreateNewFormulaInBuildingBlock(A<Type>._, A<IDimension>._, A<IEnumerable<string>>._, _buidingBlockWithFormulaCache))
+         A.CallTo(() => _formulaTask.CreateNewFormulaInBuildingBlock(A<Type>._, A<IDimension>._, A<IEnumerable<string>>._, _buidingBlockWithFormulaCache, null))
             .Returns((A.Fake<IMoBiCommand>(), _explicitFormula));
       }
 
@@ -156,7 +156,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_Add_a_formula_to_formula_cache()
       {
-         A.CallTo(() => _formulaTask.CreateNewFormulaInBuildingBlock(typeof (ExplicitFormula), A<IDimension>._, A<IEnumerable<string>>._, _buidingBlockWithFormulaCache))
+         A.CallTo(() => _formulaTask.CreateNewFormulaInBuildingBlock(typeof (ExplicitFormula), A<IDimension>._, A<IEnumerable<string>>._, _buidingBlockWithFormulaCache, null))
             .MustHaveHappened();
       }
 
@@ -167,7 +167,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_adding_a_new_formula_to_the_edited_building_block : concern_for_EditFormulaPresenter
+   public class When_adding_a_new_formula_to_the_edited_building_block : concern_for_EditFormulaInContainerPresenter
    {
       private IBuildingBlock _buidingBlockWithFormulaCache;
       private IFormulaCache _formulaCache;
@@ -186,7 +186,7 @@ namespace MoBi.Presentation
          _formulaCache.Add(new TableFormulaWithOffset().WithId("B").WithName("B"));
          _formulaCache.Add(new SumFormula().WithId("C").WithName("C"));
 
-         A.CallTo(() => _formulaTask.CreateNewFormulaInBuildingBlock(A<Type>._, A<IDimension>._, A<IEnumerable<string>>._, _buidingBlockWithFormulaCache))
+         A.CallTo(() => _formulaTask.CreateNewFormulaInBuildingBlock(A<Type>._, A<IDimension>._, A<IEnumerable<string>>._, _buidingBlockWithFormulaCache, null))
             .Invokes(x => _availableFormulaNames = x.GetArgument<IEnumerable<string>>(2))
             .Returns((A.Fake<IMoBiCommand>(), null));
 
@@ -206,7 +206,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_retrieving_the_list_of_all_available_formula_for_the_edited_parameter : concern_for_EditFormulaPresenter
+   public class When_retrieving_the_list_of_all_available_formula_for_the_edited_parameter : concern_for_EditFormulaInContainerPresenter
    {
       private IParameter _parameter;
       private IBuildingBlock _buidingBlockWithFormulaCache;
@@ -240,7 +240,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_retrieving_the_list_of_all_available_formula_for_the_edited_rhs_parameter_formula : concern_for_EditFormulaPresenter
+   public class When_retrieving_the_list_of_all_available_formula_for_the_edited_rhs_parameter_formula : concern_for_EditFormulaInContainerPresenter
    {
       private IParameter _parameter;
       private IBuildingBlock _buidingBlockWithFormulaCache;

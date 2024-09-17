@@ -46,7 +46,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IDescriptorConditionListPresenter<ObserverBuilder> _descriptorConditionListPresenter;
       private IBuildingBlock _buildingBlock;
 
-      protected EditObserverBuilderPresenter(IEditObserverBuilderView view, IEditFormulaPresenter editFormulaPresenter,
+      protected EditObserverBuilderPresenter(IEditObserverBuilderView view, IEditFormulaInContainerPresenter editFormulaPresenter,
          ISelectReferenceAtObserverPresenter selectReferencePresenter, IMoBiContext context,
          IViewItemContextMenuFactory viewItemContextMenuFactory, IEditTaskFor<TObserverBuilder> editTasks,
          IMoleculeDependentBuilderPresenter moleculeListPresenter, IDescriptorConditionListPresenter<ObserverBuilder> descriptorConditionListPresenter) :

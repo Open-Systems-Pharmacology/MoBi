@@ -54,7 +54,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IReactionProductsPresenter _reactionProductPresenter;
       private readonly IReactionModifiersPresenter _reactionModifiersPresenter;
 
-      public EditReactionBuilderPresenter(IEditReactionBuilderView view, IEditFormulaPresenter editFormulaPresenter,
+      public EditReactionBuilderPresenter(IEditReactionBuilderView view, IEditFormulaInContainerPresenter editFormulaPresenter,
          ISelectReferenceAtReactionPresenter selectReferencesPresenter, IReactionBuilderToReactionBuilderDTOMapper reactionBuilderToReactionBuilderDTOMapper,
          IViewItemContextMenuFactory viewItemContextMenuFactory, IEditTaskFor<ReactionBuilder> editTasks,
          IFormulaToFormulaBuilderDTOMapper formulaBuilderMapper, IEditParametersInContainerPresenter editReactionParametersPresenter, IMoBiContext context,

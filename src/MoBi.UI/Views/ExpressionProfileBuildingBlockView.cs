@@ -150,7 +150,7 @@ namespace MoBi.UI.Views
          var repository = new UxRepositoryItemComboBox(gridView);
          repository.FillComboBoxRepositoryWith(_presenter.AllFormulas());
 
-         repository.Buttons.Add(new EditorButton(ButtonPredefines.Plus));
+         repository.Buttons.Add(new EditorButton(ButtonPredefines.Ellipsis));
          repository.ButtonClick += OnFormulaButtonClick;
 
          return repository;
@@ -158,12 +158,12 @@ namespace MoBi.UI.Views
 
       protected void OnFormulaButtonClick(object sender, ButtonPressedEventArgs e)
       {
-         if (!e.Button.Kind.Equals(ButtonPredefines.Plus)) return;
+         if (!e.Button.Kind.Equals(ButtonPredefines.Ellipsis)) return;
 
          var expressionParameterDTO = _gridViewBinder.ElementAt(gridView.FocusedRowHandle);
-         _presenter.AddNewFormula(expressionParameterDTO);
-         var comboBox = sender as ComboBoxEdit;
-         if (comboBox != null)
+         _presenter.EditFormula(expressionParameterDTO);
+
+         if (sender is ComboBoxEdit comboBox)
             comboBox.FillComboBoxEditorWith(_presenter.AllFormulas());
       }
 

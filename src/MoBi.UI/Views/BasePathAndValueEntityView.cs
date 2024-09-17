@@ -332,10 +332,10 @@ namespace MoBi.UI.Views
 
       protected void OnFormulaButtonClick(object sender, ButtonPressedEventArgs e)
       {
-         if (!e.Button.Kind.Equals(ButtonPredefines.Plus)) return;
+         if (!e.Button.Kind.Equals(ButtonPredefines.Ellipsis)) return;
 
          var startValueDTO = _gridViewBinder.ElementAt(gridView.FocusedRowHandle);
-         _presenter.AddNewFormula(startValueDTO);
+         _presenter.EditFormula(startValueDTO);
 
          if (sender is ComboBoxEdit comboBox)
             comboBox.FillComboBoxEditorWith(_presenter.AllFormulas());
@@ -347,7 +347,7 @@ namespace MoBi.UI.Views
          repository.FillComboBoxRepositoryWith(_presenter.AllFormulas());
          if (CanCreateNewFormula)
          {
-            repository.Buttons.Add(new EditorButton(ButtonPredefines.Plus));
+            repository.Buttons.Add(new EditorButton(ButtonPredefines.Ellipsis));
             repository.ButtonClick += OnFormulaButtonClick;
          }
 

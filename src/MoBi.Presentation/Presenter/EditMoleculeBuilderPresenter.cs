@@ -43,7 +43,7 @@ namespace MoBi.Presentation.Presenter
          IMoleculeBuilderToMoleculeBuilderDTOMapper moleculeBuilderDTOMapper,
          IEditParametersInContainerPresenter editMoleculeParameters,
          IEditTaskFor<MoleculeBuilder> editTasks,
-         IEditFormulaPresenter editFormulaPresenter,
+         IEditFormulaInContainerPresenter editFormulaPresenter,
          IMoBiContext context,
          ISelectReferenceAtMoleculePresenter selectReferencePresenter,
          IReactionDimensionRetriever dimensionRetriever,
@@ -71,10 +71,7 @@ namespace MoBi.Presentation.Presenter
          _editMoleculeParameters.InitializeWith(CommandCollector);
       }
 
-      public void Edit(object objectToEdit)
-      {
-         Edit(objectToEdit.DowncastTo<MoleculeBuilder>());
-      }
+      public void Edit(object objectToEdit) => Edit(objectToEdit.DowncastTo<MoleculeBuilder>());
 
       public override void ReleaseFrom(IEventPublisher eventPublisher)
       {
