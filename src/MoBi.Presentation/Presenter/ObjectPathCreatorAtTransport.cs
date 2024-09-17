@@ -7,7 +7,7 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
-   internal interface IObjectPathCreatorAtTransport : IObjectPathCreator
+   public interface IObjectPathCreatorAtTransport : IObjectPathCreator
    {
       TransportBuilder Transport { set; }
    }
@@ -35,15 +35,21 @@ namespace MoBi.Presentation.Presenter
       /// </returns>
       public override ReferenceDTO CreatePathFromParameterDummy(ObjectBaseDTO objectBaseDTO, bool shouldCreateAbsolutePaths, IEntity refObject, IUsingFormula editedObject)
       {
-         var dtoDummyParameter = (DummyParameterDTO) objectBaseDTO;
+         var dtoDummyParameter = (DummyParameterDTO)objectBaseDTO;
          var firstPathElement = getPathKeywordForContainer(dtoDummyParameter.Parent.ParentContainer);
-         if (firstPathElement.IsNullOrEmpty())
-            return base.CreatePathFromParameterDummy(objectBaseDTO, shouldCreateAbsolutePaths, refObject, editedObject);
+         if (firstPathElement.IsNullOrEmpty() || shouldCreateAbsolutePaths)
+         {
+            var dto = base.CreatePathFromParameterDummy(objectBaseDTO, shouldCreateAbsolutePaths, refObject, editedObject);
+            if (!shouldCreateAbsolutePaths)
+               dto.Path.Replace(dtoDummyParameter.ModelParentName, ObjectPathKeywords.MOLECULE);
+
+            return dto;
+         }
 
          var moleculeElement = shouldCreateAbsolutePaths ? dtoDummyParameter.ModelParentName : ObjectPathKeywords.MOLECULE;
          return new ReferenceDTO
          {
-            Path = CreateFormulaUsablePathFrom(new[] {firstPathElement, moleculeElement, dtoDummyParameter.Name}, dtoDummyParameter.Parameter)
+            Path = CreateFormulaUsablePathFrom(new[] { firstPathElement, moleculeElement, dtoDummyParameter.Name }, dtoDummyParameter.Parameter)
          };
       }
 
@@ -52,14 +58,20 @@ namespace MoBi.Presentation.Presenter
          var moleculeProperties = _context.Get<IContainer>(dtoObjectBase.MoleculePropertiesContainer.Id);
          var parentContainer = moleculeProperties.ParentContainer;
          var firstPathElemnt = getPathKeywordForContainer(parentContainer);
-         if (firstPathElemnt.IsNullOrEmpty())
-            return base.CreateMoleculePath(dtoObjectBase, shouldCreateAbsolutePaths, refObject);
+         if (firstPathElemnt.IsNullOrEmpty() || shouldCreateAbsolutePaths || firstPathElemnt.Equals(Constants.NEIGHBORHOODS))
+         {
+            var dto = base.CreateMoleculePath(dtoObjectBase, shouldCreateAbsolutePaths, refObject);
+            if (!shouldCreateAbsolutePaths)
+               dto.Path.Replace(dtoObjectBase.Name, ObjectPathKeywords.MOLECULE);
+            return dto;
+         }
+
 
          string moleculeElement = shouldCreateAbsolutePaths ? dtoObjectBase.Name : ObjectPathKeywords.MOLECULE;
 
          return new ReferenceDTO
          {
-            Path = CreateFormulaUsablePathFrom(new[] {firstPathElemnt, moleculeElement}, AppConstants.AmountAlias, Constants.Dimension.MOLAR_AMOUNT)
+            Path = CreateFormulaUsablePathFrom(new[] { firstPathElemnt, moleculeElement }, AppConstants.AmountAlias, Constants.Dimension.MOLAR_AMOUNT)
          };
       }
 
@@ -77,7 +89,7 @@ namespace MoBi.Presentation.Presenter
       {
          return new ReferenceDTO
          {
-            Path = CreateFormulaUsablePathFrom(new[] {parameter.Name}, parameter)
+            Path = CreateFormulaUsablePathFrom(new[] { parameter.Name }, parameter)
          };
       }
 
@@ -120,6 +132,9 @@ namespace MoBi.Presentation.Presenter
 
          if (Transport.SourceCriteria.IsSatisfiedBy(container))
             return ObjectPathKeywords.SOURCE;
+
+         if (container.RootContainer.Description.Contains(Constants.NEIGHBORHOODS))
+            return ObjectPathKeywords.NEIGHBORHOOD;
 
          return string.Empty;
       }

@@ -156,12 +156,15 @@ namespace MoBi.Presentation.Presenter
             if (objectBaseDTO.IsAnImplementationOf<DummyParameterDTO>())
                return createPathFromParameterDummy(objectBaseDTO);
 
+            var objectBase = _context.Get<IObjectBase>(objectBaseDTO.Id);
+            if (objectBase != null)
+               return createPathsFromEntity(objectBase);
+
             if (objectBaseDTO.IsAnImplementationOf<DummyMoleculeContainerDTO>())
                return _objectPathCreator.CreateMoleculePath((DummyMoleculeContainerDTO)objectBaseDTO, shouldCreateAbsolutePath, _refObject);
 
-            var objectBase = _context.Get<IObjectBase>(objectBaseDTO.Id);
 
-            return objectBase != null ? createPathsFromEntity(objectBase) : null;
+            return null;
          }
          catch (InvalidCastException)
          {
