@@ -62,7 +62,7 @@ namespace MoBi.Presentation.Presenter
          {
             var dto = base.CreateMoleculePath(dtoObjectBase, shouldCreateAbsolutePaths, refObject);
             if (!shouldCreateAbsolutePaths)
-               dto.Path.Replace(dtoObjectBase.Name, ObjectPathKeywords.MOLECULE);
+               dto?.Path.Replace(dtoObjectBase.Name, ObjectPathKeywords.MOLECULE);
             return dto;
          }
 
