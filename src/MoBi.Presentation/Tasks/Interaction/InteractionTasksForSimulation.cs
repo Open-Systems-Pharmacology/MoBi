@@ -5,11 +5,11 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Events;
+using MoBi.Core.Extensions;
 using MoBi.Core.Services;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Assets;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
@@ -93,7 +93,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          simulations.Each(simulation =>
          {
-            macroCommand.AddCommand(GetRemoveCommand(simulation, currentProject, null).Run(Context));
+            macroCommand.AddCommand(GetRemoveCommand(simulation, currentProject, null).RunCommand(Context));
             Context.PublishEvent(new RemovedEvent(simulation, currentProject));
          });
 
@@ -120,7 +120,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (simulation == null)
             return new MoBiEmptyCommand();
 
-         var command = addSimulationToProjectCommand(simulation).Run(_interactionTaskContext.Context);
+         var command = addSimulationToProjectCommand(simulation).RunCommand(_interactionTaskContext.Context);
          _editTask.Edit(simulation);
          return command;
       }
@@ -153,7 +153,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public override IMoBiCommand AddNew(MoBiProject moBiProject, IBuildingBlock buildingBlockToAddTo)
       {
-         return addSimulationToProjectCommand(createSimulation()).Run(_interactionTaskContext.Context);
+         return addSimulationToProjectCommand(createSimulation()).RunCommand(_interactionTaskContext.Context);
       }
 
       public override IMoBiCommand GetRemoveCommand(IMoBiSimulation transportBuilderToRemove, MoBiProject project, IBuildingBlock buildingBlock)
@@ -190,7 +190,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          var newSimulation = _cloneManager.CloneSimulation(simulationToClone).WithName(newName);
          
-         _interactionTaskContext.Context.AddToHistory(new AddSimulationCommand(newSimulation).Run(_interactionTaskContext.Context));
+         _interactionTaskContext.Context.AddToHistory(new AddSimulationCommand(newSimulation).RunCommand(_interactionTaskContext.Context));
 
          return newSimulation;
       }

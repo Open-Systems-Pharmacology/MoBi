@@ -1,9 +1,9 @@
 ﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
+using MoBi.Core.Extensions;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -49,7 +49,7 @@ namespace MoBi.Core.Commands
    {
       protected override void Because()
       {
-         sut.Run(_context);
+         sut.RunCommand(_context);
       }
 
       [Observation]

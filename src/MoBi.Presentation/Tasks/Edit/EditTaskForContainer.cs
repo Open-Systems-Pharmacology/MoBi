@@ -4,11 +4,11 @@ using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Extensions;
 using MoBi.Core.Serialization.Exchange;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Interaction;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -247,7 +247,7 @@ namespace MoBi.Presentation.Tasks.Edit
 
       public IMoBiCommand SetContainerMode(IBuildingBlock buildingBlock, IContainer container, ContainerMode containerMode)
       {
-         return new SetContainerModeCommand(buildingBlock, container, containerMode).Run(_context);
+         return new SetContainerModeCommand(buildingBlock, container, containerMode).RunCommand(_context);
       }
 
       public string BrowseSavePathFor(string name)

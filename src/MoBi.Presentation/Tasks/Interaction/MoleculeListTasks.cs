@@ -1,8 +1,8 @@
 ﻿using System.Linq;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Extensions;
 using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Tasks.Interaction
@@ -24,7 +24,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       public IMoBiCommand MergeMoleculeLists(IMoleculeDependentBuilder builder, IMoleculeDependentBuilder targetBuilder, IBuildingBlock targetBuildingBlock)
       {
          var newMoleculeList = createUnionMoleculeList(builder, targetBuilder);
-         return new SetMoleculeListsCommand(targetBuilder, newMoleculeList, targetBuildingBlock).Run(_context);
+         return new SetMoleculeListsCommand(targetBuilder, newMoleculeList, targetBuildingBlock).RunCommand(_context);
       }
 
       private MoleculeList createUnionMoleculeList(IMoleculeDependentBuilder builder, IMoleculeDependentBuilder targetBuilder)

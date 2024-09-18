@@ -5,12 +5,12 @@ using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
+using MoBi.Core.Extensions;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Views;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -94,7 +94,7 @@ namespace MoBi.Presentation.Presenter
 
       private void addToParent(IFormula formula)
       {
-         AddCommand(new AddFormulaToFormulaCacheCommand(_buildingBlock, formula).Run(_context));
+         AddCommand(new AddFormulaToFormulaCacheCommand(_buildingBlock, formula).RunCommand(_context));
          Edit(_buildingBlock);
          Select(formula);
       }
@@ -123,7 +123,7 @@ namespace MoBi.Presentation.Presenter
          if (result == ViewResult.No) 
             return;
 
-         AddCommand(new RemoveFormulaFromFormulaCacheCommand(_buildingBlock, formula).Run(_context));
+         AddCommand(new RemoveFormulaFromFormulaCacheCommand(_buildingBlock, formula).RunCommand(_context));
          //Ensure that if an invalid formula is removed, the invalid message is removed as well
          _context.PublishEvent(new FormulaValidEvent(formula, _buildingBlock));
          Edit(_buildingBlock);
@@ -141,7 +141,7 @@ namespace MoBi.Presentation.Presenter
          if (string.IsNullOrEmpty(newName))
             return;
 
-         AddCommand(new RenameObjectBaseCommand(formula, newName, _buildingBlock).Run(_context));
+         AddCommand(new RenameObjectBaseCommand(formula, newName, _buildingBlock).RunCommand(_context));
          Edit(_buildingBlock);
       }
 

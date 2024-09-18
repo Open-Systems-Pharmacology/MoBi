@@ -6,6 +6,7 @@ using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
+using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Extensions;
@@ -98,7 +99,7 @@ namespace MoBi.Presentation.Presenter
          macroCommand.ObjectType = _objectType;
          macroCommand.Description = RemoveCommandDescription();
 
-         AddCommand(macroCommand.Run(_context));
+         AddCommand(macroCommand.RunCommand(_context));
 
          _startValueDTOs.RemoveRange(startValuesToRemove);
       }

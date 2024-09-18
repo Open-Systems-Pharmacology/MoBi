@@ -4,6 +4,7 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Extensions;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Commands.Core;
@@ -121,7 +122,7 @@ namespace MoBi.Presentation.Tasks.Edit
          if (string.IsNullOrEmpty(newName))
             return;
 
-         addCommand(new RenameSimulationResultsCommand(dataRepository, simulation, newName).Run(_context));
+         addCommand(new RenameSimulationResultsCommand(dataRepository, simulation, newName).RunCommand(_context));
       }
 
       public void ExportODEForMatlab(IMoBiSimulation simulation)

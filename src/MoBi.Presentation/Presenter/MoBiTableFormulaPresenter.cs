@@ -3,9 +3,9 @@ using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
+using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
 using MoBi.Presentation.Tasks;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Formulas;
@@ -87,7 +87,7 @@ namespace MoBi.Presentation.Presenter
          }
 
          this.DoWithinLatch(() =>
-            AddCommand(_tableFormulaTask.SetXValuePoint(_editedFormula, valuePointDTO.ValuePoint, newValue, _buildingBlock).Run(_context))
+            AddCommand(_tableFormulaTask.SetXValuePoint(_editedFormula, valuePointDTO.ValuePoint, newValue, _buildingBlock).RunCommand(_context))
          );
       }
 
@@ -99,7 +99,7 @@ namespace MoBi.Presentation.Presenter
       public override void SetRestartSolver(ValuePointDTO valuePointDTO, bool restart)
       {
          this.DoWithinLatch(() =>
-            AddCommand(_tableFormulaTask.SetRestartSolver(_editedFormula, valuePointDTO.ValuePoint, restart, _buildingBlock).Run(_context))
+            AddCommand(_tableFormulaTask.SetRestartSolver(_editedFormula, valuePointDTO.ValuePoint, restart, _buildingBlock).RunCommand(_context))
          );
       }
 
@@ -118,7 +118,7 @@ namespace MoBi.Presentation.Presenter
       public override void SetYValue(ValuePointDTO valuePointDTO, double newValue)
       {
          this.DoWithinLatch(() =>
-            AddCommand(_tableFormulaTask.SetYValuePoint(_editedFormula, valuePointDTO.ValuePoint, newValue, _buildingBlock).Run(_context))
+            AddCommand(_tableFormulaTask.SetYValuePoint(_editedFormula, valuePointDTO.ValuePoint, newValue, _buildingBlock).RunCommand(_context))
          );
       }
 

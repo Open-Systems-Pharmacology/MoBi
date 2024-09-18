@@ -3,13 +3,12 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Extensions;
-using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Domain.UnitSystem;
 using MoBi.Core.Exceptions;
+using MoBi.Core.Extensions;
 using MoBi.Core.Services;
 using MoBi.Presentation.Tasks.Edit;
-using OSPSuite.Core.Commands;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -112,7 +111,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public IMoBiCommand SetDimensionForParameter(IParameter parameter, IDimension newDimension, IBuildingBlock buildingBlock)
       {
-         return new SetParameterDimensionInBuildingBlockCommand(parameter, newDimension, buildingBlock).Run(Context);
+         return new SetParameterDimensionInBuildingBlockCommand(parameter, newDimension, buildingBlock).RunCommand(Context);
       }
 
       public IMoBiCommand ResetRHSFormulaFor(IParameter parameter, IBuildingBlock buildingBlock)
@@ -120,7 +119,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (parameter.RHSFormula==null)
             return new MoBiEmptyCommand();
 
-         return new EditParameterRHSFormulaInBuildingBlockCommand(null, parameter.RHSFormula, parameter, buildingBlock).Run(Context);
+         return new EditParameterRHSFormulaInBuildingBlockCommand(null, parameter.RHSFormula, parameter, buildingBlock).RunCommand(Context);
       }
 
       public IMoBiCommand SetNameForParameter(IParameter parameter, string newName, IBuildingBlock buildingBlock)

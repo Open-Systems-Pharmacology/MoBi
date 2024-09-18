@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Services;
+using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
 using MoBi.Core.Mappers;
 using MoBi.Presentation.DTO;
@@ -12,7 +12,6 @@ using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Assets;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
@@ -57,7 +56,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public override IMoBiCommand AddPathAndValueEntityToBuildingBlock(ParameterValuesBuildingBlock buildingBlock, ParameterValue pathAndValueEntity)
       {
-         return GenerateAddCommand(buildingBlock, pathAndValueEntity).Run(Context);
+         return GenerateAddCommand(buildingBlock, pathAndValueEntity).RunCommand(Context);
       }
 
       protected override IMoBiCommand GetUpdatePathAndValueEntityInBuildingBlockCommand(ParameterValuesBuildingBlock buildingBlock, ImportedQuantityDTO dto)
@@ -76,7 +75,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          GetImportPathAndValueEntityMacroCommand(buildingBlock, startQuantities, macroCommand);
 
-         return macroCommand.Run(Context);
+         return macroCommand.RunCommand(Context);
       }
 
       public override IMoBiCommand RemovePathAndValueEntityFromBuildingBlockCommand(ParameterValue pathAndValueEntity, ParameterValuesBuildingBlock buildingBlock)
@@ -118,8 +117,8 @@ namespace MoBi.Presentation.Tasks.Interaction
             Description = AppConstants.Commands.EditPathAndName(objectType, parameterValue.ContainerPath, entityPath, parameterValue.Name, newName)
          };
          // Run this first before creating the command for rename because the entity needs to be in the building block before the name can be changed
-         macroCommand.Add(_entityPathTask.SetContainerPathCommand(buildingBlock, parameterValue, entityPath).Run(Context));
-         macroCommand.Add(_entityPathTask.UpdateNameCommand(buildingBlock, parameterValue, newName).Run(Context));
+         macroCommand.Add(_entityPathTask.SetContainerPathCommand(buildingBlock, parameterValue, entityPath).RunCommand(Context));
+         macroCommand.Add(_entityPathTask.UpdateNameCommand(buildingBlock, parameterValue, newName).RunCommand(Context));
 
          return macroCommand;
       }

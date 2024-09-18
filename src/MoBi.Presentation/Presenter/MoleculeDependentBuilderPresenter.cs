@@ -5,6 +5,7 @@ using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
+using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
 using MoBi.Core.Services;
 using MoBi.Presentation.Presenter.BasePresenter;
@@ -68,7 +69,7 @@ namespace MoBi.Presentation.Presenter
       private void removeMolecule(IEnumerable<string> availableMolecules, string molecule, Func<RemoveMoleculeNameCommand> removeItemCommand)
       {
          if (!availableMolecules.ContainsItem(molecule)) return;
-         AddCommand(removeItemCommand().Run(_context));
+         AddCommand(removeItemCommand().RunCommand(_context));
       }
 
       public void AddToIncludeList()
@@ -93,12 +94,12 @@ namespace MoBi.Presentation.Presenter
          var moleculeName = newMoleculeName();
          if (string.IsNullOrEmpty(moleculeName)) return;
          if (availableMolecules.ContainsItem(moleculeName)) return;
-         AddCommand(addItemCommand(moleculeName).Run(_context));
+         AddCommand(addItemCommand(moleculeName).RunCommand(_context));
       }
 
       public void SetForAll(bool forAll)
       {
-         AddCommand(new SetForAllCommand(_moleculeDependentBuilder, forAll, BuildingBlock).Run(_context));
+         AddCommand(new SetForAllCommand(_moleculeDependentBuilder, forAll, BuildingBlock).RunCommand(_context));
       }
 
       public override void AddCommand(ICommand command)

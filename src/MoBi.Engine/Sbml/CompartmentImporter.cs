@@ -4,7 +4,7 @@ using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.UnitSystem;
-using OSPSuite.Core.Commands.Core;
+using MoBi.Core.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
@@ -209,7 +209,7 @@ namespace MoBi.Engine.Sbml
       /// </summary>
       public override void AddToProject()
       {
-         _command.AddCommand(new AddBuildingBlockToModuleCommand<MoBiSpatialStructure>(SpatialStructure, _sbmlModule).Run(_context));
+         _command.AddCommand(new AddBuildingBlockToModuleCommand<MoBiSpatialStructure>(SpatialStructure, _sbmlModule).RunCommand(_context));
       }
    }
 }

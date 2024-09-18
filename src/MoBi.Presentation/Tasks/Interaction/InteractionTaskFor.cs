@@ -5,6 +5,7 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
 using MoBi.Core.Events;
+using MoBi.Core.Extensions;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
@@ -76,7 +77,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          var newEntity = CreateNewEntity(parent);
          var addCommand = GetSilentAddCommand(newEntity, parent, buildingBlockToAddTo);
-         macroCommand.AddCommand(addCommand.Run(Context));
+         macroCommand.AddCommand(addCommand.RunCommand(Context));
          var parentContainer = parent as IEnumerable<IObjectBase> ?? Enumerable.Empty<IObjectBase>();
 
          if (!_editTask.EditEntityModal(newEntity, parentContainer, macroCommand, buildingBlockToAddTo))
@@ -219,7 +220,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       protected virtual IMoBiCommand RunRemoveCommand(TChild objectToRemove, TParent parent, IBuildingBlock buildingBlock)
       {
-         return GetRemoveCommand(objectToRemove, parent, buildingBlock).Run(Context);
+         return GetRemoveCommand(objectToRemove, parent, buildingBlock).RunCommand(Context);
       }
 
       public abstract IMoBiCommand GetRemoveCommand(TChild objectToRemove, TParent parent, IBuildingBlock buildingBlock);
@@ -238,7 +239,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          };
 
          //add silently and raise event at the end
-         macroCommand.Add(GetSilentAddCommand(childToAdd, parent, buildingBlockWithFormulaCache).Run(Context));
+         macroCommand.Add(GetSilentAddCommand(childToAdd, parent, buildingBlockWithFormulaCache).RunCommand(Context));
 
          if (!adjustFormula(childToAdd, buildingBlockWithFormulaCache, macroCommand))
             return CancelCommand(macroCommand);

@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
+using MoBi.Core.Extensions;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
@@ -124,7 +124,7 @@ namespace MoBi.Presentation.Presenter
 
       public virtual void SetPropertyValueFromView<T>(string propertyName, T newValue, T oldValue)
       {
-         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, _reactionBuilder, BuildingBlock).Run(_context));
+         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, _reactionBuilder, BuildingBlock).RunCommand(_context));
       }
 
       public void RenameSubject()
@@ -134,7 +134,7 @@ namespace MoBi.Presentation.Presenter
 
       public void SetCreateProcessRateParameter(bool createProcessRate)
       {
-         AddCommand(new SetCreateProcessRateParameterCommand(createProcessRate, _reactionBuilder, BuildingBlock).Run(_context));
+         AddCommand(new SetCreateProcessRateParameterCommand(createProcessRate, _reactionBuilder, BuildingBlock).RunCommand(_context));
          _view.PlotProcessRateParameterEnabled = createProcessRate;
       }
 
