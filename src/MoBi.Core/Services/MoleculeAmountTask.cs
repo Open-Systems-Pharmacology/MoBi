@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using OSPSuite.Core.Commands.Core;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 
@@ -38,12 +38,12 @@ namespace MoBi.Core.Services
 
       public IMoBiCommand UpdateScaleDivisors(IMoBiSimulation simulation, IReadOnlyCollection<ScaleDivisor> scaleDivisors)
       {
-         return new UpdateMoleculeAmountScaleDivisorsInSimulationCommand(scaleDivisors, simulation).Run(_context);
+         return new UpdateMoleculeAmountScaleDivisorsInSimulationCommand(scaleDivisors, simulation).RunCommand(_context);
       }
 
       public IMoBiCommand UpdateScaleDivisor(IMoBiSimulation simulation, MoleculeAmount moleculeAmount, double newScaleDivisor)
       {
-         return new UpdateMoleculeAmountScaleDivisorInSimulationCommand(moleculeAmount, newScaleDivisor, simulation).Run(_context);
+         return new UpdateMoleculeAmountScaleDivisorInSimulationCommand(moleculeAmount, newScaleDivisor, simulation).RunCommand(_context);
       }
    }
 }

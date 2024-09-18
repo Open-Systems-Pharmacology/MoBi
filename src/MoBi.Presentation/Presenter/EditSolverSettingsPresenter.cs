@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
-using MoBi.Presentation.Settings;
+using MoBi.Core.Extensions;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.Builder;
@@ -49,7 +48,7 @@ namespace MoBi.Presentation.Presenter
          //always convert the value to the actual property type
          var oldValueToUse = _context.DeserializeValueTo(solverOptionDTO.Type, oldValue);
          var newValueToUse = _context.DeserializeValueTo(solverOptionDTO.Type, newValue);
-         AddCommand(createEditCommandFor(solverOptionDTO.Name, newValueToUse, oldValueToUse).Run(_context));
+         AddCommand(createEditCommandFor(solverOptionDTO.Name, newValueToUse, oldValueToUse).RunCommand(_context));
       }
 
       private IMoBiCommand createEditCommandFor(string name, object newValue, object oldValue)

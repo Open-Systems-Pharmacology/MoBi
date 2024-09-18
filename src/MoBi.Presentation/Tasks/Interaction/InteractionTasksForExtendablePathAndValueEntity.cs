@@ -8,6 +8,7 @@ using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Exceptions;
+using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
@@ -184,7 +185,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          _extendManager.Merge(cacheToExtend, targetCache, defaultOption: retainConflictingEntities ? MergeConflictOptions.SkipAll : MergeConflictOptions.ReplaceAll);
 
-         macro.Run(Context);
+         macro.RunCommand(Context);
 
          return macro;
       }
@@ -226,7 +227,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public IMoBiCommand UpdatePathAndValueEntityDimension(TBuildingBlock pathAndValueEntitiesBuildingBlock, TPathAndValueEntity pathAndValueEntity, IDimension newDimension)
       {
-         return new UpdateDimensionInPathAndValueEntityCommand<TPathAndValueEntity>(pathAndValueEntity, newDimension, _interactionTaskContext.DisplayUnitFor(newDimension), pathAndValueEntitiesBuildingBlock).Run(Context);
+         return new UpdateDimensionInPathAndValueEntityCommand<TPathAndValueEntity>(pathAndValueEntity, newDimension, _interactionTaskContext.DisplayUnitFor(newDimension), pathAndValueEntitiesBuildingBlock).RunCommand(Context);
       }
 
       public ICommand CloneAndAddToParent(TBuildingBlock buildingBlockToClone, Module parentModule)
@@ -339,7 +340,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (buildingBlockToAddTo != null)
             return ExtendBuildingBlockWith(buildingBlockToAddTo, buildingBlock.ToList());
 
-         return new AddBuildingBlockToModuleCommand<TBuildingBlock>(_interactionTaskContext.InteractionTask.Clone(buildingBlock), module).Run(_interactionTaskContext.Context);
+         return new AddBuildingBlockToModuleCommand<TBuildingBlock>(_interactionTaskContext.InteractionTask.Clone(buildingBlock), module).RunCommand(_interactionTaskContext.Context);
       }
 
       public IMoBiCommand ExtendBuildingBlockWith(TBuildingBlock buildingBlock, IReadOnlyList<TPathAndValueEntity> newEntities)

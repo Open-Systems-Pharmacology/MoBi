@@ -4,7 +4,7 @@ using System.Linq;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
-using OSPSuite.Core.Commands.Core;
+using MoBi.Core.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -119,7 +119,7 @@ namespace MoBi.Core.Services
          checkId(formula);
          //Run is required here so that the next time the same formula is found, it will be replaced automatically instead of being 
          //added again to the cache
-         _allCommands.Add(new AddFormulaToFormulaCacheCommand(_buildingBlock, formula).Run(_context));
+         _allCommands.Add(new AddFormulaToFormulaCacheCommand(_buildingBlock, formula).RunCommand(_context));
          return formula;
       }
 

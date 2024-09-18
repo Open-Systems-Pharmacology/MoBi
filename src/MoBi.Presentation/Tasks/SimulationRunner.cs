@@ -6,6 +6,7 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
+using MoBi.Core.Extensions;
 using MoBi.Core.Services;
 using MoBi.Presentation.Presenter;
 using OSPSuite.Core.Commands;
@@ -82,7 +83,7 @@ namespace MoBi.Presentation.Tasks
             return;
 
          //they are different. Issue an update command
-         addCommand(new UpdateOutputSelectionsInSimulationCommand(outputSelections, simulation).Run(_context));
+         addCommand(new UpdateOutputSelectionsInSimulationCommand(outputSelections, simulation).RunCommand(_context));
       }
 
       private bool settingsRequired(IMoBiSimulation simulation, bool defineSettings)

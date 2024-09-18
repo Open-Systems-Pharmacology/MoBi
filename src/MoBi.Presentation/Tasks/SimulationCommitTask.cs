@@ -4,6 +4,7 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
+using MoBi.Core.Extensions;
 using MoBi.Core.Services;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
@@ -75,7 +76,7 @@ namespace MoBi.Presentation.Tasks
 
          macroCommand.Add(new ClearOriginalQuantitiesTrackerCommand(simulationWithChanges));
 
-         macroCommand.Run(_context);
+         macroCommand.RunCommand(_context);
 
 
          _context.PublishEvent(new SimulationStatusChangedEvent(simulationWithChanges));

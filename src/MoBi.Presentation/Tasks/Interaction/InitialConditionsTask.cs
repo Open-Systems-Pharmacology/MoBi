@@ -6,13 +6,13 @@ using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Events;
+using MoBi.Core.Extensions;
 using MoBi.Core.Mappers;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Assets;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -99,7 +99,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       private IMoBiCommand updateIsPresent(TBuildingBlock initialConditions, InitialCondition msv, bool isPresent)
       {
-         return new UpdateInitialConditionIsPresentCommand(initialConditions, msv, isPresent).Run(Context);
+         return new UpdateInitialConditionIsPresentCommand(initialConditions, msv, isPresent).RunCommand(Context);
       }
 
       public IMoBiCommand SetNegativeValuesAllowed(TBuildingBlock initialConditions, IEnumerable<InitialCondition> pathAndValueEntities, bool negativeValuesAllowed)
@@ -132,12 +132,12 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       private IMoBiCommand updateNegativeValuesAllowed(TBuildingBlock initialConditions, InitialCondition msv, bool negativeValuesAllowed)
       {
-         return new UpdateInitialConditionNegativeValuesAllowedCommand(initialConditions, msv, negativeValuesAllowed).Run(Context);
+         return new UpdateInitialConditionNegativeValuesAllowedCommand(initialConditions, msv, negativeValuesAllowed).RunCommand(Context);
       }
 
       public override IMoBiCommand AddPathAndValueEntityToBuildingBlock(TBuildingBlock buildingBlock, InitialCondition initialCondition)
       {
-         return GenerateAddCommand(buildingBlock, initialCondition).Run(Context);
+         return GenerateAddCommand(buildingBlock, initialCondition).RunCommand(Context);
       }
 
       public override IMoBiCommand ImportPathAndValueEntitiesToBuildingBlock(TBuildingBlock buildingBlock, IEnumerable<ImportedQuantityDTO> startQuantities)
@@ -151,12 +151,12 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          GetImportPathAndValueEntityMacroCommand(buildingBlock, startQuantities, macroCommand);
 
-         return macroCommand.Run(Context);
+         return macroCommand.RunCommand(Context);
       }
 
       public IMoBiCommand UpdateInitialConditionScaleDivisor(TBuildingBlock buildingBlock, InitialCondition initialCondition, double newScaleDivisor, double oldScaleDivisor)
       {
-         return new UpdateInitialConditionScaleDivisorCommand(buildingBlock, initialCondition, newScaleDivisor, oldScaleDivisor).Run(Context);
+         return new UpdateInitialConditionScaleDivisorCommand(buildingBlock, initialCondition, newScaleDivisor, oldScaleDivisor).RunCommand(Context);
       }
 
       public IMoBiCommand RefreshInitialConditionsFromBuildingBlocks(TBuildingBlock buildingBlock, IReadOnlyList<InitialCondition> initialConditions)
@@ -213,7 +213,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
          // If all usages of a formula are being refreshed, then we can remove the existing formula from the formula cache
          if (canRemoveFormula(buildingBlock, initialConditions, initialCondition.Formula))
-            macroCommand.Add(new RemoveFormulaFromFormulaCacheCommand(buildingBlock, initialCondition.Formula).Run(Context));
+            macroCommand.Add(new RemoveFormulaFromFormulaCacheCommand(buildingBlock, initialCondition.Formula).RunCommand(Context));
 
          // The clone manager can return an existing formula from the formula cache if it is present and equivalent to the formula being cloned
          // This is important for renaming step. We can't just rename this formula if one already exists in the cache with the same name because

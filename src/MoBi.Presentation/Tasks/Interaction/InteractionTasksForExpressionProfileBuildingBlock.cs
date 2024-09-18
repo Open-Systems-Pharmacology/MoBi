@@ -3,6 +3,7 @@ using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
+using MoBi.Core.Extensions;
 using MoBi.Core.Mappers;
 using MoBi.Core.Services;
 using MoBi.Presentation.Tasks.Edit;
@@ -59,7 +60,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          macroCommand.AddRange(expressionProfileUpdate.Select(parameter => updateCommandFor(buildingBlock, parameter.Path, parameter.UpdatedValue)));
 
-         return macroCommand.Run(Context);
+         return macroCommand.RunCommand(Context);
       }
 
       private static ICommand updateCommandFor(ExpressionProfileBuildingBlock buildingBlock, ObjectPath path, double? value)

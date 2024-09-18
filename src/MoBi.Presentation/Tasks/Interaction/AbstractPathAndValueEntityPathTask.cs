@@ -1,6 +1,6 @@
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
-using OSPSuite.Core.Commands.Core;
+using MoBi.Core.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -68,12 +68,12 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public IMoBiCommand UpdateName(TBuildingBlock buildingBlock, TPathAndValueEntity pathAndValueEntity, string newValue)
       {
-         return UpdateNameCommand(buildingBlock, pathAndValueEntity, newValue).Run(_context);
+         return UpdateNameCommand(buildingBlock, pathAndValueEntity, newValue).RunCommand(_context);
       }
 
       public IMoBiCommand UpdateContainerPath(TBuildingBlock startValues, TPathAndValueEntity pathAndValueEntity, int indexToUpdate, string newValue)
       {
-         return UpdateContainerPathCommand(startValues, pathAndValueEntity, indexToUpdate, newValue).Run(_context);
+         return UpdateContainerPathCommand(startValues, pathAndValueEntity, indexToUpdate, newValue).RunCommand(_context);
       }
 
       public abstract IMoBiCommand UpdateNameCommand(ILookupBuildingBlock<TPathAndValueEntity> startValues, TPathAndValueEntity pathAndValueEntity, string newName);

@@ -4,6 +4,7 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Events;
+using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
@@ -12,7 +13,6 @@ using MoBi.Presentation.Settings;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
@@ -307,7 +307,7 @@ namespace MoBi.Presentation.Presenter
       public void SetBuildModeFor(ParameterDTO parameterDTO, ParameterBuildMode newMode)
       {
          var parameter = ParameterFrom(parameterDTO);
-         AddCommand(_parameterTask.SetBuildModeForParameter(parameter, newMode, BuildingBlock).Run(_interactionTaskContext.Context));
+         AddCommand(_parameterTask.SetBuildModeForParameter(parameter, newMode, BuildingBlock).RunCommand(_interactionTaskContext.Context));
          _interactionTaskContext.DialogCreator.MessageBoxInfo(AppConstants.Validation.ChangeBuildModeWarning);
          Select(parameterDTO);
       }

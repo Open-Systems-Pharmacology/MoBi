@@ -2,12 +2,12 @@
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
+using MoBi.Core.Extensions;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Tasks.Edit;
@@ -117,7 +117,7 @@ namespace MoBi.Presentation.Presenter
 
       public void UpdateDimension(IDimension newDimension)
       {
-         AddCommand(new UpdateDimensionInObserverBuilderCommand(_observerBuilder, newDimension, BuildingBlock).Run(_context));
+         AddCommand(new UpdateDimensionInObserverBuilderCommand(_observerBuilder, newDimension, BuildingBlock).RunCommand(_context));
          setUpFormulaEditView();
       }
 
@@ -141,7 +141,7 @@ namespace MoBi.Presentation.Presenter
 
       public void SetPropertyValueFromView<T>(string propertyName, T newValue, T oldValue)
       {
-         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, _observerBuilder, BuildingBlock).Run(_context));
+         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, _observerBuilder, BuildingBlock).RunCommand(_context));
       }
 
       public void RenameSubject()

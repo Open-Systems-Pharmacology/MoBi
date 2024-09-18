@@ -4,7 +4,7 @@ using libsbmlcs;
 using MoBi.Core;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
-using OSPSuite.Core.Commands.Core;
+using MoBi.Core.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Descriptors;
@@ -182,7 +182,7 @@ namespace MoBi.Engine.Sbml
       /// </summary>
       public override void AddToProject()
       {
-         _context.HistoryManager.AddCommand(new AddBuildingBlockToModuleCommand<EventGroupBuildingBlock>(EventGroupBuildingBlock, _sbmlModule).Run(_context));
+         _context.HistoryManager.AddCommand(new AddBuildingBlockToModuleCommand<EventGroupBuildingBlock>(EventGroupBuildingBlock, _sbmlModule).RunCommand(_context));
       }
    }
 }

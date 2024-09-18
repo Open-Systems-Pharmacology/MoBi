@@ -2,6 +2,7 @@
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Domain.UnitSystem;
+using MoBi.Core.Extensions;
 using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
 using OSPSuite.Core;
@@ -149,7 +150,7 @@ namespace MoBi.Core.Domain.Model
          CurrentProject = ObjectBaseFactory.Create<MoBiProject>();
          HistoryManager = _historyManagerFactory.Create() as IMoBiHistoryManager;
          LoadFrom(CurrentProject);
-         AddToHistory(new CreateProjectCommand().Run(this));
+         AddToHistory(new CreateProjectCommand().RunCommand(this));
       }
 
       public override void Clear()
