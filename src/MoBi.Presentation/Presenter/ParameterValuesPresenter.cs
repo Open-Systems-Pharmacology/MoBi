@@ -119,6 +119,8 @@ namespace MoBi.Presentation.Presenter
          if (allSkipped.Any())
             _dialogCreator.MessageBoxInfo(AppConstants.Captions.BuildingBlockAlreadyContains(allSkipped.Select(x => x.PathAsString).ToList()));
 
+         _dialogCreator.MessageBoxInfo(AppConstants.Warnings.CheckDimensionOfAddedParameters);
+
          return macroCommand;
       }
 
