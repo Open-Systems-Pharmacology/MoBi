@@ -3,6 +3,7 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Extensions;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -162,7 +163,7 @@ namespace MoBi.Presentation.Presenter
       public void SetDescription(ParameterDTO parameterDTO, string newDescription)
       {
          AddCommand(_parameterTask.SetDescriptionForParameter(parameterDTO.Parameter, newDescription, BuildingBlock)
-            .Run(_interactionTaskContext.Context));
+            .RunCommand(_interactionTaskContext.Context));
       }
 
       public void SetBuildMode(ParameterDTO parameterDTO, ParameterBuildMode newBuildMode)
@@ -171,12 +172,12 @@ namespace MoBi.Presentation.Presenter
             _interactionTaskContext.DialogCreator.MessageBoxInfo(AppConstants.Validation.ChangeBuildModeWarning);
 
          AddCommand(_parameterTask.SetBuildModeForParameter(parameterDTO.Parameter, newBuildMode, BuildingBlock)
-            .Run(_interactionTaskContext.Context));
+            .RunCommand(_interactionTaskContext.Context));
       }
 
       public void SetName(ParameterDTO parameterDTO, string newName)
       {
-         AddCommand(_parameterTask.SetNameForParameter(parameterDTO.Parameter, newName, BuildingBlock).Run(_interactionTaskContext.Context));
+         AddCommand(_parameterTask.SetNameForParameter(parameterDTO.Parameter, newName, BuildingBlock).RunCommand(_interactionTaskContext.Context));
       }
 
       private void setValueOrigin(ValueOrigin newValueOrigin)
@@ -303,7 +304,7 @@ namespace MoBi.Presentation.Presenter
 
       private void addCommandToRun(ICommand<IMoBiContext> command)
       {
-         AddCommand(command.Run(_interactionTaskContext.Context));
+         AddCommand(command.RunCommand(_interactionTaskContext.Context));
       }
 
       public void SetDimension(IDimension dimension)

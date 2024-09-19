@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using MoBi.Assets;
 using MoBi.Core.Commands;
+using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Assets;
@@ -49,7 +50,7 @@ namespace MoBi.Presentation.Tasks.Edit
          moleculeBuilder.DefaultStartFormula = _context.Create<ConstantFormula>().WithValue(0).WithDimension(_dimensionRetriever.MoleculeDimension);
 
          _calculationMethodRepository.GetAllCategoriesDefault().Each(cm => moleculeBuilder.AddUsedCalculationMethod(new UsedCalculationMethod(cm.Category, AppConstants.DefaultNames.EmptyCalculationMethod)));
-         commandCollector.AddCommand(new AddMoleculeBuilderCommand(moleculesBuildingBlock, moleculeBuilder).Run(_context));
+         commandCollector.AddCommand(new AddMoleculeBuilderCommand(moleculesBuildingBlock, moleculeBuilder).RunCommand(_context));
          return true;
       }
 
@@ -76,7 +77,7 @@ namespace MoBi.Presentation.Tasks.Edit
             commandCollector.AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(transporterMoleculeContainer.PropertyName(x => x.TransportName), newName, oldTransportName, transporterMoleculeContainer, buildingBlock) { ObjectType = ObjectName });
          }
 
-         commandCollector.Run(_context);
+         commandCollector.RunCommand(_context);
          _context.AddToHistory(commandCollector);
       }
    }

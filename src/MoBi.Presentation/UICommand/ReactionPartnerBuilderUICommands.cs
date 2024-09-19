@@ -1,6 +1,6 @@
-using OSPSuite.Core.Commands.Core;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Extensions;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.UICommands;
@@ -37,7 +37,7 @@ namespace MoBi.Presentation.UICommand
       protected override void PerformExecute()
       {
          var reactionBuildingBlock = RetrieveActiveSubject();
-         _context.AddToHistory(RemoveCommandFor(reactionBuildingBlock).Run(_context));
+         _context.AddToHistory(RemoveCommandFor(reactionBuildingBlock).RunCommand(_context));
       }
 
       protected abstract IMoBiCommand RemoveCommandFor(MoBiReactionBuildingBlock reactionBuildingBlock);

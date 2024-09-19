@@ -5,14 +5,13 @@ using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Tasks.Edit;
-using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Extensions;
@@ -92,7 +91,7 @@ namespace MoBi.Presentation.Presenter
       public void SetParentPath(string parentPath)
       {
          var objectPath = new ObjectPath(parentPath.ToPathArray());
-         AddCommand(new SetParentPathCommand(_container, objectPath, BuildingBlock).Run(_context));
+         AddCommand(new SetParentPathCommand(_container, objectPath, BuildingBlock).RunCommand(_context));
 
          //rebind the view
          _containerDTO.ParentPath = parentPath;

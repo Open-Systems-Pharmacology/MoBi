@@ -5,6 +5,7 @@ using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
+using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
 using MoBi.Core.Services;
 using MoBi.Presentation.Tasks.Interaction;
@@ -123,7 +124,7 @@ namespace MoBi.Presentation.Tasks
          if (viewResult == ViewResult.No)
             return;
 
-         _context.AddToHistory(deleteAllResultsFromSimulationCommand(simulation).Run(_context));
+         _context.AddToHistory(deleteAllResultsFromSimulationCommand(simulation).RunCommand(_context));
       }
 
       public void DeleteAllResultsFromAllSimulation()
@@ -141,7 +142,7 @@ namespace MoBi.Presentation.Tasks
          };
 
          simulations.Each(s => macroCommand.AddCommand(deleteAllResultsFromSimulationCommand(s)));
-         _context.AddToHistory(macroCommand.Run(_context));
+         _context.AddToHistory(macroCommand.RunCommand(_context));
       }
 
       private static MoBiMacroCommand deleteAllResultsFromSimulationCommand(IMoBiSimulation simulation)
@@ -193,7 +194,7 @@ namespace MoBi.Presentation.Tasks
          if (string.IsNullOrEmpty(newName))
             return;
 
-         _context.AddToHistory(new RenameObservedDataCommand(dataRepository, newName).Run(_context));
+         _context.AddToHistory(new RenameObservedDataCommand(dataRepository, newName).RunCommand(_context));
       }
 
       public override void UpdateMolWeight(DataRepository observedData)
@@ -226,7 +227,7 @@ namespace MoBi.Presentation.Tasks
 
          resultsToRemove.Each(result => { macroCommand.Add(removeResultFromSimulationCommand(result)); });
 
-         _context.AddToHistory(macroCommand.Run(_context));
+         _context.AddToHistory(macroCommand.RunCommand(_context));
       }
 
       public void AddAndReplaceObservedDataFromConfigurationToProject(ImporterConfiguration configuration,

@@ -5,6 +5,7 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
+using MoBi.Core.Extensions;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Commands.Core;
@@ -100,7 +101,7 @@ namespace MoBi.Presentation.Tasks.Edit
          if (CheckUsagesFor(newName, objectBase.Name, objectBase, commandCollector, buildingBlock?.Module))
             commandCollector.AddCommand(GetRenameCommandFor(objectBase, buildingBlock, newName, objectType));
 
-         commandCollector.Run(_context);
+         commandCollector.RunCommand(_context);
          return commandCollector;
       }
 

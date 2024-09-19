@@ -1,9 +1,9 @@
 ﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Extensions;
 using MoBi.Helpers;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 
@@ -71,7 +71,7 @@ namespace MoBi.Core.Commands
    {
       protected override void Because()
       {
-         sut = new RenameContainerCommand(_child3, "NEW_NAME", _spatialStructure).Run(_context);
+         sut = new RenameContainerCommand(_child3, "NEW_NAME", _spatialStructure).RunCommand(_context);
       }
 
       [Observation]
@@ -89,7 +89,7 @@ namespace MoBi.Core.Commands
    {
       protected override void Because()
       {
-         sut = new RenameContainerCommand(_container, "NEW_NAME", _spatialStructure).Run(_context);
+         sut = new RenameContainerCommand(_container, "NEW_NAME", _spatialStructure).RunCommand(_context);
       }
 
       [Observation]
@@ -111,7 +111,7 @@ namespace MoBi.Core.Commands
    {
       protected override void Because()
       {
-         sut = new RenameContainerCommand(_similarContainer, "NEW_NAME", _spatialStructure).Run(_context);
+         sut = new RenameContainerCommand(_similarContainer, "NEW_NAME", _spatialStructure).RunCommand(_context);
       }
       
       [Observation]

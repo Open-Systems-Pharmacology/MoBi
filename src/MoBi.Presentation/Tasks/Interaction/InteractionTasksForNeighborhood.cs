@@ -2,8 +2,8 @@
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Extensions;
 using MoBi.Presentation.Tasks.Edit;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 
@@ -45,7 +45,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          //this needs to happen BEFORE we add the run the add command so that the diagram will refresh as expected
          neighborhoodBuilder.ResolveReference(spatialStructure);
-         macroCommand.AddCommand(GetAddCommand(neighborhoodBuilder, spatialStructure.NeighborhoodsContainer, spatialStructure).Run(Context));
+         macroCommand.AddCommand(GetAddCommand(neighborhoodBuilder, spatialStructure.NeighborhoodsContainer, spatialStructure).RunCommand(Context));
          macroCommand.Description = AppConstants.Commands.AddToDescription(ObjectName, neighborhoodBuilder.Name, spatialStructure.Name);
          _editTask.Edit(neighborhoodBuilder);
          return macroCommand;

@@ -2,14 +2,13 @@
 using System.Drawing;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
-using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
 using MoBi.Core.Events;
+using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -106,7 +105,7 @@ namespace MoBi.Presentation.Presenter
 
       public void SetPropertyValueFromView<T>(string propertyName, T newValue, T oldValue)
       {
-         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, _applicationBuilder, BuildingBlock).Run(_context));
+         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, _applicationBuilder, BuildingBlock).RunCommand(_context));
       }
 
       public void RenameSubject()
@@ -153,14 +152,14 @@ namespace MoBi.Presentation.Presenter
 
       private void updateRelativeContainerPath(ApplicationMoleculeBuilder applicationMoleculeBuilder, ObjectPath path)
       {
-         AddCommand(new EditRelativeContainerPathPropertyAtApplicationMoleculeBuilderCommand(applicationMoleculeBuilder, path, BuildingBlock).Run(_context));
+         AddCommand(new EditRelativeContainerPathPropertyAtApplicationMoleculeBuilderCommand(applicationMoleculeBuilder, path, BuildingBlock).RunCommand(_context));
       }
 
       public void UpdateFormula(ApplicationMoleculeBuilderDTO applicationMoleculeBuilderDTO, FormulaBuilderDTO newFormulaDTO)
       {
          var applicationMoleculeBuilder = _context.Get<ApplicationMoleculeBuilder>(applicationMoleculeBuilderDTO.Id);
          var newFormula = FormulaCache.FindById(newFormulaDTO.Id);
-         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(_formulaPropertyName, newFormula, applicationMoleculeBuilder.Formula, applicationMoleculeBuilder, BuildingBlock).Run(_context));
+         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(_formulaPropertyName, newFormula, applicationMoleculeBuilder.Formula, applicationMoleculeBuilder, BuildingBlock).RunCommand(_context));
       }
 
       public void SetRelativeContainerPath(ApplicationMoleculeBuilderDTO applicationMoleculeBuilderDTO, string newRelativeContainerPath)
@@ -172,7 +171,7 @@ namespace MoBi.Presentation.Presenter
       public void SetPropertyValueFor<T>(ApplicationMoleculeBuilderDTO dto, string propertyName, T newValue, T oldValue)
       {
          var applicationMoleculeBuilder = applicationMoleculeBuilderFrom(dto);
-         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, applicationMoleculeBuilder, BuildingBlock).Run(_context));
+         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, applicationMoleculeBuilder, BuildingBlock).RunCommand(_context));
       }
 
       private ApplicationMoleculeBuilder applicationMoleculeBuilderFrom(ApplicationMoleculeBuilderDTO dto)

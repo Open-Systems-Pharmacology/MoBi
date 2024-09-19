@@ -4,6 +4,7 @@ using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
+using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
@@ -12,7 +13,6 @@ using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using OSPSuite.Assets;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -119,7 +119,7 @@ namespace MoBi.Presentation.Presenter
 
       public void SetPropertyValueFromView<T>(string propertyName, T newValue, T oldValue)
       {
-         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, _eventBuilder, BuildingBlock).Run(_context));
+         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, _eventBuilder, BuildingBlock).RunCommand(_context));
       }
 
       public void RenameSubject()
@@ -162,7 +162,7 @@ namespace MoBi.Presentation.Presenter
          if (newFormula == _eventBuilder.Formula)
             return;
 
-         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(_eventBuilder.PropertyName(x => x.Formula), newFormula, _eventBuilder.Formula, _eventBuilder, BuildingBlock).Run(_context));
+         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(_eventBuilder.PropertyName(x => x.Formula), newFormula, _eventBuilder.Formula, _eventBuilder, BuildingBlock).RunCommand(_context));
          _editFormulaPresenter.Edit(newFormula);
          _view.SetFormulaView(_editFormulaPresenter.BaseView);
          _view.SetSelectReferenceView(_selectReferencePresenter.View);
@@ -200,7 +200,7 @@ namespace MoBi.Presentation.Presenter
       public void SetPropertyValueFor<T>(EventAssignmentBuilderDTO eventAssignmentBuilderDTO, string propertyName, T newValue, T oldValue)
       {
          var eventAssignmentBuilder = eventAssignmentBuilderFor(eventAssignmentBuilderDTO);
-         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, eventAssignmentBuilder, BuildingBlock).Run(_context));
+         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, eventAssignmentBuilder, BuildingBlock).RunCommand(_context));
       }
 
       private EventAssignmentBuilder eventAssignmentBuilderFor(EventAssignmentBuilderDTO eventAssignmentBuilderDTO)
@@ -226,8 +226,8 @@ namespace MoBi.Presentation.Presenter
             CommandType = AppConstants.Commands.EditCommand,
             ObjectType = ObjectTypes.EventBuilder
          };
-         newFormulaCommand.AddCommand(new AddFormulaToFormulaCacheCommand(BuildingBlock, newFormula).Run(_context));
-         newFormulaCommand.AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(_formulaPropertyName, newFormula, _eventBuilder.Formula, _eventBuilder, BuildingBlock).Run(_context));
+         newFormulaCommand.AddCommand(new AddFormulaToFormulaCacheCommand(BuildingBlock, newFormula).RunCommand(_context));
+         newFormulaCommand.AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(_formulaPropertyName, newFormula, _eventBuilder.Formula, _eventBuilder, BuildingBlock).RunCommand(_context));
          AddCommand(newFormulaCommand);
          Edit(_eventBuilder);
       }
@@ -237,7 +237,7 @@ namespace MoBi.Presentation.Presenter
          var newFormula = _context.Get<ExplicitFormula>(formulaBuilderDTO.Id);
          var eventAssignmentBuilder = _context.Get<EventAssignmentBuilder>(eventAssignmentBuilderDTO.Id);
          AddCommand(
-            new EditObjectBasePropertyInBuildingBlockCommand(eventAssignmentBuilder.PropertyName(b => b.Formula), newFormula, eventAssignmentBuilder.Formula, eventAssignmentBuilder, BuildingBlock).Run(_context));
+            new EditObjectBasePropertyInBuildingBlockCommand(eventAssignmentBuilder.PropertyName(b => b.Formula), newFormula, eventAssignmentBuilder.Formula, eventAssignmentBuilder, BuildingBlock).RunCommand(_context));
       }
 
       public void Handle(AddedEvent eventToHandle)

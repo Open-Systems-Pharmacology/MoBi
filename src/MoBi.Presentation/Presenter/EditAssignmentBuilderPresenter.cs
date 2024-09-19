@@ -2,13 +2,13 @@ using System.Collections.Generic;
 using System.Linq;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Extensions;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Views;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -93,7 +93,7 @@ namespace MoBi.Presentation.Presenter
       public IFormulaCache FormulaCache => BuildingBlock.FormulaCache;
 
       public void SetPropertyValueFromView<T>(string propertyName, T newValue, T oldValue) => 
-         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, _eventAssignmentBuilder, BuildingBlock).Run(_context));
+         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, _eventAssignmentBuilder, BuildingBlock).RunCommand(_context));
 
       public void RenameSubject() => _editTasksForAssignment.Rename(_eventAssignmentBuilder, BuildingBlock);
 
@@ -114,7 +114,7 @@ namespace MoBi.Presentation.Presenter
 
       private void setObjectPath(FormulaUsablePath objectPath)
       {
-         AddCommand(new SetEventAssignmentObjectPathCommand(_eventAssignmentBuilder, objectPath, BuildingBlock).Run(_context));
+         AddCommand(new SetEventAssignmentObjectPathCommand(_eventAssignmentBuilder, objectPath, BuildingBlock).RunCommand(_context));
          _eventAssignmentBuilderDTO.ChangedEntityPath = _eventAssignmentBuilder.ObjectPath.ToString();
          bindToFormula();
       }

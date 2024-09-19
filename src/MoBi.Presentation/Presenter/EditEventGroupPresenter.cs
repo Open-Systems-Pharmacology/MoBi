@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using OSPSuite.Core.Commands.Core;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Extensions;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
@@ -73,7 +73,7 @@ namespace MoBi.Presentation.Presenter
 
       public void SetPropertyValueFromView<T>(string propertyName, T newValue, T oldValue)
       {
-         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, _eventGroupBuilder, BuildingBlock).Run(_context));
+         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, _eventGroupBuilder, BuildingBlock).RunCommand(_context));
       }
 
       public void RenameSubject()

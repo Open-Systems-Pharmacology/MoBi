@@ -1,9 +1,8 @@
 ﻿using System;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
-using OSPSuite.Core.Commands.Core;
+using MoBi.Core.Extensions;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Descriptors;
 
 namespace MoBi.Core.Services
@@ -54,22 +53,22 @@ namespace MoBi.Core.Services
 
       public IMoBiCommand RemoveTagCondition<T>(string tag, TagType tagType, TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase
       {
-         return getRemoveCommand(tag, tagType, tagConditionCommandParameters).Run(_context);
+         return getRemoveCommand(tag, tagType, tagConditionCommandParameters).RunCommand(_context);
       }
 
       public IMoBiCommand AddTagCondition<T>(string tag, TagType tagType,  TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase
       {
-         return getAddCommand(tag, tagType, tagConditionCommandParameters).Run(_context);
+         return getAddCommand(tag, tagType, tagConditionCommandParameters).RunCommand(_context);
       }
 
       public IMoBiCommand EditTag<T>(string newTag, string oldTag,  TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase
       {
-         return new EditTagCommand<T>(newTag, oldTag, tagConditionCommandParameters).Run(_context);
+         return new EditTagCommand<T>(newTag, oldTag, tagConditionCommandParameters).RunCommand(_context);
       }
 
       public IMoBiCommand EditOperator<T>(CriteriaOperator newOperator, TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase
       {
-         return new EditOperatorCommand<T>(newOperator, tagConditionCommandParameters).Run(_context);
+         return new EditOperatorCommand<T>(newOperator, tagConditionCommandParameters).RunCommand(_context);
       }
 
       private IMoBiCommand getAddCommand<T>(string tag, TagType tagType,  TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase
