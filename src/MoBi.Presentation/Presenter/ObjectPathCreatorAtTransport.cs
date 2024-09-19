@@ -58,14 +58,13 @@ namespace MoBi.Presentation.Presenter
          var moleculeProperties = _context.Get<IContainer>(dtoObjectBase.MoleculePropertiesContainer.Id);
          var parentContainer = moleculeProperties.ParentContainer;
          var firstPathElemnt = getPathKeywordForContainer(parentContainer);
-         if (firstPathElemnt.IsNullOrEmpty() || shouldCreateAbsolutePaths || firstPathElemnt.Equals(Constants.NEIGHBORHOODS))
+         if (firstPathElemnt.IsNullOrEmpty() || shouldCreateAbsolutePaths)
          {
             var dto = base.CreateMoleculePath(dtoObjectBase, shouldCreateAbsolutePaths, refObject);
             if (!shouldCreateAbsolutePaths)
                dto?.Path.Replace(dtoObjectBase.Name, ObjectPathKeywords.MOLECULE);
             return dto;
          }
-
 
          string moleculeElement = shouldCreateAbsolutePaths ? dtoObjectBase.Name : ObjectPathKeywords.MOLECULE;
 
@@ -132,9 +131,6 @@ namespace MoBi.Presentation.Presenter
 
          if (Transport.SourceCriteria.IsSatisfiedBy(container))
             return ObjectPathKeywords.SOURCE;
-
-         if (container.RootContainer.Description.Contains(Constants.NEIGHBORHOODS))
-            return ObjectPathKeywords.NEIGHBORHOOD;
 
          return string.Empty;
       }
