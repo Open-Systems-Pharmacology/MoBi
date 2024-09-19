@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
@@ -59,7 +61,7 @@ namespace MoBi.Presentation.Presenter
 
       public void SetOffsetFormulaPath()
       {
-         var path = selectFormulaUseablePath(isValidOffsetObject, AppConstants.Captions.OffsetObjectPath);
+         var path = selectFormulaUsablePath(isValidOffsetObject, AppConstants.Captions.OffsetObjectPath);
          if (path == null) return;
 
          AddCommand(_moBiFormulaTask.ChangeOffsetObject(_formula, path, BuildingBlock));
@@ -74,7 +76,7 @@ namespace MoBi.Presentation.Presenter
 
       public void SetTableObjectPath()
       {
-         var path = selectFormulaUseablePath(isValidTableObject, AppConstants.Captions.TableObjectPath);
+         var path = selectFormulaUsablePath(isValidTableObject, AppConstants.Captions.TableObjectPath);
          if (path == null) return;
 
          AddCommand(_moBiFormulaTask.ChangeTableObject(_formula, path, BuildingBlock));
@@ -87,14 +89,18 @@ namespace MoBi.Presentation.Presenter
          return parameter?.Formula.IsTable() ?? false;
       }
 
-      private FormulaUsablePath selectFormulaUseablePath(Func<IObjectBase, bool> predicate, string caption)
+      private FormulaUsablePath selectFormulaUsablePath(Func<IObjectBase, bool> predicate, string caption)
       {
          using (var presenter = _applicationController.Start<ISelectFormulaUsablePathPresenter>())
          {
-            var referencePresenter = _selectReferencePresenterFactory.ReferenceAtParameterFor(UsingObject.ParentContainer);
-            presenter.Init(predicate, UsingObject, new[] {UsingObject.RootContainer}, caption, referencePresenter);
+            var referencePresenter = _selectReferencePresenterFactory.ReferenceAtParameterFor(UsingObject?.ParentContainer);
+            referencePresenter.DisableTimeSelection();
+            presenter.Init(predicate, UsingObject, contextList(UsingObject), caption, referencePresenter);
             return presenter.GetSelection();
          }
       }
+
+      private IReadOnlyList<IObjectBase> contextList(IUsingFormula usingObject) =>
+         usingObject?.RootContainer != null ? new[] { usingObject.RootContainer } : Array.Empty<IObjectBase>();
    }
 }

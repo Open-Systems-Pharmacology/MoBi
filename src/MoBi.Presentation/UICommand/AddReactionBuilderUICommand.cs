@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Extensions;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
@@ -43,7 +43,7 @@ namespace MoBi.Presentation.UICommand
       protected override void PerformExecute()
       {
          var buildingBlock = RetrieveActiveSubject();
-         ValidMoleculeNamesForPartner(buildingBlock).Each(molecule => _context.AddToHistory(AddCommandFor(buildingBlock, molecule).Run(_context)));
+         ValidMoleculeNamesForPartner(buildingBlock).Each(molecule => _context.AddToHistory(AddCommandFor(buildingBlock, molecule).RunCommand(_context)));
       }
 
       protected abstract IMoBiCommand AddCommandFor(MoBiReactionBuildingBlock buildingBlock, string molecule);

@@ -143,13 +143,13 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.AddNewFormula(_buildingBlockDTO.Parameters.First());
+         sut.EditFormula(_buildingBlockDTO.Parameters.First());
       }
 
       [Observation]
       public void the_presenter_uses_the_interaction_task_to_add_the_formula()
       {
-         A.CallTo(() => _interactionTaskForIndividual.AddNewFormulaAtBuildingBlock(_buildingBlock, _individualParameter1, null)).MustHaveHappened();
+         A.CallTo(() => _interactionTaskForIndividual.EditFormulaAtBuildingBlock(_buildingBlock, _individualParameter1, null)).MustHaveHappened();
       }
    }
 

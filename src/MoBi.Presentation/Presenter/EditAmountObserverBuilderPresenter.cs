@@ -22,7 +22,7 @@ namespace MoBi.Presentation.Presenter
          IEditTaskFor<AmountObserverBuilder> editTasks,
          IObserverBuilderToDTOObserverBuilderMapper observerBuilderMapper,
          IViewItemContextMenuFactory viewItemContextMenuFactory,
-         IEditFormulaPresenter editFormulaPresenter,
+         IEditFormulaInContainerPresenter editFormulaPresenter,
          ISelectReferenceAtAmountObserverPresenter selectReferencePresenter,
          IMoleculeDependentBuilderPresenter moleculeListPresenter,
          IDescriptorConditionListPresenter<ObserverBuilder> descriptorConditionListPresenter)
@@ -31,9 +31,6 @@ namespace MoBi.Presentation.Presenter
          _observerBuilderMapper = observerBuilderMapper;
       }
 
-      protected override ObserverBuilderDTO MapFrom(AmountObserverBuilder observerBuilder)
-      {
-         return _observerBuilderMapper.MapFrom(observerBuilder);
-      }
+      protected override ObserverBuilderDTO MapFrom(AmountObserverBuilder observerBuilder) => _observerBuilderMapper.MapFrom(observerBuilder);
    }
 }

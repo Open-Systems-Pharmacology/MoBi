@@ -11,14 +11,16 @@ namespace MoBi.Presentation.Views
    public interface ISelectReferenceView : IView<ISelectReferencePresenter>
    {
       /// <summary>
-      ///    Clear the tree and show the nodes
+      ///    Optionally clear the tree and show the nodes
       /// </summary>
-      void Show(IEnumerable<ITreeNode> nodes);
+      void Show(IEnumerable<ITreeNode> nodes, bool clear = true);
 
       ObjectBaseDTO SelectedDTO { get; }
       ObjectPathType ObjectPathType { get; set; }
       string Localisation { get; set; }
       bool ChangeLocalisationAllowed { get; set; }
+      bool EnableMultiSelect { set; get; }
+      IReadOnlyList<ObjectBaseDTO> AllSelectedDTOs { get; }
 
       /// <summary>
       ///    Add nodes to the view
@@ -40,5 +42,6 @@ namespace MoBi.Presentation.Views
 
       void Remove(IObjectBase removedObject);
       IReadOnlyList<ITreeNode> GetNodes(IObjectBase objectBase);
+      void Clear();
    }
 }

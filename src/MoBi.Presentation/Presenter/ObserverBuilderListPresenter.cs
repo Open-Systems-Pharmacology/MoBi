@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.UnitSystem;
 using MoBi.Core.Events;
+using MoBi.Core.Extensions;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
@@ -79,7 +79,7 @@ namespace MoBi.Presentation.Presenter
          var newFormula = _buildingBlock.FormulaCache[newValue.Id];
          var oldFormula = _buildingBlock.FormulaCache[oldValue.Id];
          var observerBuilder = _context.Get<ObserverBuilder>(dtoObserverBuilder.Id);
-         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand("Formula", newFormula, oldFormula, observerBuilder, BuildingBlock).Run(_context)); //<IFormula>
+         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand("Formula", newFormula, oldFormula, observerBuilder, BuildingBlock).RunCommand(_context)); //<IFormula>
       }
 
       public IReadOnlyList<IDimension> GetDimensions() => _dimensionFactory.DimensionsSortedByName;
@@ -87,7 +87,7 @@ namespace MoBi.Presentation.Presenter
       public void SetPropertyValueFromViewFor<T>(ObjectBaseDTO dtoObserverBuilder, string propertyName, T newValue, T oldValue)
       {
          var observerBuilder = _context.Get<ObserverBuilder>(dtoObserverBuilder.Id);
-         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, observerBuilder, BuildingBlock).Run(_context)); // <T>
+         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, observerBuilder, BuildingBlock).RunCommand(_context)); // <T>
       }
 
       public void Select(ObserverBuilderDTO dto)

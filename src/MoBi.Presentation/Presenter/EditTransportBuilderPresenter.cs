@@ -3,12 +3,12 @@ using System.Drawing;
 using System.Linq;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Extensions;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Views;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -56,7 +56,7 @@ namespace MoBi.Presentation.Presenter
       public EditTransportBuilderPresenter(IEditTransportBuilderView view, ITransportBuilderToTransportBuilderDTOMapper transportBuilderToDTOTransportBuilderMapper,
          IEditTaskFor<TransportBuilder> editTasks, IViewItemContextMenuFactory viewItemContextMenuFactory,
          IFormulaToFormulaBuilderDTOMapper formulaToDTOFormulaBuilderMapper, IEditParametersInContainerPresenter editParametersInContainerPresenter,
-         IEditFormulaPresenter editFormulaPresenter, ISelectReferenceAtTransportPresenter selectReferencePresenter, IMoBiContext context,
+         IEditFormulaInContainerPresenter editFormulaPresenter, ISelectReferenceAtTransportPresenter selectReferencePresenter, IMoBiContext context,
          IMoleculeDependentBuilderPresenter moleculeListPresenter, IDescriptorConditionListPresenter<TransportBuilder> sourceCriteriaPresenter,
          IDescriptorConditionListPresenter<TransportBuilder> targetCriteriaPresenter)
          : base(view, editFormulaPresenter, selectReferencePresenter)
@@ -143,7 +143,7 @@ namespace MoBi.Presentation.Presenter
       public void SetPropertyValueFromView<TProperty>(string propertyName, TProperty newValue, TProperty oldValue)
       {
          var editPropertyCommand = new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, _transportBuilder, BuildingBlock); //<TProperty>
-         AddCommand(editPropertyCommand.Run(_context));
+         AddCommand(editPropertyCommand.RunCommand(_context));
       }
 
       public void RenameSubject()
@@ -153,7 +153,7 @@ namespace MoBi.Presentation.Presenter
 
       public void SetCreateProcessRateParameter(bool createProcessRate)
       {
-         AddCommand(new SetCreateProcessRateParameterCommand(createProcessRate, _transportBuilder, BuildingBlock).Run(_context));
+         AddCommand(new SetCreateProcessRateParameterCommand(createProcessRate, _transportBuilder, BuildingBlock).RunCommand(_context));
          _view.EnableDisablePlotProcessRateParameter(createProcessRate);
       }
 

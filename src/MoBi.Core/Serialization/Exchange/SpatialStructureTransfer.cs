@@ -7,5 +7,6 @@ namespace MoBi.Core.Serialization.Exchange
    {
       public MoBiSpatialStructure SpatialStructure { get; set; }
       public ParameterValuesBuildingBlock ParameterValues { set; get; }
+      public InitialConditionsBuildingBlock InitialConditions { get; set; }
    }
 }

@@ -15,7 +15,7 @@ namespace MoBi.Presentation.Presenter
    public interface ISelectOrganAndProteinsPresenter : IDisposablePresenter
    {
       IReadOnlyList<MoleculeBuilder> SelectedMolecules { get; }
-      IContainer SelectedOrgan { get; }
+      IReadOnlyList<IContainer> SelectedContainers { get; }
       void SelectSelectOrganAndProteins(Module defaultModule);
    }
 
@@ -42,10 +42,12 @@ namespace MoBi.Presentation.Presenter
          AddSubPresenters(_selectMoleculesPresenter, _selectContainerInTreePresenter);
          _view.AddMoleculeSelectionView(_selectMoleculesPresenter.View);
          _view.AddOrganSelectionView(_selectContainerInTreePresenter.View);
+
+         _selectContainerInTreePresenter.AllowMultiSelect = true;
       }
 
       public IReadOnlyList<MoleculeBuilder> SelectedMolecules { get; private set; }
-      public IContainer SelectedOrgan { get; private set; }
+      public IReadOnlyList<IContainer> SelectedContainers { get; private set; }
 
       private void selectionChanged(object sender, EventArgs e)
       {
@@ -65,12 +67,12 @@ namespace MoBi.Presentation.Presenter
          if (_view.Canceled)
          {
             SelectedMolecules = new List<MoleculeBuilder>();
-            SelectedOrgan = null;
+            SelectedContainers = null;
             return;
          }
 
          SelectedMolecules = _selectMoleculesPresenter.SelectedMolecules.Select(x => x.MoleculeBuilder).ToList();
-         SelectedOrgan = _selectContainerInTreePresenter.SelectedEntity as IContainer;
+         SelectedContainers = _selectContainerInTreePresenter.SelectedContainers;
       }
 
       private static string defaultSelectionInSpatialStructure(Module defaultModule)
@@ -90,10 +92,34 @@ namespace MoBi.Presentation.Presenter
          return defaultModule.SpatialStructure.Where(x => x.ContainerType.Equals(ContainerType.Organ)).ToList();
       }
 
-      public override bool CanClose => selectedContainerIsOrgan() && _subPresenterManager.CanClose;
+      public override bool CanClose => selectionsAreAllowed() && _subPresenterManager.CanClose;
 
-      private bool selectedContainerIsOrgan() =>
-         _selectContainerInTreePresenter.SelectedEntity is IContainer container && container.ContainerType.Equals(ContainerType.Organ);
+      private bool selectionsAreAllowed()
+      {
+         return selectedContainersAreOrgans() && moleculeIsSelected();
+      }
+
+      private bool moleculeIsSelected()
+      {
+         return _selectMoleculesPresenter.SelectedMolecules.Count != 0;
+      }
+
+      private bool selectedContainersAreOrgans()
+      {
+         var selectedEntities = _selectContainerInTreePresenter.SelectedContainers;
+
+         return (onlyOrgansSelected(selectedEntities) || onlyOrganismSelected(selectedEntities)) && selectedEntities.Count != 0;
+      }
+
+      private bool onlyOrganismSelected(IReadOnlyList<IContainer> selectedEntities)
+      {
+         return selectedEntities.All(x => x.ContainerType.Equals(ContainerType.Organism));
+      }
+
+      private bool onlyOrgansSelected(IReadOnlyList<IContainer> selectedEntities)
+      {
+         return selectedEntities.All(x => x.ContainerType.Equals(ContainerType.Organ));
+      }
 
       private IReadOnlyList<ObjectBaseDTO> treeNodes() =>
          _buildingBlockRepository.SpatialStructureCollection.Select(x => _moduleAndSpatialStructureDTOMapper.MapFrom(x.Module)).ToList();

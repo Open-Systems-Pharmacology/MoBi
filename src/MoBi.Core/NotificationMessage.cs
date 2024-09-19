@@ -96,5 +96,10 @@ namespace MoBi.Core
             }
          }
       }
+
+      public override string ToString()
+      {
+         return _message;
+      }
    }
 }

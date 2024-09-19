@@ -1,3 +1,5 @@
+using MoBi.Core.Domain;
+using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain.Builder;
@@ -12,6 +14,8 @@ namespace MoBi.Core.Commands
    public abstract class BuildingBlockChangeCommandBase<T> : BuildingBlockChangeCommandBase where T :  class, IBuildingBlock
    {
       public bool ShouldIncrementVersion { get; set; }
+      public bool HasChangedModuleType { get; private set; }
+      public PKSimModuleConversion ConversionOption { get; set; }  = PKSimModuleConversion.SetAsExtensionModule;
 
       protected T _buildingBlock;
       protected string _buildingBlockId;
@@ -26,9 +30,11 @@ namespace MoBi.Core.Commands
 
       protected override void ExecuteWith(IMoBiContext context)
       {
+         var originalPkSimModuleState = _buildingBlock.IsPkSimModule();
          if (_buildingBlock == null) return;
          var buildingBlockVersionUpdater = context.Resolve<IBuildingBlockVersionUpdater>();
-         buildingBlockVersionUpdater.UpdateBuildingBlockVersion(_buildingBlock, ShouldIncrementVersion);
+         buildingBlockVersionUpdater.UpdateBuildingBlockVersion(_buildingBlock, ShouldIncrementVersion, ConversionOption);
+         HasChangedModuleType = originalPkSimModuleState != _buildingBlock.IsPkSimModule();
       }
 
       protected override void ClearReferences()

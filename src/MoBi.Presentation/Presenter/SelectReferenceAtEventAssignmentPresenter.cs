@@ -32,7 +32,7 @@ namespace MoBi.Presentation.Presenter
          AddSpatialStructures();
       }
 
-      public override void Init(IEntity assignment, IEnumerable<IObjectBase> contextSpecificEntitiesToAddToReferenceTree, IUsingFormula editedObject)
+      public override void Init(IEntity assignment, IReadOnlyList<IObjectBase> contextSpecificEntitiesToAddToReferenceTree, IUsingFormula editedObject)
       {
          base.Init(assignment, contextSpecificEntitiesToAddToReferenceTree, editedObject);
          addEventGroupParameter(assignment.RootContainer);

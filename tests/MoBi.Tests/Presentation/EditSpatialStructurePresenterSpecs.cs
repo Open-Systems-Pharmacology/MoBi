@@ -147,6 +147,58 @@ namespace MoBi.Presentation
       }
    }
 
+   internal class When_edit_spatial_structure_presenter_handles_a_select_event_for_a_neighborhood_builder_without_a_container : concern_for_EditSpatialStructurePresenterSpecs
+   {
+      private MoBiSpatialStructure _spatialStructure;
+
+      protected override void Context()
+      {
+         base.Context();
+         _spatialStructure = new MoBiSpatialStructure
+         {
+            NeighborhoodsContainer = new Container().WithName("Neighborhoods")
+         };
+         sut.Edit(_spatialStructure);
+      }
+
+      protected override void Because()
+      {
+         sut.Handle(new EntitySelectedEvent(null, _hierarchicalPresenter));
+      }
+
+      [Observation]
+      public void should_call_edit_for_null_view()
+      {
+         A.CallTo(() => _view.SetEditView(null)).MustHaveHappened();
+      }
+   }
+
+   internal class When_edit_spatial_structure_presenter_handles_a_select_event_for_a_neighborhood_builder_without_a_container_and_the_sender_is_another_presenter : concern_for_EditSpatialStructurePresenterSpecs
+   {
+      private MoBiSpatialStructure _spatialStructure;
+
+      protected override void Context()
+      {
+         base.Context();
+         _spatialStructure = new MoBiSpatialStructure
+         {
+            NeighborhoodsContainer = new Container().WithName("Neighborhoods")
+         };
+         sut.Edit(_spatialStructure);
+      }
+
+      protected override void Because()
+      {
+         sut.Handle(new EntitySelectedEvent(null, A.Fake<IHierarchicalSpatialStructurePresenter>()));
+      }
+
+      [Observation]
+      public void should_call_edit_for_null_view()
+      {
+         A.CallTo(() => _view.SetEditView(null)).MustNotHaveHappened();
+      }
+   }
+
    internal class When_edit_spatial_structure_presenter_handles_a_select_event_for_a_neighborhood_builder : concern_for_EditSpatialStructurePresenterSpecs
    {
       private MoBiSpatialStructure _spatialStructure;

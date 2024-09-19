@@ -89,6 +89,12 @@ namespace MoBi.Presentation
       {
          A.CallTo(() => _commandCollector.AddCommand(_command)).MustHaveHappened();
       }
+
+      [Observation]
+      public void the_time_reference_should_not_be_added()
+      {
+         A.CallTo(() => _referencePresenter.DisableTimeSelection()).MustHaveHappened();
+      }
    }
 
    public class When_the_edit_table_formula_with_x_argument_presenter_is_selecting_a_x_argument_object_path_for_the_edited_table_formula : concern_for_EditTableFormulaWithXArgumentFormulaPresenter

@@ -5,6 +5,7 @@ using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
+using MoBi.Core.Extensions;
 using OSPSuite.Core.Commands;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
@@ -39,7 +40,7 @@ namespace MoBi.Core.Services
          var loadCommand = createLoadCommand(simulation);
          var shouldCloneSimulation = _context.CurrentProject.Simulations.ExistsById(simulation.Id);
          addSimulationToProject(simulation, loadCommand, shouldCloneSimulation);
-         return loadCommand.Run(_context);
+         return loadCommand.RunCommand(_context);
       }
 
       private static MoBiMacroCommand createLoadCommand(IMoBiSimulation simulation)
@@ -58,8 +59,8 @@ namespace MoBi.Core.Services
 
          renameCollidingEntities(simulation.Modules, project.Modules);
          renameCollidingEntities(simulation.Configuration.ExpressionProfiles, project.ExpressionProfileCollection);
-         
-         if(simulation.Configuration.Individual != null)
+
+         if (simulation.Configuration.Individual != null)
             renameCollidingEntities(new[] { simulation.Configuration.Individual }, project.IndividualsCollection);
 
          if (shouldCloneSimulation)
@@ -90,7 +91,7 @@ namespace MoBi.Core.Services
          //We always clone the simulation from Transfer as it may be loaded twice
          addSimulationToProject(simulation, loadCommand, shouldCloneSimulation: true);
          addObservedDataToProject(simulationTransfer.AllObservedData, loadCommand);
-         return loadCommand.Run(_context);
+         return loadCommand.RunCommand(_context);
       }
 
       private void addObservedDataToProject(IEnumerable<DataRepository> allObservedData, MoBiMacroCommand loadCommand)
@@ -112,7 +113,7 @@ namespace MoBi.Core.Services
       private void addSimulationConfigurationToProject(IMoBiSimulation simulation, ICommandCollector commandCollector)
       {
          var cloneForProjectEntities = _cloneManager.CloneSimulationConfiguration(simulation.Configuration);
-         cloneForProjectEntities.ModuleConfigurations.Each(moduleConfiguration => commandCollector.AddCommand(new AddModuleCommand(moduleConfiguration.Module)));
+         cloneForProjectEntities.ModuleConfigurations.Each(moduleConfiguration => commandCollector.AddCommand(new AddModuleCommand(moduleConfiguration.Module) { Silent = true }));
 
          addToProject(commandCollector, cloneForProjectEntities.Individual, individual => new AddIndividualBuildingBlockToProjectCommand(individual));
          cloneForProjectEntities.ExpressionProfiles.Each(expressionProfile => addToProject(commandCollector, expressionProfile, ep => new AddExpressionProfileBuildingBlockToProjectCommand(ep)));

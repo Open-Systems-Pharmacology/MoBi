@@ -4,6 +4,7 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Events;
+using MoBi.Core.Extensions;
 using MoBi.Core.Services;
 using MoBi.Presentation.Presenter;
 using OSPSuite.Core.Commands.Core;
@@ -62,12 +63,12 @@ namespace MoBi.Presentation.Tasks
       public ICommand UpdateSimulationSolverAndSchema(IMoBiSimulation simulationToUpdate)
       {
          var newSimulationSettings = _cloneManager.Clone(_context.CurrentProject.SimulationSettings);
-         return new UpdateSolverAndSchemaInSimulationCommand(simulationToUpdate, newSimulationSettings.Solver, newSimulationSettings.OutputSchema).Run(_context);
+         return new UpdateSolverAndSchemaInSimulationCommand(simulationToUpdate, newSimulationSettings.Solver, newSimulationSettings.OutputSchema).RunCommand(_context);
       }
 
       public ICommand UpdateSimulationOutputSelections(IMoBiSimulation simulation)
       {
-         return new UpdateOutputSelectionsInSimulationCommand(_cloneManager.Clone(_context.CurrentProject.SimulationSettings).OutputSelections, simulation).Run(_context);
+         return new UpdateOutputSelectionsInSimulationCommand(_cloneManager.Clone(_context.CurrentProject.SimulationSettings).OutputSelections, simulation).RunCommand(_context);
       }
 
       public ICommand ConfigureSimulation(IMoBiSimulation simulationToConfigure)
@@ -97,7 +98,7 @@ namespace MoBi.Presentation.Tasks
 
          var updateSimulationCommand = new UpdateSimulationCommand(simulationToUpdate, model, simulationBuildConfiguration);
 
-         updateSimulationCommand.Run(_context);
+         updateSimulationCommand.RunCommand(_context);
 
          var macro = new MoBiMacroCommand
          {

@@ -105,7 +105,7 @@ namespace MoBi.Presentation
          container.Register<ISelectManyPresenter<XElement>, SelectXmlElementPresenter>();
          container.Register<ISelectManyPresenter<OSPSuite.Core.Domain.IContainer>, SelectManyObjectBasePresenter<OSPSuite.Core.Domain.IContainer>>();
          container.Register<ISelectManyPresenter<EventGroupBuilder>, SelectManyObjectBasePresenter<EventGroupBuilder>>();
-         container.Register<ISelectSinglePresenter<ParameterValuesBuildingBlock>, SelectSingleObjectBasePresenter<ParameterValuesBuildingBlock>>();
+         container.Register(typeof(ISelectSinglePresenter<>), typeof(SelectSingleObjectBasePresenter<>));
 
          container.Register<ISettingsPersistor<IUserSettings>, UserSettingsPersistor>();
          container.Register<ISettingsPersistor<IApplicationSettings>, ApplicationSettingsPersistor>();

@@ -9,11 +9,13 @@ using OSPSuite.Core.Domain.UnitSystem;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public interface IInteractionTasksForExtendablePathAndValueEntity<TBuildingBlock, in TPathAndValueEntity> : IInteractionTasksForBuildingBlock<Module, TBuildingBlock>, IInteractionTasksForPathAndValueEntity<TBuildingBlock, TPathAndValueEntity>
+   public interface IInteractionTasksForExtendablePathAndValueEntity<TBuildingBlock, TPathAndValueEntity> : IInteractionTasksForBuildingBlock<Module, TBuildingBlock>, IInteractionTasksForPathAndValueEntity<TBuildingBlock, TPathAndValueEntity>
       where TBuildingBlock : class, IBuildingBlock<TPathAndValueEntity>
       where TPathAndValueEntity : PathAndValueEntity
    {
       void ExtendPathAndValueEntityBuildingBlock(TBuildingBlock buildingBlock);
+
+      IMoBiCommand Extend(IReadOnlyList<TPathAndValueEntity> pathAndValueEntities, ILookupBuildingBlock<TPathAndValueEntity> buildingBlockToExtend, bool retainConflictingEntities = true);
 
       /// <summary>
       ///    Generates a command that will add the pathAndValueEntity to the building block
@@ -51,7 +53,8 @@ namespace MoBi.Presentation.Tasks.Interaction
       IMoBiCommand SetDisplayValueWithUnit(TPathAndValueEntity pathAndValueEntity, double? newDisplayValue, Unit unit, TBuildingBlock buildingBlock);
 
       /// <summary>
-      ///    Returns a command that can be used to remove the path and value entities contained in <paramref name="pathAndValueEntity" />
+      ///    Returns a command that can be used to remove the path and value entities contained in
+      ///    <paramref name="pathAndValueEntity" />
       ///    from
       ///    <paramref name="buildingBlock" />
       /// </summary>
@@ -103,5 +106,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       ///    Creates a clone of the <paramref name="buildingBlockToClone" /> and adds it to <paramref name="parentModule" />
       /// </summary>
       ICommand CloneAndAddToParent(TBuildingBlock buildingBlockToClone, Module parentModule);
+
+      IMoBiCommand AddOrExtendWith(TBuildingBlock buildingBlock, Module spatialStructureModule);
    }
 }

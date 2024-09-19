@@ -30,6 +30,11 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithIcon(ApplicationIcons.InitialConditionsImport)
             .WithCommandFor<ImportInitialConditionsUICommand, IBuildingBlock>(buildingBlock, _container));
 
+         _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.ExportToExcel)
+            .WithIcon(ApplicationIcons.ExportToExcel)
+            .WithCommandFor<ExportInitialConditionsBuildingBlockToExcelUICommand, InitialConditionsBuildingBlock>(buildingBlock, _container));
+
+         _allMenuItems.Add(createExtendBuildingBlockCommand(buildingBlock));
          return this;
       }
 
@@ -38,6 +43,13 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Clone.WithEllipsis())
             .WithIcon(ApplicationIcons.Clone)
             .WithCommandFor<ClonePathAndValueEntityBuildingBlockUICommand<InitialConditionsBuildingBlock, InitialCondition, IInitialConditionsTask<InitialConditionsBuildingBlock>>, InitialConditionsBuildingBlock>(buildingBlock, _container);
+      }
+
+      private IMenuBarItem createExtendBuildingBlockCommand(InitialConditionsBuildingBlock buildingBlock)
+      {
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.ExtendFrom(ObjectTypes.InitialConditionsBuildingBlock))
+            .WithIcon(ApplicationIcons.LoadIconFor(nameof(InitialConditionsBuildingBlock)))
+            .WithCommandFor<ExtendInitialConditionsFromInitialConditionsUICommand, InitialConditionsBuildingBlock>(buildingBlock, _container);
       }
    }
 }

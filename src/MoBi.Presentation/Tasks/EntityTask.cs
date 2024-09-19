@@ -2,10 +2,10 @@
 using System.Linq;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Extensions;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 
@@ -36,14 +36,14 @@ namespace MoBi.Presentation.Tasks
          if (string.IsNullOrEmpty(tag))
             return new MoBiEmptyCommand();
 
-         return new AddTagCommand(tag, entity, buildingBlock).Run(_context);
+         return new AddTagCommand(tag, entity, buildingBlock).RunCommand(_context);
       }
 
       private IEnumerable<string> getUsedTags() => _tagVisitor.AllTags();
 
       public IMoBiCommand RemoveTagFrom(TagDTO tagDTO, IEntity entity, IBuildingBlock buildingBlock)
       {
-         return new RemoveTagCommand(tagDTO.Value, entity, buildingBlock).Run(_context);
+         return new RemoveTagCommand(tagDTO.Value, entity, buildingBlock).RunCommand(_context);
       }
    }
 }

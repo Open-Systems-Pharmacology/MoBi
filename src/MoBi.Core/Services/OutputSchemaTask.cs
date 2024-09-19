@@ -1,5 +1,6 @@
 ﻿using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Extensions;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -31,12 +32,12 @@ namespace MoBi.Core.Services
          var schema = simulationSettings.OutputSchema;
          var interval = _outputIntervalFactory.CreateDefault();
          interval.Name = _containerTask.CreateUniqueName(schema, interval.Name);
-         return new AddOutputIntervalCommand(schema, interval, simulationSettings).Run(_context);
+         return new AddOutputIntervalCommand(schema, interval, simulationSettings).RunCommand(_context);
       }
 
       public ICommand RemoveOutputInterval(OutputInterval outputInterval, SimulationSettings simulationSettings)
       {
-         return new RemoveOutputIntervalCommand(simulationSettings.OutputSchema, outputInterval, simulationSettings).Run(_context);
+         return new RemoveOutputIntervalCommand(simulationSettings.OutputSchema, outputInterval, simulationSettings).RunCommand(_context);
       }
    }
 }

@@ -4,11 +4,11 @@ using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Extensions;
 using MoBi.Core.Serialization.Exchange;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Interaction;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -43,7 +43,7 @@ namespace MoBi.Presentation.Tasks.Edit
       private readonly ICloneManagerForBuildingBlock _cloneManager;
       private readonly IPathAndValueEntityToParameterValueMapper _pathAndValueEntityToParameterValueMapper;
       private readonly IFormulaFactory _formulaFactory;
-      private readonly IIndividualParameterToParameterMapper _individualParameterToParameterMapper;
+      private readonly IParameterValueToParameterMapper _individualParameterToParameterMapper;
 
       public EditTaskForContainer(IInteractionTaskContext interactionTaskContext,
          IMoBiSpatialStructureFactory spatialStructureFactory,
@@ -51,7 +51,7 @@ namespace MoBi.Presentation.Tasks.Edit
          ICloneManagerForBuildingBlock cloneManager,
          IPathAndValueEntityToParameterValueMapper pathAndValueEntityToParameterValueMapper,
          IFormulaFactory formulaFactory,
-         IIndividualParameterToParameterMapper individualParameterToParameterMapper) : base(interactionTaskContext)
+         IParameterValueToParameterMapper individualParameterToParameterMapper) : base(interactionTaskContext)
       {
          _spatialStructureFactory = spatialStructureFactory;
          _objectPathFactory = objectPathFactory;
@@ -165,12 +165,16 @@ namespace MoBi.Presentation.Tasks.Edit
 
          tmpSpatialStructure.AddTopContainer(clonedEntity);
 
-         var entitiesToExport = new List<PathAndValueEntity>();
+         var expressionParametersToExport = new List<ExpressionParameter>();
+         var initialConditionsToExport = new List<InitialCondition>();
 
          addIndividualParametersToContainerAndSubContainers(individual, clonedEntity);
 
          if (expressionProfileBuildingBlocks != null)
-            entitiesToExport.AddRange(expressionProfileBuildingBlocks.SelectMany(x => pathAndValueEntitiesForContainer(x, clonedEntity, x.MoleculeName)));
+         {
+            expressionParametersToExport.AddRange(expressionProfileBuildingBlocks.SelectMany(x => pathAndValueEntitiesForContainer(x.ExpressionParameters.ToList(), clonedEntity, x.MoleculeName)));
+            initialConditionsToExport.AddRange(expressionProfileBuildingBlocks.SelectMany(x => pathAndValueEntitiesForContainer(x.InitialConditions.ToList(), clonedEntity, x.MoleculeName)));
+         }
 
          var existingSpatialStructure = _interactionTaskContext.Active<MoBiSpatialStructure>();
          if (existingSpatialStructure != null)
@@ -181,20 +185,23 @@ namespace MoBi.Presentation.Tasks.Edit
                tmpSpatialStructure.DiagramModel = existingSpatialStructure.DiagramModel.CreateCopy(container.Id);
          }
 
-         if(!entitiesToExport.Any())
+         if(!expressionParametersToExport.Any() && !initialConditionsToExport.Any())
             _interactionTask.Save(tmpSpatialStructure, fileName);
          else
-            exportSpatialStructureTransfer(tmpSpatialStructure, fileName, entitiesToExport.MapAllUsing(_pathAndValueEntityToParameterValueMapper), container.Name);
+            exportSpatialStructureTransfer(tmpSpatialStructure, fileName, expressionParametersToExport, initialConditionsToExport, container.Name);
       }
 
-      private void exportSpatialStructureTransfer(MoBiSpatialStructure tmpSpatialStructure, string fileName, IEnumerable<ParameterValue> entitiesToExport, string containerName)
+      private void exportSpatialStructureTransfer(MoBiSpatialStructure tmpSpatialStructure, string fileName, IReadOnlyList<ExpressionParameter> expressionParametersToExport, IReadOnlyList<InitialCondition> initialConditionsToExport, string containerName)
       {
          var spatialStructureTransfer = new SpatialStructureTransfer
          {
             ParameterValues = _interactionTaskContext.Context.Create<ParameterValuesBuildingBlock>().WithName(containerName),
+            InitialConditions = _interactionTaskContext.Context.Create<InitialConditionsBuildingBlock>().WithName(containerName),
             SpatialStructure = tmpSpatialStructure
          };
-         entitiesToExport.Each(x => spatialStructureTransfer.ParameterValues.Add(x));
+         expressionParametersToExport.MapAllUsing(_pathAndValueEntityToParameterValueMapper).Each(x => spatialStructureTransfer.ParameterValues.Add(x));
+         initialConditionsToExport.Select(x => _cloneManager.Clone(x, spatialStructureTransfer.InitialConditions.FormulaCache)).Each(x => spatialStructureTransfer.InitialConditions.Add(x));
+
          _interactionTask.Save(spatialStructureTransfer, fileName);
       }
 
@@ -203,12 +210,12 @@ namespace MoBi.Presentation.Tasks.Edit
          return container.ParentPath ?? (container.ParentContainer == null ? new ObjectPath() : _objectPathFactory.CreateAbsoluteObjectPath(container.ParentContainer));
       }
 
-      private IEnumerable<TPathAndValueEntity> pathAndValueEntitiesForContainer<TPathAndValueEntity>(PathAndValueEntityBuildingBlock<TPathAndValueEntity> buildingBlock, IContainer container, string moleculeName = null) where TPathAndValueEntity : PathAndValueEntity
+      private IEnumerable<TPathAndValueEntity> pathAndValueEntitiesForContainer<TPathAndValueEntity>(IReadOnlyList<TPathAndValueEntity> buildingBlock, IContainer container, string moleculeName = null) where TPathAndValueEntity : PathAndValueEntity
       {
          if (buildingBlock == null || !buildingBlock.Any())
             return Enumerable.Empty<TPathAndValueEntity>();
 
-         var containerPath = new ObjectPath(container.ParentPath, _objectPathFactory.CreateAbsoluteObjectPath(container));
+         var containerPath = _objectPathFactory.CreateAbsoluteObjectPath(container);
          var parametersToExport = buildingBlock.Where(x => x.ContainerPath.StartsWith(containerPath)).ToList();
 
          // export parameter values for container and its existing sub-containers
@@ -240,7 +247,7 @@ namespace MoBi.Presentation.Tasks.Edit
 
       public IMoBiCommand SetContainerMode(IBuildingBlock buildingBlock, IContainer container, ContainerMode containerMode)
       {
-         return new SetContainerModeCommand(buildingBlock, container, containerMode).Run(_context);
+         return new SetContainerModeCommand(buildingBlock, container, containerMode).RunCommand(_context);
       }
 
       public string BrowseSavePathFor(string name)

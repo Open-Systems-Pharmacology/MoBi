@@ -85,7 +85,7 @@ namespace MoBi.Core.Domain.Services
 
       IMoBiCommand UpdateFormula(IEntity usingFormula, IFormula oldFormula, IFormula newFormula, FormulaDecoder decoder, IBuildingBlock buildingBlock);
 
-      (IMoBiCommand command, IFormula formula) CreateNewFormulaInBuildingBlock(Type formulaType, IDimension formulaDimension, IEnumerable<string> existingFormulaNames, IBuildingBlock buildingBlock);
+      (IMoBiCommand command, IFormula formula) CreateNewFormulaInBuildingBlock(Type formulaType, IDimension formulaDimension, IEnumerable<string> existingFormulaNames, IBuildingBlock buildingBlock, string newFormulaName = null);
 
       IFormula CreateNewFormula(Type formulaType, IDimension formulaDimension);
       TFormula CreateNewFormula<TFormula>(IDimension formulaDimension) where TFormula : IFormula;

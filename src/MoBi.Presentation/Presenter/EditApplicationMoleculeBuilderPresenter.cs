@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -28,14 +28,14 @@ namespace MoBi.Presentation.Presenter
       private ApplicationMoleculeBuilder _applicationMoleculeBuilder;
       private readonly IEditTaskFor<ApplicationMoleculeBuilder> _editTask;
       private readonly IApplicationMoleculeBuilderToApplicationMoleculeBuilderDTOMapper _applicationMoleculeMapper;
-      private readonly IEditFormulaPresenter _editFormulaPresenter;
+      private readonly IEditFormulaInContainerPresenter _editFormulaPresenter;
       private readonly IFormulaToFormulaBuilderDTOMapper _formulaToDTOFormulaMapper;
       private readonly IMoBiContext _context;
       private readonly ISelectReferencePresenterAtApplicationBuilder _selectItemPresenter;
 
       public EditApplicationMoleculeBuilderPresenter(IEditApplicationMoleculeBuilderView view, IEditTaskFor<ApplicationMoleculeBuilder> editTask,
          IApplicationMoleculeBuilderToApplicationMoleculeBuilderDTOMapper applicationMoleculeMapper, IFormulaToFormulaBuilderDTOMapper formulaToDTOFormulaMapper,
-         IEditFormulaPresenter editFormulaPresenter, IMoBiContext context, ISelectReferencePresenterAtApplicationBuilder selectItemPresenter)
+         IEditFormulaInContainerPresenter editFormulaPresenter, IMoBiContext context, ISelectReferencePresenterAtApplicationBuilder selectItemPresenter)
          : base(view)
       {
          _editTask = editTask;
@@ -49,15 +49,6 @@ namespace MoBi.Presentation.Presenter
          AddSubPresenters(_editFormulaPresenter, _selectItemPresenter);
       }
 
-      private ApplicationBuilder getParent(ApplicationMoleculeBuilder applicationMoleculeBuilder, IBuildingBlock buildingBlock)
-      {
-         var eventGroupBuilding = getEventGroupBuilding(buildingBlock);
-
-         return eventGroupBuilding.Select(x => x.GetAllContainersAndSelf<ApplicationBuilder>()
-            .FirstOrDefault(ab => ab.Molecules.Contains(applicationMoleculeBuilder)))
-            .FirstOrDefault(applicationBuilder => applicationBuilder != null);
-      }
-
       private EventGroupBuildingBlock getEventGroupBuilding(IBuildingBlock buildingBlockWithFormulaCache)
       {
          return buildingBlockWithFormulaCache.DowncastTo<EventGroupBuildingBlock>();
@@ -69,14 +60,14 @@ namespace MoBi.Presentation.Presenter
       {
          _applicationMoleculeBuilder = applicationMoleculeBuilder;
          _editFormulaPresenter.Init(_applicationMoleculeBuilder, BuildingBlock);
-         _selectItemPresenter.Init(_applicationMoleculeBuilder.ParentContainer, getEventGroupBuilding(BuildingBlock), applicationMoleculeBuilder);
+         _selectItemPresenter.Init(_applicationMoleculeBuilder.ParentContainer, getEventGroupBuilding(BuildingBlock).ToList(), applicationMoleculeBuilder);
          var dto = _applicationMoleculeMapper.MapFrom(_applicationMoleculeBuilder);
          _view.Show(dto);
       }
 
       public void SetPropertyValueFromView<T>(string propertyName, T newValue, T oldValue)
       {
-         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, _applicationMoleculeBuilder, BuildingBlock).Run(_context));
+         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, _applicationMoleculeBuilder, BuildingBlock).RunCommand(_context));
       }
 
       public void RenameSubject()

@@ -113,11 +113,11 @@ namespace MoBi.Presentation.Presenter
             editPresenter.SelectParameter(parameter);
       }
 
-      protected override (bool canHandle, IContainer containerObject) SpecificCanHandle(IObjectBase selectedObject)
+      protected override (bool canHandle, IContainer containerObject) SpecificCanHandle(EntitySelectedEvent entitySelectedEvent)
       {
-         var container = selectedObject as IContainer;
-         if (shouldHandleType(selectedObject))
-            return (_moleculeBuildingBlock.ContainsBuilder(selectedObject), container);
+         var container = entitySelectedEvent.ObjectBase as IContainer;
+         if (shouldHandleType(entitySelectedEvent.ObjectBase))
+            return (_moleculeBuildingBlock.ContainsBuilder(entitySelectedEvent.ObjectBase), container);
 
          return (false, container);
       }

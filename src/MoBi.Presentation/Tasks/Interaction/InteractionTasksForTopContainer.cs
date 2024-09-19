@@ -15,12 +15,12 @@ namespace MoBi.Presentation.Tasks.Interaction
    {
       private readonly IInteractionTasksForChildren<IContainer, IContainer> _interactionTaskForNeighborhood;
 
-      public InteractionTasksForTopContainer(
-         IInteractionTaskContext interactionTaskContext,
+      public InteractionTasksForTopContainer(IInteractionTaskContext interactionTaskContext,
          IEditTaskFor<IContainer> editTask,
          IObjectPathFactory objectPathFactory,
          IInteractionTasksForChildren<IContainer, IContainer> interactionTaskForNeighborhood,
-         IParameterValuesTask parameterValuesTask) : base(interactionTaskContext, editTask, objectPathFactory, parameterValuesTask)
+         IParameterValuesTask parameterValuesTask, 
+         IInitialConditionsTask<InitialConditionsBuildingBlock> initialConditionsTask) : base(interactionTaskContext, editTask, objectPathFactory, parameterValuesTask, initialConditionsTask)
       {
          _interactionTaskForNeighborhood = interactionTaskForNeighborhood;
       }

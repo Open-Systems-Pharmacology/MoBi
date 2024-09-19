@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
+using MoBi.Core.Extensions;
+using MoBi.Core.Mappers;
 using MoBi.Core.Services;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Assets;
@@ -11,6 +12,7 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
@@ -18,7 +20,6 @@ namespace MoBi.Presentation.Tasks.Interaction
       IInteractionTasksForProjectPathAndValueEntityBuildingBlocks<ExpressionProfileBuildingBlock, ExpressionParameter>,
       IInteractionTasksForProjectBuildingBlock
    {
-      IReadOnlyList<ExpressionProfileBuildingBlock> LoadFromPKML();
       IMoBiCommand UpdateExpressionProfileFromDatabase(ExpressionProfileBuildingBlock buildingBlock);
    }
 
@@ -28,23 +29,19 @@ namespace MoBi.Presentation.Tasks.Interaction
       private readonly IPKSimStarter _pkSimStarter;
       private readonly IContainerTask _containerTask;
 
-      public InteractionTasksForExpressionProfileBuildingBlock(IInteractionTaskContext interactionTaskContext, 
-         IEditTasksForExpressionProfileBuildingBlock editTask, 
-         IMoBiFormulaTask formulaTask, 
-         IPKSimStarter pkSimStarter, 
-         IContainerTask containerTask, 
-         IParameterFactory parameterFactory) :
-         base(interactionTaskContext, editTask, formulaTask, parameterFactory)
+      public InteractionTasksForExpressionProfileBuildingBlock(IInteractionTaskContext interactionTaskContext,
+         IEditTasksForExpressionProfileBuildingBlock editTask,
+         IMoBiFormulaTask formulaTask,
+         IPKSimStarter pkSimStarter,
+         IContainerTask containerTask,
+         IParameterFactory parameterFactory,
+         IExportDataTableToExcelTask exportDataTableToExcelTask,
+         IExpressionProfileBuildingBlockToDataTableMapper mapper) :
+         base(interactionTaskContext, editTask, formulaTask, parameterFactory, exportDataTableToExcelTask, mapper)
       {
          _editTaskForExpressionProfileBuildingBlock = editTask;
          _pkSimStarter = pkSimStarter;
          _containerTask = containerTask;
-      }
-
-      public IReadOnlyList<ExpressionProfileBuildingBlock> LoadFromPKML()
-      {
-         var filename = AskForPKMLFileToOpen();
-         return (string.IsNullOrEmpty(filename) ? Enumerable.Empty<ExpressionProfileBuildingBlock>() : LoadItems(filename)).ToList();
       }
 
       public IMoBiCommand UpdateExpressionProfileFromDatabase(ExpressionProfileBuildingBlock buildingBlock)
@@ -63,7 +60,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          macroCommand.AddRange(expressionProfileUpdate.Select(parameter => updateCommandFor(buildingBlock, parameter.Path, parameter.UpdatedValue)));
 
-         return macroCommand.Run(Context);
+         return macroCommand.RunCommand(Context);
       }
 
       private static ICommand updateCommandFor(ExpressionProfileBuildingBlock buildingBlock, ObjectPath path, double? value)
@@ -103,7 +100,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             return true;
 
          (_, _, string suggestedCategory) = Constants.ContainerName.NamesFromExpressionProfileName(_containerTask.CreateUniqueName(forbiddenNames, expressionProfile.Name, canUseBaseName: true));
-         
+
          var newName = newNameFromSuggestion(expressionProfile, suggestedCategory);
          if (string.IsNullOrEmpty(newName))
             return false;

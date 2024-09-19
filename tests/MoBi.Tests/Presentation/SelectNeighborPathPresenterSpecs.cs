@@ -2,6 +2,7 @@
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
+using MoBi.Helpers;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -28,6 +29,7 @@ namespace MoBi.Presentation
       protected ContainerDTO _containerDTO1;
       protected ContainerDTO _containerDTO2;
       private IModuleToModuleAndSpatialStructureDTOMapper _moduleDTOMapper;
+      private IObjectPathFactory _objectPathFactory;
 
       protected override void Context()
       {
@@ -35,11 +37,12 @@ namespace MoBi.Presentation
          _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
          _view = A.Fake<ISelectNeighborPathView>();
          _selectContainerInTreePresenter = A.Fake<ISelectContainerInTreePresenter>();
+         _objectPathFactory = new ObjectPathFactoryForSpecs();
 
          A.CallTo(() => _view.BindTo(A<ObjectPathDTO>._))
             .Invokes(x => _selectedPathDTO = x.GetArgument<ObjectPathDTO>(0));
 
-         sut = new SelectNeighborPathPresenter(_view, _selectContainerInTreePresenter, _moduleDTOMapper, _buildingBlockRepository);
+         sut = new SelectNeighborPathPresenter(_view, _selectContainerInTreePresenter, _moduleDTOMapper, _buildingBlockRepository, _objectPathFactory);
 
          _spatialStructure1 = new MoBiSpatialStructure
          {
@@ -74,7 +77,6 @@ namespace MoBi.Presentation
          {
             SpatialStructure = _organismDTO2
          };
-
          A.CallTo(() => _buildingBlockRepository.SpatialStructureCollection).Returns(new[] { _spatialStructure1, _spatialStructure2 });
          A.CallTo(() => _moduleDTOMapper.MapFrom(_spatialStructure1.Module)).Returns(_moduleAndSpatialStructureDTO1);
          A.CallTo(() => _moduleDTOMapper.MapFrom(_spatialStructure2.Module)).Returns(_moduleAndSpatialStructureDTO2);
@@ -94,6 +96,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
+         _selectContainerInTreePresenter.SelectObjectBaseDTO(null);
          sut.Init("label");
       }
 
@@ -122,15 +125,16 @@ namespace MoBi.Presentation
       public void should_not_update_the_path_if_the_selected_entity_is_not_a_container()
       {
          _selectedPathDTO.Path = "A|B";
-         _selectContainerInTreePresenter.OnSelectedEntityChanged += Raise.With(new SelectedEntityChangedArgs(new Parameter(), new ObjectPath()));
+         _selectContainerInTreePresenter.OnSelectedEntityChanged += Raise.With(new SelectedEntityChangedArgs(new Parameter()));
          _selectedPathDTO.Path.ShouldBeEqualTo("A|B");
+         sut.CanClose.ShouldBeFalse();
       }
 
       [Observation]
       public void should_not_update_the_path_if_the_selected_entity_is_not_a_physical_container()
       {
          _selectedPathDTO.Path = "A|B";
-         _selectContainerInTreePresenter.OnSelectedEntityChanged += Raise.With(new SelectedEntityChangedArgs(new Container().WithMode(ContainerMode.Logical), new ObjectPath()));
+         _selectContainerInTreePresenter.OnSelectedEntityChanged += Raise.With(new SelectedEntityChangedArgs(new Container().WithMode(ContainerMode.Logical)));
          _selectedPathDTO.Path.ShouldBeEqualTo("A|B");
       }
 
@@ -138,8 +142,9 @@ namespace MoBi.Presentation
       public void should_update_the_path_if_the_selected_entity_is_a_physical_container()
       {
          _selectedPathDTO.Path = "A|B";
-         _selectContainerInTreePresenter.OnSelectedEntityChanged += Raise.With(new SelectedEntityChangedArgs(new Container().WithMode(ContainerMode.Physical), new ObjectPath("NEW|PATH")));
-         _selectedPathDTO.Path.ShouldBeEqualTo("NEW|PATH");
+         _selectContainerInTreePresenter.OnSelectedEntityChanged += Raise.With(new SelectedEntityChangedArgs(new Container().WithName("A").WithMode(ContainerMode.Physical)));
+         _selectedPathDTO.Path.ShouldBeEqualTo("A");
+         sut.CanClose.ShouldBeTrue();
       }
 
       [Observation]
@@ -147,9 +152,9 @@ namespace MoBi.Presentation
       {
          _selectedPathDTO.Path = "A|B";
          var parentContainer = new Container { ParentPath = new ObjectPath("ROOT", "PARENT") };
-         var container = new Container().WithMode(ContainerMode.Physical).Under(parentContainer);
-         _selectContainerInTreePresenter.OnSelectedEntityChanged += Raise.With(new SelectedEntityChangedArgs(container, new ObjectPath("NEW|PATH")));
-         _selectedPathDTO.Path.ShouldBeEqualTo("ROOT|PARENT|NEW|PATH");
+         var container = new Container().WithMode(ContainerMode.Physical).Under(parentContainer).WithName("NEW_CONTAINER");
+         _selectContainerInTreePresenter.OnSelectedEntityChanged += Raise.With(new SelectedEntityChangedArgs(container));
+         _selectedPathDTO.Path.ShouldBeEqualTo("ROOT|PARENT|NEW_CONTAINER");
       }
    }
 
@@ -173,6 +178,42 @@ namespace MoBi.Presentation
       public void should_return_the_path_from_the_selected_path_dto_even_if_the_tree_selection_is_pointing_to_another_object()
       {
          _result.PathAsString.ShouldBeEqualTo("A|B|C");
+      }
+   }
+
+   public class When_selected_container_path_changes_with_physical : concern_for_SelectNeighborPathPresenter
+   {
+      protected override void Because()
+      {
+         var entity = new Container
+         {
+            Mode = ContainerMode.Physical
+         };
+         _selectContainerInTreePresenter.OnSelectedEntityChanged += Raise.With(new SelectedEntityChangedArgs(entity));
+      }
+
+      [Observation]
+      public void can_close_should_be_true()
+      {
+         sut.CanClose.ShouldBeTrue();
+      }
+   }
+
+   public class When_selected_container_path_changes_with_logical : concern_for_SelectNeighborPathPresenter
+   {
+      protected override void Because()
+      {
+         var entity = new Container
+         {
+            Mode = ContainerMode.Logical
+         };
+         _selectContainerInTreePresenter.OnSelectedEntityChanged += Raise.With(new SelectedEntityChangedArgs(entity));
+      }
+
+      [Observation]
+      public void can_close_should_be_false()
+      {
+         sut.CanClose.ShouldBeFalse();
       }
    }
 }

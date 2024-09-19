@@ -3,6 +3,7 @@ using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
+using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Services;
@@ -11,6 +12,8 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Serialization.Exchange;
 using MoBi.Helpers;
+using OSPSuite.Core.Commands.Core;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core
 {
@@ -53,6 +56,7 @@ namespace MoBi.Core
       private Module _clonedModule;
       private IndividualBuildingBlock _clonedIndividual;
       private SimulationConfiguration _clonedSimulationConfiguration;
+      private MoBiMacroCommand _commands;
 
       protected override void Context()
       {
@@ -79,7 +83,13 @@ namespace MoBi.Core
 
       protected override void Because()
       {
-         sut.AddSimulationToProject(_simulation);
+         _commands = sut.AddSimulationToProject(_simulation) as MoBiMacroCommand;
+      }
+
+      [Observation]
+      public void module_add_commands_are_added_silently()
+      {
+         _commands.All().OfType<AddModuleCommand>().All(command => command.Silent).ShouldBeTrue();
       }
 
       [Observation]

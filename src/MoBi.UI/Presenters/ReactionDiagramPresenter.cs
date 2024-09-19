@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
@@ -7,6 +6,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Core.Domain.Repository;
 using MoBi.Core.Exceptions;
+using MoBi.Core.Extensions;
 using MoBi.Core.Services;
 using MoBi.Presentation;
 using MoBi.Presentation.Presenter;
@@ -19,7 +19,6 @@ using MoBi.UI.UICommands;
 using Northwoods.Go;
 using OSPSuite.Assets;
 using OSPSuite.Core;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
@@ -117,7 +116,7 @@ namespace MoBi.UI.Presenters
                Description = AppConstants.Commands.AddManyMoleculesDescription
             };
             moleculeNames.Each(nodeName => addMoleculeNode(nodeName, command));
-            AddCommand(command.Run(_context));
+            AddCommand(command.RunCommand(_context));
          }
       }
 
@@ -148,7 +147,7 @@ namespace MoBi.UI.Presenters
             return;
          }
 
-         AddCommand(new RemoveMoleculeFromReactionBuildingBlockCommand(_model, moleculeNode.Id).Run(_context));
+         AddCommand(new RemoveMoleculeFromReactionBuildingBlockCommand(_model, moleculeNode.Id).RunCommand(_context));
       }
 
       private void promptForRemoveLinks()

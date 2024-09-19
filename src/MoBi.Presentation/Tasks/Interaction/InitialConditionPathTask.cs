@@ -30,6 +30,11 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          ConfigureTargetPath(indexToUpdate, newValue, targetPath);
 
+         return SetContainerPathCommand(buildingBlock, pathAndValueEntity, targetPath);
+      }
+
+      public override IMoBiCommand SetContainerPathCommand(ILookupBuildingBlock<InitialCondition> buildingBlock, InitialCondition pathAndValueEntity, ObjectPath targetPath)
+      {
          return new EditInitialConditionPathCommand(buildingBlock, pathAndValueEntity, targetPath);
       }
    }

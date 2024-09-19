@@ -61,7 +61,7 @@ namespace MoBi.Core.SBML
          // var buildConfiguration = _buildConfigurationFactory.CreateFromReferencesUsedIn(simulation.MoBiBuildConfiguration);
          var name = Guid.NewGuid().ToString();
          var result = _modelConstructor.CreateModelFrom(simulation.Configuration, name);
-         result.State.ShouldBeEqualTo(ValidationState.Valid);
+         result.State.ShouldBeEqualTo(ValidationState.ValidWithWarnings);
       }
 
       [Observation]

@@ -5,7 +5,7 @@ using MoBi.Core;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.UnitSystem;
-using OSPSuite.Core.Commands.Core;
+using MoBi.Core.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -336,8 +336,8 @@ namespace MoBi.Engine.Sbml
       /// </summary>
       public override void AddToProject()
       {
-         _command.AddCommand(new AddBuildingBlockToModuleCommand<MoleculeBuildingBlock>(MoleculeBuildingBlock, _sbmlModule).Run(_context));
-         _command.AddCommand(new AddBuildingBlockToModuleCommand<InitialConditionsBuildingBlock>(_initialConditionsBuildingBlock, _sbmlModule).Run(_context));
+         _command.AddCommand(new AddBuildingBlockToModuleCommand<MoleculeBuildingBlock>(MoleculeBuildingBlock, _sbmlModule).RunCommand(_context));
+         _command.AddCommand(new AddBuildingBlockToModuleCommand<InitialConditionsBuildingBlock>(_initialConditionsBuildingBlock, _sbmlModule).RunCommand(_context));
       }
 
       /// <summary>

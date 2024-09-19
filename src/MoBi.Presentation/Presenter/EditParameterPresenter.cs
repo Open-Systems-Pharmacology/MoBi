@@ -3,6 +3,7 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Extensions;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -86,9 +87,9 @@ namespace MoBi.Presentation.Presenter
    public class EditParameterPresenter : AbstractEntityEditPresenter<IEditParameterView, IEditParameterPresenter, IParameter>, IEditParameterPresenter
    {
       private IParameter _parameter;
-      private readonly IEditFormulaPresenter _editRHSFormulaPresenter;
+      private readonly IEditFormulaInContainerPresenter _editRHSFormulaPresenter;
       private readonly IInteractionTaskContext _interactionTaskContext;
-      private readonly IEditFormulaPresenter _editValueFormulaPresenter;
+      private readonly IEditFormulaInContainerPresenter _editValueFormulaPresenter;
       private readonly IParameterToParameterDTOMapper _parameterMapper;
       private ParameterDTO _parameterDTO;
       public IBuildingBlock BuildingBlock { get; set; }
@@ -106,9 +107,9 @@ namespace MoBi.Presentation.Presenter
       private readonly IDescriptorConditionListPresenter<IParameter> _containerCriteriaPresenter;
 
       public EditParameterPresenter(IEditParameterView view,
-         IEditFormulaPresenter editValueFormulaPresenter,
+         IEditFormulaInContainerPresenter editValueFormulaPresenter,
          IParameterToParameterDTOMapper parameterMapper,
-         IEditFormulaPresenter editRhsFormulaPresenter,
+         IEditFormulaInContainerPresenter editRhsFormulaPresenter,
          IInteractionTaskContext interactionTaskContext,
          IGroupRepository groupRepository,
          IEditTaskFor<IParameter> editTasks,
@@ -162,7 +163,7 @@ namespace MoBi.Presentation.Presenter
       public void SetDescription(ParameterDTO parameterDTO, string newDescription)
       {
          AddCommand(_parameterTask.SetDescriptionForParameter(parameterDTO.Parameter, newDescription, BuildingBlock)
-            .Run(_interactionTaskContext.Context));
+            .RunCommand(_interactionTaskContext.Context));
       }
 
       public void SetBuildMode(ParameterDTO parameterDTO, ParameterBuildMode newBuildMode)
@@ -171,12 +172,12 @@ namespace MoBi.Presentation.Presenter
             _interactionTaskContext.DialogCreator.MessageBoxInfo(AppConstants.Validation.ChangeBuildModeWarning);
 
          AddCommand(_parameterTask.SetBuildModeForParameter(parameterDTO.Parameter, newBuildMode, BuildingBlock)
-            .Run(_interactionTaskContext.Context));
+            .RunCommand(_interactionTaskContext.Context));
       }
 
       public void SetName(ParameterDTO parameterDTO, string newName)
       {
-         AddCommand(_parameterTask.SetNameForParameter(parameterDTO.Parameter, newName, BuildingBlock).Run(_interactionTaskContext.Context));
+         AddCommand(_parameterTask.SetNameForParameter(parameterDTO.Parameter, newName, BuildingBlock).RunCommand(_interactionTaskContext.Context));
       }
 
       private void setValueOrigin(ValueOrigin newValueOrigin)
@@ -210,7 +211,7 @@ namespace MoBi.Presentation.Presenter
          _parameter = parameter;
          _editValueFormulaPresenter.Init(_parameter, BuildingBlock);
          _editValueFormulaPresenter.ReferencePresenter.Init(_contextSpecificReferencesRetriever.RetrieveLocalReferencePoint(parameter),
-            _contextSpecificReferencesRetriever.RetrieveFor(_parameter, BuildingBlock), _parameter);
+            _contextSpecificReferencesRetriever.RetrieveFor(_parameter, BuildingBlock).ToList(), _parameter);
          _editValueOriginPresenter.Edit(parameter);
 
          if (hasRHS(parameter))
@@ -247,7 +248,7 @@ namespace MoBi.Presentation.Presenter
       {
          _editRHSFormulaPresenter.Init(_parameter, BuildingBlock);
          _editRHSFormulaPresenter.ReferencePresenter.Init(_contextSpecificReferencesRetriever.RetrieveLocalReferencePoint(_parameter),
-            _contextSpecificReferencesRetriever.RetrieveFor(_parameter, BuildingBlock), _parameter);
+            _contextSpecificReferencesRetriever.RetrieveFor(_parameter, BuildingBlock).ToList(), _parameter);
       }
 
       public override object Subject => _parameter;
@@ -303,7 +304,7 @@ namespace MoBi.Presentation.Presenter
 
       private void addCommandToRun(ICommand<IMoBiContext> command)
       {
-         AddCommand(command.Run(_interactionTaskContext.Context));
+         AddCommand(command.RunCommand(_interactionTaskContext.Context));
       }
 
       public void SetDimension(IDimension dimension)

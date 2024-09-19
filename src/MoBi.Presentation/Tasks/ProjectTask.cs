@@ -1,8 +1,10 @@
 using System.IO;
+using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Services;
+using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
@@ -84,7 +86,9 @@ namespace MoBi.Presentation.Tasks
       public void StartWithSimulation(string fileName)
       {
          _serializationTask.NewProject();
-         loadSimulationFromFileInProject(fileName);
+         var simulationTransfer = loadSimulationFromFileInProject(fileName);
+         if (simulationTransfer != null)
+            loadProjectDefaultsFromSimulationSettings(simulationTransfer);
       }
 
       public void StartWithJournal(string journalFilePath)
@@ -93,23 +97,30 @@ namespace MoBi.Presentation.Tasks
          _serializationTask.LoadJournal(journalFilePath, showJournal: true);
       }
 
-      private void loadSimulationFromFileInProject(string fileName)
+      private SimulationTransfer loadSimulationFromFileInProject(string fileName)
       {
          var project = _context.CurrentProject;
-         if (project == null) return;
-
-         if (string.IsNullOrEmpty(fileName))
-            return;
+         if (project == null || string.IsNullOrEmpty(fileName))
+            return null;
 
          SimulationTransfer simulationTransfer = null;
-
          _heavyWorkManager.Start(() => simulationTransfer = LoadSimulationTransferDataFromFile(fileName));
+
          if (simulationTransfer == null)
-            return;
+            return simulationTransfer;
 
          _context.AddToHistory(addSimulationTransferToProject(simulationTransfer));
          loadJournalIfNotLoadedAlready(project, simulationTransfer.JournalPath);
          notifyProjectLoaded();
+         return simulationTransfer;
+      }
+
+      private void loadProjectDefaultsFromSimulationSettings(SimulationTransfer simulationTransfer)
+      {
+         var simulationSettingsTask = _context.Resolve<IInteractionTasksForSimulationSettings>();
+         var simulationSettings = simulationTransfer.Simulation.Settings;
+         simulationSettingsTask.UpdateDefaultSimulationSettingsInProject(simulationSettings.OutputSchema, simulationSettings.Solver);
+         simulationSettingsTask.UpdateDefaultOutputSelectionsInProject(simulationSettings.OutputSelections.ToList());
       }
 
       private void notifyProjectLoaded()

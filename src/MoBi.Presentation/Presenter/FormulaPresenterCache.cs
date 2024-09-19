@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
-using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -35,25 +35,25 @@ namespace MoBi.Presentation.Presenter
 
       public IEditTypedFormulaPresenter PresenterFor(Type formulaType)
       {
-         if (formulaType == typeof (ExplicitFormula))
+         if (formulaType == typeof(ExplicitFormula))
             return presenterFor<IEditExplicitFormulaPresenter>(formulaType);
 
-         if (formulaType == typeof (BlackBoxFormula))
+         if (formulaType == typeof(BlackBoxFormula))
             return presenterFor<IEditBlackBoxFormulaPresenter>(formulaType);
 
-         if (formulaType == typeof (ConstantFormula))
+         if (formulaType == typeof(ConstantFormula))
             return presenterFor<IEditConstantFormulaPresenter>(formulaType);
 
-         if (formulaType == typeof (TableFormula))
+         if (formulaType == typeof(TableFormula) || formulaType == typeof(DistributedTableFormula))
             return presenterFor<IEditTableFormulaPresenter>(formulaType);
 
          if (formulaType == typeof(TableFormulaWithXArgument))
             return presenterFor<IEditTableFormulaWithXArgumentFormulaPresenter>(formulaType);
 
-         if (formulaType == typeof (TableFormulaWithOffset))
+         if (formulaType == typeof(TableFormulaWithOffset))
             return presenterFor<IEditTableFormulaWithOffsetFormulaPresenter>(formulaType);
 
-         if (formulaType == typeof (SumFormula))
+         if (formulaType == typeof(SumFormula))
             return presenterFor<IEditSumFormulaPresenter>(formulaType);
 
          throw new NotSupportedException($"Formula '{formulaType.Name}' not supported at the moment");
@@ -77,6 +77,7 @@ namespace MoBi.Presentation.Presenter
          {
             _cache.Add(formulaType, _container.Resolve<T>());
          }
+
          return _cache[formulaType];
       }
 

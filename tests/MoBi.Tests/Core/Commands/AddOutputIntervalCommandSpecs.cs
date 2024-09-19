@@ -1,4 +1,5 @@
 ﻿using FakeItEasy;
+using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using OSPSuite.BDDHelper;
@@ -85,7 +86,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void the_building_block_version_updater_should_update_the_building_block_version()
       {
-         A.CallTo(() => _buildingBlockVersionUpdater.UpdateBuildingBlockVersion(_simulationSettings, true)).MustHaveHappened();
+         A.CallTo(() => _buildingBlockVersionUpdater.UpdateBuildingBlockVersion(_simulationSettings, true, PKSimModuleConversion.SetAsExtensionModule)).MustHaveHappened();
       }
    }
 }

@@ -4,6 +4,7 @@ using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
+using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -43,7 +44,7 @@ namespace MoBi.Presentation.Presenter
          IMoleculeBuilderToMoleculeBuilderDTOMapper moleculeBuilderDTOMapper,
          IEditParametersInContainerPresenter editMoleculeParameters,
          IEditTaskFor<MoleculeBuilder> editTasks,
-         IEditFormulaPresenter editFormulaPresenter,
+         IEditFormulaInContainerPresenter editFormulaPresenter,
          IMoBiContext context,
          ISelectReferenceAtMoleculePresenter selectReferencePresenter,
          IReactionDimensionRetriever dimensionRetriever,
@@ -71,10 +72,7 @@ namespace MoBi.Presentation.Presenter
          _editMoleculeParameters.InitializeWith(CommandCollector);
       }
 
-      public void Edit(object objectToEdit)
-      {
-         Edit(objectToEdit.DowncastTo<MoleculeBuilder>());
-      }
+      public void Edit(object objectToEdit) => Edit(objectToEdit.DowncastTo<MoleculeBuilder>());
 
       public override void ReleaseFrom(IEventPublisher eventPublisher)
       {
@@ -84,7 +82,7 @@ namespace MoBi.Presentation.Presenter
 
       public void SetPropertyValueFromView<T>(string propertyName, T newValue, T oldValue)
       {
-         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, _moleculeBuilder, BuildingBlock).Run(_context));
+         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, _moleculeBuilder, BuildingBlock).RunCommand(_context));
       }
 
       public void RenameSubject()
@@ -96,7 +94,7 @@ namespace MoBi.Presentation.Presenter
       {
          _moleculeBuilder = moleculeBuilder;
          _editMoleculeParameters.Edit(moleculeBuilder);
-         _referencePresenter.Init(null, Enumerable.Empty<IObjectBase>(), null);
+         _referencePresenter.Init(null, Enumerable.Empty<IObjectBase>().ToList(), null);
          setUpFormulaEditView();
          var dto = _moleculeBuilderDTOMapper.MapFrom(moleculeBuilder);
          dto.AddUsedNames(_editTasks.GetForbiddenNamesWithoutSelf(moleculeBuilder, existingObjectsInParent));
@@ -143,7 +141,7 @@ namespace MoBi.Presentation.Presenter
 
       public void SetCalculationMethodForCategory(string category, string newValue, string oldValue)
       {
-         AddCommand(new ChangeCalculationMethodForCategoryCommand(_moleculeBuilder, category, newValue, oldValue, BuildingBlock).Run(_context));
+         AddCommand(new ChangeCalculationMethodForCategoryCommand(_moleculeBuilder, category, newValue, oldValue, BuildingBlock).RunCommand(_context));
       }
 
       public IReadOnlyList<QuantityType> MoleculeTypes { get; } = new[]
@@ -159,13 +157,13 @@ namespace MoBi.Presentation.Presenter
 
       public void SetMoleculeType(QuantityType newType, QuantityType oldType)
       {
-         AddCommand(new ChangeMoleculeTypeCommand(_moleculeBuilder, newType, oldType, BuildingBlock).Run(_context));
+         AddCommand(new ChangeMoleculeTypeCommand(_moleculeBuilder, newType, oldType, BuildingBlock).RunCommand(_context));
          _context.PublishEvent(new MoleculeIconChangedEvent(_moleculeBuilder));
       }
 
       public void SetStationaryProperty(bool isStationaryNewValue, bool oldValue)
       {
-         AddCommand(new SetStationaryPropertyCommand(_moleculeBuilder, isStationaryNewValue, oldValue, BuildingBlock).Run(_context));
+         AddCommand(new SetStationaryPropertyCommand(_moleculeBuilder, isStationaryNewValue, oldValue, BuildingBlock).RunCommand(_context));
       }
 
       public void Handle(ChangedCalculationMethodEvent eventToHandle)

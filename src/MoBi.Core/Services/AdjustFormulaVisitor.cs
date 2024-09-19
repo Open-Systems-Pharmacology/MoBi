@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
-using OSPSuite.Core.Commands.Core;
+using MoBi.Core.Events;
+using MoBi.Core.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -51,11 +52,13 @@ namespace MoBi.Core.Services
          _canceled = false;
          try
          {
+            _context.PublishEvent(new BulkUpdateStartedEvent());
             objectBase.AcceptVisitor(this);
             return (_allCommands, _canceled);
          }
          finally
          {
+            _context.PublishEvent(new BulkUpdateFinishedEvent());
             _buildingBlock = null;
             _formulaCache = null;
             _allCommands = null;
@@ -116,7 +119,7 @@ namespace MoBi.Core.Services
          checkId(formula);
          //Run is required here so that the next time the same formula is found, it will be replaced automatically instead of being 
          //added again to the cache
-         _allCommands.Add(new AddFormulaToFormulaCacheCommand(_buildingBlock, formula).Run(_context));
+         _allCommands.Add(new AddFormulaToFormulaCacheCommand(_buildingBlock, formula).RunCommand(_context));
          return formula;
       }
 
@@ -145,7 +148,7 @@ namespace MoBi.Core.Services
 
       public bool AreEqualBlackBoxFormula(BlackBoxFormula usedFormula, BlackBoxFormula alreadyUsedFormula)
       {
-         return alreadyUsedFormula != null && usedFormula != null;
+         return alreadyUsedFormula != null && usedFormula != null && string.Equals(alreadyUsedFormula.Name, usedFormula.Name);
       }
 
       public bool AreEqualTableFormula(TableFormula formula, TableFormula alreadyUsedFormula)

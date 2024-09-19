@@ -1,6 +1,6 @@
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
-using OSPSuite.Core.Commands.Core;
+using MoBi.Core.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -51,6 +51,8 @@ namespace MoBi.Presentation.Tasks.Interaction
       /// <param name="targetFormula">The formula being evaluated</param>
       /// <returns>True if the formula is equivalent to the start value formula</returns>
       bool HasEquivalentFormula(PathAndValueEntity pathAndValueEntity, IFormula targetFormula);
+
+      IMoBiCommand SetContainerPathCommand(ILookupBuildingBlock<TPathAndValueEntity> buildingBlock, TPathAndValueEntity pathAndValueEntity, ObjectPath targetPath);
    }
 
    public abstract class AbstractPathAndValueEntityPathTask<TBuildingBlock, TPathAndValueEntity> : IPathAndValueEntityPathTask<TBuildingBlock, TPathAndValueEntity> where TBuildingBlock : ILookupBuildingBlock<TPathAndValueEntity> where TPathAndValueEntity : PathAndValueEntity
@@ -66,16 +68,17 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public IMoBiCommand UpdateName(TBuildingBlock buildingBlock, TPathAndValueEntity pathAndValueEntity, string newValue)
       {
-         return UpdateNameCommand(buildingBlock, pathAndValueEntity, newValue).Run(_context);
+         return UpdateNameCommand(buildingBlock, pathAndValueEntity, newValue).RunCommand(_context);
       }
 
       public IMoBiCommand UpdateContainerPath(TBuildingBlock startValues, TPathAndValueEntity pathAndValueEntity, int indexToUpdate, string newValue)
       {
-         return UpdateContainerPathCommand(startValues, pathAndValueEntity, indexToUpdate, newValue).Run(_context);
+         return UpdateContainerPathCommand(startValues, pathAndValueEntity, indexToUpdate, newValue).RunCommand(_context);
       }
 
       public abstract IMoBiCommand UpdateNameCommand(ILookupBuildingBlock<TPathAndValueEntity> startValues, TPathAndValueEntity pathAndValueEntity, string newName);
       public abstract IMoBiCommand UpdateContainerPathCommand(ILookupBuildingBlock<TPathAndValueEntity> buildingBlock, TPathAndValueEntity pathAndValueEntity, int indexToUpdate, string newValue);
+      public abstract IMoBiCommand SetContainerPathCommand(ILookupBuildingBlock<TPathAndValueEntity> buildingBlock, TPathAndValueEntity pathAndValueEntity, ObjectPath targetPath);
 
       public static void ConfigureTargetPath(int indexToUpdate, string newValue, ObjectPath targetPath)
       {

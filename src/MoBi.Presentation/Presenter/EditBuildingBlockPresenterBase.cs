@@ -43,7 +43,7 @@ namespace MoBi.Presentation.Presenter
 
       protected TBuildingBlock BuildingBlock => Subject.DowncastTo<TBuildingBlock>();
 
-      protected virtual (bool canHandle, IContainer containerObject) SpecificCanHandle(IObjectBase selectedObject)
+      protected virtual (bool canHandle, IContainer containerObject) SpecificCanHandle(EntitySelectedEvent entitySelectedEvent)
       {
          return (false, null);
       }
@@ -85,15 +85,16 @@ namespace MoBi.Presentation.Presenter
 
       public void Handle(EntitySelectedEvent eventToHandle)
       {
-         var selectedObject = eventToHandle.ObjectBase;
-         var (canHandle, containerObject) = CanHandle(selectedObject);
-         if (!canHandle) return;
-
-         selectObjectAndContainer(containerObject, selectedObject);
+         var (canHandle, containerObject) = CanHandle(eventToHandle);
+         if (!canHandle)
+            return;
+         
+         selectObjectAndContainer(containerObject, eventToHandle.ObjectBase);
       }
 
-      internal virtual (bool canHandle, IContainer containerObject) CanHandle(IObjectBase selectedObject)
+      internal virtual (bool canHandle, IContainer containerObject) CanHandle(EntitySelectedEvent entitySelectedEvent)
       {
+         var selectedObject = entitySelectedEvent.ObjectBase;
          if (selectedObject is IFormula formula)
             return (BuildingBlock.FormulaCache.Contains(formula), null);
 
@@ -103,7 +104,7 @@ namespace MoBi.Presentation.Presenter
          if (selectedObject is TBuilder builder)
             return (BuildingBlock.Contains(builder), null);
 
-         return SpecificCanHandle(selectedObject);
+         return SpecificCanHandle(entitySelectedEvent);
       }
 
       private bool buildingBlockContains(TBuilder builder)

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
-using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Extensions;
@@ -14,6 +14,8 @@ namespace MoBi.Presentation.Presenter
    public interface ISelectContainerInTreePresenter : ISelectEntityInTreePresenter
    {
       bool ContainerSelected { get; }
+      bool AllowMultiSelect { get; set; }
+      IReadOnlyList<IContainer> SelectedContainers { get; }
    }
 
    public class SelectContainerInTreePresenter : SelectEntityInTreePresenter, ISelectContainerInTreePresenter
@@ -57,6 +59,14 @@ namespace MoBi.Presentation.Presenter
          _view.ExpandRootNodes();
       }
 
+      public IReadOnlyList<IContainer> SelectedContainers => _view.AllSelected.Select(EntityFrom).OfType<IContainer>().ToList();
+
       public bool ContainerSelected => SelectedEntity != null;
+
+      public bool AllowMultiSelect
+      {
+         get => _view.AllowMultiSelect;
+         set => _view.AllowMultiSelect = value;
+      }
    }
 }

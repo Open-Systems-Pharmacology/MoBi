@@ -5,6 +5,7 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
 using MoBi.Core.Events;
+using MoBi.Core.Extensions;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
@@ -28,6 +29,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       TChild CreateNewEntity(TParent parent);
       string AskForPKMLFileToOpen();
+      IReadOnlyList<TChild> LoadFromPKML();
    }
 
    public abstract class InteractionTasksForChildren<TParent, TChild> : InteractionTasksForChildren<TParent, TChild, IEditTaskFor<TChild>>
@@ -75,7 +77,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          var newEntity = CreateNewEntity(parent);
          var addCommand = GetSilentAddCommand(newEntity, parent, buildingBlockToAddTo);
-         macroCommand.AddCommand(addCommand.Run(Context));
+         macroCommand.AddCommand(addCommand.RunCommand(Context));
          var parentContainer = parent as IEnumerable<IObjectBase> ?? Enumerable.Empty<IObjectBase>();
 
          if (!_editTask.EditEntityModal(newEntity, parentContainer, macroCommand, buildingBlockToAddTo))
@@ -151,6 +153,12 @@ namespace MoBi.Presentation.Tasks.Interaction
          return InteractionTask.AskForFileToOpen(AppConstants.Dialog.Load(_editTask.ObjectName), Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART);
       }
 
+      public IReadOnlyList<TChild> LoadFromPKML()
+      {
+         var filename = AskForPKMLFileToOpen();
+         return (string.IsNullOrEmpty(filename) ? Enumerable.Empty<TChild>() : LoadItems(filename)).ToList();
+      }
+
       public IMoBiCommand AddExistingTemplate(TParent parent, IBuildingBlock buildingBlockWithFormulaCache)
       {
          _interactionTaskContext.UpdateTemplateDirectories();
@@ -183,6 +191,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             Description = AppConstants.Commands.AddMany(_editTask.ObjectName)
          };
 
+         Context.PublishEvent(new BulkUpdateStartedEvent());
          foreach (var existingItem in itemsToAdd)
          {
             var command = AddTo(existingItem, parent, buildingBlockWithFormulaCache);
@@ -191,6 +200,8 @@ namespace MoBi.Presentation.Tasks.Interaction
 
             macroCommand.Add(command);
          }
+
+         Context.PublishEvent(new BulkUpdateFinishedEvent());
 
          return macroCommand;
       }
@@ -209,7 +220,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       protected virtual IMoBiCommand RunRemoveCommand(TChild objectToRemove, TParent parent, IBuildingBlock buildingBlock)
       {
-         return GetRemoveCommand(objectToRemove, parent, buildingBlock).Run(Context);
+         return GetRemoveCommand(objectToRemove, parent, buildingBlock).RunCommand(Context);
       }
 
       public abstract IMoBiCommand GetRemoveCommand(TChild objectToRemove, TParent parent, IBuildingBlock buildingBlock);
@@ -228,7 +239,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          };
 
          //add silently and raise event at the end
-         macroCommand.Add(GetSilentAddCommand(childToAdd, parent, buildingBlockWithFormulaCache).Run(Context));
+         macroCommand.Add(GetSilentAddCommand(childToAdd, parent, buildingBlockWithFormulaCache).RunCommand(Context));
 
          if (!adjustFormula(childToAdd, buildingBlockWithFormulaCache, macroCommand))
             return CancelCommand(macroCommand);

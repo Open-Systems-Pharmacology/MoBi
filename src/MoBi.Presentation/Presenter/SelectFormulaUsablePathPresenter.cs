@@ -9,7 +9,7 @@ namespace MoBi.Presentation.Presenter
 {
    public interface ISelectFormulaUsablePathPresenter : IDisposablePresenter
    {
-      void Init(Func<IObjectBase, bool> predicate, IEntity refObject, IEnumerable<IObjectBase> entities, string caption, ISelectReferencePresenter referencePresenter);
+      void Init(Func<IObjectBase, bool> predicate, IEntity refObject, IReadOnlyList<IObjectBase> entities, string caption, ISelectReferencePresenter referencePresenter);
       FormulaUsablePath GetSelection();
    }
 
@@ -28,7 +28,7 @@ namespace MoBi.Presentation.Presenter
          _view.OkEnabled = _referencePresenter.LegalObjectSelected;
       }
 
-      public void Init(Func<IObjectBase, bool> predicate, IEntity refObject, IEnumerable<IObjectBase> entities, string caption, ISelectReferencePresenter referencePresenter)
+      public void Init(Func<IObjectBase, bool> predicate, IEntity refObject, IReadOnlyList<IObjectBase> entities, string caption, ISelectReferencePresenter referencePresenter)
       {
          _view.Text = caption;
          _referencePresenter = referencePresenter;

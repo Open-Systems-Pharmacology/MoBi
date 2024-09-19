@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using libsbmlcs;
 using MoBi.Core;
@@ -7,7 +6,7 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.UnitSystem;
-using OSPSuite.Core.Commands.Core;
+using MoBi.Core.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Descriptors;
@@ -569,8 +568,8 @@ namespace MoBi.Engine.Sbml
          foreach (var passiveTransport in _passiveTransportList)
             _passiveTransportBuildingBlock.Add(passiveTransport);
 
-         _context.AddToHistory(new AddBuildingBlockToModuleCommand<MoBiReactionBuildingBlock>(_reactionBuildingBlock, _sbmlModule).Run(_context));
-         _context.AddToHistory(new AddBuildingBlockToModuleCommand<PassiveTransportBuildingBlock>(_passiveTransportBuildingBlock, _sbmlModule).Run(_context));
+         _context.AddToHistory(new AddBuildingBlockToModuleCommand<MoBiReactionBuildingBlock>(_reactionBuildingBlock, _sbmlModule).RunCommand(_context));
+         _context.AddToHistory(new AddBuildingBlockToModuleCommand<PassiveTransportBuildingBlock>(_passiveTransportBuildingBlock, _sbmlModule).RunCommand(_context));
       }
    }
 }

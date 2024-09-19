@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
-using OSPSuite.Core.Commands.Core;
+using MoBi.Core.Extensions;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.UI.Diagram.Elements;
@@ -47,7 +47,7 @@ namespace MoBi.UI.UICommands
                break;
          }
          if (command == null) return;
-         _context.AddToHistory(command.Run(_context));
+         _context.AddToHistory(command.RunCommand(_context));
       }
    }
 
@@ -89,7 +89,7 @@ namespace MoBi.UI.UICommands
          }
 
          if (command == null) return;
-         _context.AddToHistory(command.Run(_context));
+         _context.AddToHistory(command.RunCommand(_context));
       }
    }
 }

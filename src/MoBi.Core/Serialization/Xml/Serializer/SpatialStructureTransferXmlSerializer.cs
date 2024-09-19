@@ -9,6 +9,7 @@ namespace MoBi.Core.Serialization.Xml.Serializer
       {
          Map(x => x.SpatialStructure);
          Map(x => x.ParameterValues);
+         Map(x => x.InitialConditions);
       }
    }
 }

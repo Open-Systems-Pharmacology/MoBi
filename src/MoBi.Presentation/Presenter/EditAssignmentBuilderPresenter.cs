@@ -1,13 +1,14 @@
 using System.Collections.Generic;
+using System.Linq;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Extensions;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Views;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -36,7 +37,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IEventAssignmentBuilderToEventAssignmentDTOMapper _eventAssignmentToDTOAssignmentMapper;
       private readonly IEditTaskFor<EventAssignmentBuilder> _editTasksForAssignment;
       private readonly IFormulaToFormulaBuilderDTOMapper _formulaToDTOFormulaMapper;
-      private readonly IEditFormulaPresenter _editFormulaPresenter;
+      private readonly IEditFormulaInContainerPresenter _editFormulaPresenter;
       private readonly IMoBiContext _context;
       private readonly ISelectReferenceAtEventAssignmentPresenter _selectReferencePresenter;
       private readonly IContextSpecificReferencesRetriever _contextSpecificReferencesRetriever;
@@ -49,7 +50,7 @@ namespace MoBi.Presentation.Presenter
          IEventAssignmentBuilderToEventAssignmentDTOMapper eventAssignmentToDTOAssignmentMapper,
          IEditTaskFor<EventAssignmentBuilder> editTasksForAssignment,
          IFormulaToFormulaBuilderDTOMapper formulaToDTOFormulaMapper,
-         IEditFormulaPresenter editFormulaPresenter,
+         IEditFormulaInContainerPresenter editFormulaPresenter,
          IMoBiContext context,
          ISelectReferenceAtEventAssignmentPresenter selectReferencePresenter,
          IContextSpecificReferencesRetriever contextSpecificReferencesRetriever,
@@ -71,7 +72,7 @@ namespace MoBi.Presentation.Presenter
       public override void Edit(EventAssignmentBuilder eventAssignmentBuilder, IReadOnlyList<IObjectBase> existingObjectsInParent)
       {
          _eventAssignmentBuilder = eventAssignmentBuilder;
-         _selectReferencePresenter.Init(eventAssignmentBuilder, _contextSpecificReferencesRetriever.RetrieveFor(_eventAssignmentBuilder), eventAssignmentBuilder);
+         _selectReferencePresenter.Init(eventAssignmentBuilder, _contextSpecificReferencesRetriever.RetrieveFor(_eventAssignmentBuilder).ToList(), eventAssignmentBuilder);
          _eventAssignmentBuilderDTO = _eventAssignmentToDTOAssignmentMapper.MapFrom(_eventAssignmentBuilder);
          _eventAssignmentBuilderDTO.AddUsedNames(_editTasksForAssignment.GetForbiddenNamesWithoutSelf(eventAssignmentBuilder, existingObjectsInParent));
          bindToView();
@@ -83,29 +84,18 @@ namespace MoBi.Presentation.Presenter
          bindToFormula();
       }
 
-      private void bindToFormula()
-      {
-         _editFormulaPresenter.Init(_eventAssignmentBuilder, BuildingBlock);
-      }
+      private void bindToFormula() => _editFormulaPresenter.Init(_eventAssignmentBuilder, BuildingBlock);
 
       public override object Subject => _eventAssignmentBuilder;
 
-      public IEnumerable<FormulaBuilderDTO> GetFormulas()
-      {
-         return FormulaCache.MapAllUsing(_formulaToDTOFormulaMapper);
-      }
+      public IEnumerable<FormulaBuilderDTO> GetFormulas() => FormulaCache.MapAllUsing(_formulaToDTOFormulaMapper);
 
       public IFormulaCache FormulaCache => BuildingBlock.FormulaCache;
 
-      public void SetPropertyValueFromView<T>(string propertyName, T newValue, T oldValue)
-      {
-         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, _eventAssignmentBuilder, BuildingBlock).Run(_context));
-      }
+      public void SetPropertyValueFromView<T>(string propertyName, T newValue, T oldValue) => 
+         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, _eventAssignmentBuilder, BuildingBlock).RunCommand(_context));
 
-      public void RenameSubject()
-      {
-         _editTasksForAssignment.Rename(_eventAssignmentBuilder, BuildingBlock);
-      }
+      public void RenameSubject() => _editTasksForAssignment.Rename(_eventAssignmentBuilder, BuildingBlock);
 
       public void SelectPath()
       {
@@ -124,24 +114,17 @@ namespace MoBi.Presentation.Presenter
 
       private void setObjectPath(FormulaUsablePath objectPath)
       {
-         AddCommand(new SetEventAssignmentObjectPathCommand(_eventAssignmentBuilder, objectPath, BuildingBlock).Run(_context));
+         AddCommand(new SetEventAssignmentObjectPathCommand(_eventAssignmentBuilder, objectPath, BuildingBlock).RunCommand(_context));
          _eventAssignmentBuilderDTO.ChangedEntityPath = _eventAssignmentBuilder.ObjectPath.ToString();
          bindToFormula();
       }
 
-      private void setObjectPath(string path, IDimension dimension)
-      {
-         var objectPath = new FormulaUsablePath(path.ToPathArray()) {Dimension = dimension};
-         setObjectPath(objectPath);
-      }
+      private void setObjectPath(string path, IDimension dimension) => setObjectPath(new FormulaUsablePath(path.ToPathArray()) { Dimension = dimension });
 
       public void SetDimension(IDimension dimension) => setObjectPath(_eventAssignmentBuilder.ObjectPath ?? string.Empty, dimension);
 
       public void SetEventAssignmentPath(string newPath) => setObjectPath(newPath, _eventAssignmentBuilder.Dimension);
 
-      public IReadOnlyList<IDimension> AllDimensions()
-      {
-         return _context.DimensionFactory.DimensionsSortedByName;
-      }
+      public IReadOnlyList<IDimension> AllDimensions() => _context.DimensionFactory.DimensionsSortedByName;
    }
 }

@@ -1,3 +1,4 @@
+using MoBi.Core;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Presentation.DTO;
@@ -43,11 +44,8 @@ namespace MoBi.Presentation.Presenter
 
       protected void RaiseEntitySelectedEvent(ObjectBaseDTO objectBaseDTO)
       {
-
          var entity = GetSelectedObject(objectBaseDTO);
-
-         if (entity != null)
-            _context.PublishEvent(new EntitySelectedEvent(entity, this));
+         _context.PublishEvent(new EntitySelectedEvent(entity, this));
       }
 
       protected IObjectBase GetSelectedObject(ObjectBaseDTO dto)

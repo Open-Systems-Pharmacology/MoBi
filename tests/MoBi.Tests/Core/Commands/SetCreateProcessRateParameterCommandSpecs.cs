@@ -11,15 +11,20 @@ namespace MoBi.Core.Commands
       protected bool _newValue;
       protected bool _oldValue;
       protected ReactionBuilder _reaactionBuilder;
+      protected IMoBiContext _context;
+      protected IBuildingBlock _buildingBlock;
 
       protected override void Context()
       {
+         _context = A.Fake<IMoBiContext>();
+         _buildingBlock = A.Fake<IBuildingBlock>();
+         _buildingBlock.Module.IsPKSimModule = true;
          _newValue = false;
          _oldValue = true;
          _reaactionBuilder = new ReactionBuilder();
          _reaactionBuilder.CreateProcessRateParameter = _oldValue;
          _reaactionBuilder.ProcessRateParameterPersistable = true;
-         sut = new SetCreateProcessRateParameterCommand(_newValue, _reaactionBuilder, A.Fake<IBuildingBlock>());
+         sut = new SetCreateProcessRateParameterCommand(_newValue, _reaactionBuilder, _buildingBlock);
       }
    }
 
@@ -27,7 +32,7 @@ namespace MoBi.Core.Commands
    {
       protected override void Because()
       {
-         sut.Execute(A.Fake<IMoBiContext>());
+         sut.Execute(_context);
       }
 
       [Observation]
@@ -40,6 +45,12 @@ namespace MoBi.Core.Commands
       public void should_set_the_plot_process_rate_parameter_to_false_if_the_create_process_rate_is_false()
       {
          _reaactionBuilder.ProcessRateParameterPersistable.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void the_module_remains_a_pk_sim_module()
+      {
+         _buildingBlock.Module.IsPKSimModule.ShouldBeTrue();
       }
    }
 }

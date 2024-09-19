@@ -1,27 +1,30 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Services;
 using FakeItEasy;
 using MoBi.Assets;
+using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
+using MoBi.Core.Services;
 using MoBi.Helpers;
 using MoBi.Presentation.Tasks.Interaction;
-using OSPSuite.Infrastructure.Import.Core;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Import;
+using OSPSuite.Core.Services;
+using OSPSuite.Infrastructure.Import.Core;
 using OSPSuite.Infrastructure.Import.Services;
-using MoBi.Core.Domain.Repository;
-using MoBi.Core.Services;
+using OSPSuite.Utility.Extensions;
+using ImporterConfiguration = OSPSuite.Core.Import.ImporterConfiguration;
 
 namespace MoBi.Presentation.Tasks
 {
-   public abstract class concern_for_ObservedDataTask : ContextSpecification<IObservedDataTask>
+   public abstract class concern_for_ObservedDataTask : ContextSpecification<ObservedDataTask>
    {
       protected IDataImporter _dataImporter;
       protected IDimensionFactory _dimensionFactory;
@@ -43,7 +46,7 @@ namespace MoBi.Presentation.Tasks
          _dimensionFactory = A.Fake<IDimensionFactory>();
          _context = A.Fake<IMoBiContext>();
          _dialogCreator = A.Fake<IDialogCreator>();
-         _dataRepository = new DataRepository {new BaseGrid("", DimensionFactoryForSpecs.Factory.Dimension("Time"))};
+         _dataRepository = new DataRepository { new BaseGrid("", DimensionFactoryForSpecs.Factory.Dimension("Time")) };
          _interactionTask = A.Fake<IInteractionTask>();
          _dataRepositoryTask = A.Fake<IDataRepositoryExportTask>();
          _containerTask = A.Fake<IContainerTask>();
@@ -71,8 +74,8 @@ namespace MoBi.Presentation.Tasks
          base.Context();
          _currentResult = new DataRepository("id1");
          _historicResult = new DataRepository("id2");
-         _repositories = new List<DataRepository> {_currentResult, _historicResult};
-         _moBiSimulation = new MoBiSimulation {ResultsDataRepository = _currentResult};
+         _repositories = new List<DataRepository> { _currentResult, _historicResult };
+         _moBiSimulation = new MoBiSimulation { ResultsDataRepository = _currentResult };
          _moBiSimulation.HistoricResults.Add(_historicResult);
 
          _project.AddSimulation(_moBiSimulation);
@@ -165,17 +168,17 @@ namespace MoBi.Presentation.Tasks
    public class When_addding_data_from_Excel : concern_for_ObservedDataTask
    {
       private ObservedDataAddedEvent _event;
-      private OSPSuite.Core.Import.ImporterConfiguration _importerConfiguration;
+      private ImporterConfiguration _importerConfiguration;
 
       protected override void Context()
       {
          base.Context();
 
-         _importerConfiguration = A.Fake<OSPSuite.Core.Import.ImporterConfiguration>();
+         _importerConfiguration = A.Fake<ImporterConfiguration>();
          _importerConfiguration.Id = "Id";
          _importerConfiguration.AddParameter(A.Fake<DataFormatParameter>());
 
-         A.CallTo(() => _dimensionFactory.DimensionsSortedByName).Returns(new []
+         A.CallTo(() => _dimensionFactory.DimensionsSortedByName).Returns(new[]
          {
             DimensionFactoryForSpecs.MassDimension,
             DimensionFactoryForSpecs.TimeDimension,
@@ -327,6 +330,128 @@ namespace MoBi.Presentation.Tasks
 
          _simulation2.HistoricResults.Count.ShouldBeEqualTo(0);
          _simulation2.ResultsDataRepository.ShouldBeNull();
+      }
+   }
+
+   internal class When_reloading_data_from_the_same_configuration_and_matches_exist : concern_for_ObservedDataTask
+   {
+      private ImporterConfiguration _importerConfiguration;
+      private IReadOnlyList<DataRepository> _existingData;
+      private DataRepository _matchingRepository, _nonMatchingRepository;
+
+      protected override void Context()
+      {
+         base.Context();
+         _dataRepository.Add(new DataColumn("id", DimensionFactoryForSpecs.MassDimension, _dataRepository.BaseGrid));
+         _existingData = new List<DataRepository> { _dataRepository };
+         _importerConfiguration = A.Fake<ImporterConfiguration>();
+         _importerConfiguration.Id = "Id";
+         _importerConfiguration.AddParameter(A.Fake<DataFormatParameter>());
+         _nonMatchingRepository = new DataRepository("non_matching");
+
+         _matchingRepository = new DataRepository("new");
+
+         _dataRepository.ExtendedProperties.Add("old_key", new ExtendedProperty<string> { Value = "old_value" });
+         _matchingRepository.ExtendedProperties.Add("old_key", new ExtendedProperty<string> { Value = "old_value" });
+         configureColumns(_matchingRepository, _dataRepository);
+
+         A.CallTo(() => _dataImporter.ImportFromConfiguration(A<ImporterConfiguration>._, A<IReadOnlyList<MetaDataCategory>>.Ignored, A<IReadOnlyList<ColumnInfo>>.Ignored, A<DataImporterSettings>.Ignored, A<string>.Ignored))
+            .Returns(new List<DataRepository> { _matchingRepository, _nonMatchingRepository });
+
+         A.CallTo(() => _dataImporter.CalculateReloadDataSetsFromConfiguration(A<IReadOnlyList<DataRepository>>._, A<IReadOnlyList<DataRepository>>._))
+            .Returns(new ReloadDataSets(Enumerable.Empty<DataRepository>(), new[] { _matchingRepository, _nonMatchingRepository }, Enumerable.Empty<DataRepository>()));
+      }
+
+      private void configureColumns(DataRepository reImportedData, DataRepository dataRepository)
+      {
+         dataRepository.BaseGrid.Values = new[] { 0.0f };
+         dataRepository.BaseGrid.Name = "Time";
+         dataRepository.AllButBaseGrid().Each(x => x.Values = new[] { 1.0f });
+         dataRepository.AllButBaseGrid().ToList().Each((x, i) => x.Name = $"name{i}");
+         var newBaseGrid = new BaseGrid(dataRepository.BaseGrid.Id, dataRepository.BaseGrid.Name, dataRepository.BaseGrid.Dimension);
+         _matchingRepository.Add(newBaseGrid);
+         dataRepository.AllButBaseGrid().Each(column => reImportedData.Add(new DataColumn(column.Id, column.Dimension, newBaseGrid)));
+
+         _matchingRepository.BaseGrid.Values = new[] { 10.0f };
+         _matchingRepository.AllButBaseGrid().Each(x => x.Values = new[] { 11.0f });
+         _matchingRepository.BaseGrid.Name = "Time";
+         _matchingRepository.AllButBaseGrid().ToList().Each((x,i) => x.Name = $"name{i}");
+      }
+
+      protected override void Because()
+      {
+         sut.AddAndReplaceObservedDataFromConfigurationToProject(_importerConfiguration, _existingData);
+      }
+
+      [Observation]
+      public void the_project_must_be_marked_as_changed()
+      {
+         A.CallTo(() => _context.ProjectChanged()).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_loaded_data_should_be_replaced_with_new_data_on_matching_repository()
+      {
+         _dataRepository.BaseGrid.Values.First().ShouldBeEqualTo(10.0f);
+         _dataRepository.AllButBaseGrid().All(x => x.Values.First() == 11.0f).ShouldBeTrue();
+      }
+   }
+
+   internal class When_reloading_data_from_the_same_configuration_and_no_matching_import_is_found : concern_for_ObservedDataTask
+   {
+      private ImporterConfiguration _importerConfiguration;
+      private IReadOnlyList<DataRepository> _existingData;
+      private DataRepository _reImportedData;
+
+      protected override void Context()
+      {
+         base.Context();
+         _dataRepository.Add(new DataColumn("id", DimensionFactoryForSpecs.MassDimension, _dataRepository.BaseGrid));
+         _existingData = new List<DataRepository> { _dataRepository };
+         _importerConfiguration = A.Fake<ImporterConfiguration>();
+         _importerConfiguration.Id = "Id";
+         _importerConfiguration.AddParameter(A.Fake<DataFormatParameter>());
+
+         _reImportedData = new DataRepository("new");
+
+         _dataRepository.ExtendedProperties.Add("old_key", new ExtendedProperty<string> { Value = "old_value" });
+         _reImportedData.ExtendedProperties.Add("new_key", new ExtendedProperty<string> { Value = "new_value" });
+         configureColumns(_reImportedData, _dataRepository);
+
+         A.CallTo(() => _dataImporter.ImportFromConfiguration(A<ImporterConfiguration>._, A<IReadOnlyList<MetaDataCategory>>.Ignored, A<IReadOnlyList<ColumnInfo>>.Ignored, A<DataImporterSettings>.Ignored, A<string>.Ignored))
+            .Returns(new List<DataRepository> { _reImportedData });
+
+         A.CallTo(() => _dataImporter.CalculateReloadDataSetsFromConfiguration(A<IReadOnlyList<DataRepository>>._, A<IReadOnlyList<DataRepository>>._)).Returns(new ReloadDataSets(Enumerable.Empty<DataRepository>(), new[] { _reImportedData }, Enumerable.Empty<DataRepository>()));
+      }
+
+      private void configureColumns(DataRepository reImportedData, DataRepository dataRepository)
+      {
+         dataRepository.BaseGrid.Values = new[] { 0.0f };
+         dataRepository.AllButBaseGrid().Each(x => x.Values = new[] { 1.0f });
+         var newBaseGrid = new BaseGrid(dataRepository.BaseGrid.Id, dataRepository.BaseGrid.Name, dataRepository.BaseGrid.Dimension);
+         _reImportedData.Add(newBaseGrid);
+         dataRepository.AllButBaseGrid().Each(column => reImportedData.Add(new DataColumn(column.Id, column.Dimension, newBaseGrid)));
+
+         _reImportedData.BaseGrid.Values = new[] { 10.0f };
+         _reImportedData.AllButBaseGrid().Each(x => x.Values = new[] { 11.0f });
+      }
+
+      protected override void Because()
+      {
+         sut.AddAndReplaceObservedDataFromConfigurationToProject(_importerConfiguration, _existingData);
+      }
+
+      [Observation]
+      public void the_project_must_not_be_marked_as_changed()
+      {
+         A.CallTo(() => _context.ProjectChanged()).MustNotHaveHappened();
+      }
+
+      [Observation]
+      public void the_loaded_data_should_not_be_replaced_with_new_data()
+      {
+         _dataRepository.BaseGrid.Values.First().ShouldBeEqualTo(0.0f);
+         _dataRepository.AllButBaseGrid().All(x => x.Values.First() == 1.0f).ShouldBeTrue();
       }
    }
 }

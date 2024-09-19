@@ -5,11 +5,11 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Events;
+using MoBi.Core.Extensions;
 using MoBi.Core.Services;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Assets;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
@@ -41,8 +41,9 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       /// <summary>
       /// Create a clone of the <paramref name="simulationToClone"/> and add it to the current project
+      /// Returns the cloned simulation if created, otherwise null
       /// </summary>
-      void CloneSimulation(IMoBiSimulation simulationToClone);
+      IMoBiSimulation CloneSimulation(IMoBiSimulation simulationToClone);
    }
 
    public class InteractionTasksForSimulation : InteractionTasksForChildren<MoBiProject, IMoBiSimulation>, IInteractionTasksForSimulation
@@ -92,7 +93,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          simulations.Each(simulation =>
          {
-            macroCommand.AddCommand(GetRemoveCommand(simulation, currentProject, null).Run(Context));
+            macroCommand.AddCommand(GetRemoveCommand(simulation, currentProject, null).RunCommand(Context));
             Context.PublishEvent(new RemovedEvent(simulation, currentProject));
          });
 
@@ -119,7 +120,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (simulation == null)
             return new MoBiEmptyCommand();
 
-         var command = addSimulationToProjectCommand(simulation).Run(_interactionTaskContext.Context);
+         var command = addSimulationToProjectCommand(simulation).RunCommand(_interactionTaskContext.Context);
          _editTask.Edit(simulation);
          return command;
       }
@@ -152,7 +153,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public override IMoBiCommand AddNew(MoBiProject moBiProject, IBuildingBlock buildingBlockToAddTo)
       {
-         return addSimulationToProjectCommand(createSimulation()).Run(_interactionTaskContext.Context);
+         return addSimulationToProjectCommand(createSimulation()).RunCommand(_interactionTaskContext.Context);
       }
 
       public override IMoBiCommand GetRemoveCommand(IMoBiSimulation transportBuilderToRemove, MoBiProject project, IBuildingBlock buildingBlock)
@@ -181,15 +182,17 @@ namespace MoBi.Presentation.Tasks.Interaction
          return simulation.Configuration.ModuleConfigurations.Where(moduleConfiguration => !versionMatch(TemplateModuleFor(moduleConfiguration.Module), moduleConfiguration)).Select(moduleConfiguration => moduleConfiguration.Module).ToList();
       }
 
-      public void CloneSimulation(IMoBiSimulation simulationToClone)
+      public IMoBiSimulation CloneSimulation(IMoBiSimulation simulationToClone)
       {
          var newName = InteractionTask.PromptForNewName(simulationToClone, _editTask.GetForbiddenNames(simulationToClone, _interactionTaskContext.Context.CurrentProject.Simulations));
          if (newName.IsNullOrEmpty())
-            return;
+            return null;
 
          var newSimulation = _cloneManager.CloneSimulation(simulationToClone).WithName(newName);
          
-         _interactionTaskContext.Context.AddToHistory(new AddSimulationCommand(newSimulation).Run(_interactionTaskContext.Context));
+         _interactionTaskContext.Context.AddToHistory(new AddSimulationCommand(newSimulation).RunCommand(_interactionTaskContext.Context));
+
+         return newSimulation;
       }
 
       private bool versionMatch(Module templateModule, ModuleConfiguration moduleConfiguration)
