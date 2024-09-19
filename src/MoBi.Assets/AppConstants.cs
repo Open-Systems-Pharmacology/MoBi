@@ -1993,11 +1993,6 @@ namespace MoBi.Assets
             return sb.ToString();
          }
 
-         public static string TheModuleWillBeConvertedFromPKSimToExtensionModule(string moduleName)
-         {
-            return $"The PK-Sim module '{moduleName}' will be converted to an extension module";
-         }
-
          public static string BuildingBlockAlreadyContains(IReadOnlyList<string> paths)
          {
             var pathsNotAdded = paths.Count;

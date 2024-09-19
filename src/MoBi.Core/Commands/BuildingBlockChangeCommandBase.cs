@@ -8,9 +8,9 @@ namespace MoBi.Core.Commands
 {
    public abstract class BuildingBlockChangeCommandBase : MoBiReversibleCommand
    {
-
+      public abstract bool WillConvertPKSimModuleToExtension { get; }
    }
-
+   
    public abstract class BuildingBlockChangeCommandBase<T> : BuildingBlockChangeCommandBase where T :  class, IBuildingBlock
    {
       public bool ShouldIncrementVersion { get; set; }
@@ -46,6 +46,22 @@ namespace MoBi.Core.Commands
       {
          if (_buildingBlockId != null)
             _buildingBlock = context.Get<T>(_buildingBlockId);
+      }
+
+      public override bool WillConvertPKSimModuleToExtension
+      {
+         get
+         {
+            // not a module building block
+            if (_buildingBlock.Module == null)
+               return false;
+
+            // already an extension module
+            if (!_buildingBlock.Module.IsPKSimModule)
+               return false;
+
+            return ConversionOption == PKSimModuleConversion.SetAsExtensionModule;
+         }
       }
    }
 }

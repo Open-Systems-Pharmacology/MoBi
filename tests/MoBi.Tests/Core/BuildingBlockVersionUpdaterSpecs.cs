@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using FakeItEasy;
-using MoBi.Assets;
 using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
@@ -86,12 +85,6 @@ namespace MoBi.Core
       {
          A.CallTo(() => _eventPublisher.PublishEvent(A<SimulationStatusChangedEvent>._)).MustHaveHappened();
          _affectedSimulations.ShouldOnlyContain(_affectedSimulation);
-      }
-
-      [Observation]
-      public void the_dialog_creator_warns_user_that_the_pk_sim_module_will_be_converted()
-      {
-         A.CallTo(() => _dialogCreator.MessageBoxInfo(AppConstants.Captions.TheModuleWillBeConvertedFromPKSimToExtensionModule(_module.Name))).MustHaveHappened();
       }
 
       [Observation]

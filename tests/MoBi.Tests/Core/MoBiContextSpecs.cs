@@ -11,6 +11,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Serialization.Journal;
 using OSPSuite.Infrastructure.Serialization.ORM.History;
 using OSPSuite.Utility.Events;
@@ -37,6 +38,7 @@ namespace MoBi.Core
       private IJournalSession _journalSession;
       private IFileLocker _fileLocker;
       private ILazyLoadTask _lazyLoadTask;
+      private IDialogCreator _dialogCreator;
 
       protected override void Context()
       {
@@ -56,13 +58,14 @@ namespace MoBi.Core
          _journalSession = A.Fake<IJournalSession>();
          _fileLocker = A.Fake<IFileLocker>();
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
+         _dialogCreator = A.Fake<IDialogCreator>();
 
          sut = new MoBiContext(_objectBaseFactory, _dimensionFactory, _eventPublisher,
             _serializationService, _objectPathFactory, _objectBaseRepository,
             _moBiHistoryManagerFactory, _registerTask, _unregisterTask,
             _clipboardManager, _container,
             _objectTypeResolver, _cloneManager,
-            _journalSession, _fileLocker, _lazyLoadTask);
+            _journalSession, _fileLocker, _lazyLoadTask, _dialogCreator);
 
          A.CallTo(() => _moBiHistoryManagerFactory.Create()).Returns(A.Fake<MoBiHistoryManager>());
       }

@@ -36,11 +36,8 @@ namespace MoBi.Core.Services
          if (buildingBlock == null)
             return;
 
-         if (shouldConvertToExtensionModule(buildingBlock, conversionOption))
-         {
-            showModuleConversionWarning(buildingBlock);
+         if (shouldConvertToExtensionModule(buildingBlock, conversionOption)) 
             buildingBlock.Module.IsPKSimModule = false;
-         }
 
          if (shouldConvertToPKSimModule(buildingBlock, conversionOption))
             buildingBlock.Module.IsPKSimModule = true;
@@ -51,18 +48,13 @@ namespace MoBi.Core.Services
          publishModuleStatusChangedEvents(buildingBlock);
       }
 
-      private void showModuleConversionWarning(IBuildingBlock buildingBlock)
-      {
-         _dialogCreator.MessageBoxInfo(AppConstants.Captions.TheModuleWillBeConvertedFromPKSimToExtensionModule(buildingBlock.Module.Name));
-      }
-
       private bool shouldConvertToExtensionModule(IBuildingBlock buildingBlock, PKSimModuleConversion conversionOption) =>
          (buildingBlock.IsPkSimModule()) && conversionOption == PKSimModuleConversion.SetAsExtensionModule;
 
       private bool shouldConvertToPKSimModule(IBuildingBlock buildingBlock, PKSimModuleConversion conversionOption) =>
          buildingBlock.Module != null && conversionOption == PKSimModuleConversion.SetAsPKSimModule;
 
-      protected void publishModuleStatusChangedEvents(IBuildingBlock buildingBlock)
+      private void publishModuleStatusChangedEvents(IBuildingBlock buildingBlock)
       {
          // Building blocks that are not contained by modules do not need to refresh when modified
          if (!_projectRetriever.Current.Modules.SelectMany(x => x.BuildingBlocks).Contains(buildingBlock))
