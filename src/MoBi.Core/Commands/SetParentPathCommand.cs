@@ -34,7 +34,15 @@ namespace MoBi.Core.Commands
          base.ExecuteWith(context);
          _container.ParentPath = _newParentPath;
          updateObjectPathsInSpatialStructure(context);
+         updateDiagram();
+
          Description = AppConstants.Commands.UpdateParentPath(_container.EntityPath(), (_newParentPath ?? new ObjectPath()).ToPathString());
+      }
+
+      private void updateDiagram()
+      {
+         if (_buildingBlock is MoBiSpatialStructure spatialStructure) 
+            spatialStructure.DiagramManager.RefreshObjectBase(_container);
       }
 
       private void updateObjectPathsInSpatialStructure(IMoBiContext context)
