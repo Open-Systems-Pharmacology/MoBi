@@ -28,14 +28,14 @@ namespace MoBi.UI.Diagram.DiagramManagers
             neighborhoodsContainerNode.Visible = false; // to avoid visibility in PrintPreview - seems not to be sufficient
             unusedNodeIds.Remove(spatialStructure.NeighborhoodsContainer.Id);
 
-
             foreach (var topContainer in spatialStructure.TopContainers)
             {
                if (containerShouldBeDisplayed(topContainer))
                {
                   AddObjectBase(diagramModel, topContainer, recursive: true, coupleAll: coupleAll);
                }
-
+               if(topContainer.ParentPath != null)
+                  unusedNodeIds.Remove(topContainer.ParentPath);
                topContainer.GetAllContainersAndSelf<IContainer>().Each(x => unusedNodeIds.Remove(x.Id));
             }
 
