@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Linq;
+using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Domain.UnitSystem;
@@ -53,7 +53,7 @@ namespace MoBi.Core.Domain.Model
 
       void UnregisterSimulation(IMoBiSimulation simulation);
 
-      bool ShouldCancel(ICommand command);
+      void PromptForCancellation(ICommand command);
    }
 
    public class MoBiContext : Workspace<MoBiProject>, IMoBiContext
@@ -261,18 +261,19 @@ namespace MoBi.Core.Domain.Model
          unregisterCachedFormulaInModel(simulation.Model);
       }
 
-      public bool ShouldCancel(ICommand command)
+      public void PromptForCancellation(ICommand command)
       {
          if(command is IMacroCommand macroCommand)
-            return macroCommand.All().Any(ShouldCancel);
+            macroCommand.All().Each(PromptForCancellation);
 
          if (!(command is BuildingBlockChangeCommandBase changeCommand))
-            return false;
+            return;
 
          if (!changeCommand.WillConvertPKSimModuleToExtension)
-            return false;
+            return;
 
-         return _dialogCreator.MessageBoxYesNo("This will convert a module to extension. Continue?", defaultButton: ViewResult.Yes) == ViewResult.No;
+         if(_dialogCreator.MessageBoxYesNo(AppConstants.Captions.ThisWillConvertPkSimModuleToExtensionModule(changeCommand.Module?.Name), defaultButton: ViewResult.Yes) == ViewResult.No)
+            throw new CancelCommandRunException();
       }
 
       private void unregisterCachedFormulaInModel(IModel model)

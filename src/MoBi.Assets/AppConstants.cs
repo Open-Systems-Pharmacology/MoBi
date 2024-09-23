@@ -2012,6 +2012,11 @@ namespace MoBi.Assets
 
             return sb.ToString();
          }
+
+         public static string ThisWillConvertPkSimModuleToExtensionModule(string moduleName)
+         {
+            return $"This will convert module '{moduleName}' to an extension module {Environment.NewLine} Continue?";
+         }
       }
 
       public static class Validation

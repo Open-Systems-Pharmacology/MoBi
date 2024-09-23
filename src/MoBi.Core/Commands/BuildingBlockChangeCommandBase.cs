@@ -2,6 +2,7 @@ using MoBi.Core.Domain;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
@@ -9,6 +10,7 @@ namespace MoBi.Core.Commands
    public abstract class BuildingBlockChangeCommandBase : MoBiReversibleCommand
    {
       public abstract bool WillConvertPKSimModuleToExtension { get; }
+      public abstract Module Module { get; }
    }
    
    public abstract class BuildingBlockChangeCommandBase<T> : BuildingBlockChangeCommandBase where T :  class, IBuildingBlock
@@ -47,6 +49,8 @@ namespace MoBi.Core.Commands
          if (_buildingBlockId != null)
             _buildingBlock = context.Get<T>(_buildingBlockId);
       }
+
+      public override Module Module => _buildingBlock?.Module;
 
       public override bool WillConvertPKSimModuleToExtension
       {
