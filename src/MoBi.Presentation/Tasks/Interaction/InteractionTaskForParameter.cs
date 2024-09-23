@@ -13,6 +13,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
+using MoBi.Presentation.Settings;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
@@ -83,9 +84,10 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public override IParameter CreateNewEntity(IContainer parent)
       {
+         var dimension = _dimensionFactory.TryGetDimension(_interactionTaskContext.UserSettings.ParameterDefaultDimension) ?? _dimensionFactory.NoDimension;
          var parameter = base.CreateNewEntity(parent)
             .WithParentContainer(parent)
-            .WithDimension(_dimensionFactory.TryGetDimension(_interactionTaskContext.UserSettings.ParameterDefaultDimension))
+            .WithDimension(dimension)
             .WithMode(parent.DefaultParameterBuildMode())
             .WithGroup(Constants.Groups.MOBI);
 

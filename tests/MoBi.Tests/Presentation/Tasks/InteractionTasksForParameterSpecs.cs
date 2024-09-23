@@ -34,6 +34,47 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
+   public class When_adding_a_new_parameter_and_default_dimension_is_null : concern_for_InteractionTasksForParameter
+   {
+      private IContainer _parentContainer;
+      private IBuildingBlock _buildingBlock;
+      private Parameter _parameter;
+      private IDimension _noDimension;
+      private ConstantFormula _defaultConstantFormula;
+
+      protected override void Context()
+      {
+         base.Context();
+         _noDimension = A.Fake<IDimension>();
+         _buildingBlock = A.Fake<IBuildingBlock>();
+         _parentContainer = new ReactionBuilder();
+         var modalPresenter = A.Fake<IModalPresenter>();
+         var editParameterPresenter = A.Fake<IEditParameterPresenter>();
+         _parameter = new Parameter();
+         A.CallTo(() => _context.Context.Create<IParameter>()).Returns(_parameter);
+         A.CallTo(() => _context.UserSettings.ParameterDefaultDimension).Returns("UNKNOWN");
+         A.CallTo(_context.ApplicationController).WithReturnType<IModalPresenter>().Returns(modalPresenter);
+         A.CallTo(() => modalPresenter.Show(null)).Returns(true);
+         A.CallTo(() => modalPresenter.SubPresenter).Returns(editParameterPresenter);
+         A.CallTo(() => _context.ApplicationController.Start<ISelectReferenceAtParameterPresenter>()).Returns(A.Fake<ISelectReferenceAtParameterPresenter>());
+         A.CallTo(() => _dimensionFactory.Dimension(A<string>._)).Returns(null);
+         A.CallTo(() => _dimensionFactory.NoDimension).Returns(_noDimension);
+         _defaultConstantFormula = new ConstantFormula();
+         A.CallTo(_formulaTask).WithReturnType<ConstantFormula>().Returns(_defaultConstantFormula);
+      }
+
+      protected override void Because()
+      {
+         sut.AddNew(_parentContainer, _buildingBlock);
+      }
+
+      [Observation]
+      public void should_get_the_no_dimension_from_dimension_factory()
+      {
+         _parameter.Dimension.ShouldBeEqualTo(_noDimension);
+      }
+   }
+
    public class When_adding_a_new_parameter_and_default_dimension_is_unknown : concern_for_InteractionTasksForParameter
    {
       private IContainer _parentContainer;

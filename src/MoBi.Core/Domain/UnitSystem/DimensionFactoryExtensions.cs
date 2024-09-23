@@ -13,6 +13,7 @@ namespace MoBi.Core.Domain.UnitSystem
          }
          catch (KeyNotFoundException)
          {
+            // We could make the fix once here rather than per-usage
             return null;
          }
       }
