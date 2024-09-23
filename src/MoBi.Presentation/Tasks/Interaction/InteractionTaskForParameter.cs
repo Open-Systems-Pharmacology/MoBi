@@ -70,9 +70,9 @@ namespace MoBi.Presentation.Tasks.Interaction
       private readonly IQuantityTask _quantityTask;
 
       public InteractionTasksForParameter(
-         IInteractionTaskContext interactionTaskContext, 
-         IEditTaskFor<IParameter> editTasks, 
-         IMoBiDimensionFactory dimensionFactory, 
+         IInteractionTaskContext interactionTaskContext,
+         IEditTaskFor<IParameter> editTasks,
+         IMoBiDimensionFactory dimensionFactory,
          IMoBiFormulaTask formulaTask,
          IQuantityTask quantityTask) :
          base(interactionTaskContext, editTasks)
@@ -84,10 +84,9 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public override IParameter CreateNewEntity(IContainer parent)
       {
-         var dimension = _dimensionFactory.TryGetDimension(_interactionTaskContext.UserSettings.ParameterDefaultDimension) ?? _dimensionFactory.NoDimension;
          var parameter = base.CreateNewEntity(parent)
             .WithParentContainer(parent)
-            .WithDimension(dimension)
+            .WithDimension(_dimensionFactory.TryGetDimension(_interactionTaskContext.UserSettings.ParameterDefaultDimension, fallBackDimension: _dimensionFactory.NoDimension))
             .WithMode(parent.DefaultParameterBuildMode())
             .WithGroup(Constants.Groups.MOBI);
 
@@ -118,7 +117,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public IMoBiCommand ResetRHSFormulaFor(IParameter parameter, IBuildingBlock buildingBlock)
       {
-         if (parameter.RHSFormula==null)
+         if (parameter.RHSFormula == null)
             return new MoBiEmptyCommand();
 
          return new EditParameterRHSFormulaInBuildingBlockCommand(null, parameter.RHSFormula, parameter, buildingBlock).RunCommand(Context);

@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System.Collections.Generic;
+using FakeItEasy;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Domain.UnitSystem;
 using MoBi.Core.Exceptions;
@@ -29,12 +30,12 @@ namespace MoBi.Presentation.Tasks
          _editTasks = A.Fake<IEditTaskFor<IParameter>>();
          _dimensionFactory = A.Fake<IMoBiDimensionFactory>();
          _formulaTask = A.Fake<IMoBiFormulaTask>();
-         _quantityTask= A.Fake<IQuantityTask>();
+         _quantityTask = A.Fake<IQuantityTask>();
          sut = new InteractionTasksForParameter(_context, _editTasks, _dimensionFactory, _formulaTask, _quantityTask);
       }
    }
 
-   public class When_adding_a_new_parameter_and_default_dimension_is_null : concern_for_InteractionTasksForParameter
+   public class When_adding_a_new_parameter_and_default_dimension_is_not_found : concern_for_InteractionTasksForParameter
    {
       private IContainer _parentContainer;
       private IBuildingBlock _buildingBlock;
@@ -57,7 +58,7 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => modalPresenter.Show(null)).Returns(true);
          A.CallTo(() => modalPresenter.SubPresenter).Returns(editParameterPresenter);
          A.CallTo(() => _context.ApplicationController.Start<ISelectReferenceAtParameterPresenter>()).Returns(A.Fake<ISelectReferenceAtParameterPresenter>());
-         A.CallTo(() => _dimensionFactory.Dimension(A<string>._)).Returns(null);
+         A.CallTo(() => _dimensionFactory.Dimension("UNKNOWN")).Throws<KeyNotFoundException>();
          A.CallTo(() => _dimensionFactory.NoDimension).Returns(_noDimension);
          _defaultConstantFormula = new ConstantFormula();
          A.CallTo(_formulaTask).WithReturnType<ConstantFormula>().Returns(_defaultConstantFormula);
@@ -188,5 +189,5 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-  
+
 }

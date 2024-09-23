@@ -36,10 +36,9 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public override IDistributedParameter CreateNewEntity(IContainer container)
       {
-         var dimension = _dimensionFactory.TryGetDimension(_interactionTaskContext.UserSettings.ParameterDefaultDimension) ?? _dimensionFactory.NoDimension;
          var parameter = base.CreateNewEntity(container)
             .WithParentContainer(container)
-            .WithDimension(dimension);
+            .WithDimension(_dimensionFactory.TryGetDimension(_interactionTaskContext.UserSettings.ParameterDefaultDimension, fallBackDimension: _dimensionFactory.NoDimension));
 
          parameter.DisplayUnit = _interactionTaskContext.DisplayUnitFor(parameter);
 
