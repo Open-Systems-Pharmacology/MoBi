@@ -46,10 +46,9 @@ namespace MoBi.Presentation.Presenter
             return dto;
          }
 
-         var moleculeElement = shouldCreateAbsolutePaths ? dtoDummyParameter.ModelParentName : ObjectPathKeywords.MOLECULE;
          return new ReferenceDTO
          {
-            Path = CreateFormulaUsablePathFrom(new[] { firstPathElement, moleculeElement, dtoDummyParameter.Name }, dtoDummyParameter.Parameter)
+            Path = CreateFormulaUsablePathFrom(new[] { firstPathElement, dtoDummyParameter.ModelParentName, dtoDummyParameter.Name }, dtoDummyParameter.Parameter)
          };
       }
 
@@ -66,11 +65,9 @@ namespace MoBi.Presentation.Presenter
             return dto;
          }
 
-         string moleculeElement = shouldCreateAbsolutePaths ? dtoObjectBase.Name : ObjectPathKeywords.MOLECULE;
-
          return new ReferenceDTO
          {
-            Path = CreateFormulaUsablePathFrom(new[] { firstPathElemnt, moleculeElement }, AppConstants.AmountAlias, Constants.Dimension.MOLAR_AMOUNT)
+            Path = CreateFormulaUsablePathFrom(new[] { firstPathElemnt, dtoObjectBase.Name }, AppConstants.AmountAlias, Constants.Dimension.MOLAR_AMOUNT)
          };
       }
 
