@@ -13,6 +13,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
+using MoBi.Presentation.Settings;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
@@ -69,9 +70,9 @@ namespace MoBi.Presentation.Tasks.Interaction
       private readonly IQuantityTask _quantityTask;
 
       public InteractionTasksForParameter(
-         IInteractionTaskContext interactionTaskContext, 
-         IEditTaskFor<IParameter> editTasks, 
-         IMoBiDimensionFactory dimensionFactory, 
+         IInteractionTaskContext interactionTaskContext,
+         IEditTaskFor<IParameter> editTasks,
+         IMoBiDimensionFactory dimensionFactory,
          IMoBiFormulaTask formulaTask,
          IQuantityTask quantityTask) :
          base(interactionTaskContext, editTasks)
@@ -85,7 +86,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
          var parameter = base.CreateNewEntity(parent)
             .WithParentContainer(parent)
-            .WithDimension(_dimensionFactory.TryGetDimension(_interactionTaskContext.UserSettings.ParameterDefaultDimension))
+            .WithDimension(_dimensionFactory.TryGetDimension(_interactionTaskContext.UserSettings.ParameterDefaultDimension, fallBackDimension: _dimensionFactory.NoDimension))
             .WithMode(parent.DefaultParameterBuildMode())
             .WithGroup(Constants.Groups.MOBI);
 
@@ -116,7 +117,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public IMoBiCommand ResetRHSFormulaFor(IParameter parameter, IBuildingBlock buildingBlock)
       {
-         if (parameter.RHSFormula==null)
+         if (parameter.RHSFormula == null)
             return new MoBiEmptyCommand();
 
          return new EditParameterRHSFormulaInBuildingBlockCommand(null, parameter.RHSFormula, parameter, buildingBlock).RunCommand(Context);

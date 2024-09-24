@@ -146,7 +146,7 @@ namespace MoBi.Presentation.Presenter
 
       public void CreateNewPath()
       {
-         var path = new FormulaUsablePath().WithDimension(_dimensionFactory.TryGetDimension(_userSettings.ParameterDefaultDimension));
+         var path = new FormulaUsablePath().WithDimension(_dimensionFactory.TryGetDimension(_userSettings.ParameterDefaultDimension, fallBackDimension: _dimensionFactory.NoDimension));
          AddPathToFormula(path);
       }
 
