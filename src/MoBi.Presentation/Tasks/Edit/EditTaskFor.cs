@@ -98,7 +98,7 @@ namespace MoBi.Presentation.Tasks.Edit
             Description = AppConstants.Commands.RenameDescription(objectBase, newName)
          };
 
-         if (CheckUsagesFor(newName, objectBase.Name, objectBase, commandCollector, buildingBlock?.Module))
+         if ((objectBase is IBuildingBlock) || CheckUsagesFor(newName, objectBase.Name, objectBase, commandCollector, buildingBlock?.Module))
             commandCollector.AddCommand(GetRenameCommandFor(objectBase, buildingBlock, newName, objectType));
 
          commandCollector.RunCommand(_context);
@@ -183,11 +183,9 @@ namespace MoBi.Presentation.Tasks.Edit
 
       public virtual void SaveMultiple(IReadOnlyList<T> entitiesToSerialize) =>
          _interactionTask.Save(entitiesToSerialize);
-      
 
       public virtual void Save(T entityToSerialize) =>
-         _interactionTask.Save(new List<T>{entityToSerialize});
-
+         _interactionTask.Save(new List<T> { entityToSerialize });
 
       public virtual bool EditEntityModal(T entity, IEnumerable<IObjectBase> existingObjectsInParent, ICommandCollector commandCollector, IBuildingBlock buildingBlock)
       {
