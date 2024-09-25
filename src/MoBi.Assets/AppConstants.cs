@@ -1183,6 +1183,7 @@ namespace MoBi.Assets
             return string.Format("Cannot find a parameter for path {1} in simulation {0} during import. Only updates are allowed", name, path);
          }
 
+         public static readonly string CheckDimensionOfAddedParameters = "Check the <i>Dimension</i> property of the added parameters";
          public static readonly string ThisItNotATemplateBuildingBlock = "This is not the template building block!";
       }
 

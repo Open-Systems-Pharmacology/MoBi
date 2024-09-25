@@ -22,6 +22,9 @@ namespace MoBi.Presentation.Presenter.SpaceDiagram
       {
          var container = Get<IContainer>(node.Id);
 
+         if (container == null)
+            return;
+
          contextMenuView.AddMenuItem(CreateMenuButton.WithCaption(AppConstants.MenuNames.AddNew(ObjectTypes.Container))
             .WithCommandFor<AddNewCommandFor<IContainer, IContainer>, IContainer>(container, _context.Container)
             .WithIcon(ApplicationIcons.ContainerAdd));
