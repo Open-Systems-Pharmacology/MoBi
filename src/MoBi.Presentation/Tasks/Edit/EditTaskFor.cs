@@ -112,6 +112,10 @@ namespace MoBi.Presentation.Tasks.Edit
 
       public bool CheckUsagesFor(string newName, string oldName, IObjectBase renamedObject, ICommandCollector commandCollector, Module module)
       {
+         //If it is a building block, we don't need to check usages
+         if (renamedObject is IBuildingBlock)
+            return true;
+
          if (renamedObject.IsAnImplementationOf<IModelCoreSimulation>())
             return changeUsagesInSimulation(newName, renamedObject.DowncastTo<IModelCoreSimulation>(), commandCollector);
 
@@ -183,11 +187,9 @@ namespace MoBi.Presentation.Tasks.Edit
 
       public virtual void SaveMultiple(IReadOnlyList<T> entitiesToSerialize) =>
          _interactionTask.Save(entitiesToSerialize);
-      
 
       public virtual void Save(T entityToSerialize) =>
-         _interactionTask.Save(new List<T>{entityToSerialize});
-
+         _interactionTask.Save(new List<T> { entityToSerialize });
 
       public virtual bool EditEntityModal(T entity, IEnumerable<IObjectBase> existingObjectsInParent, ICommandCollector commandCollector, IBuildingBlock buildingBlock)
       {
