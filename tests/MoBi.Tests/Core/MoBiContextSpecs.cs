@@ -1,7 +1,6 @@
 using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Repository;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Domain.UnitSystem;
 using MoBi.Core.Serialization.Xml.Services;
@@ -9,8 +8,10 @@ using MoBi.Core.Services;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Serialization.Journal;
 using OSPSuite.Infrastructure.Serialization.ORM.History;
 using OSPSuite.Utility.Events;
@@ -19,7 +20,7 @@ using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.Core
 {
-   public abstract class concern_for_MoBiContext : ContextSpecification<IMoBiContext>
+   public abstract class concern_for_MoBiContext : ContextSpecification<MoBiContext>
    {
       protected IMoBiDimensionFactory _dimensionFactory;
       protected IEventPublisher _eventPublisher;
@@ -37,6 +38,7 @@ namespace MoBi.Core
       private IJournalSession _journalSession;
       private IFileLocker _fileLocker;
       private ILazyLoadTask _lazyLoadTask;
+      protected IDialogCreator _dialogCreator;
 
       protected override void Context()
       {
@@ -56,13 +58,14 @@ namespace MoBi.Core
          _journalSession = A.Fake<IJournalSession>();
          _fileLocker = A.Fake<IFileLocker>();
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
+         _dialogCreator = A.Fake<IDialogCreator>();
 
          sut = new MoBiContext(_objectBaseFactory, _dimensionFactory, _eventPublisher,
             _serializationService, _objectPathFactory, _objectBaseRepository,
             _moBiHistoryManagerFactory, _registerTask, _unregisterTask,
             _clipboardManager, _container,
             _objectTypeResolver, _cloneManager,
-            _journalSession, _fileLocker, _lazyLoadTask);
+            _journalSession, _fileLocker, _lazyLoadTask, _dialogCreator);
 
          A.CallTo(() => _moBiHistoryManagerFactory.Create()).Returns(A.Fake<MoBiHistoryManager>());
       }
@@ -250,6 +253,103 @@ namespace MoBi.Core
       {
          A.CallTo(() => _unregisterTask.UnregisterAllIn(_explicitFormula)).MustHaveHappened();
          A.CallTo(() => _unregisterTask.UnregisterAllIn(_explicitFormulaInNeighborhood)).MustHaveHappened();
+      }
+   }
+
+   public class When_running_module_commands_that_convert_pk_sim_modules : concern_for_MoBiContext
+   {
+      private MoBiMacroCommand _command;
+      private ParameterValue _parameterValue;
+      private ParameterValuesBuildingBlock _buildingBlock;
+      private Module _module;
+
+      protected override void Context()
+      {
+         base.Context();
+         _command = new MoBiMacroCommand();
+         _parameterValue = new ParameterValue();
+         _buildingBlock = new ParameterValuesBuildingBlock();
+         _module = new Module
+         {
+            IsPKSimModule = true
+         };
+         _module.Add(_buildingBlock);
+         _command.Add(new AddParameterValueToBuildingBlockCommand(_buildingBlock, _parameterValue));
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, A<ViewResult>._)).Returns(ViewResult.Yes);
+      }
+
+      protected override void Because()
+      {
+         sut.PromptForCancellation(_command);
+      }
+
+      [Observation]
+      public void the_user_should_be_prompted()
+      {
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, A<ViewResult>._)).MustHaveHappened();
+      }
+   }
+
+   public class When_canceling_the_conversion : concern_for_MoBiContext
+   {
+      private MoBiMacroCommand _command;
+      private ParameterValue _parameterValue;
+      private ParameterValuesBuildingBlock _buildingBlock;
+      private Module _module;
+
+      protected override void Context()
+      {
+         base.Context();
+         _command = new MoBiMacroCommand();
+         _parameterValue = new ParameterValue();
+         _buildingBlock = new ParameterValuesBuildingBlock();
+         _module = new Module
+         {
+            IsPKSimModule = true
+         };
+         _module.Add(_buildingBlock);
+         _command.Add(new AddParameterValueToBuildingBlockCommand(_buildingBlock, _parameterValue));
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, A<ViewResult>._)).Returns(ViewResult.No);
+      }
+
+      [Observation]
+      public void the_user_should_not_be_prompted()
+      {
+         The.Action(() => sut.PromptForCancellation(_command)).ShouldThrowAn<CancelCommandRunException>();
+      }
+   }
+
+   public class When_running_module_commands_that_doesnt_convert_pksim_module : concern_for_MoBiContext
+   {
+      private MoBiMacroCommand _command;
+      private ParameterValue _parameterValue;
+      private ParameterValuesBuildingBlock _buildingBlock;
+      private Module _module;
+
+      protected override void Context()
+      {
+         base.Context();
+         _command = new MoBiMacroCommand();
+         _parameterValue = new ParameterValue();
+         _buildingBlock = new ParameterValuesBuildingBlock();
+         _module = new Module
+         {
+            IsPKSimModule = false
+         };
+         _module.Add(_buildingBlock);
+         _command.Add(new AddParameterValueToBuildingBlockCommand(_buildingBlock, _parameterValue));
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, A<ViewResult>._)).Returns(ViewResult.Yes);
+      }
+
+      protected override void Because()
+      {
+         sut.PromptForCancellation(_command);
+      }
+
+      [Observation]
+      public void the_user_should_not_be_prompted()
+      {
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, A<ViewResult>._)).MustNotHaveHappened();
       }
    }
 }

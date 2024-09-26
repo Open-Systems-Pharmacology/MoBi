@@ -2,11 +2,18 @@ using MoBi.Core.Domain;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public abstract class BuildingBlockChangeCommandBase<T> : MoBiReversibleCommand where T :  class, IBuildingBlock
+   public abstract class BuildingBlockChangeCommandBase : MoBiReversibleCommand
+   {
+      public abstract bool WillConvertPKSimModuleToExtensionModule { get; }
+      public abstract Module Module { get; }
+   }
+   
+   public abstract class BuildingBlockChangeCommandBase<T> : BuildingBlockChangeCommandBase where T :  class, IBuildingBlock
    {
       public bool ShouldIncrementVersion { get; set; }
       public bool HasChangedModuleType { get; private set; }
@@ -41,6 +48,24 @@ namespace MoBi.Core.Commands
       {
          if (_buildingBlockId != null)
             _buildingBlock = context.Get<T>(_buildingBlockId);
+      }
+
+      public override Module Module => _buildingBlock?.Module;
+
+      public override bool WillConvertPKSimModuleToExtensionModule
+      {
+         get
+         {
+            // not a module building block
+            if (_buildingBlock.Module == null)
+               return false;
+
+            // already an extension module
+            if (!_buildingBlock.Module.IsPKSimModule)
+               return false;
+
+            return ConversionOption == PKSimModuleConversion.SetAsExtensionModule;
+         }
       }
    }
 }

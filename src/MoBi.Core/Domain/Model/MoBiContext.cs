@@ -1,4 +1,5 @@
 ﻿using System;
+using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Domain.UnitSystem;
@@ -12,6 +13,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Serialization.Journal;
 using OSPSuite.Infrastructure.Serialization.ORM.History;
 using OSPSuite.Utility.Events;
@@ -50,6 +52,8 @@ namespace MoBi.Core.Domain.Model
       object DeserializeValueTo(Type propertyType, string valueAsString);
 
       void UnregisterSimulation(IMoBiSimulation simulation);
+
+      void PromptForCancellation(ICommand command);
    }
 
    public class MoBiContext : Workspace<MoBiProject>, IMoBiContext
@@ -62,6 +66,7 @@ namespace MoBi.Core.Domain.Model
       private readonly IObjectTypeResolver _objectTypeResolver;
       private readonly ICloneManagerForBuildingBlock _cloneManager;
       private readonly ILazyLoadTask _lazyLoadTask;
+      private readonly IDialogCreator _dialogCreator;
       private readonly IJournalSession _journalSession;
 
       public IContainer Container { get; }
@@ -76,7 +81,8 @@ namespace MoBi.Core.Domain.Model
          IXmlSerializationService serializationService, IObjectPathFactory objectPathFactory, IWithIdRepository objectBaseRepository,
          IHistoryManagerFactory historyManagerFactory, IRegisterTask registerTask, IUnregisterTask unregisterTask,
          IClipboardManager clipboardManager, IContainer container, IObjectTypeResolver objectTypeResolver,
-         ICloneManagerForBuildingBlock cloneManager, IJournalSession journalSession, IFileLocker fileLocker, ILazyLoadTask lazyLoadTask) : base(eventPublisher, fileLocker)
+         ICloneManagerForBuildingBlock cloneManager, IJournalSession journalSession, IFileLocker fileLocker, ILazyLoadTask lazyLoadTask,
+         IDialogCreator dialogCreator) : base(eventPublisher, fileLocker)
       {
          ObjectBaseFactory = objectBaseFactory;
          ObjectRepository = objectBaseRepository;
@@ -88,6 +94,7 @@ namespace MoBi.Core.Domain.Model
          _objectTypeResolver = objectTypeResolver;
          _cloneManager = cloneManager;
          _lazyLoadTask = lazyLoadTask;
+         _dialogCreator = dialogCreator;
          _historyManagerFactory = historyManagerFactory;
          _registerTask = registerTask;
          _unregisterTask = unregisterTask;
@@ -120,6 +127,7 @@ namespace MoBi.Core.Domain.Model
       {
          return id != null ? ObjectBaseFactory.Create<T>(id) : ObjectBaseFactory.Create<T>();
       }
+
 
       public void AddToHistory(ICommand command)
       {
@@ -201,7 +209,7 @@ namespace MoBi.Core.Domain.Model
       public string SerializeValue(object value)
       {
          if (value == null)
-            return String.Empty;
+            return string.Empty;
 
          if (value.IsAnImplementationOf<IObjectBase>())
             return value.DowncastTo<IObjectBase>().Id;
@@ -253,14 +261,29 @@ namespace MoBi.Core.Domain.Model
          unregisterCachedFormulaInModel(simulation.Model);
       }
 
+      public void PromptForCancellation(ICommand command)
+      {
+         if(command is IMacroCommand macroCommand)
+            macroCommand.All().Each(PromptForCancellation);
+
+         if (!(command is BuildingBlockChangeCommandBase changeCommand))
+            return;
+
+         if (!changeCommand.WillConvertPKSimModuleToExtensionModule)
+            return;
+
+         if(_dialogCreator.MessageBoxYesNo(AppConstants.Captions.ThisWillConvertPkSimModuleToExtensionModule(changeCommand.Module?.Name), defaultButton: ViewResult.Yes) == ViewResult.No)
+            throw new CancelCommandRunException();
+      }
+
       private void unregisterCachedFormulaInModel(IModel model)
       {
          //Cacheable Formulas are not automatically unregistered we need to do this in an extra step
-         unregisterAllCachableFormulasIn(model.Root);
-         unregisterAllCachableFormulasIn(model.Neighborhoods);
+         unregisterAllCacheableFormulasIn(model.Root);
+         unregisterAllCacheableFormulasIn(model.Neighborhoods);
       }
 
-      private void unregisterAllCachableFormulasIn(OSPSuite.Core.Domain.IContainer container)
+      private void unregisterAllCacheableFormulasIn(OSPSuite.Core.Domain.IContainer container)
       {
          container.GetAllChildren<IUsingFormula>(x => x.Formula.IsCachable()).Each(x => Unregister(x.Formula));
       }

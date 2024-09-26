@@ -1994,11 +1994,6 @@ namespace MoBi.Assets
             return sb.ToString();
          }
 
-         public static string TheModuleWillBeConvertedFromPKSimToExtensionModule(string moduleName)
-         {
-            return $"The PK-Sim module '{moduleName}' will be converted to an extension module";
-         }
-
          public static string BuildingBlockAlreadyContains(IReadOnlyList<string> paths)
          {
             var pathsNotAdded = paths.Count;
@@ -2017,6 +2012,11 @@ namespace MoBi.Assets
                sb.AppendLine("They already exist in the building block");
 
             return sb.ToString();
+         }
+
+         public static string ThisWillConvertPkSimModuleToExtensionModule(string moduleName)
+         {
+            return $"This will convert PK-Sim module '{moduleName}' to an extension module {Environment.NewLine} Continue?";
          }
       }
 
