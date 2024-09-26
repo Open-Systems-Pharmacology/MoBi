@@ -112,6 +112,7 @@ namespace MoBi.Presentation.Tasks.Edit
 
       public bool CheckUsagesFor(string newName, string oldName, IObjectBase renamedObject, ICommandCollector commandCollector, Module module)
       {
+         //If it is a building block, we don't need to check usages
          if (renamedObject is IBuildingBlock)
             return true;
 
