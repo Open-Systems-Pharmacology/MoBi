@@ -9,7 +9,7 @@ namespace MoBi.Core.Commands
 {
    public abstract class BuildingBlockChangeCommandBase : MoBiReversibleCommand
    {
-      public abstract bool WillConvertPKSimModuleToExtension { get; }
+      public abstract bool WillConvertPKSimModuleToExtensionModule { get; }
       public abstract Module Module { get; }
    }
    
@@ -52,7 +52,7 @@ namespace MoBi.Core.Commands
 
       public override Module Module => _buildingBlock?.Module;
 
-      public override bool WillConvertPKSimModuleToExtension
+      public override bool WillConvertPKSimModuleToExtensionModule
       {
          get
          {

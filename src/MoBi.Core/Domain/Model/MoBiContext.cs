@@ -269,7 +269,7 @@ namespace MoBi.Core.Domain.Model
          if (!(command is BuildingBlockChangeCommandBase changeCommand))
             return;
 
-         if (!changeCommand.WillConvertPKSimModuleToExtension)
+         if (!changeCommand.WillConvertPKSimModuleToExtensionModule)
             return;
 
          if(_dialogCreator.MessageBoxYesNo(AppConstants.Captions.ThisWillConvertPkSimModuleToExtensionModule(changeCommand.Module?.Name), defaultButton: ViewResult.Yes) == ViewResult.No)

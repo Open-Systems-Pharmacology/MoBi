@@ -2016,7 +2016,7 @@ namespace MoBi.Assets
 
          public static string ThisWillConvertPkSimModuleToExtensionModule(string moduleName)
          {
-            return $"This will convert module '{moduleName}' to an extension module {Environment.NewLine} Continue?";
+            return $"This will convert PK-Sim module '{moduleName}' to an extension module {Environment.NewLine} Continue?";
          }
       }
 
