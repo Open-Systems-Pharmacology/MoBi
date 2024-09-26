@@ -98,7 +98,7 @@ namespace MoBi.Presentation.Tasks.Edit
             Description = AppConstants.Commands.RenameDescription(objectBase, newName)
          };
 
-         if ((objectBase is IBuildingBlock) || CheckUsagesFor(newName, objectBase.Name, objectBase, commandCollector, buildingBlock?.Module))
+         if (CheckUsagesFor(newName, objectBase.Name, objectBase, commandCollector, buildingBlock?.Module))
             commandCollector.AddCommand(GetRenameCommandFor(objectBase, buildingBlock, newName, objectType));
 
          commandCollector.RunCommand(_context);
@@ -112,6 +112,9 @@ namespace MoBi.Presentation.Tasks.Edit
 
       public bool CheckUsagesFor(string newName, string oldName, IObjectBase renamedObject, ICommandCollector commandCollector, Module module)
       {
+         if (renamedObject is IBuildingBlock)
+            return true;
+
          if (renamedObject.IsAnImplementationOf<IModelCoreSimulation>())
             return changeUsagesInSimulation(newName, renamedObject.DowncastTo<IModelCoreSimulation>(), commandCollector);
 
