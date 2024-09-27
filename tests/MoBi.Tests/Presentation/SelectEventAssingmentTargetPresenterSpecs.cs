@@ -14,6 +14,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Collections;
 
 namespace MoBi.Presentation
 {
@@ -32,9 +33,9 @@ namespace MoBi.Presentation
       private Container _rootContainer;
       protected ReactionBuilder _reaction;
       protected MoleculeBuilder _moleculeBuilder;
-      private IParameter _localParameter;
-      private IParameter _globalParameter;
-      private ISelectEntityInTreePresenter _selectEntityInTreePresenter;
+      protected IParameter _localParameter;
+      protected IParameter _globalParameter;
+      protected ISelectEntityInTreePresenter _selectEntityInTreePresenter;
       private ISpatialStructureToSpatialStructureDTOMapper _spatialStructureDTOMapper;
       private IBuildingBlockRepository _buildingBlockRepository;
       private MoBiReactionBuildingBlock _reactionBB;
@@ -63,7 +64,7 @@ namespace MoBi.Presentation
          _rootContainer = new Container();
          _moleculeBuilder = new MoleculeBuilder().WithName("M");
          _reaction = new ReactionBuilder().WithName("R");
-         _localParameter = new Parameter().WithMode(ParameterBuildMode.Local).WithName("LocalParam");
+         _localParameter = new Parameter().WithMode(ParameterBuildMode.Local).WithName("LocalParam").WithId("localParam");
          _globalParameter = new Parameter().WithMode(ParameterBuildMode.Global).WithName("GlobalParam");
          _reaction.Add(_localParameter);
          _reaction.Add(_globalParameter);
@@ -72,7 +73,30 @@ namespace MoBi.Presentation
 
          _mobiProject.AddModule(new Module {_reactionBB,  _moleculeBB});
 
-         sut.Init(_rootContainer);
+         var forbiddenAssignees = new Cache<IObjectBase, string> { { _localParameter, "a reason" } };
+         sut.Init(_rootContainer, forbiddenAssignees);
+      }
+   }
+
+   internal class When_trying_to_select_a_forbidden_assignee : concern_for_SelectEventAssignmentTargetPresenter
+   {
+      private ObjectBaseDTO _forbiddenParameterDTO;
+
+      protected override void Context()
+      {
+         base.Context();
+         _forbiddenParameterDTO = new ObjectBaseDTO(_localParameter);
+         A.CallTo(() => _selectEntityInTreePresenter.SelectedDTO).Returns(_forbiddenParameterDTO);
+         A.CallTo(() => _view.HasError).Returns(false);
+         A.CallTo(() => _selectEntityInTreePresenter.CanClose).Returns(true);
+         A.CallTo(() => _context.Get<IObjectBase>(_localParameter.Id)).Returns(_localParameter);
+      }
+
+
+      [Observation]
+      public void should_not_be_able_to_complete_the_selection()
+      {
+         sut.CanClose.ShouldBeFalse();
       }
    }
 

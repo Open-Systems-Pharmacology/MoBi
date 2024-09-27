@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Extensions;
@@ -15,6 +16,7 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
@@ -76,6 +78,7 @@ namespace MoBi.Presentation.Presenter
          _eventAssignmentBuilderDTO = _eventAssignmentToDTOAssignmentMapper.MapFrom(_eventAssignmentBuilder);
          _eventAssignmentBuilderDTO.AddUsedNames(_editTasksForAssignment.GetForbiddenNamesWithoutSelf(eventAssignmentBuilder, existingObjectsInParent));
          bindToView();
+         _editFormulaPresenter.StatusChanged += (o, e) => _view.ValidateAll();
       }
 
       private void bindToView()
@@ -92,7 +95,7 @@ namespace MoBi.Presentation.Presenter
 
       public IFormulaCache FormulaCache => BuildingBlock.FormulaCache;
 
-      public void SetPropertyValueFromView<T>(string propertyName, T newValue, T oldValue) => 
+      public void SetPropertyValueFromView<T>(string propertyName, T newValue, T oldValue) =>
          AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, _eventAssignmentBuilder, BuildingBlock).RunCommand(_context));
 
       public void RenameSubject() => _editTasksForAssignment.Rename(_eventAssignmentBuilder, BuildingBlock);
@@ -102,7 +105,7 @@ namespace MoBi.Presentation.Presenter
          FormulaUsablePath objectPath;
          using (var presenter = _applicationController.Start<ISelectEventAssignmentTargetPresenter>())
          {
-            presenter.Init(_eventAssignmentBuilder.RootContainer);
+            presenter.Init(_eventAssignmentBuilder.RootContainer, getForbiddenAssignees());
             objectPath = presenter.Select();
          }
 
@@ -110,6 +113,16 @@ namespace MoBi.Presentation.Presenter
             return;
 
          setObjectPath(objectPath);
+      }
+
+      private ICache<IObjectBase, string> getForbiddenAssignees()
+      {
+         var cache = new Cache<IObjectBase, string>();
+         if (_eventAssignmentBuilder.UseAsValue || _eventAssignmentBuilder.Formula == null)
+            return cache;
+
+         _eventAssignmentBuilder.Formula.ObjectPaths.Select(x => x.TryResolve<IUsingFormula>(_eventAssignmentBuilder)).Each(x => cache.Add(x, AppConstants.Captions.AssigningFormulaCreatesCircularReference));
+         return cache;
       }
 
       private void setObjectPath(FormulaUsablePath objectPath)

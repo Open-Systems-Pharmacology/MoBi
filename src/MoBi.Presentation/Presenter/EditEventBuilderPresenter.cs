@@ -18,6 +18,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 
@@ -174,23 +175,34 @@ namespace MoBi.Presentation.Presenter
          ObjectPath objectPath;
          using (var selectEventAssignmentTargetPresenter = _applicationController.Start<ISelectEventAssignmentTargetPresenter>())
          {
-            selectEventAssignmentTargetPresenter.Init(_eventBuilder.RootContainer);
+            var eventAssignmentBuilder = eventAssignmentBuilderFor(eventAssignmentBuilderDTO);
+            selectEventAssignmentTargetPresenter.Init(_eventBuilder.RootContainer, getForbiddenAssignees(eventAssignmentBuilder));
             objectPath = selectEventAssignmentTargetPresenter.Select();
          }
 
          if (objectPath == null)
             return;
 
-         setChantedEntityPath(objectPath, eventAssignmentBuilderDTO);
+         setChangedEntityPath(objectPath, eventAssignmentBuilderDTO);
+      }
+
+      private ICache<IObjectBase, string> getForbiddenAssignees(EventAssignmentBuilder eventAssignmentBuilder)
+      {
+         var cache = new Cache<IObjectBase, string>();
+         if (eventAssignmentBuilder.UseAsValue || eventAssignmentBuilder.Formula == null)
+            return cache;
+
+         eventAssignmentBuilder.Formula.ObjectPaths.Select(x => x.TryResolve<IUsingFormula>(eventAssignmentBuilder)).Each(x => cache.Add(x, AppConstants.Captions.AssigningFormulaCreatesCircularReference));
+         return cache;
       }
 
       public void SetChangedEntityPath(string newPath, EventAssignmentBuilderDTO dto)
       {
          var objectPath = new ObjectPath(newPath.ToPathArray());
-         setChantedEntityPath(objectPath, dto);
+         setChangedEntityPath(objectPath, dto);
       }
 
-      private void setChantedEntityPath(ObjectPath objectPath, EventAssignmentBuilderDTO dto)
+      private void setChangedEntityPath(ObjectPath objectPath, EventAssignmentBuilderDTO dto)
       {
          var eventAssignmentBuilder = eventAssignmentBuilderFor(dto);
          SetPropertyValueFor(dto, eventAssignmentBuilder.PropertyName(x => x.ObjectPath), objectPath, eventAssignmentBuilder.ObjectPath);

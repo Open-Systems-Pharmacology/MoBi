@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MoBi.Assets;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
@@ -12,13 +13,14 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
    public interface ISelectEventAssignmentTargetPresenter : ISelectObjectPathPresenter
    {
-      void Init(IContainer container);
+      void Init(IContainer container, ICache<IObjectBase, string> forbiddenAssignees);
       FormulaUsablePath Select();
    }
 
@@ -37,6 +39,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IBuildingBlockRepository _buildingBlockRepository;
       private IReadOnlyList<MoleculeBuilder> _molecules;
       private IReadOnlyList<ReactionBuilder> _reactions;
+      private ICache<IObjectBase, string> _forbiddenAssignees;
 
       public SelectEventAssignmentTargetPresenter(
          ISelectObjectPathView view, IMoBiContext context,
@@ -66,17 +69,21 @@ namespace MoBi.Presentation.Presenter
          _objectBaseDTOMapper = objectBaseDTOMapper;
          AddSubPresenters(_selectEntityInTreePresenter);
          _selectEntityInTreePresenter.GetChildren = GetChildren;
-         _selectEntityInTreePresenter.OnSelectedEntityChanged += (o, e) => _view.OkEnabled = e != null;
+         _selectEntityInTreePresenter.OnSelectedEntityChanged += (o, e) => ViewChanged();
          _view.AddSelectionView(_selectEntityInTreePresenter.View);
       }
 
       public FormulaUsablePath Select()
       {
          _view.Display();
-
          return _view.Canceled ? null : generatePathFromDTO(_selectEntityInTreePresenter.SelectedDTO);
       }
 
+      public override void ViewChanged()
+      {
+         base.ViewChanged();
+         _view.OkEnabled = CanClose;
+      }
 
       //make this method public so that it can be tested
       public IReadOnlyList<ObjectBaseDTO> GetChildren(ObjectBaseDTO parentDTO)
@@ -112,7 +119,20 @@ namespace MoBi.Presentation.Presenter
             list.AddRange(getLocalInformationForReaction(container));
          }
 
+         list.Where(objectSelectionIsForbidden).Each(x => cannotSelectDescription(x, _forbiddenAssignees[x.ObjectBase]));
+
          return list;
+      }
+
+      private bool objectSelectionIsForbidden(ObjectBaseDTO x)
+      {
+         return x.ObjectBase != null && _forbiddenAssignees.Keys.Contains(x.ObjectBase);
+      }
+
+      private void cannotSelectDescription(ObjectBaseDTO objectBaseDTO, string forbiddenReason)
+      {
+         objectBaseDTO.Description += Environment.NewLine + AppConstants.Captions.ObjectCannotBeSelected(forbiddenReason);
+         objectBaseDTO.Description = objectBaseDTO.Description.Trim();
       }
 
       private IReadOnlyList<ObjectBaseDTO> map(IEnumerable<IObjectBase> objectsToMap) => objectsToMap.MapAllUsing(_objectBaseDTOMapper);
@@ -143,7 +163,7 @@ namespace MoBi.Presentation.Presenter
             return true;
 
          var selection = _context.Get<IObjectBase>(selectedDTO.Id);
-         return selection != null && selection.IsAnImplementationOf<IUsingFormula>();
+         return selection != null && selection.IsAnImplementationOf<IUsingFormula>() && !_forbiddenAssignees.Keys.Contains(selection);
       }
 
       private bool isDummy(ObjectBaseDTO selectedDTO)
@@ -153,14 +173,16 @@ namespace MoBi.Presentation.Presenter
                 selectedDTO.IsAnImplementationOf<DummyParameterDTO>();
       }
 
-      public void Init(IContainer container)
+      public void Init(IContainer container, ICache<IObjectBase, string> forbiddenAssignees)
       {
          _molecules = _buildingBlockRepository.MoleculeBlockCollection.SelectMany(bb => bb.All()).Distinct(new NameComparer<MoleculeBuilder>()).OrderBy(x => x.Name).ToList();
          _reactions = _buildingBlockRepository.ReactionBlockCollection.SelectMany(bb => bb.All()).Distinct(new NameComparer<ReactionBuilder>()).OrderBy(x => x.Name).ToList();
+         _forbiddenAssignees = forbiddenAssignees;
          var list = new List<ObjectBaseDTO>();
          list.AddRange(_buildingBlockRepository.SpatialStructureCollection.MapAllUsing(_spatialStructureDTOMapper));
          list.Add(_objectBaseDTOMapper.MapFrom(container));
          list.AddRange(globalReactionParameters());
+
          _selectEntityInTreePresenter.InitTreeStructure(list);
       }
 

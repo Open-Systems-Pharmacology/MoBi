@@ -1618,7 +1618,8 @@ namespace MoBi.Assets
          public static readonly string Present = "Present";
          public static readonly string NotPresent = "Not Present";
          public static readonly string EditFormula = "Edit Formula";
-         
+         public static readonly string AssigningFormulaCreatesCircularReference = "Assigning formula creates circular reference";
+
          public static string SelectTheBuildingBlockWhereEntitiesWillBeAddedOrUpdated(string typeBeingAdded) => $"Select the building block where {typeBeingAdded} will be added or updated";
          public static readonly string SelectBuildingBlock = "Select Building Block";
          public static readonly string MakeDefault = "Make defaults";
@@ -2018,6 +2019,11 @@ namespace MoBi.Assets
          {
             return $"This will convert PK-Sim module '{moduleName}' to an extension module {Environment.NewLine} Continue?";
          }
+
+         public static string ObjectCannotBeSelected(string forbiddenReason)
+         {
+            return $"This item cannot be selected. {forbiddenReason}";
+         }
       }
 
       public static class Validation
@@ -2043,6 +2049,7 @@ namespace MoBi.Assets
          public static readonly string ModuleNameCannotBeEmpty = "Module name cannot be empty";
          public static readonly string ExtendingRequiresMoleculeBuildingBlock = "Extending requires a molecule building block";
          public static readonly string ExtendingRequiresSpatialStructure = "Extending requires a spatial structure";
+         public static readonly string CannotAssignAFormulaThatReferencesTheAssignmentTarget = "Cannot assign a formula that references the assignment target";
          public static string AnotherMoleculeNamedIsSelected(string moleculeName) => $"Another molecule named {moleculeName} is selected";
 
          public static string XDimensionColumnMustNotHaveRepeatedValues(string dimensionName)
