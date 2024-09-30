@@ -28,61 +28,44 @@ namespace MoBi.Presentation.DTO
 
       private IBusinessRule cannotAssignCircularRefRuleFormula { get; } = CreateRule.For<EventAssignmentBuilderDTO>()
          .Property(x => x.NewFormula)
-         .WithRule((dto, newFormula) => !formulaRefersToAssignmentFormula(dto, newFormula))
+         .WithRule((dto, newFormula) => !formulaRefersToAssignmentFormula(dto._eventAssignmentBuilder, newFormula))
          .WithError(AppConstants.Validation.CannotAssignAFormulaThatReferencesTheAssignmentTarget);
 
-      private static bool formulaRefersToAssignmentFormula(EventAssignmentBuilderDTO dto, FormulaBuilderDTO formulaDTO)
+      private static bool formulaRefersToAssignmentFormula(EventAssignmentBuilder assignmentBuilder, FormulaBuilderDTO formulaDTO)
       {
-         var assignmentBuilder = dto._eventAssignmentBuilder;
          var assignmentPath = assignmentBuilder.ObjectPath;
          var formulaPaths = formulaDTO.ObjectPaths.Select(x => x.FormulaUsablePath).ToList();
 
-         if (!canReferToAssignmentTarget(assignmentBuilder.UseAsValue, assignmentPath, formulaPaths))
-            return false;
-
-         return formulaPathsReferToAssignmentTarget(assignmentPath, assignmentBuilder, formulaPaths);
+         return formulaPathsReferToAssignmentTarget(assignmentBuilder, assignmentBuilder.UseAsValue, assignmentPath, formulaPaths);
       }
 
       private IBusinessRule cannotAssignCircularRefRuleAssignment { get; } = CreateRule.For<EventAssignmentBuilderDTO>()
          .Property(x => x.ChangedEntityPath)
-         .WithRule((dto, changedEntityPath) => !formulaRefersToAssignmentTarget(dto, changedEntityPath))
+         .WithRule((dto, changedEntityPath) => !formulaRefersToAssignmentTarget(dto._eventAssignmentBuilder, changedEntityPath))
          .WithError(AppConstants.Validation.CannotAssignAFormulaThatReferencesTheAssignmentTarget);
 
-      private static bool formulaRefersToAssignmentTarget(EventAssignmentBuilderDTO dto, string changedEntityPath)
+      private static bool formulaRefersToAssignmentTarget(EventAssignmentBuilder assignmentBuilder, string changedEntityPath)
       {
-         var assignmentBuilder = dto._eventAssignmentBuilder;
-
-         var assignmentPath = new ObjectPath(changedEntityPath.ToPathArray());
-         var assignmentFormulaPaths = assignmentBuilder.Formula?.ObjectPaths;
-
-         if (!canReferToAssignmentTarget(assignmentBuilder.UseAsValue, assignmentPath, assignmentFormulaPaths))
-            return false;
-
-         return formulaPathsReferToAssignmentTarget(assignmentPath, assignmentBuilder, assignmentFormulaPaths);
+         return formulaPathsReferToAssignmentTarget(assignmentBuilder, assignmentBuilder.UseAsValue, new ObjectPath(changedEntityPath.ToPathArray()), assignmentBuilder.Formula?.ObjectPaths);
       }
 
       private IBusinessRule cannotAssignCircularRefRuleUseAsValue { get; } = CreateRule.For<EventAssignmentBuilderDTO>()
          .Property(x => x.UseAsValue)
-         .WithRule((dto, useAsValue) => !formulaRefersToAssignmentTarget(dto, useAsValue))
+         .WithRule((dto, useAsValue) => !formulaRefersToAssignmentTarget(dto._eventAssignmentBuilder, useAsValue))
          .WithError(AppConstants.Validation.CannotAssignAFormulaThatReferencesTheAssignmentTarget);
 
-      private static bool formulaRefersToAssignmentTarget(EventAssignmentBuilderDTO dto, bool useAsValue)
+      private static bool formulaRefersToAssignmentTarget(EventAssignmentBuilder assignmentBuilder, bool useAsValue)
       {
-         var assignmentBuilder = dto._eventAssignmentBuilder;
+         return formulaPathsReferToAssignmentTarget(assignmentBuilder, useAsValue, assignmentBuilder.ObjectPath, assignmentBuilder.Formula?.ObjectPaths);
+      }
 
-         var assignmentPath = assignmentBuilder.ObjectPath;
-         var assignmentFormulaPaths = assignmentBuilder.Formula?.ObjectPaths;
-
+      private static bool formulaPathsReferToAssignmentTarget(EventAssignmentBuilder assignmentBuilder, bool useAsValue, ObjectPath assignmentPath, IReadOnlyList<FormulaUsablePath> assignmentFormulaPaths)
+      {
          if (!canReferToAssignmentTarget(useAsValue, assignmentPath, assignmentFormulaPaths))
             return false;
 
-         return formulaPathsReferToAssignmentTarget(assignmentPath, assignmentBuilder, assignmentFormulaPaths);
-      }
-
-      private static bool formulaPathsReferToAssignmentTarget(ObjectPath assignmentPath, EventAssignmentBuilder assignmentBuilder, IReadOnlyList<ObjectPath> formulaPaths)
-      {
          var assignmentTarget = assignmentPath.TryResolve<IUsingFormula>(assignmentBuilder);
-         return formulaPaths.Any(path => path.TryResolve<IUsingFormula>(assignmentBuilder) == assignmentTarget);
+         return assignmentFormulaPaths.Any(path => path.TryResolve<IUsingFormula>(assignmentBuilder) == assignmentTarget);
       }
 
       private static bool canReferToAssignmentTarget(bool useAsValue, ObjectPath objectPath, IReadOnlyList<ObjectPath> formulaPaths)

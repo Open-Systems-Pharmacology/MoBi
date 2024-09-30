@@ -8,6 +8,7 @@ using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
+using MoBi.Presentation.Extensions;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
@@ -176,7 +177,7 @@ namespace MoBi.Presentation.Presenter
          using (var selectEventAssignmentTargetPresenter = _applicationController.Start<ISelectEventAssignmentTargetPresenter>())
          {
             var eventAssignmentBuilder = eventAssignmentBuilderFor(eventAssignmentBuilderDTO);
-            selectEventAssignmentTargetPresenter.Init(_eventBuilder.RootContainer, getForbiddenAssignees(eventAssignmentBuilder));
+            selectEventAssignmentTargetPresenter.Init(_eventBuilder.RootContainer, eventAssignmentBuilder.GetForbiddenAssignees());
             objectPath = selectEventAssignmentTargetPresenter.Select();
          }
 
@@ -186,15 +187,7 @@ namespace MoBi.Presentation.Presenter
          setChangedEntityPath(objectPath, eventAssignmentBuilderDTO);
       }
 
-      private ICache<IObjectBase, string> getForbiddenAssignees(EventAssignmentBuilder eventAssignmentBuilder)
-      {
-         var cache = new Cache<IObjectBase, string>();
-         if (eventAssignmentBuilder.UseAsValue || eventAssignmentBuilder.Formula == null)
-            return cache;
 
-         eventAssignmentBuilder.Formula.ObjectPaths.Select(x => x.TryResolve<IUsingFormula>(eventAssignmentBuilder)).Each(x => cache.Add(x, AppConstants.Captions.AssigningFormulaCreatesCircularReference));
-         return cache;
-      }
 
       public void SetChangedEntityPath(string newPath, EventAssignmentBuilderDTO dto)
       {

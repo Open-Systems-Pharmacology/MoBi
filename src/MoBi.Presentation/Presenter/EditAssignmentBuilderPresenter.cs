@@ -6,6 +6,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Extensions;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
+using MoBi.Presentation.Extensions;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Tasks.Edit;
@@ -105,7 +106,7 @@ namespace MoBi.Presentation.Presenter
          FormulaUsablePath objectPath;
          using (var presenter = _applicationController.Start<ISelectEventAssignmentTargetPresenter>())
          {
-            presenter.Init(_eventAssignmentBuilder.RootContainer, getForbiddenAssignees());
+            presenter.Init(_eventAssignmentBuilder.RootContainer, _eventAssignmentBuilder.GetForbiddenAssignees());
             objectPath = presenter.Select();
          }
 
@@ -113,16 +114,6 @@ namespace MoBi.Presentation.Presenter
             return;
 
          setObjectPath(objectPath);
-      }
-
-      private ICache<IObjectBase, string> getForbiddenAssignees()
-      {
-         var cache = new Cache<IObjectBase, string>();
-         if (_eventAssignmentBuilder.UseAsValue || _eventAssignmentBuilder.Formula == null)
-            return cache;
-
-         _eventAssignmentBuilder.Formula.ObjectPaths.Select(x => x.TryResolve<IUsingFormula>(_eventAssignmentBuilder)).Each(x => cache.Add(x, AppConstants.Captions.AssigningFormulaCreatesCircularReference));
-         return cache;
       }
 
       private void setObjectPath(FormulaUsablePath objectPath)
