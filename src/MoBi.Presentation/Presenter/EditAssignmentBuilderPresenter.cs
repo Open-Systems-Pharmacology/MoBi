@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
+using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Extensions;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
+using MoBi.Presentation.Extensions;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Tasks.Edit;
@@ -15,6 +17,7 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
@@ -76,6 +79,7 @@ namespace MoBi.Presentation.Presenter
          _eventAssignmentBuilderDTO = _eventAssignmentToDTOAssignmentMapper.MapFrom(_eventAssignmentBuilder);
          _eventAssignmentBuilderDTO.AddUsedNames(_editTasksForAssignment.GetForbiddenNamesWithoutSelf(eventAssignmentBuilder, existingObjectsInParent));
          bindToView();
+         _editFormulaPresenter.StatusChanged += (o, e) => _view.ValidateAll();
       }
 
       private void bindToView()
@@ -92,7 +96,7 @@ namespace MoBi.Presentation.Presenter
 
       public IFormulaCache FormulaCache => BuildingBlock.FormulaCache;
 
-      public void SetPropertyValueFromView<T>(string propertyName, T newValue, T oldValue) => 
+      public void SetPropertyValueFromView<T>(string propertyName, T newValue, T oldValue) =>
          AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, _eventAssignmentBuilder, BuildingBlock).RunCommand(_context));
 
       public void RenameSubject() => _editTasksForAssignment.Rename(_eventAssignmentBuilder, BuildingBlock);
@@ -102,7 +106,7 @@ namespace MoBi.Presentation.Presenter
          FormulaUsablePath objectPath;
          using (var presenter = _applicationController.Start<ISelectEventAssignmentTargetPresenter>())
          {
-            presenter.Init(_eventAssignmentBuilder.RootContainer);
+            presenter.Init(_eventAssignmentBuilder.RootContainer, _eventAssignmentBuilder.GetForbiddenAssignees());
             objectPath = presenter.Select();
          }
 

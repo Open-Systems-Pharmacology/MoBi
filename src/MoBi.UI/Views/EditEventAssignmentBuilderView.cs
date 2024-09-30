@@ -60,31 +60,19 @@ namespace MoBi.UI.Views
          layoutGroupAssignment.Text = AppConstants.Captions.Assignment;
       }
 
-      private void OnValueUpdating<T>(EventAssignmentBuilderDTO eventAssignmentBuilder, PropertyValueSetEventArgs<T> e)
-      {
+      private void OnValueUpdating<T>(EventAssignmentBuilderDTO eventAssignmentBuilder, PropertyValueSetEventArgs<T> e) => 
          OnEvent(() => _presenter.SetPropertyValueFromView(e.PropertyName, e.NewValue, e.OldValue));
-      }
 
-      public void SetFormulaView(IView subView)
-      {
-         pnlFormula.FillWith(subView);
-      }
+      public void SetFormulaView(IView subView) => pnlFormula.FillWith(subView);
 
-      public void AttachPresenter(IEditAssignmentBuilderPresenter presenter)
-      {
-         _presenter = presenter;
-      }
+      public void ValidateAll() => _screenBinder.Validate();
 
-      public void Show(EventAssignmentBuilderDTO eventAssignmentBuilderDTO)
-      {
-         _screenBinder.BindToSource(eventAssignmentBuilderDTO);
-      }
+      public void AttachPresenter(IEditAssignmentBuilderPresenter presenter) => _presenter = presenter;
+
+      public void Show(EventAssignmentBuilderDTO eventAssignmentBuilderDTO) => _screenBinder.BindToSource(eventAssignmentBuilderDTO);
 
       public override bool HasError => base.HasError || _screenBinder.HasError;
 
-      public void Activate()
-      {
-         ActiveControl = tbName;
-      }
+      public void Activate() => ActiveControl = tbName;
    }
 }

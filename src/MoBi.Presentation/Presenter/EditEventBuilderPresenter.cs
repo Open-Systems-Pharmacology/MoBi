@@ -8,6 +8,7 @@ using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
+using MoBi.Presentation.Extensions;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
@@ -18,6 +19,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 
@@ -174,23 +176,26 @@ namespace MoBi.Presentation.Presenter
          ObjectPath objectPath;
          using (var selectEventAssignmentTargetPresenter = _applicationController.Start<ISelectEventAssignmentTargetPresenter>())
          {
-            selectEventAssignmentTargetPresenter.Init(_eventBuilder.RootContainer);
+            var eventAssignmentBuilder = eventAssignmentBuilderFor(eventAssignmentBuilderDTO);
+            selectEventAssignmentTargetPresenter.Init(_eventBuilder.RootContainer, eventAssignmentBuilder.GetForbiddenAssignees());
             objectPath = selectEventAssignmentTargetPresenter.Select();
          }
 
          if (objectPath == null)
             return;
 
-         setChantedEntityPath(objectPath, eventAssignmentBuilderDTO);
+         setChangedEntityPath(objectPath, eventAssignmentBuilderDTO);
       }
+
+
 
       public void SetChangedEntityPath(string newPath, EventAssignmentBuilderDTO dto)
       {
          var objectPath = new ObjectPath(newPath.ToPathArray());
-         setChantedEntityPath(objectPath, dto);
+         setChangedEntityPath(objectPath, dto);
       }
 
-      private void setChantedEntityPath(ObjectPath objectPath, EventAssignmentBuilderDTO dto)
+      private void setChangedEntityPath(ObjectPath objectPath, EventAssignmentBuilderDTO dto)
       {
          var eventAssignmentBuilder = eventAssignmentBuilderFor(dto);
          SetPropertyValueFor(dto, eventAssignmentBuilder.PropertyName(x => x.ObjectPath), objectPath, eventAssignmentBuilder.ObjectPath);

@@ -11,6 +11,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility.Collections;
 
 namespace MoBi.Presentation
 {
@@ -76,7 +77,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_leverage_the_select_target_presenter_to_retrieve_the_selection_with_the_root_container()
       {
-         A.CallTo(() => _selectionTargetPresenter.Init(_eventAssignmentBuilder.RootContainer)).MustHaveHappened();
+         A.CallTo(() => _selectionTargetPresenter.Init(_eventAssignmentBuilder.RootContainer, A<Cache<IObjectBase, string>>._)).MustHaveHappened();
       }
 
       [Observation]
