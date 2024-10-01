@@ -17,8 +17,8 @@ namespace MoBi.Presentation.DTO
          Formula = formula;
          if(formula is ExplicitFormula explicitFormula)
             FormulaString = explicitFormula.FormulaString;
-
-         else FormulaString = string.Empty;
+         else 
+            FormulaString = string.Empty;
       }
 
       public override string ToString()
