@@ -78,7 +78,7 @@ namespace MoBi.Presentation.Presenter
       {
          var allFormulas = new List<ValueFormulaDTO> { new EmptyFormulaDTO() };
 
-         allFormulas.AddRange(_buildingBlock.FormulaCache.OfType<ExplicitFormula>()
+         allFormulas.AddRange(_buildingBlock.FormulaCache
             .OrderBy(formula => formula.Name)
             .Select(formula => new ValueFormulaDTO(formula)));
 
