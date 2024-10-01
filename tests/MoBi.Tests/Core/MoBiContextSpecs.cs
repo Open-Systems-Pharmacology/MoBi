@@ -290,6 +290,31 @@ namespace MoBi.Core
       }
    }
 
+   public class When_running_module_commands_that_uses_rename_object_base_without_building_block : concern_for_MoBiContext
+   {
+      private RenameObjectBaseCommand _command;
+      private MoBiSimulation _simulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = new MoBiSimulation().WithName("oldname");
+         _command = new RenameObjectBaseCommand(_simulation, "newname", null);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, A<ViewResult>._)).Returns(ViewResult.Yes);
+      }
+
+      protected override void Because()
+      {
+         sut.PromptForCancellation(_command);
+      }
+
+      [Observation]
+      public void the_user_should_be_prompted()
+      {
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, A<ViewResult>._)).MustNotHaveHappened();
+      }
+   }
+
    public class When_canceling_the_conversion : concern_for_MoBiContext
    {
       private MoBiMacroCommand _command;

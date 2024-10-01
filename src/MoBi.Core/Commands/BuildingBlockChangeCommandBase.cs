@@ -57,7 +57,7 @@ namespace MoBi.Core.Commands
          get
          {
             // not a module building block
-            if (_buildingBlock.Module == null)
+            if (_buildingBlock?.Module == null)
                return false;
 
             // already an extension module
