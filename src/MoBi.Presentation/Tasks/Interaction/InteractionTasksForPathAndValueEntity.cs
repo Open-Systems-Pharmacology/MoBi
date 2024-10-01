@@ -187,6 +187,7 @@ namespace MoBi.Presentation.Tasks.Interaction
                
             macroCommand.Add(_interactionTaskContext.MoBiFormulaTask.UpdateFormula(builder, builder.Formula, editFormulaPresenter.Formula, usingFormulaDecoder, buildingBlock));
             macroCommand.Add(_interactionTaskContext.MoBiFormulaTask.AddFormulaToCacheOrFixReferenceCommand(buildingBlock, builder).RunCommand(_interactionTaskContext.Context));
+            macroCommand.Add(setValue(builder, null, builder.DisplayUnit, buildingBlock));
             return macroCommand;
          }
       }

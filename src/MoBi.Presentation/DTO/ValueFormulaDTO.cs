@@ -12,14 +12,20 @@ namespace MoBi.Presentation.DTO
       {
       }
 
-      public ValueFormulaDTO(ExplicitFormula explicitFormula)
+      public ValueFormulaDTO(IFormula formula)
       {
-         Formula = explicitFormula;
-         FormulaString = explicitFormula.FormulaString;
+         Formula = formula;
+         if(formula is ExplicitFormula explicitFormula)
+            FormulaString = explicitFormula.FormulaString;
+
+         else FormulaString = string.Empty;
       }
 
       public override string ToString()
       {
+         if(string.IsNullOrEmpty(FormulaString))
+            return $"{Formula.Name}";
+
          return Formula != null ? $"{Formula.Name} ({FormulaString})" : FormulaString;
       }
    }
