@@ -42,6 +42,7 @@ namespace MoBi.UI.Views
 
       private readonly PopupContainerControl _popupControl = new PopupContainerControl();
       private readonly RepositoryItemPopupContainerEdit _repositoryItemPopupContainerEdit = new RepositoryItemPopupContainerEdit();
+      private LayoutControlGroup _flowGroup;
 
       public IndividualBuildingBlockView(ValueOriginBinder<IndividualParameterDTO> valueOriginBinder)
       {
@@ -211,14 +212,20 @@ namespace MoBi.UI.Views
 
       private void createNameValuePairs(IndividualBuildingBlockDTO buildingBlock)
       {
-         var flowGroup = uxLayoutControl.AddGroup();
-         flowGroup.Text = OriginData;
-         flowGroup.LayoutMode = LayoutMode.Flow;
-         flowGroup.Move(gridGroup, InsertType.Top);
+         if (_flowGroup != null)
+         {
+            uxLayoutControl.Remove(_flowGroup);
+            _flowGroup.Dispose();
+         }
+
+         _flowGroup = uxLayoutControl.AddGroup();
+         _flowGroup.Text = OriginData;
+         _flowGroup.LayoutMode = LayoutMode.Flow;
+         _flowGroup.Move(gridGroup, InsertType.Top);
          var extendedProperties = buildingBlock.OriginData;
 
-         extendedProperties.Each(x => addOriginDataToView(x, flowGroup));
-         addPKSimVersionToView(buildingBlock.PKSimVersion, flowGroup);
+         extendedProperties.Each(x => addOriginDataToView(x, _flowGroup));
+         addPKSimVersionToView(buildingBlock.PKSimVersion, _flowGroup);
          resizeTextBoxesToBestFit();
          uxLayoutControl.BestFit();
       }
