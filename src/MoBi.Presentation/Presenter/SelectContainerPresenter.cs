@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using FluentNHibernate.Utils;
 using MoBi.Assets;
 using MoBi.Core.Domain.Repository;
 using MoBi.Presentation.DTO;
@@ -8,6 +7,7 @@ using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
