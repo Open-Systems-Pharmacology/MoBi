@@ -1,6 +1,5 @@
 ﻿using System;
 using FakeItEasy;
-using FluentNHibernate.Utils;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
 using MoBi.Presentation.DTO;
@@ -13,6 +12,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility;
 using System.Linq;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation
 {

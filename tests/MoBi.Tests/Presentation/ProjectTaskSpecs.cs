@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using FakeItEasy;
-using FluentNHibernate.Utils;
 using MoBi.Assets;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
@@ -22,6 +21,7 @@ using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 using IProjectTask = MoBi.Presentation.Tasks.IProjectTask;
 
 namespace MoBi.Presentation
