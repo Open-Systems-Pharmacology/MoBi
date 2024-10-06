@@ -1,7 +1,7 @@
 ﻿using System.Windows.Forms;
 using DevExpress.Utils;
 using DevExpress.XtraBars;
-using DevExpress.XtraBars.Ribbon;
+using DevExpress.XtraGrid.Views.Grid.ViewInfo;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Formatters;
@@ -19,6 +19,7 @@ using OSPSuite.UI.RepositoryItems;
 using OSPSuite.UI.Services;
 using OSPSuite.UI.Views;
 using OSPSuite.Utility.Extensions;
+using Unit = OSPSuite.Core.Domain.UnitSystem.Unit;
 
 namespace MoBi.UI.Views
 {
@@ -97,7 +98,12 @@ namespace MoBi.UI.Views
 
       private void onGridViewMouseDown(MouseEventArgs e)
       {
-         if (e.Button != MouseButtons.Right) return;
+         if (e.Button != MouseButtons.Right) 
+            return;
+
+         if (gridView.CalcHitInfo(e.Location).HitTest != GridHitTest.EmptyRow)
+            return;
+
          ((ParameterValuesPresenter)_presenter).ShowContextMenu(null, this.CalculateRelativeOffset(e.Location, gridControl));
       }
 
