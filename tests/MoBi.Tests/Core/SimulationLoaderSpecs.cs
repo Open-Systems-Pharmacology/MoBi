@@ -14,6 +14,8 @@ using OSPSuite.Core.Serialization.Exchange;
 using MoBi.Helpers;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Extensions;
+using DevExpress.DataProcessing.InMemoryDataProcessor;
+using OSPSuite.SimModel;
 
 namespace MoBi.Core
 {
@@ -62,6 +64,8 @@ namespace MoBi.Core
       {
          base.Context();
          _project.AddModule(new Module().WithName("moduleName"));
+         _project.AddModule(new Module().WithName("newModuleName"));
+
 
          _clonedBuildingBlock = new ObserverBuildingBlock().WithId("SP2");
          _clonedModule = new Module
@@ -73,12 +77,13 @@ namespace MoBi.Core
          _clonedSimulationConfiguration = new SimulationConfiguration();
          _clonedSimulationConfiguration.AddModuleConfiguration(new ModuleConfiguration(_clonedModule));
          _clonedSimulationConfiguration.Individual = _clonedIndividual;
+         _simulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(new Module().WithName("newModuleName")));
+         _simulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(new Module().WithName("Unique moduleName")));
+         _simulation.Name = "Sim1";
          
          A.CallTo(() => _cloneManager.CloneSimulationConfiguration(_simulationConfiguration)).Returns(_clonedSimulationConfiguration);
          
          A.CallTo(_nameCorrector).WithReturnType<bool>().Returns(true);
-
-         A.CallTo(() => _nameCorrector.AutoCorrectName(A<IEnumerable<string>>._, A<IObjectBase>._)).Invokes(x => x.GetArgument<Module>(1).Name = "the corrected name");
       }
 
       protected override void Because()
@@ -117,10 +122,18 @@ namespace MoBi.Core
       }
 
       [Observation]
-      public void the_module_in_the_simulation_should_be_renamed()
+      public void the_module_in_the_simulation_with_conflicting_names_should_be_renamed()
       {
-         _simulation.Modules[0].Name.ShouldBeEqualTo("the corrected name");
+         _simulation.Modules[0].Name.ShouldBeEqualTo(_simulation.Name);
+         _simulation.Modules[1].Name.ShouldBeEqualTo($"{_simulation.Name} 1");
       }
+
+      [Observation]
+      public void the_module_in_the_simulation_with_no_conflicting_name_should_not_be_renamed()
+      {
+         _simulation.Modules[2].Name.ShouldBeEqualTo("Unique moduleName");
+      }
+      
    }
 
    public class When_adding_a_simulation_to_project_that_does_already_exists_by_name_and_the_user_cancels_the_rename : concern_for_SimulationLoader

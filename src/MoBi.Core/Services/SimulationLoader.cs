@@ -57,7 +57,11 @@ namespace MoBi.Core.Services
 
          var project = _context.CurrentProject;
 
-         renameCollidingEntities(simulation.Modules, project.Modules);
+         moBiSimulation.ResultsDataRepository = simulation.ResultsDataRepository;
+         if (!_nameCorrector.CorrectName(project.Simulations, moBiSimulation))
+            return;
+
+         renameCollidingModules(simulation.Modules, moBiSimulation.Name, project.Modules);
          renameCollidingEntities(simulation.Configuration.ExpressionProfiles, project.ExpressionProfileCollection);
 
          if (simulation.Configuration.Individual != null)
@@ -68,13 +72,25 @@ namespace MoBi.Core.Services
 
          addSimulationConfigurationToProject(moBiSimulation, loadCommand);
 
-         moBiSimulation.ResultsDataRepository = simulation.ResultsDataRepository;
-         if (!_nameCorrector.CorrectName(project.Simulations, moBiSimulation))
-            return;
-
          moBiSimulation.HasChanged = true;
          loadCommand.AddCommand(new AddSimulationCommand(moBiSimulation));
       }
+
+      private void renameCollidingModules(IEnumerable<Module> modulesToRename, string simulationName, IReadOnlyList<IWithName> existingEntities)
+      {
+         var takenNames = existingEntities.AllNames();
+
+         modulesToRename
+            .Where(x => takenNames.Contains(x.Name))
+            .Select((x, index) => new { Module = x, Index = index })
+            .Each(item => item.Module.Name = getModuleNameByIndex(simulationName,item.Index) );
+
+         //If there are still colliding names based on the simulation name, we need to correct them
+         modulesToRename.Where(x => takenNames.Contains(x.Name)).Each(x => _nameCorrector.AutoCorrectName(takenNames, x));
+      }
+
+      private string getModuleNameByIndex(string name, int index)=>
+         $"{name}{(index == 0 ? string.Empty : " " + index)}";
 
       private void renameCollidingEntities(IEnumerable<IObjectBase> entitiesToRename, IReadOnlyList<IWithName> existingEntities)
       {
