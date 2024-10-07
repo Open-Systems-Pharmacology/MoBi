@@ -6,6 +6,11 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Utility.Container;
+using MoBi.Assets;
+using MoBi.Presentation.UICommand;
+using OSPSuite.Assets;
+using OSPSuite.Core.Domain.Data;
+using OSPSuite.Presentation.Core;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
@@ -35,10 +40,16 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       protected override IEnumerable<IMenuBarItem> AllMenuItemsFor(IReadOnlyList<IBuildingBlock> buildingBlocks, IMoBiContext context)
       {
-         if (buildingBlocks.Count == 2)
+         if (buildingBlocks.Count == 2 && (buildingBlocks[0].GetType() == buildingBlocks[1].GetType()))
             yield return ComparisonCommonContextMenuItems.CompareObjectsMenu(buildingBlocks, context, _container);
 
          yield return ObjectBaseCommonContextMenuItems.AddToJournal(buildingBlocks, _container);
+
+         if (buildingBlocks.Count > 1)
+            yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
+               .WithCommandFor<RemoveMultipleBuildingBlocksUICommand, IReadOnlyList<IBuildingBlock>>(buildingBlocks, _container)
+               .AsGroupStarter()
+               .WithIcon(ApplicationIcons.Delete);
       }
    }
 }
