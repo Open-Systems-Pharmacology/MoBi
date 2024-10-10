@@ -56,13 +56,6 @@ namespace MoBi.Core.Services
          var moBiSimulation = simulation;
 
          var project = _context.CurrentProject;
-         var originalSimulationName = moBiSimulation.Name;
-         if (!_nameCorrector.CorrectName(project.Simulations, moBiSimulation))
-            return;
-
-         if (originalSimulationName != moBiSimulation.Name) //has been renamed
-            renameColidingModules(simulation.Modules, moBiSimulation.Name, project.Modules, originalSimulationName);
-
          renameCollidingEntities(simulation.Configuration.ExpressionProfiles, project.ExpressionProfileCollection);
 
          if (simulation.Configuration.Individual != null)
@@ -75,18 +68,24 @@ namespace MoBi.Core.Services
 
          moBiSimulation.ResultsDataRepository = simulation.ResultsDataRepository;
 
+         var originalSimulationName = moBiSimulation.Name;
+         if (!_nameCorrector.CorrectName(project.Simulations, moBiSimulation))
+            return;
+
+         if (originalSimulationName != moBiSimulation.Name) //has been renamed
+            correctModuleNames(simulation.Modules, moBiSimulation.Name, project.Modules, originalSimulationName);
+
          moBiSimulation.HasChanged = true;
          loadCommand.AddCommand(new AddSimulationCommand(moBiSimulation));
       }
 
-      private void renameColidingModules(IReadOnlyList<Module> modulesToRename, string simulationName, IReadOnlyList<Module> existingModules, string originalSimulationName)
+      private void correctModuleNames(IReadOnlyList<Module> modulesToRename, string simulationName, IReadOnlyList<Module> existingModules, string originalSimulationName)
       {
          //these names are unique so better creating a HashSet.
          var takenNames = existingModules.AllNames().ToHashSet();
 
          modulesToRename
-            .Select((x, index) => new { Module = x, Index = index })
-            .Each(item => renameModulesAfterSimulation(item.Module, simulationName, originalSimulationName));
+            .Each(module=> renameModulesAfterSimulation(module, simulationName, originalSimulationName));
 
          // Correct any remaining name conflicts
          modulesToRename.Where(x => takenNames.Contains(x.Name)).Each(x => _nameCorrector.AutoCorrectName(takenNames, x));
@@ -97,10 +96,7 @@ namespace MoBi.Core.Services
          if (module.Name.StartsWith(originalSimulationName))
             module.Name.Replace(originalSimulationName, simulationName);
       }
-
-      private string getModuleNameByIndex(string name, int index) =>
-         $"{name}{(index == 0 ? string.Empty : " " + index)}";
-
+      
       private void renameCollidingEntities(IEnumerable<IObjectBase> entitiesToRename, IReadOnlyList<IWithName> existingEntities)
       {
          var takenNames = existingEntities.AllNames();
