@@ -9,18 +9,18 @@ using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.UICommand
 {
-   public class RemoveMultipleBuildingBlocksUICommand : ObjectUICommand<IReadOnlyList<IBuildingBlock>>
+   public class RemoveMultipleBuildingBlocksUICommand<TBuildingBlock> : ObjectUICommand<IReadOnlyList<TBuildingBlock>> where TBuildingBlock : class, IBuildingBlock
    {
-      private readonly IInteractionTasksForMultipleBuildingBlocks _interactionTasks;
+      private readonly ITaskForMultipleBuildingBlocks<TBuildingBlock> _task;
 
-      public RemoveMultipleBuildingBlocksUICommand(IInteractionTasksForMultipleBuildingBlocks interactionTasks)
+      public RemoveMultipleBuildingBlocksUICommand(ITaskForMultipleBuildingBlocks<TBuildingBlock> task)
       {
-         _interactionTasks = interactionTasks;
+         _task = task;
       }
 
       protected override void PerformExecute()
       {
-         _interactionTasks.RemoveBuildingBlocks(Subject);
+         _task.RemoveBuildingBlocks(Subject);
       }
    }
 }

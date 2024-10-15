@@ -14,25 +14,22 @@ namespace MoBi.Presentation.Tasks.Interaction
 {
    namespace MoBi.Presentation.Tasks.Interaction
    {
-      public interface IInteractionTasksForMultipleBuildingBlocks
+      //Remove the Generic type
+      //get the type of BB and based on it , use the correct implementation for removal.
+      public interface ITaskForMultipleBuildingBlocks<TBuildingBlock> where TBuildingBlock : class, IBuildingBlock
       {
-         void RemoveBuildingBlocks(IReadOnlyList<IBuildingBlock> buildingBlocks);
+         void RemoveBuildingBlocks(IReadOnlyList<TBuildingBlock> buildingBlocks);
       } 
 
-      public class InteractionTasksForMultipleBuildingBlocks: 
-         IInteractionTasksForMultipleBuildingBlocks
-      
-      {
-         private readonly IInteractionTasksForChildren<Module, BuildingBlock> _interactionTasks;
-         private readonly IBuildingBlockTaskRetriever _buildingBlockTaskRetriever;
-         public InteractionTasksForMultipleBuildingBlocks(IInteractionTasksForChildren<Module, BuildingBlock> interactionTasks)
-         {
-            _interactionTasks = interactionTasks;
-         }
+      public class TaskForMultipleBuildingBlocks<TBuildingBlock> :
+         ITaskForMultipleBuildingBlocks<TBuildingBlock> where TBuildingBlock : class, IBuildingBlock
 
-         public void RemoveBuildingBlocks(IReadOnlyList<IBuildingBlock> buildingBlocks)
+      {
+         
+         //private readonly IBuildingBlockTaskRetriever _buildingBlockTaskRetriever;
+         public void RemoveBuildingBlocks(IReadOnlyList<TBuildingBlock> buildingBlocks)
          {
-            buildingBlocks.Each(x=> _interactionTasks.Remove(x as BuildingBlock, x.Module, x, true));            
+            throw new NotImplementedException();
          }
       }
    } 

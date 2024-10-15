@@ -47,7 +47,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
          if (buildingBlocks.Count > 1)
             yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
-               .WithCommandFor<RemoveMultipleBuildingBlocksUICommand, IReadOnlyList<IBuildingBlock>>(buildingBlocks, _container)
+               .WithCommandFor<RemoveMultipleBuildingBlocksUICommand<IBuildingBlock>, IReadOnlyList<IBuildingBlock>>(buildingBlocks, _container)
                .AsGroupStarter()
                .WithIcon(ApplicationIcons.Delete);
       }
