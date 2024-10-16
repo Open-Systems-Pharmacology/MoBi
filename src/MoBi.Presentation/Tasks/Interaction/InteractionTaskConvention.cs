@@ -24,6 +24,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          var interactionInterfaces = concreteType.GetInterfaces()
             .Where(i => i.IsGenericType && i.Name.StartsWith("IInteractionTasksFor")).ToList();
 
+
          interactionInterfaces.Each(interfaceType => register(concreteType, container, lifeStyle, interfaceType));
       }
 
