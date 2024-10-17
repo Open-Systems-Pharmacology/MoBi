@@ -30,10 +30,12 @@ namespace MoBi.Presentation.Presenter
       IListener<EntitySelectedEvent>,
       IListener<SimulationReloadEvent>,
       IListener<FavoritesSelectedEvent>,
-      IListener<UserDefinedSelectedEvent>
+      IListener<UserDefinedSelectedEvent>,
+      IListener<ShowSimulationChangesEvent>
    {
       void LoadDiagram();
       string CreateResultTabCaption(string viewCaption);
+      void LoadChanges();
    }
 
    public class EditSimulationPresenter : SingleStartPresenter<IEditSimulationView, IEditSimulationPresenter>, IEditSimulationPresenter, IListener<ObservedDataRemovedFromAnalysableEvent>
@@ -46,6 +48,7 @@ namespace MoBi.Presentation.Presenter
       private readonly ISimulationResidualVsTimeChartPresenter _simulationResidualVsTimeChartPresenter;
       private readonly IEditSolverSettingsPresenter _solverSettingsPresenter;
       private readonly IEditOutputSchemaPresenter _editOutputSchemaPresenter;
+      private readonly ISimulationChangesPresenter _simulationChangesPresenter;
       private readonly IEditInSimulationPresenterFactory _showPresenterFactory;
       private readonly ICache<Type, IEditInSimulationPresenter> _cacheShowPresenter;
       private bool _diagramLoaded;
@@ -66,9 +69,10 @@ namespace MoBi.Presentation.Presenter
          IUserDefinedParametersPresenter userDefinedParametersPresenter, ISimulationOutputMappingPresenter simulationOutputMappingPresenter,
          ISimulationPredictedVsObservedChartPresenter simulationPredictedVsObservedChartPresenter,
          ISimulationResidualVsTimeChartPresenter simulationResidualVsTimeChartPresenter, IMoBiContext context,
-         IOutputMappingMatchingTask outputMappingMatchingTask)
+         IOutputMappingMatchingTask outputMappingMatchingTask, ISimulationChangesPresenter changesPresenter)
          : base(view)
       {
+         _simulationChangesPresenter = changesPresenter;
          _editOutputSchemaPresenter = editOutputSchemaPresenter;
          _showPresenterFactory = showPresenterFactory;
          _heavyWorkManager = heavyWorkManager;
@@ -89,32 +93,26 @@ namespace MoBi.Presentation.Presenter
          _hierarchicalPresenter.ShowSolverSettings = showSolverSettings;
          _hierarchicalPresenter.SimulationFavorites = () => _favoritesPresenter.Favorites();
          _view.SetChartView(chartPresenter.View);
+         _view.SetChangesView(changesPresenter.View);
          _view.SetPredictedVsObservedView(simulationPredictedVsObservedChartPresenter.View);
          _view.SetResidualsVsTimeView(simulationResidualVsTimeChartPresenter.View);
          _view.SetDataView(_simulationOutputMappingPresenter.View);
          AddSubPresenters(_chartPresenter, _hierarchicalPresenter, _simulationDiagramPresenter, _solverSettingsPresenter, _editOutputSchemaPresenter,
             _favoritesPresenter, _userDefinedParametersPresenter, _simulationOutputMappingPresenter, _simulationPredictedVsObservedChartPresenter,
-            _simulationResidualVsTimeChartPresenter);
+            _simulationResidualVsTimeChartPresenter, _simulationChangesPresenter);
          _cacheShowPresenter = new Cache<Type, IEditInSimulationPresenter> { OnMissingKey = x => null };
          _chartPresenter.OnObservedDataAddedToChart += onObservedDataAddedToChart;
          _context = context;
          _outputMappingMatchingTask = outputMappingMatchingTask;
       }
 
-      public string CreateResultTabCaption(string chartName)
-      {
-         return string.IsNullOrWhiteSpace(chartName) ? AppConstants.Captions.Results : chartName;
-      }
+      public string CreateResultTabCaption(string chartName) => string.IsNullOrWhiteSpace(chartName) ? AppConstants.Captions.Results : chartName;
 
-      private void showSolverSettings()
-      {
-         _view.SetEditView(_solverSettingsPresenter.BaseView);
-      }
+      public void LoadChanges() => _simulationChangesPresenter.Edit(_simulation);
 
-      private void showOutputSchema()
-      {
-         _view.SetEditView(_editOutputSchemaPresenter.BaseView);
-      }
+      private void showSolverSettings() => _view.SetEditView(_solverSettingsPresenter.BaseView);
+
+      private void showOutputSchema() => _view.SetEditView(_editOutputSchemaPresenter.BaseView);
 
       public override void ReleaseFrom(IEventPublisher eventPublisher)
       {
@@ -132,6 +130,7 @@ namespace MoBi.Presentation.Presenter
          _favoritesPresenter.Edit(_simulation);
          _chartPresenter.UpdateTemplatesFor(_simulation);
          _view.SetEditView(_favoritesPresenter.BaseView);
+         _simulationChangesPresenter.Edit(_simulation);
          _simulationOutputMappingPresenter.EditSimulation(simulation);
          UpdateCaption();
          _view.Display();
@@ -147,10 +146,7 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      public override void Edit(object subject)
-      {
-         Edit(subject.DowncastTo<IMoBiSimulation>());
-      }
+      public override void Edit(object subject) => Edit(subject.DowncastTo<IMoBiSimulation>());
 
       public override object Subject => _simulation;
 
@@ -262,34 +258,21 @@ namespace MoBi.Presentation.Presenter
 
       private bool shouldShow(IEntity entity)
       {
-         if (entity == null) return false;
+         if (entity == null) 
+            return false;
+         
          return _simulation.Model.Root.Equals(entity.RootContainer) || _simulation.Model.Neighborhoods.Equals(entity.RootContainer);
       }
 
-      public void ZoomIn()
-      {
-         _simulationDiagramPresenter.Zoom(AppConstants.Diagram.Model.ZoomInFactor);
-      }
+      public void ZoomIn() => _simulationDiagramPresenter.Zoom(AppConstants.Diagram.Model.ZoomInFactor);
 
-      public void ZoomOut()
-      {
-         _simulationDiagramPresenter.Zoom(1 / AppConstants.Diagram.Model.ZoomInFactor);
-      }
+      public void ZoomOut() => _simulationDiagramPresenter.Zoom(1 / AppConstants.Diagram.Model.ZoomInFactor);
 
-      public void FitToPage()
-      {
-         _simulationDiagramPresenter.Zoom(AppConstants.Diagram.Base.ZoomFitToPageFactor);
-      }
+      public void FitToPage() => _simulationDiagramPresenter.Zoom(AppConstants.Diagram.Base.ZoomFitToPageFactor);
 
-      public void LayoutByForces()
-      {
-         _simulationDiagramPresenter.Layout(null, AppConstants.Diagram.Base.LayoutDepthChildren, null);
-      }
+      public void LayoutByForces() => _simulationDiagramPresenter.Layout(null, AppConstants.Diagram.Base.LayoutDepthChildren, null);
 
-      protected override void UpdateCaption()
-      {
-         _view.Caption = AppConstants.Captions.SimulationCaption(_simulation.Name);
-      }
+      protected override void UpdateCaption() => _view.Caption = AppConstants.Captions.SimulationCaption(_simulation.Name);
 
       public void Handle(SimulationReloadEvent eventToHandle)
       {
@@ -327,10 +310,7 @@ namespace MoBi.Presentation.Presenter
             _chartPresenter.RefreshSimulationChart();
       }
 
-      private bool canHandle(IObjectBaseEvent objectBaseEvent)
-      {
-         return Equals(_simulation, objectBaseEvent.ObjectBase);
-      }
+      private bool canHandle(IObjectBaseEvent objectBaseEvent) => Equals(_simulation, objectBaseEvent.ObjectBase);
 
       private void onObservedDataAddedToChart(object sender, ObservedDataAddedToChartEventArgs e)
       {
@@ -350,6 +330,14 @@ namespace MoBi.Presentation.Presenter
       {
          return e.AddedDataRepositories
             .Where(dataRepository => !_simulation.OutputMappings.Any(x => x.UsesObservedData(dataRepository))).ToList();
+      }
+
+      public void Handle(ShowSimulationChangesEvent eventToHandle)
+      {
+         if (eventToHandle.Simulation == _simulation)
+         {
+            _view.ShowChangesTab();
+         }
       }
    }
 }

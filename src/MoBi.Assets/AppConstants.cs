@@ -1128,6 +1128,7 @@ namespace MoBi.Assets
          public static readonly string SettingsAndSchema = "Output Intervals and Solver Settings";
          public static readonly string MergeBehavior = "Merge Behavior";
          public static readonly string ExportToExcel = "Export to Excel®...";
+         public static readonly string ShowChanges = "Show Changes";
 
          public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
 
@@ -1619,7 +1620,10 @@ namespace MoBi.Assets
          public static readonly string NotPresent = "Not Present";
          public static readonly string EditFormula = "Edit Formula";
          public static readonly string AssigningFormulaCreatesCircularReference = "Assigning formula creates circular reference";
-
+         public static readonly string Changes = "Changes";
+         public static readonly string SimulationChangesSinceConfiguration = "Simulation changes since configuration";
+         public static readonly string OriginalValue = "Original Value";
+         public static readonly string CurrentValue = "Current Value";
          public static string SelectTheBuildingBlockWhereEntitiesWillBeAddedOrUpdated(string typeBeingAdded) => $"Select the building block where {typeBeingAdded} will be added or updated";
          public static readonly string SelectBuildingBlock = "Select Building Block";
          public static readonly string MakeDefault = "Make defaults";
