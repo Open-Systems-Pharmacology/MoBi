@@ -46,12 +46,10 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          {
             createEditItem(simulation),
             createRenameItem(simulation),
-            createConfigure(simulation).AsGroupStarter()
+            createConfigure(simulation).AsGroupStarter(),
+            createUpdate(simulation)
          };
 
-
-         if (simulation.BuildingBlocks().Any(hasChanges))
-            _allMenuItems.Add(createUpdate(simulation));
 
          if (simulation.OriginalQuantityValues.Any())
             _allMenuItems.Add(createCommit(simulation));
