@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain;
@@ -19,35 +18,35 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public class InteractionTasksForMultipleBuildingBlocks : IInteractionTasksForMultipleBuildingBlocks
       {
-         private readonly IInteractionTasksForChildren<Module, EventGroupBuildingBlock> _interactionTasksForApplicationMoleculeBuilder;
-         private readonly IInteractionTasksForChildren<Module, InitialConditionsBuildingBlock> _interactionTasksForInitialCondition;
-         private readonly IInteractionTasksForChildren<Module, MoleculeBuildingBlock> _interactionTasksForMolecule;
-         private readonly IInteractionTasksForChildren<Module, PassiveTransportBuildingBlock> _interactionTasksForPassiveTransport;
+         private readonly IInteractionTasksForChildren<Module, EventGroupBuildingBlock> _interactionTasksForEventGroupBuildingBlock;
+         private readonly IInteractionTasksForChildren<Module, InitialConditionsBuildingBlock> _interactionTasksForInitialConditionBuildingBlock;
+         private readonly IInteractionTasksForChildren<Module, MoleculeBuildingBlock> _interactionTasksForMoleculeBuildingBlock;
+         private readonly IInteractionTasksForChildren<Module, PassiveTransportBuildingBlock> _interactionTasksForPassiveTransportBuildingBlock;
          private readonly IInteractionTasksForChildren<Module, ParameterValuesBuildingBlock> _interactionTasksForParameterValues;
-         private readonly IInteractionTasksForChildren<Module, MoBiReactionBuildingBlock> _interactionTasksForMobiReaction;
-         private readonly IInteractionTasksForChildren<Module, MoBiSpatialStructure> _interactionTasksForMobiSpatialStructure;
-         private readonly IInteractionTasksForChildren<Module, ObserverBuildingBlock> _interactionTasksForObserver;
+         private readonly IInteractionTasksForChildren<Module, MoBiReactionBuildingBlock> _interactionTasksForMobiReactionBuildingBlock;
+         private readonly IInteractionTasksForChildren<Module, MoBiSpatialStructure> _interactionTasksForMobiSpatialStructureBuildingBlock;
+         private readonly IInteractionTasksForChildren<Module, ObserverBuildingBlock> _interactionTasksForObserverBuildingBlock;
          private readonly IInteractionTaskContext _interactionTaskContext;
 
          public InteractionTasksForMultipleBuildingBlocks(
-            IInteractionTasksForChildren<Module, EventGroupBuildingBlock> interactionTasksForApplicationMoleculeBuilder,
-            IInteractionTasksForChildren<Module, InitialConditionsBuildingBlock> interactionTasksForInitialCondition,
-            IInteractionTasksForChildren<Module, MoleculeBuildingBlock> interactionTasksForMolecule,
-            IInteractionTasksForChildren<Module, PassiveTransportBuildingBlock> interactionTasksForPassiveTransport,
+            IInteractionTasksForChildren<Module, EventGroupBuildingBlock> interactionTasksForEventGroupBuildingBlock,
+            IInteractionTasksForChildren<Module, InitialConditionsBuildingBlock> interactionTasksForInitialConditionBuildingBlock,
+            IInteractionTasksForChildren<Module, MoleculeBuildingBlock> interactionTasksForMoleculeBuildingBlock,
+            IInteractionTasksForChildren<Module, PassiveTransportBuildingBlock> interactionTasksForPassiveTransportBuildingBlock,
             IInteractionTasksForChildren<Module, ParameterValuesBuildingBlock> interactionTasksForParameterValues,
-            IInteractionTasksForChildren<Module, MoBiReactionBuildingBlock> interactionTasksForMobiReaction,
-            IInteractionTasksForChildren<Module, MoBiSpatialStructure> interactionTasksForMobiSpatialStructure,
-            IInteractionTasksForChildren<Module, ObserverBuildingBlock> interactionTasksForObserver,
+            IInteractionTasksForChildren<Module, MoBiReactionBuildingBlock> interactionTasksForMobiReactionBuildingBlock,
+            IInteractionTasksForChildren<Module, MoBiSpatialStructure> interactionTasksForMobiSpatialStructureBuildingBlock,
+            IInteractionTasksForChildren<Module, ObserverBuildingBlock> interactionTasksForObserverBuildingBlock,
             IInteractionTaskContext interactionTaskContext)
          {
-            _interactionTasksForApplicationMoleculeBuilder = interactionTasksForApplicationMoleculeBuilder;
-            _interactionTasksForInitialCondition = interactionTasksForInitialCondition;
-            _interactionTasksForMolecule = interactionTasksForMolecule;
-            _interactionTasksForPassiveTransport = interactionTasksForPassiveTransport;
+            _interactionTasksForEventGroupBuildingBlock = interactionTasksForEventGroupBuildingBlock;
+            _interactionTasksForInitialConditionBuildingBlock = interactionTasksForInitialConditionBuildingBlock;
+            _interactionTasksForMoleculeBuildingBlock = interactionTasksForMoleculeBuildingBlock;
+            _interactionTasksForPassiveTransportBuildingBlock = interactionTasksForPassiveTransportBuildingBlock;
             _interactionTasksForParameterValues = interactionTasksForParameterValues;
-            _interactionTasksForMobiReaction = interactionTasksForMobiReaction;
-            _interactionTasksForMobiSpatialStructure = interactionTasksForMobiSpatialStructure;
-            _interactionTasksForObserver = interactionTasksForObserver;
+            _interactionTasksForMobiReactionBuildingBlock = interactionTasksForMobiReactionBuildingBlock;
+            _interactionTasksForMobiSpatialStructureBuildingBlock = interactionTasksForMobiSpatialStructureBuildingBlock;
+            _interactionTasksForObserverBuildingBlock = interactionTasksForObserverBuildingBlock;
             _interactionTaskContext = interactionTaskContext;
          }
 
@@ -56,14 +55,14 @@ namespace MoBi.Presentation.Tasks.Interaction
             if (_interactionTaskContext.DialogCreator.MessageBoxYesNo(AppConstants.Dialog.RemoveMultipleBuildingBlocks) != ViewResult.Yes)
                return;
 
-            var referringSimulationsAndBuildingBlocks = new List<Tuple<IReadOnlyList<IMoBiSimulation>, IBuildingBlock>>();
+            var referringSimulationsAndBuildingBlocks = new List<Tuple<IReadOnlyList<string>, string>>();
 
             foreach (var buildingBlockToRemove in buildingBlocksToRemove)
             {
                var referringSimulations = _interactionTaskContext.Context.CurrentProject.SimulationsUsing(buildingBlockToRemove);
 
                if (referringSimulations.Any())
-                  referringSimulationsAndBuildingBlocks.Add(new Tuple<IReadOnlyList<IMoBiSimulation>, IBuildingBlock>(referringSimulations, buildingBlockToRemove));
+                  referringSimulationsAndBuildingBlocks.Add(new Tuple<IReadOnlyList<string>, string>(referringSimulations.AllNames(), buildingBlockToRemove.Name));
                else
                {
                   removeBuildingBlock(buildingBlockToRemove);
@@ -72,19 +71,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
             if (referringSimulationsAndBuildingBlocks.Any())
             {
-               var messageBuilder = new StringBuilder();
-
-               messageBuilder.AppendLine(AppConstants.Dialog.BuildingBlocksUsedInSimulation);
-               messageBuilder.AppendLine();
-
-               foreach (var item in referringSimulationsAndBuildingBlocks)
-               {
-                  var buildingBlock = item.Item2;
-                  var simulations = item.Item1;
-
-                  messageBuilder.AppendLine($"\t- {AppConstants.CannotRemoveBuildingBlockFromProject(buildingBlock.Name, simulations.AllNames())}");
-               }
-
+               var messageBuilder = AppConstants.ListOfBuildingBlocksNotRemoved(referringSimulationsAndBuildingBlocks);
                _interactionTaskContext.DialogCreator.MessageBoxInfo(messageBuilder.ToString());
             }
          }
@@ -94,35 +81,35 @@ namespace MoBi.Presentation.Tasks.Interaction
             switch (buildingBlockToRemove)
             {
                case EventGroupBuildingBlock eventGroupBuildingBlock:
-                  _interactionTasksForApplicationMoleculeBuilder.Remove(eventGroupBuildingBlock, eventGroupBuildingBlock.Module, eventGroupBuildingBlock, true);
+                  _interactionTaskContext.Context.AddToHistory(_interactionTasksForEventGroupBuildingBlock.Remove(eventGroupBuildingBlock, eventGroupBuildingBlock.Module, eventGroupBuildingBlock, silent: true));
                   break;
 
                case InitialConditionsBuildingBlock initialConditionsBuildingBlock:
-                  _interactionTasksForInitialCondition.Remove(initialConditionsBuildingBlock, initialConditionsBuildingBlock.Module, initialConditionsBuildingBlock, true);
+                  _interactionTaskContext.Context.AddToHistory(_interactionTasksForInitialConditionBuildingBlock.Remove(initialConditionsBuildingBlock, initialConditionsBuildingBlock.Module, initialConditionsBuildingBlock, silent: true));
                   break;
 
                case MoleculeBuildingBlock moleculeBuildingBlock:
-                  _interactionTasksForMolecule.Remove(moleculeBuildingBlock, moleculeBuildingBlock.Module, moleculeBuildingBlock, true);
+                  _interactionTaskContext.Context.AddToHistory(_interactionTasksForMoleculeBuildingBlock.Remove(moleculeBuildingBlock, moleculeBuildingBlock.Module, moleculeBuildingBlock, silent: true));
                   break;
 
                case PassiveTransportBuildingBlock passiveTransportBuildingBlock:
-                  _interactionTasksForPassiveTransport.Remove(passiveTransportBuildingBlock, passiveTransportBuildingBlock.Module, passiveTransportBuildingBlock, true);
+                  _interactionTaskContext.Context.AddToHistory(_interactionTasksForPassiveTransportBuildingBlock.Remove(passiveTransportBuildingBlock, passiveTransportBuildingBlock.Module, passiveTransportBuildingBlock, silent: true));
                   break;
 
                case ParameterValuesBuildingBlock parameterValuesBuildingBlock:
-                  _interactionTasksForParameterValues.Remove(parameterValuesBuildingBlock, parameterValuesBuildingBlock.Module, parameterValuesBuildingBlock, true);
+                  _interactionTaskContext.Context.AddToHistory(_interactionTasksForParameterValues.Remove(parameterValuesBuildingBlock, parameterValuesBuildingBlock.Module, parameterValuesBuildingBlock, silent: true));
                   break;
 
                case MoBiReactionBuildingBlock mobiReactionBuildingBlock:
-                  _interactionTasksForMobiReaction.Remove(mobiReactionBuildingBlock, mobiReactionBuildingBlock.Module, mobiReactionBuildingBlock, true);
+                  _interactionTaskContext.Context.AddToHistory(_interactionTasksForMobiReactionBuildingBlock.Remove(mobiReactionBuildingBlock, mobiReactionBuildingBlock.Module, mobiReactionBuildingBlock, silent: true));
                   break;
 
                case MoBiSpatialStructure mobiSpatialStructure:
-                  _interactionTasksForMobiSpatialStructure.Remove(mobiSpatialStructure, mobiSpatialStructure.Module, mobiSpatialStructure, true);
+                  _interactionTaskContext.Context.AddToHistory(_interactionTasksForMobiSpatialStructureBuildingBlock.Remove(mobiSpatialStructure, mobiSpatialStructure.Module, mobiSpatialStructure, silent: true));
                   break;
 
                case ObserverBuildingBlock observerBuildingBlock:
-                  _interactionTasksForObserver.Remove(observerBuildingBlock, observerBuildingBlock.Module, observerBuildingBlock, true);
+                  _interactionTaskContext.Context.AddToHistory(_interactionTasksForObserverBuildingBlock.Remove(observerBuildingBlock, observerBuildingBlock.Module, observerBuildingBlock, silent: true));
                   break;
 
                default:

@@ -2319,6 +2319,21 @@ namespace MoBi.Assets
          return cannotRemoveTypeFromProject("module", buildingBlockName, referringBuildingBlockNames);
       }
 
+      public static StringBuilder ListOfBuildingBlocksNotRemoved(List<Tuple<IReadOnlyList<string>, string>> referringSimulationsAndBuildingBlocks)
+      {
+         var messageBuilder = new StringBuilder();
+
+         messageBuilder.AppendLine(Dialog.BuildingBlocksUsedInSimulation);
+         messageBuilder.AppendLine();
+
+         foreach (var (referringSimulations, buildingBlock) in referringSimulationsAndBuildingBlocks)
+         {
+            messageBuilder.AppendLine($"\t- {CannotRemoveBuildingBlockFromProject(buildingBlock, referringSimulations)}");
+         }
+
+         return messageBuilder;
+      }
+
       public static string CannotRemoveBuildingBlockFromProject(string buildingBlockName, IEnumerable<string> referringBuildingBlockNames)
       {
          return cannotRemoveTypeFromProject("building block", buildingBlockName, referringBuildingBlockNames);
