@@ -205,9 +205,9 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       private IMenuBarItem createShowDifferences(IMoBiSimulation simulation)
       {
-         return CreateMenuButton.WithCaption(AppConstants.MenuNames.ShowDifferences)
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.ShowChanges)
             .WithIcon(ApplicationIcons.Comparison)
-            .WithCommandFor<ShowDifferencesUICommand, IMoBiSimulation>(simulation, _container);
+            .WithCommandFor<ShowChangesUICommand, IMoBiSimulation>(simulation, _container);
       }
 
       private IMenuBarItem createCommit(IMoBiSimulation simulation)

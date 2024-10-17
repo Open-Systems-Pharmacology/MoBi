@@ -5,12 +5,12 @@ using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.UICommand
 {
-   internal class ShowDifferencesUICommand : ObjectUICommand<IMoBiSimulation>
+   internal class ShowChangesUICommand : ObjectUICommand<IMoBiSimulation>
    {
       private readonly IMoBiContext _context;
       private readonly IEditTasksForSimulation _simulationTasks;
 
-      public ShowDifferencesUICommand(IMoBiContext context, IEditTasksForSimulation simulationTasks)
+      public ShowChangesUICommand(IMoBiContext context, IEditTasksForSimulation simulationTasks)
       {
          _context = context;
          _simulationTasks = simulationTasks;

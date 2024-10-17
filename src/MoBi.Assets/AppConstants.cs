@@ -1128,7 +1128,7 @@ namespace MoBi.Assets
          public static readonly string SettingsAndSchema = "Output Intervals and Solver Settings";
          public static readonly string MergeBehavior = "Merge Behavior";
          public static readonly string ExportToExcel = "Export to Excel®...";
-         public static readonly string ShowDifferences = "Show Differences";
+         public static readonly string ShowChanges = "Show Changes";
 
          public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
 
