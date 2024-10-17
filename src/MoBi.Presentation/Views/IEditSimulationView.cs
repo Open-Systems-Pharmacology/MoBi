@@ -12,7 +12,7 @@ namespace MoBi.Presentation.Views
       void SetModelDiagram(ISimulationDiagramView subView);
 
       /// <summary>
-      ///    Indicates whether or not the current view is the results view
+      ///    Indicates whether the current view is the results view
       /// </summary>
       bool ShowsResults { get; }
 
@@ -28,5 +28,7 @@ namespace MoBi.Presentation.Views
 
       void SetPredictedVsObservedView(ISimulationVsObservedDataView view);
       void SetResidualsVsTimeView(ISimulationVsObservedDataView view);
+      void ShowChangesTab();
+      void SetChangesView(ISimulationChangesView view);
    }
 }

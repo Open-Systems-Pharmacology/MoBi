@@ -1,5 +1,6 @@
 ﻿using System.Xml.Linq;
 using MoBi.Core.Domain;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Core.Serialization.Xml.Extensions;
 
@@ -18,6 +19,10 @@ namespace MoBi.Core.Serialization.Xml.Serializer
       protected override void TypedDeserialize(OriginalQuantityValue originalQuantityValue, XElement element, SerializationContext serializationContext)
       {
          base.TypedDeserialize(originalQuantityValue, element, serializationContext);
+
+         if (originalQuantityValue.Dimension == null)
+            originalQuantityValue.Dimension = Constants.Dimension.NO_DIMENSION;
+
          element.UpdateDisplayUnit(originalQuantityValue);
       }
 

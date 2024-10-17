@@ -1,5 +1,7 @@
+using System;
 using MoBi.Presentation.DTO;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Utility.Format;
 
 namespace MoBi.Presentation.Formatters
@@ -14,6 +16,11 @@ namespace MoBi.Presentation.Formatters
       public static IFormatter<double?> ParameterValueFormatter(this ParameterValueDTO parameterValueDTO)
       {
          return new ValueAllowingNaNFormatter(parameterValueDTO);
+      }
+
+      public static IFormatter<double?> OriginalQuantityValueFormatter(this OriginalQuantityValueDTO originalQuantityValueDTO, Func<OriginalQuantityValueDTO, Unit> displayUnitRetriever)
+      {
+         return new NullableWithRetrievableDisplayUnitFormatter(() => displayUnitRetriever(originalQuantityValueDTO));
       }
 
       public static IFormatter<double?> IndividualParameterFormatter(this IndividualParameterDTO individualParameterDTO)

@@ -1,4 +1,5 @@
 ﻿using FakeItEasy;
+using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Events;
@@ -125,6 +126,7 @@ namespace MoBi.Core.Service
       {
          base.Context();
          _simulationToConfigure = new MoBiSimulation { Model = new Model { Root = new Container() }.WithName("OLD_MODEL") };
+         _simulationToConfigure.AddOriginalQuantityValue(new OriginalQuantityValue {Path = "a path"});
          _simulationToConfigure.Configuration = new SimulationConfiguration();
          _model = new Model().WithName("NEW MODEL");
          _model.Root = new Container();
@@ -146,6 +148,12 @@ namespace MoBi.Core.Service
       public void should_start_the_configure_workflow_for_the_user()
       {
          A.CallTo(() => _configurePresenter.CreateBasedOn(_simulationToConfigure, false)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_original_quantities_should_be_cleared()
+      {
+         _simulationToConfigure.OriginalQuantityValues.ShouldBeEmpty();
       }
 
       [Observation]

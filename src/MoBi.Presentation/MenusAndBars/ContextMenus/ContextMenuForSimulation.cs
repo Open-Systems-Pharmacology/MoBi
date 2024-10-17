@@ -52,7 +52,10 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
 
          if (simulation.OriginalQuantityValues.Any())
+         {
             _allMenuItems.Add(createCommit(simulation));
+            _allMenuItems.Add(createShowDifferences(simulation));
+         }
 
          _allMenuItems.AddRange(new[]
          {
@@ -198,6 +201,13 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Edit)
             .WithIcon(ApplicationIcons.Edit)
             .WithCommandFor<EditSimulationUICommand, IMoBiSimulation>(simulation, _container);
+      }
+
+      private IMenuBarItem createShowDifferences(IMoBiSimulation simulation)
+      {
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.ShowDifferences)
+            .WithIcon(ApplicationIcons.Comparison)
+            .WithCommandFor<ShowDifferencesUICommand, IMoBiSimulation>(simulation, _container);
       }
 
       private IMenuBarItem createCommit(IMoBiSimulation simulation)
