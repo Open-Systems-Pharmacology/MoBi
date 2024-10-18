@@ -65,7 +65,7 @@ namespace MoBi.Presentation.Presenter
 
       string DisplayFor(Type formulaType);
 
-      void FormulaTypeSelectionChanged(string formulaName);
+      void AddNewFormula(string formulaName = null);
    }
 
    public abstract class EditFormulaPresenter<TView, TPresenter> : AbstractCommandCollectorPresenter<TView, TPresenter> where TView : IView<TPresenter>, IFormulaEditView where TPresenter : IPresenter

@@ -28,7 +28,7 @@ using OSPSuite.Utility.Extensions;
 namespace MoBi.Presentation.Tasks.Interaction
 {
    public abstract class InteractionTasksForExtendablePathAndValueEntity<TBuildingBlock, TPathAndValueEntity> : InteractionTasksForPathAndValueEntity<Module, TBuildingBlock, TPathAndValueEntity>, IInteractionTasksForExtendablePathAndValueEntity<TBuildingBlock, TPathAndValueEntity>
-      where TBuildingBlock : class, ILookupBuildingBlock<TPathAndValueEntity>, IBuildingBlock, new() where TPathAndValueEntity : PathAndValueEntity
+      where TBuildingBlock : PathAndValueEntityBuildingBlock<TPathAndValueEntity>, ILookupBuildingBlock<TPathAndValueEntity>, IBuildingBlock, new() where TPathAndValueEntity : PathAndValueEntity
    {
       protected IExtendPathAndValuesManager<TPathAndValueEntity> _extendManager;
       protected readonly ICloneManagerForBuildingBlock _cloneManagerForBuildingBlock;

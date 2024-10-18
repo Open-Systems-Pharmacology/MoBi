@@ -83,7 +83,7 @@ namespace MoBi.UI.Views
 
       private void formulaTypeSelectionChanged()
       {
-         this.DoWithinExceptionHandler(() => _presenter.FormulaTypeSelectionChanged(FormulaNameControl.Text));
+         this.DoWithinExceptionHandler(() => _presenter.AddNewFormula(FormulaNameControl.Text));
       }
 
       public override void InitializeResources()
