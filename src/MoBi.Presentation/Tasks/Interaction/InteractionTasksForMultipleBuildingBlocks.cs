@@ -18,25 +18,29 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public class InteractionTasksForMultipleBuildingBlocks : IInteractionTasksForMultipleBuildingBlocks
       {
-         private readonly IInteractionTasksForChildren<Module, EventGroupBuildingBlock> _interactionTasksForEventGroupBuildingBlock;
-         private readonly IInteractionTasksForChildren<Module, InitialConditionsBuildingBlock> _interactionTasksForInitialConditionBuildingBlock;
-         private readonly IInteractionTasksForChildren<Module, MoleculeBuildingBlock> _interactionTasksForMoleculeBuildingBlock;
-         private readonly IInteractionTasksForChildren<Module, PassiveTransportBuildingBlock> _interactionTasksForPassiveTransportBuildingBlock;
-         private readonly IInteractionTasksForChildren<Module, ParameterValuesBuildingBlock> _interactionTasksForParameterValues;
-         private readonly IInteractionTasksForChildren<Module, MoBiReactionBuildingBlock> _interactionTasksForMobiReactionBuildingBlock;
-         private readonly IInteractionTasksForChildren<Module, MoBiSpatialStructure> _interactionTasksForMobiSpatialStructureBuildingBlock;
-         private readonly IInteractionTasksForChildren<Module, ObserverBuildingBlock> _interactionTasksForObserverBuildingBlock;
+         private readonly IInteractionTasksForEventBuildingBlock _interactionTasksForEventGroupBuildingBlock;
+         private readonly IInitialConditionsTask<InitialConditionsBuildingBlock> _interactionTasksForInitialConditionBuildingBlock;
+         private readonly IParameterValuesTask _interactionTasksForParameterValues;
+         private readonly IInteractionTasksForMoleculeBuildingBlock _interactionTasksForMoleculeBuildingBlock;
+         private readonly IInteractionTasksForPassiveTransportBuildingBlock _interactionTasksForPassiveTransportBuildingBlock;
+         private readonly IInteractionTasksForReactionBuildingBlock _interactionTasksForMobiReactionBuildingBlock;
+         private readonly IInteractionTasksForSpatialStructure _interactionTasksForMobiSpatialStructureBuildingBlock;
+         private readonly IInteractionTasksForObserverBuildingBlock _interactionTasksForObserverBuildingBlock;
+         private readonly IInteractionTasksForIndividualBuildingBlock _interactionTasksForIndividualBuildingBlock;
+         private readonly IInteractionTasksForExpressionProfileBuildingBlock _interactionTasksForExpressionProfileBuildingBlock;
          private readonly IInteractionTaskContext _interactionTaskContext;
 
          public InteractionTasksForMultipleBuildingBlocks(
-            IInteractionTasksForChildren<Module, EventGroupBuildingBlock> interactionTasksForEventGroupBuildingBlock,
-            IInteractionTasksForChildren<Module, InitialConditionsBuildingBlock> interactionTasksForInitialConditionBuildingBlock,
-            IInteractionTasksForChildren<Module, MoleculeBuildingBlock> interactionTasksForMoleculeBuildingBlock,
-            IInteractionTasksForChildren<Module, PassiveTransportBuildingBlock> interactionTasksForPassiveTransportBuildingBlock,
-            IInteractionTasksForChildren<Module, ParameterValuesBuildingBlock> interactionTasksForParameterValues,
-            IInteractionTasksForChildren<Module, MoBiReactionBuildingBlock> interactionTasksForMobiReactionBuildingBlock,
-            IInteractionTasksForChildren<Module, MoBiSpatialStructure> interactionTasksForMobiSpatialStructureBuildingBlock,
-            IInteractionTasksForChildren<Module, ObserverBuildingBlock> interactionTasksForObserverBuildingBlock,
+            IInteractionTasksForEventBuildingBlock interactionTasksForEventGroupBuildingBlock,
+            IInitialConditionsTask<InitialConditionsBuildingBlock> interactionTasksForInitialConditionBuildingBlock,
+            IInteractionTasksForMoleculeBuildingBlock interactionTasksForMoleculeBuildingBlock,
+            IInteractionTasksForPassiveTransportBuildingBlock interactionTasksForPassiveTransportBuildingBlock,
+            IParameterValuesTask interactionTasksForParameterValues,
+            IInteractionTasksForReactionBuildingBlock interactionTasksForMobiReactionBuildingBlock,
+            IInteractionTasksForSpatialStructure interactionTasksForMobiSpatialStructureBuildingBlock,
+            IInteractionTasksForObserverBuildingBlock interactionTasksForObserverBuildingBlock,
+            IInteractionTasksForIndividualBuildingBlock interactionTasksForIndividualBuildingBlock,
+            IInteractionTasksForExpressionProfileBuildingBlock interactionTasksForExpressionProfileBuildingBlock,
             IInteractionTaskContext interactionTaskContext)
          {
             _interactionTasksForEventGroupBuildingBlock = interactionTasksForEventGroupBuildingBlock;
@@ -47,6 +51,8 @@ namespace MoBi.Presentation.Tasks.Interaction
             _interactionTasksForMobiReactionBuildingBlock = interactionTasksForMobiReactionBuildingBlock;
             _interactionTasksForMobiSpatialStructureBuildingBlock = interactionTasksForMobiSpatialStructureBuildingBlock;
             _interactionTasksForObserverBuildingBlock = interactionTasksForObserverBuildingBlock;
+            _interactionTasksForIndividualBuildingBlock = interactionTasksForIndividualBuildingBlock;
+            _interactionTasksForExpressionProfileBuildingBlock = interactionTasksForExpressionProfileBuildingBlock;
             _interactionTaskContext = interactionTaskContext;
          }
 
@@ -110,6 +116,14 @@ namespace MoBi.Presentation.Tasks.Interaction
 
                case ObserverBuildingBlock observerBuildingBlock:
                   _interactionTaskContext.Context.AddToHistory(_interactionTasksForObserverBuildingBlock.Remove(observerBuildingBlock, observerBuildingBlock.Module, observerBuildingBlock, silent: true));
+                  break;
+
+               case IndividualBuildingBlock individualBuildingBlock:
+                  _interactionTaskContext.Context.AddToHistory(_interactionTasksForIndividualBuildingBlock.Remove(individualBuildingBlock, null, individualBuildingBlock, silent: true));
+                  break;
+
+               case ExpressionProfileBuildingBlock expressionProfileBuildingBlock:
+                  _interactionTaskContext.Context.AddToHistory(_interactionTasksForExpressionProfileBuildingBlock.Remove(expressionProfileBuildingBlock, null, expressionProfileBuildingBlock, silent: true));
                   break;
 
                default:

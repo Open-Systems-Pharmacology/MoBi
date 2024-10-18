@@ -8,11 +8,10 @@ using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-
    /// <summary>
-   /// Registers components with the following conventions
-   /// Registers all interfaces that begin with "InteractionTasksFor" if
-   ///   the interface contains a generic type.
+   ///    Registers components with the following conventions
+   ///    Registers all interfaces that begin with "InteractionTasksFor" if
+   ///    the interface contains a generic type.
    /// </summary>
    public class InteractionTaskConvention : IRegistrationConvention
    {
@@ -26,6 +25,8 @@ namespace MoBi.Presentation.Tasks.Interaction
 
 
          interactionInterfaces.Each(interfaceType => register(concreteType, container, lifeStyle, interfaceType));
+         if (interactionInterfaces.Any())
+            Debug.WriteLine($"{concreteType.Name}");
       }
 
       private static void register(Type concreteType, IContainer container, LifeStyle lifeStyle, Type interfaceType)

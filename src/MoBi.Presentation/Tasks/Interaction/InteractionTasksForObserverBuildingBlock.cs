@@ -6,7 +6,11 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public class InteractionTasksForObserverBuildingBlock : InteractionTasksForEnumerableBuildingBlock<Module, ObserverBuildingBlock, ObserverBuilder>
+   public interface IInteractionTasksForObserverBuildingBlock : IInteractionTasksForBuildingBlock<Module, ObserverBuildingBlock>
+   {
+   }
+
+   public class InteractionTasksForObserverBuildingBlock : InteractionTasksForEnumerableBuildingBlock<Module, ObserverBuildingBlock, ObserverBuilder>, IInteractionTasksForObserverBuildingBlock
    {
       private readonly IMoBiFormulaTask _moBiFormulaTask;
 

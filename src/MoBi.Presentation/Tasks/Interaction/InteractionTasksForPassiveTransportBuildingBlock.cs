@@ -5,7 +5,10 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public class InteractionTasksForPassiveTransportBuildingBlock : InteractionTasksForEnumerableBuildingBlockOfContainerBuilder<Module, PassiveTransportBuildingBlock, TransportBuilder>
+   public interface IInteractionTasksForPassiveTransportBuildingBlock : IInteractionTasksForBuildingBlock<Module, PassiveTransportBuildingBlock>
+   {
+   }
+   public class InteractionTasksForPassiveTransportBuildingBlock : InteractionTasksForEnumerableBuildingBlockOfContainerBuilder<Module, PassiveTransportBuildingBlock, TransportBuilder>, IInteractionTasksForPassiveTransportBuildingBlock
    {
       public InteractionTasksForPassiveTransportBuildingBlock(
          IInteractionTaskContext interactionTaskContext,

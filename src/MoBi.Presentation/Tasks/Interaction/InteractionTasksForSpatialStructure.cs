@@ -7,7 +7,10 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public class InteractionTasksForSpatialStructure : InteractionTasksForBuildingBlock<Module, MoBiSpatialStructure>
+   public interface IInteractionTasksForSpatialStructure : IInteractionTasksForBuildingBlock<Module, MoBiSpatialStructure>
+   {
+   }
+   public class InteractionTasksForSpatialStructure : InteractionTasksForBuildingBlock<Module, MoBiSpatialStructure>, IInteractionTasksForSpatialStructure
    {
       private readonly IMoBiSpatialStructureFactory _spatialStructureFactory;
 
