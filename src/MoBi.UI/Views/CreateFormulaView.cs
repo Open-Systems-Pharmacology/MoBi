@@ -4,6 +4,7 @@ using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.UI.Views
 {
@@ -11,7 +12,11 @@ namespace MoBi.UI.Views
    {
       public bool IsNamedFormulaView
       {
-         set => layoutItemFormulaName.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
+         set
+         {
+            layoutItemFormulaName.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
+            layoutItemAddFormula.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
+         }
       }
 
       protected override BaseControl FormulaNameControl => tbFormulaName;
@@ -20,6 +25,7 @@ namespace MoBi.UI.Views
       {
          base.InitializeResources();
 
+         btnAddFormula.Click += (o, e) => this.DoWithinExceptionHandler(() => _presenter.AddNewFormula());
          layoutItemFormulaSelect.Visibility = LayoutVisibility.Never;
          layoutItemAddFormula.Visibility = LayoutVisibility.Never;
          layoutItemCloneFormula.Visibility = LayoutVisibility.Never;

@@ -90,7 +90,7 @@ namespace MoBi.Presentation.Presenter
          OnStatusChanged();
       }
 
-      public void FormulaTypeSelectionChanged(string formulaName)
+      public void AddNewFormula(string formulaName)
       {
          SelectFormulaByTypeAndName(_formulaDTO.Type, formulaName);
          UpdateFormula();
