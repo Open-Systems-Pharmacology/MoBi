@@ -22,7 +22,6 @@ namespace MoBi.Presentation.Presenter
    {
       private readonly IObjectPathCreatorAtTransport _objectPathCreatorAtTransport;
       private readonly ITransportMoleculeContainerToObjectBaseDTOMapper _transporterMoleculeContainerMapper;
-      private readonly IBuildingBlockRepository _buildingBlockRepository;
 
       public SelectReferenceAtTransportPresenter(ISelectReferenceView view, 
          IObjectBaseToObjectBaseDTOMapper objectBaseDTOMapper,
@@ -39,7 +38,6 @@ namespace MoBi.Presentation.Presenter
       {
          _objectPathCreatorAtTransport = objectPathCreatorAtTransport;
          _transporterMoleculeContainerMapper = transporterMoleculeContainerMapper;
-         _buildingBlockRepository = buildingBlockRepository;
       }
 
 

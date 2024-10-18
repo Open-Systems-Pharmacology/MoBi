@@ -60,7 +60,6 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
    public class ContextMenuSpecificationFactoryForModuleParameterValuesCollection : IContextMenuSpecificationFactory<IViewItem>
    {
       private readonly IContainer _container;
-      private readonly IObjectTypeResolver _objectTypeResolver;
 
       public ContextMenuSpecificationFactoryForModuleParameterValuesCollection(IContainer container)
       {
