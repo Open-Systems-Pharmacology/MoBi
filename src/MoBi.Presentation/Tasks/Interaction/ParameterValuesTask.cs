@@ -25,6 +25,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       void AddStartValueExpression(ParameterValuesBuildingBlock buildingBlock);
       IMoBiCommand SetFullPath(ParameterValue parameterValue, ObjectPath entityPath, ParameterValuesBuildingBlock buildingBlock);
       IReadOnlyList<ObjectPath> GetNewPaths();
+      bool CorrectName(ParameterValuesBuildingBlock buildingBlock, Module module);
    }
 
    public class ParameterValuesTask : InteractionTasksForExtendablePathAndValueEntity<ParameterValuesBuildingBlock, ParameterValue>, IParameterValuesTask
@@ -156,7 +157,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          }
       }
 
-      protected override bool CorrectName(ParameterValuesBuildingBlock buildingBlock, Module module)
+      public override bool CorrectName(ParameterValuesBuildingBlock buildingBlock, Module module)
       {
          var forbiddenNames = _editTask.GetForbiddenNames(buildingBlock, module.ParameterValuesCollection);
          return InteractionTask.CorrectName(buildingBlock, forbiddenNames);

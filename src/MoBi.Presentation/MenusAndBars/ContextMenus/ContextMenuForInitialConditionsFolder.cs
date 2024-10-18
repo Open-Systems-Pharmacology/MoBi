@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using MoBi.Assets;
+using MoBi.Core.Domain.Extensions;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.UICommand;
 using OSPSuite.Assets;
@@ -24,11 +25,25 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          _allMenuItems = new List<IMenuBarItem>();
       }
 
+      public override IContextMenu InitializeWith(ObjectBaseDTO dto, IPresenter presenter)
+      {
+         var cm = base.InitializeWith(dto, presenter);
+         _allMenuItems.Add(createAddBuildingBlock(ModuleFor(dto)));
+         return cm;
+      }
+
       protected override IMenuBarItem AddNewBuildingBlock(Module module)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddNew(ObjectTypes.InitialConditionsBuildingBlock))
             .WithIcon(ApplicationIcons.LoadIconFor(nameof(InitialConditionsBuildingBlock)))
             .WithCommandFor<AddNewInitialConditionsBuildingBlockUICommand, Module>(module, _container);
+      }
+
+      private IMenuBarItem createAddBuildingBlock(Module module)
+      {
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExisting(ObjectTypes.InitialConditionsBuildingBlock))
+            .WithIcon(ApplicationIcons.LoadIconFor(nameof(ParameterValuesBuildingBlock)))
+            .WithCommandFor<AddInitialConditionsBuildingBlockCommand, Module>(module, _container);
       }
    }
 

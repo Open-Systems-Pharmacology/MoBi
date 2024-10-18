@@ -269,7 +269,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          Context.PublishEvent(new AddedEvent<TChild>(newObjectBase, parent));
       }
 
-      protected virtual bool CorrectName(TChild child, TParent parent)
+      public virtual bool CorrectName(TChild child, TParent parent)
       {
          var parentContainer = parent as IEnumerable<IObjectBase> ?? Enumerable.Empty<IObjectBase>();
          var forbiddenNames = _editTask.GetForbiddenNames(child, parentContainer);

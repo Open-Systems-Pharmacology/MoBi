@@ -35,17 +35,46 @@ namespace MoBi.Presentation.Tasks.Interaction
 
    public class InteractionTasksForModule : InteractionTasksForChildren<MoBiProject, Module>, IInteractionTasksForModule
    {
+      private readonly IParameterValuesTask _parameterValuesTask;
+      private readonly IInitialConditionsTask<InitialConditionsBuildingBlock> _initialConditionsTask;
       private IMoBiContext context => _interactionTaskContext.Context;
 
-      public InteractionTasksForModule(IInteractionTaskContext interactionTaskContext, IEditTaskForModule editTask) : base(interactionTaskContext, editTask)
+      public InteractionTasksForModule(
+         IInteractionTaskContext interactionTaskContext, 
+         IEditTaskForModule editTask,
+         IParameterValuesTask parameterValuesTask,
+         IInitialConditionsTask<InitialConditionsBuildingBlock> initialConditionsTask) : base(interactionTaskContext, editTask)
       {
+         _parameterValuesTask = parameterValuesTask;
+         _initialConditionsTask = initialConditionsTask;
       }
 
       public override IMoBiCommand GetRemoveCommand(Module objectToRemove, MoBiProject parent, IBuildingBlock buildingBlock) => new RemoveModuleCommand(objectToRemove);
 
       public override IMoBiCommand GetAddCommand(Module itemToAdd, MoBiProject parent, IBuildingBlock buildingBlock) => new AddModuleCommand(itemToAdd);
 
-      public IMoBiCommand GetAddBuildingBlocksToModuleCommand(Module existingModule, IReadOnlyList<IBuildingBlock> listOfNewBuildingBlocks) => new AddMultipleBuildingBlocksToModuleCommand(existingModule, listOfNewBuildingBlocks);
+      public IMoBiCommand GetAddBuildingBlocksToModuleCommand(Module existingModule, IReadOnlyList<IBuildingBlock> listOfNewBuildingBlocks) 
+         => new AddMultipleBuildingBlocksToModuleCommand(existingModule, listOfNewBuildingBlocks);
+
+      /// <summary>
+      /// Corrects the name of building blocks if they are parameter values or initial conditions
+      /// Other types of building blocks can not have multiple instances in the same module, so the names do not need to be checked
+      /// </summary>
+      /// <returns>True if all building blocks have been uniquely named, if rename was not done, returns false</returns>
+      private bool correctBuildingBlockNames(IReadOnlyList<IBuildingBlock> listOfNewBuildingBlocks, Module existingModule)
+      {
+         foreach (var x in listOfNewBuildingBlocks)
+         {
+            switch (x)
+            {
+               case ParameterValuesBuildingBlock parameterValuesBuildingBlock when _parameterValuesTask.CorrectName(parameterValuesBuildingBlock, existingModule) == false:
+               case InitialConditionsBuildingBlock initialConditionsBuildingBlock when _initialConditionsTask.CorrectName(initialConditionsBuildingBlock, existingModule) == false:
+                  return false;
+            }
+         };
+
+         return true;
+      }
 
       protected override void SetAddCommandDescription(Module child, MoBiProject parent, IMoBiCommand addCommand, MoBiMacroCommand macroCommand,
          IBuildingBlock buildingBlock)
@@ -183,12 +212,15 @@ namespace MoBi.Presentation.Tasks.Interaction
             if (filename.IsNullOrEmpty())
                return;
 
-            var items = loadBuildingBlock(buildingBlockType, filename);
+            var listOfNewBuildingBlocks = loadBuildingBlock(buildingBlockType, filename);
 
-            if (!items.Any())
+            if (!listOfNewBuildingBlocks.Any())
                return;
 
-            context.AddToHistory(GetAddBuildingBlocksToModuleCommand(module, items)
+            if (!correctBuildingBlockNames(listOfNewBuildingBlocks, module))
+               return;
+
+            context.AddToHistory(GetAddBuildingBlocksToModuleCommand(module, listOfNewBuildingBlocks)
                .RunCommand(context));
          }
       }
