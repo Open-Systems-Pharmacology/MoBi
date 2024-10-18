@@ -93,7 +93,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new RemoveExpressionProfileBuildingBlockFromProjectCommand(expressionProfileToRemove);
       }
 
-      protected override bool CorrectName(ExpressionProfileBuildingBlock expressionProfile, MoBiProject project)
+      public override bool CorrectName(ExpressionProfileBuildingBlock expressionProfile, MoBiProject project)
       {
          var forbiddenNames = project.ExpressionProfileCollection.AllNames();
          if (!forbiddenNames.Contains(expressionProfile.Name))

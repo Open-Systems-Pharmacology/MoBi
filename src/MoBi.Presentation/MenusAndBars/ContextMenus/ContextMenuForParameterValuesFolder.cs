@@ -32,6 +32,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          base.InitializeWith(dto, presenter);
          _allMenuItems.Add(createAddExpressionAsParameterValueBuildingBlock(ModuleFor(dto)));
          _allMenuItems.Add(createAddIndividualAsParameterValueBuildingBlock(ModuleFor(dto)));
+         _allMenuItems.Add(createAddParameterValueBuildingBlock(ModuleFor(dto)));
          return this;
       }
 
@@ -47,6 +48,13 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExisting(ObjectTypes.ExpressionProfileBuildingBlock))
             .WithIcon(ApplicationIcons.LoadIconFor(nameof(ExpressionProfileBuildingBlock)))
             .WithCommandFor<AddExpressionAsParameterValuesCommand, Module>(module, _container);
+      }
+
+      private IMenuBarItem createAddParameterValueBuildingBlock(Module module)
+      {
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExisting(_objectTypeResolver.TypeFor<ParameterValuesBuildingBlock>()))
+            .WithIcon(ApplicationIcons.LoadIconFor(nameof(ParameterValuesBuildingBlock)))
+            .WithCommandFor<AddParameterValuesBuildingBlockCommand, Module>(module, _container);
       }
 
       private IMenuBarItem createAddIndividualAsParameterValueBuildingBlock(Module module)
