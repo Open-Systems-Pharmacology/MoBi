@@ -212,7 +212,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             if (filename.IsNullOrEmpty())
                return;
 
-            var listOfNewBuildingBlocks = loadBuildingBlock(buildingBlockType, filename);
+            var listOfNewBuildingBlocks = loadBuildingBlocks(buildingBlockType, filename);
 
             if (!listOfNewBuildingBlocks.Any())
                return;
@@ -232,7 +232,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.TEMPLATE);
       }
 
-      private List<IBuildingBlock> loadBuildingBlock(BuildingBlockType buildingBlockType, string filename)
+      private List<IBuildingBlock> loadBuildingBlocks(BuildingBlockType buildingBlockType, string filename)
       {
          var items = new List<IBuildingBlock>();
 
