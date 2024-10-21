@@ -68,7 +68,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.FormulaTypeSelectionChanged(string.Empty);
+         sut.AddNewFormula(string.Empty);
       }
 
       [Observation]

@@ -59,15 +59,20 @@ namespace MoBi.Presentation
       private ParameterValue _entity;
       private ParameterValuesBuildingBlock _buildingBlock;
       private ParameterValuesBuildingBlock _clonedBuildingBlock;
+      private ParameterValue _pathAndValueEntity;
 
       protected override void Context()
       {
          base.Context();
-         _entity = new ParameterValue().WithName("parameter").WithFormula(new ExplicitFormula().WithName("explicit"));
+         _entity = new ParameterValue { Path = new ObjectPath("Organism", "Liver", "volume") }.WithFormula(new ExplicitFormula().WithName("explicit"));
          _buildingBlock = new ParameterValuesBuildingBlock { _entity };
+         _pathAndValueEntity = new ParameterValue {Path = new ObjectPath("Organism", "Liver", "volume")}.WithFormula(new ExplicitFormula().WithName("explicit"));
+         var dummyWithTheSameName = new ParameterValue {Path = new ObjectPath("Organism", "Lung", "volume")}.WithFormula(new ExplicitFormula().WithName("explicit"));
+
          _clonedBuildingBlock = new ParameterValuesBuildingBlock
          {
-            new ParameterValue().WithName("parameter").WithFormula(new ExplicitFormula().WithName("explicit"))
+            dummyWithTheSameName,
+            _pathAndValueEntity
          };
          A.CallTo(() => _cloneManager.Clone(_buildingBlock)).Returns(_clonedBuildingBlock);
       }
@@ -86,7 +91,7 @@ namespace MoBi.Presentation
       [Observation]
       public void the_presenter_and_view_are_using_a_clone()
       {
-         A.CallTo(() => _formulaToFormulaInfoDTOMapper.MapFrom(_clonedBuildingBlock.First().Formula)).MustHaveHappened();
+         A.CallTo(() => _formulaToFormulaInfoDTOMapper.MapFrom(_pathAndValueEntity.Formula)).MustHaveHappened();
       }
    }
 }
