@@ -11,7 +11,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 {
    public interface IInteractionTasksForNeighborhood : IInteractionTasksForChildren<IContainer, NeighborhoodBuilder>
    {
-      IMoBiCommand Add(IContainer firstNeighbor, IContainer secondNeighbor);
+      IMoBiCommand Add(ObjectPath firstNeighbor, ObjectPath secondNeighbor);
       IMoBiCommand CreateRemoveCommand(NeighborhoodBuilder neighborhoodBuilder, IBuildingBlock buildingBlock);
    }
 
@@ -26,7 +26,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return _interactionTaskContext.Active<MoBiSpatialStructure>();
       }
 
-      public IMoBiCommand Add(IContainer firstNeighbor, IContainer secondNeighbor)
+      public IMoBiCommand Add(ObjectPath firstNeighborAbsoluteObjectPath, ObjectPath secondNeighborAbsoluteObjectPath)
       {
          var macroCommand = new MoBiMacroCommand
          {
@@ -37,8 +37,8 @@ namespace MoBi.Presentation.Tasks.Interaction
          var spatialStructure = getSpatialStructure();
 
          var neighborhoodBuilder = CreateNewEntity(spatialStructure.NeighborhoodsContainer);
-         neighborhoodBuilder.FirstNeighborPath = Context.ObjectPathFactory.CreateAbsoluteObjectPath(firstNeighbor);
-         neighborhoodBuilder.SecondNeighborPath = Context.ObjectPathFactory.CreateAbsoluteObjectPath(secondNeighbor);
+         neighborhoodBuilder.FirstNeighborPath = firstNeighborAbsoluteObjectPath;
+         neighborhoodBuilder.SecondNeighborPath = secondNeighborAbsoluteObjectPath;
 
          if (!_editTask.EditEntityModal(neighborhoodBuilder, spatialStructure, macroCommand, spatialStructure))
             return new MoBiEmptyCommand();

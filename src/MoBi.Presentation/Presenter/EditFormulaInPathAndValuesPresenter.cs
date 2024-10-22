@@ -19,7 +19,7 @@ namespace MoBi.Presentation.Presenter
    {
       void Init<TBuildingBlock, TBuilder>(TBuilder formulaOwner, TBuildingBlock buildingBlock, UsingFormulaDecoder formulaDecoder) 
          where TBuilder : PathAndValueEntity, IUsingFormula, IWithDisplayUnit
-         where TBuildingBlock : PathAndValueEntityBuildingBlock<TBuilder>;
+         where TBuildingBlock : class, ILookupBuildingBlock<TBuilder>;
 
       IFormula Formula { get; }
    }
@@ -55,12 +55,12 @@ namespace MoBi.Presentation.Presenter
       }
 
 
-      public void Init<TBuildingBlock, TBuilder>(TBuilder formulaOwner, TBuildingBlock buildingBlock, UsingFormulaDecoder formulaDecoder) where TBuilder : PathAndValueEntity, IUsingFormula, IWithDisplayUnit where TBuildingBlock : PathAndValueEntityBuildingBlock<TBuilder>
+      public void Init<TBuildingBlock, TBuilder>(TBuilder formulaOwner, TBuildingBlock buildingBlock, UsingFormulaDecoder formulaDecoder) where TBuilder : PathAndValueEntity, IUsingFormula, IWithDisplayUnit where TBuildingBlock : class, ILookupBuildingBlock<TBuilder>
       {
          InitializeWith(new MoBiMacroCommand());
 
          var clonedBuildingBlock = _cloneManager.Clone(buildingBlock);
-         _clonedBuilder = clonedBuildingBlock[formulaOwner.Path];
+         _clonedBuilder = clonedBuildingBlock.ByPath(formulaOwner.Path);
 
          ReferencePresenter.Init(null, Array.Empty<IObjectBase>(), _clonedBuilder);
          Initialize(_clonedBuilder, clonedBuildingBlock, formulaDecoder);

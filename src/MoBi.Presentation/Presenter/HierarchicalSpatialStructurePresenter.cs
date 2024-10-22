@@ -161,7 +161,7 @@ namespace MoBi.Presentation.Presenter
 
       protected override IEntity GetEntityForNeighbor(NeighborDTO neighborDTO)
       {
-         return _spatialStructure.TopContainers.Select(x => neighborDTO.Path.Resolve<IEntity>(x)).FirstOrDefault(x => x != default);
+         return _spatialStructure.TopContainers.Select(x => neighborDTO.Path.TryResolve<IEntity>(x)).FirstOrDefault(x => x != default);
       }
 
       protected override IReadOnlyList<ObjectBaseDTO> GetChildrenSorted(IContainer container, Func<IEntity, bool> predicate)
