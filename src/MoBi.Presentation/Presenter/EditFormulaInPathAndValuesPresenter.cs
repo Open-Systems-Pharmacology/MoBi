@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
@@ -18,7 +19,7 @@ namespace MoBi.Presentation.Presenter
    {
       void Init<TBuildingBlock, TBuilder>(TBuilder formulaOwner, TBuildingBlock buildingBlock, UsingFormulaDecoder formulaDecoder) 
          where TBuilder : PathAndValueEntity, IUsingFormula, IWithDisplayUnit
-         where TBuildingBlock : class, IBuildingBlock<TBuilder>;
+         where TBuildingBlock : PathAndValueEntityBuildingBlock<TBuilder>;
 
       IFormula Formula { get; }
    }
@@ -43,7 +44,7 @@ namespace MoBi.Presentation.Presenter
          
       }
 
-      public void FormulaTypeSelectionChanged(string formulaName)
+      public void AddNewFormula(string formulaName = null)
       {
          var (_, newFormula) = _formulaTask.CreateNewFormulaInBuildingBlock(_formulaDTO.Type, FormulaDimension, AllFormulaNames, _buildingBlock, formulaName);
          if (newFormula == null)
@@ -54,12 +55,12 @@ namespace MoBi.Presentation.Presenter
       }
 
 
-      public void Init<TBuildingBlock, TBuilder>(TBuilder formulaOwner, TBuildingBlock buildingBlock, UsingFormulaDecoder formulaDecoder) where TBuilder : PathAndValueEntity, IUsingFormula, IWithDisplayUnit where TBuildingBlock : class, IBuildingBlock<TBuilder>
+      public void Init<TBuildingBlock, TBuilder>(TBuilder formulaOwner, TBuildingBlock buildingBlock, UsingFormulaDecoder formulaDecoder) where TBuilder : PathAndValueEntity, IUsingFormula, IWithDisplayUnit where TBuildingBlock : PathAndValueEntityBuildingBlock<TBuilder>
       {
          InitializeWith(new MoBiMacroCommand());
 
          var clonedBuildingBlock = _cloneManager.Clone(buildingBlock);
-         _clonedBuilder = clonedBuildingBlock.FindByName(formulaOwner.Name);
+         _clonedBuilder = clonedBuildingBlock[formulaOwner.Path];
 
          ReferencePresenter.Init(null, Array.Empty<IObjectBase>(), _clonedBuilder);
          Initialize(_clonedBuilder, clonedBuildingBlock, formulaDecoder);
