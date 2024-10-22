@@ -102,11 +102,10 @@ namespace MoBi.UI.Diagram.DiagramManagers
          if (!(neighborhoodBase is NeighborhoodBuilder builder))
          {
             return base.PathsForNeighborhood(neighborhoodBase);
-
          }
 
          return (builder.FirstNeighbor == null ? builder.FirstNeighborPath : builder.FirstNeighbor.EntityPath(),
-            builder.SecondNeighbor == null ? builder.FirstNeighborPath : builder.SecondNeighbor.EntityPath());
+            builder.SecondNeighbor == null ? builder.SecondNeighborPath : builder.SecondNeighbor.EntityPath());
 
       }
 
