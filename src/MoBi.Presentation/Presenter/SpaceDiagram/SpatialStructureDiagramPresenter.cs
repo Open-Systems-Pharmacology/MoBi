@@ -15,7 +15,6 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Diagram.Elements;
 using OSPSuite.Presentation.Presenters;
-using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter.SpaceDiagram
 {
@@ -88,16 +87,19 @@ namespace MoBi.Presentation.Presenter.SpaceDiagram
 
       public override void Link(IBaseNode node1, IBaseNode node2, object portObject1, object portObject2)
       {
-         if (!node1.IsAnImplementationOf<IContainerNode>() || !node2.IsAnImplementationOf<IContainerNode>())
+         if (!(node1 is IContainerNode containerNode1) || !(node2 is IContainerNode containerNode2))
             return;
 
-         var container1 = _context.Get<IContainer>(node1.Id);
-         var container2 = _context.Get<IContainer>(node2.Id);
-
          var addNeighborhoodTask = _context.Resolve<IInteractionTasksForNeighborhood>();
-         AddCommand(addNeighborhoodTask.Add(container1, container2));
+         AddCommand(addNeighborhoodTask.Add(objectPathFor(containerNode1), objectPathFor(containerNode2)));
          //because cannot undo this action, reset undo stack
          DiagramModel.ClearUndoStack();
+      }
+
+      private ObjectPath objectPathFor(IContainerNode containerNode)
+      {
+         var container = _context.Get<IContainer>(containerNode.Id);
+         return container != null ? _context.ObjectPathFactory.CreateAbsoluteObjectPath(container) : DiagramManager.PathForNodeWithoutEntity(containerNode);
       }
 
       protected override void Unlink(IBaseNode node1, IBaseNode node2, object portObject1, object portObject2)

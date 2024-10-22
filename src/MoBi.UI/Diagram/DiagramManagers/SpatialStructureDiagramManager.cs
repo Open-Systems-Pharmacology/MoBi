@@ -41,6 +41,7 @@ namespace MoBi.UI.Diagram.DiagramManagers
 
             foreach (var neighborhoodBuilder in spatialStructure.Neighborhoods)
             {
+               neighborhoodBuilder.ResolveReference(spatialStructure);
                AddNeighborhood(neighborhoodBuilder);
                unusedNodeIds.Remove(neighborhoodBuilder.Id);
             }
@@ -94,6 +95,34 @@ namespace MoBi.UI.Diagram.DiagramManagers
       public override IDiagramManager<MoBiSpatialStructure> Create()
       {
          return new SpatialStructureDiagramManager();
+      }
+
+      protected override (string, string) PathsForNeighborhood(INeighborhoodBase neighborhoodBase)
+      {
+         if (!(neighborhoodBase is NeighborhoodBuilder builder))
+         {
+            return base.PathsForNeighborhood(neighborhoodBase);
+
+         }
+
+         return (builder.FirstNeighbor == null ? builder.FirstNeighborPath : builder.FirstNeighbor.EntityPath(),
+            builder.SecondNeighbor == null ? builder.FirstNeighborPath : builder.SecondNeighbor.EntityPath());
+
+      }
+
+      protected override (IContainerNode firstNeighborContainerNode, IContainerNode secondNeighborContainerNode) GetNeighborHoodNodes(INeighborhoodBase neighborhoodBase)
+      {
+         var (firstNeighborNode, secondNeighborNode) = base.GetNeighborHoodNodes(neighborhoodBase);
+
+         if (neighborhoodBase is NeighborhoodBuilder neighborhoodBuilder)
+         {
+            if (firstNeighborNode == null)
+               firstNeighborNode = DiagramModel.GetNode<IContainerNode>(neighborhoodBuilder.FirstNeighborPath);
+            if (secondNeighborNode == null)
+               secondNeighborNode = DiagramModel.GetNode<IContainerNode>(neighborhoodBuilder.SecondNeighborPath);
+         }
+           
+         return (firstNeighborNode, secondNeighborNode);
       }
    }
 }
