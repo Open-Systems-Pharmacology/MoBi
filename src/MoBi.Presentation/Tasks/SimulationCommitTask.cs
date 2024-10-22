@@ -10,7 +10,9 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.SimModel;
 using static MoBi.Assets.AppConstants.Commands;
+using static OSPSuite.Assets.Captions;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -24,6 +26,8 @@ namespace MoBi.Presentation.Tasks
       /// </summary>
       /// <returns>An executed command</returns>
       IMoBiCommand CommitSimulationChanges(IMoBiSimulation simulationWithChanges);
+
+      string ShowChanges(IMoBiSimulation simulationWithChanges);
    }
 
    public class SimulationCommitTask : ISimulationCommitTask
@@ -81,6 +85,26 @@ namespace MoBi.Presentation.Tasks
 
          _context.PublishEvent(new SimulationStatusChangedEvent(simulationWithChanges));
          return macroCommand;
+      }
+
+      public string ShowChanges(IMoBiSimulation simulationWithChanges)
+      {
+         string message = string.Empty;
+
+         var lastModuleConfiguration = simulationWithChanges.Configuration.ModuleConfigurations.Last();
+         var changesForICValues = changesFrom<MoleculeAmount>(simulationWithChanges).ToList();
+         var changesForParameterValues = changesFrom<Parameter>(simulationWithChanges).ToList();
+
+         var lstChanges = new List<string>();
+         if (changesForICValues.Any())
+            lstChanges.Add($"{lastModuleConfiguration.SelectedInitialConditions.Name}");
+         if (changesForParameterValues.Any())
+            lstChanges.Add($"{lastModuleConfiguration.SelectedParameterValues.Name}");
+
+         if (lstChanges.Any())
+            message = CommitingChangesToModulesMessage(lastModuleConfiguration.Module.Name, lstChanges);
+
+         return message;
       }
 
       /// <summary>

@@ -280,6 +280,19 @@ namespace MoBi.Assets
             return DisplayValue(displayValue.ConvertedTo<string>(), displayUnit);
          }
 
+         public static string CommitingChangesToModulesMessage(string moduleName, List<string> buildingBlockNames)
+         {
+            string message = $"Confirm to apply the following changes on {moduleName}:";
+
+            foreach (var buildingBlock in buildingBlockNames)
+            {
+               message += $"{Environment.NewLine}{buildingBlock}";
+            }
+
+            return message;
+         }
+
+
          public static string DisplayValue(string displayValue, string displayUnit)
          {
             if (string.IsNullOrEmpty(displayUnit))
