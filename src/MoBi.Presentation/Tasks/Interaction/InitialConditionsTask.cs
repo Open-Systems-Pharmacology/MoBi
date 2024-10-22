@@ -46,7 +46,7 @@ namespace MoBi.Presentation.Tasks.Interaction
    }
 
    public class InitialConditionsTask<TBuildingBlock> : InteractionTasksForExtendablePathAndValueEntity<TBuildingBlock, InitialCondition>, IInitialConditionsTask<TBuildingBlock> 
-      where TBuildingBlock : PathAndValueEntityBuildingBlock<InitialCondition>, ILookupBuildingBlock<InitialCondition>, new()
+      where TBuildingBlock : class, ILookupBuildingBlock<InitialCondition>, new()
    {
       private readonly IReactionDimensionRetriever _dimensionRetriever;
       protected readonly IInitialConditionsCreator _initialConditionsCreator;
