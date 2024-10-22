@@ -10,9 +10,7 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.SimModel;
 using static MoBi.Assets.AppConstants.Commands;
-using static OSPSuite.Assets.Captions;
 
 namespace MoBi.Presentation.Tasks
 {
