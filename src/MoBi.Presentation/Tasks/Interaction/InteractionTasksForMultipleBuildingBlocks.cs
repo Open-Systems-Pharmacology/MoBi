@@ -4,6 +4,7 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Extensions;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -72,7 +73,7 @@ namespace MoBi.Presentation.Tasks.Interaction
                var referringSimulations = _interactionTaskContext.Context.CurrentProject.SimulationsUsing(buildingBlockToRemove);
 
                if (referringSimulations.Any())
-                  referringSimulationsAndBuildingBlocks.Add(new Tuple<IReadOnlyList<string>, string>(referringSimulations.AllNames(), buildingBlockToRemove.Name));
+                  referringSimulationsAndBuildingBlocks.Add(new Tuple<IReadOnlyList<string>, string>(referringSimulations.AllNames(), buildingBlockToRemove.DisplayName));
                else
                {
                   allCommands.Add(removeBuildingBlock(buildingBlockToRemove));
@@ -99,7 +100,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             };
             allCommands.Each(x => x.Visible = false);
             macroCommand.AddRange(allCommands);
-            macroCommand.Execute(_interactionTaskContext.Context);
+            macroCommand.RunCommand(_interactionTaskContext.Context);
             _interactionTaskContext.Context.AddToHistory(macroCommand);
          }
 
