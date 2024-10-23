@@ -66,12 +66,6 @@ namespace MoBi.Presentation.Tasks.Interaction
 
             var referringSimulationsAndBuildingBlocks = new List<Tuple<IReadOnlyList<string>, string>>();
             var allCommands = new List<IMoBiCommand>();
-            var macroCommand = new MoBiMacroCommand()
-            {
-               CommandType = AppConstants.Commands.DeleteCommand,
-               ObjectType = ObjectTypes.BuildingBlock,
-               Description = AppConstants.Commands.RemoveMultipleBuildingBlocks
-            };
 
             foreach (var buildingBlockToRemove in buildingBlocksToRemove)
             {
@@ -86,18 +80,27 @@ namespace MoBi.Presentation.Tasks.Interaction
             }
 
             if (allCommands.Any())
-            {
-               allCommands.Each(x => x.Visible = false);
-               macroCommand.AddRange(allCommands);
-               macroCommand.Execute(_interactionTaskContext.Context);
-               _interactionTaskContext.Context.AddToHistory(macroCommand);
-            }
+               executeMacroCommand(allCommands);
 
             if (referringSimulationsAndBuildingBlocks.Any())
             {
                var messageBuilder = AppConstants.ListOfBuildingBlocksNotRemoved(referringSimulationsAndBuildingBlocks);
                _interactionTaskContext.DialogCreator.MessageBoxInfo(messageBuilder.ToString());
             }
+         }
+
+         private void executeMacroCommand(List<IMoBiCommand> allCommands)
+         {
+            var macroCommand = new MoBiMacroCommand()
+            {
+               CommandType = AppConstants.Commands.DeleteCommand,
+               ObjectType = ObjectTypes.BuildingBlock,
+               Description = AppConstants.Commands.RemoveMultipleBuildingBlocks
+            };
+            allCommands.Each(x => x.Visible = false);
+            macroCommand.AddRange(allCommands);
+            macroCommand.Execute(_interactionTaskContext.Context);
+            _interactionTaskContext.Context.AddToHistory(macroCommand);
          }
 
          private IMoBiCommand removeBuildingBlock(IBuildingBlock buildingBlockToRemove)
