@@ -9,7 +9,9 @@ namespace MoBi.Presentation.Tasks.Interaction
 {
    public interface IInteractionTasksForReactionBuildingBlock : IInteractionTasksForBuildingBlock<Module, MoBiReactionBuildingBlock>
    {
+      IMoBiCommand GetRemoveCommand(MoBiReactionBuildingBlock objectToRemove, Module parent, IBuildingBlock buildingBlock);
    }
+
    public class InteractionTasksForReactionBuildingBlock : InteractionTasksForEnumerableBuildingBlockOfContainerBuilder<Module, MoBiReactionBuildingBlock, ReactionBuilder>, IInteractionTasksForReactionBuildingBlock
    {
       private readonly IReactionBuildingBlockFactory _reactionBuildingBlockFactory;

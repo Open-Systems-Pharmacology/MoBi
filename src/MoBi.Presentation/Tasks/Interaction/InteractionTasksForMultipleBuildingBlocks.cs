@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
+using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
@@ -62,6 +65,13 @@ namespace MoBi.Presentation.Tasks.Interaction
                return;
 
             var referringSimulationsAndBuildingBlocks = new List<Tuple<IReadOnlyList<string>, string>>();
+            var allCommands = new List<IMoBiCommand>();
+            var macroCommand = new MoBiMacroCommand()
+            {
+               CommandType = AppConstants.Commands.DeleteCommand,
+               ObjectType = ObjectTypes.BuildingBlock,
+               Description = AppConstants.Commands.RemoveMultipleBuildingBlocks
+            };
 
             foreach (var buildingBlockToRemove in buildingBlocksToRemove)
             {
@@ -71,8 +81,16 @@ namespace MoBi.Presentation.Tasks.Interaction
                   referringSimulationsAndBuildingBlocks.Add(new Tuple<IReadOnlyList<string>, string>(referringSimulations.AllNames(), buildingBlockToRemove.Name));
                else
                {
-                  removeBuildingBlock(buildingBlockToRemove);
+                  allCommands.Add(removeBuildingBlock(buildingBlockToRemove));
                }
+            }
+
+            if (allCommands.Any())
+            {
+               allCommands.Each(x => x.Visible = false);
+               macroCommand.AddRange(allCommands);
+               macroCommand.Execute(_interactionTaskContext.Context);
+               _interactionTaskContext.Context.AddToHistory(macroCommand);
             }
 
             if (referringSimulationsAndBuildingBlocks.Any())
@@ -82,49 +100,39 @@ namespace MoBi.Presentation.Tasks.Interaction
             }
          }
 
-         private void removeBuildingBlock(IBuildingBlock buildingBlockToRemove)
+         private IMoBiCommand removeBuildingBlock(IBuildingBlock buildingBlockToRemove)
          {
             switch (buildingBlockToRemove)
             {
                case EventGroupBuildingBlock eventGroupBuildingBlock:
-                  _interactionTaskContext.Context.AddToHistory(_interactionTasksForEventGroupBuildingBlock.Remove(eventGroupBuildingBlock, eventGroupBuildingBlock.Module, eventGroupBuildingBlock, silent: true));
-                  break;
+                  return _interactionTasksForEventGroupBuildingBlock.GetRemoveCommand(eventGroupBuildingBlock, eventGroupBuildingBlock.Module, eventGroupBuildingBlock);
 
                case InitialConditionsBuildingBlock initialConditionsBuildingBlock:
-                  _interactionTaskContext.Context.AddToHistory(_interactionTasksForInitialConditionBuildingBlock.Remove(initialConditionsBuildingBlock, initialConditionsBuildingBlock.Module, initialConditionsBuildingBlock, silent: true));
-                  break;
+                  return _interactionTasksForInitialConditionBuildingBlock.GetRemoveCommand(initialConditionsBuildingBlock, initialConditionsBuildingBlock.Module, initialConditionsBuildingBlock);
 
                case MoleculeBuildingBlock moleculeBuildingBlock:
-                  _interactionTaskContext.Context.AddToHistory(_interactionTasksForMoleculeBuildingBlock.Remove(moleculeBuildingBlock, moleculeBuildingBlock.Module, moleculeBuildingBlock, silent: true));
-                  break;
+                  return _interactionTasksForMoleculeBuildingBlock.GetRemoveCommand(moleculeBuildingBlock, moleculeBuildingBlock.Module, moleculeBuildingBlock);
 
                case PassiveTransportBuildingBlock passiveTransportBuildingBlock:
-                  _interactionTaskContext.Context.AddToHistory(_interactionTasksForPassiveTransportBuildingBlock.Remove(passiveTransportBuildingBlock, passiveTransportBuildingBlock.Module, passiveTransportBuildingBlock, silent: true));
-                  break;
+                  return _interactionTasksForPassiveTransportBuildingBlock.GetRemoveCommand(passiveTransportBuildingBlock, passiveTransportBuildingBlock.Module, passiveTransportBuildingBlock);
 
                case ParameterValuesBuildingBlock parameterValuesBuildingBlock:
-                  _interactionTaskContext.Context.AddToHistory(_interactionTasksForParameterValues.Remove(parameterValuesBuildingBlock, parameterValuesBuildingBlock.Module, parameterValuesBuildingBlock, silent: true));
-                  break;
+                  return _interactionTasksForParameterValues.GetRemoveCommand(parameterValuesBuildingBlock, parameterValuesBuildingBlock.Module, parameterValuesBuildingBlock);
 
                case MoBiReactionBuildingBlock mobiReactionBuildingBlock:
-                  _interactionTaskContext.Context.AddToHistory(_interactionTasksForMobiReactionBuildingBlock.Remove(mobiReactionBuildingBlock, mobiReactionBuildingBlock.Module, mobiReactionBuildingBlock, silent: true));
-                  break;
+                  return _interactionTasksForMobiReactionBuildingBlock.GetRemoveCommand(mobiReactionBuildingBlock, mobiReactionBuildingBlock.Module, mobiReactionBuildingBlock);
 
                case MoBiSpatialStructure mobiSpatialStructure:
-                  _interactionTaskContext.Context.AddToHistory(_interactionTasksForMobiSpatialStructureBuildingBlock.Remove(mobiSpatialStructure, mobiSpatialStructure.Module, mobiSpatialStructure, silent: true));
-                  break;
+                  return _interactionTasksForMobiSpatialStructureBuildingBlock.GetRemoveCommand(mobiSpatialStructure, mobiSpatialStructure.Module, mobiSpatialStructure);
 
                case ObserverBuildingBlock observerBuildingBlock:
-                  _interactionTaskContext.Context.AddToHistory(_interactionTasksForObserverBuildingBlock.Remove(observerBuildingBlock, observerBuildingBlock.Module, observerBuildingBlock, silent: true));
-                  break;
+                  return _interactionTasksForObserverBuildingBlock.GetRemoveCommand(observerBuildingBlock, observerBuildingBlock.Module, observerBuildingBlock);
 
                case IndividualBuildingBlock individualBuildingBlock:
-                  _interactionTaskContext.Context.AddToHistory(_interactionTasksForIndividualBuildingBlock.Remove(individualBuildingBlock, null, individualBuildingBlock, silent: true));
-                  break;
+                  return _interactionTasksForIndividualBuildingBlock.GetRemoveCommand(individualBuildingBlock, null, individualBuildingBlock);
 
                case ExpressionProfileBuildingBlock expressionProfileBuildingBlock:
-                  _interactionTaskContext.Context.AddToHistory(_interactionTasksForExpressionProfileBuildingBlock.Remove(expressionProfileBuildingBlock, null, expressionProfileBuildingBlock, silent: true));
-                  break;
+                  return _interactionTasksForExpressionProfileBuildingBlock.GetRemoveCommand(expressionProfileBuildingBlock, null, expressionProfileBuildingBlock);
 
                default:
                   throw new InvalidOperationException($"No interaction task found for building block type: {buildingBlockToRemove.GetType()}");

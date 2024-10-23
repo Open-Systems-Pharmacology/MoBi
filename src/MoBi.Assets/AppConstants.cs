@@ -257,6 +257,7 @@ namespace MoBi.Assets
          public static readonly string RemoveMultipleParameterValues = "Remove multiple parameter values";
          public static readonly string RemoveMultipleInitialConditions = "Remove multiple initial conditions";
          public static readonly string RemoveMultipleModules = "Remove multiple modules";
+         public static readonly string RemoveMultipleBuildingBlocks = "Remove multiple building blocks";
          public static readonly string SimulationType = "simulation";
          public static readonly string BuildingBlockType = "building block";
          public static readonly string ParameterType = "parameter";
@@ -890,7 +891,6 @@ namespace MoBi.Assets
          public static readonly string RemoveMultipleModules = "Do you really want to remove the selected Modules?";
          public static readonly string RemoveMultipleBuildingBlocks = "Do you really want to remove the selected Building Blocks?";
          public static readonly string BuildingBlocksUsedInSimulation = "The following issues where found when trying to remove Building Blocks from the simulation:";
-         
 
          public static string RemoveSimulationsFromProject(string projectName)
          {

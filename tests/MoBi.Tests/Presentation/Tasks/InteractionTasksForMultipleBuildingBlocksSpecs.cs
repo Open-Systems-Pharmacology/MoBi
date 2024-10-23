@@ -24,7 +24,6 @@ namespace MoBi.Presentation.Tasks
       protected IInteractionTasksForObserverBuildingBlock _interactionTasksForObserverBuildingBlock;
       protected IInteractionTasksForIndividualBuildingBlock _interactionTasksForIndividualBuildingBlock;
       protected IInteractionTasksForExpressionProfileBuildingBlock _interactionTasksForExpressionProfileBuildingBlock;
-      protected IInteractionTaskContext _interactionTaskContext;
       protected IInteractionTaskContext _context;
       protected EventGroupBuildingBlock _eventGroupBuildingBlockUsedInSimulation;
       protected MoBiSpatialStructure _spatialStructureBuildingBlockUsedInSimulation;
@@ -38,6 +37,17 @@ namespace MoBi.Presentation.Tasks
       {
          _project = DomainHelperForSpecs.NewProject();
          _context = A.Fake<IInteractionTaskContext>();
+         _interactionTasksForEventGroupBuildingBlock = A.Fake<IInteractionTasksForEventBuildingBlock>();
+         _interactionTasksForInitialConditionBuildingBlock = A.Fake<IInitialConditionsTask<InitialConditionsBuildingBlock>>();
+         _interactionTasksForMoleculeBuildingBlock = A.Fake<IInteractionTasksForMoleculeBuildingBlock>();
+         _interactionTasksForPassiveTransportBuildingBlock = A.Fake<IInteractionTasksForPassiveTransportBuildingBlock>();
+         _interactionTasksForParameterValues = A.Fake<IParameterValuesTask>();
+         _interactionTasksForMobiReactionBuildingBlock = A.Fake<IInteractionTasksForReactionBuildingBlock>();
+         _interactionTasksForMobiSpatialStructureBuildingBlock = A.Fake<IInteractionTasksForSpatialStructure>();
+         _interactionTasksForObserverBuildingBlock = A.Fake<IInteractionTasksForObserverBuildingBlock>();
+         _interactionTasksForIndividualBuildingBlock = A.Fake<IInteractionTasksForIndividualBuildingBlock>();
+         _interactionTasksForExpressionProfileBuildingBlock = A.Fake<IInteractionTasksForExpressionProfileBuildingBlock>();
+
          sut = new InteractionTasksForMultipleBuildingBlocks(
             _interactionTasksForEventGroupBuildingBlock,
             _interactionTasksForInitialConditionBuildingBlock,
@@ -49,7 +59,7 @@ namespace MoBi.Presentation.Tasks
             _interactionTasksForObserverBuildingBlock,
             _interactionTasksForIndividualBuildingBlock,
             _interactionTasksForExpressionProfileBuildingBlock,
-            _interactionTaskContext
+            _context
          );
          A.CallTo(() => _context.DialogCreator.MessageBoxYesNo(A<string>.Ignored, A<ViewResult>.Ignored)).Returns(ViewResult.Yes);
 
@@ -85,8 +95,8 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void buildingBlocks_should_not_be_removed()
       {
-         A.CallTo(() => _interactionTasksForEventGroupBuildingBlock.Remove(_eventGroupBuildingBlockUsedInSimulation, A<Module>.Ignored, A<IBuildingBlock>.Ignored, A<bool>.Ignored)).MustNotHaveHappened();
-         A.CallTo(() => _interactionTasksForMobiSpatialStructureBuildingBlock.Remove(_spatialStructureBuildingBlockUsedInSimulation, A<Module>.Ignored, A<IBuildingBlock>.Ignored, A<bool>.Ignored)).MustNotHaveHappened();
+         A.CallTo(() => _interactionTasksForEventGroupBuildingBlock.GetRemoveCommand(_eventGroupBuildingBlockUsedInSimulation, A<Module>.Ignored, A<IBuildingBlock>.Ignored)).MustNotHaveHappened();
+         A.CallTo(() => _interactionTasksForMobiSpatialStructureBuildingBlock.GetRemoveCommand(_spatialStructureBuildingBlockUsedInSimulation, A<Module>.Ignored, A<IBuildingBlock>.Ignored)).MustNotHaveHappened();
       }
 
       [Observation]
@@ -109,8 +119,8 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void buildingBlocks_should_be_removed()
       {
-         A.CallTo(() => _interactionTasksForEventGroupBuildingBlock.Remove(_eventGroupBuildingBlockNotUsedInSimulation, A<Module>.Ignored, A<IBuildingBlock>.Ignored, A<bool>.Ignored)).MustHaveHappened();
-         A.CallTo(() => _interactionTasksForMobiSpatialStructureBuildingBlock.Remove(_spatialStructureBuildingBlockNotUsedInSimulation, A<Module>.Ignored, A<IBuildingBlock>.Ignored, A<bool>.Ignored)).MustHaveHappened();
+         A.CallTo(() => _interactionTasksForEventGroupBuildingBlock.GetRemoveCommand(_eventGroupBuildingBlockNotUsedInSimulation, A<Module>.Ignored, A<IBuildingBlock>.Ignored)).MustHaveHappened();
+         A.CallTo(() => _interactionTasksForMobiSpatialStructureBuildingBlock.GetRemoveCommand(_spatialStructureBuildingBlockNotUsedInSimulation, A<Module>.Ignored, A<IBuildingBlock>.Ignored)).MustHaveHappened();
       }
    }
 }
