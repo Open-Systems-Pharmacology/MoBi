@@ -890,7 +890,7 @@ namespace MoBi.Assets
          public static readonly Size PARAMETER_SELECTION_SIZE = new Size(1200, 800);
          public static readonly string RemoveMultipleModules = "Do you really want to remove the selected Modules?";
          public static readonly string RemoveMultipleBuildingBlocks = "Do you really want to remove the selected Building Blocks?";
-         public static readonly string BuildingBlocksUsedInSimulation = "The following issues where found when trying to remove Building Blocks from the simulation:";
+         public static readonly string BuildingBlocksUsedInSimulation = "The following building blocks could not be removed from the project";
 
          public static string RemoveSimulationsFromProject(string projectName)
          {
