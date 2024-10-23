@@ -87,22 +87,11 @@ namespace MoBi.Presentation.Tasks
 
       public string ShowChanges(IMoBiSimulation simulationWithChanges)
       {
-         string message = string.Empty;
-
          var lastModuleConfiguration = simulationWithChanges.Configuration.ModuleConfigurations.Last();
          var changesForICValues = changesFrom<MoleculeAmount>(simulationWithChanges).ToList();
          var changesForParameterValues = changesFrom<Parameter>(simulationWithChanges).ToList();
 
-         var lstChanges = new List<string>();
-         if (changesForICValues.Any())
-            lstChanges.Add($"{lastModuleConfiguration.SelectedInitialConditions.Name}");
-         if (changesForParameterValues.Any())
-            lstChanges.Add($"{lastModuleConfiguration.SelectedParameterValues.Name}");
-
-         if (lstChanges.Any())
-            message = CommitingChangesToModulesMessage(lastModuleConfiguration.Module.Name, lstChanges);
-
-         return message;
+         return CommitingChangesToModulesMessage(lastModuleConfiguration, changesForICValues, changesForParameterValues);
       }
 
       /// <summary>

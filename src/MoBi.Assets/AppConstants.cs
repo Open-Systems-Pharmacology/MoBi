@@ -280,14 +280,14 @@ namespace MoBi.Assets
             return DisplayValue(displayValue.ConvertedTo<string>(), displayUnit);
          }
 
-         public static string CommitingChangesToModulesMessage(string moduleName, List<string> buildingBlockNames)
+         public static string CommitingChangesToModulesMessage(ModuleConfiguration moduleConfiguration, IEnumerable<(ObjectPath quantityPath, MoleculeAmount quantity)> moleculeChanges, IEnumerable<(ObjectPath quantityPath, Parameter quantity)> parameterChanges)
          {
-            string message = $"Confirm to apply the following changes on {moduleName}:";
+            string message = $"Confirm to apply the following changes on {moduleConfiguration.Module.Name}:";
 
-            foreach (var buildingBlock in buildingBlockNames)
-            {
-               message += $"{Environment.NewLine}{buildingBlock}";
-            }
+            if (moleculeChanges.Any())
+               message += $"{Environment.NewLine}{(string.IsNullOrEmpty(moduleConfiguration.SelectedInitialConditions?.DisplayName) ? "Create new Initial Conditions Building block" : moduleConfiguration.SelectedInitialConditions.DisplayName)}";
+            if (parameterChanges.Any())
+               message += $"{Environment.NewLine}{(string.IsNullOrEmpty(moduleConfiguration.SelectedParameterValues?.DisplayName) ? "Create new Parameter Values Building block" : moduleConfiguration.SelectedParameterValues.DisplayName)}";
 
             return message;
          }
