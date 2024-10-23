@@ -14,15 +14,18 @@ namespace MoBi.Presentation.Tasks
 {
    public class concern_for_InteractionTasksForMultipleBuildingBlocks : ContextSpecification<InteractionTasksForMultipleBuildingBlocks>
    {
+      protected IInteractionTasksForEventBuildingBlock _interactionTasksForEventGroupBuildingBlock;
+      protected IInitialConditionsTask<InitialConditionsBuildingBlock> _interactionTasksForInitialConditionBuildingBlock;
+      protected IInteractionTasksForMoleculeBuildingBlock _interactionTasksForMoleculeBuildingBlock;
+      protected IInteractionTasksForPassiveTransportBuildingBlock _interactionTasksForPassiveTransportBuildingBlock;
+      protected IParameterValuesTask _interactionTasksForParameterValues;
+      protected IInteractionTasksForReactionBuildingBlock _interactionTasksForMobiReactionBuildingBlock;
+      protected IInteractionTasksForSpatialStructure _interactionTasksForMobiSpatialStructureBuildingBlock;
+      protected IInteractionTasksForObserverBuildingBlock _interactionTasksForObserverBuildingBlock;
+      protected IInteractionTasksForIndividualBuildingBlock _interactionTasksForIndividualBuildingBlock;
+      protected IInteractionTasksForExpressionProfileBuildingBlock _interactionTasksForExpressionProfileBuildingBlock;
+      protected IInteractionTaskContext _interactionTaskContext;
       protected IInteractionTaskContext _context;
-      protected IInteractionTasksForChildren<Module, EventGroupBuildingBlock> _interactionTasksForApplicationMoleculeBuilder = A.Fake<IInteractionTasksForChildren<Module, EventGroupBuildingBlock>>();
-      protected IInteractionTasksForChildren<Module, InitialConditionsBuildingBlock> _interactionTasksForInitialCondition = A.Fake<IInteractionTasksForChildren<Module, InitialConditionsBuildingBlock>>();
-      protected IInteractionTasksForChildren<Module, MoleculeBuildingBlock> _interactionTasksForMolecule = A.Fake<IInteractionTasksForChildren<Module, MoleculeBuildingBlock>>();
-      protected IInteractionTasksForChildren<Module, PassiveTransportBuildingBlock> _interactionTasksForPassiveTransport = A.Fake<IInteractionTasksForChildren<Module, PassiveTransportBuildingBlock>>();
-      protected IInteractionTasksForChildren<Module, ParameterValuesBuildingBlock> _interactionTasksForParameterValues = A.Fake<IInteractionTasksForChildren<Module, ParameterValuesBuildingBlock>>();
-      protected IInteractionTasksForChildren<Module, MoBiReactionBuildingBlock> _interactionTasksForMobiReaction = A.Fake<IInteractionTasksForChildren<Module, MoBiReactionBuildingBlock>>();
-      protected IInteractionTasksForChildren<Module, MoBiSpatialStructure> _interactionTasksForMobiSpatialStructure = A.Fake<IInteractionTasksForChildren<Module, MoBiSpatialStructure>>();
-      protected IInteractionTasksForChildren<Module, ObserverBuildingBlock> _interactionTasksForObserver = A.Fake<IInteractionTasksForChildren<Module, ObserverBuildingBlock>>();
       protected EventGroupBuildingBlock _eventGroupBuildingBlockUsedInSimulation;
       protected MoBiSpatialStructure _spatialStructureBuildingBlockUsedInSimulation;
       protected EventGroupBuildingBlock _eventGroupBuildingBlockNotUsedInSimulation;
@@ -36,15 +39,17 @@ namespace MoBi.Presentation.Tasks
          _project = DomainHelperForSpecs.NewProject();
          _context = A.Fake<IInteractionTaskContext>();
          sut = new InteractionTasksForMultipleBuildingBlocks(
-            _interactionTasksForApplicationMoleculeBuilder,
-            _interactionTasksForInitialCondition,
-            _interactionTasksForMolecule,
-            _interactionTasksForPassiveTransport,
+            _interactionTasksForEventGroupBuildingBlock,
+            _interactionTasksForInitialConditionBuildingBlock,
+            _interactionTasksForMoleculeBuildingBlock,
+            _interactionTasksForPassiveTransportBuildingBlock,
             _interactionTasksForParameterValues,
-            _interactionTasksForMobiReaction,
-            _interactionTasksForMobiSpatialStructure,
-            _interactionTasksForObserver,
-            _context
+            _interactionTasksForMobiReactionBuildingBlock,
+            _interactionTasksForMobiSpatialStructureBuildingBlock,
+            _interactionTasksForObserverBuildingBlock,
+            _interactionTasksForIndividualBuildingBlock,
+            _interactionTasksForExpressionProfileBuildingBlock,
+            _interactionTaskContext
          );
          A.CallTo(() => _context.DialogCreator.MessageBoxYesNo(A<string>.Ignored, A<ViewResult>.Ignored)).Returns(ViewResult.Yes);
 
@@ -80,8 +85,8 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void buildingBlocks_should_not_be_removed()
       {
-         A.CallTo(() => _interactionTasksForApplicationMoleculeBuilder.Remove(_eventGroupBuildingBlockUsedInSimulation, A<Module>.Ignored, A<IBuildingBlock>.Ignored, A<bool>.Ignored)).MustNotHaveHappened();
-         A.CallTo(() => _interactionTasksForMobiSpatialStructure.Remove(_spatialStructureBuildingBlockUsedInSimulation, A<Module>.Ignored, A<IBuildingBlock>.Ignored, A<bool>.Ignored)).MustNotHaveHappened();
+         A.CallTo(() => _interactionTasksForEventGroupBuildingBlock.Remove(_eventGroupBuildingBlockUsedInSimulation, A<Module>.Ignored, A<IBuildingBlock>.Ignored, A<bool>.Ignored)).MustNotHaveHappened();
+         A.CallTo(() => _interactionTasksForMobiSpatialStructureBuildingBlock.Remove(_spatialStructureBuildingBlockUsedInSimulation, A<Module>.Ignored, A<IBuildingBlock>.Ignored, A<bool>.Ignored)).MustNotHaveHappened();
       }
 
       [Observation]
@@ -104,8 +109,8 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void buildingBlocks_should_be_removed()
       {
-         A.CallTo(() => _interactionTasksForApplicationMoleculeBuilder.Remove(_eventGroupBuildingBlockNotUsedInSimulation, A<Module>.Ignored, A<IBuildingBlock>.Ignored, A<bool>.Ignored)).MustHaveHappened();
-         A.CallTo(() => _interactionTasksForMobiSpatialStructure.Remove(_spatialStructureBuildingBlockNotUsedInSimulation, A<Module>.Ignored, A<IBuildingBlock>.Ignored, A<bool>.Ignored)).MustHaveHappened();
+         A.CallTo(() => _interactionTasksForEventGroupBuildingBlock.Remove(_eventGroupBuildingBlockNotUsedInSimulation, A<Module>.Ignored, A<IBuildingBlock>.Ignored, A<bool>.Ignored)).MustHaveHappened();
+         A.CallTo(() => _interactionTasksForMobiSpatialStructureBuildingBlock.Remove(_spatialStructureBuildingBlockNotUsedInSimulation, A<Module>.Ignored, A<IBuildingBlock>.Ignored, A<bool>.Ignored)).MustHaveHappened();
       }
    }
 }
