@@ -42,9 +42,12 @@ namespace MoBi.Presentation.Tasks.Interaction
       IMoBiCommand UpdateInitialConditionScaleDivisor(TBuildingBlock buildingBlock, InitialCondition initialCondition, double newScaleDivisor, double oldScaleDivisor);
 
       IMoBiCommand RefreshInitialConditionsFromBuildingBlocks(TBuildingBlock buildingBlock, IReadOnlyList<InitialCondition> initialConditions);
+
+      bool CorrectName(TBuildingBlock buildingBlock, Module module);
    }
 
-   public class InitialConditionsTask<TBuildingBlock> : InteractionTasksForExtendablePathAndValueEntity<TBuildingBlock, InitialCondition>, IInitialConditionsTask<TBuildingBlock> where TBuildingBlock : class, ILookupBuildingBlock<InitialCondition>, new()
+   public class InitialConditionsTask<TBuildingBlock> : InteractionTasksForExtendablePathAndValueEntity<TBuildingBlock, InitialCondition>, IInitialConditionsTask<TBuildingBlock> 
+      where TBuildingBlock : class, ILookupBuildingBlock<InitialCondition>, new()
    {
       private readonly IReactionDimensionRetriever _dimensionRetriever;
       protected readonly IInitialConditionsCreator _initialConditionsCreator;
@@ -118,7 +121,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return macroCommand;
       }
 
-      protected override bool CorrectName(TBuildingBlock buildingBlock, Module module)
+      public override bool CorrectName(TBuildingBlock buildingBlock, Module module)
       {
          // If this is an ExpressionProfileBuildingBlock, then the names of existing
          // building blocks in the module InitialConditionsCollection are not forbidden.

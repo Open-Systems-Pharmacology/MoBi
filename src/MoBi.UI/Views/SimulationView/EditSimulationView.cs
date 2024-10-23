@@ -41,6 +41,7 @@ namespace MoBi.UI.Views.SimulationView
          tabData.InitWith(AppConstants.Captions.SimulationObservedData, ApplicationIcons.ObservedData);
          tabPredVsObs.InitWith(Captions.SimulationUI.PredictedVsObservedSimulation, ApplicationIcons.PredictedVsObservedAnalysis);
          tabResidVsTime.InitWith(Captions.SimulationUI.ResidualsVsTimeSimulation, ApplicationIcons.ResidualVsTimeAnalysis);
+         tabChanges.InitWith(AppConstants.Captions.Changes, ApplicationIcons.Comparison);
 
          tabsNavigation.SelectedPageChanging += (o, e) => OnEvent(tabSelectionChanged, e);
          tabs.SelectedPageChanging += (o, e) => OnEvent(tabSelectionChanged, e);
@@ -53,6 +54,8 @@ namespace MoBi.UI.Views.SimulationView
       {
          if (e.Page.Equals(tabDiagram))
             simulationPresenter.LoadDiagram();
+         else if (e.Page.Equals(tabChanges))
+            simulationPresenter.LoadChanges();
       }
 
       public void SetEditView(IView view)
@@ -97,6 +100,16 @@ namespace MoBi.UI.Views.SimulationView
       public void SetResidualsVsTimeView(ISimulationVsObservedDataView view)
       {
          tabResidVsTime.FillWith(view);
+      }
+
+      public void ShowChangesTab()
+      {
+         tabs.SelectedTabPage = tabChanges;
+      }
+
+      public void SetChangesView(ISimulationChangesView view)
+      {
+         tabChanges.FillWith(view);
       }
    }
 }

@@ -184,10 +184,19 @@ namespace MoBi.Presentation.Tasks.Interaction
 
             if (!modalPresenter.Show())
                return new MoBiEmptyCommand();
-               
-            macroCommand.Add(_interactionTaskContext.MoBiFormulaTask.UpdateFormula(builder, builder.Formula, editFormulaPresenter.Formula, usingFormulaDecoder, buildingBlock));
-            macroCommand.Add(_interactionTaskContext.MoBiFormulaTask.AddFormulaToCacheOrFixReferenceCommand(buildingBlock, builder).RunCommand(_interactionTaskContext.Context));
-            macroCommand.Add(setValue(builder, null, builder.DisplayUnit, buildingBlock));
+
+            var newFormula = editFormulaPresenter.Formula;
+            if (newFormula is ConstantFormula constantFormula)
+            {
+               macroCommand.Add(setValue(builder, constantFormula.Value, constantFormula.Dimension.BaseUnit, buildingBlock));
+            }
+            else
+            {
+               macroCommand.Add(_interactionTaskContext.MoBiFormulaTask.UpdateFormula(builder, builder.Formula, newFormula, usingFormulaDecoder, buildingBlock));
+               macroCommand.Add(_interactionTaskContext.MoBiFormulaTask.AddFormulaToCacheOrFixReferenceCommand(buildingBlock, builder).RunCommand(_interactionTaskContext.Context));
+               macroCommand.Add(setValue(builder, null, builder.DisplayUnit, buildingBlock));
+            }
+
             return macroCommand;
          }
       }

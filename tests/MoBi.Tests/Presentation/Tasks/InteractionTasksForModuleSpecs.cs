@@ -18,11 +18,15 @@ namespace MoBi.Presentation.Tasks
    public class concern_for_InteractionTasksForModule : ContextSpecification<InteractionTasksForModule>
    {
       protected IInteractionTaskContext _context;
+      private IInitialConditionsTask<InitialConditionsBuildingBlock> _initialConditionsTask;
+      private IParameterValuesTask _parameterValuesTask;
 
       protected override void Context()
       {
          _context = A.Fake<IInteractionTaskContext>();
-         sut = new InteractionTasksForModule(_context, new EditTaskForModule(_context));
+         _initialConditionsTask = A.Fake<IInitialConditionsTask<InitialConditionsBuildingBlock>>();
+         _parameterValuesTask = A.Fake<IParameterValuesTask>();
+         sut = new InteractionTasksForModule(_context, new EditTaskForModule(_context), _parameterValuesTask, _initialConditionsTask);
       }
    }
 

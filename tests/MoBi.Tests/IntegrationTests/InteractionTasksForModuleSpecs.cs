@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using FakeItEasy;
-using MoBi.Assets;
+﻿using FakeItEasy;
 using MoBi.Core;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
@@ -36,6 +33,8 @@ namespace MoBi.IntegrationTests
       protected IInteractionTaskContext _context;
       protected IDialogCreator _dialogCreator;
       protected IMoBiContext _moBiContext;
+      protected IInitialConditionsTask<InitialConditionsBuildingBlock> _initialConditionsTask;
+      protected IParameterValuesTask _parameterValuesTask;
 
       protected override void Context()
       {
@@ -54,12 +53,15 @@ namespace MoBi.IntegrationTests
             A.Fake<IMoBiConfiguration>(), A.Fake<DirectoryMapSettings>(), A.Fake<ICheckNameVisitor>(), A.Fake<IBuildingBlockRepository>(),
             A.Fake<IObjectBaseNamingTask>());
 
+         _parameterValuesTask = A.Fake<IParameterValuesTask>();
+         _initialConditionsTask = A.Fake<IInitialConditionsTask<InitialConditionsBuildingBlock>>();
+
          _selectTypePresenter = A.Fake<ISelectBuildingBlockTypePresenter>();
          A.CallTo(() => _context.ApplicationController.Start<ISelectBuildingBlockTypePresenter>()).Returns(_selectTypePresenter);
          A.CallTo(() => _dialogCreator.AskForFileToOpen(A<string>._, A<string>._, A<string>._, A<string>._, A<string>._)).Returns(DomainHelperForSpecs.TestFileFullPath("Sim_V12.pkml"));
          _module = new Module();
 
-         sut = new InteractionTasksForModule(_context, new EditTaskForModule(_context));
+         sut = new InteractionTasksForModule(_context, new EditTaskForModule(_context), _parameterValuesTask, _initialConditionsTask);
       }
    }
 
@@ -124,6 +126,13 @@ namespace MoBi.IntegrationTests
 
    public class When_loading_building_blocks_into_the_module : concern_for_InteractionTasksForModule
    {
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo((() => _parameterValuesTask.CorrectName(A<ParameterValuesBuildingBlock>._, _module))).Returns(true);
+         A.CallTo((() => _initialConditionsTask.CorrectName(A<InitialConditionsBuildingBlock>._, _module))).Returns(true);
+      }
+
       [TestCase(BuildingBlockType.SpatialStructure)]
       [TestCase(BuildingBlockType.Reaction)]
       [TestCase(BuildingBlockType.EventGroup)]
@@ -137,6 +146,25 @@ namespace MoBi.IntegrationTests
          A.CallTo(() => _selectTypePresenter.GetBuildingBlockType(A<Module>._)).Returns(type);
          sut.LoadBuildingBlocksToModule(_module);
          _module.BuildingBlocks.Count.ShouldBeEqualTo(1);
+      }
+   }
+
+   public class When_loading_building_blocks_into_the_module_and_renaming_is_declined : concern_for_InteractionTasksForModule
+   {
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo((() => _parameterValuesTask.CorrectName(A<ParameterValuesBuildingBlock>._, _module))).Returns(false);
+         A.CallTo((() => _initialConditionsTask.CorrectName(A<InitialConditionsBuildingBlock>._, _module))).Returns(false);
+      }
+
+      [TestCase(BuildingBlockType.InitialConditions)]
+      [TestCase(BuildingBlockType.ParameterValues)]
+      public void the_building_block_is_not_loaded_to_the_module(BuildingBlockType type)
+      {
+         A.CallTo(() => _selectTypePresenter.GetBuildingBlockType(A<Module>._)).Returns(type);
+         sut.LoadBuildingBlocksToModule(_module);
+         _module.BuildingBlocks.Count.ShouldBeEqualTo(0);
       }
    }
 }

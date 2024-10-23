@@ -111,6 +111,8 @@ namespace MoBi.UI.Views
          layoutItemRibbon.SizeConstraintsType = SizeConstraintsType.Custom;
          layoutItemRibbon.MaxSize = new Size(0, ribbonControl.Size.Height);
          layoutItemRibbon.MinSize = new Size(0, ribbonControl.Size.Height);
+
+         gridView.ShowColumnChooser = true;
       }
 
       private void hideEditor() => _unitControl.Hide();

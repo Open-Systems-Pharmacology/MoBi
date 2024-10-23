@@ -46,15 +46,16 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          {
             createEditItem(simulation),
             createRenameItem(simulation),
-            createConfigure(simulation).AsGroupStarter()
+            createConfigure(simulation).AsGroupStarter(),
+            createUpdate(simulation)
          };
 
 
-         if (simulation.BuildingBlocks().Any(hasChanges))
-            _allMenuItems.Add(createUpdate(simulation));
-
          if (simulation.OriginalQuantityValues.Any())
+         {
             _allMenuItems.Add(createCommit(simulation));
+            _allMenuItems.Add(createShowDifferences(simulation));
+         }
 
          _allMenuItems.AddRange(new[]
          {
@@ -200,6 +201,13 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Edit)
             .WithIcon(ApplicationIcons.Edit)
             .WithCommandFor<EditSimulationUICommand, IMoBiSimulation>(simulation, _container);
+      }
+
+      private IMenuBarItem createShowDifferences(IMoBiSimulation simulation)
+      {
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.ShowChanges)
+            .WithIcon(ApplicationIcons.Comparison)
+            .WithCommandFor<ShowChangesUICommand, IMoBiSimulation>(simulation, _container);
       }
 
       private IMenuBarItem createCommit(IMoBiSimulation simulation)

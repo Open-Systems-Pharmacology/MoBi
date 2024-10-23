@@ -214,10 +214,14 @@ namespace MoBi.Core.Services
 
       private ICommand runAsSimulationMacroCommand(IQuantity quantity, IMoBiSimulation simulation, IMoBiCommand simulationCommandToBeRun, bool shouldUpdateValueOriginAndState = true)
       {
-         IOSPSuiteCommand executedCommand = simulationCommandToBeRun.AsHidden().RunCommand(_context);
+         IOSPSuiteCommand executedCommand = simulationCommandToBeRun.RunCommand(_context);
 
          if (shouldUpdateValueOriginAndState)
             executedCommand = withUpdatedDefaultStateAndValueOrigin(executedCommand, quantity, simulation);
+
+         // The command was wrapped into a macro command and should therefore be hidden
+         if (executedCommand != simulationCommandToBeRun)
+            simulationCommandToBeRun.AsHidden();
 
          //needs to be done at the end because description might be set only after run
          return executedCommand.WithHistoryEntriesFrom(simulationCommandToBeRun);
