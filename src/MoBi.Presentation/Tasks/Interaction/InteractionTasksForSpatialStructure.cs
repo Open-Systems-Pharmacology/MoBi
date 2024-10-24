@@ -9,7 +9,6 @@ namespace MoBi.Presentation.Tasks.Interaction
 {
    public interface IInteractionTasksForSpatialStructure : IInteractionTasksForBuildingBlock<Module, MoBiSpatialStructure>
    {
-      IMoBiCommand GetRemoveCommand(MoBiSpatialStructure objectToRemove, Module parent, IBuildingBlock buildingBlock);
    }
 
    public class InteractionTasksForSpatialStructure : InteractionTasksForBuildingBlock<Module, MoBiSpatialStructure>, IInteractionTasksForSpatialStructure

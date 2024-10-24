@@ -7,7 +7,6 @@ namespace MoBi.Presentation.Tasks.Interaction
 {
    public interface IInteractionTasksForEventBuildingBlock : IInteractionTasksForBuildingBlock<Module, EventGroupBuildingBlock>
    {
-      IMoBiCommand GetRemoveCommand(EventGroupBuildingBlock objectToRemove, Module parent, IBuildingBlock buildingBlock);
    }
 
    public class InteractionTasksForEventBuildingBlock : InteractionTasksForEnumerableBuildingBlockOfContainerBuilder<Module, EventGroupBuildingBlock, EventGroupBuilder>, IInteractionTasksForEventBuildingBlock

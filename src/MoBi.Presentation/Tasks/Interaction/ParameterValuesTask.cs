@@ -26,7 +26,6 @@ namespace MoBi.Presentation.Tasks.Interaction
       IMoBiCommand SetFullPath(ParameterValue parameterValue, ObjectPath entityPath, ParameterValuesBuildingBlock buildingBlock);
       IReadOnlyList<ObjectPath> GetNewPaths();
       bool CorrectName(ParameterValuesBuildingBlock buildingBlock, Module module);
-      IMoBiCommand GetRemoveCommand(ParameterValuesBuildingBlock objectToRemove, Module parent, IBuildingBlock buildingBlock);
    }
 
    public class ParameterValuesTask : InteractionTasksForExtendablePathAndValueEntity<ParameterValuesBuildingBlock, ParameterValue>, IParameterValuesTask

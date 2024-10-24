@@ -7,7 +7,6 @@ namespace MoBi.Presentation.Tasks.Interaction
 {
    public interface IInteractionTasksForPassiveTransportBuildingBlock : IInteractionTasksForBuildingBlock<Module, PassiveTransportBuildingBlock>
    {
-      IMoBiCommand GetRemoveCommand(PassiveTransportBuildingBlock objectToRemove, Module parent, IBuildingBlock buildingBlock);
    }
 
    public class InteractionTasksForPassiveTransportBuildingBlock : InteractionTasksForEnumerableBuildingBlockOfContainerBuilder<Module, PassiveTransportBuildingBlock, TransportBuilder>, IInteractionTasksForPassiveTransportBuildingBlock

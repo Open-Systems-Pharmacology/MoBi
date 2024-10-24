@@ -20,7 +20,6 @@ namespace MoBi.Presentation.Tasks.Interaction
       IInteractionTasksForProjectPathAndValueEntityBuildingBlocks<ExpressionProfileBuildingBlock, ExpressionParameter>,
       IInteractionTasksForProjectBuildingBlock
    {
-      IMoBiCommand GetRemoveCommand(ExpressionProfileBuildingBlock individualBuildingBlockToRemove, MoBiProject parent, IBuildingBlock buildingBlock);
       IMoBiCommand UpdateExpressionProfileFromDatabase(ExpressionProfileBuildingBlock buildingBlock);
    }
 

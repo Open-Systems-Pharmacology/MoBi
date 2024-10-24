@@ -26,7 +26,6 @@ namespace MoBi.Presentation.Tasks.Interaction
 {
    public interface IInitialConditionsTask<TBuildingBlock> : IInteractionTasksForExtendablePathAndValueEntity<TBuildingBlock, InitialCondition> where TBuildingBlock : class, IBuildingBlock<InitialCondition>
    {
-      IMoBiCommand GetRemoveCommand(TBuildingBlock objectToRemove, Module parent, IBuildingBlock buildingBlock);
       IMoBiCommand SetIsPresent(TBuildingBlock initialConditions, IEnumerable<InitialCondition> pathAndValueEntities, bool isPresent);
 
       IMoBiCommand SetNegativeValuesAllowed(TBuildingBlock initialConditions, IEnumerable<InitialCondition> pathAndValueEntities, bool negativeValuesAllowed);

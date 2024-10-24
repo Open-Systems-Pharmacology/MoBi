@@ -9,7 +9,6 @@ namespace MoBi.Presentation.Tasks.Interaction
    public interface IInteractionTasksForMoleculeBuildingBlock : IInteractionTasksForBuildingBlock<Module, MoleculeBuildingBlock>
    {
       void Edit(MoleculeBuildingBlock moleculeBuildingBlock, MoleculeBuilder moleculeBuilder);
-      IMoBiCommand GetRemoveCommand(MoleculeBuildingBlock objectToRemove, Module parent, IBuildingBlock buildingBlock);
    }
 
    public class InteractionTasksForMoleculeBuildingBlock : InteractionTasksForEnumerableBuildingBlockOfContainerBuilder<Module, MoleculeBuildingBlock, MoleculeBuilder>, IInteractionTasksForMoleculeBuildingBlock
