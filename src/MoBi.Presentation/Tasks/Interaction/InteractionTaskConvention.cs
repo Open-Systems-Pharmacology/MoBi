@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Container.Conventions;
@@ -8,11 +7,10 @@ using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-
    /// <summary>
-   /// Registers components with the following conventions
-   /// Registers all interfaces that begin with "InteractionTasksFor" if
-   ///   the interface contains a generic type.
+   ///    Registers components with the following conventions
+   ///    Registers all interfaces that begin with "InteractionTasksFor" if
+   ///    the interface contains a generic type.
    /// </summary>
    public class InteractionTaskConvention : IRegistrationConvention
    {
