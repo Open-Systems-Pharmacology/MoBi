@@ -60,10 +60,9 @@ namespace MoBi.Presentation.Tasks
 
       public IMoBiCommand CommitSimulationChanges(IMoBiSimulation simulationWithChanges)
       {
-         var changes = showChanges(simulationWithChanges);
-         if (_interactionTaskContext.DialogCreator.MessageBoxYesNo(changes) != ViewResult.Yes)
+         var changes = getChanges(simulationWithChanges);
+         if (_interactionTaskContext.DialogCreator.MessageBoxYesNo(changes.message) != ViewResult.Yes)
             return null;
-
 
          var lastModuleConfiguration = simulationWithChanges.Configuration.ModuleConfigurations.Last();
 
@@ -75,14 +74,14 @@ namespace MoBi.Presentation.Tasks
          };
 
          if (lastModuleConfiguration.SelectedInitialConditions == null)
-            macroCommand.AddRange(addNewInitialConditionsFromSimulationChanges(simulationWithChanges, lastModuleConfiguration));
+            macroCommand.AddRange(addNewInitialConditionsFromSimulationChanges(simulationWithChanges, lastModuleConfiguration, changes.moleculeChanges));
          else
-            macroCommand.AddRange(updateInitialConditionsFromSimulationChanges(simulationWithChanges, lastModuleConfiguration));
+            macroCommand.AddRange(updateInitialConditionsFromSimulationChanges(lastModuleConfiguration, changes.moleculeChanges));
 
          if (lastModuleConfiguration.SelectedParameterValues == null)
-            macroCommand.AddRange(addNewParameterValuesFromSimulationChanges(simulationWithChanges, lastModuleConfiguration));
+            macroCommand.AddRange(addNewParameterValuesFromSimulationChanges(simulationWithChanges, lastModuleConfiguration, changes.parameterChanges));
          else
-            macroCommand.AddRange(updateParameterValuesFromSimulationChanges(simulationWithChanges, lastModuleConfiguration));
+            macroCommand.AddRange(updateParameterValuesFromSimulationChanges(lastModuleConfiguration, changes.parameterChanges));
 
          macroCommand.Add(new ClearOriginalQuantitiesTrackerCommand(simulationWithChanges));
 
@@ -91,13 +90,15 @@ namespace MoBi.Presentation.Tasks
          return macroCommand;
       }
 
-      private string showChanges(IMoBiSimulation simulationWithChanges)
+      private (string message, IEnumerable<(ObjectPath quantityPath, MoleculeAmount quantity)> moleculeChanges, IEnumerable<(ObjectPath quantityPath, Parameter quantity)> parameterChanges) getChanges(IMoBiSimulation simulationWithChanges)
       {
          var lastModuleConfiguration = simulationWithChanges.Configuration.ModuleConfigurations.Last();
          var changesForICValues = changesFrom<MoleculeAmount>(simulationWithChanges).ToList();
          var changesForParameterValues = changesFrom<Parameter>(simulationWithChanges).ToList();
 
-         return CommitingChangesToModulesMessage(lastModuleConfiguration, changesForICValues, changesForParameterValues);
+         var message = CommitingChangesToModulesMessage(lastModuleConfiguration, changesForICValues, changesForParameterValues);
+
+         return (message, changesForICValues, changesForParameterValues);
       }
 
       /// <summary>
@@ -108,11 +109,11 @@ namespace MoBi.Presentation.Tasks
       ///    have SelectedParameterValues as that building block will receive the updates. The template module and building block
       ///    is resolved from the project by name
       /// </summary>
-      private IEnumerable<IMoBiCommand> updateParameterValuesFromSimulationChanges(IMoBiSimulation simulation, ModuleConfiguration moduleConfiguration)
+      private IEnumerable<IMoBiCommand> updateParameterValuesFromSimulationChanges(ModuleConfiguration moduleConfiguration, IEnumerable<(ObjectPath quantityPath, Parameter quantity)> parameterChanges)
       {
          var templateBuildingBlock = _templateResolverTask.TemplateBuildingBlockFor(moduleConfiguration.SelectedParameterValues);
 
-         var valueTuples = changesFrom<Parameter>(simulation).ToList();
+         var valueTuples = parameterChanges.ToList();
          return valueTuples.Select(x => synchronizeParameterValueCommand(x.quantity, x.quantityPath, templateBuildingBlock)).Concat(valueTuples.Select(x => synchronizeParameterValueCommand(x.quantity, x.quantityPath, moduleConfiguration.SelectedParameterValues).AsHidden()));
       }
 
@@ -124,11 +125,11 @@ namespace MoBi.Presentation.Tasks
       ///    have SelectedInitialConditions as that building block will receive the updates. The template module and building
       ///    block is resolved from the project by name
       /// </summary>
-      private IEnumerable<IMoBiCommand> updateInitialConditionsFromSimulationChanges(IMoBiSimulation simulation, ModuleConfiguration moduleConfiguration)
+      private IEnumerable<IMoBiCommand> updateInitialConditionsFromSimulationChanges(ModuleConfiguration moduleConfiguration, IEnumerable<(ObjectPath quantityPath, MoleculeAmount quantity)> moleculeChanges)
       {
          var templateBuildingBlock = _templateResolverTask.TemplateBuildingBlockFor(moduleConfiguration.SelectedInitialConditions);
 
-         var valueTuples = changesFrom<MoleculeAmount>(simulation).ToList();
+         var valueTuples = moleculeChanges.ToList();
          return valueTuples.Select(x => synchronizeInitialConditionCommand(x.quantity, x.quantityPath, templateBuildingBlock)).Concat(valueTuples.Select(x => synchronizeInitialConditionCommand(x.quantity, x.quantityPath, moduleConfiguration.SelectedInitialConditions).AsHidden()));
       }
 
@@ -140,10 +141,10 @@ namespace MoBi.Presentation.Tasks
       ///    in the <paramref name="simulation" />. The new building block will be selected in
       ///    <paramref name="moduleConfiguration" />
       /// </summary>
-      private IEnumerable<IMoBiCommand> addNewParameterValuesFromSimulationChanges(IMoBiSimulation simulation, ModuleConfiguration moduleConfiguration)
+      private IEnumerable<IMoBiCommand> addNewParameterValuesFromSimulationChanges(IMoBiSimulation simulation, ModuleConfiguration moduleConfiguration, IEnumerable<(ObjectPath quantityPath, Parameter quantity)> parameterChanges)
       {
          // Create two parameter values for each Parameter change, one for the project building block and one for the simulation building block
-         var parameterValuesToAdd = changesFrom<Parameter>(simulation).Select(x => (simulation: createParameterValue(x.quantity, x.quantityPath), project: createParameterValue(x.quantity, x.quantityPath))).ToList();
+         var parameterValuesToAdd = parameterChanges.Select(x => (simulation: createParameterValue(x.quantity, x.quantityPath), project: createParameterValue(x.quantity, x.quantityPath))).ToList();
          return createAddBuildingBlockCommands<ParameterValuesBuildingBlock, ParameterValue>(simulation, moduleConfiguration, parameterValuesToAdd);
       }
 
@@ -155,10 +156,10 @@ namespace MoBi.Presentation.Tasks
       ///    in the <paramref name="simulation" />. The new building block will be selected in
       ///    <paramref name="moduleConfiguration" />
       /// </summary>
-      private IEnumerable<IMoBiCommand> addNewInitialConditionsFromSimulationChanges(IMoBiSimulation simulation, ModuleConfiguration moduleConfiguration)
+      private IEnumerable<IMoBiCommand> addNewInitialConditionsFromSimulationChanges(IMoBiSimulation simulation, ModuleConfiguration moduleConfiguration, IEnumerable<(ObjectPath quantityPath, MoleculeAmount quantity)> moleculeChanges)
       {
          // Create two initial conditions for each MoleculeAmount change, one for the project building block and one for the simulation building block
-         var initialConditionsToAdd = changesFrom<MoleculeAmount>(simulation).Select(x => (simulation: createInitialCondition(x.quantity, x.quantityPath), project: createInitialCondition(x.quantity, x.quantityPath))).ToList();
+         var initialConditionsToAdd = moleculeChanges.Select(x => (simulation: createInitialCondition(x.quantity, x.quantityPath), project: createInitialCondition(x.quantity, x.quantityPath))).ToList();
          return createAddBuildingBlockCommands<InitialConditionsBuildingBlock, InitialCondition>(simulation, moduleConfiguration, initialConditionsToAdd);
       }
 
