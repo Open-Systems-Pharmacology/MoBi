@@ -6,10 +6,12 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Extensions;
 using MoBi.Core.Services;
+using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Services;
 using static MoBi.Assets.AppConstants.Commands;
 
 namespace MoBi.Presentation.Tasks
@@ -24,8 +26,6 @@ namespace MoBi.Presentation.Tasks
       /// </summary>
       /// <returns>An executed command</returns>
       IMoBiCommand CommitSimulationChanges(IMoBiSimulation simulationWithChanges);
-
-      string ShowChanges(IMoBiSimulation simulationWithChanges);
    }
 
    public class SimulationCommitTask : ISimulationCommitTask
@@ -37,6 +37,7 @@ namespace MoBi.Presentation.Tasks
       private readonly IParameterValuesCreator _parameterValuesCreator;
       private readonly INameCorrector _nameCorrector;
       private readonly IObjectTypeResolver _objectTypeResolver;
+      private readonly IInteractionTaskContext _interactionTaskContext;
 
       public SimulationCommitTask(IMoBiContext context,
          ITemplateResolverTask templateResolverTask,
@@ -44,7 +45,8 @@ namespace MoBi.Presentation.Tasks
          IInitialConditionsCreator initialConditionsCreator,
          IParameterValuesCreator parameterValuesCreator,
          INameCorrector nameCorrector,
-         IObjectTypeResolver objectTypeResolver)
+         IObjectTypeResolver objectTypeResolver,
+         IInteractionTaskContext interactionTaskContext)
       {
          _context = context;
          _templateResolverTask = templateResolverTask;
@@ -53,10 +55,16 @@ namespace MoBi.Presentation.Tasks
          _parameterValuesCreator = parameterValuesCreator;
          _nameCorrector = nameCorrector;
          _objectTypeResolver = objectTypeResolver;
+         _interactionTaskContext = interactionTaskContext;
       }
 
       public IMoBiCommand CommitSimulationChanges(IMoBiSimulation simulationWithChanges)
       {
+         var changes = showChanges(simulationWithChanges);
+         if (_interactionTaskContext.DialogCreator.MessageBoxYesNo(changes) != ViewResult.Yes)
+            return null;
+
+
          var lastModuleConfiguration = simulationWithChanges.Configuration.ModuleConfigurations.Last();
 
          var macroCommand = new MoBiMacroCommand
@@ -79,13 +87,11 @@ namespace MoBi.Presentation.Tasks
          macroCommand.Add(new ClearOriginalQuantitiesTrackerCommand(simulationWithChanges));
 
          macroCommand.RunCommand(_context);
-
-
          _context.PublishEvent(new SimulationStatusChangedEvent(simulationWithChanges));
          return macroCommand;
       }
 
-      public string ShowChanges(IMoBiSimulation simulationWithChanges)
+      private string showChanges(IMoBiSimulation simulationWithChanges)
       {
          var lastModuleConfiguration = simulationWithChanges.Configuration.ModuleConfigurations.Last();
          var changesForICValues = changesFrom<MoleculeAmount>(simulationWithChanges).ToList();
