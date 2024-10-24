@@ -5,6 +5,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Helper;
 using MoBi.Core.Services;
 using MoBi.Helpers;
+using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
@@ -17,6 +18,7 @@ namespace MoBi.Presentation.Tasks
    public class concern_for_SimulationCommitTask : ContextSpecification<SimulationCommitTask>
    {
       protected MoBiSimulation _simulationWithChanges;
+      protected IInteractionTaskContext _interactionTaskContext;
       protected INameCorrector _nameCorrector;
       protected IInitialConditionsCreator _initialConditionsCreator;
       protected IParameterValuesCreator _parameterValuesCreator;
@@ -41,8 +43,9 @@ namespace MoBi.Presentation.Tasks
          _initialConditionsCreator = A.Fake<IInitialConditionsCreator>();
          _parameterValuesCreator = A.Fake<IParameterValuesCreator>();
          _nameCorrector = A.Fake<INameCorrector>();
+         _interactionTaskContext = A.Fake<IInteractionTaskContext>();
 
-         sut = new SimulationCommitTask(_context, _templateResolverTask, _entitiesInSimulationRetriever, _initialConditionsCreator, _parameterValuesCreator, _nameCorrector, new ObjectTypeResolver());
+         sut = new SimulationCommitTask(_context, _templateResolverTask, _entitiesInSimulationRetriever, _initialConditionsCreator, _parameterValuesCreator, _nameCorrector, new ObjectTypeResolver(), _interactionTaskContext);
       }
 
       [Observation]
