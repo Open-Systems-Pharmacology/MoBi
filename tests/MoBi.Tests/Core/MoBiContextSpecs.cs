@@ -275,6 +275,7 @@ namespace MoBi.Core
          };
          _module.Add(_buildingBlock);
          _command.Add(new AddParameterValueToBuildingBlockCommand(_buildingBlock, _parameterValue));
+         _command.Add(new AddParameterValueToBuildingBlockCommand(_buildingBlock, _parameterValue));
          A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, A<ViewResult>._)).Returns(ViewResult.Yes);
       }
 
@@ -286,7 +287,7 @@ namespace MoBi.Core
       [Observation]
       public void the_user_should_be_prompted()
       {
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, A<ViewResult>._)).MustHaveHappened();
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, A<ViewResult>._)).MustHaveHappenedOnceExactly();
       }
    }
 

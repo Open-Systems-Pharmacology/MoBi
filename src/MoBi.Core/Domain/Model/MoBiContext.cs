@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Services;
@@ -263,8 +264,13 @@ namespace MoBi.Core.Domain.Model
 
       public void PromptForCancellation(ICommand command)
       {
+         promptForCancellation(command, new List<Module>());
+      }
+
+      private void promptForCancellation(ICommand command, List<Module> confirmedModuleConversions)
+      {
          if(command is IMacroCommand macroCommand)
-            macroCommand.All().Each(PromptForCancellation);
+            macroCommand.All().Each(x => promptForCancellation(x, confirmedModuleConversions));
 
          if (!(command is BuildingBlockChangeCommandBase changeCommand))
             return;
@@ -272,8 +278,13 @@ namespace MoBi.Core.Domain.Model
          if (!changeCommand.WillConvertPKSimModuleToExtensionModule)
             return;
 
+         if (confirmedModuleConversions.Contains(changeCommand.Module))
+            return;
+
          if(_dialogCreator.MessageBoxYesNo(AppConstants.Captions.ThisWillConvertPkSimModuleToExtensionModule(changeCommand.Module?.Name), defaultButton: ViewResult.Yes) == ViewResult.No)
             throw new CancelCommandRunException();
+
+         confirmedModuleConversions.Add(changeCommand.Module);
       }
 
       private void unregisterCachedFormulaInModel(IModel model)

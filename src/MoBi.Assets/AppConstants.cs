@@ -1128,6 +1128,7 @@ namespace MoBi.Assets
          public static readonly string SettingsAndSchema = "Output Intervals and Solver Settings";
          public static readonly string MergeBehavior = "Merge Behavior";
          public static readonly string ExportToExcel = "Export to Excel®...";
+         public static readonly string ImportFromExcel = "Import from Excel®...";
          public static readonly string ShowChanges = "Show Changes";
 
          public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
@@ -1184,7 +1185,7 @@ namespace MoBi.Assets
             return string.Format("Cannot find a parameter for path {1} in simulation {0} during import. Only updates are allowed", name, path);
          }
 
-         public static readonly string CheckDimensionOfAddedParameters = "Check the <i>Dimension</i> property of the added parameters";
+         public static readonly string CheckDimensionOfAddedParameters = $"The <i>Dimension</i> property of the added parameters will not be automatically set.{Environment.NewLine}Please set the <i>Dimension</i> of all added parameters.";
          public static readonly string ThisItNotATemplateBuildingBlock = "This is not the template building block!";
       }
 
