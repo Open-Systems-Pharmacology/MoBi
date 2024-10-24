@@ -1,19 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Services;
+using MoBi.Helpers;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Serialization.Exchange;
-using MoBi.Helpers;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core
 {
@@ -52,7 +50,7 @@ namespace MoBi.Core
    public class When_adding_a_simulation_to_project_that_contains_a_module_with_the_same_name : concern_for_SimulationLoader
    {
       private ObserverBuildingBlock _clonedBuildingBlock;
-     
+
       private Module _clonedModule;
       private IndividualBuildingBlock _clonedIndividual;
       private SimulationConfiguration _clonedSimulationConfiguration;
@@ -62,6 +60,8 @@ namespace MoBi.Core
       {
          base.Context();
          _project.AddModule(new Module().WithName("moduleName"));
+         _project.AddModule(new Module().WithName("newModuleName"));
+
 
          _clonedBuildingBlock = new ObserverBuildingBlock().WithId("SP2");
          _clonedModule = new Module
@@ -73,12 +73,23 @@ namespace MoBi.Core
          _clonedSimulationConfiguration = new SimulationConfiguration();
          _clonedSimulationConfiguration.AddModuleConfiguration(new ModuleConfiguration(_clonedModule));
          _clonedSimulationConfiguration.Individual = _clonedIndividual;
-         
-         A.CallTo(() => _cloneManager.CloneSimulationConfiguration(_simulationConfiguration)).Returns(_clonedSimulationConfiguration);
-         
-         A.CallTo(_nameCorrector).WithReturnType<bool>().Returns(true);
+         _simulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(new Module().WithName("newModuleName")));
+         _simulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(new Module().WithName("Unique moduleName")));
+         _simulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(new Module().WithName("Sim1 1")));
+         _simulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(new Module().WithName("Sim1 2")));
+         _simulation.Name = "Sim1";
 
-         A.CallTo(() => _nameCorrector.AutoCorrectName(A<IEnumerable<string>>._, A<IObjectBase>._)).Invokes(x => x.GetArgument<Module>(1).Name = "the corrected name");
+         A.CallTo(() => _cloneManager.CloneSimulationConfiguration(_simulationConfiguration)).Returns(_clonedSimulationConfiguration);
+
+         A.CallTo(_nameCorrector).WithReturnType<bool>()
+            .Invokes(() => { _simulation.Name = "new SimName"; }).Returns(true);
+
+         A.CallTo(() => _nameCorrector.CorrectName(A<IEnumerable<IObjectBase>>.Ignored, _simulation))
+            .Returns(true);
+
+         //I need this invocation to provide a unique name for the modules.
+         A.CallTo(() => _nameCorrector.AutoCorrectName(A<IEnumerable<string>>.Ignored, A<Module>.Ignored))
+            .Invokes((IEnumerable<string> takenNames, Module module) => { module.Name = $"{module.Name} has been renamed"; });
       }
 
       protected override void Because()
@@ -117,9 +128,23 @@ namespace MoBi.Core
       }
 
       [Observation]
-      public void the_module_in_the_simulation_should_be_renamed()
+      public void the_module_in_the_simulation_with_conflicting_names_should_be_renamed()
       {
-         _simulation.Modules[0].Name.ShouldBeEqualTo("the corrected name");
+         _simulation.Modules[0].Name.ShouldContain("has been renamed".ToCharArray());
+         _simulation.Modules[1].Name.ShouldContain("has been renamed".ToCharArray());
+      }
+
+      [Observation]
+      public void the_module_in_the_simulation_with_no_conflicting_name_should_not_be_renamed()
+      {
+         _simulation.Modules[2].Name.ShouldBeEqualTo("Unique moduleName");
+      }
+
+      [Observation]
+      public void the_modules_in_the_simulation_named_after_simulation_have_been_changed()
+      {
+         _simulation.Modules[3].Name.ShouldBeEqualTo($"Sim1 1");
+         _simulation.Modules[4].Name.ShouldBeEqualTo($"Sim1 2");
       }
    }
 
