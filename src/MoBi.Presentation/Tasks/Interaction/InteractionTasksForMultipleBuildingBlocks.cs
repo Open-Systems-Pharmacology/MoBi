@@ -9,7 +9,6 @@ using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
-using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
@@ -66,7 +65,12 @@ namespace MoBi.Presentation.Tasks.Interaction
                return;
 
             var referringSimulationsAndBuildingBlocks = new List<Tuple<IReadOnlyList<string>, string>>();
-            var allCommands = new List<IMoBiCommand>();
+            var macroCommand = new MoBiMacroCommand()
+            {
+               CommandType = AppConstants.Commands.DeleteCommand,
+               ObjectType = ObjectTypes.BuildingBlock,
+               Description = AppConstants.Commands.RemoveMultipleBuildingBlocks
+            };
 
             foreach (var buildingBlockToRemove in buildingBlocksToRemove)
             {
@@ -76,32 +80,21 @@ namespace MoBi.Presentation.Tasks.Interaction
                   referringSimulationsAndBuildingBlocks.Add(new Tuple<IReadOnlyList<string>, string>(referringSimulations.AllNames(), buildingBlockToRemove.DisplayName));
                else
                {
-                  allCommands.Add(removeBuildingBlock(buildingBlockToRemove));
+                  macroCommand.Add(removeBuildingBlock(buildingBlockToRemove));
                }
             }
 
-            if (allCommands.Any())
-               executeMacroCommand(allCommands);
+            if (!macroCommand.IsEmpty)
+            {
+               macroCommand.RunCommand(_interactionTaskContext.Context);
+               _interactionTaskContext.Context.AddToHistory(macroCommand);
+            }
 
             if (referringSimulationsAndBuildingBlocks.Any())
             {
                var messageBuilder = AppConstants.ListOfBuildingBlocksNotRemoved(referringSimulationsAndBuildingBlocks);
                _interactionTaskContext.DialogCreator.MessageBoxInfo(messageBuilder.ToString());
             }
-         }
-
-         private void executeMacroCommand(List<IMoBiCommand> allCommands)
-         {
-            var macroCommand = new MoBiMacroCommand()
-            {
-               CommandType = AppConstants.Commands.DeleteCommand,
-               ObjectType = ObjectTypes.BuildingBlock,
-               Description = AppConstants.Commands.RemoveMultipleBuildingBlocks
-            };
-            allCommands.Each(x => x.Visible = false);
-            macroCommand.AddRange(allCommands);
-            macroCommand.RunCommand(_interactionTaskContext.Context);
-            _interactionTaskContext.Context.AddToHistory(macroCommand);
          }
 
          private IMoBiCommand removeBuildingBlock(IBuildingBlock buildingBlockToRemove)

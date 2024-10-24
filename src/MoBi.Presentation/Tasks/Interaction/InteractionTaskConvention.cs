@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Container.Conventions;
@@ -25,8 +24,6 @@ namespace MoBi.Presentation.Tasks.Interaction
 
 
          interactionInterfaces.Each(interfaceType => register(concreteType, container, lifeStyle, interfaceType));
-         if (interactionInterfaces.Any())
-            Debug.WriteLine($"{concreteType.Name}");
       }
 
       private static void register(Type concreteType, IContainer container, LifeStyle lifeStyle, Type interfaceType)
