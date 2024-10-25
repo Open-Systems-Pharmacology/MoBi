@@ -12,6 +12,7 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -44,7 +45,7 @@ namespace MoBi.Presentation.Tasks
          _parameterValuesCreator = A.Fake<IParameterValuesCreator>();
          _nameCorrector = A.Fake<INameCorrector>();
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
-
+         A.CallTo(() => _interactionTaskContext.DialogCreator.MessageBoxYesNo(A<string>._, A<ViewResult>._)).Returns(ViewResult.Yes);
          sut = new SimulationCommitTask(_context, _templateResolverTask, _entitiesInSimulationRetriever, _initialConditionsCreator, _parameterValuesCreator, _nameCorrector, new ObjectTypeResolver(), _interactionTaskContext);
       }
 

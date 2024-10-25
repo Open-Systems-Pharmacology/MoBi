@@ -19,7 +19,7 @@ namespace MoBi.Presentation.UICommand
       protected override void PerformExecute()
       {
          var command = _simulationCommitTask.CommitSimulationChanges(Subject);
-         if(command!= null)
+         if(command != null)
             _context.AddToHistory(command);
       }
    }

@@ -112,9 +112,7 @@ namespace MoBi.Presentation.Tasks
       private IEnumerable<IMoBiCommand> updateParameterValuesFromSimulationChanges(ModuleConfiguration moduleConfiguration, IReadOnlyList<(ObjectPath quantityPath, Parameter quantity)> parameterChanges)
       {
          var templateBuildingBlock = _templateResolverTask.TemplateBuildingBlockFor(moduleConfiguration.SelectedParameterValues);
-
-         var valueTuples = parameterChanges;
-         return valueTuples.Select(x => synchronizeParameterValueCommand(x.quantity, x.quantityPath, templateBuildingBlock)).Concat(valueTuples.Select(x => synchronizeParameterValueCommand(x.quantity, x.quantityPath, moduleConfiguration.SelectedParameterValues).AsHidden()));
+         return parameterChanges.Select(x => synchronizeParameterValueCommand(x.quantity, x.quantityPath, templateBuildingBlock)).Concat(parameterChanges.Select(x => synchronizeParameterValueCommand(x.quantity, x.quantityPath, moduleConfiguration.SelectedParameterValues).AsHidden()));
       }
 
       /// <summary>
@@ -129,8 +127,7 @@ namespace MoBi.Presentation.Tasks
       {
          var templateBuildingBlock = _templateResolverTask.TemplateBuildingBlockFor(moduleConfiguration.SelectedInitialConditions);
 
-         var valueTuples = moleculeChanges;
-         return valueTuples.Select(x => synchronizeInitialConditionCommand(x.quantity, x.quantityPath, templateBuildingBlock)).Concat(valueTuples.Select(x => synchronizeInitialConditionCommand(x.quantity, x.quantityPath, moduleConfiguration.SelectedInitialConditions).AsHidden()));
+         return moleculeChanges.Select(x => synchronizeInitialConditionCommand(x.quantity, x.quantityPath, templateBuildingBlock)).Concat(moleculeChanges.Select(x => synchronizeInitialConditionCommand(x.quantity, x.quantityPath, moduleConfiguration.SelectedInitialConditions).AsHidden()));
       }
 
       /// <summary>
