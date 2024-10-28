@@ -5,18 +5,21 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Helper;
 using MoBi.Core.Services;
 using MoBi.Helpers;
+using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.Tasks
 {
    public class concern_for_SimulationCommitTask : ContextSpecification<SimulationCommitTask>
    {
       protected MoBiSimulation _simulationWithChanges;
+      protected IInteractionTaskContext _interactionTaskContext;
       protected INameCorrector _nameCorrector;
       protected IInitialConditionsCreator _initialConditionsCreator;
       protected IParameterValuesCreator _parameterValuesCreator;
@@ -41,8 +44,9 @@ namespace MoBi.Presentation.Tasks
          _initialConditionsCreator = A.Fake<IInitialConditionsCreator>();
          _parameterValuesCreator = A.Fake<IParameterValuesCreator>();
          _nameCorrector = A.Fake<INameCorrector>();
-
-         sut = new SimulationCommitTask(_context, _templateResolverTask, _entitiesInSimulationRetriever, _initialConditionsCreator, _parameterValuesCreator, _nameCorrector, new ObjectTypeResolver());
+         _interactionTaskContext = A.Fake<IInteractionTaskContext>();
+         A.CallTo(() => _interactionTaskContext.DialogCreator.MessageBoxYesNo(A<string>._, A<ViewResult>._)).Returns(ViewResult.Yes);
+         sut = new SimulationCommitTask(_context, _templateResolverTask, _entitiesInSimulationRetriever, _initialConditionsCreator, _parameterValuesCreator, _nameCorrector, new ObjectTypeResolver(), _interactionTaskContext);
       }
 
       [Observation]
@@ -134,6 +138,7 @@ namespace MoBi.Presentation.Tasks
             moleculeAmount
          };
 
+         A.CallTo(() => _entitiesInSimulationRetriever.EntitiesFrom<DistributedParameter>(_simulationWithChanges)).Returns(new PathCacheForSpecs<DistributedParameter>());
          A.CallTo(() => _entitiesInSimulationRetriever.EntitiesFrom<Parameter>(_simulationWithChanges)).Returns(parameterPathCache);
          A.CallTo(() => _entitiesInSimulationRetriever.EntitiesFrom<MoleculeAmount>(_simulationWithChanges)).Returns(initialConditionsPathCache);
       }
@@ -224,6 +229,7 @@ namespace MoBi.Presentation.Tasks
          };
 
          A.CallTo(() => _entitiesInSimulationRetriever.EntitiesFrom<Parameter>(_simulationWithChanges)).Returns(parameterPathCache);
+         A.CallTo(() => _entitiesInSimulationRetriever.EntitiesFrom<DistributedParameter>(_simulationWithChanges)).Returns(new PathCacheForSpecs<DistributedParameter>());
          A.CallTo(() => _entitiesInSimulationRetriever.EntitiesFrom<MoleculeAmount>(_simulationWithChanges)).Returns(initialConditionsPathCache);
       }
 

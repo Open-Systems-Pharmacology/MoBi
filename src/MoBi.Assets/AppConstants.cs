@@ -280,6 +280,26 @@ namespace MoBi.Assets
             return DisplayValue(displayValue.ConvertedTo<string>(), displayUnit);
          }
 
+         public static string CommitingChangesToModulesMessage(ModuleConfiguration moduleConfiguration, bool hasMoleculeChanges, bool hasParameterChanges)
+         {
+            string message = $"Changes will be applied in the module <i>{moduleConfiguration.Module.Name}</i>:{Environment.NewLine}";
+
+            if (hasMoleculeChanges)
+            {
+               var icName = moduleConfiguration.SelectedInitialConditions == null ? "A new Initial Conditions Building Block will be created" : $"New Initial Conditions will be added to <i>{moduleConfiguration.SelectedInitialConditions.DisplayName}</i>";
+               message += $"{Environment.NewLine}- {icName}";
+            }
+
+            if (hasParameterChanges)
+            {
+               var pvName = moduleConfiguration.SelectedParameterValues == null ? "A new Parameter Values Building Block will be created" : $"New Parameter Values will be added to <i>{moduleConfiguration.SelectedParameterValues.DisplayName}</i>";
+               message += $"{Environment.NewLine}- {pvName}";
+            }
+
+            return message;
+         }
+
+
          public static string DisplayValue(string displayValue, string displayUnit)
          {
             if (string.IsNullOrEmpty(displayUnit))
