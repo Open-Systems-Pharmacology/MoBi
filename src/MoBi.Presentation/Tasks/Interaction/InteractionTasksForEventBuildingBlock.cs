@@ -5,7 +5,11 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public class InteractionTasksForEventBuildingBlock : InteractionTasksForEnumerableBuildingBlockOfContainerBuilder<Module, EventGroupBuildingBlock, EventGroupBuilder>
+   public interface IInteractionTasksForEventBuildingBlock : IInteractionTasksForBuildingBlock<Module, EventGroupBuildingBlock>
+   {
+   }
+
+   public class InteractionTasksForEventBuildingBlock : InteractionTasksForEnumerableBuildingBlockOfContainerBuilder<Module, EventGroupBuildingBlock, EventGroupBuilder>, IInteractionTasksForEventBuildingBlock
    {
       public InteractionTasksForEventBuildingBlock(
          IInteractionTaskContext interactionTaskContext,

@@ -257,6 +257,7 @@ namespace MoBi.Assets
          public static readonly string RemoveMultipleParameterValues = "Remove multiple parameter values";
          public static readonly string RemoveMultipleInitialConditions = "Remove multiple initial conditions";
          public static readonly string RemoveMultipleModules = "Remove multiple modules";
+         public static readonly string RemoveMultipleBuildingBlocks = "Remove multiple building blocks";
          public static readonly string SimulationType = "simulation";
          public static readonly string BuildingBlockType = "building block";
          public static readonly string ParameterType = "parameter";
@@ -908,6 +909,8 @@ namespace MoBi.Assets
          public static readonly Size SELECT_SINGLE_SIZE = new Size(475, 160);
          public static readonly Size PARAMETER_SELECTION_SIZE = new Size(1200, 800);
          public static readonly string RemoveMultipleModules = "Do you really want to remove the selected Modules?";
+         public static readonly string RemoveMultipleBuildingBlocks = "Do you really want to remove the selected building blocks?";
+         public static readonly string BuildingBlocksUsedInSimulation = "The following building blocks could not be removed from the project";
 
          public static string RemoveSimulationsFromProject(string projectName)
          {
@@ -2339,6 +2342,21 @@ namespace MoBi.Assets
       public static string CannotRemoveModuleFromProject(string buildingBlockName, IEnumerable<string> referringBuildingBlockNames)
       {
          return cannotRemoveTypeFromProject("module", buildingBlockName, referringBuildingBlockNames);
+      }
+
+      public static StringBuilder ListOfBuildingBlocksNotRemoved(List<Tuple<IReadOnlyList<string>, string>> referringSimulationsAndBuildingBlocks)
+      {
+         var messageBuilder = new StringBuilder();
+
+         messageBuilder.AppendLine(Dialog.BuildingBlocksUsedInSimulation);
+         messageBuilder.AppendLine();
+
+         foreach (var (referringSimulations, buildingBlock) in referringSimulationsAndBuildingBlocks)
+         {
+            messageBuilder.AppendLine($"\t- {CannotRemoveBuildingBlockFromProject(buildingBlock, referringSimulations)}");
+         }
+
+         return messageBuilder;
       }
 
       public static string CannotRemoveBuildingBlockFromProject(string buildingBlockName, IEnumerable<string> referringBuildingBlockNames)

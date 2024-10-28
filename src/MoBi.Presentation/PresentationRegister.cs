@@ -199,7 +199,7 @@ namespace MoBi.Presentation
             scan.ExcludeType(typeof(InitialConditionsTask<>));
          });
          container.Register<IInteractionTasksForChildren<Module, InitialConditionsBuildingBlock>, InitialConditionsTask<InitialConditionsBuildingBlock>>();
-        
+
          container.Register<IEditTaskFor<InteractionContainer>, EditTaskForInteractionContainer>();
          container.Register<IEditTaskFor<MoleculeBuilder>, EditTasksForMoleculeBuilder>();
          container.Register<IEditTaskFor<ReactionBuilder>, EditTasksForReactionBuilder>();

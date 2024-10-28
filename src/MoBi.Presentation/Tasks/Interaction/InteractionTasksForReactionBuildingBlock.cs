@@ -7,7 +7,11 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public class InteractionTasksForReactionBuildingBlock : InteractionTasksForEnumerableBuildingBlockOfContainerBuilder<Module, MoBiReactionBuildingBlock, ReactionBuilder>
+   public interface IInteractionTasksForReactionBuildingBlock : IInteractionTasksForBuildingBlock<Module, MoBiReactionBuildingBlock>
+   {
+   }
+
+   public class InteractionTasksForReactionBuildingBlock : InteractionTasksForEnumerableBuildingBlockOfContainerBuilder<Module, MoBiReactionBuildingBlock, ReactionBuilder>, IInteractionTasksForReactionBuildingBlock
    {
       private readonly IReactionBuildingBlockFactory _reactionBuildingBlockFactory;
 

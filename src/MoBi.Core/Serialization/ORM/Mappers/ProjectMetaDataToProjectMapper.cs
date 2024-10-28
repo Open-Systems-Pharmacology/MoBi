@@ -92,8 +92,6 @@ namespace MoBi.Core.Serialization.ORM.Mappers
       {
          var simulationSettingsBlocks = moduleBuildingBlocks.OfType<SimulationSettings>().ToList();
          simulationSettingsBlocks.Each(x => moduleBuildingBlocks.Remove(x));
-
-
          
          if(hasUniqueBuildingBlocks(moduleBuildingBlocks))
             addModuleBuildingBlocks(moduleBuildingBlocks);

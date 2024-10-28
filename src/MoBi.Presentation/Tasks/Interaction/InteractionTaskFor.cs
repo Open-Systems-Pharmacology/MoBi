@@ -26,6 +26,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       IMoBiCommand AddTo(TChild childToAdd, TParent parent, IBuildingBlock buildingBlockWithFormulaCache);
       IMoBiCommand AddTo(IReadOnlyCollection<TChild> itemsToAdd, TParent parent, IBuildingBlock buildingBlockWithFormulaCache = null);
       IMoBiCommand AddFromFileTo(string filename, TParent parent, IBuildingBlock buildingBlockWithFormulaCache = null);
+      IMoBiCommand GetRemoveCommand(TChild objectToRemove, TParent parent, IBuildingBlock buildingBlock);
 
       TChild CreateNewEntity(TParent parent);
       string AskForPKMLFileToOpen();
