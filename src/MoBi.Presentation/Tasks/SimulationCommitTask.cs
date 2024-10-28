@@ -12,6 +12,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
+using OSPSuite.Utility.Extensions;
 using static MoBi.Assets.AppConstants.Commands;
 
 namespace MoBi.Presentation.Tasks
@@ -60,8 +61,14 @@ namespace MoBi.Presentation.Tasks
 
       public IMoBiCommand CommitSimulationChanges(IMoBiSimulation simulationWithChanges)
       {
-         var changes = getChanges(simulationWithChanges);
-         if (_interactionTaskContext.DialogCreator.MessageBoxYesNo(changes.message) != ViewResult.Yes)
+         var moleculeChanges = changesFrom<MoleculeAmount>(simulationWithChanges).ToList();
+         var parameterChanges = new List<(ObjectPath quantityPath, IParameter quantity)>();
+         changesFrom<Parameter>(simulationWithChanges).Each(x => parameterChanges.Add(x));
+         changesFrom<DistributedParameter>(simulationWithChanges).Each(x => parameterChanges.Add(x));
+         
+         var message = CommitingChangesToModulesMessage(simulationWithChanges.Configuration.ModuleConfigurations.Last(), moleculeChanges.Any(), parameterChanges.Any());
+
+         if (_interactionTaskContext.DialogCreator.MessageBoxYesNo(message) != ViewResult.Yes)
             return null;
 
          var lastModuleConfiguration = simulationWithChanges.Configuration.ModuleConfigurations.Last();
@@ -74,31 +81,20 @@ namespace MoBi.Presentation.Tasks
          };
 
          if (lastModuleConfiguration.SelectedInitialConditions == null)
-            macroCommand.AddRange(addNewInitialConditionsFromSimulationChanges(simulationWithChanges, lastModuleConfiguration, changes.moleculeChanges));
+            macroCommand.AddRange(addNewInitialConditionsFromSimulationChanges(simulationWithChanges, lastModuleConfiguration, moleculeChanges));
          else
-            macroCommand.AddRange(updateInitialConditionsFromSimulationChanges(lastModuleConfiguration, changes.moleculeChanges));
+            macroCommand.AddRange(updateInitialConditionsFromSimulationChanges(lastModuleConfiguration, moleculeChanges));
 
          if (lastModuleConfiguration.SelectedParameterValues == null)
-            macroCommand.AddRange(addNewParameterValuesFromSimulationChanges(simulationWithChanges, lastModuleConfiguration, changes.parameterChanges));
+            macroCommand.AddRange(addNewParameterValuesFromSimulationChanges(simulationWithChanges, lastModuleConfiguration, parameterChanges));
          else
-            macroCommand.AddRange(updateParameterValuesFromSimulationChanges(lastModuleConfiguration, changes.parameterChanges));
+            macroCommand.AddRange(updateParameterValuesFromSimulationChanges(lastModuleConfiguration, parameterChanges));
 
          macroCommand.Add(new ClearOriginalQuantitiesTrackerCommand(simulationWithChanges));
 
          macroCommand.RunCommand(_context);
          _context.PublishEvent(new SimulationStatusChangedEvent(simulationWithChanges));
          return macroCommand;
-      }
-
-      private (string message, IReadOnlyList<(ObjectPath quantityPath, MoleculeAmount quantity)> moleculeChanges, IReadOnlyList<(ObjectPath quantityPath, Parameter quantity)> parameterChanges) getChanges(IMoBiSimulation simulationWithChanges)
-      {
-         var lastModuleConfiguration = simulationWithChanges.Configuration.ModuleConfigurations.Last();
-         var changesForICValues = changesFrom<MoleculeAmount>(simulationWithChanges).ToList();
-         var changesForParameterValues = changesFrom<Parameter>(simulationWithChanges).ToList();
-
-         var message = CommitingChangesToModulesMessage(lastModuleConfiguration, changesForICValues, changesForParameterValues);
-
-         return (message, changesForICValues, changesForParameterValues);
       }
 
       /// <summary>
@@ -109,7 +105,7 @@ namespace MoBi.Presentation.Tasks
       ///    have SelectedParameterValues as that building block will receive the updates. The template module and building block
       ///    is resolved from the project by name
       /// </summary>
-      private IEnumerable<IMoBiCommand> updateParameterValuesFromSimulationChanges(ModuleConfiguration moduleConfiguration, IReadOnlyList<(ObjectPath quantityPath, Parameter quantity)> parameterChanges)
+      private IEnumerable<IMoBiCommand> updateParameterValuesFromSimulationChanges(ModuleConfiguration moduleConfiguration, IReadOnlyList<(ObjectPath quantityPath, IParameter quantity)> parameterChanges)
       {
          var templateBuildingBlock = _templateResolverTask.TemplateBuildingBlockFor(moduleConfiguration.SelectedParameterValues);
          return parameterChanges.Select(x => synchronizeParameterValueCommand(x.quantity, x.quantityPath, templateBuildingBlock)).Concat(parameterChanges.Select(x => synchronizeParameterValueCommand(x.quantity, x.quantityPath, moduleConfiguration.SelectedParameterValues).AsHidden()));
@@ -138,7 +134,7 @@ namespace MoBi.Presentation.Tasks
       ///    in the <paramref name="simulation" />. The new building block will be selected in
       ///    <paramref name="moduleConfiguration" />
       /// </summary>
-      private IEnumerable<IMoBiCommand> addNewParameterValuesFromSimulationChanges(IMoBiSimulation simulation, ModuleConfiguration moduleConfiguration, IReadOnlyList<(ObjectPath quantityPath, Parameter quantity)> parameterChanges)
+      private IEnumerable<IMoBiCommand> addNewParameterValuesFromSimulationChanges(IMoBiSimulation simulation, ModuleConfiguration moduleConfiguration, IReadOnlyList<(ObjectPath quantityPath, IParameter quantity)> parameterChanges)
       {
          // Create two parameter values for each Parameter change, one for the project building block and one for the simulation building block
          var parameterValuesToAdd = parameterChanges.Select(x => (simulation: createParameterValue(x.quantity, x.quantityPath), project: createParameterValue(x.quantity, x.quantityPath))).ToList();
@@ -204,7 +200,7 @@ namespace MoBi.Presentation.Tasks
          return _initialConditionsCreator.CreateInitialCondition(moleculeAmountPath, moleculeAmount);
       }
 
-      private ParameterValue createParameterValue(Parameter parameter, ObjectPath parameterPath)
+      private ParameterValue createParameterValue(IParameter parameter, ObjectPath parameterPath)
       {
          return _parameterValuesCreator.CreateParameterValue(parameterPath, parameter);
       }

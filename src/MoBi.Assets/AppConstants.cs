@@ -280,14 +280,21 @@ namespace MoBi.Assets
             return DisplayValue(displayValue.ConvertedTo<string>(), displayUnit);
          }
 
-         public static string CommitingChangesToModulesMessage(ModuleConfiguration moduleConfiguration, IEnumerable<(ObjectPath quantityPath, MoleculeAmount quantity)> moleculeChanges, IEnumerable<(ObjectPath quantityPath, Parameter quantity)> parameterChanges)
+         public static string CommitingChangesToModulesMessage(ModuleConfiguration moduleConfiguration, bool hasMoleculeChanges, bool hasParameterChanges)
          {
-            string message = $"Confirm to apply the following changes on {moduleConfiguration.Module.Name}:";
+            string message = $"Changes will be applied in the module <i>{moduleConfiguration.Module.Name}</i>:{Environment.NewLine}";
 
-            if (moleculeChanges.Any())
-               message += $"{Environment.NewLine}{(string.IsNullOrEmpty(moduleConfiguration.SelectedInitialConditions?.DisplayName) ? "Create new Initial Conditions Building block" : moduleConfiguration.SelectedInitialConditions.DisplayName)}";
-            if (parameterChanges.Any())
-               message += $"{Environment.NewLine}{(string.IsNullOrEmpty(moduleConfiguration.SelectedParameterValues?.DisplayName) ? "Create new Parameter Values Building block" : moduleConfiguration.SelectedParameterValues.DisplayName)}";
+            if (hasMoleculeChanges)
+            {
+               var icName = moduleConfiguration.SelectedInitialConditions == null ? "A new Initial Conditions Building Block will be created" : $"New Initial Conditions will be added to <i>{moduleConfiguration.SelectedInitialConditions.DisplayName}</i>";
+               message += $"{Environment.NewLine}- {icName}";
+            }
+
+            if (hasParameterChanges)
+            {
+               var pvName = moduleConfiguration.SelectedParameterValues == null ? "A new Parameter Values Building Block will be created" : $"New Parameter Values will be added to <i>{moduleConfiguration.SelectedParameterValues.DisplayName}</i>";
+               message += $"{Environment.NewLine}- {pvName}";
+            }
 
             return message;
          }
