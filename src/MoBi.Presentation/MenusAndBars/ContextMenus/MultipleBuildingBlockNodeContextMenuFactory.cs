@@ -45,10 +45,10 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
          yield return ObjectBaseCommonContextMenuItems.AddToJournal(buildingBlocks, _container);
 
-         if (buildingBlocks.Count > 1)
-            yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
-               .WithCommandFor<RemoveMultipleBuildingBlocksUICommand, IReadOnlyList<IBuildingBlock>>(buildingBlocks, _container)
-               .WithIcon(ApplicationIcons.Delete);
+
+         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
+            .WithCommandFor<RemoveMultipleBuildingBlocksUICommand, IReadOnlyList<IBuildingBlock>>(buildingBlocks, _container)
+            .WithIcon(ApplicationIcons.Delete);
       }
    }
 }
