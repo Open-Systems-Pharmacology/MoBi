@@ -64,8 +64,6 @@ namespace MoBi.Core.Services
          if (shouldCloneSimulation)
             moBiSimulation = cloneSimulation(moBiSimulation);
 
-         addSimulationConfigurationToProject(moBiSimulation, loadCommand);
-
          moBiSimulation.ResultsDataRepository = simulation.ResultsDataRepository;
 
          var originalSimulationName = moBiSimulation.Name;
@@ -73,7 +71,9 @@ namespace MoBi.Core.Services
             return;
 
          if (originalSimulationName != moBiSimulation.Name) //has been renamed
-            correctModuleNames(simulation.Modules, moBiSimulation.Name, project.Modules, originalSimulationName);
+            correctModuleNames(moBiSimulation.Modules, moBiSimulation.Name, project.Modules, originalSimulationName);
+
+         addSimulationConfigurationToProject(moBiSimulation, loadCommand);
 
          moBiSimulation.HasChanged = true;
          loadCommand.AddCommand(new AddSimulationCommand(moBiSimulation));
@@ -94,7 +94,7 @@ namespace MoBi.Core.Services
       private void renameModulesAfterSimulation(Module module, string simulationName, string originalSimulationName)
       {
          if (module.Name.StartsWith(originalSimulationName))
-            module.Name.Replace(originalSimulationName, simulationName);
+            module.Name = module.Name.Replace(originalSimulationName, simulationName);
       }
       
       private void renameCollidingEntities(IEnumerable<IObjectBase> entitiesToRename, IReadOnlyList<IWithName> existingEntities)
