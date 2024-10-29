@@ -71,7 +71,7 @@ namespace MoBi.Presentation.Presenter
       public override void Initialize()
       {
          _view.Initialize();
-         UpdateWindowTitle();
+         updateWindowTitle();
 
          Thread.Sleep(10000);
          _allMainViewItemPresenters.All().Each(x => x.Initialize());
@@ -148,24 +148,24 @@ namespace MoBi.Presentation.Presenter
          View.AllowChildActivation = true;
       }
 
-      private void UpdateWindowTitle()
+      private void updateWindowTitle()
       {
-         if (string.IsNullOrEmpty(_currentProjectName))
-            View.Caption = _configuration.ProductDisplayName;
-         else
-            View.Caption = $"{_configuration.ProductDisplayName} | {_currentProjectName}";
+         View.Caption = 
+            string.IsNullOrEmpty(_currentProjectName) 
+               ? _configuration.ProductDisplayName 
+               : $"{_configuration.ProductDisplayName} | {_currentProjectName}";
       }
 
       public void Handle(ProjectLoadedEvent eventToHandle)
       {
          _currentProjectName = eventToHandle.Project.Name;
-         UpdateWindowTitle();
+         updateWindowTitle();
       }
 
       public void Handle(ProjectClosedEvent eventToHandle)
       {
          _currentProjectName = null;
-         UpdateWindowTitle();
+         updateWindowTitle();
       }
    }
 }
