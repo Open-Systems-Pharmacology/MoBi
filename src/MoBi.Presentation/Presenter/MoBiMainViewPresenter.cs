@@ -9,6 +9,7 @@ using MoBi.Core.Events;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.UICommand;
 using MoBi.Presentation.Views;
+using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Main;
@@ -21,15 +22,18 @@ namespace MoBi.Presentation.Presenter
       IListener<SimulationRunStartedEvent>,
       IListener<SimulationRunFinishedEvent>,
       IListener<ReportCreationStartedEvent>,
-      IListener<ReportCreationFinishedEvent>
+      IListener<ReportCreationFinishedEvent>,
+      IListener<ProjectLoadedEvent>,
+      IListener<ProjectClosedEvent>
 
-   {
+    {
       void Run(StartOptions startOptions);
       bool FormClosing();
       void RestoreLayout();
    }
 
-   public class MoBiMainViewPresenter : AbstractMainViewPresenter<IMoBiMainView, IMoBiMainViewPresenter>, IMoBiMainViewPresenter
+   public class MoBiMainViewPresenter : AbstractMainViewPresenter<IMoBiMainView, IMoBiMainViewPresenter>,
+      IMoBiMainViewPresenter
    {
       private readonly IProjectTask _projectTask;
       private readonly IRepository<IMainViewItemPresenter> _allMainViewItemPresenters;
@@ -39,16 +43,18 @@ namespace MoBi.Presentation.Presenter
       private readonly IMoBiConfiguration _configuration;
       private readonly IWatermarkStatusChecker _watermarkStatusChecker;
 
+      private string _currentProjectName;
+
       public MoBiMainViewPresenter(
-         IMoBiMainView view, 
+         IMoBiMainView view,
          IRepository<IMainViewItemPresenter> allMainViewItemPresenters,
-         IProjectTask projectTask, 
-         ISkinManager skinManager, 
+         IProjectTask projectTask,
+         ISkinManager skinManager,
          IExitCommand exitCommand,
-         IEventPublisher eventPublisher, 
+         IEventPublisher eventPublisher,
          IUserSettings userSettings,
-         ITabbedMdiChildViewContextMenuFactory contextMenuFactory, 
-         IMoBiConfiguration configuration, 
+         ITabbedMdiChildViewContextMenuFactory contextMenuFactory,
+         IMoBiConfiguration configuration,
          IWatermarkStatusChecker watermarkStatusChecker) : base(view, eventPublisher, contextMenuFactory)
       {
          _skinManager = skinManager;
@@ -65,7 +71,7 @@ namespace MoBi.Presentation.Presenter
       public override void Initialize()
       {
          _view.Initialize();
-         View.Caption = _configuration.ProductDisplayName;
+         UpdateWindowTitle();
 
          Thread.Sleep(10000);
          _allMainViewItemPresenters.All().Each(x => x.Initialize());
@@ -140,6 +146,26 @@ namespace MoBi.Presentation.Presenter
       public void Handle(SimulationRunFinishedEvent eventToHandle)
       {
          View.AllowChildActivation = true;
+      }
+
+      private void UpdateWindowTitle()
+      {
+         if (string.IsNullOrEmpty(_currentProjectName))
+            View.Caption = _configuration.ProductDisplayName;
+         else
+            View.Caption = $"{_configuration.ProductDisplayName} | {_currentProjectName}";
+      }
+
+      public void Handle(ProjectLoadedEvent eventToHandle)
+      {
+         _currentProjectName = eventToHandle.Project.Name;
+         UpdateWindowTitle();
+      }
+
+      public void Handle(ProjectClosedEvent eventToHandle)
+      {
+         _currentProjectName = null;
+         UpdateWindowTitle();
       }
    }
 }
