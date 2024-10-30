@@ -162,12 +162,21 @@ namespace MoBi.UI.Views
       {
          projectExpressionsTree.TreeView.AddNode(treeNodeToAdd);
          projectExpressionsTree.TreeView.Selection.Add(projectExpressionsTree.TreeView.NodeFrom(treeNodeToAdd));
+
+         // The selected expression may have changed due to binding but the event does not fire.
+         // This forces a UI update to acknowledge changing selections
+         projectTreeSelectionChanged();
+         
       }
 
       public void AddUsedExpression(ITreeNode treeNodeToAdd)
       {
          simulationExpressionsTree.AddNode(treeNodeToAdd);
          simulationExpressionsTree.Selection.Add(simulationExpressionsTree.NodeFrom(treeNodeToAdd));
+
+         // The selected expression may have changed due to binding but the event does not fire.
+         // This forces a UI update to acknowledge changing selections
+         simulationTreeSelectionChanged();
       }
 
       private void disposeBinders()
