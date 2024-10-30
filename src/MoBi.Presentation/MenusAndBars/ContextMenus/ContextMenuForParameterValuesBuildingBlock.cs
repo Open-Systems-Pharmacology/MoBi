@@ -35,6 +35,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
          _allMenuItems.Add(createExtendParameterValueBuildingBlockFromExpression(buildingBlock));
          _allMenuItems.Add(createExtendParameterValueBuildingBlockFromIndividual(buildingBlock));
+         _allMenuItems.Add(createExtendParameterValueBuildingBlockFromParameterValues(buildingBlock));
 
          return this;
       }
@@ -51,6 +52,13 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.ExtendFrom(ObjectTypes.ExpressionProfileBuildingBlock))
             .WithIcon(ApplicationIcons.LoadIconFor(nameof(ExpressionProfileBuildingBlock)))
             .WithCommandFor<ExtendParameterValuesFromExpressionUICommand, ParameterValuesBuildingBlock>(buildingBlock, _container);
+      }
+
+      private IMenuBarItem createExtendParameterValueBuildingBlockFromParameterValues(ParameterValuesBuildingBlock buildingBlock)
+      {
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.ExtendFrom(ObjectTypes.ParameterValuesBuildingBlock))
+            .WithIcon(ApplicationIcons.LoadIconFor(nameof(ParameterValuesBuildingBlock)))
+            .WithCommandFor<ExtendParameterValuesFromParameterValuesUICommand, ParameterValuesBuildingBlock>(buildingBlock, _container);
       }
 
       private IMenuBarItem createExtendParameterValueBuildingBlockFromIndividual(ParameterValuesBuildingBlock buildingBlock)
