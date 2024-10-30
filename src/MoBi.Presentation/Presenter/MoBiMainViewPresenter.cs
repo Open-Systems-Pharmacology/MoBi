@@ -42,9 +42,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IUserSettings _userSettings;
       private readonly IMoBiConfiguration _configuration;
       private readonly IWatermarkStatusChecker _watermarkStatusChecker;
-
-      private string _currentProjectName;
-
+        
       public MoBiMainViewPresenter(
          IMoBiMainView view,
          IRepository<IMainViewItemPresenter> allMainViewItemPresenters,
@@ -148,24 +146,15 @@ namespace MoBi.Presentation.Presenter
          View.AllowChildActivation = true;
       }
 
-      private void updateWindowTitle()
-      {
+      private void updateWindowTitle(string projectName = null)
+        {
          View.Caption = 
-            string.IsNullOrEmpty(_currentProjectName) 
+            string.IsNullOrEmpty(projectName) 
                ? _configuration.ProductDisplayName 
-               : $"{_configuration.ProductDisplayName} | {_currentProjectName}";
+               : $"{_configuration.ProductDisplayName} | {projectName}";
       }
 
-      public void Handle(ProjectLoadedEvent eventToHandle)
-      {
-         _currentProjectName = eventToHandle.Project.Name;
-         updateWindowTitle();
-      }
-
-      public void Handle(ProjectClosedEvent eventToHandle)
-      {
-         _currentProjectName = null;
-         updateWindowTitle();
-      }
+      public void Handle(ProjectLoadedEvent eventToHandle) => updateWindowTitle(eventToHandle.Project.Name);
+      public void Handle(ProjectClosedEvent eventToHandle) => updateWindowTitle();
    }
 }
