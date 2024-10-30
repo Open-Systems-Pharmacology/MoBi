@@ -156,6 +156,11 @@ namespace MoBi.UI.Views
       public void BindTo(IndividualSelectionDTO individualSelectionDTO)
       {
          _screenBinder.BindToSource(individualSelectionDTO);
+
+         // The selected expression may have changed due to binding but the event does not fire.
+         // This forces a UI update to acknowledge changing selections
+         projectTreeSelectionChanged();
+         simulationTreeSelectionChanged();
       }
 
       public void AddUnusedExpression(ITreeNode treeNodeToAdd)
