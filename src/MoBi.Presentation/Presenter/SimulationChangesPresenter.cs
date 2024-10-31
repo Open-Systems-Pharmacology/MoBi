@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
@@ -21,14 +22,22 @@ namespace MoBi.Presentation.Presenter
       public override void Edit(IMoBiSimulation simulation)
       {
          _simulation = simulation;
-         _view.BindTo(_simulation.OriginalQuantityValues.OrderBy(x => x.Path).Select(createDTO).ToList());
+         _view.BindTo(allDTOsWithModelQuantitiesFrom(_simulation));
       }
 
-      private OriginalQuantityValueDTO createDTO(OriginalQuantityValue originalQuantityValue)
+      private List<OriginalQuantityValueDTO> allDTOsWithModelQuantitiesFrom(IMoBiSimulation simulation)
       {
-         var path = new ObjectPath(originalQuantityValue.Path.ToPathArray());
-         return new OriginalQuantityValueDTO(originalQuantityValue).WithCurrentQuantity(path.TryResolve<IQuantity>(_simulation.Model.Root));
+         return simulation.OriginalQuantityValues.OrderBy(x => x.Path).
+            Select(x => (originalQuantityValue:x, quantity:quantityFrom(x, simulation.Model.Root))).
+            Where(x => x.quantity != null).
+            Select(x => new OriginalQuantityValueDTO(x.originalQuantityValue).WithCurrentQuantity(x.quantity)).ToList();
       }
+
+      private IQuantity quantityFrom(OriginalQuantityValue originalQuantityValue, IContainer modelRoot)
+      {
+         return new ObjectPath(originalQuantityValue.Path.ToPathArray()).TryResolve<IQuantity>(modelRoot);
+      }
+
 
       public override object Subject => _simulation;
    }
