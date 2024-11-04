@@ -27,7 +27,7 @@ namespace MoBi.Presentation.Repositories
          yield return addMoleculeButtonGroup;
          yield return addReactionButtonGroup;
          yield return editDiagramButtonGroup;
-         yield return addOrganismButtonGroup;
+         yield return addSpatialStructureButtonGroup;
          yield return addPassiveTransportButtonGroup;
          yield return addObserverButtonGroup;
          yield return addEventButtonGroup;
@@ -115,12 +115,12 @@ namespace MoBi.Presentation.Repositories
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewReactionMolecule)))
          .WithId(ButtonGroupIds.AddReaction);
 
-      private IButtonGroup addOrganismButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Add)
+      private IButtonGroup addSpatialStructureButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Add)
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewTopContainer)).WithCaption(AppConstants.RibbonButtonNames.New))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.LoadTopContainer)).WithCaption(AppConstants.RibbonButtonNames.Load))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.LoadTopContainerFromTemplate)).WithCaption(AppConstants.RibbonButtonNames.LoadFromTemplate))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewNeighborhood)).WithCaption(ObjectTypes.Neighborhood))
-         .WithId(ButtonGroupIds.AddOrganism);
+         .WithId(ButtonGroupIds.AddSpatialStructure);
 
       private IButtonGroup addPassiveTransportButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Add)
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewPassiveTransport)).WithCaption(AppConstants.RibbonButtonNames.New))

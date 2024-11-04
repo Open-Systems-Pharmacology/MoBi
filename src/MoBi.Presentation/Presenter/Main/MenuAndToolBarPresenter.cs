@@ -108,7 +108,7 @@ namespace MoBi.Presentation.Presenter.Main
       {
          _view.CreateDynamicPageCategory(AppConstants.RibbonCategories.Molecules, Color.LightGreen);
          _view.CreateDynamicPageCategory(AppConstants.RibbonCategories.Reactions, Color.LightGreen);
-         _view.CreateDynamicPageCategory(AppConstants.RibbonCategories.Organisms, Color.LightGreen);
+         _view.CreateDynamicPageCategory(AppConstants.RibbonCategories.SpatialStructures, Color.LightGreen);
          _view.CreateDynamicPageCategory(AppConstants.RibbonCategories.PassiveTransports, Color.LightGreen);
          _view.CreateDynamicPageCategory(AppConstants.RibbonCategories.Observers, Color.LightGreen);
          _view.CreateDynamicPageCategory(AppConstants.RibbonCategories.Events, Color.LightGreen);
@@ -121,7 +121,7 @@ namespace MoBi.Presentation.Presenter.Main
          _dynamicRibbonPageCache.Add(typeof(MoleculeBuildingBlock), AppConstants.RibbonCategories.Molecules);
          _dynamicRibbonPageCache.Add(typeof(ReactionBuildingBlock), AppConstants.RibbonCategories.Reactions);
          _dynamicRibbonPageCache.Add(typeof(ObserverBuildingBlock), AppConstants.RibbonCategories.Observers);
-         _dynamicRibbonPageCache.Add(typeof(SpatialStructure), AppConstants.RibbonCategories.Organisms);
+         _dynamicRibbonPageCache.Add(typeof(SpatialStructure), AppConstants.RibbonCategories.SpatialStructures);
 
          _dynamicRibbonPageCache.Add(typeof(PassiveTransportBuildingBlock), AppConstants.RibbonCategories.PassiveTransports);
          _dynamicRibbonPageCache.Add(typeof(EventGroupBuildingBlock), AppConstants.RibbonCategories.Events);
@@ -134,8 +134,8 @@ namespace MoBi.Presentation.Presenter.Main
          _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.AddMolecule), AppConstants.RibbonPages.DynamicMolecules, AppConstants.RibbonCategories.Molecules);
          _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.AddReaction), AppConstants.RibbonPages.DynamicReactions, AppConstants.RibbonCategories.Reactions);
          _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.EditDiagram), AppConstants.RibbonPages.DynamicReactions, AppConstants.RibbonCategories.Reactions);
-         _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.AddOrganism), AppConstants.RibbonPages.DynamicOrganisms, AppConstants.RibbonCategories.Organisms);
-         _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.EditDiagram), AppConstants.RibbonPages.DynamicOrganisms, AppConstants.RibbonCategories.Organisms);
+         _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.AddSpatialStructure), AppConstants.RibbonPages.DynamicSpatialStructures, AppConstants.RibbonCategories.SpatialStructures);
+         _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.EditDiagram), AppConstants.RibbonPages.DynamicSpatialStructures, AppConstants.RibbonCategories.SpatialStructures);
          _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.AddPassiveTransport), AppConstants.RibbonPages.DynamicPassiveTransports, AppConstants.RibbonCategories.PassiveTransports);
          _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.AddObserver), AppConstants.RibbonPages.DynamicObservers, AppConstants.RibbonCategories.Observers);
          _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.AddEvent), AppConstants.RibbonPages.DynamicEvents, AppConstants.RibbonCategories.Events);

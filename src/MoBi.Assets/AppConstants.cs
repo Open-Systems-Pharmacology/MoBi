@@ -167,7 +167,7 @@ namespace MoBi.Assets
          public static readonly string Utilities = "Utilities";
          public static readonly string DynamicMolecules = "Edit Molecule";
          public static readonly string DynamicReactions = "Edit Reaction";
-         public static readonly string DynamicOrganisms = "Edit Organism";
+         public static readonly string DynamicSpatialStructures = "Edit Spatial Structure";
          public static readonly string DynamicPassiveTransports = "Edit Passive Transport";
          public static readonly string DynamicObservers = "Edit Observer";
          public static readonly string DynamicEvents = "Edit Event";
@@ -182,7 +182,7 @@ namespace MoBi.Assets
       {
          public static readonly string Molecules = "Molecules";
          public static readonly string Reactions = "Reactions";
-         public static readonly string Organisms = "Organisms";
+         public static readonly string SpatialStructures = "Spatial Structures";
          public static readonly string PassiveTransports = "Passive Transports";
          public static readonly string Observers = "Observers";
          public static readonly string Events = "Events";
@@ -197,7 +197,7 @@ namespace MoBi.Assets
             {
                Molecules,
                Reactions,
-               Organisms,
+               SpatialStructures,
                PassiveTransports,
                Observers,
                Events,
@@ -2255,7 +2255,6 @@ namespace MoBi.Assets
       };
 
       public static readonly string None = "<None>";
-      public static readonly string PKSimTopContainer = "Organism";
       public static readonly string AmountAlias = "M";
       public static readonly string NeighborhoodTag = "Neighborhood";
       public static readonly string OutputIntervalId = "OutputIntervalId";
