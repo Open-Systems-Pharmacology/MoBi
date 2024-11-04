@@ -14,7 +14,7 @@ namespace MoBi.Presentation.MenusAndBars
       public static ButtonGroupId Export = new ButtonGroupId("Export");
       public static ButtonGroupId AddMolecule = new ButtonGroupId("AddMolecule");
       public static ButtonGroupId AddReaction = new ButtonGroupId("AddReaction");
-      public static ButtonGroupId AddOrganism = new ButtonGroupId("AddOrganism");
+      public static ButtonGroupId AddSpatialStructure = new ButtonGroupId("AddSpatialStructure");
       public static ButtonGroupId AddObserver = new ButtonGroupId("AddObserver");
       public static ButtonGroupId AddPassiveTransport = new ButtonGroupId("AddPassiveTransport");
       public static ButtonGroupId AddEvent = new ButtonGroupId("AddEvent");
