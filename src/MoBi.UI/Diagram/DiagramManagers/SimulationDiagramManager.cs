@@ -35,7 +35,7 @@ namespace MoBi.UI.Diagram.DiagramManagers
 
          neighborhoodsContainerNode.IsVisible = false;
 
-         foreach (var topContainer in simulation.Model.Root.GetAllContainersAndSelf<IContainer>())
+         foreach (var topContainer in simulation.Model.Root.GetChildren<IContainer>())
          {
             if (topContainer.ContainerType == ContainerType.Organism
                 || topContainer.ContainerType == ContainerType.Organ
