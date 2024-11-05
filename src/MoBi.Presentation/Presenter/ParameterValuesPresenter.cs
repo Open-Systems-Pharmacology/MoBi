@@ -94,12 +94,10 @@ namespace MoBi.Presentation.Presenter
       public void AddNewParameterValues()
       {
          var allSelected = _parameterValuesTask.GetNewPaths();
-         var buildingBlockWasEmpty = !_buildingBlock.Any();
          _context.AddToHistory(addParameterValuesForObjectPaths(allSelected, _buildingBlock));
-
-         if (buildingBlockWasEmpty)
-            _view.InitializePathColumns();
       }
+
+      private int longestPathLength(ParameterValuesBuildingBlock buildingBlock) => buildingBlock.Any() ? buildingBlock.Max(x => x.Path.Count) : 0;
 
       private IMoBiCommand addParameterValuesForObjectPaths(IReadOnlyList<ObjectPath> objectPaths, ParameterValuesBuildingBlock buildingBlockToAddTo)
       {
@@ -114,7 +112,12 @@ namespace MoBi.Presentation.Presenter
             Description = AppConstants.Commands.AddNewParameterValues(buildingBlockToAddTo.DisplayName)
          };
 
+         var maxPathLengthBeforeAdd = longestPathLength(_buildingBlock);
          macroCommand.AddRange(objectPathsToAdd.Select(entityPath => addAndUpdatePath(buildingBlockToAddTo, entityPath)));
+
+         var maxPathLengthAfterAdd = longestPathLength(_buildingBlock);
+         if (maxPathLengthAfterAdd > maxPathLengthBeforeAdd)
+            _view.InitializePathColumns();
 
          if (allSkipped.Any())
             _dialogCreator.MessageBoxInfo(AppConstants.Captions.BuildingBlockAlreadyContains(allSkipped.Select(x => x.PathAsString).ToList()));

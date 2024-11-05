@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using FakeItEasy;
+using FakeItEasy.Core;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Mappers;
@@ -84,12 +85,29 @@ namespace MoBi.Presentation
 
    internal class When_creating_parameter_values_and_none_are_in_the_building_block : When_creating_new_parameter_values
    {
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _parameterValuesTask.SetFullPath(A<ParameterValue>._, _path1, _parameterValuesBuildingBlock)).Invokes(() => addPVToBuildingBlock(_path1));
+      }
+
+      private void addPVToBuildingBlock(ObjectPath path)
+      {
+         _parameterValuesBuildingBlock.Add(new ParameterValue(){Path = path});
+      }
+
       [Observation]
       public void parameters_should_be_added_for_all_selected_paths()
       {
          A.CallTo(() => _parameterValuesTask.SetFullPath(A<ParameterValue>._, _path1, _parameterValuesBuildingBlock)).MustHaveHappened();
          A.CallTo(() => _parameterValuesTask.SetFullPath(A<ParameterValue>._, _path2, _parameterValuesBuildingBlock)).MustHaveHappened();
          A.CallTo(() => _parameterValuesTask.SetFullPath(A<ParameterValue>._, _path3, _parameterValuesBuildingBlock)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_view_should_have_columns_initialized()
+      {
+         A.CallTo(() => _parameterValuesView.InitializePathColumns()).MustHaveHappenedTwiceExactly();
       }
    }
 
