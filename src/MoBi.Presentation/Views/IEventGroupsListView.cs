@@ -8,8 +8,7 @@ namespace MoBi.Presentation.Views
 {
    public interface IEventGroupsListView : IView<IEventGroupListPresenter>
    {
-      void Show(IEnumerable<EventGroupBuilderDTO> dtoEventGroupBuilders);
-      void AddNode(ITreeNode treeNode);
-      void Clear();
+      void Show(IReadOnlyList<EventGroupBuilderDTO> dtoEventGroupBuilders);
+      void AddFixedNode(ITreeNode treeNode);
    }
 }
