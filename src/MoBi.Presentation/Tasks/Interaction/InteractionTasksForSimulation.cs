@@ -10,6 +10,7 @@ using MoBi.Core.Services;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Assets;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
@@ -189,9 +190,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             return null;
 
          var newSimulation = _cloneManager.CloneSimulation(simulationToClone).WithName(newName);
-         newSimulation.Model.WithName(newName);
-         newSimulation.Model.Root.WithName(newName);
-         
+         new RenameModelCommand(newSimulation.Model, newName).RunCommand(_interactionTaskContext.Context);
          _interactionTaskContext.Context.AddToHistory(new AddSimulationCommand(newSimulation).RunCommand(_interactionTaskContext.Context));
 
          return newSimulation;
