@@ -16,9 +16,7 @@ namespace MoBi.Presentation.Presenter
 {
    public interface IEditEventGroupBuildingBlockPresenter :
       ISingleStartPresenter<EventGroupBuildingBlock>,
-      IListener<AddedEvent>,
-      IListener<RemovedEvent>
-
+      IListener<AddedEvent>
    {
    }
 
@@ -214,19 +212,6 @@ namespace MoBi.Presentation.Presenter
                 || addedObject.IsAnImplementationOf<ApplicationMoleculeBuilder>()
                 || addedObject.IsAnImplementationOf<IContainer>()
                 || addedObject.IsAnImplementationOf<TransportBuilder>();
-      }
-
-      public void Handle(RemovedEvent eventToHandle)
-      {
-         if (!eventToHandle.RemovedObjects.Any(isShowableType))
-            return;
-
-         //If only a Application Molecule Builder is removed we do not need to update the edit presenter
-         if (eventToHandle.RemovedObjects.Count() != 1 ||
-             !eventToHandle.RemovedObjects.First().IsAnImplementationOf<ApplicationMoleculeBuilder>())
-         {
-            setupEditPresenterFor(_eventGroupBuildingBlock.FirstOrDefault());
-         }
       }
 
       internal override (bool canHandle, IContainer containerObject) CanHandle(EntitySelectedEvent entitySelectedEvent)

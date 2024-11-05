@@ -46,6 +46,9 @@ namespace MoBi.Presentation.Presenter
          _applicationBuilderToDTOApplicationBuilderMapper = applicationBuilderToDTOApplicationBuilderMapper;
          _favoritesNodes = treeNodeFactory.CreateForFavorites();
          _userDefinedNodes = treeNodeFactory.CreateForUserDefined();
+
+         _view.AddFixedNode(_favoritesNodes);
+         _view.AddFixedNode(_userDefinedNodes);
       }
 
       public override void Edit(EventGroupBuildingBlock eventGroupBuildingBlock)
@@ -65,9 +68,6 @@ namespace MoBi.Presentation.Presenter
          var applicationDTOList = applications.MapAllUsing(_applicationBuilderToDTOApplicationBuilderMapper);
          events.AddRange(applicationDTOList);
 
-         _view.Clear();
-         _view.AddNode(_favoritesNodes);
-         _view.AddNode(_userDefinedNodes);
          _view.Show(events);
       }
 
@@ -117,10 +117,7 @@ namespace MoBi.Presentation.Presenter
 
       public void Handle(AddedEvent eventToHandle)
       {
-         if (_eventGroupBuildingBlock == null)
-            return;
-
-         if (!shouldShow(eventToHandle.Parent))
+         if (!canHandle(eventToHandle.Parent) || !shouldShow(eventToHandle.Parent))
             return;
 
          Edit(_eventGroupBuildingBlock);
@@ -136,13 +133,20 @@ namespace MoBi.Presentation.Presenter
 
       public void Handle(RemovedEvent eventToHandle)
       {
-         if (_eventGroupBuildingBlock == null)
-            return;
-
-         if (!eventToHandle.RemovedObjects.Any(shouldShow))
+         if (!canHandle(eventToHandle.Parent) || !eventToHandle.RemovedObjects.Any(shouldShow))
             return;
 
          Edit(_eventGroupBuildingBlock);
+      }
+
+      private bool canHandle(IObjectBase eventParent)
+      {
+         return _eventGroupBuildingBlock != null && (buildingBlockContains(eventParent) || Equals(_eventGroupBuildingBlock, eventParent));
+      }
+
+      private bool buildingBlockContains(IObjectBase eventParent)
+      {
+         return _eventGroupBuildingBlock.Any(builder => builder.GetAllContainersAndSelf<IContainer>(child => Equals(child, eventParent)).Any());
       }
    }
 }
