@@ -189,6 +189,8 @@ namespace MoBi.Presentation.Tasks.Interaction
             return null;
 
          var newSimulation = _cloneManager.CloneSimulation(simulationToClone).WithName(newName);
+         newSimulation.Model.WithName(newName);
+         newSimulation.Model.Root.WithName(newName);
          
          _interactionTaskContext.Context.AddToHistory(new AddSimulationCommand(newSimulation).RunCommand(_interactionTaskContext.Context));
 

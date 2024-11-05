@@ -106,7 +106,11 @@ namespace MoBi.Presentation
          };
          _clonedSimulation = new MoBiSimulation
          {
-            Configuration = new SimulationConfiguration()
+            Configuration = new SimulationConfiguration(),
+            Model = new Model
+            {
+               Root = new Container()
+            }
          };
 
          A.CallTo(() => _interactionTaskContext.InteractionTask.PromptForNewName(A<IMoBiSimulation>._, A<IEnumerable<string>>._)).Returns("new name");
@@ -135,6 +139,8 @@ namespace MoBi.Presentation
       public void the_cloned_simulation_should_be_renamed()
       {
          _clonedSimulation.Name.ShouldBeEqualTo("new name");
+         _clonedSimulation.Model.Name.ShouldBeEqualTo("new name");
+         _clonedSimulation.Model.Root.Name.ShouldBeEqualTo("new name");
       }
    }
 
