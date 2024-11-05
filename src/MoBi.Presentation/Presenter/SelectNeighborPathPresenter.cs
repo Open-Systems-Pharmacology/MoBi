@@ -6,7 +6,6 @@ using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Presenters;
-using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -14,6 +13,7 @@ namespace MoBi.Presentation.Presenter
    {
       void Init(string label, string defaultSelection = null);
       ObjectPath NeighborPath { get; }
+      void PathChanged(string text);
    }
 
    public class SelectNeighborPathPresenter : AbstractPresenter<ISelectNeighborPathView, ISelectNeighborPathPresenter>, ISelectNeighborPathPresenter
@@ -23,12 +23,12 @@ namespace MoBi.Presentation.Presenter
       private readonly IBuildingBlockRepository _buildingBlockRepository;
       private readonly IObjectPathFactory _objectPathFactory;
       private readonly ObjectPathDTO _selectedPathDTO = new ObjectPathDTO();
-      private bool _physicalContainerSelected;
+
       public SelectNeighborPathPresenter(
          ISelectNeighborPathView view,
          ISelectContainerInTreePresenter selectContainerInTreePresenter,
          IModuleToModuleAndSpatialStructureDTOMapper moduleToModuleDTOMapper,
-         IBuildingBlockRepository buildingBlockRepository, 
+         IBuildingBlockRepository buildingBlockRepository,
          IObjectPathFactory objectPathFactory) : base(view)
       {
          _selectContainerInTreePresenter = selectContainerInTreePresenter;
@@ -43,17 +43,11 @@ namespace MoBi.Presentation.Presenter
 
       private void onSelectedContainerPathChanged(IEntity entity)
       {
-         if (!(entity is IContainer container))
+         if (entity is IContainer container)
          {
-            _physicalContainerSelected = false;
+            _selectedPathDTO.Path = _objectPathFactory.CreateAbsoluteObjectPath(container).PathAsString;
          }
-         else
-         {         
-            //Only physical containers can be selected as neighbors
-            _physicalContainerSelected = container.Mode == ContainerMode.Physical;
-            if (_physicalContainerSelected)
-               _selectedPathDTO.Path = _objectPathFactory.CreateAbsoluteObjectPath(container).PathAsString;
-         }
+
          ViewChanged();
       }
 
@@ -79,6 +73,12 @@ namespace MoBi.Presentation.Presenter
 
       public ObjectPath NeighborPath => new ObjectPath(_selectedPathDTO.Path.ToPathArray());
 
-      public override bool CanClose => _physicalContainerSelected;
+      public void PathChanged(string text)
+      {
+         _selectedPathDTO.Path = text;
+         ViewChanged();
+      }
+
+      public override bool CanClose => !_view.HasError;
    }
 }

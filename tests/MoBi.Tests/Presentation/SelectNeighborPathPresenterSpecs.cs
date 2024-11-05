@@ -122,20 +122,28 @@ namespace MoBi.Presentation
    public class When_notify_that_the_selected_entity_was_changed : concern_for_SelectNeighborPathPresenter
    {
       [Observation]
+      public void should_allow_the_close_no_matter_if_selection_is_container()
+      {
+         sut.CanClose.ShouldBeTrue();
+      }
+
+      [Observation]
       public void should_not_update_the_path_if_the_selected_entity_is_not_a_container()
       {
          _selectedPathDTO.Path = "A|B";
          _selectContainerInTreePresenter.OnSelectedEntityChanged += Raise.With(new SelectedEntityChangedArgs(new Parameter()));
          _selectedPathDTO.Path.ShouldBeEqualTo("A|B");
-         sut.CanClose.ShouldBeFalse();
       }
 
       [Observation]
-      public void should_not_update_the_path_if_the_selected_entity_is_not_a_physical_container()
+      public void should_update_the_path_if_the_selected_entity_even_though_selection_is_not_a_physical_container()
       {
          _selectedPathDTO.Path = "A|B";
-         _selectContainerInTreePresenter.OnSelectedEntityChanged += Raise.With(new SelectedEntityChangedArgs(new Container().WithMode(ContainerMode.Logical)));
-         _selectedPathDTO.Path.ShouldBeEqualTo("A|B");
+         var container = new Container().WithMode(ContainerMode.Logical);
+         container.ParentPath = new ObjectPath("A");
+         container.Name = "C";
+         _selectContainerInTreePresenter.OnSelectedEntityChanged += Raise.With(new SelectedEntityChangedArgs(container));
+         _selectedPathDTO.Path.ShouldBeEqualTo("A|C");
       }
 
       [Observation]
@@ -211,9 +219,9 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void can_close_should_be_false()
+      public void can_close_should_be_true()
       {
-         sut.CanClose.ShouldBeFalse();
+         sut.CanClose.ShouldBeTrue();
       }
    }
 }
