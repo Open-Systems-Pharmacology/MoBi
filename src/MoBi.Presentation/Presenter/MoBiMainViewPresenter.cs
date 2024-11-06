@@ -24,7 +24,8 @@ namespace MoBi.Presentation.Presenter
       IListener<ReportCreationStartedEvent>,
       IListener<ReportCreationFinishedEvent>,
       IListener<ProjectLoadedEvent>,
-      IListener<ProjectClosedEvent>
+      IListener<ProjectClosedEvent>,
+      IListener<ProjectSavedEvent>
 
     {
       void Run(StartOptions startOptions);
@@ -156,5 +157,6 @@ namespace MoBi.Presentation.Presenter
 
       public void Handle(ProjectLoadedEvent eventToHandle) => updateWindowTitle(eventToHandle.Project.Name);
       public void Handle(ProjectClosedEvent eventToHandle) => updateWindowTitle();
-   }
+      public void Handle(ProjectSavedEvent eventToHandle) => updateWindowTitle(eventToHandle.Project.Name);
+    }
 }
