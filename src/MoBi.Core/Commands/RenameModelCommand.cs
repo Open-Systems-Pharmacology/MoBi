@@ -47,8 +47,8 @@ namespace MoBi.Core.Commands
          updateFormulasInContainer(root);
          updateFormulasInContainer(_model.Neighborhoods);
 
-         var allEventAssingements = root.GetAllChildren<EventAssignment>();
-         allEventAssingements.Each(ea => updateObjectPath(ea.ObjectPath));
+         var allEventAssignments = root.GetAllChildren<EventAssignment>();
+         allEventAssignments.Each(ea => updateObjectPath(ea.ObjectPath));
       }
 
       private void updateFormulasInContainer(IContainer root)
