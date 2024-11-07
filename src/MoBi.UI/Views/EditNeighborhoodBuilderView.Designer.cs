@@ -19,7 +19,8 @@ namespace MoBi.UI.Views
          {
             components.Dispose();
          }
-         _screenBinder.Dispose();
+         disposeBinders();
+
          base.Dispose(disposing);
       }
 

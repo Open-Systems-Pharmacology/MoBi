@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
@@ -61,7 +62,8 @@ namespace MoBi.Presentation.Presenter
          _neighborhoodBuilder = neighborhoodBuilder;
          _existingObjectsInParent = existingObjectsInParent;
          base.Edit(neighborhoodBuilder, existingObjectsInParent);
-         _neighborhoodBuilderDTO = _neighborhoodBuilderMapper.MapFrom(neighborhoodBuilder);
+         existingObjectsInParent = existingObjectsInParent ?? new List<IObjectBase>();
+         _neighborhoodBuilderDTO = _neighborhoodBuilderMapper.MapFrom(neighborhoodBuilder, existingObjectsInParent.OfType<NeighborhoodBuilder>().ToList());
          _neighborhoodBuilderDTO.AddUsedNames(_editTask.GetForbiddenNamesWithoutSelf(neighborhoodBuilder, existingObjectsInParent));
          _tagsPresenter.Edit(neighborhoodBuilder);
          _view.BindTo(_neighborhoodBuilderDTO);
@@ -90,9 +92,9 @@ namespace MoBi.Presentation.Presenter
 
       private SpatialStructure spatialStructure => BuildingBlock.DowncastTo<SpatialStructure>();
 
-      public void SelectFirstNeighbor() => selectNeighbor(AppConstants.Captions.FirstNeighbor, _neighborhoodBuilderDTO.FirstNeighborPath, SetFirstNeighborPath);
+      public void SelectFirstNeighbor() => selectNeighbor(AppConstants.Captions.FirstNeighbor, _neighborhoodBuilderDTO.FirstNeighborDTO, SetFirstNeighborPath);
 
-      public void SelectSecondNeighbor() => selectNeighbor(AppConstants.Captions.SecondNeighbor, _neighborhoodBuilderDTO.SecondNeighborPath, SetSecondNeighborPath);
+      public void SelectSecondNeighbor() => selectNeighbor(AppConstants.Captions.SecondNeighbor, _neighborhoodBuilderDTO.SecondNeighborDTO, SetSecondNeighborPath);
 
       public override IBuildingBlock BuildingBlock
       {
@@ -103,7 +105,7 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      private void selectNeighbor(string label, string neighborPath, Action<string> setNeighborAction)
+      private void selectNeighbor(string label, NeighborhoodObjectPathDTO neighborPath, Action<string> setNeighborAction)
       {
          var neighbor = retrieveNeighborPath(label, neighborPath);
          if (neighbor == null)
@@ -114,14 +116,14 @@ namespace MoBi.Presentation.Presenter
          rebind();
       }
 
-      private ObjectPath retrieveNeighborPath(string label, string currentNeighborPath)
+      private ObjectPath retrieveNeighborPath(string label, NeighborhoodObjectPathDTO currentNeighborPath)
       {
          using (var modalPresenter = _applicationController.Start<IModalPresenter>())
          {
             modalPresenter.Text = AppConstants.Captions.SelectContainer;
             var selectNeighborPresenter = _applicationController.Start<ISelectNeighborPathPresenter>();
             modalPresenter.Encapsulate(selectNeighborPresenter);
-            selectNeighborPresenter.Init(label, defaultSelection: currentNeighborPath);
+            selectNeighborPresenter.Init(label, selectionDTO: currentNeighborPath);
 
             return modalPresenter.Show() ? selectNeighborPresenter.NeighborPath : null;
          }

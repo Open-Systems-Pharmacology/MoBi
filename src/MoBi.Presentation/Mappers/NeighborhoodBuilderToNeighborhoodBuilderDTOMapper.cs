@@ -1,14 +1,14 @@
-﻿using MoBi.Core.Repositories;
+﻿using System.Collections.Generic;
+using MoBi.Core.Repositories;
 using MoBi.Presentation.DTO;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Extensions;
-using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface INeighborhoodBuilderToNeighborhoodBuilderDTOMapper : IMapper<NeighborhoodBuilder, NeighborhoodBuilderDTO>
+   public interface INeighborhoodBuilderToNeighborhoodBuilderDTOMapper
    {
+      NeighborhoodBuilderDTO MapFrom(NeighborhoodBuilder neighborhoodBuilder, IReadOnlyList<NeighborhoodBuilder> existingNeighborhoods);
    }
 
    public class NeighborhoodBuilderToNeighborhoodBuilderDTOMapper : ContainerToContainerDTOMapper, INeighborhoodBuilderToNeighborhoodBuilderDTOMapper
@@ -17,12 +17,9 @@ namespace MoBi.Presentation.Mappers
       {
       }
 
-      public NeighborhoodBuilderDTO MapFrom(NeighborhoodBuilder neighborhoodBuilder)
+      public NeighborhoodBuilderDTO MapFrom(NeighborhoodBuilder neighborhoodBuilder, IReadOnlyList<NeighborhoodBuilder> existingNeighborhoods)
       {
-         var dto = MapContainer(neighborhoodBuilder, new NeighborhoodBuilderDTO(neighborhoodBuilder));
-         dto.FirstNeighborPath = neighborhoodBuilder.FirstNeighborPath?.ToPathString();
-         dto.SecondNeighborPath = neighborhoodBuilder.SecondNeighborPath?.ToPathString();
-         return dto;
+         return MapContainer(neighborhoodBuilder, new NeighborhoodBuilderDTO(neighborhoodBuilder, existingNeighborhoods));
       }
    }
 }
