@@ -158,5 +158,7 @@ namespace MoBi.UI.Views
          _screenBinder.BindToSource(neighborhoodBuilderDTO);
          initControls();
       }
+
+      private void disposeBinders() => _screenBinder.Dispose();
    }
 }

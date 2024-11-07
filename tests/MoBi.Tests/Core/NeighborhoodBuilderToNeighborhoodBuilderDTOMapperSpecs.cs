@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System.Collections.Generic;
+using FakeItEasy;
 using MoBi.Core.Repositories;
 using MoBi.Helpers;
 using MoBi.Presentation.DTO;
@@ -41,15 +42,15 @@ namespace MoBi.Core
 
       protected override void Because()
       {
-         _dto = sut.MapFrom(_neighborhood);
+         _dto = sut.MapFrom(_neighborhood, new List<NeighborhoodBuilder>());
       }
 
       [Observation]
       public void should_return_a_DTO_object_with_the_expected_properties()
       {
          _dto.Name.ShouldBeEqualTo(_neighborhood.Name);
-         _dto.FirstNeighborPath.ShouldBeEqualTo(_neighborhood.FirstNeighborPath.ToPathString());
-         _dto.SecondNeighborPath.ShouldBeNullOrEmpty();
+         _dto.FirstNeighborDTO.Path.ShouldBeEqualTo(_neighborhood.FirstNeighborPath.ToPathString());
+         _dto.SecondNeighborDTO.Path.ShouldBeNullOrEmpty();
       }
    }
 }

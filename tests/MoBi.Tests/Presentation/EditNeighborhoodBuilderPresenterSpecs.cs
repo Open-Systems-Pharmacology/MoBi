@@ -3,6 +3,7 @@ using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
@@ -15,7 +16,7 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation
 {
-   public abstract class concern_for_EditNeighborhoodBuilderPresenter : ContextSpecification<IEditNeighborhoodBuilderPresenter>
+   public abstract class concern_for_EditNeighborhoodBuilderPresenter : ContextSpecification<EditNeighborhoodBuilderPresenter>
    {
       private IEditNeighborhoodBuilderView _view;
       private IEditParametersInContainerPresenter _editParameterInContainerPresenter;
@@ -95,7 +96,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_ask_the_user_to_select_a_neighborhood_path()
       {
-         A.CallTo(() => _selectNeighborPathPresenter.Init(AppConstants.Captions.SecondNeighbor, A<string>._)).MustHaveHappened();
+         A.CallTo(() => _selectNeighborPathPresenter.Init(AppConstants.Captions.SecondNeighbor, A<NeighborhoodObjectPathDTO>._)).MustHaveHappened();
       }
 
       [Observation]

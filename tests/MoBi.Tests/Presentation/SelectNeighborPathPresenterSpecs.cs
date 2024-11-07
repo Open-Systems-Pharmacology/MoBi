@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using FakeItEasy;
+using FluentNHibernate.Utils;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
 using MoBi.Helpers;
@@ -10,6 +11,7 @@ using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation
 {
@@ -22,7 +24,7 @@ namespace MoBi.Presentation
       protected IContainer _organism1;
       protected SpatialStructureDTO _organismDTO1;
       protected ModuleAndSpatialStructureDTO _moduleAndSpatialStructureDTO1, _moduleAndSpatialStructureDTO2;
-      protected ObjectPathDTO _selectedPathDTO;
+      protected NeighborhoodObjectPathDTO _selectedPathDTO;
       private IBuildingBlockRepository _buildingBlockRepository;
       protected Container _organism2;
       protected SpatialStructureDTO _organismDTO2;
@@ -39,8 +41,8 @@ namespace MoBi.Presentation
          _selectContainerInTreePresenter = A.Fake<ISelectContainerInTreePresenter>();
          _objectPathFactory = new ObjectPathFactoryForSpecs();
 
-         A.CallTo(() => _view.BindTo(A<ObjectPathDTO>._))
-            .Invokes(x => _selectedPathDTO = x.GetArgument<ObjectPathDTO>(0));
+         var neighborhoodBuilderDTO = new NeighborhoodBuilderDTO(new NeighborhoodBuilder(), new List<NeighborhoodBuilder>());
+         _selectedPathDTO = new NeighborhoodObjectPathDTO(neighborhoodBuilderDTO, () => neighborhoodBuilderDTO.FirstNeighborDTO);
 
          sut = new SelectNeighborPathPresenter(_view, _selectContainerInTreePresenter, _moduleDTOMapper, _buildingBlockRepository, _objectPathFactory);
 
@@ -92,12 +94,13 @@ namespace MoBi.Presentation
          base.Context();
          A.CallTo(() => _selectContainerInTreePresenter.InitTreeStructure(A<IReadOnlyList<ObjectBaseDTO>>._))
             .Invokes(x => _allObjectBaseForTree = x.GetArgument<IReadOnlyList<ObjectBaseDTO>>(0));
+
+         sut.Init("label", _selectedPathDTO);
       }
 
       protected override void Because()
       {
          _selectContainerInTreePresenter.SelectObjectBaseDTO(null);
-         sut.Init("label");
       }
 
       [Observation]
@@ -121,6 +124,12 @@ namespace MoBi.Presentation
 
    public class When_notify_that_the_selected_entity_was_changed : concern_for_SelectNeighborPathPresenter
    {
+      protected override void Context()
+      {
+         base.Context();
+         sut.Init("label", _selectedPathDTO);
+      }
+
       [Observation]
       public void should_allow_the_close_no_matter_if_selection_is_container()
       {
@@ -174,6 +183,7 @@ namespace MoBi.Presentation
       {
          base.Context();
          _selectedPathDTO.Path = "A|B|C";
+         sut.Init("label", _selectedPathDTO);
          A.CallTo(() => _selectContainerInTreePresenter.SelectedEntityPath).Returns(new ObjectPath("D|E|F"));
       }
 
@@ -191,6 +201,12 @@ namespace MoBi.Presentation
 
    public class When_selected_container_path_changes_with_physical : concern_for_SelectNeighborPathPresenter
    {
+      protected override void Context()
+      {
+         base.Context();
+         sut.Init("label", _selectedPathDTO);
+      }
+
       protected override void Because()
       {
          var entity = new Container
@@ -209,6 +225,12 @@ namespace MoBi.Presentation
 
    public class When_selected_container_path_changes_with_logical : concern_for_SelectNeighborPathPresenter
    {
+      protected override void Context()
+      {
+         base.Context();
+         sut.Init("label", _selectedPathDTO);
+      }
+
       protected override void Because()
       {
          var entity = new Container

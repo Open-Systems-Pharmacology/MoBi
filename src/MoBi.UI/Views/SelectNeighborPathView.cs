@@ -15,27 +15,18 @@ namespace MoBi.UI.Views
    public partial class SelectNeighborPathView : BaseUserControl, ISelectNeighborPathView
    {
       private ISelectNeighborPathPresenter _presenter;
-      private readonly ScreenBinder<ObjectPathDTO> _screenBinder = new ScreenBinder<ObjectPathDTO>();
+      private readonly ScreenBinder<NeighborhoodObjectPathDTO> _screenBinder = new ScreenBinder<NeighborhoodObjectPathDTO>();
 
       public SelectNeighborPathView()
       {
          InitializeComponent();
       }
 
-      public void AttachPresenter(ISelectNeighborPathPresenter presenter)
-      {
-         _presenter = presenter;
-      }
+      public void AttachPresenter(ISelectNeighborPathPresenter presenter) => _presenter = presenter;
 
-      public void AddContainerCriteriaView(IView view)
-      {
-         panelContainerSelection.FillWith(view);
-      }
+      public void AddContainerCriteriaView(IView view) => panelContainerSelection.FillWith(view);
 
-      public void BindTo(ObjectPathDTO objectPathDTO)
-      {
-         _screenBinder.BindToSource(objectPathDTO);
-      }
+      public void BindTo(NeighborhoodObjectPathDTO objectPathDTO) => _screenBinder.BindToSource(objectPathDTO);
 
       public string Label
       {
@@ -43,6 +34,8 @@ namespace MoBi.UI.Views
          //this is just to satisfy tests. We don't care about the get in general
          get => layoutItemContainerPath.Text;
       }
+
+      public void ValidateNeighborhood() => _screenBinder.Validate();
 
       public override void InitializeBinding()
       {
