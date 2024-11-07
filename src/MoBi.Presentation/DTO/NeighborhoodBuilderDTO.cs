@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
+using MoBi.Assets;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Validation;
 
 namespace MoBi.Presentation.DTO
 {
@@ -23,6 +25,8 @@ namespace MoBi.Presentation.DTO
          FirstNeighborDTO = new NeighborhoodObjectPathDTO(this, () => SecondNeighborDTO) { Path = neighborhoodBuilder.FirstNeighborPath?.ToPathString() };
          SecondNeighborDTO = new NeighborhoodObjectPathDTO(this, () => FirstNeighborDTO) { Path = neighborhoodBuilder.SecondNeighborPath?.ToPathString() };
          addExistingNeighborhoods(existingNeighborhoods);
+
+         Rules.AddRange(AllRules.All);
       }
 
       private void addExistingNeighborhoods(IReadOnlyList<NeighborhoodBuilder> existingNeighborhoods)
@@ -51,6 +55,37 @@ namespace MoBi.Presentation.DTO
             return false;
 
          return _connections[path].Contains(secondNeighborPath);
+      }
+
+      private static class AllRules
+      {
+         private static IBusinessRule noEquivalentForFirstNeighbor { get; } = CreateRule.For<NeighborhoodBuilderDTO>()
+            .Property(x => x.FirstNeighborPath)
+            .WithRule((dto, path) => !dto.HasConnectionBetween(path, dto.SecondNeighborPath))
+            .WithError((dto, path) => AppConstants.Validation.HasEquivalentNeighborhood(path, dto.SecondNeighborPath));
+
+         private static IBusinessRule noEquivalentForSecondNeighbor { get; } = CreateRule.For<NeighborhoodBuilderDTO>()
+            .Property(x => x.SecondNeighborPath)
+            .WithRule((dto, path) => !dto.HasConnectionBetween(path, dto.FirstNeighborPath))
+            .WithError((dto, path) => AppConstants.Validation.HasEquivalentNeighborhood(path, dto.FirstNeighborPath));
+
+         private static IBusinessRule notEqualToSecondNeighbor { get; } = CreateRule.For<NeighborhoodBuilderDTO>()
+            .Property(x => x.FirstNeighborPath)
+            .WithRule((dto, path) => !Equals(path, dto.SecondNeighborPath))
+            .WithError((dto, path) => AppConstants.Validation.CannotCreateANeighborhoodThatConnectsAContainerToItself);
+
+         private static IBusinessRule notEqualToFirstNeighbor { get; } = CreateRule.For<NeighborhoodBuilderDTO>()
+            .Property(x => x.SecondNeighborPath)
+            .WithRule((dto, path) => !Equals(path, dto.FirstNeighborPath))
+            .WithError((dto, path) => AppConstants.Validation.CannotCreateANeighborhoodThatConnectsAContainerToItself);
+
+         public static IReadOnlyList<IBusinessRule> All { get; } = new[]
+         {
+            noEquivalentForFirstNeighbor,
+            noEquivalentForSecondNeighbor,
+            notEqualToSecondNeighbor,
+            notEqualToFirstNeighbor
+         };
       }
    }
 }

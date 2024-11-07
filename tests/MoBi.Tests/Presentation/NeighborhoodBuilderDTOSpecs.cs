@@ -40,7 +40,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_have_one_invalid_message_for_each_path()
       {
-         _neighborhoodBuilderDTO.Validate().IsEmpty.ShouldBeTrue();
+         _neighborhoodBuilderDTO.Validate().Count.ShouldBeEqualTo(2);
          _neighborhoodBuilderDTO.FirstNeighborDTO.Validate().Count.ShouldBeEqualTo(1);
          _neighborhoodBuilderDTO.SecondNeighborDTO.Validate().Count.ShouldBeEqualTo(1);
       }
@@ -90,7 +90,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_have_invalid_paths_for_both_neighbors()
       {
-         _neighborhoodBuilderDTO.Validate().IsEmpty.ShouldBeTrue();
+         _neighborhoodBuilderDTO.Validate().Count.ShouldBeEqualTo(2);
          _neighborhoodBuilderDTO.FirstNeighborDTO.Validate().Count.ShouldBeEqualTo(1);
          _neighborhoodBuilderDTO.SecondNeighborDTO.Validate().Count.ShouldBeEqualTo(1);
       }

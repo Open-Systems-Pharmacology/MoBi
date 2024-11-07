@@ -60,12 +60,12 @@ namespace MoBi.Presentation.Presenter
       public override void Edit(NeighborhoodBuilder neighborhoodBuilder, IReadOnlyList<IObjectBase> existingObjectsInParent)
       {
          _neighborhoodBuilder = neighborhoodBuilder;
-         _existingObjectsInParent = existingObjectsInParent;
+         _existingObjectsInParent = existingObjectsInParent ?? new List<IObjectBase>();
          base.Edit(neighborhoodBuilder, existingObjectsInParent);
-         existingObjectsInParent = existingObjectsInParent ?? new List<IObjectBase>();
-         _neighborhoodBuilderDTO = _neighborhoodBuilderMapper.MapFrom(neighborhoodBuilder, existingObjectsInParent.OfType<NeighborhoodBuilder>().ToList());
-         _neighborhoodBuilderDTO.AddUsedNames(_editTask.GetForbiddenNamesWithoutSelf(neighborhoodBuilder, existingObjectsInParent));
          _tagsPresenter.Edit(neighborhoodBuilder);
+         
+         _neighborhoodBuilderDTO = _neighborhoodBuilderMapper.MapFrom(neighborhoodBuilder, _existingObjectsInParent.OfType<NeighborhoodBuilder>().Except(new[] { neighborhoodBuilder }).ToList());
+         _neighborhoodBuilderDTO.AddUsedNames(_editTask.GetForbiddenNamesWithoutSelf(neighborhoodBuilder, existingObjectsInParent));
          _view.BindTo(_neighborhoodBuilderDTO);
       }
 
@@ -83,11 +83,13 @@ namespace MoBi.Presentation.Presenter
       public void SetFirstNeighborPath(string neighborPath)
       {
          AddCommand(new ChangeFirstNeighborPathCommand(neighborPath, _neighborhoodBuilder, spatialStructure).RunCommand(_context));
+         rebind();
       }
 
       public void SetSecondNeighborPath(string neighborPath)
       {
          AddCommand(new ChangeSecondNeighborPathCommand(neighborPath, _neighborhoodBuilder, spatialStructure).RunCommand(_context));
+         rebind();
       }
 
       private SpatialStructure spatialStructure => BuildingBlock.DowncastTo<SpatialStructure>();
