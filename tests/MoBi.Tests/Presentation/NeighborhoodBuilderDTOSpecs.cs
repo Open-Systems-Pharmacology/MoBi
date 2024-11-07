@@ -122,6 +122,33 @@ namespace MoBi.Presentation
       }
    }
 
+   public class When_validating_a_neighborhood_with_non_connected_neighborhoods : concern_for_NeighborhoodBuilderDTO
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _neighborhoodBuilderDTO.FirstNeighborDTO.Path = "FirstNeighborPath1";
+         _neighborhoodBuilderDTO.Name = "NeighborhoodName";
+      }
+
+      protected override List<NeighborhoodBuilder> GetExistingNeighborhoods()
+      {
+         return new List<NeighborhoodBuilder>
+         {
+            new NeighborhoodBuilder { FirstNeighborPath =  new ObjectPath("SecondNeighborPath1") },
+         };
+      }
+
+      [Observation]
+      public void should_only_fail_due_to_missing_path()
+      {
+         _neighborhoodBuilderDTO.Validate().IsEmpty.ShouldBeTrue();
+         _neighborhoodBuilderDTO.FirstNeighborDTO.Validate().IsEmpty.ShouldBeTrue();
+         // validation fails for SecondNeighbor since it is empty
+         _neighborhoodBuilderDTO.SecondNeighborDTO.Validate().Count.ShouldBeEqualTo(1);
+      }
+   }
+
    public class When_validating_a_neighborhood_without_colliding_neighborhoods_and_a_name : concern_for_NeighborhoodBuilderDTO
    {
       protected override void Context()

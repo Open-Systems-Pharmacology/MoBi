@@ -31,22 +31,30 @@ namespace MoBi.Presentation.DTO
 
       private void addExistingNeighborhoods(IReadOnlyList<NeighborhoodBuilder> existingNeighborhoods)
       {
-         var uniqueNeighbors = existingNeighborhoods.SelectMany(x => new[] { x.FirstNeighborPath, x.SecondNeighborPath }).Distinct().Where(x => x != null);
          _connections = new Cache<string, List<string>>();
-
-         uniqueNeighbors.Each(x =>
-         {
-            existingNeighborhoods.Where(y => Equals(y.FirstNeighborPath, x)).Each(y => addConnection(_connections, x, y.SecondNeighborPath));
-            existingNeighborhoods.Where(y => Equals(y.SecondNeighborPath, x)).Each(y => addConnection(_connections, x, y.FirstNeighborPath));
-         });
+         existingNeighborhoods.Each(x => addConnection(_connections, x.FirstNeighborPath, x.SecondNeighborPath));
       }
 
-      private static void addConnection(Cache<string, List<string>> connections, ObjectPath x, ObjectPath connectedObjectPath)
+      private static void addConnection(Cache<string, List<string>> connections, ObjectPath path1, ObjectPath path2)
       {
-         if (!connections.Contains(x))
-            connections[x] = new List<string>();
+         connectPaths(connections, path1, path2);
+         connectPaths(connections, path2, path1);
+      }
 
-         connections[x].Add(connectedObjectPath);
+      private static void connectPaths(Cache<string, List<string>> connections, ObjectPath path1, ObjectPath path2)
+      {
+         if (isNullPath(path1) || isNullPath(path2))
+            return;
+
+         if (!connections.Contains(path1))
+            connections[path1] = new List<string>();
+
+         connections[path1].Add(path2);
+      }
+
+      private static bool isNullPath(ObjectPath path1)
+      {
+         return path1 == null || string.IsNullOrEmpty(path1.PathAsString);
       }
 
       public bool HasConnectionBetween(string path, string secondNeighborPath)
