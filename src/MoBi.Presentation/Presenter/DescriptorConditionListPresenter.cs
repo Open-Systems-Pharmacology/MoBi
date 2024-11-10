@@ -33,6 +33,7 @@ namespace MoBi.Presentation.Presenter
       void NewNotMatchTagCondition();
       void NewInContainerCondition();
       void NewInParentCondition();
+      void NewInChildrenCondition();
       void NewNotInContainerCondition();
       void ChangeOperator(CriteriaOperator criteriaOperator);
    }
@@ -147,6 +148,8 @@ namespace MoBi.Presentation.Presenter
                return AppConstants.MatchAll;
             case TagType.InParent:
                return AppConstants.InParent;
+            case TagType.InChildren:
+               return AppConstants.InChildren;
             case TagType.Match:
                return getNewTagName<MatchTagCondition>(AppConstants.Dialog.NewMatchTag);
             case TagType.NotMatch:
@@ -179,6 +182,8 @@ namespace MoBi.Presentation.Presenter
       public void NewNotInContainerCondition() => addCondition(TagType.NotInContainer);
 
       public void NewInParentCondition() => addCondition(TagType.InParent);
+
+      public void NewInChildrenCondition() => addCondition(TagType.InChildren);
 
       public void ChangeOperator(CriteriaOperator newOperator)
       {

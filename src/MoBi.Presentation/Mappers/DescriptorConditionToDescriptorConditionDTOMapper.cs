@@ -29,6 +29,8 @@ namespace MoBi.Presentation.Mappers
                return new DescriptorConditionDTO(notInContainerCondition.Tag, TagType.NotInContainer, AppConstants.NotInContainer);
             case InParentCondition _:
                return new DescriptorConditionDTO(string.Empty, TagType.InParent, AppConstants.InParent);
+            case InChildrenCondition _:
+               return new DescriptorConditionDTO(string.Empty, TagType.InChildren, AppConstants.InChildren);
             default:
                throw new ArgumentException($"Cannot create descriptor condition for {descriptorCondition.GetType().Name}");
          }
