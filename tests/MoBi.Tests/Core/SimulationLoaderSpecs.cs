@@ -47,7 +47,30 @@ namespace MoBi.Core
       }
    }
 
-   public class When_adding_a_simulation_to_project_that_contains_a_module_with_the_same_name : concern_for_SimulationLoader
+   public class When_adding_a_simulation_to_project_where_the_simulation_name_is_unique_but_module_names_collide : concern_for_SimulationLoader
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _project.AddModule(new Module().WithName("moduleName"));
+         _simulation.Name = "Sim1";
+
+         A.CallTo(() => _cloneManager.CloneSimulationConfiguration(A<SimulationConfiguration>._)).Returns(_simulationConfiguration);
+      }
+
+      protected override void Because()
+      {
+         sut.AddSimulationToProject(_simulation);
+      }
+
+      [Observation]
+      public void the_added_module_should_have_been_renamed()
+      {
+         A.CallTo(() => _nameCorrector.AutoCorrectName(A<IEnumerable<string>>._, _simulation.Modules.First())).MustHaveHappened();
+      }
+   }
+
+   public class When_adding_a_simulation_to_project_that_contains_a_simulation_with_the_same_name : concern_for_SimulationLoader
    {
       private ObserverBuildingBlock _clonedBuildingBlock;
 
