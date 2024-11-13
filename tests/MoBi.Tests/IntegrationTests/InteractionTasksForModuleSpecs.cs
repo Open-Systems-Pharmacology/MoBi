@@ -135,7 +135,7 @@ namespace MoBi.IntegrationTests
 
       [TestCase(BuildingBlockType.SpatialStructure)]
       [TestCase(BuildingBlockType.Reaction)]
-      [TestCase(BuildingBlockType.EventGroup)]
+      [TestCase(BuildingBlockType.Events)]
       [TestCase(BuildingBlockType.PassiveTransport)]
       [TestCase(BuildingBlockType.Molecule)]
       [TestCase(BuildingBlockType.Observer)]
