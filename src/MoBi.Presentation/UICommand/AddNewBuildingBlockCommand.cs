@@ -20,6 +20,7 @@ namespace MoBi.Presentation.UICommand
          _interactionTask = interactionTask;
       }
 
+      // Override this because the base class clears the Subject property after completion
       public override void Execute() => PerformExecute();
 
       protected override void PerformExecute()
