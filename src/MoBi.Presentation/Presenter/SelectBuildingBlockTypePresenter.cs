@@ -3,6 +3,7 @@ using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Format;
 
@@ -12,7 +13,7 @@ namespace MoBi.Presentation.Presenter
    {
       public string Format(BuildingBlockType valueToFormat)
       {
-         return valueToFormat.ToString();
+         return valueToFormat.ToString().SplitToUpperCase();
       }
    }
 
