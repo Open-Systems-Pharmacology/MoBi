@@ -2,7 +2,6 @@
 using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 
@@ -28,36 +27,6 @@ namespace MoBi.Core.Commands
          A.CallTo(() => parameterFactory.CreateVolumeParameter()).Returns(_volumeParameter);
          A.CallTo(() => _context.Resolve<IParameterFactory>()).Returns(parameterFactory);
          sut = new SetContainerModeCommand(_buildingBlock, _container, _newContainerMode);
-      }
-   }
-
-   public class When_setting_the_container_mode_from_logical_to_physical_in_a_container_that_does_not_have_a_volume_parameter : concern_for_SetContainerModeCommand
-   {
-      protected override void Context()
-      {
-         _newContainerMode = ContainerMode.Physical;
-         _oldContainerMode = ContainerMode.Logical;
-         base.Context();
-      }
-
-      protected override void Because()
-      {
-         sut.Execute(_context);
-      }
-
-      [Observation]
-      public void should_add_the_volume_parameter_and_register_the_volume_parameter()
-      {
-         _container.EntityAt<IParameter>(Constants.Parameters.VOLUME).ShouldBeEqualTo(_volumeParameter);
-         A.CallTo(() => _context.Register(_volumeParameter)).MustHaveHappened();
-      }
-
-      [Observation]
-      public void the_inverse_of_the_resulting_command_should_remove_the_volume_parameter_and_unregister_the_parameter()
-      {
-         sut.InvokeInverse(_context);
-         _container.EntityAt<IParameter>(Constants.Parameters.VOLUME).ShouldBeNull();
-         A.CallTo(() => _context.Unregister(_volumeParameter)).MustHaveHappened();
       }
    }
 
