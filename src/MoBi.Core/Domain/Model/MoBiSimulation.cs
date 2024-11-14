@@ -118,11 +118,21 @@ namespace MoBi.Core.Domain.Model
 
       public IReadOnlyList<IBuildingBlock> BuildingBlocks()
       {
-         var buildingBlocks = Modules.SelectMany(module => module.BuildingBlocks).Concat(Configuration.ExpressionProfiles).ToList();
+         var buildingBlocks = Configuration.ModuleConfigurations.SelectMany(usedBuildingBlocksFrom).Concat(Configuration.ExpressionProfiles).ToList();
 
          if (Configuration.Individual != null)
             buildingBlocks.Add(Configuration.Individual);
          return buildingBlocks;
+      }
+
+      private IReadOnlyList<IBuildingBlock> usedBuildingBlocksFrom(ModuleConfiguration moduleConfiguration)
+      {
+         var module = moduleConfiguration.Module;
+         // Only add used InitialConditions and ParameterValues, not ones that are not used
+         return module.BuildingBlocks
+            .Except(module.ParameterValuesCollection.Concat<IBuildingBlock>(module.InitialConditionsCollection))
+            .Concat(new List<IBuildingBlock> {moduleConfiguration.SelectedInitialConditions, moduleConfiguration.SelectedParameterValues})
+            .Where(x => x != null).ToList();
       }
 
       public IReadOnlyCollection<OriginalQuantityValue> OriginalQuantityValues => _quantityValueCache;
