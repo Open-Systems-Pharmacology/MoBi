@@ -128,7 +128,7 @@ namespace MoBi.Core.Domain.Model
       private IReadOnlyList<IBuildingBlock> usedBuildingBlocksFrom(ModuleConfiguration moduleConfiguration)
       {
          var module = moduleConfiguration.Module;
-         // Only add used InitialConditions and ParameterValues, not ones that are not used
+         // Only add selected InitialConditions and ParameterValues, not ones that are not selected
          return module.BuildingBlocks
             .Except(module.ParameterValuesCollection.Concat<IBuildingBlock>(module.InitialConditionsCollection))
             .Concat(new List<IBuildingBlock> {moduleConfiguration.SelectedInitialConditions, moduleConfiguration.SelectedParameterValues})
