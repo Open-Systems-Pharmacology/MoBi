@@ -68,7 +68,8 @@ namespace MoBi.Presentation.Presenter
       void AddNewFormula(string formulaName = null);
    }
 
-   public abstract class EditFormulaPresenter<TView, TPresenter> : AbstractCommandCollectorPresenter<TView, TPresenter> where TView : IView<TPresenter>, IFormulaEditView where TPresenter : IPresenter
+   public abstract class EditFormulaPresenter<TView, TPresenter> : AbstractCommandCollectorPresenter<TView, TPresenter>, IListener<ObjectPropertyChangedEvent>
+      where TView : IView<TPresenter>, IFormulaEditView where TPresenter : IPresenter
    {
       protected IFormulaPresenterCache _formulaPresenterCache;
       protected IFormula _formula;
@@ -135,18 +136,25 @@ namespace MoBi.Presentation.Presenter
             SelectFormulaByTypeAndName(DefaultFormulaType, string.Empty);
             _view.ClearFormulaView();
          }
-         if (_formula == null) return;
 
-         _formulaDTO = _formulaDTOMapper.MapFrom(_formula);
+         if (_formula == null)
+            return;
+
          rebind();
-         _view.BindTo(_formulaDTO);
          _view.IsComplexFormulaView = isComplexFormula(_formula);
          _view.IsNamedFormulaView = isNamedFormula(_formula);
 
          ViewChanged();
       }
 
-      protected Type DefaultFormulaType => 
+      private void rebind()
+      {
+         _formulaDTO = _formulaDTOMapper.MapFrom(_formula);
+         refresh();
+         _view.BindTo(_formulaDTO);
+      }
+
+      protected Type DefaultFormulaType =>
          _allFormulaType.Contains(_defaultFormulaType) ? _defaultFormulaType : _allFormulaType.First();
 
       protected IDimension FormulaDimension
@@ -195,11 +203,11 @@ namespace MoBi.Presentation.Presenter
          _formula = formula;
       }
 
-      private bool hasCircularReference(FormulaUsablePath path) => 
+      private bool hasCircularReference(FormulaUsablePath path) =>
          _formulaOwner != null && !IsRHS && _circularReferenceChecker.HasCircularReference(path, _formulaOwner);
 
-      private void setFormulaInOwner(IFormula newFormula) => 
-         AddCommand(_formulaTask.UpdateFormula(_formulaOwner, _formula, newFormula, _formulaDecoder, _buildingBlock));
+      private void setFormulaInOwner(IFormula newFormula) =>
+         AddCommand(_formulaTask.UpdateFormula(_formulaOwner, _formulaDecoder.GetFormula(_formulaOwner), newFormula, _formulaDecoder, _buildingBlock));
 
       protected abstract bool ShouldUpdateOwner();
 
@@ -260,7 +268,6 @@ namespace MoBi.Presentation.Presenter
       public void NamedFormulaSelectionChanged()
       {
          SelectFormulaByTypeAndName(_formulaDTO.Type, _formulaDTO.Name);
-         rebind();
       }
 
       public ISelectReferencePresenter ReferencePresenter
@@ -293,7 +300,7 @@ namespace MoBi.Presentation.Presenter
 
       private bool isNamedFormula(IFormula formula) => !(formula.IsConstant() || formula.IsDistributed());
 
-      private void rebind()
+      private void refresh()
       {
          if (!ShouldUpdateOwner())
          {
@@ -311,6 +318,7 @@ namespace MoBi.Presentation.Presenter
             _formulaPresenter.BuildingBlock = _buildingBlock;
             _formulaPresenter.InitializeWith(CommandCollector);
          }
+
          _formulaPresenter.IsRHS = IsRHS;
          _view.SetEditFormulaInstanceView(_formulaPresenter.BaseView);
          _formulaPresenter.Edit(_formula, _formulaOwner);
@@ -328,6 +336,16 @@ namespace MoBi.Presentation.Presenter
 
          _formula = null;
          UpdateFormula();
+      }
+
+      public void Handle(ObjectPropertyChangedEvent objectPropertyChangedEvent)
+      {
+         if (!objectPropertyChangedEvent.ChangedObject.Equals(_formulaOwner))
+            return;
+
+         _formula = _formulaDecoder.GetFormula(_formulaOwner);
+
+         rebind();
       }
 
       public void Handle(FormulaChangedEvent formulaChangedEvent)

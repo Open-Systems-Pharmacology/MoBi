@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using FakeItEasy;
-using MoBi.Core.Commands;
+﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Helper;
@@ -24,7 +22,7 @@ namespace MoBi.Presentation
       private IMoBiContext _moBiContext;
       protected IFormulaToFormulaInfoDTOMapper _formulaToFormulaInfoDTOMapper;
       private FormulaTypeCaptionRepository _formulaTypeCaptionRepository;
-      private IMoBiFormulaTask _moBiFormulaTask;
+      protected IMoBiFormulaTask _moBiFormulaTask;
       private ICircularReferenceChecker _circularReferenceChecker;
       protected IInteractionTaskContext _interactionTaskContext;
       private ISelectReferenceAtParameterValuePresenter _selectReferenceAtParameterValuePresenter;
@@ -43,13 +41,13 @@ namespace MoBi.Presentation
          _selectReferenceAtParameterValuePresenter = A.Fake<ISelectReferenceAtParameterValuePresenter>();
          _cloneManager = A.Fake<ICloneManagerForBuildingBlock>();
 
-         sut = new EditFormulaInPathAndValuesPresenter(_editFormulaInPathAndValues, 
-            _formulaPresenterCache, 
-            _moBiContext, 
-            _formulaToFormulaInfoDTOMapper, 
-            _formulaTypeCaptionRepository, 
-            _moBiFormulaTask, 
-            _circularReferenceChecker, 
+         sut = new EditFormulaInPathAndValuesPresenter(_editFormulaInPathAndValues,
+            _formulaPresenterCache,
+            _moBiContext,
+            _formulaToFormulaInfoDTOMapper,
+            _formulaTypeCaptionRepository,
+            _moBiFormulaTask,
+            _circularReferenceChecker,
             _selectReferenceAtParameterValuePresenter, _cloneManager);
       }
    }
@@ -60,26 +58,35 @@ namespace MoBi.Presentation
       private ParameterValuesBuildingBlock _buildingBlock;
       private ParameterValuesBuildingBlock _clonedBuildingBlock;
       private ParameterValue _pathAndValueEntity;
+      private MockUsingFormulaDecoder _mockDecoder;
+      private ParameterValue _formulaOwner;
+      private IFormula _expectedOldFormula;
 
       protected override void Context()
       {
          base.Context();
+         var formulaDecoder = new UsingFormulaDecoder();
          _entity = new ParameterValue { Path = new ObjectPath("Organism", "Liver", "volume") }.WithFormula(new ExplicitFormula().WithName("explicit"));
          _buildingBlock = new ParameterValuesBuildingBlock { _entity };
-         _pathAndValueEntity = new ParameterValue {Path = new ObjectPath("Organism", "Liver", "volume")}.WithFormula(new ExplicitFormula().WithName("explicit"));
-         var dummyWithTheSameName = new ParameterValue {Path = new ObjectPath("Organism", "Lung", "volume")}.WithFormula(new ExplicitFormula().WithName("explicit"));
+         _pathAndValueEntity = new ParameterValue { Path = new ObjectPath("Organism", "Liver", "volume") }.WithFormula(new ExplicitFormula().WithName("explicit"));
+         var dummyWithTheSameName = new ParameterValue { Path = new ObjectPath("Organism", "Lung", "volume") }.WithFormula(new ExplicitFormula().WithName("explicit"));
 
          _clonedBuildingBlock = new ParameterValuesBuildingBlock
          {
             dummyWithTheSameName,
             _pathAndValueEntity
          };
+
+         _mockDecoder = new MockUsingFormulaDecoder();
          A.CallTo(() => _cloneManager.Clone(_buildingBlock)).Returns(_clonedBuildingBlock);
+
+         _formulaOwner = _clonedBuildingBlock.FindByPath(_entity.Path);
+         _expectedOldFormula = formulaDecoder.GetFormula(_formulaOwner);
       }
 
       protected override void Because()
       {
-         sut.Init(_entity, _buildingBlock, new UsingFormulaDecoder());
+         sut.Init(_entity, _buildingBlock, _mockDecoder);
       }
 
       [Observation]
@@ -89,9 +96,23 @@ namespace MoBi.Presentation
       }
 
       [Observation]
+      public void the_update_formula_should_be_called_with_expected_formula()
+      {
+         A.CallTo(() => _moBiFormulaTask.UpdateFormula(_formulaOwner, _expectedOldFormula, A<IFormula>.Ignored, _mockDecoder, A<IBuildingBlock>.Ignored)).MustHaveHappened();
+      }
+
+      [Observation]
       public void the_presenter_and_view_are_using_a_clone()
       {
          A.CallTo(() => _formulaToFormulaInfoDTOMapper.MapFrom(_pathAndValueEntity.Formula)).MustHaveHappened();
+      }
+
+      public class MockUsingFormulaDecoder : UsingFormulaDecoder
+      {
+         public MockUsingFormulaDecoder()
+         {
+            GetFormula = _ => null;
+         }
       }
    }
 }
