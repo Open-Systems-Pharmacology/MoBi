@@ -17,6 +17,7 @@ namespace MoBi.Presentation.Presenter
       void SelectMolecules(MoleculeBuildingBlock defaultMolecules, Func<MoleculeBuilder, bool> canSelect = null);
       IReadOnlyList<MoleculeSelectionDTO> SelectedMolecules { get; }
       void SelectionChanged();
+      void UpdateValidationsFor(MoleculeSelectionDTO selectedDTO);
    }
 
    public class SelectMoleculesPresenter : AbstractPresenter<ISelectMoleculesView, ISelectMoleculesPresenter>, ISelectMoleculesPresenter
@@ -43,6 +44,8 @@ namespace MoBi.Presentation.Presenter
       }
 
       public void SelectionChanged() => OnStatusChanged();
+      public void UpdateValidationsFor(MoleculeSelectionDTO selectedDTO) => 
+         _dto.Molecules.Where(molecule => string.Equals(molecule.MoleculeName, selectedDTO.MoleculeName)).Each(_view.UpdateValidation);
 
       private void selectDefaultMolecules(MoleculeBuildingBlock defaultMolecules)
       {
