@@ -369,17 +369,17 @@ namespace MoBi.Presentation.Presenter.Main
          switch (parentNode)
          {
             case InitialConditionsFolderNode initialConditionsFolderNode:
-               {
-                  if (!initialConditionsFolderNode.HasChildren)
-                     RemoveNode(initialConditionsFolderNode);
-                  break;
-               }
+            {
+               if (!initialConditionsFolderNode.HasChildren)
+                  RemoveNode(initialConditionsFolderNode);
+               break;
+            }
             case ParameterValuesFolderNode parameterValuesFolderNode:
-               {
-                  if (!parameterValuesFolderNode.HasChildren)
-                     RemoveNode(parameterValuesFolderNode);
-                  break;
-               }
+            {
+               if (!parameterValuesFolderNode.HasChildren)
+                  RemoveNode(parameterValuesFolderNode);
+               break;
+            }
          }
       }
 
@@ -415,7 +415,6 @@ namespace MoBi.Presentation.Presenter.Main
          var moleculeBuildingBlockNode = _view.NodeById(moleculeBuildingBlock.Id);
          _view.AddNode(_treeNodeFactory.CreateFor(moleculeBuilder).Under(moleculeBuildingBlockNode));
       }
-
 
       public void Handle(AddedEvent<MoleculeBuilder> eventToHandle)
       {
