@@ -287,7 +287,7 @@ namespace MoBi.Assets
 
             if (hasMoleculeChanges)
             {
-               var icName = moduleConfiguration.SelectedInitialConditions == null ? "A new Initial Conditions Building Block will be created" : $"Initial Conditions will be written to the IC building block<i>{moduleConfiguration.SelectedInitialConditions.DisplayName}</i>";
+               var icName = moduleConfiguration.SelectedInitialConditions == null ? "A new Initial Conditions Building Block will be created" : $"Initial Conditions will be written to the IC building block <i>{moduleConfiguration.SelectedInitialConditions.DisplayName}</i>";
                message += $"{Environment.NewLine}- {icName}";
             }
 
