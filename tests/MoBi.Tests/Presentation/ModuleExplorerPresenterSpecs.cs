@@ -2,7 +2,6 @@
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Helpers;
-using MoBi.Presentation;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Presenter;
@@ -29,6 +28,7 @@ using OSPSuite.Utility.Extensions;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using FakeItEasy.Core;
 using TreeNodeFactory = MoBi.Presentation.Nodes.TreeNodeFactory;
 
 namespace MoBi.Presentation
@@ -44,10 +44,9 @@ namespace MoBi.Presentation
       private IToolTipPartCreator _toolTipPartCreator;
       protected IObservedDataInExplorerPresenter _observedDataInExplorerPresenter;
       private IMultipleTreeNodeContextMenuFactory _multipleTreeNodeContextMenuFactory;
-      private IProjectRetriever _projectRetriever;
+      protected IProjectRetriever _projectRetriever;
       protected IEditBuildingBlockStarter _editBuildingBlockStarter;
       protected IInteractionTasksForModule _interactionTaskForModule;
-      protected ITreeNode<RootNodeType> _nodeObservedDataFolder;
       private IObservedDataRepository _observedDataRepository;
 
       protected override void Context()
@@ -189,7 +188,7 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         
+
          _spatialStructureA = _treeNodeFactory.CreateFor<SpatialStructure>(new SpatialStructure().WithName("A"));
          _moduleNode = _treeNodeFactory.CreateFor(MoBiRootNodeTypes.ModulesFolder);
          var module = new Module();
@@ -223,7 +222,7 @@ namespace MoBi.Presentation
       private ITreeNode<SpatialStructure> _spatialStructureZ;
       private ITreeNode<Module> _moduleNodeA;
       private ITreeNode<Module> _moduleNodeZ;
-      
+
       protected override void Context()
       {
          base.Context();
@@ -291,7 +290,7 @@ namespace MoBi.Presentation
          _eventGroupNode = new BuildingBlockNode(_eventGroupBuildingBlock);
          A.CallTo(() => _view.TreeView.NodeById(_rootNode.Id)).Returns(_rootNode);
          A.CallTo(() => _view.TreeView.NodeById(_addedObject.Id)).Returns(_moduleNode);
-         
+
          _addedObject.Add(_eventGroupBuildingBlock);
 
          A.CallTo(() => _view.TreeView.NodeById(_eventGroupBuildingBlock.Id)).Returns(_eventGroupNode);
@@ -477,78 +476,117 @@ namespace MoBi.Presentation
          sut.CanDrag(node).ShouldBeFalse();
       }
    }
-}
 
-public class When_the_last_parameter_values_is_removed_from_a_module : When_the_last_folder_subnode_is_removed_from_a_module<ParameterValuesFolderNode, ParameterValuesBuildingBlock>
-{
-   protected override void Because()
+   public class When_the_last_parameter_values_is_removed_from_a_module : When_the_last_folder_subnode_is_removed_from_a_module<ParameterValuesFolderNode, ParameterValuesBuildingBlock>
    {
-      sut.Handle(new RemovedEvent(new List<IObjectBase> { _module1.ParameterValuesCollection[0], _module1.ParameterValuesCollection[1] }));
+      protected override void Because()
+      {
+         sut.Handle(new RemovedEvent(new List<IObjectBase> { _module1.ParameterValuesCollection[0], _module1.ParameterValuesCollection[1] }));
+      }
    }
-}
 
-public class When_the_last_initial_conditions_is_removed_from_a_module : When_the_last_folder_subnode_is_removed_from_a_module<InitialConditionsFolderNode, InitialConditionsBuildingBlock>
-{
-   protected override void Because()
+   public class When_the_last_initial_conditions_is_removed_from_a_module : When_the_last_folder_subnode_is_removed_from_a_module<InitialConditionsFolderNode, InitialConditionsBuildingBlock>
    {
-      sut.Handle(new RemovedEvent(new List<IObjectBase> { _module1.InitialConditionsCollection[0], _module1.InitialConditionsCollection[1] }));
+      protected override void Because()
+      {
+         sut.Handle(new RemovedEvent(new List<IObjectBase> { _module1.InitialConditionsCollection[0], _module1.InitialConditionsCollection[1] }));
+      }
    }
-}
 
-public abstract class When_the_last_folder_subnode_is_removed_from_a_module<TFolderNode, TBuildingBlock> : concern_for_ModuleExplorerPresenter where TFolderNode : ITreeNode where TBuildingBlock : BuildingBlock, new()
-{
-   private List<ITreeNode> _allNodesAdded;
-   private MoBiProject _project;
-   protected Module _module1;
-   private TFolderNode _folderNode;
-
-   protected override void Context()
+   public abstract class When_the_last_folder_subnode_is_removed_from_a_module<TFolderNode, TBuildingBlock> : concern_for_ModuleExplorerPresenter where TFolderNode : ITreeNode where TBuildingBlock : BuildingBlock, new()
    {
-      base.Context();
-      _project = DomainHelperForSpecs.NewProject();
-      _module1 = new Module
+      private List<ITreeNode> _allNodesAdded;
+      private MoBiProject _project;
+      protected Module _module1;
+      private TFolderNode _folderNode;
+
+      protected override void Context()
+      {
+         base.Context();
+         _project = DomainHelperForSpecs.NewProject();
+         _module1 = new Module
          {
             new MoBiSpatialStructure(),
             new TBuildingBlock().WithId("PSV1"),
             new TBuildingBlock().WithId("PSV2"),
          };
 
-      _allNodesAdded = new List<ITreeNode>();
-      A.CallTo(() => _view.AddNode(A<ITreeNode>._)).Invokes(x =>
+         _allNodesAdded = new List<ITreeNode>();
+         A.CallTo(() => _view.AddNode(A<ITreeNode>._)).Invokes(x =>
+         {
+            var treeNode = x.GetArgument<ITreeNode>(0);
+            flattenAndAdd(treeNode);
+         });
+
+         A.CallTo(() => _view.TreeView.NodeById(A<string>._)).ReturnsLazily(x => getNodeForId(x.Arguments.Get<string>(0)));
+         A.CallTo(() => _view.TreeView.DestroyNode(A<ITreeNode>._)).Invokes(x => removeNode(x.Arguments.Get<ITreeNode>(0)));
+
+         _project.AddModule(_module1);
+         sut.Handle(new ProjectCreatedEvent(_project));
+      }
+
+      private void removeNode(ITreeNode treeNode)
       {
-         var treeNode = x.GetArgument<ITreeNode>(0);
-         flattenAndAdd(treeNode);
-      });
+         _allNodesAdded.Remove(treeNode);
+         treeNode.ParentNode.RemoveChild(treeNode);
+      }
 
-      A.CallTo(() => _view.TreeView.NodeById(A<string>._)).ReturnsLazily(x => getNodeForId(x.Arguments.Get<string>(0)));
-      A.CallTo(() => _view.TreeView.DestroyNode(A<ITreeNode>._)).Invokes(x => removeNode(x.Arguments.Get<ITreeNode>(0)));
+      private ITreeNode getNodeForId(string id)
+      {
+         return _allNodesAdded.First(x => x.Id == id);
+      }
 
-      _project.AddModule(_module1);
-      sut.Handle(new ProjectCreatedEvent(_project));
+      private void flattenAndAdd(ITreeNode treeNode)
+      {
+         treeNode.Children.Each(flattenAndAdd);
+         _allNodesAdded.Add(treeNode);
+         if (treeNode is TFolderNode pvFolderNode)
+            _folderNode = pvFolderNode;
+      }
+
+      [Observation]
+      public void should_remove_the_folder_node()
+      {
+         A.CallTo(() => _view.TreeView.RemoveNode(_folderNode)).MustHaveHappened();
+      }
    }
 
-   private void removeNode(ITreeNode treeNode)
+   public class When_handling_add_molecule_builder_event : concern_for_ModuleExplorerPresenter
    {
-      _allNodesAdded.Remove(treeNode);
-      treeNode.ParentNode.RemoveChild(treeNode);
-   }
+      private MoleculeBuildingBlock _buildingBlock;
+      private ITreeNode _moleculeBuildingBlockNode;
+      private MoBiProject _project;
+      private Module _module;
 
-   private ITreeNode getNodeForId(string id)
-   {
-      return _allNodesAdded.First(x => x.Id == id);
-   }
+      protected override void Context()
+      {
+         base.Context();
+         _buildingBlock = new MoleculeBuildingBlock();
+         _project = new MoBiProject();
+         _module = new Module { _buildingBlock };
+         _project.AddModule(_module);
 
-   private void flattenAndAdd(ITreeNode treeNode)
-   {
-      treeNode.Children.Each(flattenAndAdd);
-      _allNodesAdded.Add(treeNode);
-      if (treeNode is TFolderNode pvFolderNode)
-         _folderNode = pvFolderNode;
-   }
+         A.CallTo(() => _view.AddNode(A<ITreeNode>._)).Invokes(storeBuildingBlockNode);
+         A.CallTo(() => _view.TreeView.NodeById(_buildingBlock.Id)).ReturnsLazily(x => _moleculeBuildingBlockNode);
+         sut.Handle(new ProjectCreatedEvent(_project));
+      }
 
-   [Observation]
-   public void should_remove_the_folder_node()
-   {
-      A.CallTo(() => _view.TreeView.RemoveNode(_folderNode)).MustHaveHappened();
+      private void storeBuildingBlockNode(IFakeObjectCall x)
+      {
+         var node = x.Arguments.Get<ITreeNode>(0);
+         if(Equals(node.TagAsObject, _module))
+            _moleculeBuildingBlockNode = node.Children.First(child => ReferenceEquals(child.TagAsObject, _buildingBlock));
+      }
+
+      protected override void Because()
+      {
+         sut.Handle(new AddedEvent<MoleculeBuilder>(new MoleculeBuilder(), _buildingBlock));
+      }
+
+      [Observation]
+      public void the_molecule_should_be_inserted_under_the_building_block()
+      {
+         _moleculeBuildingBlockNode.Children.Count().ShouldBeEqualTo(1);
+      }
    }
 }
