@@ -7,7 +7,7 @@ namespace MoBi.Presentation.DTO
    public enum BuildingBlockType
    {
       Reaction,
-      EventGroup,
+      Events,
       SpatialStructure,
       PassiveTransport,
       Molecule,
@@ -42,7 +42,7 @@ namespace MoBi.Presentation.DTO
             _allowedBuildingBlocks.Add(BuildingBlockType.PassiveTransport);
 
          if (module.EventGroups == null)
-            _allowedBuildingBlocks.Add(BuildingBlockType.EventGroup);
+            _allowedBuildingBlocks.Add(BuildingBlockType.Events);
 
          if (module.Observers == null)
             _allowedBuildingBlocks.Add(BuildingBlockType.Observer);
