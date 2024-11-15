@@ -89,36 +89,28 @@ namespace MoBi.Presentation
 
    public class  When_updating_formula : concern_for_EditFormulaInPathAndValuesPresenter
    {
-      private MockUsingFormulaDecoder _mockDecoder;
       private ParameterValue _formulaOwner;
       private IFormula _expectedOldFormula;
+      private UsingFormulaDecoder _formulaDecoder;
 
       protected override void Context()
       {
          base.Context();
-         _mockDecoder = new MockUsingFormulaDecoder();
-         var formulaDecoder = new UsingFormulaDecoder();
+         _formulaDecoder = new UsingFormulaDecoder();
          _formulaOwner = _clonedBuildingBlock.FindByPath(_entity.Path);
-         _expectedOldFormula = formulaDecoder.GetFormula(_formulaOwner);
+         _expectedOldFormula = _formulaOwner.Formula;
+         sut.Init(_entity, _buildingBlock, _formulaDecoder);
       }
 
       protected override void Because()
       {
-         sut.Init(_entity, _buildingBlock, _mockDecoder);
+         sut.AddNewFormula("newformula");
       }
 
       [Observation]
       public void the_update_formula_should_be_called_with_expected_formula()
       {
-         A.CallTo(() => _moBiFormulaTask.UpdateFormula(_formulaOwner, _expectedOldFormula, A<IFormula>.Ignored, _mockDecoder, A<IBuildingBlock>.Ignored)).MustHaveHappened();
-      }
-
-      public class MockUsingFormulaDecoder : UsingFormulaDecoder
-      {
-         public MockUsingFormulaDecoder()
-         {
-            GetFormula = _ => null;
-         }
+         A.CallTo(() => _moBiFormulaTask.UpdateFormula(_formulaOwner, _expectedOldFormula, A<IFormula>.Ignored, _formulaDecoder, A<IBuildingBlock>.Ignored)).MustHaveHappened();
       }
    }
 }
