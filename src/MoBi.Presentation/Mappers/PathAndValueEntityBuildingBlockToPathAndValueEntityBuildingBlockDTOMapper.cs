@@ -4,6 +4,7 @@ using MoBi.Presentation.DTO;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
+using MoBi.Core.Extensions;
 
 namespace MoBi.Presentation.Mappers
 {
@@ -40,14 +41,10 @@ namespace MoBi.Presentation.Mappers
 
       protected abstract TBuildingBlockDTO MapBuildingBlockDTO(TBuildingBlock buildingBlock, List<TBuilderDTO> parameterDTOs);
 
-      private IEnumerable<TBuilderDTO> subParametersFor(TBuilderDTO distributedParameter, IEnumerable<TBuilderDTO> parameterList)
-      {
-         return parameterList.Where(x => isDirectSubParameterOf(distributedParameter, x));
-      }
+      private IEnumerable<TBuilderDTO> subParametersFor(TBuilderDTO distributedParameter, IEnumerable<TBuilderDTO> parameterList) => 
+         parameterList.Where(x => isDirectSubParameterOf(distributedParameter, x));
 
-      private bool isDirectSubParameterOf(TBuilderDTO distributedParameter, TBuilderDTO builderDTO)
-      {
-         return builderDTO.Path.StartsWith(distributedParameter.Path) && builderDTO.Path.Count - distributedParameter.Path.Count == 1;
-      }
+      private bool isDirectSubParameterOf(TBuilderDTO distributedParameter, TBuilderDTO builderDTO) => 
+         builderDTO.PathWithValueObject.IsDirectSubParameterOf(distributedParameter.PathWithValueObject);
    }
 }
