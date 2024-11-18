@@ -387,8 +387,10 @@ namespace MoBi.UI.Views
          var rowHandle = _gridViewBinder.RowHandleFor(parameterToSelect);
          _gridView.FocusedRowHandle = rowHandle;
       }
+        
+      public void CopyToClipBoard(string text) => Clipboard.SetText(text);
 
-      private void gridViewRowChanged(FocusedRowChangedEventArgs e)
+        private void gridViewRowChanged(FocusedRowChangedEventArgs e)
       {
          var selectedItem = _gridViewBinder.ElementAt(e.FocusedRowHandle);
          if (selectedItem == null) return;

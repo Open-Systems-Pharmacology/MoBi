@@ -4,6 +4,7 @@ using DevExpress.Utils.Menu;
 using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraGrid.Views.Grid.ViewInfo;
+using MoBi.Assets;
 using OSPSuite.Assets;
 
 namespace MoBi.UI.Views
@@ -31,7 +32,7 @@ namespace MoBi.UI.Views
             return;
 
          var copyPathMenuItem = new DXMenuItem(
-            "Copy Path",
+            AppConstants.Captions.CopyPath,
             (s, args) => OnCopyPathRequested?.Invoke(GetSelectedRows().First()),
             ApplicationIcons.Copy
          );

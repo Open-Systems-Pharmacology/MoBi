@@ -39,6 +39,7 @@ namespace MoBi.Presentation
       protected ISelectReferencePresenterFactory _selectReferencePresenterFactory;
       protected IFavoriteTask _favoriteTask;
       protected IObjectTypeResolver _typeResolver;
+      protected IEntityPathResolver _entityPathResolver;
 
       protected override void Context()
       {
@@ -59,8 +60,9 @@ namespace MoBi.Presentation
          _selectReferencePresenterFactory = A.Fake<ISelectReferencePresenterFactory>();
          _favoriteTask = A.Fake<IFavoriteTask>();
          _typeResolver = A.Fake<IObjectTypeResolver>();
+         _entityPathResolver = A.Fake<IEntityPathResolver>();
          sut = new EditParametersInContainerPresenter(_view, _formulaMapper, _parameterMapper, _interactionTasks,
-            _distributeParameterPresenter, _parameterPresenter, _quantityTask, _interactionTaskContext, _clipboardManager, _editTask, _selectReferencePresenterFactory, _favoriteTask, _typeResolver);
+            _distributeParameterPresenter, _parameterPresenter, _quantityTask, _interactionTaskContext, _clipboardManager, _editTask, _selectReferencePresenterFactory, _favoriteTask, _typeResolver, _entityPathResolver);
          sut.InitializeWith(A.Fake<ICommandCollector>());
       }
    }
@@ -391,7 +393,7 @@ namespace MoBi.Presentation
          base.Context();
          _container = new Container();
          sut = new EditParametersInContainerPresenter(_view, _formulaMapper, _parameterMapper, _interactionTasks,
-            _distributeParameterPresenter, _parameterPresenter, _quantityTask, _interactionTaskContext, _clipboardManager, _editTask, _selectReferencePresenterFactory, _favoriteTask, _typeResolver);
+            _distributeParameterPresenter, _parameterPresenter, _quantityTask, _interactionTaskContext, _clipboardManager, _editTask, _selectReferencePresenterFactory, _favoriteTask, _typeResolver, _entityPathResolver);
          A.CallTo(() => _typeResolver.TypeFor(_container)).Returns(_containerType);
       }
 
@@ -418,7 +420,7 @@ namespace MoBi.Presentation
          _container = new Container();
          //_view = new EditParametersInContainerView(A.Fake<IToolTipCreator>(), A.Fake<ValueOriginBinder<ParameterDTO>>());
          sut = new EditParametersInContainerPresenter(_view, _formulaMapper, _parameterMapper, _interactionTasks,
-            _distributeParameterPresenter, _parameterPresenter, _quantityTask, _interactionTaskContext, _clipboardManager, _editTask, _selectReferencePresenterFactory, _favoriteTask, _typeResolver);
+            _distributeParameterPresenter, _parameterPresenter, _quantityTask, _interactionTaskContext, _clipboardManager, _editTask, _selectReferencePresenterFactory, _favoriteTask, _typeResolver, _entityPathResolver);
 
          _container.Name = _containerName;
       }
@@ -432,6 +434,31 @@ namespace MoBi.Presentation
       public void label_should_contain_name()
       {
          A.CallTo(_view).Where(x => x.Method.Name.Equals("set_ParentName") && x.Arguments.Get<string>(0).Equals(_containerName)).MustHaveHappened();
+      }
+   }
+
+   public class When_copying_parameter_path : concern_for_EditParameterListPresenter
+   {
+      private string _expectedPath;
+      private ParameterDTO _parameterDTO;
+
+      protected override void Context()
+      {
+         base.Context();
+         _parameterDTO = new ParameterDTO(_parameter);
+         _expectedPath = "|Organism|Container|Organ|ADC";
+         A.CallTo(() => _entityPathResolver.FullPathFor(_parameter)).Returns(_expectedPath);
+      }
+
+      protected override void Because()
+      {
+         sut.CopyPathForParameter(_parameterDTO);
+      }
+
+      [Observation]
+      public void should_copy_resolved_path_to_clipboard()
+      {
+         A.CallTo(() => _view.CopyToClipBoard(_expectedPath)).MustHaveHappened();
       }
    }
 }

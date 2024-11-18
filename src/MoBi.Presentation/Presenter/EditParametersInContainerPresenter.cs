@@ -77,6 +77,8 @@ namespace MoBi.Presentation.Presenter
       private bool _ignoreAddEvents;
       private readonly IObjectTypeResolver _typeResolver;
 
+      private readonly IEntityPathResolver _entityPathResolver;
+
       public bool ChangeLocalisationAllowed { set; private get; }
 
       public EditParametersInContainerPresenter(IEditParametersInContainerView view,
@@ -91,7 +93,8 @@ namespace MoBi.Presentation.Presenter
          IEditTaskFor<IParameter> editTask,
          ISelectReferencePresenterFactory selectReferencePresenterFactory,
          IFavoriteTask favoriteTask,
-         IObjectTypeResolver typeResolver)
+         IObjectTypeResolver typeResolver,
+         IEntityPathResolver entityPathResolver)
          : base(view, quantityTask, interactionTaskContext, formulaMapper, parameterTask, favoriteTask)
       {
          _clipboardManager = clipboardManager;
@@ -107,6 +110,7 @@ namespace MoBi.Presentation.Presenter
          _getParametersFunc = x => x.GetChildrenSortedByName<IParameter>();
          ChangeLocalisationAllowed = true;
          _typeResolver = typeResolver;
+         _entityPathResolver = entityPathResolver;
       }
 
       public void Edit(IContainer container)
@@ -141,8 +145,8 @@ namespace MoBi.Presentation.Presenter
 
       public void CopyPathForParameter(ParameterDTO parameter)
       {
-         var path = parameter.DisplayPathAsString;
-      }
+         _view.CopyToClipBoard(_entityPathResolver.FullPathFor(parameter.Parameter));
+        }
 
       private void createParameterCache(IEnumerable<IParameter> parametersToEdit)
       {

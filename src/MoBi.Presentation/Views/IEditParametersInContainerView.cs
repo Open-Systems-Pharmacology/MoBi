@@ -15,5 +15,6 @@ namespace MoBi.Presentation.Views
       void SetEditParameterView(IView view);
       void RefreshList();
       void Select(ParameterDTO parameterToSelect);
+      void CopyToClipBoard(string fullPathFor);
    }
 }
