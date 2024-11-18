@@ -390,7 +390,7 @@ namespace MoBi.UI.Views
         
       public void CopyToClipBoard(string text) => Clipboard.SetText(text);
 
-        private void gridViewRowChanged(FocusedRowChangedEventArgs e)
+      private void gridViewRowChanged(FocusedRowChangedEventArgs e)
       {
          var selectedItem = _gridViewBinder.ElementAt(e.FocusedRowHandle);
          if (selectedItem == null) return;
@@ -436,7 +436,6 @@ namespace MoBi.UI.Views
          _presenter.GroupParameters = chkGroupBy.Checked;
       }
 
-      private void OnCopyPathRequested(int rowHandle) =>
-         _presenter.CopyPathForParameter(_gridViewBinder.ElementAt(rowHandle));
+      private void OnCopyPathRequested(int rowHandle) => _presenter.CopyPathForParameter(_gridViewBinder.ElementAt(rowHandle));
     }
 }

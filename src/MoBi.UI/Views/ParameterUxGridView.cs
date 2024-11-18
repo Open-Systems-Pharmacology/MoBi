@@ -38,7 +38,7 @@ namespace MoBi.UI.Views
          );
 
          e.Menu.Items.Add(copyPathMenuItem);
-        }
+      }
 
       public event Action<int> OnCopyPathRequested;
    }
