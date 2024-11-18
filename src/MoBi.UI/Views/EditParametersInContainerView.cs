@@ -75,7 +75,7 @@ namespace MoBi.UI.Views
          splitContainerControl.PanelVisibility = SplitPanelVisibility.Panel1;
          _gridView.GroupFormat = "[#image]{1}";
          _gridView.EndGrouping += (o, e) => _gridView.ExpandAllGroups();
-
+         _gridView.OnCopyPathRequested += OnCopyPathRequested;
          toolTipController.GetActiveObjectInfo += onToolTipControllerGetActiveObjectInfo;
 
          _checkBoxRepository = new UxRepositoryItemCheckEdit(_gridView);
@@ -433,5 +433,8 @@ namespace MoBi.UI.Views
       {
          _presenter.GroupParameters = chkGroupBy.Checked;
       }
-   }
+
+      private void OnCopyPathRequested(int rowHandle) =>
+         _presenter.CopyPathForParameter(_gridViewBinder.ElementAt(rowHandle));
+    }
 }

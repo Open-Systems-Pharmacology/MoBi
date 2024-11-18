@@ -40,7 +40,7 @@ namespace MoBi.UI.Views
          this.btAddParameter = new DevExpress.XtraEditors.SimpleButton();
          this.splitContainerControl = new DevExpress.XtraEditors.SplitContainerControl();
          this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
-         this._gridView = new MoBi.UI.Views.UxGridView();
+         this._gridView = new ParameterUxGridView();
          this.layoutGroup = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutControlItemParentName = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutControlItemParmaterLists = new DevExpress.XtraLayout.LayoutControlItem();
@@ -318,7 +318,7 @@ namespace MoBi.UI.Views
       private DevExpress.XtraEditors.SimpleButton btAddParameter;
       private DevExpress.XtraEditors.SplitContainerControl splitContainerControl;
       private DevExpress.XtraGrid.GridControl gridControl;
-      private UxGridView _gridView;
+      private ParameterUxGridView _gridView;
       private DevExpress.XtraLayout.LayoutControlGroup layoutGroup;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemParmaterLists;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemAddParameter;

@@ -57,6 +57,8 @@ namespace MoBi.Presentation.Presenter
       ///    Enables the Container criteria support for specific use cases
       /// </summary>
       void EnableContainerCriteriaSupport();
+
+      void CopyPathForParameter(ParameterDTO elementAt);
    }
 
    public class EditParametersInContainerPresenter : AbstractParameterBasePresenter<IEditParametersInContainerView, IEditParametersInContainerPresenter>, IEditParametersInContainerPresenter
@@ -135,6 +137,11 @@ namespace MoBi.Presentation.Presenter
       public void EnableContainerCriteriaSupport()
       {
          _editParameterPresenter.EnableContainerCriteriaSupport();
+      }
+
+      public void CopyPathForParameter(ParameterDTO parameter)
+      {
+         var path = parameter.DisplayPathAsString;
       }
 
       private void createParameterCache(IEnumerable<IParameter> parametersToEdit)
