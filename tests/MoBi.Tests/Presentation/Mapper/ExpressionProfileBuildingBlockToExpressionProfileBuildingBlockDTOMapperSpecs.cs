@@ -1,4 +1,6 @@
 ﻿using System.Linq;
+using FakeItEasy;
+using MoBi.Core.Mappers;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using OSPSuite.BDDHelper;
@@ -11,9 +13,12 @@ namespace MoBi.Presentation.Mapper
 {
    public class concern_for_ExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper : ContextSpecification<ExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper>
    {
+      private IPathAndValueEntityToDistributedParameterMapper _mapper;
+
       protected override void Context()
       {
-         sut = new ExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper(new ExpressionParameterToExpressionParameterDTOMapper(new FormulaToValueFormulaDTOMapper()), new InitialConditionToInitialConditionDTOMapper(new FormulaToValueFormulaDTOMapper()));
+         _mapper = A.Fake<IPathAndValueEntityToDistributedParameterMapper>();
+         sut = new ExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper(new ExpressionParameterToExpressionParameterDTOMapper(new FormulaToValueFormulaDTOMapper()), new InitialConditionToInitialConditionDTOMapper(new FormulaToValueFormulaDTOMapper()), _mapper);
       }
 
       public class When_mapping_the_building_block : concern_for_ExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper

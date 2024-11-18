@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using MoBi.Core.Mappers;
 using MoBi.Presentation.DTO;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 
@@ -13,8 +16,11 @@ namespace MoBi.Presentation.Mappers
       where TBuildingBlock : PathAndValueEntityBuildingBlock<TBuilder>
       where TBuilderDTO : PathAndValueEntityDTO<TBuilder, TBuilderDTO>
    {
-      protected PathAndValueEntityBuildingBlockToPathAndValueEntityBuildingBlockDTOMapper()
-      {
+      private readonly IPathAndValueEntityToDistributedParameterMapper _pathAndValueEntityToDistributedParameterMapper;
+
+      protected PathAndValueEntityBuildingBlockToPathAndValueEntityBuildingBlockDTOMapper(IPathAndValueEntityToDistributedParameterMapper pathAndValueEntityToDistributedParameterMapper)
+      { 
+         _pathAndValueEntityToDistributedParameterMapper = pathAndValueEntityToDistributedParameterMapper;
       }
 
       public TBuildingBlockDTO MapFrom(TBuildingBlock buildingBlock)
@@ -36,6 +42,20 @@ namespace MoBi.Presentation.Mappers
             parameterDTOs.Remove(x);
             distributedParameter.AddSubParameter(x);
          });
+
+         var pathAndValueEntity = builderFrom(distributedParameter);
+         var temporaryParameter = _pathAndValueEntityToDistributedParameterMapper.MapFrom(pathAndValueEntity, distributionType(pathAndValueEntity), distributedParameter.SubParameters.Select(x => x.PathWithValueObject).ToList());
+         distributedParameter.DistributionValue = temporaryParameter.ConvertToDisplayUnit(temporaryParameter.Value);
+      }
+
+      private static DistributionType distributionType(TBuilder pathAndValueEntity)
+      {
+         return pathAndValueEntity.DistributionType.Value;
+      }
+
+      private static TBuilder builderFrom(TBuilderDTO distributedParameter)
+      {
+         return distributedParameter.PathWithValueObject;
       }
 
       protected abstract TBuildingBlockDTO MapBuildingBlockDTO(TBuildingBlock buildingBlock, List<TBuilderDTO> parameterDTOs);

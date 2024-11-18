@@ -67,7 +67,7 @@ namespace MoBi.Presentation.Tasks
          _subParameters = new List<IndividualParameter>
          {
             new IndividualParameter{Value = 3.0}.WithName(Constants.Distribution.MEAN),
-            new IndividualParameter().WithName(Constants.Distribution.PERCENTILE)
+            new IndividualParameter{Value = 0.6}.WithName(Constants.Distribution.PERCENTILE)
          };
 
          _individualBuildingBlock.AddRange(_subParameters);
@@ -82,12 +82,6 @@ namespace MoBi.Presentation.Tasks
       public void sub_parameters_should_be_removed_from_the_building_block()
       {
          _subParameters.Each(x => _individualBuildingBlock.ShouldNotContain(x));
-      }
-
-      [Observation]
-      public void should_set_the_value_of_the_parameter_to_the_mean()
-      {
-         _individualParameter.Value.ShouldBeEqualTo(3.0);
       }
    }
 }

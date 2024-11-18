@@ -1,4 +1,6 @@
 ﻿using System.Linq;
+using FakeItEasy;
+using MoBi.Core.Mappers;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using OSPSuite.BDDHelper;
@@ -11,9 +13,12 @@ namespace MoBi.Presentation.Mapper
 {
    public class concern_for_ParameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper : ContextSpecification<ParameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper>
    {
+      private IPathAndValueEntityToDistributedParameterMapper _mapper;
+
       protected override void Context()
       {
-         sut = new ParameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper(new ParameterValueToParameterValueDTOMapper(new FormulaToValueFormulaDTOMapper()));
+         _mapper = A.Fake<IPathAndValueEntityToDistributedParameterMapper>();
+         sut = new ParameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper(new ParameterValueToParameterValueDTOMapper(new FormulaToValueFormulaDTOMapper()), _mapper);
       }
 
       public class When_mapping_the_building_block : concern_for_ParameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper
