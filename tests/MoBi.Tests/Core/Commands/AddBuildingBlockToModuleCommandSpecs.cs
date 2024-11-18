@@ -22,6 +22,7 @@ namespace MoBi.Core.Commands
          _affectedSimulation.Configuration = new SimulationConfiguration();
          _project = new MoBiProject();
          _existingModule = new Module().WithId("existingModuleId");
+         _existingModule.IsPKSimModule = true;
          _affectedSimulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(_existingModule));
          _context = A.Fake<IMoBiContext>();
          _project.AddSimulation(_affectedSimulation);
@@ -62,6 +63,12 @@ namespace MoBi.Core.Commands
       }
 
       [Observation]
+      public void the_module_should_not_be_pksim_module()
+      {
+         _existingModule.IsPKSimModule.ShouldBeFalse();
+      }
+
+      [Observation]
       public void event_to_refresh_simulation_should_be_published()
       {
          A.CallTo(() => _context.PublishEvent(A<SimulationStatusChangedEvent>.That.Matches(x => x.Simulation.Equals(_affectedSimulation)))).MustHaveHappened(1, Times.Exactly);
@@ -92,6 +99,12 @@ namespace MoBi.Core.Commands
       public void event_to_refresh_simulation_should_be_published()
       {
          A.CallTo(() => _context.PublishEvent(A<SimulationStatusChangedEvent>.That.Matches(x => x.Simulation.Equals(_affectedSimulation)))).MustHaveHappened(2, Times.Exactly);
+      }
+
+      [Observation]
+      public void the_module_should_be_pksim_module()
+      {
+         _existingModule.IsPKSimModule.ShouldBeTrue();
       }
    }
 }

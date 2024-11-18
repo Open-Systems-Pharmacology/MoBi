@@ -23,23 +23,16 @@ namespace MoBi.Core.Commands
          Description = AppConstants.Commands.RemoveFromDescription(ObjectType, buildingBlock.Name, _existingModule.Name);
       }
 
-      protected override void ExecuteWith(IMoBiContext context)
-      {
-         DoExecute(context);
-         RaiseEvents(context);
-      }
-
-      protected virtual void RaiseEvents(IMoBiContext context)
+      protected override void RaiseEvents(IMoBiContext context)
       {
          context.PublishEvent(new RemovedEvent(_buildingBlock, _existingModule));
       }
 
-      protected virtual void DoExecute(IMoBiContext context)
+      protected override void DoExecute(IMoBiContext context)
       {
          removeBuildingBlockFromModule();
          context.Unregister(_buildingBlock);
          _serializationStream = context.Serialize(_buildingBlock);
-         
          PublishSimulationStatusChangedEvents(_existingModule, context);
       }
 
@@ -51,7 +44,7 @@ namespace MoBi.Core.Commands
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return new AddBuildingBlockToModuleCommand<IBuildingBlock>(_buildingBlock, _existingModule).AsInverseFor(this);
+         return new AddBuildingBlockToModuleCommand<T>(_buildingBlock, _existingModule).AsInverseFor(this);
       }
 
       private void removeBuildingBlockFromModule()

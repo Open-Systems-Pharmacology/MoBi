@@ -28,6 +28,10 @@ namespace MoBi.Core.Commands
          
          _withIdRepository = new WithIdRepository();
          _registrationTask = new RegisterTask(_withIdRepository);
+
+         _targetModule.IsPKSimModule = true;
+         _sourceModule.IsPKSimModule = true;
+
          sut = new MoveBuildingBlockToModuleCommand(_newReactionBuildingBlock, _targetModule);
          _project = new MoBiProject();
          _context = A.Fake<IMoBiContext>();
@@ -35,6 +39,8 @@ namespace MoBi.Core.Commands
 
          _targetModule.Add(new SpatialStructure().WithId("SpatialStructure"));
          _targetModule.Add(new MoleculeBuildingBlock().WithId("Molecule"));
+
+
       }
    }
 
@@ -50,6 +56,13 @@ namespace MoBi.Core.Commands
       {
          _targetModule.Reactions.ShouldBeEqualTo(_newReactionBuildingBlock);
          _sourceModule.Reactions.ShouldBeNull();
+      }
+
+      [Observation]
+      public void the_module_should_not_be_pksim_module()
+      {
+         _targetModule.IsPKSimModule.ShouldBeFalse();
+         _sourceModule.IsPKSimModule.ShouldBeFalse();
       }
    }
    
@@ -74,6 +87,13 @@ namespace MoBi.Core.Commands
       {
          _targetModule.Reactions.ShouldBeNull();
          _sourceModule.Reactions.ShouldBeEqualTo(_newReactionBuildingBlock);
+      }
+
+      [Observation]
+      public void the_module_should_be_pksim_module()
+      {
+         _sourceModule.IsPKSimModule.ShouldBeTrue();
+         _targetModule.IsPKSimModule.ShouldBeTrue();
       }
    }
 }

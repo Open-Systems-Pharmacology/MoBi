@@ -17,7 +17,10 @@ namespace MoBi.Core.Commands
       protected override void Context()
       {
          _context = A.Fake<IMoBiContext>();
-         _existingModule = new Module();
+         _existingModule = new Module
+         {
+            IsPKSimModule = true
+         };
          _bb = new SpatialStructure().WithId("newSpatialStructureBuildingBlockId");
          sut = new RemoveBuildingBlockFromModuleCommand<IBuildingBlock>(_bb, _existingModule);
       }
@@ -48,6 +51,12 @@ namespace MoBi.Core.Commands
       {
          _existingModule.BuildingBlocks.ShouldContain(_deserializedBB);
       }
+
+      [Observation]
+      public void the_module_should_be_pksim_module()
+      {
+         _existingModule.IsPKSimModule.ShouldBeTrue();
+      }
    }
 
    internal class When_removing_spatial_structure_from_module : concern_for_RemoveBuildingBlockFromModuleCommand
@@ -66,6 +75,12 @@ namespace MoBi.Core.Commands
       protected override void Because()
       {
          sut.Execute(_context);
+      }
+
+      [Observation]
+      public void the_module_should_not_be_pksim_module()
+      {
+         _existingModule.IsPKSimModule.ShouldBeFalse();
       }
 
       [Observation]

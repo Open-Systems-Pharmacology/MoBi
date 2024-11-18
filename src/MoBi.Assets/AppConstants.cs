@@ -939,7 +939,7 @@ namespace MoBi.Assets
 
          public static string Remove(string objectType, string objectName, string parentName)
          {
-            var baseString = $"Do you really want to remove {objectType} '{objectName}' from {parentName}.";
+            var baseString = $"Do you really want to remove {objectType} '{objectName}' from {parentName}?";
             if (string.Equals(objectType, ObjectTypes.Simulation))
                return baseString + $"  {objectName} will also be removed from parameter identifications and sensitivity analyses";
 
