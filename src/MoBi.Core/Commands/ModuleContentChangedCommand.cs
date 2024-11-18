@@ -59,9 +59,9 @@ namespace MoBi.Core.Commands
          _existingModule.IsPKSimModule = _newPkSimModuleState;
       }
 
-      public void WithNewPKSimModuleStateFrom(ModuleContentChangedCommand<T> newPKSimModuleState)
+      public void WithNewPKSimModuleStateFrom(ModuleContentChangedCommand<T> originalContentChangedCommand)
       {
-         _newPkSimModuleState = newPKSimModuleState._oldPKSimModuleState;
+         _newPkSimModuleState = originalContentChangedCommand._oldPKSimModuleState;
       }
    }
 }
