@@ -382,10 +382,10 @@ namespace MoBi.Presentation.Presenter.Main
          }
       }
 
-      private void removeFolderNode(ITreeNode initialConditionsFolderNode)
+      private void removeFolderNode(ITreeNode folderNode)
       {
-         RemoveNode(initialConditionsFolderNode);
-         initialConditionsFolderNode.ParentNode.RemoveChild(initialConditionsFolderNode);
+         RemoveNode(folderNode);
+         folderNode.ParentNode.RemoveChild(folderNode);
       }
 
       public void Handle(RemovedEvent eventToHandle)
