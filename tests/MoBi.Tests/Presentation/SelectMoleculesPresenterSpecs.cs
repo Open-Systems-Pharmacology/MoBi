@@ -24,7 +24,6 @@ namespace MoBi.Presentation
          _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
          _selectMoleculesDTOMapper = new SelectMoleculesDTOMapper();
          sut = new SelectMoleculesPresenter(_view, _buildingBlockRepository, _selectMoleculesDTOMapper);
-         
       }
    }
 
@@ -61,6 +60,42 @@ namespace MoBi.Presentation
       private bool contains(IReadOnlyList<MoleculeSelectionDTO> moleculeSelectionDTOs, MoleculeBuilder moleculeBuilder)
       {
          return moleculeSelectionDTOs.Any(x => x.MoleculeBuilder.Equals(moleculeBuilder));
+      }
+   }
+
+   public class When_validating_same_name_dto : concern_for_SelectMoleculesPresenter
+   {
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
+      private MoleculeBuilder _moleculeBuilder;
+      private IReadOnlyList<MoleculeSelectionDTO> _dto;
+      private MoleculeBuildingBlock _secondMoleculeBuildingBlock;
+      private MoleculeBuilder _secondMoleculeBuilder;
+      private MoleculeBuilder _differentBuilder;
+
+      protected override void Context()
+      {
+         base.Context();
+         _moleculeBuilder = new MoleculeBuilder {Name = "molecule"};
+         _secondMoleculeBuilder = new MoleculeBuilder { Name = _moleculeBuilder.Name };
+         _differentBuilder = new MoleculeBuilder { Name = "different" };
+         _moleculeBuildingBlock = new MoleculeBuildingBlock { _moleculeBuilder };
+         _secondMoleculeBuildingBlock = new MoleculeBuildingBlock {_secondMoleculeBuilder, _differentBuilder };
+         A.CallTo(() => _buildingBlockRepository.MoleculeBlockCollection).Returns(new[] { _moleculeBuildingBlock, _secondMoleculeBuildingBlock });
+         A.CallTo(() => _view.BindTo(A<IReadOnlyList<MoleculeSelectionDTO>>._)).Invokes(x => _dto = x.Arguments.Get<IReadOnlyList<MoleculeSelectionDTO>>(0));
+         sut.SelectMolecules(_moleculeBuildingBlock);
+   }
+
+      protected override void Because()
+      {
+         sut.UpdateValidationsFor(_dto.First());
+      }
+
+      [Observation]
+      public void the_validation_must_be_forced_on_like_named_molecules()
+      {
+         A.CallTo(() => _view.UpdateValidation(_dto[0])).MustHaveHappened();
+         A.CallTo(() => _view.UpdateValidation(_dto[1])).MustHaveHappened();
+         A.CallTo(() => _view.UpdateValidation(_dto[2])).MustNotHaveHappened();
       }
    }
 }

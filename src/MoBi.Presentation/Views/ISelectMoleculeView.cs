@@ -8,5 +8,6 @@ namespace MoBi.Presentation.Views
    public interface ISelectMoleculesView : IView<ISelectMoleculesPresenter>
    {
       void BindTo(IReadOnlyList<MoleculeSelectionDTO> dtoMolecules);
+      void UpdateValidation(MoleculeSelectionDTO moleculeDTO);
    }
 }

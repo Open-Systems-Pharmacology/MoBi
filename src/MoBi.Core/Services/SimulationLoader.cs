@@ -56,13 +56,16 @@ namespace MoBi.Core.Services
          var moBiSimulation = simulation;
 
          var project = _context.CurrentProject;
-         renameCollidingEntities(simulation.Configuration.ExpressionProfiles, project.ExpressionProfileCollection);
-
-         if (simulation.Configuration.Individual != null)
-            renameCollidingEntities(new[] { simulation.Configuration.Individual }, project.IndividualsCollection);
 
          if (shouldCloneSimulation)
             moBiSimulation = cloneSimulation(moBiSimulation);
+
+         renameCollidingEntities(moBiSimulation.Configuration.ExpressionProfiles, project.ExpressionProfileCollection);
+
+         if (moBiSimulation.Configuration.Individual != null)
+            renameCollidingEntities(new[] { moBiSimulation.Configuration.Individual }, project.IndividualsCollection);
+
+         renameCollidingEntities(moBiSimulation.Modules, project.Modules);
 
          moBiSimulation.ResultsDataRepository = simulation.ResultsDataRepository;
 
@@ -97,7 +100,7 @@ namespace MoBi.Core.Services
             module.Name = module.Name.Replace(originalSimulationName, simulationName);
       }
       
-      private void renameCollidingEntities(IEnumerable<IObjectBase> entitiesToRename, IReadOnlyList<IWithName> existingEntities)
+      private void renameCollidingEntities<T>(IEnumerable<T> entitiesToRename, IReadOnlyList<IWithName> existingEntities) where T : IObjectBase
       {
          var takenNames = existingEntities.AllNames();
          entitiesToRename.Where(x => takenNames.Contains(x.Name)).Each(x => _nameCorrector.AutoCorrectName(takenNames, x));

@@ -2,6 +2,7 @@
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Helpers;
+using MoBi.Presentation;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Presenter;
@@ -223,8 +224,6 @@ namespace MoBi.Presentation
       private ITreeNode<Module> _moduleNodeA;
       private ITreeNode<Module> _moduleNodeZ;
       
-
-
       protected override void Context()
       {
          base.Context();
@@ -477,5 +476,79 @@ namespace MoBi.Presentation
          A.CallTo(() => _observedDataInExplorerPresenter.CanDrag(node)).Returns(false);
          sut.CanDrag(node).ShouldBeFalse();
       }
+   }
+}
+
+public class When_the_last_parameter_values_is_removed_from_a_module : When_the_last_folder_subnode_is_removed_from_a_module<ParameterValuesFolderNode, ParameterValuesBuildingBlock>
+{
+   protected override void Because()
+   {
+      sut.Handle(new RemovedEvent(new List<IObjectBase> { _module1.ParameterValuesCollection[0], _module1.ParameterValuesCollection[1] }));
+   }
+}
+
+public class When_the_last_initial_conditions_is_removed_from_a_module : When_the_last_folder_subnode_is_removed_from_a_module<InitialConditionsFolderNode, InitialConditionsBuildingBlock>
+{
+   protected override void Because()
+   {
+      sut.Handle(new RemovedEvent(new List<IObjectBase> { _module1.InitialConditionsCollection[0], _module1.InitialConditionsCollection[1] }));
+   }
+}
+
+public abstract class When_the_last_folder_subnode_is_removed_from_a_module<TFolderNode, TBuildingBlock> : concern_for_ModuleExplorerPresenter where TFolderNode : ITreeNode where TBuildingBlock : BuildingBlock, new()
+{
+   private List<ITreeNode> _allNodesAdded;
+   private MoBiProject _project;
+   protected Module _module1;
+   private TFolderNode _folderNode;
+
+   protected override void Context()
+   {
+      base.Context();
+      _project = DomainHelperForSpecs.NewProject();
+      _module1 = new Module
+         {
+            new MoBiSpatialStructure(),
+            new TBuildingBlock().WithId("PSV1"),
+            new TBuildingBlock().WithId("PSV2"),
+         };
+
+      _allNodesAdded = new List<ITreeNode>();
+      A.CallTo(() => _view.AddNode(A<ITreeNode>._)).Invokes(x =>
+      {
+         var treeNode = x.GetArgument<ITreeNode>(0);
+         flattenAndAdd(treeNode);
+      });
+
+      A.CallTo(() => _view.TreeView.NodeById(A<string>._)).ReturnsLazily(x => getNodeForId(x.Arguments.Get<string>(0)));
+      A.CallTo(() => _view.TreeView.DestroyNode(A<ITreeNode>._)).Invokes(x => removeNode(x.Arguments.Get<ITreeNode>(0)));
+
+      _project.AddModule(_module1);
+      sut.Handle(new ProjectCreatedEvent(_project));
+   }
+
+   private void removeNode(ITreeNode treeNode)
+   {
+      _allNodesAdded.Remove(treeNode);
+      treeNode.ParentNode.RemoveChild(treeNode);
+   }
+
+   private ITreeNode getNodeForId(string id)
+   {
+      return _allNodesAdded.First(x => x.Id == id);
+   }
+
+   private void flattenAndAdd(ITreeNode treeNode)
+   {
+      treeNode.Children.Each(flattenAndAdd);
+      _allNodesAdded.Add(treeNode);
+      if (treeNode is TFolderNode pvFolderNode)
+         _folderNode = pvFolderNode;
+   }
+
+   [Observation]
+   public void should_remove_the_folder_node()
+   {
+      A.CallTo(() => _view.TreeView.RemoveNode(_folderNode)).MustHaveHappened();
    }
 }

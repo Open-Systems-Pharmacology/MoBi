@@ -11,9 +11,9 @@ namespace MoBi.Presentation.Presenter
 {
    public interface ISelectNeighborPathPresenter : IPresenter<ISelectNeighborPathView>
    {
-      void Init(string label, string defaultSelection = null);
+      void Init(string label, NeighborhoodObjectPathDTO selectionDTO);
       ObjectPath NeighborPath { get; }
-      void PathChanged(string text);
+      void RefreshView();
    }
 
    public class SelectNeighborPathPresenter : AbstractPresenter<ISelectNeighborPathView, ISelectNeighborPathPresenter>, ISelectNeighborPathPresenter
@@ -22,7 +22,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IModuleToModuleAndSpatialStructureDTOMapper _moduleToModuleDTOMapper;
       private readonly IBuildingBlockRepository _buildingBlockRepository;
       private readonly IObjectPathFactory _objectPathFactory;
-      private readonly ObjectPathDTO _selectedPathDTO = new ObjectPathDTO();
+      private NeighborhoodObjectPathDTO _selectedPathDTO;
 
       public SelectNeighborPathPresenter(
          ISelectNeighborPathView view,
@@ -37,7 +37,6 @@ namespace MoBi.Presentation.Presenter
          _objectPathFactory = objectPathFactory;
          AddSubPresenters(_selectContainerInTreePresenter);
          _view.AddContainerCriteriaView(_selectContainerInTreePresenter.BaseView);
-         _view.BindTo(_selectedPathDTO);
          _selectContainerInTreePresenter.OnSelectedEntityChanged += (o, e) => onSelectedContainerPathChanged(e.Entity);
       }
 
@@ -51,7 +50,7 @@ namespace MoBi.Presentation.Presenter
          ViewChanged();
       }
 
-      public void Init(string label, string defaultSelection = null)
+      public void Init(string label, NeighborhoodObjectPathDTO selectionDTO)
       {
          _view.Label = label;
 
@@ -62,7 +61,8 @@ namespace MoBi.Presentation.Presenter
             return;
 
          _selectContainerInTreePresenter.InitTreeStructure(modules);
-         _selectedPathDTO.Path = defaultSelection ?? string.Empty;
+         _selectedPathDTO = selectionDTO;
+         _view.BindTo(_selectedPathDTO);
          ViewChanged();
       }
 
@@ -73,11 +73,8 @@ namespace MoBi.Presentation.Presenter
 
       public ObjectPath NeighborPath => new ObjectPath(_selectedPathDTO.Path.ToPathArray());
 
-      public void PathChanged(string text)
-      {
-         _selectedPathDTO.Path = text;
-         ViewChanged();
-      }
+
+      public void RefreshView() => _view.ValidateNeighborhood();
 
       public override bool CanClose => !_view.HasError;
    }

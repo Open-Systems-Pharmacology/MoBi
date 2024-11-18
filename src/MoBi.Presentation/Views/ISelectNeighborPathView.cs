@@ -7,7 +7,8 @@ namespace MoBi.Presentation.Views
    public interface ISelectNeighborPathView : IView<ISelectNeighborPathPresenter>
    {
       void AddContainerCriteriaView(IView view);
-      void BindTo(ObjectPathDTO objectPathDTO);
+      void BindTo(NeighborhoodObjectPathDTO objectPathDTO);
       string Label { get; set; }
+      void ValidateNeighborhood();
    }
 }

@@ -2078,6 +2078,7 @@ namespace MoBi.Assets
          public static readonly string ExtendingRequiresMoleculeBuildingBlock = "Extending requires a molecule building block";
          public static readonly string ExtendingRequiresSpatialStructure = "Extending requires a spatial structure";
          public static readonly string CannotAssignAFormulaThatReferencesTheAssignmentTarget = "Cannot assign a formula that references the assignment target";
+         public static readonly string CannotCreateANeighborhoodThatConnectsAContainerToItself = "Cannot create a neighborhood that connects a container to itself";
          public static string AnotherMoleculeNamedIsSelected(string moleculeName) => $"Another molecule named {moleculeName} is selected";
 
          public static string XDimensionColumnMustNotHaveRepeatedValues(string dimensionName)
@@ -2168,6 +2169,11 @@ namespace MoBi.Assets
          }
 
          public static string ThePathIsAlreadySelectedAsAnOutput(ObjectPath objectPath) => $"The path {objectPath} is already selected as an output.";
+
+         public static string HasEquivalentNeighborhood(string firstNeighborPath, string secondNeighborPath)
+         {
+            return $"A neighborhood already exists between '{firstNeighborPath}' and '{secondNeighborPath}'";
+         }
       }
 
       public static readonly string TimeColumnName = "Simulationtime";

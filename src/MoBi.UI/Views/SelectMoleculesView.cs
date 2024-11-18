@@ -63,6 +63,16 @@ namespace MoBi.UI.Views
          _gridViewBinder.BindToSource(dtoMolecules);
       }
 
+      public void UpdateValidation(MoleculeSelectionDTO moleculeDTO)
+      {
+         var rowHandle = _gridViewBinder.RowHandleFor(moleculeDTO);
+
+         if (gridView.IsRowVisible(rowHandle) != RowVisibleState.Visible)
+            return;
+
+         gridView.FocusedRowHandle = rowHandle;
+      }
+
       public override void InitializeBinding()
       {
          base.InitializeBinding();
@@ -84,7 +94,9 @@ namespace MoBi.UI.Views
          // The select/unselect of a molecule will affect the validation of another molecule
          // with the same name. If both were selected, and one is unselected, then the other becomes
          // valid.
-         gridView.RefreshData();
+         var originalFocusRow = gridView.FocusedRowHandle;
+         _presenter.UpdateValidationsFor(_gridViewBinder.FocusedElement);
+         gridView.FocusedRowHandle = originalFocusRow;
          _presenter.SelectionChanged();
       }
 

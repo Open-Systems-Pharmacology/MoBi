@@ -361,6 +361,27 @@ namespace MoBi.Presentation.Presenter.Main
          }
       }
 
+      public override void RemoveNodeFor(IWithId objectWithId)
+      {
+         var parentNode = NodeFor(objectWithId)?.ParentNode;
+         base.RemoveNodeFor(objectWithId);
+         switch (parentNode)
+         {
+            case InitialConditionsFolderNode initialConditionsFolderNode:
+            {
+               if (!initialConditionsFolderNode.HasChildren)
+                  RemoveNode(initialConditionsFolderNode);
+               break;
+            }
+            case ParameterValuesFolderNode parameterValuesFolderNode:
+            {
+               if (!parameterValuesFolderNode.HasChildren)
+                  RemoveNode(parameterValuesFolderNode);
+               break;
+            }
+         }
+      }
+
       public void Handle(RemovedEvent eventToHandle)
       {
          RemoveNodesFor(eventToHandle.RemovedObjects);

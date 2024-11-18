@@ -9,6 +9,7 @@ using MoBi.Core.Events;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.UICommand;
 using MoBi.Presentation.Views;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters.ContextMenus;
@@ -150,7 +151,7 @@ namespace MoBi.Presentation.Presenter
       private void updateWindowTitle(string projectName = null)
         {
          View.Caption = 
-            string.IsNullOrEmpty(projectName) 
+            string.IsNullOrEmpty(projectName) || string.Equals(Constants.PROJECT_UNDEFINED, projectName)
                ? _configuration.ProductDisplayName 
                : $"{_configuration.ProductDisplayName} | {projectName}";
       }

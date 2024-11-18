@@ -1,6 +1,8 @@
-﻿using FakeItEasy;
+﻿using System.Collections.Generic;
+using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
+using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Views;
@@ -11,7 +13,7 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation
 {
-   public abstract class concern_for_CreateNeighborhoodBuilderPresenter : ContextSpecification<ICreateNeighborhoodBuilderPresenter>
+   public abstract class concern_for_CreateNeighborhoodBuilderPresenter : ContextSpecification<CreateNeighborhoodBuilderPresenter>
    {
       protected ICreateNeighborhoodBuilderView _view;
       protected IEditTaskFor<NeighborhoodBuilder> _editTask;
@@ -20,6 +22,8 @@ namespace MoBi.Presentation
       protected NeighborhoodBuilder _neighborhoodBuilder;
       protected Container _neighborhoodsContainer;
       protected SpatialStructure _spatialStructure;
+      protected INeighborhoodBuilderToNeighborhoodBuilderDTOMapper _neighborhoodBuilderMapper;
+      protected NeighborhoodBuilderDTO _neighborhoodBuilderDTO;
 
       protected override void Context()
       {
@@ -27,13 +31,17 @@ namespace MoBi.Presentation
          _editTask = A.Fake<IEditTaskFor<NeighborhoodBuilder>>();
          _firstNeighborPresenter = A.Fake<ISelectNeighborPathPresenter>();
          _secondNeighborPresenter = A.Fake<ISelectNeighborPathPresenter>();
-         sut = new CreateNeighborhoodBuilderPresenter(_view, _editTask, _firstNeighborPresenter, _secondNeighborPresenter);
+         _neighborhoodBuilderMapper = A.Fake<INeighborhoodBuilderToNeighborhoodBuilderDTOMapper>();
+         sut = new CreateNeighborhoodBuilderPresenter(_view, _editTask, _neighborhoodBuilderMapper, _firstNeighborPresenter, _secondNeighborPresenter);
 
          _neighborhoodBuilder = new NeighborhoodBuilder();
          _neighborhoodsContainer = new Container();
 
          _spatialStructure = new SpatialStructure();
          sut.BuildingBlock = _spatialStructure;
+         _neighborhoodBuilderDTO = new NeighborhoodBuilderDTO(_neighborhoodBuilder, new List<NeighborhoodBuilder>());
+
+         A.CallTo(() => _neighborhoodBuilderMapper.MapFrom(_neighborhoodBuilder, A<IReadOnlyList<NeighborhoodBuilder>>._)).Returns(_neighborhoodBuilderDTO);
       }
    }
 
@@ -47,8 +55,8 @@ namespace MoBi.Presentation
       [Observation]
       public void should_initialize_the_first_and_second_neighbor_presenter_with_the_spatial_structure()
       {
-         A.CallTo(() => _firstNeighborPresenter.Init(AppConstants.Captions.FirstNeighbor, null)).MustHaveHappened();
-         A.CallTo(() => _secondNeighborPresenter.Init(AppConstants.Captions.SecondNeighbor, null)).MustHaveHappened();
+         A.CallTo(() => _firstNeighborPresenter.Init(AppConstants.Captions.FirstNeighbor, _neighborhoodBuilderDTO.FirstNeighborDTO)).MustHaveHappened();
+         A.CallTo(() => _secondNeighborPresenter.Init(AppConstants.Captions.SecondNeighbor, _neighborhoodBuilderDTO.SecondNeighborDTO)).MustHaveHappened();
       }
 
       [Observation]
