@@ -75,21 +75,21 @@ namespace MoBi.Presentation.Presenter
          var newItems = new List<ObjectPath>();
          foreach (var item in selectedItems)
          {
-            var temAsPath = CreatePathFor(item);
-            if (temAsPath.PathAsString.Contains(Constants.MOLECULE_PROPERTIES))
+            var itemAsPath = CreatePathFor(item);
+            if (itemAsPath.PathAsString.Contains(Constants.MOLECULE_PROPERTIES))
             {
                var matchingDto = selectedParameterDtos
                   .FirstOrDefault(dto => dto.Id == item.Id);
 
                if (matchingDto != null && !string.IsNullOrEmpty(matchingDto.ModelParentName))
                {
-                  temAsPath.ReplaceWith(temAsPath.PathAsString
+                  itemAsPath.ReplaceWith(itemAsPath.PathAsString
                      .Replace(Constants.MOLECULE_PROPERTIES, matchingDto.ModelParentName)
                      .ToPathArray());
                }
             }
 
-            newItems.Add(temAsPath);
+            newItems.Add(itemAsPath);
          }
 
          return newItems;
