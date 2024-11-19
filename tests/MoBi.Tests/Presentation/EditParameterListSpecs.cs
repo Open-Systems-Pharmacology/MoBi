@@ -300,8 +300,8 @@ namespace MoBi.Presentation
          A.CallTo(() => _parameterMapper.MapFrom(_advancedParameter)).Returns(new ParameterDTO(_advancedParameter));
 
          sut.Edit(testContainer);
-         A.CallTo(() => _view.BindTo(A<IEnumerable<ParameterDTO>>._))
-            .Invokes(x => _boundParameterDTOs = x.GetArgument<IEnumerable<ParameterDTO>>(0).ToList());
+         A.CallTo(() => _view.BindTo(A<IReadOnlyList<ParameterDTO>>._))
+            .Invokes(x => _boundParameterDTOs = x.GetArgument<IReadOnlyList<ParameterDTO>>(0).ToList());
       }
 
       protected override void Because()

@@ -8,7 +8,7 @@ namespace MoBi.Presentation.Views
 {
    public interface IEditParametersInContainerView : IView<IEditParametersInContainerPresenter>
    {
-      void BindTo(IEnumerable<ParameterDTO> dtos);
+      void BindTo(IReadOnlyList<ParameterDTO> parameterDTOs);
       EditParameterMode EditMode { get; set; }
       bool ShowBuildMode { get; set; }
       string ParentName { set; }

@@ -58,7 +58,7 @@ namespace MoBi.Presentation.Presenter
       /// </summary>
       void EnableContainerCriteriaSupport();
 
-      void CopyPathForParameter(ParameterDTO elementAt);
+      void CopyPathForParameter(ParameterDTO parameter);
    }
 
    public class EditParametersInContainerPresenter : AbstractParameterBasePresenter<IEditParametersInContainerView, IEditParametersInContainerPresenter>, IEditParametersInContainerPresenter
@@ -146,7 +146,7 @@ namespace MoBi.Presentation.Presenter
       public void CopyPathForParameter(ParameterDTO parameter)
       {
          _view.CopyToClipBoard(_entityPathResolver.FullPathFor(parameter.Parameter));
-        }
+      }
 
       private void createParameterCache(IEnumerable<IParameter> parametersToEdit)
       {
@@ -179,7 +179,6 @@ namespace MoBi.Presentation.Presenter
 
       private string getContainerName(IContainer container) =>
          string.IsNullOrEmpty(container.Name) ? AppConstants.Captions.NewWindow(_typeResolver.TypeFor(container)) : container.Name;
-      
 
       public void Select(IParameter parameter)
       {
