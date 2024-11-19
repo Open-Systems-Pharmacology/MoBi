@@ -3,53 +3,73 @@ using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Events;
 
 namespace MoBi.Core.Services
 {
    public interface IQuantityValueInSimulationChangeTracker
    {
-      void TrackChanges(IQuantity quantity, IMoBiSimulation simulation, Action<IQuantity> actionModifyingQuantity);
+      void TrackQuantityChange(IQuantity quantity, IMoBiSimulation simulation, Action<IQuantity> actionModifyingQuantity);
+      void TrackScaleChange(MoleculeAmount moleculeAmount, IMoBiSimulation simulation, Action<MoleculeAmount> actionModifyingScaleDivisor);
    }
 
    public class QuantityValueInSimulationChangeTracker : IQuantityValueInSimulationChangeTracker
    {
       private readonly IQuantityToOriginalQuantityValueMapper _quantityToOriginalQuantityValueMapper;
       private readonly IEventPublisher _eventPublisher;
-      private readonly IEntityPathResolver _entityPathResolver;
 
-      public QuantityValueInSimulationChangeTracker(IQuantityToOriginalQuantityValueMapper quantityToOriginalQuantityValueMapper, IEventPublisher eventPublisher, IEntityPathResolver entityPathResolver)
+      public QuantityValueInSimulationChangeTracker(IQuantityToOriginalQuantityValueMapper quantityToOriginalQuantityValueMapper, IEventPublisher eventPublisher)
       {
          _quantityToOriginalQuantityValueMapper = quantityToOriginalQuantityValueMapper;
          _eventPublisher = eventPublisher;
-         _entityPathResolver = entityPathResolver;
       }
 
-      public void TrackChanges(IQuantity quantity, IMoBiSimulation simulation, Action<IQuantity> actionModifyingQuantity)
+      public void TrackQuantityChange(IQuantity quantity, IMoBiSimulation simulation, Action<IQuantity> actionModifyingQuantity)
       {
          storeOriginalQuantityValue(quantity, simulation);
 
          actionModifyingQuantity(quantity);
 
-         checkForOriginalValueRestored(quantity, simulation);
+         checkForOriginalQuantityRestored(quantity, simulation);
+      }
+
+      public void TrackScaleChange(MoleculeAmount moleculeAmount, IMoBiSimulation simulation, Action<MoleculeAmount> actionModifyingScaleDivisor)
+      {
+         storeOriginalScaleFactor(moleculeAmount, simulation);
+         actionModifyingScaleDivisor(moleculeAmount);
+         checkForOriginalQuantityRestored(moleculeAmount, simulation);
+      }
+
+      private void storeOriginalScaleFactor(MoleculeAmount moleculeAmount, IMoBiSimulation simulation)
+      {
+         var originalQuantityValue = _quantityToOriginalQuantityValueMapper.MapFrom(moleculeAmount);
+         if (!shouldStore(originalQuantityValue, simulation))
+            return;
+
+         simulation.AddOriginalQuantityValue(originalQuantityValue);
+         _eventPublisher.PublishEvent(new SimulationStatusChangedEvent(simulation));
       }
 
       private void storeOriginalQuantityValue(IQuantity quantity, IMoBiSimulation simulation)
       {
-         var pathForQuantity = _entityPathResolver.ObjectPathFor(quantity);
-         if (simulation.OriginalQuantityValueFor(pathForQuantity) != null)
+         var originalQuantityValue = _quantityToOriginalQuantityValueMapper.MapFrom(quantity);
+         if (!shouldStore(originalQuantityValue, simulation))
             return;
 
-         simulation.AddOriginalQuantityValue(_quantityToOriginalQuantityValueMapper.MapFrom(quantity));
+         simulation.AddOriginalQuantityValue(originalQuantityValue);
          _eventPublisher.PublishEvent(new SimulationStatusChangedEvent(simulation));
+      }
+
+      private bool shouldStore(OriginalQuantityValue quantity, IMoBiSimulation simulation)
+      {
+         return simulation.OriginalQuantityValueFor(quantity) == null;
       }
 
       private bool areEquivalent(OriginalQuantityValue newParameterValue, OriginalQuantityValue oldParameterValue)
       {
          return newParameterValue.Value == oldParameterValue.Value &&
                 newParameterValue.DisplayUnit == oldParameterValue.DisplayUnit &&
-                newParameterValue.Path.Equals(oldParameterValue.Path) &&
+                newParameterValue.Id.Equals(oldParameterValue.Id) &&
                 newParameterValue.ValueOrigin.Equals(oldParameterValue.ValueOrigin);
       }
 
@@ -57,15 +77,26 @@ namespace MoBi.Core.Services
       ///    If the result of the tracked change is that the new quantity becomes the same as the original quantity,
       ///    then we remove the original quantity value from the simulation.
       /// </summary>
-      private void checkForOriginalValueRestored(IQuantity quantity, IMoBiSimulation simulation)
+      private void checkForOriginalQuantityRestored(IQuantity quantity, IMoBiSimulation simulation)
       {
          var newParameterValue = _quantityToOriginalQuantityValueMapper.MapFrom(quantity);
-         var oldParameterValue = simulation.OriginalQuantityValueFor(newParameterValue.Path);
+         checkForOriginalRestored(simulation, newParameterValue);
+      }
+
+      private void checkForOriginalQuantityRestored(MoleculeAmount moleculeAmount, IMoBiSimulation simulation)
+      {
+         var newParameterValue = _quantityToOriginalQuantityValueMapper.MapFrom(moleculeAmount);
+         checkForOriginalRestored(simulation, newParameterValue);
+      }
+
+      private void checkForOriginalRestored(IMoBiSimulation simulation, OriginalQuantityValue newParameterValue)
+      {
+         var oldParameterValue = simulation.OriginalQuantityValueFor(newParameterValue);
 
          if (oldParameterValue == null || !areEquivalent(newParameterValue, oldParameterValue))
             return;
 
-         simulation.RemoveOriginalQuantityValue(newParameterValue.Path);
+         simulation.RemoveOriginalQuantityValue(oldParameterValue);
          _eventPublisher.PublishEvent(new SimulationStatusChangedEvent(simulation));
       }
    }

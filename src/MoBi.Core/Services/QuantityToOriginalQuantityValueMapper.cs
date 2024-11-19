@@ -5,7 +5,7 @@ using OSPSuite.Utility;
 
 namespace MoBi.Core.Services
 {
-   public interface IQuantityToOriginalQuantityValueMapper : IMapper<IQuantity, OriginalQuantityValue>
+   public interface IQuantityToOriginalQuantityValueMapper : IMapper<IQuantity, OriginalQuantityValue>, IMapper<MoleculeAmount, OriginalQuantityValue>
    {
    }
    
@@ -20,16 +20,29 @@ namespace MoBi.Core.Services
 
       public OriginalQuantityValue MapFrom(IQuantity quantity)
       {
-         var parameterValue = new OriginalQuantityValue
+         var quantityValue = new OriginalQuantityValue
          {
             Path = _entityPathResolver.ObjectPathFor(quantity),
             Value = quantity.Value,
             Dimension = quantity.Dimension,
-            DisplayUnit = quantity.DisplayUnit
+            DisplayUnit = quantity.DisplayUnit,
+            Type = OriginalQuantityValue.Types.Quantity
          };
 
-         parameterValue.UpdateValueOriginFrom(quantity.ValueOrigin);
-         return parameterValue;
+         quantityValue.UpdateValueOriginFrom(quantity.ValueOrigin);
+         return quantityValue;
+      }
+
+      public OriginalQuantityValue MapFrom(MoleculeAmount moleculeAmount)
+      {
+         return new OriginalQuantityValue
+         {
+            Value = moleculeAmount.ScaleDivisor,
+            Path = _entityPathResolver.ObjectPathFor(moleculeAmount),
+            Type = OriginalQuantityValue.Types.ScaleDivisor,
+            Dimension = Constants.Dimension.NO_DIMENSION,
+            DisplayUnit = Constants.Dimension.NO_DIMENSION.DefaultUnit
+         };
       }
    }
 }

@@ -15,12 +15,83 @@ namespace MoBi.Core.Service
    public class concern_for_QuantityValueChangeTracker : ContextSpecification<QuantityValueInSimulationChangeTracker>
    {
       protected IEventPublisher _eventPublisher;
-      protected IQuantityToOriginalQuantityValueMapper _quantityToOriginalQuantityValueMapper;
 
       protected override void Context()
       {
          _eventPublisher = A.Fake<IEventPublisher>();
-         _quantityToOriginalQuantityValueMapper = new QuantityToOriginalQuantityValueMapper(new EntityPathResolverForSpecs());
+         sut = DomainHelperForSpecs.QuantityValueChangeTracker(_eventPublisher);
+      }
+   }
+
+   public class When_tracking_change_to_a_quantity_and_scale_in_a_simulation : concern_for_QuantityValueChangeTracker
+   {
+      private MoleculeAmount _quantity;
+      private IMoBiSimulation _simulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = new MoBiSimulation();
+
+         _quantity = new MoleculeAmount
+         {
+            Name = "moleculeAmountName",
+            Value = 1.0,
+            Dimension = DimensionFactoryForSpecs.MassDimension,
+            DisplayUnit = DimensionFactoryForSpecs.MassDimension.DefaultUnit,
+            ScaleDivisor = 1.0
+         };
+
+         var container = new Container().WithName("topContainer");
+         container.Add(_quantity);
+      }
+
+      protected override void Because()
+      {
+         sut.TrackQuantityChange(_quantity, _simulation, x => x.Value = 3.0);
+         sut.TrackScaleChange(_quantity, _simulation, x => x.ScaleDivisor = 3.0);
+      }
+
+      [Observation]
+      public void the_simulation_should_contain_separate_trackers_for_value_and_scale()
+      {
+         _simulation.OriginalQuantityValues.Count.ShouldBeEqualTo(2);
+      }
+   }
+
+   public class When_tracking_change_to_scale_divisor_a_simulation : concern_for_QuantityValueChangeTracker
+   {
+      private MoleculeAmount _quantity;
+      private IMoBiSimulation _simulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = new MoBiSimulation();
+
+         _quantity = new MoleculeAmount
+         {
+            Name = "moleculeAmountName",
+            Value = 1.0,
+            Dimension = DimensionFactoryForSpecs.MassDimension,
+            DisplayUnit = DimensionFactoryForSpecs.MassDimension.DefaultUnit,
+            ScaleDivisor = 1.0
+         };
+
+         var container = new Container().WithName("topContainer");
+         container.Add(_quantity);
+      }
+
+      protected override void Because()
+      {
+         sut.TrackScaleChange(_quantity, _simulation, x => x.ScaleDivisor = 3.0);
+         sut.TrackScaleChange(_quantity, _simulation, x => x.ScaleDivisor = 1.0);
+      }
+
+      [Observation]
+      public void the_simulation_should_contain_a_tracker_object_with_the_original_value()
+      {
+         _simulation.OriginalQuantityValues.Count.ShouldBeEqualTo(0);
       }
    }
 
@@ -49,8 +120,8 @@ namespace MoBi.Core.Service
 
       protected override void Because()
       {
-         new QuantityValueInSimulationChangeTracker(_quantityToOriginalQuantityValueMapper, _eventPublisher, new EntityPathResolverForSpecs()).TrackChanges(_quantity, _simulation, x => x.Value = 3.0);
-         new QuantityValueInSimulationChangeTracker(_quantityToOriginalQuantityValueMapper, _eventPublisher, new EntityPathResolverForSpecs()).TrackChanges(_quantity, _simulation, x => x.Value = 1.0);
+         sut.TrackQuantityChange(_quantity, _simulation, x => x.Value = 3.0);
+         sut.TrackQuantityChange(_quantity, _simulation, x => x.Value = 1.0);
       }
 
       [Observation]
@@ -81,13 +152,11 @@ namespace MoBi.Core.Service
 
          var container = new Container().WithName("topContainer");
          container.Add(_quantity);
-
-         sut = new QuantityValueInSimulationChangeTracker(_quantityToOriginalQuantityValueMapper, _eventPublisher, new EntityPathResolverForSpecs());
       }
 
       protected override void Because()
       {
-         sut.TrackChanges(_quantity, _simulation, x => { });
+         sut.TrackQuantityChange(_quantity, _simulation, x => { });
       }
 
       [Observation]
@@ -124,12 +193,11 @@ namespace MoBi.Core.Service
 
          var container = new Container().WithName("topContainer");
          container.Add(_quantity);
-         sut = new QuantityValueInSimulationChangeTracker(_quantityToOriginalQuantityValueMapper, _eventPublisher, new EntityPathResolverForSpecs());
       }
 
       protected override void Because()
       {
-         sut.TrackChanges(_quantity, _simulation, x => x.Value = 2.0);
+         sut.TrackQuantityChange(_quantity, _simulation, x => x.Value = 2.0);
       }
 
       [Observation]
