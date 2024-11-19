@@ -59,27 +59,41 @@ namespace MoBi.Presentation.Presenter
 
       public override IReadOnlyList<ObjectPath> GetAllSelections()
       {
-         var selectedItems = base.GetAllSelections();
-         replaceMoleculePropertiesWithModelParentName(selectedItems);
-         return selectedItems;
-      }
+         var selectedItems = GetAllSelected<IEntity>().ToList();
 
-      private void replaceMoleculePropertiesWithModelParentName(IReadOnlyList<ObjectPath> selectedItems)
-      {
-         var parentName = getParentNameFromSelection();
-         if (parentName != string.Empty)
-         {
-            foreach (var item in selectedItems.Where(x => x.PathAsString.Contains(Constants.MOLECULE_PROPERTIES)))
-            {
-               item.ReplaceWith(item.PathAsString.Replace(Constants.MOLECULE_PROPERTIES, parentName).ToPathArray());
-            }
-         }
-      }
-
-      private string getParentNameFromSelection() =>
-         _view.AllSelectedDTOs
+         var selectedDummyDtos = _view.AllSelectedDTOs
             .OfType<DummyParameterDTO>()
-            .FirstOrDefault()?.ModelParentName ?? string.Empty;
+            .ToList();
+
+         return replaceMoleculePropertiesWithMoleculeName(selectedItems, selectedDummyDtos);
+      }
+
+      private IReadOnlyList<ObjectPath> replaceMoleculePropertiesWithMoleculeName(
+         IReadOnlyList<IEntity> selectedItems,
+         IReadOnlyList<DummyParameterDTO> selectedParameterDtos)
+      {
+         var newItems = new List<ObjectPath>();
+         foreach (var item in selectedItems)
+         {
+            var temAsPath = CreatePathFor(item);
+            if (temAsPath.PathAsString.Contains(Constants.MOLECULE_PROPERTIES))
+            {
+               var matchingDto = selectedParameterDtos
+                  .FirstOrDefault(dto => dto.Id == item.Id);
+
+               if (matchingDto != null && !string.IsNullOrEmpty(matchingDto.ModelParentName))
+               {
+                  temAsPath.ReplaceWith(temAsPath.PathAsString
+                     .Replace(Constants.MOLECULE_PROPERTIES, matchingDto.ModelParentName)
+                     .ToPathArray());
+               }
+            }
+
+            newItems.Add(temAsPath);
+         }
+
+         return newItems;
+      }
 
       private IContainer containerFrom(ObjectBaseDTO dto)
       {

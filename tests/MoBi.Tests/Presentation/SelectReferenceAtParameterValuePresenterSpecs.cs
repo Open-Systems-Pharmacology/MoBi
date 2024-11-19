@@ -87,9 +87,10 @@ namespace MoBi.Presentation
       private ObjectBaseDTO _parameter1;
       private ObjectBaseDTO _parameter2;
       private DummyParameterDTO _dtoMoleculeParameter;
-      private readonly string _moleculePropertiesID = Constants.MOLECULE_PROPERTIES;
-      private IParameter _moleculeParameter;
+      private readonly string _moleculePropertiesId = Constants.MOLECULE_PROPERTIES;
       private IReadOnlyList<ObjectPath> _selectedSections;
+      private int _counter;
+      private readonly string _moleculeParameterId = "MoleculeParameterId";
 
       private string _modelParentName;
 
@@ -97,15 +98,16 @@ namespace MoBi.Presentation
       {
          base.Context();
          _modelParentName = "modelParentName";
-         var moleculeProperties = new Container().WithName(Constants.MOLECULE_PROPERTIES).WithId(_moleculePropertiesID);
-         var parameter = new Parameter().WithName("parameter").WithId("parameter");
+         var moleculeProperties = new Container().WithName(Constants.MOLECULE_PROPERTIES).WithId(_moleculePropertiesId);
+         var parameter = new Parameter().WithName("parameter").WithId(_moleculeParameterId);
          _parameter1 = new ObjectBaseDTO(new Parameter().WithId("1").WithParentContainer(moleculeProperties));
          _parameter2 = new ObjectBaseDTO(new Parameter().WithId("2"));
          _dtoMoleculeParameter = new DummyParameterDTO(parameter).WithName("parameter");
+         _dtoMoleculeParameter.Id = _moleculeParameterId;
          _dtoMoleculeParameter.ModelParentName = _modelParentName;
+         A.CallTo(() => _context.Get<IEntity>(A<string>._)).ReturnsLazily(objectBaseForId);
          A.CallTo(() => _view.AllSelectedDTOs).Returns(new[] { _parameter1, _parameter2, _dtoMoleculeParameter });
          int callCount = 0;
-
          A.CallTo(() => _objectPathFactory.CreateAbsoluteObjectPath(A<IEntity>.Ignored))
             .ReturnsLazily(() =>
             {
@@ -122,6 +124,20 @@ namespace MoBi.Presentation
                      return null;
                }
             });
+      }
+
+      private IEntity objectBaseForId(IFakeObjectCall x)
+      {
+         var id = x.Arguments.Get<string>(0);
+         if (id == _moleculeParameterId)
+         {
+            return _dtoMoleculeParameter.ObjectBase as IEntity;
+         }
+         else
+         {
+            _counter++;
+            return _counter % 2 == 0 ? _parameter1.ObjectBase as IEntity : _parameter2.ObjectBase as IEntity;
+         }
       }
 
       protected override void Because()
@@ -269,7 +285,6 @@ namespace MoBi.Presentation
          A.CallTo(() => _objectBaseDTOMapper.MapFrom(A<IObjectBase>._)).ReturnsLazily(x => new ObjectBaseDTO(x.Arguments.Get<IObjectBase>(0)));
 
          _pathChild = sut.GetChildObjects(_objectBaseDTO).ToList().Single();
-
       }
 
       protected override void Because()
