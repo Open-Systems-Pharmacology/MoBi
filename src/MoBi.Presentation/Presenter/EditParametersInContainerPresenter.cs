@@ -138,15 +138,9 @@ namespace MoBi.Presentation.Presenter
          refreshViewAndSelect(parameterDTO);
       }
 
-      public void EnableContainerCriteriaSupport()
-      {
-         _editParameterPresenter.EnableContainerCriteriaSupport();
-      }
+      public void EnableContainerCriteriaSupport() => _editParameterPresenter.EnableContainerCriteriaSupport();
 
-      public void CopyPathForParameter(ParameterDTO parameter)
-      {
-         _view.CopyToClipBoard(_entityPathResolver.FullPathFor(parameter.Parameter));
-      }
+      public void CopyPathForParameter(ParameterDTO parameter) => _view.CopyToClipBoard(_entityPathResolver.FullPathFor(parameter.Parameter));
 
       private void createParameterCache(IEnumerable<IParameter> parametersToEdit)
       {
@@ -158,10 +152,7 @@ namespace MoBi.Presentation.Presenter
          _allParametersDTO.AddRange(_parameters.MapAllUsing(_parameterToDTOParameterMapper).Cast<ParameterDTO>());
       }
 
-      private void releaseParameters()
-      {
-         _allParametersDTO.Each(dto => dto.Release());
-      }
+      private void releaseParameters() => _allParametersDTO.Each(dto => dto.Release());
 
       public EditParameterMode EditMode
       {
@@ -186,10 +177,7 @@ namespace MoBi.Presentation.Presenter
          _view.Select(dtoFor(parameter));
       }
 
-      private ParameterDTO dtoFor(IParameter parameter)
-      {
-         return _allParametersDTO.FirstOrDefault(x => Equals(x.Parameter, parameter));
-      }
+      private ParameterDTO dtoFor(IParameter parameter) => _allParametersDTO.FirstOrDefault(x => Equals(x.Parameter, parameter));
 
       private void showParameters()
       {
@@ -198,15 +186,9 @@ namespace MoBi.Presentation.Presenter
          setupEditPresenter(parametersToShowDTO.FirstOrDefault()?.Parameter);
       }
 
-      private bool shouldShowParameter(ParameterDTO parameterDTO)
-      {
-         return ShowAdvancedParameters || ParameterFrom(parameterDTO).Visible;
-      }
+      private bool shouldShowParameter(ParameterDTO parameterDTO) => ShowAdvancedParameters || ParameterFrom(parameterDTO).Visible;
 
-      private void refreshList()
-      {
-         _view.RefreshList();
-      }
+      private void refreshList() => _view.RefreshList();
 
       public bool ShowBuildMode
       {
@@ -248,22 +230,15 @@ namespace MoBi.Presentation.Presenter
          setupEditPresenter(parameter);
       }
 
-      public void SetIsPersistable(ParameterDTO parameterDTO, bool isPersistable)
-      {
+      public void SetIsPersistable(ParameterDTO parameterDTO, bool isPersistable) =>
          //no need for a command here
          parameterDTO.Persistable = isPersistable;
-      }
 
-      public void CopyToClipBoard(ParameterDTO parameterDTO)
-      {
-         _clipboardManager.CopyToClipBoard(ParameterFrom(parameterDTO));
-      }
+      public void CopyToClipBoard(ParameterDTO parameterDTO) => _clipboardManager.CopyToClipBoard(ParameterFrom(parameterDTO));
 
-      public void CutToClipBoard(ParameterDTO parameterDTO)
-      {
+      public void CutToClipBoard(ParameterDTO parameterDTO) =>
          _clipboardManager.CutToClipBoard(ParameterFrom(parameterDTO),
             para => AddCommand(_parameterTask.Remove(para, _container, buildingBlock: _buildingBlock, silent: true)));
-      }
 
       public void PasteFromClipBoard()
       {
@@ -281,10 +256,7 @@ namespace MoBi.Presentation.Presenter
          Edit(_container);
       }
 
-      public void LoadParameter()
-      {
-         AddCommand(_parameterTask.AddExisting(_container, BuildingBlock));
-      }
+      public void LoadParameter() => AddCommand(_parameterTask.AddExisting(_container, BuildingBlock));
 
       private void refreshViewAndSelect(ParameterDTO parameterDTO)
       {
@@ -322,15 +294,9 @@ namespace MoBi.Presentation.Presenter
          Select(parameterDTO);
       }
 
-      public void AddParameter()
-      {
-         AddCommand(_parameterTask.AddNew(_container, BuildingBlock));
-      }
+      public void AddParameter() => AddCommand(_parameterTask.AddNew(_container, BuildingBlock));
 
-      public void RemoveParameter(ParameterDTO parameterDTO)
-      {
-         AddCommand(_parameterTask.Remove(ParameterFrom(parameterDTO), _container, BuildingBlock));
-      }
+      public void RemoveParameter(ParameterDTO parameterDTO) => AddCommand(_parameterTask.Remove(ParameterFrom(parameterDTO), _container, BuildingBlock));
 
       private bool shouldHandleRemove(RemovedEvent eventToHandle)
       {
@@ -421,9 +387,6 @@ namespace MoBi.Presentation.Presenter
          refreshList();
       }
 
-      private bool canHandle(ParameterChangedEvent eventToHandle)
-      {
-         return _parameters.Any(parameter => eventToHandle.Parameters.Contains(parameter));
-      }
+      private bool canHandle(ParameterChangedEvent eventToHandle) => _parameters.Any(parameter => eventToHandle.Parameters.Contains(parameter));
    }
 }

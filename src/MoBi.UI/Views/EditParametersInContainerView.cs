@@ -99,15 +99,9 @@ namespace MoBi.UI.Views
          );
       }
 
-      private void copyPath()
-      {
-         _presenter.CopyPathForParameter(_gridViewBinder.FocusedElement);
-      }
+      private void copyPath() => _presenter.CopyPathForParameter(_gridViewBinder.FocusedElement);
 
-      private void hideEditor()
-      {
-         _unitControl.Hide();
-      }
+      private void hideEditor() => _unitControl.Hide();
 
       public override void InitializeResources()
       {
@@ -235,20 +229,11 @@ namespace MoBi.UI.Views
          });
       }
 
-      private void onSetDimension(ParameterDTO parameter, IDimension newValue)
-      {
-         _presenter.SetDimensionFor(parameter, newValue);
-      }
+      private void onSetDimension(ParameterDTO parameter, IDimension newValue) => _presenter.SetDimensionFor(parameter, newValue);
 
-      private void onParameterValueSet(ParameterDTO parameter, PropertyValueSetEventArgs<double> e)
-      {
-         OnEvent(() => _presenter.OnParameterValueSet(parameter, e.NewValue));
-      }
+      private void onParameterValueSet(ParameterDTO parameter, PropertyValueSetEventArgs<double> e) => OnEvent(() => _presenter.OnParameterValueSet(parameter, e.NewValue));
 
-      private void onParameterValueOriginSet(ParameterDTO parameter, ValueOrigin valueOrigin)
-      {
-         OnEvent(() => _presenter.OnParameterValueOriginSet(parameter, valueOrigin));
-      }
+      private void onParameterValueOriginSet(ParameterDTO parameter, ValueOrigin valueOrigin) => OnEvent(() => _presenter.OnParameterValueOriginSet(parameter, valueOrigin));
 
       private RepositoryItem repositoryForValue(ParameterDTO parameter)
       {
@@ -258,10 +243,7 @@ namespace MoBi.UI.Views
          return _standardParameterEditRepository;
       }
 
-      private void configureRepository(BaseEdit activeEditor, ParameterDTO parameter)
-      {
-         _unitControl.UpdateUnitsFor(activeEditor, parameter);
-      }
+      private void configureRepository(BaseEdit activeEditor, ParameterDTO parameter) => _unitControl.UpdateUnitsFor(activeEditor, parameter);
 
       private RepositoryItem createBuildModeRepository()
       {
@@ -324,10 +306,7 @@ namespace MoBi.UI.Views
          _colGroup.Visible = _presenter.GroupParameters;
       }
 
-      public void AttachPresenter(IEditParametersInContainerPresenter presenter)
-      {
-         _presenter = presenter;
-      }
+      public void AttachPresenter(IEditParametersInContainerPresenter presenter) => _presenter = presenter;
 
       public EditParameterMode EditMode
       {
@@ -400,10 +379,7 @@ namespace MoBi.UI.Views
          splitContainerControl.Panel2.FillWith(subView);
       }
 
-      public void RefreshList()
-      {
-         _gridViewBinder.Rebind();
-      }
+      public void RefreshList() => _gridViewBinder.Rebind();
 
       public void Select(ParameterDTO parameterToSelect)
       {
@@ -449,14 +425,8 @@ namespace MoBi.UI.Views
          }
       }
 
-      private void showAdvancedParameterChanged()
-      {
-         _presenter.ShowAdvancedParameters = chkShowAdvancedParameter.Checked;
-      }
+      private void showAdvancedParameterChanged() => _presenter.ShowAdvancedParameters = chkShowAdvancedParameter.Checked;
 
-      private void groupByChanged()
-      {
-         _presenter.GroupParameters = chkGroupBy.Checked;
-      }
+      private void groupByChanged() => _presenter.GroupParameters = chkGroupBy.Checked;
    }
 }
