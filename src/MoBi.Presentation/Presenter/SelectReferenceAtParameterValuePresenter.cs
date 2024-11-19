@@ -3,6 +3,7 @@ using System.Linq;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
+using MoBi.Core.Extensions;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Settings;
@@ -82,11 +83,21 @@ namespace MoBi.Presentation.Presenter
          if (pathAndValueEntities == null)
             return;
 
-         _containers[pathAndValueEntities] = getGroups<TBuildingBlock, TEntity>(pathAndValueEntities);
+         _containers[pathAndValueEntities] = getGroups(entitiesExceptSubParameters<TBuildingBlock, TEntity>(pathAndValueEntities));
 
-         pathAndValueEntities.Where(x => x.DistributionType == null).Each(x => addToContainer(x, _containers[pathAndValueEntities]));
+         pathAndValueEntities.Each(x => addToContainer(x, _containers[pathAndValueEntities]));
 
          addPathAndValuesFromContainer(children, _containers[pathAndValueEntities]);
+      }
+
+      private static IReadOnlyList<TEntity> entitiesExceptSubParameters<TBuildingBlock, TEntity>(TBuildingBlock pathAndValueEntities) where TBuildingBlock : PathAndValueEntityBuildingBlock<TEntity> where TEntity : PathAndValueEntity
+      {
+         return pathAndValueEntities.Where(x => !isSubParameter(x, pathAndValueEntities)).ToList();
+      }
+
+      private static bool isSubParameter<TEntity>(TEntity pathAndValueEntity, PathAndValueEntityBuildingBlock<TEntity> buildingBlock) where TEntity : PathAndValueEntity
+      {
+         return buildingBlock.Any(pathAndValueEntity.IsDirectSubParameterOf);
       }
 
       private void addPathAndValuesFromContainer(List<ObjectBaseDTO> children, IContainer container)
@@ -110,7 +121,7 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      private IContainer getGroups<TBuildingBlock, TEntity>(TBuildingBlock pathAndValueEntities) where TBuildingBlock : PathAndValueEntityBuildingBlock<TEntity> where TEntity : PathAndValueEntity
+      private IContainer getGroups<TEntity>(IReadOnlyList<TEntity> pathAndValueEntities) where TEntity : PathAndValueEntity
       {
          var rootContainer = new Container();
 
