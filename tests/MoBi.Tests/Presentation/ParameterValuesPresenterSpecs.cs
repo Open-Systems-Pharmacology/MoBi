@@ -3,6 +3,7 @@ using FakeItEasy;
 using FakeItEasy.Core;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Mappers;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Interaction;
@@ -25,14 +26,15 @@ namespace MoBi.Presentation
       private IParameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper _parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper;
       protected IParameterValuesTask _parameterValuesTask;
       protected IDialogCreator _dialogCreator;
+      private IPathAndValueEntityToDistributedParameterMapper _mapper;
 
       protected override void Context()
       {
          _parameterValuesView = A.Fake<IParameterValuesView>();
          _modalPresenter = A.Fake<IModalPresenter>();
          _parameterValuesBuildingBlock = new ParameterValuesBuildingBlock();
-
-         _parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper = new ParameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper(new ParameterValueToParameterValueDTOMapper(A.Fake<IFormulaToValueFormulaDTOMapper>()));
+         _mapper = A.Fake<IPathAndValueEntityToDistributedParameterMapper>();
+         _parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper = new ParameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper(new ParameterValueToParameterValueDTOMapper(A.Fake<IFormulaToValueFormulaDTOMapper>()), _mapper);
          _parameterValuesTask = A.Fake<IParameterValuesTask>();
          _dialogCreator = A.Fake<IDialogCreator>();
          sut = new ParameterValuesPresenter(

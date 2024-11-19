@@ -8,7 +8,6 @@ using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Utility.Reflection;
 using OSPSuite.Utility.Validation;
 using static MoBi.Assets.AppConstants.Captions;
-using static OSPSuite.Core.Domain.Constants.Distribution;
 
 namespace MoBi.Presentation.DTO
 {
@@ -16,10 +15,8 @@ namespace MoBi.Presentation.DTO
    {
       private readonly List<TSubParameter> _subParameters = new List<TSubParameter>();
       public IReadOnlyList<TSubParameter> SubParameters => _subParameters;
-
       public ObjectPath Path => PathWithValueObject.Path;
-
-      public TSubParameter MeanDTO => SubParameters.FindByName(MEAN);
+      public double DistributionValue { set; get; }
 
       protected PathAndValueEntityDTO(T pathAndValueEntity) : base(pathAndValueEntity)
       {
@@ -32,15 +29,9 @@ namespace MoBi.Presentation.DTO
 
       public string DistributionType => $"{PathWithValueObject.DistributionType} {Distribution}";
 
-      public override Unit DisplayUnit
-      {
-         get => IsDistributed ? MeanDTO?.DisplayUnit : base.DisplayUnit;
-         set => base.DisplayUnit = value;
-      }
-
       public override double? Value
       {
-         get => IsDistributed ? MeanDTO?.Value : base.Value;
+         get => IsDistributed ? DistributionValue : base.Value;
          set => base.Value = value;
       }
    }

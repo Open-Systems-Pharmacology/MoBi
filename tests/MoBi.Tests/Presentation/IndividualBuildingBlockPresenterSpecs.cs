@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using FakeItEasy;
+using MoBi.Core.Mappers;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -29,13 +30,15 @@ namespace MoBi.Presentation
       private IFormulaToValueFormulaDTOMapper _formulaToValueFormulaDTOMapper;
       private IDimensionFactory _dimensionFactory;
       private IIndividualDistributedPathAndValueEntityPresenter _distributedParameterPresenter;
+      private IPathAndValueEntityToDistributedParameterMapper _mapper;
 
       protected override void Context()
       {
          _distributedParameterPresenter = A.Fake<IIndividualDistributedPathAndValueEntityPresenter>();
          _individualParameterToIndividualParameterDTOMapper = new IndividualParameterToIndividualParameterDTOMapper(new FormulaToValueFormulaDTOMapper());
          _dimensionFactory = A.Fake<IDimensionFactory>();
-         _individualBuildingBlockToIndividualBuildingBlockDTOMapper = new IndividualBuildingBlockToIndividualBuildingBlockDTOMapper(_individualParameterToIndividualParameterDTOMapper);
+         _mapper = A.Fake<IPathAndValueEntityToDistributedParameterMapper>();
+         _individualBuildingBlockToIndividualBuildingBlockDTOMapper = new IndividualBuildingBlockToIndividualBuildingBlockDTOMapper(_individualParameterToIndividualParameterDTOMapper, _mapper);
          _view = A.Fake<IIndividualBuildingBlockView>();
          _interactionTaskForIndividual = A.Fake<IInteractionTasksForIndividualBuildingBlock>();
          _formulaToValueFormulaDTOMapper = new FormulaToValueFormulaDTOMapper();

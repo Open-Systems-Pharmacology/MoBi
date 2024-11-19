@@ -18,13 +18,14 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using MoBi.Core.Mappers;
 
 namespace MoBi.Presentation
 {
    public abstract class concern_for_InitialConditionsPresenter : ContextSpecification<InitialConditionsPresenter>
    {
       protected IInitialConditionsView _view;
-      protected IInitialConditionToInitialConditionDTOMapper _mapper;
+      protected IInitialConditionToInitialConditionDTOMapper _dtoMapper;
       private IMoBiContext _context;
       protected IInitialConditionsTask<InitialConditionsBuildingBlock> _initialConditionTask;
       protected ICommandCollector _commandCollector;
@@ -34,21 +35,24 @@ namespace MoBi.Presentation
       private IDimensionFactory _dimensionFactory;
       private IInitialConditionsDistributedPathAndValueEntityPresenter _distributedParameterPresenter;
       private IInitialConditionsBuildingBlockToInitialConditionsBuildingBlockDTOMapper _buildingBlockMapper;
+      private IPathAndValueEntityToDistributedParameterMapper _mapper;
+
       protected override void Context()
       {
          _view = A.Fake<IInitialConditionsView>();
-         _mapper = A.Fake<IInitialConditionToInitialConditionDTOMapper>();
+         _dtoMapper = A.Fake<IInitialConditionToInitialConditionDTOMapper>();
          _context = A.Fake<IMoBiContext>();
          _initialConditionTask = A.Fake<IInitialConditionsTask<InitialConditionsBuildingBlock>>();
          _commandCollector = A.Fake<ICommandCollector>();
          _dimensionFactory = A.Fake<IDimensionFactory>();
          _initialConditionsCreator = A.Fake<IInitialConditionsCreator>();
          _distributedParameterPresenter = A.Fake<IInitialConditionsDistributedPathAndValueEntityPresenter>();
+         _mapper = A.Fake<IPathAndValueEntityToDistributedParameterMapper>();
          _formulaToValueFormulaDTOMapper = new FormulaToValueFormulaDTOMapper();
-         _buildingBlockMapper = new InitialConditionsBuildingBlockToInitialConditionsBuildingBlockDTOMapper(_mapper);
+         _buildingBlockMapper = new InitialConditionsBuildingBlockToInitialConditionsBuildingBlockDTOMapper(_dtoMapper, _mapper);
 
       sut = new InitialConditionsPresenter(
-            _view, _mapper, _initialConditionTask,
+            _view, _dtoMapper, _initialConditionTask,
             _initialConditionsCreator, _context, _formulaToValueFormulaDTOMapper, _dimensionFactory, _distributedParameterPresenter, _buildingBlockMapper);
          _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock();
 
@@ -97,9 +101,9 @@ namespace MoBi.Presentation
          _initialConditionsBuildingBlock.Add(_startValue2);
          _initialConditionsBuildingBlock.Add(_startValue3);
 
-         A.CallTo(() => _mapper.MapFrom(_startValue1, _initialConditionsBuildingBlock)).Returns(new InitialConditionDTO(_startValue1, _initialConditionsBuildingBlock));
-         A.CallTo(() => _mapper.MapFrom(_startValue2, _initialConditionsBuildingBlock)).Returns(new InitialConditionDTO(_startValue2, _initialConditionsBuildingBlock));
-         A.CallTo(() => _mapper.MapFrom(_startValue3, _initialConditionsBuildingBlock)).Returns(new InitialConditionDTO(_startValue3, _initialConditionsBuildingBlock));
+         A.CallTo(() => _dtoMapper.MapFrom(_startValue1, _initialConditionsBuildingBlock)).Returns(new InitialConditionDTO(_startValue1, _initialConditionsBuildingBlock));
+         A.CallTo(() => _dtoMapper.MapFrom(_startValue2, _initialConditionsBuildingBlock)).Returns(new InitialConditionDTO(_startValue2, _initialConditionsBuildingBlock));
+         A.CallTo(() => _dtoMapper.MapFrom(_startValue3, _initialConditionsBuildingBlock)).Returns(new InitialConditionDTO(_startValue3, _initialConditionsBuildingBlock));
 
          sut.Edit(_initialConditionsBuildingBlock);
       }
@@ -203,7 +207,7 @@ namespace MoBi.Presentation
          _msv1 = new InitialCondition();
          _initialConditionDTO1 = new InitialConditionDTO(_msv1, _initialConditionsBuildingBlock);
          _initialConditionDTO2 = new InitialConditionDTO(_msv1, _initialConditionsBuildingBlock);
-         A.CallTo(() => _mapper.MapFrom(_msv1, _initialConditionsBuildingBlock))
+         A.CallTo(() => _dtoMapper.MapFrom(_msv1, _initialConditionsBuildingBlock))
             .ReturnsNextFromSequence(_initialConditionDTO1, _initialConditionDTO2);
 
          _initialConditionsBuildingBlock.Add(_msv1);

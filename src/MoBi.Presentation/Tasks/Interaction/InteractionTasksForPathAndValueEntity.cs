@@ -6,6 +6,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
+using MoBi.Core.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Commands.Core;
@@ -80,22 +81,22 @@ namespace MoBi.Presentation.Tasks.Interaction
       where TBuilder : PathAndValueEntity, IUsingFormula, IWithDisplayUnit where TParent : class, IObjectBase
    {
       protected readonly IMoBiFormulaTask _moBiFormulaTask;
-      private readonly IParameterFactory _parameterFactory;
       private readonly IExportDataTableToExcelTask _exportDataTableToExcelTask;
       private readonly IMapper<TBuildingBlock, List<DataTable>> _dataTableMapper;
+      private readonly IPathAndValueEntityToDistributedParameterMapper _pathAndValueEntityToDistributedParameterMapper;
 
       protected InteractionTasksForPathAndValueEntity(IInteractionTaskContext interactionTaskContext,
          IEditTasksForBuildingBlock<TBuildingBlock> editTask,
          IMoBiFormulaTask moBiFormulaTask,
-         IParameterFactory parameterFactory,
          IExportDataTableToExcelTask exportDataTableToExcelTask,
-         IMapper<TBuildingBlock, List<DataTable>> dataTableMapper)
+         IMapper<TBuildingBlock, List<DataTable>> dataTableMapper,
+         IPathAndValueEntityToDistributedParameterMapper pathAndValueEntityToDistributedParameterMapper)
          : base(interactionTaskContext, editTask)
       {
          _moBiFormulaTask = moBiFormulaTask;
-         _parameterFactory = parameterFactory;
          _exportDataTableToExcelTask = exportDataTableToExcelTask;
          _dataTableMapper = dataTableMapper;
+         _pathAndValueEntityToDistributedParameterMapper = pathAndValueEntityToDistributedParameterMapper;
       }
 
       public ICommand SetValueOrigin(TBuildingBlock buildingBlock, ValueOrigin valueOrigin, TBuilder pathAndValueEntity)
@@ -118,11 +119,10 @@ namespace MoBi.Presentation.Tasks.Interaction
             Description = AppConstants.Commands.ConvertDistributedPathAndValueEntityToConstantValue(objectType, distributedParameter.Path)
          };
 
-         var temporaryParameter = createTemporaryParameter(distributedParameter, distributedParameter.DistributionType.Value);
+         var temporaryParameter = _pathAndValueEntityToDistributedParameterMapper.MapFrom(distributedParameter, distributedParameter.DistributionType.Value, subParameters);
 
          foreach (var subParameter in subParameters)
          {
-            temporaryParameter.Add(_parameterFactory.CreateParameter(subParameter.Name, subParameter.Value, subParameter.Dimension, formula: subParameter.Formula, displayUnit: subParameter.DisplayUnit));
             moBiMacroCommand.Add(new RemovePathAndValueEntityFromBuildingBlockCommand<TBuilder>(buildingBlock, subParameter.Path));
          }
 
@@ -146,11 +146,6 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          var mappedValues = _dataTableMapper.MapFrom(subject);
          _exportDataTableToExcelTask.ExportDataTablesToExcel(mappedValues, excelFileName, openExcel: false);
-      }
-
-      private IDistributedParameter createTemporaryParameter(TBuilder distributedEntity, DistributionType distributionType)
-      {
-         return _parameterFactory.CreateDistributedParameter(distributedEntity.Name, distributionType, dimension: distributedEntity.Dimension, displayUnit: distributedEntity.DisplayUnit) as IDistributedParameter;
       }
 
       protected virtual string GetNewNameForClone(TBuildingBlock buildingBlockToClone)

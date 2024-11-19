@@ -62,11 +62,11 @@ namespace MoBi.Presentation.Tasks.Interaction
          IInitialConditionPathTask initialConditionPathTask,
          IReactionDimensionRetriever dimensionRetriever,
          IInitialConditionsCreator initialConditionsCreator,
-         IParameterFactory parameterFactory,
          IObjectTypeResolver objectTypeResolver,
          INameCorrector nameCorrector,
          IExportDataTableToExcelTask exportDataTableToExcelTask,
-         IInitialConditionsToDataTableMapper dataTableMapper) :
+         IInitialConditionsToDataTableMapper dataTableMapper,
+         IPathAndValueEntityToDistributedParameterMapper pathAndValueEntityToDistributedParameterMapper) :
          base(interactionTaskContext,
             editTask,
             extendManager,
@@ -75,10 +75,10 @@ namespace MoBi.Presentation.Tasks.Interaction
             spatialStructureFactory,
             dtoMapper,
             initialConditionPathTask,
-            parameterFactory,
             objectTypeResolver,
             exportDataTableToExcelTask,
-            dataTableMapper)
+            dataTableMapper,
+            pathAndValueEntityToDistributedParameterMapper)
       {
          _dimensionRetriever = dimensionRetriever;
          _initialConditionsCreator = initialConditionsCreator;
