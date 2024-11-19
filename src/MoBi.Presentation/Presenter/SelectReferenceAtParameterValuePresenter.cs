@@ -9,6 +9,7 @@ using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 
@@ -55,6 +56,30 @@ namespace MoBi.Presentation.Presenter
 
          return children;
       }
+
+      public override IReadOnlyList<ObjectPath> GetAllSelections()
+      {
+         var selectedItems = base.GetAllSelections();
+         replaceMoleculePropertiesWithModelParentName(selectedItems);
+         return selectedItems;
+      }
+
+      private void replaceMoleculePropertiesWithModelParentName(IReadOnlyList<ObjectPath> selectedItems)
+      {
+         var parentName = getParentNameFromSelection();
+         if (parentName != string.Empty)
+         {
+            foreach (var item in selectedItems.Where(x => x.PathAsString.Contains(Constants.MOLECULE_PROPERTIES)))
+            {
+               item.ReplaceWith(item.PathAsString.Replace(Constants.MOLECULE_PROPERTIES, parentName).ToPathArray());
+            }
+         }
+      }
+
+      private string getParentNameFromSelection() =>
+         _view.AllSelectedDTOs
+            .OfType<DummyParameterDTO>()
+            .FirstOrDefault()?.ModelParentName ?? string.Empty;
 
       private IContainer containerFrom(ObjectBaseDTO dto)
       {

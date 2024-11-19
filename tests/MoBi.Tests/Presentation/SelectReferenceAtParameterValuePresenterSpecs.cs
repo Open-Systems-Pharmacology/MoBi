@@ -28,10 +28,12 @@ namespace MoBi.Presentation
       protected IObjectPathCreatorAtParameter _objectPathCreator;
       protected IObjectBaseDTOToReferenceNodeMapper _referenceMapper;
       protected IBuildingBlockRepository _buildingBlockRepository;
+      protected IObjectPathFactory _objectPathFactory;
 
       protected override void Context()
       {
          _view = A.Fake<ISelectReferenceView>();
+         _objectPathFactory = A.Fake<IObjectPathFactory>();
          _context = A.Fake<IMoBiContext>();
          _objectBaseDTOMapper = A.Fake<IObjectBaseToObjectBaseDTOMapper>();
          _moleculeMapper = A.Fake<IObjectBaseToDummyMoleculeDTOMapper>();
@@ -40,6 +42,7 @@ namespace MoBi.Presentation
          _objectPathCreator = A.Fake<IObjectPathCreatorAtParameter>();
          _referenceMapper = A.Fake<IObjectBaseDTOToReferenceNodeMapper>();
          _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
+         A.CallTo(() => _context.ObjectPathFactory).Returns(_objectPathFactory);
          A.CallTo(() => _view.Shows(A<IEntity>.Ignored)).Returns(true);
          sut = new SelectReferenceAtParameterValuePresenter(_view, _objectBaseDTOMapper, _context, _userSettings,
             _moleculeMapper, _parameterMapper, _referenceMapper, _objectPathCreator, _buildingBlockRepository);
@@ -54,8 +57,8 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         _parameterDTO1 = new ObjectBaseDTO (new Parameter().WithId("1"));
-         _parameterDTO2 = new ObjectBaseDTO (new Parameter().WithId("2"));
+         _parameterDTO1 = new ObjectBaseDTO(new Parameter().WithId("1"));
+         _parameterDTO2 = new ObjectBaseDTO(new Parameter().WithId("2"));
          A.CallTo(() => _context.Get<IObjectBase>(A<string>._)).ReturnsLazily(objectBaseForId);
          A.CallTo(() => _view.AllSelectedDTOs).Returns(new[] { _parameterDTO1, _parameterDTO2 });
       }
@@ -76,6 +79,66 @@ namespace MoBi.Presentation
       public void the_presenter_can_close()
       {
          sut.CanClose.ShouldBeTrue();
+      }
+   }
+
+   internal class When_selecting_molecule_properties : concern_for_SelectReferenceAtParameterValuePresenter
+   {
+      private ObjectBaseDTO _parameter1;
+      private ObjectBaseDTO _parameter2;
+      private DummyParameterDTO _dtoMoleculeParameter;
+      private readonly string _moleculePropertiesID = Constants.MOLECULE_PROPERTIES;
+      private IParameter _moleculeParameter;
+      private IReadOnlyList<ObjectPath> _selectedSections;
+
+      private string _modelParentName;
+
+      protected override void Context()
+      {
+         base.Context();
+         _modelParentName = "modelParentName";
+         var moleculeProperties = new Container().WithName(Constants.MOLECULE_PROPERTIES).WithId(_moleculePropertiesID);
+         var parameter = new Parameter().WithName("parameter").WithId("parameter");
+         _parameter1 = new ObjectBaseDTO(new Parameter().WithId("1").WithParentContainer(moleculeProperties));
+         _parameter2 = new ObjectBaseDTO(new Parameter().WithId("2"));
+         _dtoMoleculeParameter = new DummyParameterDTO(parameter).WithName("parameter");
+         _dtoMoleculeParameter.ModelParentName = _modelParentName;
+         A.CallTo(() => _view.AllSelectedDTOs).Returns(new[] { _parameter1, _parameter2, _dtoMoleculeParameter });
+         int callCount = 0;
+
+         A.CallTo(() => _objectPathFactory.CreateAbsoluteObjectPath(A<IEntity>.Ignored))
+            .ReturnsLazily(() =>
+            {
+               callCount++;
+               switch (callCount)
+               {
+                  case 1:
+                     return new ObjectPath($"{_modelParentName}|Path1|Item1");
+                  case 2:
+                     return new ObjectPath($"{_modelParentName}|Path1|Item2");
+                  case 3:
+                     return new ObjectPath($"{Constants.MOLECULE_PROPERTIES}|Path1|Item3");
+                  default:
+                     return null;
+               }
+            });
+      }
+
+      protected override void Because()
+      {
+         _selectedSections = sut.GetAllSelections();
+      }
+
+      [Observation]
+      public void the_selected_should_not_contain_molecule_properties()
+      {
+         _selectedSections.Any(x => x.PathAsString.Contains(Constants.MOLECULE_PROPERTIES)).ShouldBeFalse();
+      }
+
+      [Observation]
+      public void the_selected_should_contain_model_parent_name()
+      {
+         _selectedSections.Count(x => x.PathAsString.Contains(_modelParentName)).ShouldBeEqualTo(3);
       }
    }
 
