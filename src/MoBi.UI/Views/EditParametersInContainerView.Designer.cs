@@ -40,7 +40,7 @@ namespace MoBi.UI.Views
          this.btAddParameter = new DevExpress.XtraEditors.SimpleButton();
          this.splitContainerControl = new DevExpress.XtraEditors.SplitContainerControl();
          this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
-         this._gridView = new MoBi.UI.Views.UxGridView();
+         this.gridView = new UxGridView(gridControl);
          this.layoutGroup = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutControlItemParentName = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutControlItemParmaterLists = new DevExpress.XtraLayout.LayoutControlItem();
@@ -58,7 +58,7 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl)).BeginInit();
          this.splitContainerControl.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.gridControl)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this._gridView)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.gridView)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroup)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemParentName)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemParmaterLists)).BeginInit();
@@ -156,25 +156,25 @@ namespace MoBi.UI.Views
          // 
          this.gridControl.Dock = System.Windows.Forms.DockStyle.Fill;
          this.gridControl.Location = new System.Drawing.Point(0, 0);
-         this.gridControl.MainView = this._gridView;
+         this.gridControl.MainView = this.gridView;
          this.gridControl.Name = "gridControl";
          this.gridControl.Size = new System.Drawing.Size(522, 453);
          this.gridControl.TabIndex = 3;
          this.gridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this._gridView});
+            this.gridView});
          // 
          // _gridView
          // 
-         this._gridView.AllowsFiltering = true;
-         this._gridView.EnableColumnContextMenu = true;
-         this._gridView.GridControl = this.gridControl;
-         this._gridView.MultiSelect = false;
-         this._gridView.Name = "_gridView";
-         this._gridView.OptionsBehavior.EditorShowMode = DevExpress.Utils.EditorShowMode.MouseDown;
-         this._gridView.OptionsNavigation.AutoFocusNewRow = true;
-         this._gridView.OptionsSelection.EnableAppearanceFocusedCell = false;
-         this._gridView.OptionsSelection.EnableAppearanceFocusedRow = false;
-         this._gridView.OptionsView.ShowIndicator = false;
+         this.gridView.AllowsFiltering = true;
+         this.gridView.EnableColumnContextMenu = true;
+         this.gridView.GridControl = this.gridControl;
+         this.gridView.MultiSelect = false;
+         this.gridView.Name = "gridView";
+         this.gridView.OptionsBehavior.EditorShowMode = DevExpress.Utils.EditorShowMode.MouseDown;
+         this.gridView.OptionsNavigation.AutoFocusNewRow = true;
+         this.gridView.OptionsSelection.EnableAppearanceFocusedCell = false;
+         this.gridView.OptionsSelection.EnableAppearanceFocusedRow = false;
+         this.gridView.OptionsView.ShowIndicator = false;
          // 
          // layoutGroup
          // 
@@ -299,7 +299,7 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.splitContainerControl)).EndInit();
          this.splitContainerControl.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.gridControl)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this._gridView)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.gridView)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroup)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemParentName)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemParmaterLists)).EndInit();
@@ -318,7 +318,7 @@ namespace MoBi.UI.Views
       private DevExpress.XtraEditors.SimpleButton btAddParameter;
       private DevExpress.XtraEditors.SplitContainerControl splitContainerControl;
       private DevExpress.XtraGrid.GridControl gridControl;
-      private UxGridView _gridView;
+      private UxGridView gridView;
       private DevExpress.XtraLayout.LayoutControlGroup layoutGroup;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemParmaterLists;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemAddParameter;
