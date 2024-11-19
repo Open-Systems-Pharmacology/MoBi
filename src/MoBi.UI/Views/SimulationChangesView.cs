@@ -39,8 +39,9 @@ namespace MoBi.UI.Views
       public override void InitializeBinding()
       {
          _gridViewBinder.Bind(x => x.Path).AsReadOnly();
-         _originalValueColumn = _gridViewBinder.Bind(x => x.OriginalValue).WithFormat(dto => dto.OriginalQuantityValueFormatter(x => x.OriginalDisplayUnit)).WithCaption(AppConstants.Captions.OriginalValue).AsReadOnly();
-         _currentValueColumn = _gridViewBinder.Bind(x => x.CurrentValue).WithFormat(dto => dto.OriginalQuantityValueFormatter(x => x.CurrentDisplayUnit)).WithCaption(AppConstants.Captions.CurrentValue).AsReadOnly();
+         _gridViewBinder.Bind(x => x.Type).AsReadOnly();
+         _originalValueColumn = _gridViewBinder.Bind(x => x.OriginalValue).WithFormat(dto => dto.OriginalQuantityValueFormatter(x => x.DisplayUnit)).WithCaption(AppConstants.Captions.OriginalValue).AsReadOnly();
+         _currentValueColumn = _gridViewBinder.Bind(x => x.CurrentValue).WithFormat(dto => dto.OriginalQuantityValueFormatter(x => x.DisplayUnit)).WithCaption(AppConstants.Captions.CurrentValue).AsReadOnly();
          _gridViewBinder.Bind(x => x.Dimension).AsReadOnly();
       }
 

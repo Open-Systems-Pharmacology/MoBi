@@ -14,6 +14,7 @@ namespace MoBi.Core.Serialization.Xml.Serializer
          Map(x => x.Value);
          Map(x => x.ValueOrigin);
          Map(x => x.Dimension);
+         Map(x => x.Type);
       }
 
       protected override void TypedDeserialize(OriginalQuantityValue originalQuantityValue, XElement element, SerializationContext serializationContext)

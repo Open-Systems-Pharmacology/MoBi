@@ -52,13 +52,13 @@ namespace MoBi.Core.Domain.Model
 
       /// <summary>
       ///    Adds an original quantity value so that changes to quantities in the simulation can be tracked.
-      ///    There can only be one original quantity value So, adding a second <paramref name="parameterValue" />
+      ///    There can only be one original quantity value per path, adding a second <paramref name="quantityValue" />
       ///    with identical path has no affect
       /// </summary>
-      void AddOriginalQuantityValue(OriginalQuantityValue parameterValue);
+      void AddOriginalQuantityValue(OriginalQuantityValue quantityValue);
 
-      void RemoveOriginalQuantityValue(string objectPath);
-      OriginalQuantityValue OriginalQuantityValueFor(string objectPath);
+      void RemoveOriginalQuantityValue(OriginalQuantityValue quantityValue);
+      OriginalQuantityValue OriginalQuantityValueFor(OriginalQuantityValue quantityValue);
       void ClearOriginalQuantities();
    }
 
@@ -127,17 +127,17 @@ namespace MoBi.Core.Domain.Model
 
       public IReadOnlyCollection<OriginalQuantityValue> OriginalQuantityValues => _quantityValueCache;
 
-      public void AddOriginalQuantityValue(OriginalQuantityValue parameterValue)
+      public void AddOriginalQuantityValue(OriginalQuantityValue quantityValue)
       {
-         // if there's already a value set for this path, then ignore the add
+         // if there's already a value set for this path and type, then ignore the add
          // we only store the first instance for a path
-         if (_quantityValueCache[parameterValue.Path] == null)
-            _quantityValueCache[parameterValue.Path] = parameterValue;
+         if (_quantityValueCache[quantityValue.Id] == null)
+            _quantityValueCache[quantityValue.Id] = quantityValue;
       }
 
-      public void RemoveOriginalQuantityValue(string objectPath) => _quantityValueCache.Remove(objectPath);
+      public void RemoveOriginalQuantityValue(OriginalQuantityValue quantityValue) => _quantityValueCache.Remove(quantityValue.Id);
 
-      public OriginalQuantityValue OriginalQuantityValueFor(string objectPath) => _quantityValueCache[objectPath];
+      public OriginalQuantityValue OriginalQuantityValueFor(OriginalQuantityValue quantityValue) => _quantityValueCache[quantityValue.Id];
 
       public void ClearOriginalQuantities()
       {

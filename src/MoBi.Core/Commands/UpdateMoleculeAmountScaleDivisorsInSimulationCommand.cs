@@ -5,6 +5,7 @@ using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Assets;
+using MoBi.Core.Services;
 
 namespace MoBi.Core.Commands
 {
@@ -32,7 +33,8 @@ namespace MoBi.Core.Commands
       {
          var containerTask = context.Resolve<IContainerTask>();
          var allMoleculeAmounts = containerTask.CacheAllChildren<MoleculeAmount>(_simulation.Model.Root);
-
+         var changeTracker = context.Resolve<IQuantityValueInSimulationChangeTracker>();
+         
          foreach (var scaleDivisor in _scaleFactors)
          {
             var moleculeAmount = allMoleculeAmounts[scaleDivisor.QuantityPath];
@@ -42,7 +44,7 @@ namespace MoBi.Core.Commands
                continue;
 
             _oldScaleFactors.Add(new ScaleDivisor { QuantityPath = scaleDivisor.QuantityPath, Value = moleculeAmount.ScaleDivisor });
-            moleculeAmount.ScaleDivisor = scaleDivisor.Value;
+            changeTracker.TrackScaleChange(moleculeAmount, _simulation, x => x.ScaleDivisor = scaleDivisor.Value);
          }
       }
 

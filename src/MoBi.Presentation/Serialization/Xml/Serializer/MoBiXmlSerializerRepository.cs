@@ -1,3 +1,4 @@
+using MoBi.Core.Domain;
 using MoBi.Core.Serialization.Xml.Services;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
@@ -52,6 +53,7 @@ namespace MoBi.Presentation.Serialization.Xml.Serializer
          base.AddInitialMappers();
          AttributeMapperRepository.AddAttributeMapper(new EnumAttributeMapper<NodeSize, SerializationContext>());
          AttributeMapperRepository.AddAttributeMapper(new EnumAttributeMapper<NotificationType, SerializationContext>());
+         AttributeMapperRepository.AddAttributeMapper(new EnumAttributeMapper<OriginalQuantityValue.Types, SerializationContext>());
       }
    }
 }
