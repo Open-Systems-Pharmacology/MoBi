@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using DevExpress.Utils.Extensions;
 using FakeItEasy;
 using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
