@@ -272,7 +272,7 @@ namespace MoBi.Core.Domain.Model
          if(command is IMacroCommand macroCommand)
             macroCommand.All().Each(x => promptForCancellation(x, confirmedModuleConversions));
 
-         if (!(command is BuildingBlockChangeCommandBase changeCommand))
+         if (!(command is IWillConvertPKSimModuleToExtensionModule changeCommand))
             return;
 
          if (!changeCommand.WillConvertPKSimModuleToExtensionModule)

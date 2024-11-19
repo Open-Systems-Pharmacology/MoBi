@@ -369,17 +369,23 @@ namespace MoBi.Presentation.Presenter.Main
          {
             case InitialConditionsFolderNode initialConditionsFolderNode:
             {
-               if (!initialConditionsFolderNode.HasChildren)
-                  RemoveNode(initialConditionsFolderNode);
+               if (!initialConditionsFolderNode.HasChildren) 
+                  removeFolderNode(initialConditionsFolderNode);
                break;
             }
             case ParameterValuesFolderNode parameterValuesFolderNode:
             {
                if (!parameterValuesFolderNode.HasChildren)
-                  RemoveNode(parameterValuesFolderNode);
+                  removeFolderNode(parameterValuesFolderNode);
                break;
             }
          }
+      }
+
+      private void removeFolderNode(ITreeNode folderNode)
+      {
+         RemoveNode(folderNode);
+         folderNode.ParentNode.RemoveChild(folderNode);
       }
 
       public void Handle(RemovedEvent eventToHandle)

@@ -23,13 +23,7 @@ namespace MoBi.Core.Commands
          Silent = false;
       }
 
-      protected override void ExecuteWith(IMoBiContext context)
-      {
-         DoExecute(context);
-         RaiseEvents(context);
-      }
-
-      protected virtual void RaiseEvents(IMoBiContext context)
+      protected override void RaiseEvents(IMoBiContext context)
       {
          if (!Silent)
             context.PublishEvent(new AddedEvent<T>(_buildingBlock, _existingModule));
@@ -37,7 +31,7 @@ namespace MoBi.Core.Commands
          PublishSimulationStatusChangedEvents(_existingModule, context);
       }
 
-      protected virtual void DoExecute(IMoBiContext context)
+      protected override void DoExecute(IMoBiContext context)
       {
          context.Register(_buildingBlock);
          _existingModule.Add(_buildingBlock);
