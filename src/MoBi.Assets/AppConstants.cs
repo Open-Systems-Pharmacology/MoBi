@@ -906,8 +906,6 @@ namespace MoBi.Assets
          public static readonly string ApplyDefaultNaming = "Apply default renaming";
          public static readonly string RemoveSelectedResultsFromSimulations = "Do you really want to remove the selected results from simulations";
          public static readonly string RemoveSelectedResultsFromProject = "Do you really want to remove the selected result(s) from the project";
-         public static readonly Size SELECT_SINGLE_SIZE = new Size(475, 160);
-         public static readonly Size PARAMETER_SELECTION_SIZE = new Size(1200, 800);
          public static readonly string RemoveMultipleModules = "Do you really want to remove the selected Modules?";
          public static readonly string RemoveMultipleBuildingBlocks = "Do you really want to remove the selected building blocks?";
          public static readonly string BuildingBlocksUsedInSimulation = "The following building blocks could not be removed from the project";

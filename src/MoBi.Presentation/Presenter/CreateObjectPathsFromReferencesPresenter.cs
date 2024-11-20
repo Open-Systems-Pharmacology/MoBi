@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
@@ -12,6 +13,7 @@ namespace MoBi.Presentation.Presenter
       void Init(IEntity localReferencePoint, IReadOnlyList<IObjectBase> contextSpecificEntitiesToAddToReferenceTree, IUsingFormula editedObject);
       IReadOnlyList<ObjectPath> GetAllSelections();
       void AddSelection();
+      Size? ModalSize { get; }
    }
 
 
@@ -35,6 +37,7 @@ namespace MoBi.Presentation.Presenter
       public IReadOnlyList<ObjectPath> GetAllSelections() => convertTextToObjectPaths(_view.AllPaths.Where(x => !string.IsNullOrWhiteSpace(x)).ToList());
 
       public void AddSelection() => _view.AddSelectedPaths(_selectReferencePresenter.GetAllSelections().Select(x => x.PathAsString).ToList());
+      public Size? ModalSize => _view.ModalSize;
 
       private IReadOnlyList<ObjectPath> convertTextToObjectPaths(IReadOnlyList<string> pathsAsString) => pathsAsString.Select(x => new ObjectPath(x.ToPathArray())).ToList();
 
