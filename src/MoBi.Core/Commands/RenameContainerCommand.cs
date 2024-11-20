@@ -1,14 +1,10 @@
-﻿using System;
-using System.Linq;
-using MoBi.Assets;
+﻿using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Events;
-using OSPSuite.Core.Extensions;
-using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Commands
 {
@@ -43,34 +39,12 @@ namespace MoBi.Core.Commands
       protected override void ExecuteWith(IMoBiContext context)
       {
          base.ExecuteWith(context);
-         var objectPathFactory = context.ObjectPathFactory;
-         var containerPath = objectPathFactory.CreateAbsoluteObjectPath(_container);
-
          //perform the rename
          _oldName = _container.Name;
          _container.Name = _newName;
 
-         //the container has been renamed, we need to update the path of all neighborhoods connected to it
-         //no need to update referenced in the neighborhood as they have not changed
-         var updateNeighborhoods = updateNeighborhoodsDef(containerPath, objectPathFactory.CreateAbsoluteObjectPath(_container));
-         updateNeighborhoods(x => x.FirstNeighborPath);
-         updateNeighborhoods(x => x.SecondNeighborPath);
-
          context.PublishEvent(new RenamedEvent(_container));
       }
-
-      private Action<Func<NeighborhoodBuilder, ObjectPath>> updateNeighborhoodsDef(string oldContainerPath, string newContainerPath) =>
-         (neighborPathFunc) =>
-         {
-            _buildingBlock.Neighborhoods.Select(x => new
-               {
-                  NeihgborPath = neighborPathFunc(x),
-                  NeighborPathString = neighborPathFunc(x).ToString()
-               })
-               //either the path is the same or the path starts with the old container path exactly
-               .Where(x => x.NeighborPathString.Equals(oldContainerPath) || x.NeighborPathString.StartsWith($"{oldContainerPath}{ObjectPath.PATH_DELIMITER}"))
-               .Each(x => x.NeihgborPath.ReplaceWith(x.NeighborPathString.Replace(oldContainerPath, newContainerPath).ToPathArray()));
-         };
 
       public override void RestoreExecutionData(IMoBiContext context)
       {

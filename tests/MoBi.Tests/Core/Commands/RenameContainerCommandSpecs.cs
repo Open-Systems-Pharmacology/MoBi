@@ -93,13 +93,6 @@ namespace MoBi.Core.Commands
       }
 
       [Observation]
-      public void should_rename_the_path_in_the_neighborhoods_not_referencing_this_container()
-      {
-         _neighborhood1.FirstNeighborPath.PathAsString.ShouldBeEqualTo("A|NEW_NAME|A");
-         _neighborhood1.SecondNeighborPath.PathAsString.ShouldBeEqualTo("A|NEW_NAME|B");
-      }
-
-      [Observation]
       public void should_not_rename_the_path_in_the_neighborhoods_not_referencing_this_container()
       {
          _neighborhood2.FirstNeighborPath.PathAsString.ShouldBeEqualTo("A|B|A");
