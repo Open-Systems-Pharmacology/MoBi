@@ -264,6 +264,7 @@ namespace MoBi.Assets
          public static readonly string UpdateRelativeExpressions = "Update relative expressions";
          public static readonly string UpdateProjectDefaultSimulationSettings = "Update project default simulation settings";
          public static readonly string RemoveTrackedQuantityChanges = "Remove tracked quantity changes";
+         public static readonly string RestoreTrackedQuantityChanges = "Restore tracked quantity changes";
          public static readonly string AddedMultipleBuildingBlocksFromFile = "Added multiple building blocks from file";
          public static string AddNewParameterValues(string buildingBlockName) => $"Add new Parameter Values to {buildingBlockName}";
 

@@ -1,17 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Input;
 using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Events;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Events;
 
 namespace MoBi.Presentation.Presenter
 {
-   public class SimulationChangesPresenter : AbstractEditPresenter<ISimulationChangesView, ISimulationChangesPresenter, IMoBiSimulation>, ISimulationChangesPresenter
+   public class SimulationChangesPresenter : AbstractEditPresenter<ISimulationChangesView, ISimulationChangesPresenter, IMoBiSimulation>, ISimulationChangesPresenter, IListener<SimulationStatusChangedEvent>
    {
       private IMoBiSimulation _simulation;
 
@@ -57,6 +60,16 @@ namespace MoBi.Presentation.Presenter
 
 
       public override object Subject => _simulation;
+      public void Handle(SimulationStatusChangedEvent eventToHandle)
+      {
+         if (canHandle(eventToHandle))
+            Edit(_simulation);
+      }
+
+      private bool canHandle(SimulationStatusChangedEvent eventToHandle)
+      {
+         return eventToHandle.Simulation == _simulation;
+      }
    }
 
    public interface ISimulationChangesPresenter : IPresenter<ISimulationChangesView>, IEditPresenter<IMoBiSimulation>
