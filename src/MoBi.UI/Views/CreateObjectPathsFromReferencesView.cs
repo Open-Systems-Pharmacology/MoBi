@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Presentation.Presenter;
@@ -42,13 +43,14 @@ namespace MoBi.UI.Views
       public void AddReferenceSelectionView(IView view) => referenceSelectionPanel.FillWith(view);
 
       public IReadOnlyList<string> AllPaths => memoEditObjectPaths.Lines;
+      public Size? ModalSize => UIConstants.UI.PARAMETER_SELECTION_SIZE;
 
       public void CanAdd(bool canAdd) => btnAdd.Enabled = canAdd;
 
       public void AddSelectedPaths(IReadOnlyList<string> pathsToAdd)
       {
          var allLines = pathsToAdd.Where(x => !memoEditObjectPaths.Lines.Contains(x));
-         
+
          if (!string.IsNullOrEmpty(memoEditObjectPaths.Text))
             allLines = allLines.Prepend(memoEditObjectPaths.Text);
 

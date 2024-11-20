@@ -385,7 +385,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             };
             presenter.InitializeWith(allItems, x => !ReferenceEquals(_newBuildingBlock, x));
             modal.CanCancel = false;
-            modal.Show(AppConstants.Dialog.SELECT_SINGLE_SIZE);
+            modal.Show(presenter.ModalSize);
             return existingBuildingBlockSelected(presenter.Selection) ? presenter.Selection : null;
          }
       }
