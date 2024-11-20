@@ -266,6 +266,7 @@ namespace MoBi.Core
       protected override void Context()
       {
          base.Context();
+         sut.CurrentProject = new MoBiProject();
          _command = new MoBiMacroCommand();
          _parameterValue = new ParameterValue();
          _buildingBlock = new ParameterValuesBuildingBlock();
@@ -274,6 +275,7 @@ namespace MoBi.Core
             IsPKSimModule = true
          };
          _module.Add(_buildingBlock);
+         sut.CurrentProject.AddModule(_module);
          _command.Add(new AddParameterValueToBuildingBlockCommand(_buildingBlock, _parameterValue));
          _command.Add(new AddParameterValueToBuildingBlockCommand(_buildingBlock, _parameterValue));
          A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, A<ViewResult>._)).Returns(ViewResult.Yes);
@@ -327,12 +329,14 @@ namespace MoBi.Core
       {
          base.Context();
          _command = new MoBiMacroCommand();
+         sut.CurrentProject = new MoBiProject();
          _parameterValue = new ParameterValue();
          _buildingBlock = new ParameterValuesBuildingBlock();
          _module = new Module
          {
             IsPKSimModule = true
          };
+         sut.CurrentProject.AddModule(_module);
          _module.Add(_buildingBlock);
          _command.Add(new AddParameterValueToBuildingBlockCommand(_buildingBlock, _parameterValue));
          A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, A<ViewResult>._)).Returns(ViewResult.No);
@@ -361,6 +365,41 @@ namespace MoBi.Core
          _module = new Module
          {
             IsPKSimModule = false
+         };
+         _module.Add(_buildingBlock);
+         _command.Add(new AddParameterValueToBuildingBlockCommand(_buildingBlock, _parameterValue));
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, A<ViewResult>._)).Returns(ViewResult.Yes);
+      }
+
+      protected override void Because()
+      {
+         sut.PromptForCancellation(_command);
+      }
+
+      [Observation]
+      public void the_user_should_not_be_prompted()
+      {
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, A<ViewResult>._)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_running_module_commands_that_converts_a_module_not_in_the_project : concern_for_MoBiContext
+   {
+      private MoBiMacroCommand _command;
+      private ParameterValue _parameterValue;
+      private ParameterValuesBuildingBlock _buildingBlock;
+      private Module _module;
+
+      protected override void Context()
+      {
+         base.Context();
+         _command = new MoBiMacroCommand();
+         sut.CurrentProject = new MoBiProject();
+         _parameterValue = new ParameterValue();
+         _buildingBlock = new ParameterValuesBuildingBlock();
+         _module = new Module
+         {
+            IsPKSimModule = true
          };
          _module.Add(_buildingBlock);
          _command.Add(new AddParameterValueToBuildingBlockCommand(_buildingBlock, _parameterValue));

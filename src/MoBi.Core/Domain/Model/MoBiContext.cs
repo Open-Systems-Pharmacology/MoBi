@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Services;
@@ -276,6 +277,9 @@ namespace MoBi.Core.Domain.Model
             return;
 
          if (!changeCommand.WillConvertPKSimModuleToExtensionModule)
+            return;
+
+         if (!CurrentProject.Modules.Contains(changeCommand.Module))
             return;
 
          if (confirmedModuleConversions.Contains(changeCommand.Module))
