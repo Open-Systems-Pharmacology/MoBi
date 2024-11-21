@@ -10,6 +10,7 @@ using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 
@@ -55,6 +56,44 @@ namespace MoBi.Presentation.Presenter
          }
 
          return children;
+      }
+
+      public override IReadOnlyList<ObjectPath> GetAllSelections()
+      {
+         var selectedItems = GetAllSelected<IEntity>().ToList();
+
+         var selectedDummyDtos = _view.AllSelectedDTOs
+            .OfType<DummyParameterDTO>()
+            .ToList();
+
+         return replaceMoleculePropertiesWithMoleculeName(selectedItems, selectedDummyDtos);
+      }
+
+      private IReadOnlyList<ObjectPath> replaceMoleculePropertiesWithMoleculeName(
+         IReadOnlyList<IEntity> selectedItems,
+         IReadOnlyList<DummyParameterDTO> selectedParameterDtos)
+      {
+         var newItems = new List<ObjectPath>();
+         foreach (var item in selectedItems)
+         {
+            var itemAsPath = CreatePathFor(item);
+            if (itemAsPath.PathAsString.Contains(Constants.MOLECULE_PROPERTIES))
+            {
+               var matchingDto = selectedParameterDtos
+                  .FirstOrDefault(dto => dto.Id == item.Id);
+
+               if (matchingDto != null && !string.IsNullOrEmpty(matchingDto.ModelParentName))
+               {
+                  itemAsPath.ReplaceWith(itemAsPath.PathAsString
+                     .Replace(Constants.MOLECULE_PROPERTIES, matchingDto.ModelParentName)
+                     .ToPathArray());
+               }
+            }
+
+            newItems.Add(itemAsPath);
+         }
+
+         return newItems;
       }
 
       private IContainer containerFrom(ObjectBaseDTO dto)

@@ -39,6 +39,7 @@ namespace MoBi.Presentation.Presenter
       void SelectionChanged();
       event Action SelectionChangedEvent;
       IReadOnlyList<ObjectPath> GetAllSelections();
+      IEnumerable<T> GetAllSelected<T>() where T : class, IObjectBase;
    }
 
    public abstract class SelectReferencePresenterBase : AbstractCommandCollectorPresenter<ISelectReferenceView, ISelectReferencePresenter>, ISelectReferencePresenter
@@ -181,17 +182,17 @@ namespace MoBi.Presentation.Presenter
       {
          var selection = GetSelected<IEntity>();
 
-         return createPathFor(selection);
+         return CreatePathFor(selection);
       }
 
-      private ObjectPath createPathFor(IEntity selection)
+      public ObjectPath CreatePathFor(IEntity selection)
       {
          return shouldCreateAbsolutePath ? _objectPathFactory.CreateAbsoluteObjectPath(selection) : _objectPathFactory.CreateRelativeObjectPath(_refObject, selection);
       }
 
       public virtual IReadOnlyList<ObjectPath> GetAllSelections()
       {
-         return GetAllSelected<IEntity>().Select(createPathFor).ToList();
+         return GetAllSelected<IEntity>().Select(CreatePathFor).ToList();
       }
 
       protected T GetSelected<T>() where T : class, IObjectBase
@@ -201,7 +202,7 @@ namespace MoBi.Presentation.Presenter
          return dto == null ? null : _context.Get<T>(dto.Id);
       }
 
-      protected IEnumerable<T> GetAllSelected<T>() where T : class, IObjectBase
+      public IEnumerable<T> GetAllSelected<T>() where T : class, IObjectBase
       {
          return _view.AllSelectedDTOs.Select(dto => _context.Get<T>(dto.Id));
       }
