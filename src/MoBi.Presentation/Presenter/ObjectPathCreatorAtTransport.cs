@@ -46,12 +46,10 @@ namespace MoBi.Presentation.Presenter
             return dto;
          }
 
-         var newDto = new ReferenceDTO
+         return new ReferenceDTO
          {
-            Path = CreateFormulaUsablePathFrom(new[] { firstPathElement, dtoDummyParameter.ModelParentName, dtoDummyParameter.Name }, dtoDummyParameter.Parameter)
+            Path = CreateFormulaUsablePathFrom(new[] { firstPathElement, ObjectPathKeywords.MOLECULE, dtoDummyParameter.Name }, dtoDummyParameter.Parameter)
          };
-         newDto.Path.Replace(dtoDummyParameter.ModelParentName, ObjectPathKeywords.MOLECULE);
-         return newDto;
       }
 
       public override ReferenceDTO CreateMoleculePath(DummyMoleculeContainerDTO dtoObjectBase, bool shouldCreateAbsolutePaths, IEntity refObject)
