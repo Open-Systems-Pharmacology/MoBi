@@ -71,7 +71,7 @@ namespace MoBi.Core.Commands
       public AddInChildrenConditionCommand(TagConditionCommandParameters<T> tagConditionCommandParameters)
          : base(string.Empty, tagConditionCommandParameters)
       {
-         ObjectType = AppConstants.Commands.InParentCondition;
+         ObjectType = AppConstants.Commands.InChildrenCondition;
       }
 
       protected override ITagCondition CreateNewTagCondition()

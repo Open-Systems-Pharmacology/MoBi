@@ -241,6 +241,7 @@ namespace MoBi.Assets
          public static readonly string NotMatchTagCondition = "Not Match Tag Condition";
          public static readonly string InContainerCondition = "In Container Condition";
          public static readonly string InParentCondition = "In Parent Condition";
+         public static readonly string InChildrenCondition = "In Children Condition";
          public static readonly string NotInContainerCondition = "Not In Container Condition";
          public static readonly string Name = "Name";
          public static readonly string UpdateDimensionsAndUnits = "Changing dimensions and units";

@@ -75,7 +75,7 @@ namespace MoBi.Core.Commands
       public RemoveInChildrenConditionCommand(TagConditionCommandParameters<T> tagConditionCommandParameters)
          : base(string.Empty, tagConditionCommandParameters)
       {
-         ObjectType = AppConstants.Commands.InParentCondition;
+         ObjectType = AppConstants.Commands.InChildrenCondition;
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
