@@ -80,7 +80,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             CreateAddNewNotMatchTagCondition(),
             CreateAddNewInContainerCondition().AsGroupStarter(),
             CreateAddNewNotInContainerCondition(),
-            CreateAddInParentCondition(),
+            CreateAddInParentCondition().AsGroupStarter(),
             CreateAddInChildrenCondition()
          };
 
