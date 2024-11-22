@@ -67,7 +67,7 @@ namespace MoBi.Presentation.Presenter
 
          return new ReferenceDTO
          {
-            Path = CreateFormulaUsablePathFrom(new[] { firstPathElemnt, dtoObjectBase.Name }, AppConstants.AmountAlias, Constants.Dimension.MOLAR_AMOUNT)
+            Path = CreateFormulaUsablePathFrom(new[] { firstPathElemnt, ObjectPathKeywords.MOLECULE }, AppConstants.AmountAlias, Constants.Dimension.MOLAR_AMOUNT)
          };
       }
 
