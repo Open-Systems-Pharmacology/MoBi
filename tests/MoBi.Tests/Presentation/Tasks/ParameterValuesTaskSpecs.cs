@@ -35,8 +35,8 @@ namespace MoBi.Presentation.Tasks
       protected IInteractionTaskContext _context;
       private IEditTasksForBuildingBlock<ParameterValuesBuildingBlock> _editTasks;
       protected IParameterResolver _parameterResolver;
-      private IParameterFactory _parameterFactory;
       private IObjectTypeResolver _objectTypeResolver;
+      private IPathAndValueEntityToDistributedParameterMapper _mapper;
 
       protected override void Context()
       {
@@ -46,13 +46,13 @@ namespace MoBi.Presentation.Tasks
          _cloneManagerForBuildingBlock = A.Fake<ICloneManagerForBuildingBlock>();
          _parameterValueBuildingBlock = new ParameterValuesBuildingBlock();
          _parameterResolver = A.Fake<IParameterResolver>();
-         _parameterFactory = A.Fake<IParameterFactory>();
          _objectTypeResolver = A.Fake<IObjectTypeResolver>();
+         _mapper = A.Fake<IPathAndValueEntityToDistributedParameterMapper>();
 
          sut = new ParameterValuesTask(_context, _editTasks, _cloneManagerForBuildingBlock,
             new ImportedQuantityToParameterValueMapper(_parameterValuesCreator), A.Fake<IParameterValueBuildingBlockExtendManager>(),
             A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(), new ParameterValuePathTask(A.Fake<IFormulaTask>(), _context.Context),
-            _parameterValuesCreator, _parameterFactory, _objectTypeResolver, A.Fake<IExportDataTableToExcelTask>(), A.Fake<IParameterValuesToParameterValuesDataTableMapper>());
+            _parameterValuesCreator, _objectTypeResolver, A.Fake<IExportDataTableToExcelTask>(), A.Fake<IParameterValuesToParameterValuesDataTableMapper>(), _mapper);
       }
    }
 

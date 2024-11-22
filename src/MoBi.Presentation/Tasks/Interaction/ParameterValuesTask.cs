@@ -41,11 +41,11 @@ namespace MoBi.Presentation.Tasks.Interaction
          IMoBiSpatialStructureFactory spatialStructureFactory,
          IParameterValuePathTask parameterValuePathTask,
          IParameterValuesCreator parameterValuesCreator,
-         IParameterFactory parameterFactory,
          IObjectTypeResolver objectTypeResolver,
          IExportDataTableToExcelTask exportDataTableToExcelTask,
-         IParameterValuesToParameterValuesDataTableMapper dataTableMapper)
-         : base(interactionTaskContext, editTask, parameterValuesExtendManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoToQuantityToParameterValueMapper, parameterValuePathTask, parameterFactory, objectTypeResolver, exportDataTableToExcelTask, dataTableMapper)
+         IParameterValuesToParameterValuesDataTableMapper dataTableMapper,
+         IPathAndValueEntityToDistributedParameterMapper pathAndValueEntityToDistributedParameterMapper)
+         : base(interactionTaskContext, editTask, parameterValuesExtendManager, cloneManagerForBuildingBlock, moBiFormulaTask, spatialStructureFactory, dtoToQuantityToParameterValueMapper, parameterValuePathTask, objectTypeResolver, exportDataTableToExcelTask, dataTableMapper, pathAndValueEntityToDistributedParameterMapper)
       {
          _parameterValuesCreator = parameterValuesCreator;
       }
@@ -136,7 +136,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             modalPresenter.Encapsulate(referenceAtParamValuePresenter);
             referenceAtParamValuePresenter.Init(null, new List<IObjectBase>(), null);
 
-            return !modalPresenter.Show(AppConstants.Dialog.PARAMETER_SELECTION_SIZE) ? Enumerable.Empty<ObjectPath>().ToList() : referenceAtParamValuePresenter.GetAllSelections();
+            return !modalPresenter.Show(referenceAtParamValuePresenter.ModalSize) ? Enumerable.Empty<ObjectPath>().ToList() : referenceAtParamValuePresenter.GetAllSelections();
          }
       }
 

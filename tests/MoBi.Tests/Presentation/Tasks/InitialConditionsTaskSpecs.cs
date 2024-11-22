@@ -43,6 +43,7 @@ namespace MoBi.Presentation.Tasks
       protected INameCorrector _nameCorrector;
       protected IFormulaTask _formulaTask;
       private IObjectTypeResolver _objectTypeResolver;
+      private IPathAndValueEntityToDistributedParameterMapper _mapper;
 
       protected override void Context()
       {
@@ -60,9 +61,10 @@ namespace MoBi.Presentation.Tasks
          _reactionDimensionRetriever = A.Fake<IReactionDimensionRetriever>();
          _moleculeBuilderTask = A.Fake<IInteractionTasksForMoleculeBuilder>();
          _formulaTask = A.Fake<IFormulaTask>();
+         _mapper = A.Fake<IPathAndValueEntityToDistributedParameterMapper>();
          sut = new InitialConditionsTask<InitialConditionsBuildingBlock>(_context, _editTask, A.Fake<IInitialConditionsBuildingBlockExtendManager>(), _cloneManagerForBuildingBlock, A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(),
             new ImportedQuantityToInitialConditionMapper(_initialConditionsCreator),
-            new InitialConditionPathTask(_formulaTask, _context.Context), _reactionDimensionRetriever, _initialConditionsCreator, _parameterFactory, _objectTypeResolver, _nameCorrector, A.Fake<IExportDataTableToExcelTask>(), A.Fake<IInitialConditionsToDataTableMapper>());
+            new InitialConditionPathTask(_formulaTask, _context.Context), _reactionDimensionRetriever, _initialConditionsCreator, _objectTypeResolver, _nameCorrector, A.Fake<IExportDataTableToExcelTask>(), A.Fake<IInitialConditionsToDataTableMapper>(), _mapper);
       }
    }
 

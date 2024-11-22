@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Events;
 using MoBi.Core.Helper;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Extensions;
@@ -37,6 +38,7 @@ namespace MoBi.Core.Commands
          OldValueSerializationString = context.SerializeValue(_oldValue);
          NewValueSerializationString = context.SerializeValue(_newValue);
          context.ProjectChanged();
+         context.PublishEvent(new ObjectPropertyChangedEvent(_objectToUpdate));
       }
 
       protected virtual void UpdatePropertyValue()

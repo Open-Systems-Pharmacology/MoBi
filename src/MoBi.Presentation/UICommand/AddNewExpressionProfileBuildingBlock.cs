@@ -12,7 +12,7 @@ namespace MoBi.Presentation.UICommand
       {
       }
 
-      protected override IBuildingBlock createBuildingBlockFromPKSim()
+      protected override IBuildingBlock CreateBuildingBlockFromPKSim()
       {
          return _pkSimStarter.CreateProfileExpression(Subject);
       }

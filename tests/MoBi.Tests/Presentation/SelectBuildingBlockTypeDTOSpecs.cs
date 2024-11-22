@@ -30,7 +30,7 @@ namespace MoBi.Presentation
          sut.AllowedBuildingBlockTypes.ShouldContain(BuildingBlockType.Reaction);
          sut.AllowedBuildingBlockTypes.ShouldContain(BuildingBlockType.Molecule);
          sut.AllowedBuildingBlockTypes.ShouldContain(BuildingBlockType.Observer);
-         sut.AllowedBuildingBlockTypes.ShouldContain(BuildingBlockType.EventGroup);
+         sut.AllowedBuildingBlockTypes.ShouldContain(BuildingBlockType.Events);
          sut.AllowedBuildingBlockTypes.ShouldContain(BuildingBlockType.SpatialStructure);
          sut.AllowedBuildingBlockTypes.ShouldContain(BuildingBlockType.ParameterValues);
          sut.AllowedBuildingBlockTypes.ShouldContain(BuildingBlockType.InitialConditions);

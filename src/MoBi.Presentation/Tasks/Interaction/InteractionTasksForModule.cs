@@ -241,7 +241,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             case BuildingBlockType.Reaction:
                items.AddRange(InteractionTask.LoadItems<MoBiReactionBuildingBlock>(filename));
                break;
-            case BuildingBlockType.EventGroup:
+            case BuildingBlockType.Events:
                items.AddRange(InteractionTask.LoadItems<EventGroupBuildingBlock>(filename));
                break;
             case BuildingBlockType.SpatialStructure:

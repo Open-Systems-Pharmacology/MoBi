@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using DevExpress.XtraEditors.Controls;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
@@ -10,6 +11,8 @@ namespace MoBi.UI.Views
 {
    public partial class SelectSingleView<T> : BaseUserControl, ISelectSingleView<T>
    {
+      public Size? ModalSize => UIConstants.UI.SELECT_SINGLE_SIZE;
+
       public SelectSingleView()
       {
          InitializeComponent();

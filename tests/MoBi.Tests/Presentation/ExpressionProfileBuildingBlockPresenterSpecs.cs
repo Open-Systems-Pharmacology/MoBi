@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using FakeItEasy;
+using MoBi.Core.Mappers;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -32,6 +33,7 @@ namespace MoBi.Presentation
       private IDimensionFactory _dimensionFactory;
       private IPKSimStarter _pkSimStarter;
       private IExpressionDistributedPathAndValueEntityPresenter _distributedParameterPresenter;
+      private IPathAndValueEntityToDistributedParameterMapper _mapper;
 
       protected override void Context()
       {
@@ -40,7 +42,8 @@ namespace MoBi.Presentation
          _initialConditionToInitialConditionDTOMapper = new InitialConditionToInitialConditionDTOMapper(new FormulaToValueFormulaDTOMapper());
          _dimensionFactory = A.Fake<IDimensionFactory>();
          _pkSimStarter = A.Fake<IPKSimStarter>();
-         _expressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper = new ExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper(_expressionParameterToExpressionParameterDTOMapper, _initialConditionToInitialConditionDTOMapper);
+         _mapper = A.Fake<IPathAndValueEntityToDistributedParameterMapper>();
+         _expressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper = new ExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper(_expressionParameterToExpressionParameterDTOMapper, _initialConditionToInitialConditionDTOMapper, _mapper);
          _view = A.Fake<IExpressionProfileBuildingBlockView>();
          _interactionTaskForExpressionProfile = A.Fake<IInteractionTasksForExpressionProfileBuildingBlock>();
          _formulaToValueFormulaDTOMapper = new FormulaToValueFormulaDTOMapper();

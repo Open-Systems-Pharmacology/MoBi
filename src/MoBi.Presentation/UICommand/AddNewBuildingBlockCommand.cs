@@ -20,9 +20,12 @@ namespace MoBi.Presentation.UICommand
          _interactionTask = interactionTask;
       }
 
+      // Override this because the base class clears the Subject property after completion
+      public override void Execute() => PerformExecute();
+
       protected override void PerformExecute()
       {
-         var buildingBlockFromPKSim = createBuildingBlockFromPKSim();
+         var buildingBlockFromPKSim = CreateBuildingBlockFromPKSim();
 
          if (buildingBlockFromPKSim == null)
             return;
@@ -30,6 +33,6 @@ namespace MoBi.Presentation.UICommand
          _context.AddToHistory(_interactionTask.AddToProject(buildingBlockFromPKSim));
       }
 
-      protected abstract IBuildingBlock createBuildingBlockFromPKSim();
+      protected abstract IBuildingBlock CreateBuildingBlockFromPKSim();
    }
 }

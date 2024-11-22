@@ -80,7 +80,7 @@ namespace MoBi.Core.Commands
          _simulationToUpdate.HasChanged = _hasChanged;
 
          // We need ToList since we are modifying the collection in the loop
-         _simulationToUpdate.OriginalQuantityValues.ToList().Each(x => _simulationToUpdate.RemoveOriginalQuantityValue(x.Path));
+         _simulationToUpdate.OriginalQuantityValues.ToList().Each(x => _simulationToUpdate.RemoveOriginalQuantityValue(x));
          
          context.PublishEvent(new SimulationReloadEvent(_simulationToUpdate));
       }

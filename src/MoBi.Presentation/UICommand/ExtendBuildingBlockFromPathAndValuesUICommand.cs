@@ -25,7 +25,7 @@ namespace MoBi.Presentation.UICommand
       protected override void PerformExecute()
       {
          var buildingBlocks = _interactionTasksForSource.LoadFromPKML();
-         _context.AddToHistory(_taskForExtendingTarget.Extend(MapAll(buildingBlocks), Subject));
+         _context.AddToHistory(_taskForExtendingTarget.Extend(MapAll(buildingBlocks), Subject, retainConflictingEntities:false));
       }
 
       protected abstract IReadOnlyList<TTargetBuilder> MapAll(IReadOnlyList<TSource> buildingBlocks);

@@ -59,7 +59,7 @@ namespace MoBi.Core
          get
          {
             if (BuildingBlock != null)
-               return BuildingBlock.Name;
+               return BuildingBlock.DisplayName;
             return string.Empty;
          }
       }

@@ -3,6 +3,7 @@ using System.Data;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
+using MoBi.Core.Mappers;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -26,7 +27,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          IMoBiFormulaTask moBiFormulaTask,
          IParameterFactory parameterFactory,
          IExportDataTableToExcelTask exportDataTableToExcelTask,
-         IMapper<TBuildingBlock, List<DataTable>> dataTableMapper) : base(interactionTaskContext, editTask, moBiFormulaTask, parameterFactory, exportDataTableToExcelTask, dataTableMapper)
+         IMapper<TBuildingBlock, List<DataTable>> dataTableMapper) : base(interactionTaskContext, editTask, moBiFormulaTask, exportDataTableToExcelTask, dataTableMapper, new PathAndValueEntityToDistributedParameterMapper(parameterFactory))
       {
       }
 

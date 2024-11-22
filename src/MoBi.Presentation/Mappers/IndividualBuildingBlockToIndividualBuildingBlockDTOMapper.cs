@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using MoBi.Core.Mappers;
 using MoBi.Presentation.DTO;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility;
@@ -15,7 +16,8 @@ namespace MoBi.Presentation.Mappers
    {
       private readonly IIndividualParameterToIndividualParameterDTOMapper _individualParameterToDTOMapper;
 
-      public IndividualBuildingBlockToIndividualBuildingBlockDTOMapper(IIndividualParameterToIndividualParameterDTOMapper individualParameterToDTOMapper)
+      public IndividualBuildingBlockToIndividualBuildingBlockDTOMapper(IIndividualParameterToIndividualParameterDTOMapper individualParameterToDTOMapper,
+         IPathAndValueEntityToDistributedParameterMapper mapper) : base(mapper)
       {
          _individualParameterToDTOMapper = individualParameterToDTOMapper;
       }

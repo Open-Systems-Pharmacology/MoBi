@@ -7,12 +7,12 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public abstract class BuildingBlockChangeCommandBase : MoBiReversibleCommand
+   public abstract class BuildingBlockChangeCommandBase : MoBiReversibleCommand, IWillConvertPKSimModuleToExtensionModule
    {
       public abstract bool WillConvertPKSimModuleToExtensionModule { get; }
       public abstract Module Module { get; }
    }
-   
+
    public abstract class BuildingBlockChangeCommandBase<T> : BuildingBlockChangeCommandBase where T :  class, IBuildingBlock
    {
       public bool ShouldIncrementVersion { get; set; }
@@ -41,7 +41,7 @@ namespace MoBi.Core.Commands
 
       protected override void ClearReferences()
       {
-         _buildingBlock = default(T);
+         _buildingBlock = default;
       }
 
       public override void RestoreExecutionData(IMoBiContext context)

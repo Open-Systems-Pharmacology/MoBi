@@ -13,6 +13,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Presentation.Nodes;
 
 namespace MoBi.Presentation
@@ -28,10 +29,12 @@ namespace MoBi.Presentation
       protected IObjectPathCreatorAtParameter _objectPathCreator;
       protected IObjectBaseDTOToReferenceNodeMapper _referenceMapper;
       protected IBuildingBlockRepository _buildingBlockRepository;
+      protected IObjectPathFactory _objectPathFactory;
 
       protected override void Context()
       {
          _view = A.Fake<ISelectReferenceView>();
+         _objectPathFactory = A.Fake<IObjectPathFactory>();
          _context = A.Fake<IMoBiContext>();
          _objectBaseDTOMapper = A.Fake<IObjectBaseToObjectBaseDTOMapper>();
          _moleculeMapper = A.Fake<IObjectBaseToDummyMoleculeDTOMapper>();
@@ -40,6 +43,7 @@ namespace MoBi.Presentation
          _objectPathCreator = A.Fake<IObjectPathCreatorAtParameter>();
          _referenceMapper = A.Fake<IObjectBaseDTOToReferenceNodeMapper>();
          _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
+         A.CallTo(() => _context.ObjectPathFactory).Returns(_objectPathFactory);
          A.CallTo(() => _view.Shows(A<IEntity>.Ignored)).Returns(true);
          sut = new SelectReferenceAtParameterValuePresenter(_view, _objectBaseDTOMapper, _context, _userSettings,
             _moleculeMapper, _parameterMapper, _referenceMapper, _objectPathCreator, _buildingBlockRepository);
@@ -54,8 +58,8 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         _parameterDTO1 = new ObjectBaseDTO (new Parameter().WithId("1"));
-         _parameterDTO2 = new ObjectBaseDTO (new Parameter().WithId("2"));
+         _parameterDTO1 = new ObjectBaseDTO(new Parameter().WithId("1"));
+         _parameterDTO2 = new ObjectBaseDTO(new Parameter().WithId("2"));
          A.CallTo(() => _context.Get<IObjectBase>(A<string>._)).ReturnsLazily(objectBaseForId);
          A.CallTo(() => _view.AllSelectedDTOs).Returns(new[] { _parameterDTO1, _parameterDTO2 });
       }
@@ -76,6 +80,82 @@ namespace MoBi.Presentation
       public void the_presenter_can_close()
       {
          sut.CanClose.ShouldBeTrue();
+      }
+   }
+
+   internal class When_selecting_molecule_properties : concern_for_SelectReferenceAtParameterValuePresenter
+   {
+      private ObjectBaseDTO _parameter1;
+      private ObjectBaseDTO _parameter2;
+      private DummyParameterDTO _dtoMoleculeParameter;
+      private readonly string _moleculePropertiesId = Constants.MOLECULE_PROPERTIES;
+      private IReadOnlyList<ObjectPath> _selectedSections;
+      private int _counter;
+      private readonly string _moleculeParameterId = "MoleculeParameterId";
+
+      private string _modelParentName;
+
+      protected override void Context()
+      {
+         base.Context();
+         _modelParentName = "modelParentName";
+         var moleculeProperties = new Container().WithName(Constants.MOLECULE_PROPERTIES).WithId(_moleculePropertiesId);
+         var parameter = new Parameter().WithName("parameter").WithId(_moleculeParameterId);
+         _parameter1 = new ObjectBaseDTO(new Parameter().WithId("1").WithParentContainer(moleculeProperties));
+         _parameter2 = new ObjectBaseDTO(new Parameter().WithId("2"));
+         _dtoMoleculeParameter = new DummyParameterDTO(parameter).WithName("parameter");
+         _dtoMoleculeParameter.Id = _moleculeParameterId;
+         _dtoMoleculeParameter.ModelParentName = _modelParentName;
+         A.CallTo(() => _context.Get<IEntity>(A<string>._)).ReturnsLazily(objectBaseForId);
+         A.CallTo(() => _view.AllSelectedDTOs).Returns(new[] { _parameter1, _parameter2, _dtoMoleculeParameter });
+         int callCount = 0;
+         A.CallTo(() => _objectPathFactory.CreateAbsoluteObjectPath(A<IEntity>.Ignored))
+            .ReturnsLazily(() =>
+            {
+               callCount++;
+               switch (callCount)
+               {
+                  case 1:
+                     return new ObjectPath($"{_modelParentName}|Path1|Item1");
+                  case 2:
+                     return new ObjectPath($"{_modelParentName}|Path1|Item2");
+                  case 3:
+                     return new ObjectPath($"{Constants.MOLECULE_PROPERTIES}|Path1|Item3");
+                  default:
+                     return null;
+               }
+            });
+      }
+
+      private IEntity objectBaseForId(IFakeObjectCall x)
+      {
+         var id = x.Arguments.Get<string>(0);
+         if (id == _moleculeParameterId)
+         {
+            return _dtoMoleculeParameter.ObjectBase as IEntity;
+         }
+         else
+         {
+            _counter++;
+            return _counter % 2 == 0 ? _parameter1.ObjectBase as IEntity : _parameter2.ObjectBase as IEntity;
+         }
+      }
+
+      protected override void Because()
+      {
+         _selectedSections = sut.GetAllSelections();
+      }
+
+      [Observation]
+      public void the_selected_should_not_contain_molecule_properties()
+      {
+         _selectedSections.Any(x => x.PathAsString.Contains(Constants.MOLECULE_PROPERTIES)).ShouldBeFalse();
+      }
+
+      [Observation]
+      public void the_selected_should_contain_model_parent_name()
+      {
+         _selectedSections.Count(x => x.PathAsString.Contains(_modelParentName)).ShouldBeEqualTo(3);
       }
    }
 
@@ -206,7 +286,6 @@ namespace MoBi.Presentation
          A.CallTo(() => _objectBaseDTOMapper.MapFrom(A<IObjectBase>._)).ReturnsLazily(x => new ObjectBaseDTO(x.Arguments.Get<IObjectBase>(0)));
 
          _pathChild = sut.GetChildObjects(_objectBaseDTO).ToList().Single();
-
       }
 
       protected override void Because()
@@ -220,6 +299,52 @@ namespace MoBi.Presentation
          _children[0].ObjectBase.Name.ShouldBeEqualTo("Container");
          var entity = (_children[0].ObjectBase as Container).Single();
          entity.Name.ShouldBeEqualTo("named parameter");
+      }
+   }
+
+   public class When_getting_child_objects_with_a_distributed_parameter : concern_for_SelectReferenceAtParameterValuePresenter
+   {
+      private ObjectBaseDTO _objectBaseDTO;
+      private List<ObjectBaseDTO> _children;
+      private IndividualBuildingBlock _individualBuildingBlock;
+
+      protected override void Context()
+      {
+         base.Context();
+         _individualBuildingBlock = new IndividualBuildingBlock().WithId("1");
+         var pathAndValueEntity = new IndividualParameter().WithId("2");
+         pathAndValueEntity.Path = new ObjectPath("Root", "Container", "distributed parameter");
+         
+         pathAndValueEntity.DistributionType = DistributionType.Normal;
+         _individualBuildingBlock.Add(pathAndValueEntity);
+
+         pathAndValueEntity = new IndividualParameter().WithId("3");
+         pathAndValueEntity.Path = new ObjectPath("Root", "Container", "distributed parameter", "mean");
+         _individualBuildingBlock.Add(pathAndValueEntity);
+
+         _objectBaseDTO = new ObjectBaseDTO(_individualBuildingBlock);
+
+         A.CallTo(() => _context.ObjectRepository.ContainsObjectWithId(_individualBuildingBlock.Id)).Returns(true);
+         A.CallTo(() => _context.Get<IndividualBuildingBlock>(_individualBuildingBlock.Id)).Returns(_individualBuildingBlock);
+         A.CallTo(() => _context.Get<ExpressionProfileBuildingBlock>(A<string>._)).Returns(null);
+         A.CallTo(() => _objectBaseDTOMapper.MapFrom(A<IObjectBase>._)).ReturnsLazily(x => new ObjectBaseDTO(x.Arguments.Get<IObjectBase>(0)));
+      }
+
+      protected override void Because()
+      {
+         _children = sut.GetChildObjects(_objectBaseDTO).ToList();
+      }
+
+      [Observation]
+      public void the_child_objects_added_to_the_view_should_contain_the_individual_parameters()
+      {
+         _children.Count.ShouldBeEqualTo(1);
+         _children[0].ObjectBase.Name.ShouldBeEqualTo("Root");
+         var root = _children[0].ObjectBase as Container;
+         var container = root.Single() as Container;
+         container.Name.ShouldBeEqualTo("Container");
+         var distributedParameterContainer = container.Single() as IndividualParameter;
+         distributedParameterContainer.Name.ShouldBeEqualTo("distributed parameter");
       }
    }
 }

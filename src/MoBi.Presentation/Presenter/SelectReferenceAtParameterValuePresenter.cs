@@ -3,12 +3,14 @@ using System.Linq;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
+using MoBi.Core.Extensions;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 
@@ -56,6 +58,44 @@ namespace MoBi.Presentation.Presenter
          return children;
       }
 
+      public override IReadOnlyList<ObjectPath> GetAllSelections()
+      {
+         var selectedItems = GetAllSelected<IEntity>().ToList();
+
+         var selectedDummyDtos = _view.AllSelectedDTOs
+            .OfType<DummyParameterDTO>()
+            .ToList();
+
+         return replaceMoleculePropertiesWithMoleculeName(selectedItems, selectedDummyDtos);
+      }
+
+      private IReadOnlyList<ObjectPath> replaceMoleculePropertiesWithMoleculeName(
+         IReadOnlyList<IEntity> selectedItems,
+         IReadOnlyList<DummyParameterDTO> selectedParameterDtos)
+      {
+         var newItems = new List<ObjectPath>();
+         foreach (var item in selectedItems)
+         {
+            var itemAsPath = CreatePathFor(item);
+            if (itemAsPath.PathAsString.Contains(Constants.MOLECULE_PROPERTIES))
+            {
+               var matchingDto = selectedParameterDtos
+                  .FirstOrDefault(dto => dto.Id == item.Id);
+
+               if (matchingDto != null && !string.IsNullOrEmpty(matchingDto.ModelParentName))
+               {
+                  itemAsPath.ReplaceWith(itemAsPath.PathAsString
+                     .Replace(Constants.MOLECULE_PROPERTIES, matchingDto.ModelParentName)
+                     .ToPathArray());
+               }
+            }
+
+            newItems.Add(itemAsPath);
+         }
+
+         return newItems;
+      }
+
       private IContainer containerFrom(ObjectBaseDTO dto)
       {
          if (dto.ObjectBase is IContainer container && _containers.Any(x => x.GetAllContainersAndSelf<IContainer>().Contains(container)))
@@ -82,11 +122,21 @@ namespace MoBi.Presentation.Presenter
          if (pathAndValueEntities == null)
             return;
 
-         _containers[pathAndValueEntities] = getGroups<TBuildingBlock, TEntity>(pathAndValueEntities);
+         _containers[pathAndValueEntities] = getGroups(entitiesExceptSubParameters<TBuildingBlock, TEntity>(pathAndValueEntities));
 
-         pathAndValueEntities.Where(x => x.DistributionType == null).Each(x => addToContainer(x, _containers[pathAndValueEntities]));
+         pathAndValueEntities.Each(x => addToContainer(x, _containers[pathAndValueEntities]));
 
          addPathAndValuesFromContainer(children, _containers[pathAndValueEntities]);
+      }
+
+      private static IReadOnlyList<TEntity> entitiesExceptSubParameters<TBuildingBlock, TEntity>(TBuildingBlock pathAndValueEntities) where TBuildingBlock : PathAndValueEntityBuildingBlock<TEntity> where TEntity : PathAndValueEntity
+      {
+         return pathAndValueEntities.Where(x => !isSubParameter(x, pathAndValueEntities)).ToList();
+      }
+
+      private static bool isSubParameter<TEntity>(TEntity pathAndValueEntity, PathAndValueEntityBuildingBlock<TEntity> buildingBlock) where TEntity : PathAndValueEntity
+      {
+         return buildingBlock.Any(pathAndValueEntity.IsDirectSubParameterOf);
       }
 
       private void addPathAndValuesFromContainer(List<ObjectBaseDTO> children, IContainer container)
@@ -110,7 +160,7 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      private IContainer getGroups<TBuildingBlock, TEntity>(TBuildingBlock pathAndValueEntities) where TBuildingBlock : PathAndValueEntityBuildingBlock<TEntity> where TEntity : PathAndValueEntity
+      private IContainer getGroups<TEntity>(IReadOnlyList<TEntity> pathAndValueEntities) where TEntity : PathAndValueEntity
       {
          var rootContainer = new Container();
 

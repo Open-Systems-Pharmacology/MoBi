@@ -5,7 +5,6 @@ using OSPSuite.Core.Domain.Formulas;
 
 namespace MoBi.Core.Helper
 {
-
    /// <summary>
    ///    Encapsulates a setter and getter method providing read and write access to an IFormula field
    /// </summary>
@@ -16,8 +15,14 @@ namespace MoBi.Core.Helper
       /// </summary>
       /// <returns>A string representing the property name</returns>
       public abstract string PropertyName { get; }
+
+      public IFormula GetFormula(object formulaOwner)
+      {
+         var property = formulaOwner.GetType().GetProperty(PropertyName);
+         return property?.GetValue(formulaOwner, null) as IFormula;
+      }
    }
-   
+
    /// <summary>
    ///    Encapsulates a setter and getter method providing read and write access to an IFormula field
    /// </summary>

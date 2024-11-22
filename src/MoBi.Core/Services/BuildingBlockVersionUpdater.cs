@@ -49,7 +49,7 @@ namespace MoBi.Core.Services
       }
 
       private bool shouldConvertToExtensionModule(IBuildingBlock buildingBlock, PKSimModuleConversion conversionOption) =>
-         (buildingBlock.IsPkSimModule()) && conversionOption == PKSimModuleConversion.SetAsExtensionModule;
+         buildingBlock.IsPkSimModule() && conversionOption == PKSimModuleConversion.SetAsExtensionModule;
 
       private bool shouldConvertToPKSimModule(IBuildingBlock buildingBlock, PKSimModuleConversion conversionOption) =>
          buildingBlock.Module != null && conversionOption == PKSimModuleConversion.SetAsPKSimModule;

@@ -38,6 +38,7 @@ namespace MoBi.Presentation.Presenter.Main
       IListener<AddedEvent<Module>>,
       IListener<AddedEvent<IndividualBuildingBlock>>,
       IListener<AddedEvent<ExpressionProfileBuildingBlock>>,
+      IListener<AddedEvent<MoleculeBuilder>>,
       IListener<ModuleStatusChangedEvent>,
       IListener<BulkUpdateStartedEvent>,
       IListener<BulkUpdateFinishedEvent>
@@ -178,7 +179,7 @@ namespace MoBi.Presentation.Presenter.Main
             _view.NodeByType(MoBiRootNodeTypes.ModulesFolder)
          });
 
-         if(_editSinglesOnLoad)
+         if (_editSinglesOnLoad)
             editSingleBuildingBlockModule(moduleToAdd);
       }
 
@@ -361,6 +362,33 @@ namespace MoBi.Presentation.Presenter.Main
          }
       }
 
+      public override void RemoveNodeFor(IWithId objectWithId)
+      {
+         var parentNode = NodeFor(objectWithId)?.ParentNode;
+         base.RemoveNodeFor(objectWithId);
+         switch (parentNode)
+         {
+            case InitialConditionsFolderNode initialConditionsFolderNode:
+            {
+               if (!initialConditionsFolderNode.HasChildren) 
+                  removeFolderNode(initialConditionsFolderNode);
+               break;
+            }
+            case ParameterValuesFolderNode parameterValuesFolderNode:
+            {
+               if (!parameterValuesFolderNode.HasChildren)
+                  removeFolderNode(parameterValuesFolderNode);
+               break;
+            }
+         }
+      }
+
+      private void removeFolderNode(ITreeNode folderNode)
+      {
+         RemoveNode(folderNode);
+         folderNode.ParentNode.RemoveChild(folderNode);
+      }
+
       public void Handle(RemovedEvent eventToHandle)
       {
          RemoveNodesFor(eventToHandle.RemovedObjects);
@@ -386,6 +414,17 @@ namespace MoBi.Presentation.Presenter.Main
       public void Handle(BulkUpdateFinishedEvent eventToHandle)
       {
          _editSinglesOnLoad = true;
+      }
+
+      private void addMoleculeBuilder(MoleculeBuilder moleculeBuilder, MoleculeBuildingBlock moleculeBuildingBlock)
+      {
+         var moleculeBuildingBlockNode = _view.NodeById(moleculeBuildingBlock.Id);
+         _view.AddNode(_treeNodeFactory.CreateFor(moleculeBuilder).Under(moleculeBuildingBlockNode));
+      }
+
+      public void Handle(AddedEvent<MoleculeBuilder> eventToHandle)
+      {
+         addMoleculeBuilder(eventToHandle.AddedObject, eventToHandle.Parent.DowncastTo<MoleculeBuildingBlock>());
       }
    }
 }
