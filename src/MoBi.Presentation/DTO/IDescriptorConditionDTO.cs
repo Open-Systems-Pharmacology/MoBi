@@ -25,7 +25,7 @@ namespace MoBi.Presentation.DTO
          TagDescription = tagDescription;
       }
 
-      public bool IsReadOnly => TagType.IsOneOf(TagType.MatchAll, TagType.InParent);
+      public bool IsReadOnly => TagType.IsOneOf(TagType.MatchAll, TagType.InParent, TagType.InChildren);
    }
 
    public class ContainerDescriptorRootItem : IRootViewItem<DescriptorConditionDTO>

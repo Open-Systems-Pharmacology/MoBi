@@ -14,10 +14,10 @@ namespace MoBi.Core.Services
       MatchAll,
       InContainer,
       NotInContainer,
-      InParent
+      InParent,
+      InChildren
    }
 
-  
    public interface ITagTask
    {
       /// <summary>
@@ -26,20 +26,19 @@ namespace MoBi.Core.Services
       IMoBiCommand RemoveTagCondition<T>(string tag, TagType tagType, TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase;
 
       /// <summary>
-      ///    Adds a tag <paramref name="tag" /> of type <paramref name="tagType" /> 
+      ///    Adds a tag <paramref name="tag" /> of type <paramref name="tagType" />
       /// </summary>
       IMoBiCommand AddTagCondition<T>(string tag, TagType tagType, TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase;
 
       /// <summary>
-      ///    Edits the tag <paramref name="oldTag" /> 
+      ///    Edits the tag <paramref name="oldTag" />
       /// </summary>
       IMoBiCommand EditTag<T>(string newTag, string oldTag, TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase;
 
       /// <summary>
-      ///    Edits the tag <paramref name="newOperator" /> 
+      ///    Edits the tag <paramref name="newOperator" />
       /// </summary>
       IMoBiCommand EditOperator<T>(CriteriaOperator newOperator, TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase;
-
    }
 
    public class TagTask : ITagTask
@@ -56,12 +55,12 @@ namespace MoBi.Core.Services
          return getRemoveCommand(tag, tagType, tagConditionCommandParameters).RunCommand(_context);
       }
 
-      public IMoBiCommand AddTagCondition<T>(string tag, TagType tagType,  TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase
+      public IMoBiCommand AddTagCondition<T>(string tag, TagType tagType, TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase
       {
          return getAddCommand(tag, tagType, tagConditionCommandParameters).RunCommand(_context);
       }
 
-      public IMoBiCommand EditTag<T>(string newTag, string oldTag,  TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase
+      public IMoBiCommand EditTag<T>(string newTag, string oldTag, TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase
       {
          return new EditTagCommand<T>(newTag, oldTag, tagConditionCommandParameters).RunCommand(_context);
       }
@@ -71,22 +70,24 @@ namespace MoBi.Core.Services
          return new EditOperatorCommand<T>(newOperator, tagConditionCommandParameters).RunCommand(_context);
       }
 
-      private IMoBiCommand getAddCommand<T>(string tag, TagType tagType,  TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase
+      private IMoBiCommand getAddCommand<T>(string tag, TagType tagType, TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase
       {
          switch (tagType)
          {
             case TagType.MatchAll:
                return new AddMatchAllConditionCommand<T>(tagConditionCommandParameters);
             case TagType.Match:
-               return new AddMatchTagConditionCommand<T>(tag,  tagConditionCommandParameters);
+               return new AddMatchTagConditionCommand<T>(tag, tagConditionCommandParameters);
             case TagType.NotMatch:
-               return new AddNotMatchTagConditionCommand<T>(tag,  tagConditionCommandParameters);
+               return new AddNotMatchTagConditionCommand<T>(tag, tagConditionCommandParameters);
             case TagType.InContainer:
-               return new AddInContainerConditionCommand<T>(tag,  tagConditionCommandParameters);
+               return new AddInContainerConditionCommand<T>(tag, tagConditionCommandParameters);
             case TagType.NotInContainer:
-               return new AddNotInContainerConditionCommand<T>(tag,  tagConditionCommandParameters);
+               return new AddNotInContainerConditionCommand<T>(tag, tagConditionCommandParameters);
             case TagType.InParent:
                return new AddInParentConditionCommand<T>(tagConditionCommandParameters);
+            case TagType.InChildren:
+               return new AddInChildrenConditionCommand<T>(tagConditionCommandParameters);
             default:
                throw new ArgumentOutOfRangeException(nameof(tagType));
          }
@@ -99,15 +100,17 @@ namespace MoBi.Core.Services
             case TagType.MatchAll:
                return new RemoveMatchAllConditionCommand<T>(tagConditionCommandParameters);
             case TagType.Match:
-               return new RemoveMatchTagConditionCommand<T>(tag,  tagConditionCommandParameters);
+               return new RemoveMatchTagConditionCommand<T>(tag, tagConditionCommandParameters);
             case TagType.NotMatch:
-               return new RemoveNotMatchTagConditionCommand<T>(tag,  tagConditionCommandParameters);
+               return new RemoveNotMatchTagConditionCommand<T>(tag, tagConditionCommandParameters);
             case TagType.InContainer:
-               return new RemoveInContainerConditionCommand<T>(tag,  tagConditionCommandParameters);
+               return new RemoveInContainerConditionCommand<T>(tag, tagConditionCommandParameters);
             case TagType.NotInContainer:
-               return new RemoveNotInContainerConditionCommand<T>(tag,  tagConditionCommandParameters);
+               return new RemoveNotInContainerConditionCommand<T>(tag, tagConditionCommandParameters);
             case TagType.InParent:
                return new RemoveInParentConditionCommand<T>(tagConditionCommandParameters);
+            case TagType.InChildren:
+               return new RemoveInChildrenConditionCommand<T>(tagConditionCommandParameters);
             default:
                throw new ArgumentOutOfRangeException(nameof(tagType));
          }

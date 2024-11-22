@@ -22,6 +22,7 @@ namespace MoBi.Assets
       public static readonly string MatchAll = "in all containers";
       public static readonly string InContainer = "in container";
       public static readonly string InParent = "in parent";
+      public static readonly string InChildren = "in children";
       public static readonly string NotInContainer = "not in container";
       public static readonly string NullFormulaDescription = "No Formula";
       public static readonly string DefaultSkin = "Office 2013 Light Gray";
@@ -240,6 +241,7 @@ namespace MoBi.Assets
          public static readonly string NotMatchTagCondition = "Not Match Tag Condition";
          public static readonly string InContainerCondition = "In Container Condition";
          public static readonly string InParentCondition = "In Parent Condition";
+         public static readonly string InChildrenCondition = "In Children Condition";
          public static readonly string NotInContainerCondition = "Not In Container Condition";
          public static readonly string Name = "Name";
          public static readonly string UpdateDimensionsAndUnits = "Changing dimensions and units";
@@ -1507,6 +1509,7 @@ namespace MoBi.Assets
          public static readonly string NewNotInContainerCondition = "New \"Not in container\" condition";
          public static readonly string AddMatchAllCondition = "Add \"Match all tag\" condition";
          public static readonly string AddInParentCondition = "Add \"In parent\" condition";
+         public static readonly string AddInChildrenCondition = "Add \"In children\" condition";
          public static readonly string Persistable = "Plot parameter";
          public static readonly string Properties = "Properties";
          public static readonly string Tags = "Tags";

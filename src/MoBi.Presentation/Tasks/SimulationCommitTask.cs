@@ -65,7 +65,7 @@ namespace MoBi.Presentation.Tasks
          var parameterChanges = new List<(ObjectPath quantityPath, IParameter quantity)>();
          changesFrom<Parameter>(simulationWithChanges).Each(x => parameterChanges.Add(x));
          changesFrom<DistributedParameter>(simulationWithChanges).Each(x => parameterChanges.Add(x));
-         
+
          var message = CommitingChangesToModulesMessage(simulationWithChanges.Configuration.ModuleConfigurations.Last(), moleculeChanges.Any(), parameterChanges.Any());
 
          if (_interactionTaskContext.DialogCreator.MessageBoxYesNo(message) != ViewResult.Yes)
@@ -99,11 +99,9 @@ namespace MoBi.Presentation.Tasks
 
       /// <summary>
       ///    Creates two new macro commands that have synchronized the parameter values building blocks from the template module
-      ///    and simulation module
-      ///    with the changes from the <paramref name="simulation" />. The simulation module is identified by
-      ///    <paramref name="moduleConfiguration" /> and it must
-      ///    have SelectedParameterValues as that building block will receive the updates. The template module and building block
-      ///    is resolved from the project by name
+      ///    and simulation module with the changes from the simulation. The simulation module is identified by
+      ///    <paramref name="moduleConfiguration" /> and it must  have SelectedParameterValues as that building block will
+      ///    receive the updates. The template module and building block is resolved from the project by name
       /// </summary>
       private IEnumerable<IMoBiCommand> updateParameterValuesFromSimulationChanges(ModuleConfiguration moduleConfiguration, IReadOnlyList<(ObjectPath quantityPath, IParameter quantity)> parameterChanges)
       {
@@ -113,11 +111,9 @@ namespace MoBi.Presentation.Tasks
 
       /// <summary>
       ///    Creates two new macro commands that have synchronized the initial conditions building blocks from the template
-      ///    module and simulation module respectively
-      ///    with the changes from the <paramref name="simulation" />. The simulation module is identified by
-      ///    <paramref name="moduleConfiguration" /> and it must
-      ///    have SelectedInitialConditions as that building block will receive the updates. The template module and building
-      ///    block is resolved from the project by name
+      ///    module and simulation module respectively with the changes from the simulation. The simulation module is identified
+      ///    by    <paramref name="moduleConfiguration" /> and it must have SelectedInitialConditions as that building block will
+      ///    receive the updates. The template module and building block is resolved from the project by name
       /// </summary>
       private IEnumerable<IMoBiCommand> updateInitialConditionsFromSimulationChanges(ModuleConfiguration moduleConfiguration, IReadOnlyList<(ObjectPath quantityPath, MoleculeAmount quantity)> moleculeChanges)
       {
@@ -172,7 +168,7 @@ namespace MoBi.Presentation.Tasks
          where TBuildingBlock : PathAndValueEntityBuildingBlock<TPathAndValueEntity>, IBuildingBlock where TPathAndValueEntity : PathAndValueEntity
       {
          if (!entitiesToAdd.Any())
-            return new[] { new MoBiEmptyCommand() };
+            return new[] {new MoBiEmptyCommand()};
 
          var templateModule = _templateResolverTask.TemplateModuleFor(moduleConfiguration.Module);
 

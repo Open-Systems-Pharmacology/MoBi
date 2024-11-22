@@ -1,10 +1,8 @@
-﻿using System;
-using MoBi.Assets;
+﻿using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Descriptors;
 
 namespace MoBi.Core.Commands
@@ -68,6 +66,25 @@ namespace MoBi.Core.Commands
       }
    }
 
+   public class AddInChildrenConditionCommand<T> : AddTagConditionCommandBase<T> where T : class, IObjectBase
+   {
+      public AddInChildrenConditionCommand(TagConditionCommandParameters<T> tagConditionCommandParameters)
+         : base(string.Empty, tagConditionCommandParameters)
+      {
+         ObjectType = AppConstants.Commands.InChildrenCondition;
+      }
+
+      protected override ITagCondition CreateNewTagCondition()
+      {
+         return new InChildrenCondition();
+      }
+
+      protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
+      {
+         return new RemoveInChildrenConditionCommand<T>(CreateCommandParameters()).AsInverseFor(this);
+      }
+   }
+
    public class AddMatchTagConditionCommand<T> : AddTagConditionCommandBase<T> where T : class, IObjectBase
    {
       public AddMatchTagConditionCommand(string tag, TagConditionCommandParameters<T> tagConditionCommandParameters)
@@ -83,7 +100,7 @@ namespace MoBi.Core.Commands
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return new RemoveMatchTagConditionCommand<T>(_tag,CreateCommandParameters()).AsInverseFor(this);
+         return new RemoveMatchTagConditionCommand<T>(_tag, CreateCommandParameters()).AsInverseFor(this);
       }
    }
 
@@ -121,7 +138,7 @@ namespace MoBi.Core.Commands
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return new RemoveInContainerConditionCommand<T>(_tag,CreateCommandParameters()).AsInverseFor(this);
+         return new RemoveInContainerConditionCommand<T>(_tag, CreateCommandParameters()).AsInverseFor(this);
       }
    }
 
@@ -140,7 +157,7 @@ namespace MoBi.Core.Commands
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return new RemoveNotInContainerConditionCommand<T>(_tag,CreateCommandParameters()).AsInverseFor(this);
+         return new RemoveNotInContainerConditionCommand<T>(_tag, CreateCommandParameters()).AsInverseFor(this);
       }
    }
 }

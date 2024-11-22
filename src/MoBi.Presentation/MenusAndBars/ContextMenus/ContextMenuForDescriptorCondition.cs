@@ -46,6 +46,12 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithActionCommand(() => _presenter.NewInParentCondition());
       }
 
+      protected virtual IMenuBarItem CreateAddInChildrenCondition()
+      {
+         return CreateMenuButton.WithCaption(AppConstants.Captions.AddInChildrenCondition)
+            .WithActionCommand(() => _presenter.NewInChildrenCondition());
+      }
+
       protected virtual IMenuBarItem CreateAddNewNotMatchTagCondition()
       {
          return CreateMenuButton.WithCaption(AppConstants.Captions.NewNotMatchTagCondition)
@@ -74,7 +80,8 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             CreateAddNewNotMatchTagCondition(),
             CreateAddNewInContainerCondition().AsGroupStarter(),
             CreateAddNewNotInContainerCondition(),
-            CreateAddInParentCondition(),
+            CreateAddInParentCondition().AsGroupStarter(),
+            CreateAddInChildrenCondition()
          };
 
          if (_allowAddAllCondition)
