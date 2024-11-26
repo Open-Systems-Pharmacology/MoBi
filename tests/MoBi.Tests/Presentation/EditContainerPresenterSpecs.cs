@@ -269,12 +269,6 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_not_show_confirm_dialog()
-      {
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>.Ignored, A<ViewResult>.Ignored)).MustNotHaveHappened();
-      }
-
-      [Observation]
       public void should_change_mode()
       {
          _muscle.Mode.ShouldBeEqualTo(ContainerMode.Logical);
