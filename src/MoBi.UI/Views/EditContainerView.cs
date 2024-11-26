@@ -15,7 +15,6 @@ using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.Utility.Extensions;
-using System;
 using ToolTips = MoBi.Assets.ToolTips;
 
 namespace MoBi.UI.Views
@@ -26,12 +25,10 @@ namespace MoBi.UI.Views
       protected ScreenBinder<ContainerDTO> _screenBinder;
       protected bool _readOnly;
       private readonly UserLookAndFeel _lookAndFeel;
-      private readonly IDialogCreator _dialogCreator;
 
       public EditContainerView(UserLookAndFeel lookAndFeel, IDialogCreator dialogCreator)
       {
          _lookAndFeel = lookAndFeel;
-         _dialogCreator = dialogCreator;
          InitializeComponent();
       }
 
@@ -71,19 +68,14 @@ namespace MoBi.UI.Views
 
       private void ConfirmAndExecuteContainerModeChange(ContainerMode newMode)
       {
-         if (newMode == ContainerMode.Logical)
+         OnEvent(() =>
          {
-            var ans = _dialogCreator.MessageBoxYesNo("This action will remove all MoleculeProperties of this container, are you sure?");
-            if (ans == ViewResult.No)
-            {
+            var result = _presenter.SetContainerMode(newMode);
+            if (!result)
                cbContainerMode.SelectedIndex = 0;
-               return;
-            }
-               
-         }
-         
-         OnEvent(() => _presenter.SetContainerMode(newMode));
+         });
       }
+
       public void Activate()
       {
          ActiveControl = btName;

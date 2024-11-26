@@ -303,7 +303,6 @@ namespace MoBi.Assets
             return message;
          }
 
-
          public static string DisplayValue(string displayValue, string displayUnit)
          {
             if (string.IsNullOrEmpty(displayUnit))
