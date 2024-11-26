@@ -283,17 +283,17 @@ namespace MoBi.Assets
 
          public static string CommitingChangesToModulesMessage(ModuleConfiguration moduleConfiguration, bool hasMoleculeChanges, bool hasParameterChanges)
          {
-            string message = $"Changed parameter Values will be committed to the PV of the module <i>{moduleConfiguration.Module.Name}</i>:{Environment.NewLine}";
+            string message = $"Changed parameter values will be committed to the parameter values of the module <i>{moduleConfiguration.Module.Name}</i>:{Environment.NewLine}";
 
             if (hasMoleculeChanges)
             {
-               var icName = moduleConfiguration.SelectedInitialConditions == null ? "A new Initial Conditions Building Block will be created" : $"Initial Conditions will be written to the IC building block <i>{moduleConfiguration.SelectedInitialConditions.DisplayName}</i>";
+               var icName = moduleConfiguration.SelectedInitialConditions == null ? "A new initial conditions building block will be created" : $"Initial conditions will be written to the initial conditions building block <i>{moduleConfiguration.SelectedInitialConditions.DisplayName}</i>";
                message += $"{Environment.NewLine}- {icName}";
             }
 
             if (hasParameterChanges)
             {
-               var pvName = moduleConfiguration.SelectedParameterValues == null ? "A new Parameter Values Building Block will be created" : $"Parameter values will be written to the PV building block <i>{moduleConfiguration.SelectedParameterValues.DisplayName}</i>";
+               var pvName = moduleConfiguration.SelectedParameterValues == null ? "A new parameter values building block will be created" : $"Parameter values will be written to the parameter values building block <i>{moduleConfiguration.SelectedParameterValues.DisplayName}</i>";
                message += $"{Environment.NewLine}- {pvName}";
             }
 
