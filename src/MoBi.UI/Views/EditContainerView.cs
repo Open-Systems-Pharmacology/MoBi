@@ -6,6 +6,8 @@ using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using MoBi.UI.Extensions;
 using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Services;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
@@ -13,6 +15,7 @@ using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.Utility.Extensions;
+using System;
 using ToolTips = MoBi.Assets.ToolTips;
 
 namespace MoBi.UI.Views
@@ -23,10 +26,12 @@ namespace MoBi.UI.Views
       protected ScreenBinder<ContainerDTO> _screenBinder;
       protected bool _readOnly;
       private readonly UserLookAndFeel _lookAndFeel;
+      private readonly IDialogCreator _dialogCreator;
 
-      public EditContainerView(UserLookAndFeel lookAndFeel)
+      public EditContainerView(UserLookAndFeel lookAndFeel, IDialogCreator dialogCreator)
       {
          _lookAndFeel = lookAndFeel;
+         _dialogCreator = dialogCreator;
          InitializeComponent();
       }
 
@@ -34,10 +39,11 @@ namespace MoBi.UI.Views
       {
          base.InitializeBinding();
          _screenBinder = new ScreenBinder<ContainerDTO>();
-         _screenBinder.Bind(dto => dto.Mode).To(cbContainerMode)
+         _screenBinder.Bind(dto => dto.Mode)
+            .To(cbContainerMode)
             .WithValues(dto => _presenter.AllContainerModes)
             .AndDisplays(mode => _presenter.ContainerModeDisplayFor(mode))
-            .OnValueUpdating += (o, e) => OnEvent((() => _presenter.SetContainerMode(e.NewValue)));
+            .OnValueUpdating += (o, e) => ConfirmAndExecuteContainerModeChange(e.NewValue);
 
          _screenBinder.Bind(dto => dto.ContainerType)
             .To(cbContainerType)
@@ -63,6 +69,21 @@ namespace MoBi.UI.Views
          btParentPath.ButtonClick += (o, e) => OnEvent(_presenter.UpdateParentPath);
       }
 
+      private void ConfirmAndExecuteContainerModeChange(ContainerMode newMode)
+      {
+         if (newMode == ContainerMode.Logical)
+         {
+            var ans = _dialogCreator.MessageBoxYesNo("This action will remove all MoleculeProperties of this container, are you sure?");
+            if (ans == ViewResult.No)
+            {
+               cbContainerMode.SelectedIndex = 0;
+               return;
+            }
+               
+         }
+         
+         OnEvent(() => _presenter.SetContainerMode(newMode));
+      }
       public void Activate()
       {
          ActiveControl = btName;

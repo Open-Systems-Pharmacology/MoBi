@@ -119,7 +119,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          parameterValuesBuildingBlock.Each(x => { x.ContainerPath.Replace(oldName, newName); });
       }
 
-      
+
 
       private (MoBiSpatialStructure, ParameterValuesBuildingBlock, InitialConditionsBuildingBlock) loadFromPKML(string filename)
       {

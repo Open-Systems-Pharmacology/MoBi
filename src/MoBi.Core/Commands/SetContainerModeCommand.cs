@@ -1,4 +1,8 @@
-﻿using MoBi.Assets;
+﻿using System.Linq;
+using System.Runtime.InteropServices;
+using System.Runtime.Remoting.Contexts;
+using MoBi.Assets;
+using MoBi.Core.Domain.Extensions;
 using OSPSuite.Core.Commands.Core;
 using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain;
@@ -30,6 +34,25 @@ namespace MoBi.Core.Commands
       {
          base.ExecuteWith(context);
          _container.Mode = _newContainerMode;
+         if (_container.Mode == ContainerMode.Logical)
+         {
+            var moleculeProperties = _container.Children
+               .OfType<IContainer>()
+               .Where(child => child.IsMoleculeProperties())
+               .ToList();
+
+            foreach (var item in moleculeProperties)
+            {
+               _container.RemoveChild(item);
+            }
+         }
+         else
+         {
+            var moleculeProperties = context.Create<IContainer>()
+               .WithName(Constants.MOLECULE_PROPERTIES)
+               .WithMode(ContainerMode.Logical);
+            _container.Add(moleculeProperties);
+         }
          Description = AppConstants.Commands.EditDescription(ObjectTypes.Container, AppConstants.Captions.ContainerMode, _oldContainerMode.ToString(), _newContainerMode.ToString(), _container.Name);
       }
 
