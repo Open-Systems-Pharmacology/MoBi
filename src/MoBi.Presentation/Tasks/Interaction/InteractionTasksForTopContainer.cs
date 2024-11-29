@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using MoBi.Core.Commands;
-using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Domain;
@@ -21,10 +19,26 @@ namespace MoBi.Presentation.Tasks.Interaction
          IEditTaskFor<IContainer> editTask,
          IObjectPathFactory objectPathFactory,
          IInteractionTasksForChildren<IContainer, IContainer> interactionTaskForNeighborhood,
-         IParameterValuesTask parameterValuesTask, 
+         IParameterValuesTask parameterValuesTask,
          IInitialConditionsTask<InitialConditionsBuildingBlock> initialConditionsTask) : base(interactionTaskContext, editTask, objectPathFactory, parameterValuesTask, initialConditionsTask)
       {
          _interactionTaskForNeighborhood = interactionTaskForNeighborhood;
+      }
+
+      protected override void PerformPostAddActions(IContainer newEntity, MoBiSpatialStructure parent, IBuildingBlock buildingBlockToAddTo)
+      {
+         if (newEntity == null)
+            return;
+
+         if (newEntity.Mode == ContainerMode.Logical)
+         {
+            var moleculeProperties = _editTask.GetMoleculeProperties(newEntity);
+
+            foreach (var item in moleculeProperties)
+            {
+               newEntity.RemoveChild(item);
+            }
+         }
       }
 
       public override IMoBiCommand GetRemoveCommand(IContainer entityToRemove, MoBiSpatialStructure parent, IBuildingBlock buildingBlock)

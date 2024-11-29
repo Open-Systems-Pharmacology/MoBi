@@ -3,6 +3,7 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain;
+using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Extensions;
@@ -40,6 +41,8 @@ namespace MoBi.Presentation.Tasks.Edit
       bool EditEntityModal(T newEntity, IEnumerable<IObjectBase> existingObjectsInParent, ICommandCollector commandCollector, IBuildingBlock buildingBlock);
       string IconFor(IObjectBase objectBase);
       void SaveMultiple(IReadOnlyList<T> entitiesToSerialize);
+
+      List<IContainer> GetMoleculeProperties(IContainer container);
    }
 
    public abstract class EditTaskFor<T> : IEditTaskFor<T> where T : class, IObjectBase
@@ -216,5 +219,11 @@ namespace MoBi.Presentation.Tasks.Edit
             presenterWithFormulaCache.BuildingBlock = buildingBlock;
          }
       }
+
+      public List<IContainer> GetMoleculeProperties(IContainer container) =>
+         container?.Children
+            .OfType<IContainer>()
+            .Where(child => child.IsMoleculeProperties())
+            .ToList() ?? new List<IContainer>();
    }
 }

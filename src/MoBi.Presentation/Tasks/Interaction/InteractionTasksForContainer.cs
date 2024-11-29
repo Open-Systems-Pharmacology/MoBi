@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using MoBi.Core.Commands;
-using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Domain;
@@ -13,11 +11,15 @@ namespace MoBi.Presentation.Tasks.Interaction
    public class InteractionTasksForContainer : InteractionTasksForContainerBase<IContainer>
    {
       public InteractionTasksForContainer(
-         IInteractionTaskContext interactionTaskContext, 
-         IEditTaskFor<IContainer> editTask, 
-         IObjectPathFactory objectPathFactory, 
-         IParameterValuesTask parameterValuesTask, 
+         IInteractionTaskContext interactionTaskContext,
+         IEditTaskFor<IContainer> editTask,
+         IObjectPathFactory objectPathFactory,
+         IParameterValuesTask parameterValuesTask,
          IInitialConditionsTask<InitialConditionsBuildingBlock> initialConditionsTask) : base(interactionTaskContext, editTask, objectPathFactory, parameterValuesTask, initialConditionsTask)
+      {
+      }
+
+      protected override void PerformPostAddActions(IContainer entity, IContainer parent, IBuildingBlock buildingBlock)
       {
       }
 
@@ -41,6 +43,6 @@ namespace MoBi.Presentation.Tasks.Interaction
       protected override IMoBiCommand AddNeighborhoodsToSpatialStructure(IReadOnlyList<NeighborhoodBuilder> neighborhoods, MoBiSpatialStructure spatialStructure)
       {
          return AddTo(neighborhoods, spatialStructure.NeighborhoodsContainer, spatialStructure);
-      }  
+      }
    }
 }

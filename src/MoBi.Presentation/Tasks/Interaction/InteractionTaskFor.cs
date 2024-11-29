@@ -2,7 +2,6 @@
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
-using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
 using MoBi.Core.Events;
@@ -103,23 +102,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       protected virtual void PerformPostAddActions(TChild newEntity, TParent parent, IBuildingBlock buildingBlockToAddTo)
       {
-         var container = (newEntity as Container);
-         if (container == null)
-            return;
-
-         if (container.Mode == ContainerMode.Logical)
-         {
-            var moleculeProperties = GetMoleculePropertiesForContainer(container);
-
-            foreach (var item in moleculeProperties)
-            {
-               container.RemoveChild(item);
-            }
-         }
       }
-
-      
-
 
       /// <summary>
       ///    Sets the command description after the new object is named.
