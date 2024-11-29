@@ -11,6 +11,7 @@ using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Tasks.Edit;
+using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
@@ -32,7 +33,7 @@ namespace MoBi.Presentation.Presenter
       void UpdateParentPath();
       string ContainerModeDisplayFor(ContainerMode mode);
       IReadOnlyList<ContainerMode> AllContainerModes { get; }
-      bool SetContainerMode(ContainerMode newContainerMode);
+      bool ConfirmAndSetContainerMode(ContainerMode newContainerMode);
       IReadOnlyList<ContainerType> AllContainerTypes { get; }
    }
 
@@ -47,6 +48,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IObjectPathFactory _objectPathFactory;
       private readonly IDialogCreator _dialogCreator;
       private bool _isNewEntity;
+      private IInteractionTasksForSpatialStructure _interactionTasksForSpatialStructure;
 
       public EditContainerPresenter(
          IEditContainerView view,
@@ -57,7 +59,8 @@ namespace MoBi.Presentation.Presenter
          ITagsPresenter tagsPresenter,
          IApplicationController applicationController,
          IObjectPathFactory objectPathFactory,
-         IDialogCreator dialogCreator)
+         IDialogCreator dialogCreator,
+         IInteractionTasksForSpatialStructure interactionTasksForSpatialStructure)
          : base(view, editParametersInContainerPresenter, context, editTasks)
       {
          _dialogCreator = dialogCreator;
@@ -66,6 +69,7 @@ namespace MoBi.Presentation.Presenter
          _applicationController = applicationController;
          _editTasks = editTasks;
          _objectPathFactory = objectPathFactory;
+         _interactionTasksForSpatialStructure = interactionTasksForSpatialStructure;
          _view.AddParameterView(editParametersInContainerPresenter.BaseView);
          _view.AddTagsView(_tagsPresenter.BaseView);
          AddSubPresenters(_tagsPresenter);
@@ -106,7 +110,7 @@ namespace MoBi.Presentation.Presenter
          _view.BindTo(_containerDTO);
       }
 
-      public bool SetContainerMode(ContainerMode newContainerMode)
+      public bool ConfirmAndSetContainerMode(ContainerMode newContainerMode)
       {
          if (_isNewEntity)
          {
@@ -121,25 +125,23 @@ namespace MoBi.Presentation.Presenter
                return false;
          }
 
-         var oldContainerMode = newContainerMode == ContainerMode.Physical ? ContainerMode.Logical : ContainerMode.Physical;
+         var oldContainerMode = _container.Mode;
+
          var macroCommand = new MoBiMacroCommand
          {
-            ObjectType = _container.Name,
+            ObjectType = ObjectTypes.Container,
             Description = AppConstants.Commands.EditDescription(ObjectTypes.Container, AppConstants.Captions.ContainerMode, oldContainerMode.ToString(), newContainerMode.ToString(), _container.Name),
             CommandType = AppConstants.Commands.UpdateCommand,
          };
 
-         macroCommand.Add(new SetContainerModeCommand(BuildingBlock, _container, newContainerMode));
+         macroCommand.Add(_editTasks.SetContainerMode(BuildingBlock, _container, newContainerMode));
 
          if (newContainerMode == ContainerMode.Logical)
          {
-            var moleculeProperties = _container.Children
-               .OfType<IContainer>()
-               .Where(child => child.IsMoleculeProperties())
-               .ToList();
+            var moleculeProperties = GetMoleculePropertiesForContainer(_container);
 
             if (moleculeProperties.Any())
-               macroCommand.Add(new RemoveContainerFromSpatialStructureCommand(_container, moleculeProperties.FirstOrDefault(), (MoBiSpatialStructure)BuildingBlock));
+               macroCommand.Add(new RemoveContainerFromSpatialStructureCommand(_container, moleculeProperties.FirstOrDefault(), (MoBiSpatialStructure)BuildingBlock).RunCommand(_context));
          }
          else
          {
@@ -147,10 +149,10 @@ namespace MoBi.Presentation.Presenter
                .WithName(Constants.MOLECULE_PROPERTIES)
                .WithMode(ContainerMode.Logical);
 
-            macroCommand.Add(new AddContainerToSpatialStructureCommand(_container, moleculeProperties, (MoBiSpatialStructure)BuildingBlock));
+            macroCommand.Add(new AddContainerToSpatialStructureCommand(_container, moleculeProperties, (MoBiSpatialStructure)BuildingBlock).RunCommand(_context));
          }
 
-         AddCommand(macroCommand.RunCommand(_context));
+         AddCommand(macroCommand);
          return true;
       }
 
@@ -181,7 +183,8 @@ namespace MoBi.Presentation.Presenter
       public override void Edit(IContainer container, IReadOnlyList<IObjectBase> existingObjectsInParent)
       {
          _container = container;
-         _isNewEntity = string.IsNullOrEmpty(_container?.Name);
+         //an unnamed container means it is being created now, since the name is mandatory over the creation.
+         _isNewEntity = string.IsNullOrEmpty(_container.Name);
          base.Edit(container, existingObjectsInParent);
          _containerDTO = _containerMapper.MapFrom(_container);
          _containerDTO.AddUsedNames(_editTasks.GetForbiddenNamesWithoutSelf(container, existingObjectsInParent));

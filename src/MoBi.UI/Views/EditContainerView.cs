@@ -26,7 +26,7 @@ namespace MoBi.UI.Views
       protected bool _readOnly;
       private readonly UserLookAndFeel _lookAndFeel;
 
-      public EditContainerView(UserLookAndFeel lookAndFeel, IDialogCreator dialogCreator)
+      public EditContainerView(UserLookAndFeel lookAndFeel)
       {
          _lookAndFeel = lookAndFeel;
          InitializeComponent();
@@ -40,7 +40,7 @@ namespace MoBi.UI.Views
             .To(cbContainerMode)
             .WithValues(dto => _presenter.AllContainerModes)
             .AndDisplays(mode => _presenter.ContainerModeDisplayFor(mode))
-            .OnValueUpdating += (o, e) => ConfirmAndExecuteContainerModeChange(e.NewValue);
+            .OnValueUpdating += (o, e) => executeContainerModeChange(e.NewValue);
 
          _screenBinder.Bind(dto => dto.ContainerType)
             .To(cbContainerType)
@@ -66,11 +66,11 @@ namespace MoBi.UI.Views
          btParentPath.ButtonClick += (o, e) => OnEvent(_presenter.UpdateParentPath);
       }
 
-      private void ConfirmAndExecuteContainerModeChange(ContainerMode newMode)
+      private void executeContainerModeChange(ContainerMode newMode)
       {
          OnEvent(() =>
          {
-            var result = _presenter.SetContainerMode(newMode);
+            var result = _presenter.ConfirmAndSetContainerMode(newMode);
             if (!result)
                cbContainerMode.SelectedIndex = 0;
          });

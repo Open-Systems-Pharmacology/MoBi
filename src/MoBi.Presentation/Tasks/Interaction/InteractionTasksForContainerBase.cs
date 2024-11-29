@@ -2,6 +2,7 @@
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
+using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Core.Serialization.Exchange;
@@ -44,6 +45,16 @@ namespace MoBi.Presentation.Tasks.Interaction
          return newEntity;
       }
 
+      protected virtual List<IContainer> GetMoleculePropertiesForContainer(Container container)
+      {
+         var moleculeProperties = container?.Children
+            .OfType<IContainer>()
+            .Where(child => child.IsMoleculeProperties())
+            .ToList() ?? new List<IContainer>();
+
+         return moleculeProperties;
+      }
+      
       private MoBiSpatialStructure getSpatialStructure(IBuildingBlock buildingBlockWithFormulaCache)
       {
          return buildingBlockWithFormulaCache as MoBiSpatialStructure ?? _interactionTaskContext.Active<MoBiSpatialStructure>();
@@ -118,8 +129,6 @@ namespace MoBi.Presentation.Tasks.Interaction
          parameterValuesBuildingBlock.Name = parameterValuesBuildingBlock.Name.Replace(oldName, newName);
          parameterValuesBuildingBlock.Each(x => { x.ContainerPath.Replace(oldName, newName); });
       }
-
-
 
       private (MoBiSpatialStructure, ParameterValuesBuildingBlock, InitialConditionsBuildingBlock) loadFromPKML(string filename)
       {

@@ -109,10 +109,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          if (container.Mode == ContainerMode.Logical)
          {
-            var moleculeProperties = container.Children
-               .OfType<IContainer>() 
-               .Where(child => child.IsMoleculeProperties())
-               .ToList();
+            var moleculeProperties = GetMoleculePropertiesForContainer(container);
 
             foreach (var item in moleculeProperties)
             {
@@ -120,6 +117,9 @@ namespace MoBi.Presentation.Tasks.Interaction
             }
          }
       }
+
+      
+
 
       /// <summary>
       ///    Sets the command description after the new object is named.

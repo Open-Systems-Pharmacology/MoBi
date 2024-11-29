@@ -265,7 +265,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.SetContainerMode(ContainerMode.Logical);
+         sut.ConfirmAndSetContainerMode(ContainerMode.Logical);
       }
 
       [Observation]
@@ -289,7 +289,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.SetContainerMode(ContainerMode.Logical);
+         sut.ConfirmAndSetContainerMode(ContainerMode.Logical);
       }
 
       [Observation]
