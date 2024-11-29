@@ -14,6 +14,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
+using System.Runtime.Remoting.Contexts;
 
 namespace MoBi.Core.Service
 {
@@ -114,6 +115,61 @@ namespace MoBi.Core.Service
       public void the_notification_area_should_be_cleared()
       {
          A.CallTo(() => _context.PublishEvent(A<ClearNotificationsEvent>.That.Matches(x => x.MessageOrigin.Equals(MessageOrigin.Simulation)))).MustHaveHappened();
+      }
+   }
+
+   public class When_configuring_and_adding_a_simulation : concern_for_SimulationUpdateTask
+   {
+      private IMoBiSimulation _simulationToConfigure;
+      private IModel _model;
+      private MoBiProject _moBiProject;
+
+      protected override void Context()
+      {
+         base.Context();
+         _moBiProject = new MoBiProject();
+         _simulationToConfigure = new MoBiSimulation { Model = new Model { Root = new Container() }.WithName("OLD_MODEL") };
+         _simulationToConfigure.AddOriginalQuantityValue(new OriginalQuantityValue { Path = "a path" });
+         _simulationToConfigure.Configuration = new SimulationConfiguration();
+         _model = new Model().WithName("NEW MODEL");
+         _model.Root = new Container();
+         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._, A<string>._)).Returns(_model);
+         A.CallTo(() => _context.CurrentProject).Returns(_moBiProject);
+      }
+
+      protected override void Because()
+      {
+         sut.ConfigureSimulationAndAddToProject(_simulationToConfigure);
+      }
+
+      [Observation]
+      public void the_simulation_is_added_to_the_project()
+      {
+         _moBiProject.Simulations.ShouldContain(_simulationToConfigure);
+      }
+
+      [Observation]
+      public void the_notification_area_should_be_cleared()
+      {
+         A.CallTo(() => _context.PublishEvent(A<ClearNotificationsEvent>.That.Matches(x => x.MessageOrigin.Equals(MessageOrigin.Simulation)))).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_start_the_configure_workflow_for_the_user()
+      {
+         A.CallTo(() => _configurePresenter.CreateBasedOn(_simulationToConfigure, false)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_original_quantities_should_be_cleared()
+      {
+         _simulationToConfigure.OriginalQuantityValues.ShouldBeEmpty();
+      }
+
+      [Observation]
+      public void should_create_a_new_simulation_using_the_build_configuration_setup_by_the_user()
+      {
+         _simulationToConfigure.Model.ShouldBeEqualTo(_model);
       }
    }
 

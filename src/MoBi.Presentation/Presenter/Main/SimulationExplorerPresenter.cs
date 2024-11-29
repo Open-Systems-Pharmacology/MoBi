@@ -155,6 +155,12 @@ namespace MoBi.Presentation.Presenter.Main
       private void reCreateSimulationNode(IMoBiSimulation simulation)
       {
          var simulationNode = _view.NodeById(simulation.Id);
+
+         // In case of a cloned simulation, the reload event will be published by the command
+         // before the simulation is added to the project
+         if (simulationNode == null)
+            return;
+
          bool simulationNodeExpanded = _view.IsNodeExpanded(simulationNode);
          var parentNode = simulationNode.ParentNode.DowncastTo<ITreeNode<IClassification>>();
          RemoveNodeFor(simulation);
