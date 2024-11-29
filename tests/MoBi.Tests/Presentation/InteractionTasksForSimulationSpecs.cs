@@ -131,9 +131,9 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void the_new_simulation_is_added_to_the_project_by_command()
+      public void the_new_simulation_is_not_added_to_the_project_by_command()
       {
-         _moBiProject.Simulations.ShouldContain(_clonedSimulation);
+         _moBiProject.Simulations.ShouldNotContain(_clonedSimulation);
       }
 
       [Observation]

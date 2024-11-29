@@ -7,6 +7,7 @@ using MoBi.Core.Events;
 using MoBi.Core.Extensions;
 using MoBi.Core.Services;
 using MoBi.Presentation.Presenter;
+using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
@@ -30,6 +31,8 @@ namespace MoBi.Presentation.Tasks
       ICommand UpdateSimulationOutputSelections(IMoBiSimulation simulation);
 
       ICommand UpdateSimulationSolverAndSchema(IMoBiSimulation simulationToUpdate);
+
+      ICommand ConfigureSimulationAndAddToProject(IMoBiSimulation clonedSimulation);
    }
 
    public class SimulationUpdateTask : ISimulationUpdateTask
@@ -66,6 +69,21 @@ namespace MoBi.Presentation.Tasks
          return new UpdateSolverAndSchemaInSimulationCommand(simulationToUpdate, newSimulationSettings.Solver, newSimulationSettings.OutputSchema).RunCommand(_context);
       }
 
+      public ICommand ConfigureSimulationAndAddToProject(IMoBiSimulation clonedSimulation)
+      {
+         var macroCommand = new MoBiMacroCommand
+         {
+            ObjectType = ObjectTypes.Simulation,
+            CommandType = AppConstants.Commands.AddCommand,
+            Description = AppConstants.Commands.AddToProjectDescription(ObjectTypes.Simulation, clonedSimulation.Name)
+         };
+
+         macroCommand.Add(ConfigureSimulation(clonedSimulation));
+         macroCommand.Add(new AddSimulationCommand(clonedSimulation).RunCommand(_context));
+
+         return macroCommand;
+      }
+
       public ICommand UpdateSimulationOutputSelections(IMoBiSimulation simulation)
       {
          return new UpdateOutputSelectionsInSimulationCommand(_cloneManager.Clone(_context.CurrentProject.SimulationSettings).OutputSelections, simulation).RunCommand(_context);
@@ -100,15 +118,7 @@ namespace MoBi.Presentation.Tasks
 
          updateSimulationCommand.RunCommand(_context);
 
-         var macro = new MoBiMacroCommand
-         {
-            Description = updateSimulationCommand.Description,
-            CommandType = updateSimulationCommand.CommandType,
-            ObjectType = updateSimulationCommand.ObjectType
-         };
-
-         macro.Add(updateSimulationCommand);
-         return macro;
+         return updateSimulationCommand;
       }
 
       private SimulationConfiguration createSimulationConfigurationToUseInSimulation(SimulationConfiguration simulationConfiguration)

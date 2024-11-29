@@ -25,7 +25,7 @@ namespace MoBi.Presentation.UICommand
          if (clonedSimulation == null) 
             return;
 
-         _context.AddToHistory(_simulationUpdateTask.ConfigureSimulation(clonedSimulation));
+         _context.AddToHistory(_simulationUpdateTask.ConfigureSimulationAndAddToProject(clonedSimulation));
       }
    }
 }

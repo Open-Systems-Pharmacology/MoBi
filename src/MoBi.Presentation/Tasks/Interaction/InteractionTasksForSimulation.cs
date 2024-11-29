@@ -193,8 +193,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          // during cloning, we don't need to track the rename in history since the simulation is not yet added to the project
          new RenameModelCommand(newSimulation.Model, newName).RunCommand(_interactionTaskContext.Context);
-         _interactionTaskContext.Context.AddToHistory(new AddSimulationCommand(newSimulation).RunCommand(_interactionTaskContext.Context));
-
+         
          return newSimulation;
       }
 
