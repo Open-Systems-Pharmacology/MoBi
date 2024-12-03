@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
@@ -23,7 +24,7 @@ namespace MoBi.Presentation
    {
       protected IEditContainerView _view;
       private IContainerToContainerDTOMapper _containerMapper;
-      private IEditTaskForContainer _editTasks;
+      protected IEditTaskForContainer _editTasks;
       protected IEditParametersInContainerPresenter _parametersInContainerPresenter;
       protected IMoBiContext _context;
       private ITagsPresenter _tagsPresenter;
@@ -241,8 +242,8 @@ namespace MoBi.Presentation
 
    internal class When_setting_container_mode_to_new_container : concern_for_EditContainerPresenter
    {
-      protected IContainer _muscle;
-      protected MoBiSpatialStructure _spatialStructure;
+      private IContainer _muscle;
+      private MoBiSpatialStructure _spatialStructure;
 
       protected override void Context()
       {
@@ -275,16 +276,33 @@ namespace MoBi.Presentation
       }
    }
 
-   internal class When_setting_container_mode_to_existing_container : When_setting_container_mode_to_new_container
+   internal class When_setting_container_mode_to_existing_container : concern_for_EditContainerPresenter
    {
+      private IContainer _muscle;
+      private MoBiSpatialStructure _spatialStructure;
+
       protected override void Context()
       {
          base.Context();
+         _muscle = new Container { ParentPath = new ObjectPath("A", "B") };
+         _spatialStructure = new MoBiSpatialStructure
+         {
+            NeighborhoodsContainer = new Container(),
+            DiagramManager = A.Fake<IDiagramManager<MoBiSpatialStructure>>()
+         };
+         _spatialStructure.AddTopContainer(_muscle);
          _muscle.Mode = ContainerMode.Physical;
-         _muscle.Name = "Muscle";
+         var moleculeProperties = _context.Create<IContainer>()
+            .WithName(Constants.MOLECULE_PROPERTIES)
+            .WithMode(ContainerMode.Logical);
+         _muscle.Add(moleculeProperties);
          sut.BuildingBlock = _spatialStructure;
+         _muscle.Name = "Muscle";
          sut.Edit(_muscle);
          A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>.Ignored, A<ViewResult>.Ignored)).Returns(ViewResult.Yes);
+         A.CallTo(() => _editTasks.GetMoleculeProperties(_muscle)).Returns(new List<IContainer>() { moleculeProperties });
+         A.CallTo(() => _editTasks.SetContainerMode(A<IBuildingBlock>.Ignored, _muscle,ContainerMode.Logical)).Returns(new SetContainerModeCommand(new MoBiSpatialStructure(),_muscle, ContainerMode.Logical));
+         
       }
 
       protected override void Because()
