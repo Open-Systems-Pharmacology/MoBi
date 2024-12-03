@@ -1650,6 +1650,7 @@ namespace MoBi.Assets
          public static readonly string SimulationChangesSinceConfiguration = "Simulation changes since configuration";
          public static readonly string OriginalValue = "Original Value";
          public static readonly string CurrentValue = "Current Value";
+         public static readonly string CreateProcessRateParameters = "Create all process rates in simulation";
          public static string SelectTheBuildingBlockWhereEntitiesWillBeAddedOrUpdated(string typeBeingAdded) => $"Select the building block where {typeBeingAdded} will be added or updated";
          public static readonly string SelectBuildingBlock = "Select Building Block";
          public static readonly string MakeDefault = "Make defaults";
