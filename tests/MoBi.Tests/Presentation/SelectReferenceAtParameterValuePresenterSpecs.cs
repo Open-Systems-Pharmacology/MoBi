@@ -83,7 +83,7 @@ namespace MoBi.Presentation
       }
    }
 
-   internal class When_selecting_molecule_properties : concern_for_SelectReferenceAtParameterValuePresenter
+   internal class When_selecting_molecule_properties_with_global_params : concern_for_SelectReferenceAtParameterValuePresenter
    {
       private ObjectBaseDTO _parameter1;
       private ObjectBaseDTO _parameter2;
@@ -104,6 +104,7 @@ namespace MoBi.Presentation
          _parameter1 = new ObjectBaseDTO(new Parameter().WithId("1").WithParentContainer(moleculeProperties));
          _parameter2 = new ObjectBaseDTO(new Parameter().WithId("2"));
          _dtoMoleculeParameter = new DummyParameterDTO(parameter).WithName("parameter");
+         parameter.BuildMode = ParameterBuildMode.Global;
          _dtoMoleculeParameter.Id = _moleculeParameterId;
          _dtoMoleculeParameter.ModelParentName = _modelParentName;
          A.CallTo(() => _context.Get<IEntity>(A<string>._)).ReturnsLazily(objectBaseForId);
@@ -153,9 +154,94 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void the_selected_should_contain_model_parent_name()
+      public void the_selected_should_contain_model_parent_name_for_global_build_mode()
       {
          _selectedSections.Count(x => x.PathAsString.Contains(_modelParentName)).ShouldBeEqualTo(3);
+      }
+   }
+
+   internal class When_selecting_molecule_properties_with_local_params : concern_for_SelectReferenceAtParameterValuePresenter
+   {
+      private DummyParameterDTO _dtoGlobalMoleculeParameter;
+      private DummyParameterDTO _dtoLocalMoleculeParameter;
+      private IReadOnlyList<ObjectPath> _selectedSections;
+      private readonly string _globalMoleculeParameterId = "GlobalMoleculeParameterId";
+      private readonly string _localMoleculeParameterId = "LocalMoleculeParameterId";
+      private readonly string _modelParentName = "modelParentName";
+      private readonly string _parentContainer = "ParentContainer";
+
+      protected override void Context()
+      {
+         base.Context();
+         var globalParameter = new Parameter().WithName("parameter").WithId(_globalMoleculeParameterId);
+         globalParameter.BuildMode = ParameterBuildMode.Global;
+         var localParameter = new Parameter().WithName("parameter").WithId(_localMoleculeParameterId);
+         localParameter.BuildMode = ParameterBuildMode.Local;
+
+         _dtoGlobalMoleculeParameter = new DummyParameterDTO(globalParameter).WithName("globalParameter");
+         _dtoGlobalMoleculeParameter.Id = _globalMoleculeParameterId;
+         _dtoGlobalMoleculeParameter.ModelParentName = _modelParentName;
+
+         _dtoLocalMoleculeParameter = new DummyParameterDTO(localParameter).WithName("localParameter");
+         _dtoLocalMoleculeParameter.Id = _localMoleculeParameterId;
+         _dtoLocalMoleculeParameter.Parent = new Container().WithName(_parentContainer).WithId("Mol1");
+
+         A.CallTo(() => _context.Get<IEntity>(A<string>._)).ReturnsLazily(objectBaseForId);
+         A.CallTo(() => _view.AllSelectedDTOs).Returns(new[] { _dtoLocalMoleculeParameter, _dtoGlobalMoleculeParameter });
+         int callCount = 0;
+         A.CallTo(() => _objectPathFactory.CreateAbsoluteObjectPath(A<IEntity>.Ignored))
+            .ReturnsLazily(() =>
+            {
+               callCount++;
+               switch (callCount)
+               {
+                  case 1:
+                     return new ObjectPath("Mol1|Path1|Item1");
+                  case 2:
+                     return new ObjectPath($"{Constants.MOLECULE_PROPERTIES}|Path1|Item3");
+                  default:
+                     return null;
+               }
+            });
+      }
+
+      private IEntity objectBaseForId(IFakeObjectCall x)
+      {
+         var id = x.Arguments.Get<string>(0);
+         if (id == _globalMoleculeParameterId)
+         {
+            return _dtoGlobalMoleculeParameter.ObjectBase as IEntity;
+         }
+
+         if (id == _localMoleculeParameterId)
+         {
+            return _dtoLocalMoleculeParameter.ObjectBase as IEntity;
+         }
+
+         return null;
+      }
+
+      protected override void Because()
+      {
+         _selectedSections = sut.GetAllSelections();
+      }
+
+      [Observation]
+      public void the_selected_should_not_contain_molecule_properties()
+      {
+         _selectedSections.Any(x => x.PathAsString.Contains(Constants.MOLECULE_PROPERTIES)).ShouldBeFalse();
+      }
+
+      [Observation]
+      public void the_selected_global_parameters_should_have_correct_path()
+      {
+         _selectedSections.Count(x => x.PathAsString.Contains(_parentContainer)).ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void the_selected_local_parameters_should_have_correct_path()
+      {
+         _selectedSections.Count(x => x.PathAsString.Contains(_modelParentName)).ShouldBeEqualTo(1);
       }
    }
 
@@ -314,7 +400,7 @@ namespace MoBi.Presentation
          _individualBuildingBlock = new IndividualBuildingBlock().WithId("1");
          var pathAndValueEntity = new IndividualParameter().WithId("2");
          pathAndValueEntity.Path = new ObjectPath("Root", "Container", "distributed parameter");
-         
+
          pathAndValueEntity.DistributionType = DistributionType.Normal;
          _individualBuildingBlock.Add(pathAndValueEntity);
 
