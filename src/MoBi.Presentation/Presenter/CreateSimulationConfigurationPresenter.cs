@@ -25,7 +25,7 @@ namespace MoBi.Presentation.Presenter
 
    public class CreateSimulationConfigurationPresenter : WizardPresenter<ICreateSimulationConfigurationView, ICreateSimulationConfigurationPresenter, ISimulationConfigurationItemPresenter>, ICreateSimulationConfigurationPresenter
    {
-      private ObjectBaseDTO _simulationDTO;
+      private SimulationDTO _simulationDTO;
       private readonly IForbiddenNamesRetriever _forbiddenNamesRetriever;
       protected readonly IUserSettings _userSettings;
       private readonly IModuleConfigurationDTOToModuleConfigurationMapper _moduleConfigurationMapper;
@@ -75,7 +75,9 @@ namespace MoBi.Presentation.Presenter
 
       private void edit(IMoBiSimulation simulation, bool allowNaming)
       {
-         _simulationDTO = new ObjectBaseDTO(simulation).WithName(simulation.Name);
+         _simulationDTO = new SimulationDTO(simulation).WithName(simulation.Name);
+         _simulationDTO.CreateAllProcessRateParameters = simulation.Configuration.CreateAllProcessRateParameters;
+         
          if (allowNaming)
             _simulationDTO.AddUsedNames(nameOfSimulationAlreadyUsed(simulation));
          else
@@ -112,6 +114,8 @@ namespace MoBi.Presentation.Presenter
 
          simulationConfiguration.ShouldValidate = true;
          simulationConfiguration.PerformCircularReferenceCheck = _userSettings.CheckCircularReference;
+
+         simulationConfiguration.CreateAllProcessRateParameters = _simulationDTO.CreateAllProcessRateParameters;
       }
    }
 }

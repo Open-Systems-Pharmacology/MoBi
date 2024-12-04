@@ -15,12 +15,12 @@ namespace MoBi.UI.Views
 {
    public partial class CreateSimulationConfigurationView : WizardView, ICreateSimulationConfigurationView
    {
-      private readonly ScreenBinder<ObjectBaseDTO> _screenBinder;
+      private readonly ScreenBinder<SimulationDTO> _screenBinder;
 
       public CreateSimulationConfigurationView()
       {
          InitializeComponent();
-         _screenBinder = new ScreenBinder<ObjectBaseDTO>();
+         _screenBinder = new ScreenBinder<SimulationDTO>();
          ClientSize = new Size(UIConstants.UI.SIMULATION_VIEW_WIDTH, UIConstants.UI.SIMULATION_VIEW_HEIGHT);
       }
 
@@ -33,6 +33,7 @@ namespace MoBi.UI.Views
       {
          base.InitializeBinding();
          _screenBinder.Bind(x => x.Name).To(tbName);
+         _screenBinder.Bind(x => x.CreateAllProcessRateParameters).To(cbCreateProcessRate);
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
       }
 
@@ -41,7 +42,7 @@ namespace MoBi.UI.Views
          WizardPresenter = presenter;
       }
 
-      public void BindTo(ObjectBaseDTO simulationDTO)
+      public void BindTo(SimulationDTO simulationDTO)
       {
          _screenBinder.BindToSource(simulationDTO);
          NotifyViewChanged();
@@ -58,6 +59,7 @@ namespace MoBi.UI.Views
          layoutItemName.Text = AppConstants.Captions.Name.FormatForLabel();
          ApplicationIcon = ApplicationIcons.Simulation;
          Caption = AppConstants.Captions.SimulationConfigurationWizard;
+         cbCreateProcessRate.Text = AppConstants.Captions.CreateProcessRateParameters;
          this.ResizeForCurrentScreen(fractionHeight: UIConstants.UI.SCREEN_RESIZE_FRACTION, fractionWidth: UIConstants.UI.SCREEN_RESIZE_FRACTION);
       }
 
