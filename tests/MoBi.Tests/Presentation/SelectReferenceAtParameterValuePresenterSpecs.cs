@@ -196,7 +196,7 @@ namespace MoBi.Presentation
                switch (callCount)
                {
                   case 1:
-                     return new ObjectPath("Mol1|Path1|Item1");
+                     return new ObjectPath($"{_parentContainer}|Path1|Item1");
                   case 2:
                      return new ObjectPath($"{Constants.MOLECULE_PROPERTIES}|Path1|Item3");
                   default:

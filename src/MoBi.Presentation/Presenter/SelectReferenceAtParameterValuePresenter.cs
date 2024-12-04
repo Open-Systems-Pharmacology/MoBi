@@ -99,32 +99,21 @@ namespace MoBi.Presentation.Presenter
 
       private ObjectPath getObjectPath(IEntity item, DummyParameterDTO matchingDto)
       {
-         var itemAsPath = CreatePathFor(item);
-
-         if (item is Parameter itemParam && matchingDto != null)
+         if (shouldUseParameterPath(item, matchingDto))
          {
-            if (itemParam.BuildMode == ParameterBuildMode.Local)
-            {
-               itemAsPath = getObjectPathForParameter(matchingDto);
-            }
+            var returnPath = _objectPathFactory.CreateAbsoluteObjectPath(matchingDto.Parent);
+            returnPath.Add(matchingDto.Name);
+            return returnPath;
          }
 
-         return itemAsPath;
+         return CreatePathFor(item);
       }
 
-      private ObjectPath getObjectPathForParameter(DummyParameterDTO parameter)
+      private bool shouldUseParameterPath(IEntity item, DummyParameterDTO matchingDto)
       {
-         var container = parameter.Parent;
-         var objectPath = new ObjectPath();
-         while (container != null)
-         {
-            objectPath.AddAtFront(container.Name);
-
-            container = container.ParentContainer;
-         }
-
-         objectPath.Add(parameter.Name);
-         return objectPath;
+         return item is Parameter itemParam
+                && matchingDto != null
+                && itemParam.BuildMode == ParameterBuildMode.Local;
       }
 
       private IContainer containerFrom(ObjectBaseDTO dto)
