@@ -283,7 +283,7 @@ namespace MoBi.Assets
 
          public static string CommitingChangesToModulesMessage(ModuleConfiguration moduleConfiguration, bool hasMoleculeChanges, bool hasParameterChanges)
          {
-            string message = $"Changed parameter values will be committed to the parameter values of the module <i>{moduleConfiguration.Module.Name}</i>:{Environment.NewLine}";
+            string message = $"Changed parameter values will be committed to the parameter values building block of the module <i>{moduleConfiguration.Module.Name}</i>:{Environment.NewLine}";
 
             if (hasMoleculeChanges)
             {
