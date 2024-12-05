@@ -42,7 +42,7 @@ namespace MoBi.Presentation.Tasks.Edit
       string IconFor(IObjectBase objectBase);
       void SaveMultiple(IReadOnlyList<T> entitiesToSerialize);
 
-      List<IContainer> GetMoleculeProperties(IContainer container);
+      IContainer GetMoleculeProperties(IContainer container);
    }
 
    public abstract class EditTaskFor<T> : IEditTaskFor<T> where T : class, IObjectBase
@@ -220,10 +220,7 @@ namespace MoBi.Presentation.Tasks.Edit
          }
       }
 
-      public List<IContainer> GetMoleculeProperties(IContainer container) =>
-         container?.Children
-            .OfType<IContainer>()
-            .Where(child => child.IsMoleculeProperties())
-            .ToList() ?? new List<IContainer>();
+      public IContainer GetMoleculeProperties(IContainer container) =>
+         container?.Container(Constants.MOLECULE_PROPERTIES);
    }
 }

@@ -300,7 +300,7 @@ namespace MoBi.Presentation
          _muscle.Name = "Muscle";
          sut.Edit(_muscle);
          A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>.Ignored, A<ViewResult>.Ignored)).Returns(ViewResult.Yes);
-         A.CallTo(() => _editTasks.GetMoleculeProperties(_muscle)).Returns(new List<IContainer>() { moleculeProperties });
+         A.CallTo(() => _editTasks.GetMoleculeProperties(_muscle)).Returns(moleculeProperties);
          A.CallTo(() => _editTasks.SetContainerMode(A<IBuildingBlock>.Ignored, _muscle,ContainerMode.Logical)).Returns(new SetContainerModeCommand(new MoBiSpatialStructure(),_muscle, ContainerMode.Logical));
          
       }

@@ -34,10 +34,9 @@ namespace MoBi.Presentation.Tasks.Interaction
          {
             var moleculeProperties = _editTask.GetMoleculeProperties(newEntity);
 
-            foreach (var item in moleculeProperties)
-            {
-               newEntity.RemoveChild(item);
-            }
+            if(moleculeProperties != null)
+               newEntity.RemoveChild(moleculeProperties);
+            
          }
       }
 

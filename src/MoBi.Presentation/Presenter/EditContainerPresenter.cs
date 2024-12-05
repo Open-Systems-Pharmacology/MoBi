@@ -136,8 +136,8 @@ namespace MoBi.Presentation.Presenter
          {
             var moleculeProperties = _editTasks.GetMoleculeProperties(_container);
 
-            if (moleculeProperties.Any())
-               macroCommand.Add(new RemoveContainerFromSpatialStructureCommand(_container, moleculeProperties.FirstOrDefault(), (MoBiSpatialStructure)BuildingBlock).RunCommand(_context));
+            if (moleculeProperties!= null)
+               macroCommand.Add(new RemoveContainerFromSpatialStructureCommand(_container, moleculeProperties, (MoBiSpatialStructure)BuildingBlock).RunCommand(_context));
          }
          else
          {
