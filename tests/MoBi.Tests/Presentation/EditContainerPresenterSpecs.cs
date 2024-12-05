@@ -1,18 +1,20 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
-using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Utility.Extensions;
 
@@ -22,16 +24,18 @@ namespace MoBi.Presentation
    {
       protected IEditContainerView _view;
       private IContainerToContainerDTOMapper _containerMapper;
-      private IEditTaskForContainer _editTasks;
+      protected IEditTaskForContainer _editTasks;
       protected IEditParametersInContainerPresenter _parametersInContainerPresenter;
-      private IMoBiContext _context;
+      protected IMoBiContext _context;
       private ITagsPresenter _tagsPresenter;
       protected IApplicationController _applicationController;
       protected ICommandCollector _commandCollector;
       private IObjectPathFactory _objectPathFactory;
+      protected IDialogCreator _dialogCreator;
 
       protected override void Context()
       {
+         _dialogCreator = A.Fake<IDialogCreator>();
          _view = A.Fake<IEditContainerView>();
          _containerMapper = A.Fake<IContainerToContainerDTOMapper>();
          _editTasks = A.Fake<IEditTaskForContainer>();
@@ -40,7 +44,7 @@ namespace MoBi.Presentation
          _tagsPresenter = A.Fake<ITagsPresenter>();
          _applicationController = A.Fake<IApplicationController>();
          _objectPathFactory = A.Fake<IObjectPathFactory>();
-         sut = new EditContainerPresenter(_view, _containerMapper, _editTasks, _parametersInContainerPresenter, _context, _tagsPresenter, _applicationController, _objectPathFactory);
+         sut = new EditContainerPresenter(_view, _containerMapper, _editTasks, _parametersInContainerPresenter, _context, _tagsPresenter, _applicationController, _objectPathFactory, _dialogCreator);
          _commandCollector = new MoBiMacroCommand();
          sut.InitializeWith(_commandCollector);
       }
@@ -233,6 +237,92 @@ namespace MoBi.Presentation
       public void should_not_update_the_parent_path()
       {
          _container.ParentPath.PathAsString.ShouldBeEqualTo("A|B");
+      }
+   }
+
+   internal class When_setting_container_mode_to_new_container : concern_for_EditContainerPresenter
+   {
+      private IContainer _muscle;
+      private MoBiSpatialStructure _spatialStructure;
+
+      protected override void Context()
+      {
+         base.Context();
+         _muscle = new Container { ParentPath = new ObjectPath("A", "B") };
+         _spatialStructure = new MoBiSpatialStructure
+         {
+            NeighborhoodsContainer = new Container(),
+            DiagramManager = A.Fake<IDiagramManager<MoBiSpatialStructure>>()
+         };
+         _spatialStructure.AddTopContainer(_muscle);
+         _muscle.Mode = ContainerMode.Physical;
+         var moleculeProperties = _context.Create<IContainer>()
+            .WithName(Constants.MOLECULE_PROPERTIES)
+            .WithMode(ContainerMode.Logical);
+         _muscle.Add(moleculeProperties);
+         sut.Edit(_muscle);
+         sut.BuildingBlock = _spatialStructure;
+      }
+
+      protected override void Because()
+      {
+         sut.ConfirmAndSetContainerMode(ContainerMode.Logical);
+      }
+
+      [Observation]
+      public void should_change_mode()
+      {
+         _muscle.Mode.ShouldBeEqualTo(ContainerMode.Logical);
+      }
+   }
+
+   internal class When_setting_container_mode_to_existing_container : concern_for_EditContainerPresenter
+   {
+      private IContainer _muscle;
+      private MoBiSpatialStructure _spatialStructure;
+
+      protected override void Context()
+      {
+         base.Context();
+         _muscle = new Container { ParentPath = new ObjectPath("A", "B") };
+         _spatialStructure = new MoBiSpatialStructure
+         {
+            NeighborhoodsContainer = new Container(),
+            DiagramManager = A.Fake<IDiagramManager<MoBiSpatialStructure>>()
+         };
+         _spatialStructure.AddTopContainer(_muscle);
+         _muscle.Mode = ContainerMode.Physical;
+         var moleculeProperties = _context.Create<IContainer>()
+            .WithName(Constants.MOLECULE_PROPERTIES)
+            .WithMode(ContainerMode.Logical);
+         _muscle.Add(moleculeProperties);
+         sut.BuildingBlock = _spatialStructure;
+         _muscle.Name = "Muscle";
+         sut.Edit(_muscle);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>.Ignored, A<ViewResult>.Ignored)).Returns(ViewResult.Yes);
+         A.CallTo(() => _editTasks.GetMoleculeProperties(_muscle)).Returns(moleculeProperties);
+         A.CallTo(() => _editTasks.SetContainerMode(A<IBuildingBlock>.Ignored, _muscle,ContainerMode.Logical)).Returns(new SetContainerModeCommand(new MoBiSpatialStructure(),_muscle, ContainerMode.Logical));
+         
+      }
+
+      protected override void Because()
+      {
+         sut.ConfirmAndSetContainerMode(ContainerMode.Logical);
+      }
+
+      [Observation]
+      public void should_show_confirm_dialog()
+      {
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>.Ignored, A<ViewResult>.Ignored)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_create_the_macro_command_for_changing_mode()
+      {
+         _commandCollector.All().Any(x => x.IsAnImplementationOf<MoBiMacroCommand>()).ShouldBeTrue();
+         var macroCommand = (_commandCollector.All().FirstOrDefault() as MoBiMacroCommand);
+         macroCommand.All().Any(x => x.IsAnImplementationOf<SetContainerModeCommand>()).ShouldBeTrue();
+         macroCommand.All().Any(x => x.IsAnImplementationOf<RemoveContainerFromSpatialStructureCommand>()).ShouldBeTrue();
       }
    }
 }

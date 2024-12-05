@@ -102,7 +102,6 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       protected virtual void PerformPostAddActions(TChild newEntity, TParent parent, IBuildingBlock buildingBlockToAddTo)
       {
-         //by default nothing to do
       }
 
       /// <summary>

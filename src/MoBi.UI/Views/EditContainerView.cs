@@ -1,4 +1,5 @@
-﻿using DevExpress.LookAndFeel;
+﻿using System.Linq;
+using DevExpress.LookAndFeel;
 using DevExpress.XtraEditors.Controls;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
@@ -6,6 +7,7 @@ using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using MoBi.UI.Extensions;
 using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
@@ -34,10 +36,11 @@ namespace MoBi.UI.Views
       {
          base.InitializeBinding();
          _screenBinder = new ScreenBinder<ContainerDTO>();
-         _screenBinder.Bind(dto => dto.Mode).To(cbContainerMode)
+         _screenBinder.Bind(dto => dto.Mode)
+            .To(cbContainerMode)
             .WithValues(dto => _presenter.AllContainerModes)
             .AndDisplays(mode => _presenter.ContainerModeDisplayFor(mode))
-            .OnValueUpdating += (o, e) => OnEvent((() => _presenter.SetContainerMode(e.NewValue)));
+            .OnValueUpdating += (o, e) => executeContainerModeChange(o, e.NewValue);
 
          _screenBinder.Bind(dto => dto.ContainerType)
             .To(cbContainerType)
@@ -61,6 +64,18 @@ namespace MoBi.UI.Views
 
          btName.ButtonClick += (o, e) => OnEvent(_presenter.RenameSubject);
          btParentPath.ButtonClick += (o, e) => OnEvent(_presenter.UpdateParentPath);
+      }
+
+      private void executeContainerModeChange(ContainerDTO container, ContainerMode newMode)
+      {
+         OnEvent(() =>
+         {
+            var result = _presenter.ConfirmAndSetContainerMode(newMode);
+            cbContainerMode.SelectedIndex = _presenter.AllContainerModes.Select((mode, index) => new { mode, index })
+               .Where(x => x.mode == result)
+               .Select(x => x.index)
+               .FirstOrDefault();
+         });
       }
 
       public void Activate()

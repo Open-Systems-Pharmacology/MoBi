@@ -19,10 +19,25 @@ namespace MoBi.Presentation.Tasks.Interaction
          IEditTaskFor<IContainer> editTask,
          IObjectPathFactory objectPathFactory,
          IInteractionTasksForChildren<IContainer, IContainer> interactionTaskForNeighborhood,
-         IParameterValuesTask parameterValuesTask, 
+         IParameterValuesTask parameterValuesTask,
          IInitialConditionsTask<InitialConditionsBuildingBlock> initialConditionsTask) : base(interactionTaskContext, editTask, objectPathFactory, parameterValuesTask, initialConditionsTask)
       {
          _interactionTaskForNeighborhood = interactionTaskForNeighborhood;
+      }
+
+      protected override void PerformPostAddActions(IContainer newEntity, MoBiSpatialStructure parent, IBuildingBlock buildingBlockToAddTo)
+      {
+         if (newEntity == null)
+            return;
+
+         if (newEntity.Mode == ContainerMode.Logical)
+         {
+            var moleculeProperties = _editTask.GetMoleculeProperties(newEntity);
+
+            if(moleculeProperties != null)
+               newEntity.RemoveChild(moleculeProperties);
+            
+         }
       }
 
       public override IMoBiCommand GetRemoveCommand(IContainer entityToRemove, MoBiSpatialStructure parent, IBuildingBlock buildingBlock)
