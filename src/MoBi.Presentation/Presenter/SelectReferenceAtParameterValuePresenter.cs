@@ -66,22 +66,23 @@ namespace MoBi.Presentation.Presenter
             .OfType<DummyParameterDTO>()
             .ToList();
 
-         return replaceMoleculePropertiesWithMoleculeName(selectedItems, selectedDummyDtos);
+         return createObjectPathsForSelection(selectedItems, selectedDummyDtos);
       }
 
-      private IReadOnlyList<ObjectPath> replaceMoleculePropertiesWithMoleculeName(
+      private IReadOnlyList<ObjectPath> createObjectPathsForSelection(
          IReadOnlyList<IEntity> selectedItems,
          IReadOnlyList<DummyParameterDTO> selectedParameterDtos)
       {
          var newItems = new List<ObjectPath>();
          foreach (var item in selectedItems)
          {
-            var itemAsPath = CreatePathFor(item);
+            var matchingDto = selectedParameterDtos
+               .FirstOrDefault(dto => dto.Id == item.Id);
+
+            var itemAsPath = getObjectPath(item, matchingDto);
+
             if (itemAsPath.PathAsString.Contains(Constants.MOLECULE_PROPERTIES))
             {
-               var matchingDto = selectedParameterDtos
-                  .FirstOrDefault(dto => dto.Id == item.Id);
-
                if (matchingDto != null && !string.IsNullOrEmpty(matchingDto.ModelParentName))
                {
                   itemAsPath.ReplaceWith(itemAsPath.PathAsString
@@ -94,6 +95,25 @@ namespace MoBi.Presentation.Presenter
          }
 
          return newItems;
+      }
+
+      private ObjectPath getObjectPath(IEntity item, DummyParameterDTO matchingDto)
+      {
+         if (shouldUseParameterPath(item, matchingDto))
+         {
+            var returnPath = _objectPathFactory.CreateAbsoluteObjectPath(matchingDto.Parent);
+            returnPath.Add(matchingDto.Name);
+            return returnPath;
+         }
+
+         return CreatePathFor(item);
+      }
+
+      private bool shouldUseParameterPath(IEntity item, DummyParameterDTO matchingDto)
+      {
+         return item is Parameter itemParam
+                && matchingDto != null
+                && itemParam.BuildMode == ParameterBuildMode.Local;
       }
 
       private IContainer containerFrom(ObjectBaseDTO dto)
