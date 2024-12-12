@@ -305,9 +305,9 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_not_allow_localisation_change()
+      public void should_allow_localisation_change()
       {
-         _view.ChangeLocalisationAllowed.ShouldBeFalse();
+         _view.ChangeLocalisationAllowed.ShouldBeTrue();
       }
    }
 
