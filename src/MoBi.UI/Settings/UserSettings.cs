@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
+using System.Linq;
+using DevExpress.Utils;
 using DevExpress.XtraBars.Docking;
 using DevExpress.XtraBars.Ribbon;
 using MoBi.Assets;
 using MoBi.Core;
 using MoBi.Core.Domain;
+using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Presentation.Settings;
 using OSPSuite.Assets;
@@ -192,17 +196,12 @@ namespace MoBi.UI.Settings
       public void SaveLayout()
       {
          LayoutVersion = AppConstants.LayoutVersion;
-         MainViewLayout = mainViewLayoutToString();
+         var streamMainView = new MemoryStream();
+         _dockManager.SaveLayoutToStream(streamMainView);
+         MainViewLayout = streamToString(streamMainView);
          var streamRibbon = new MemoryStream();
          _ribbonManager.Ribbon.Toolbar.SaveLayoutToStream(streamRibbon);
          RibbonLayout = streamToString(streamRibbon);
-      }
-
-      private string mainViewLayoutToString()
-      {
-         var streamMainView = new MemoryStream();
-         _dockManager.SaveLayoutToStream(streamMainView);
-         return streamToString(streamMainView);
       }
 
       public void RestoreLayout()
@@ -210,7 +209,7 @@ namespace MoBi.UI.Settings
          if (LayoutVersion != AppConstants.LayoutVersion)
             resetLayout();
 
-         if (!MainViewLayout.IsNullOrEmpty()) 
+         if (!MainViewLayout.IsNullOrEmpty())
             _dockManager.RestoreFromStream(streamFromString(MainViewLayout));
 
          if (!RibbonLayout.IsNullOrEmpty())
