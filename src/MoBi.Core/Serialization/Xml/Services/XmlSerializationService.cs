@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Xml.Linq;
-using OSPSuite.Serializer.Xml;
-using OSPSuite.Serializer.Xml.Extensions;
-using OSPSuite.Utility.Compression;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
+using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Serialization.Converter;
@@ -15,6 +11,11 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Serialization.Xml;
+using OSPSuite.Serializer.Xml;
+using OSPSuite.Serializer.Xml.Extensions;
+using OSPSuite.Utility.Compression;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Serialization.Xml.Services
 {
@@ -38,10 +39,16 @@ namespace MoBi.Core.Serialization.Xml.Services
       private readonly ISerializationContextFactory _serializationContextFactory;
       private readonly IEventPublisher _eventPublisher;
       private readonly IDeserializedReferenceResolver _deserializedReferenceResolver;
+      private readonly IProjectConverterLogger _projectConverterLogger;
       private readonly IXmlSerializer<SerializationContext> _formulaCacheSerializer;
 
-      public XmlSerializationService(IMoBiXmlSerializerRepository repository, ICompression compression, IMoBiObjectConverterFinder objectConverterFinder,
-         ISerializationContextFactory serializationContextFactory, IEventPublisher eventPublisher, IDeserializedReferenceResolver deserializedReferenceResolver)
+      public XmlSerializationService(IMoBiXmlSerializerRepository repository, 
+         ICompression compression, 
+         IMoBiObjectConverterFinder objectConverterFinder,
+         ISerializationContextFactory serializationContextFactory, 
+         IEventPublisher eventPublisher, 
+         IDeserializedReferenceResolver deserializedReferenceResolver, 
+         IProjectConverterLogger projectConverterLogger)
       {
          _repository = repository;
          _compression = compression;
@@ -49,6 +56,7 @@ namespace MoBi.Core.Serialization.Xml.Services
          _serializationContextFactory = serializationContextFactory;
          _eventPublisher = eventPublisher;
          _deserializedReferenceResolver = deserializedReferenceResolver;
+         _projectConverterLogger = projectConverterLogger;
          _formulaCacheSerializer = _repository.SerializerFor<IFormulaCache>();
       }
 
@@ -84,7 +92,7 @@ namespace MoBi.Core.Serialization.Xml.Services
 
       public T Deserialize<T>(XElement element, MoBiProject project, int version)
       {
-         return deserialize(element, project, version, typeof (T)).DowncastTo<T>();
+         return deserialize(element, project, version, typeof(T)).DowncastTo<T>();
       }
 
       public T Deserialize<T>(byte[] compressedBytes, MoBiProject project, SerializationContext serializationContext = null)
@@ -152,11 +160,17 @@ namespace MoBi.Core.Serialization.Xml.Services
       private bool convert(object deserializedObject, int objectVersion, MoBiProject project)
       {
          var conversionHappened = convert(deserializedObject, project, objectVersion, x => x.Convert);
-         var simulation = deserializedObject as IMoBiSimulation;
 
          //Ensure that a simulation is marked as changed so that converted changes will also be persisted when the project is saved
-         if (simulation != null)
+         if (deserializedObject is IMoBiSimulation simulation)
+         {
             simulation.HasChanged = conversionHappened;
+            if (conversionHappened && simulation.HasUntraceableChanges)
+               _projectConverterLogger.AddWarning(
+                  AppConstants.Captions.ProjectConversionResultedInSimulationsWithUntraceableChanges(new[] { simulation.Name }),
+                  simulation,
+                  null);
+         }
 
          return conversionHappened;
       }

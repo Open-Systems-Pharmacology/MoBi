@@ -61,10 +61,10 @@ namespace MoBi.Presentation.Presenter.Main
 
       public void Handle(ProjectLoadedEvent eventToHandle)
       {
-         refrehHistory();
+         refreshHistory();
       }
 
-      private void refrehHistory()
+      private void refreshHistory()
       {
          _historyBrowserPresenter.HistoryManager = _context.HistoryManager;
          _historyBrowserPresenter.UpdateHistory();
@@ -75,19 +75,13 @@ namespace MoBi.Presentation.Presenter.Main
          //nothing to do
       }
 
-      public bool CanClose
-      {
-         get { return true; }
-      }
+      public bool CanClose => true;
 
-      public IView BaseView
-      {
-         get { return null; }
-      }
+      public IView BaseView => null;
 
       public void Handle(ProjectClosedEvent eventToHandle)
       {
-         refrehHistory();
+         refreshHistory();
       }
 
       public void ReleaseFrom(IEventPublisher eventPublisher)

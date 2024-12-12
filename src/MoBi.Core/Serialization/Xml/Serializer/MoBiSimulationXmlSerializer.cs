@@ -24,6 +24,7 @@ namespace MoBi.Core.Serialization.Xml.Serializer
          Map(x => x.ParameterIdentificationWorkingDirectory);
          Map(x => x.HasUpToDateResults);
          Map(x => x.OutputMappings);
+         Map(x => x.HasUntraceableChanges);
          MapEnumerable(x => x.OriginalQuantityValues, x => x.AddOriginalQuantityValue);
       }
 

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
@@ -94,7 +95,16 @@ namespace MoBi.Presentation.Tasks
 
          macroCommand.RunCommand(_context);
          _context.PublishEvent(new SimulationStatusChangedEvent(simulationWithChanges));
+
+         if (simulationWithChanges.HasUntraceableChanges)
+            showWarningDialogForUntraceableChanges(simulationWithChanges);
+
          return macroCommand;
+      }
+
+      private void showWarningDialogForUntraceableChanges(IMoBiSimulation simulationWithChanges)
+      {
+         _interactionTaskContext.DialogCreator.MessageBoxInfo(AppConstants.Captions.SimulationHasChangesThatCannotBeCommitted(simulationWithChanges.Name));
       }
 
       /// <summary>

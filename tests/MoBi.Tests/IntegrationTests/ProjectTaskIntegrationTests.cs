@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using MoBi.Core;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Helper;
+using MoBi.Core.Serialization.Converter;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -13,7 +15,7 @@ namespace MoBi.IntegrationTests
 {
    public class concern_for_LoadProjectIntegrationTest : ContextWithLoadedProject
    {
-      private IMoBiContext _context;
+      protected IMoBiContext _context;
       private ObjectTypeResolver _objectTypeResolver;
 
       public override void GlobalContext()
@@ -129,5 +131,39 @@ namespace MoBi.IntegrationTests
          _context.CurrentProject.Modules.Each(x => x.Name.Contains(_objectTypeResolver.TypeFor(x.BuildingBlocks[0]).Replace("Building Block", string.Empty)).ShouldBeTrue());
       }
 
+      public class When_loading_a_V11_project_with_untraceable_changes : concern_for_LoadProjectIntegrationTest
+      {
+         private MoBiProject _project;
+         private IProjectConverterLogger _logger;
+
+         public override void GlobalContext()
+         {
+            base.GlobalContext();
+            _project = LoadProject("V11SimulationWithChanges");
+            _logger = _context.Resolve<IProjectConverterLogger>();
+         }
+
+         [Observation]
+         public void project_conversion_should_flag_the_correct_simulations_with_traceable_changes()
+         {
+            _project.Simulations.First(x => x.Name.Equals("simulationchange")).HasUntraceableChanges.ShouldBeTrue();
+            _project.Simulations.First(x => x.Name.Equals("simulationchanges2")).HasUntraceableChanges.ShouldBeTrue();
+            _project.Simulations.First(x => x.Name.Equals("bbchange")).HasUntraceableChanges.ShouldBeFalse();
+            _project.Simulations.First(x => x.Name.Equals("nochange")).HasUntraceableChanges.ShouldBeFalse();
+         }
+
+         [Observation]
+         public void project_conversion_should_log_two_warnings_for_appropriate_simulations()
+         {
+            var warningSimulations = _logger.AllMessages().Where(x => x.Type == NotificationType.Warning).ToList();
+            warningSimulations.Count().ShouldBeEqualTo(2);
+            _logger.AllMessages().Count(x => isMatchingSimulations(x, warningSimulations.AllNames())).ShouldBeEqualTo(2);
+         }
+
+         private bool isMatchingSimulations(NotificationMessage notificationMessage, IReadOnlyList<string> warningSimulations)
+         {
+            return notificationMessage.Object is IMoBiSimulation moBiSimulation && warningSimulations.Contains(moBiSimulation.Name);
+         }
+      }
    }
 }

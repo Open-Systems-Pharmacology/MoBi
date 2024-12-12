@@ -192,21 +192,31 @@ namespace MoBi.UI.Settings
       public void SaveLayout()
       {
          LayoutVersion = AppConstants.LayoutVersion;
-         var streamMainView = new MemoryStream();
-         _dockManager.SaveLayoutToStream(streamMainView);
-         MainViewLayout = streamToString(streamMainView);
+         MainViewLayout = mainViewLayoutToString();
          var streamRibbon = new MemoryStream();
          _ribbonManager.Ribbon.Toolbar.SaveLayoutToStream(streamRibbon);
          RibbonLayout = streamToString(streamRibbon);
+      }
+
+      private string mainViewLayoutToString()
+      {
+         var streamMainView = new MemoryStream();
+         _dockManager.SaveLayoutToStream(streamMainView);
+         return streamToString(streamMainView);
       }
 
       public void RestoreLayout()
       {
          if (LayoutVersion != AppConstants.LayoutVersion)
             resetLayout();
+         var defaultDockPanelCount = _dockManager.Panels.Count;
+         var defaultLayout = mainViewLayoutToString();
 
          if (!MainViewLayout.IsNullOrEmpty())
             _dockManager.RestoreFromStream(streamFromString(MainViewLayout));
+
+         // if(_dockManager.Panels.Count != defaultDockPanelCount)
+         //    _dockManager.RestoreFromStream(streamFromString(defaultLayout));
 
          if (!RibbonLayout.IsNullOrEmpty())
             _ribbonManager.RestoreFromStream(streamFromString(RibbonLayout));

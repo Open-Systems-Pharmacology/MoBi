@@ -2054,6 +2054,28 @@ namespace MoBi.Assets
          {
             return $"This item cannot be selected. {forbiddenReason}";
          }
+
+         public static string ProjectConversionResultedInSimulationsWithUntraceableChanges(IReadOnlyList<string> simulationNames)
+         {
+            if (simulationNames.Count > 1)
+            {
+               var sb = new StringBuilder();
+               sb.Append($"Some simulations have changes that cannot be commited back to building blocks after project conversion");
+               sb.AppendLine();
+               sb.Append(namesList(simulationNames));
+               sb.AppendLine();
+               return sb.ToString();
+            }
+            else
+            {
+               return $"The simulation '{simulationNames.Single()}' has changes that cannot be commited back to building blocks after project conversion";
+            }
+         }
+
+         public static string SimulationHasChangesThatCannotBeCommitted(string simulationName)
+         {
+            return $"The simulation '{simulationName}' had changes that could not be committed to building blocks when it was converted from a previous version.";
+         }
       }
 
       public static class Validation

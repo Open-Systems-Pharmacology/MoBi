@@ -142,7 +142,7 @@ namespace MoBi.Presentation.Tasks
 
          var notificationMessages = _projectConverterLogger.AllMessages().ToList();
          if (notificationMessages.Any())
-            _context.PublishEvent(new ShowNotificationsEvent(notificationMessages));
+            _context.PublishEvent(new ShowProjectConversionNotificationsEvent(notificationMessages));
 
          _postSerializationSteps.PerformPostDeserializationFor(deserializedObjects, version, resetIds);
 
