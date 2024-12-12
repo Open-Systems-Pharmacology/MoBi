@@ -209,14 +209,9 @@ namespace MoBi.UI.Settings
       {
          if (LayoutVersion != AppConstants.LayoutVersion)
             resetLayout();
-         var defaultDockPanelCount = _dockManager.Panels.Count;
-         var defaultLayout = mainViewLayoutToString();
 
-         if (!MainViewLayout.IsNullOrEmpty())
+         if (!MainViewLayout.IsNullOrEmpty()) 
             _dockManager.RestoreFromStream(streamFromString(MainViewLayout));
-
-         // if(_dockManager.Panels.Count != defaultDockPanelCount)
-         //    _dockManager.RestoreFromStream(streamFromString(defaultLayout));
 
          if (!RibbonLayout.IsNullOrEmpty())
             _ribbonManager.RestoreFromStream(streamFromString(RibbonLayout));
