@@ -1,5 +1,7 @@
 ﻿using System;
 using MoBi.Assets;
+using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Exceptions;
 
 namespace MoBi.Core.Exceptions
@@ -44,7 +46,14 @@ namespace MoBi.Core.Exceptions
    public class InvalidProjectFileException : MoBiException
    {
       public InvalidProjectFileException(int projectVersion)
-         : base(AppConstants.ProjectVersionCannotBeLoaded(projectVersion, ProjectVersions.Current, ProjectVersions.ProjectIsTooOld(projectVersion), AppConstants.ProductSiteDownload))
+         : base(
+            Captions.ProjectVersionCannotBeLoaded(
+               projectVersion,
+               ProjectVersions.OldestSupportedVersion.VersionDisplay,
+               ProjectVersions.OldestSupportedVersion.Version,
+               ProjectVersions.Current.VersionDisplay,
+               ProjectVersions.Current.Version,
+               Constants.PRODUCT_SITE_DOWNLOAD))
       {
       }
    }
