@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System.Linq;
+using FakeItEasy;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Repositories;
@@ -50,9 +51,9 @@ namespace MoBi.Core
       }
 
       [Observation]
-      public void should_not_include_any_top_containers()
+      public void should_only_include_events_container()
       {
-         _result.TopContainers.ShouldBeEmpty();
+         _result.TopContainers.Single().Name.ShouldBeEqualTo(Constants.EVENTS);
       }
    }
 }

@@ -1,4 +1,5 @@
-﻿using OSPSuite.Core;
+﻿using System.Linq;
+using OSPSuite.Core;
 using OSPSuite.Core.Serialization;
 using OSPSuite.Utility.Collections;
 
@@ -37,10 +38,7 @@ namespace MoBi.Core
          return (projectVersion <= Current.Version) && _knownVersions.Contains(projectVersion);
       }
 
-      public static bool ProjectIsTooOld(int projectVersion)
-      {
-         return projectVersion <= UNSUPPORTED;
-      }
+      public static ProjectVersion OldestSupportedVersion => _knownVersions.OrderBy(x => x.Version).First();
 
       public static ProjectVersion FindBy(int version) => _knownVersions[version];
    }
