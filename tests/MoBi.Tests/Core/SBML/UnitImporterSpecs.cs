@@ -97,7 +97,7 @@ namespace MoBi.Core.SBML
       [Observation]
       public void ParameterWithVolumeUnitTest()
       {
-         var tc = SBMLModule.SpatialStructure.TopContainers.First();
+         var tc = SBMLModule.SpatialStructure.TopContainers.Single(x => x.Name.Equals("TOPCONTAINERSBML "));
          var parameter = tc.GetSingleChildByName<IParameter>("k1");
          parameter.ShouldNotBeNull();
          parameter.DisplayUnit.ToString().ShouldBeEqualTo("l");
@@ -135,7 +135,7 @@ namespace MoBi.Core.SBML
       [Observation]
       public void should_find_combined_dimensions()
       {
-         var tc = SBMLModule.SpatialStructure.TopContainers.First();
+         var tc = SBMLModule.SpatialStructure.TopContainers.Single(x => x.Name.Contains("TOPCONTAINERSBML Keating2019"));
          var parameter = tc.Parameter("Vmax_ATPASE");
          parameter.ShouldNotBeNull();
          parameter.DisplayUnit.ToString().ShouldBeEqualTo("kat");

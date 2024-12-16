@@ -65,7 +65,7 @@ namespace MoBi.IntegrationTests
          base.GlobalContext();
          _simulationConfiguration = DomainFactoryForSpecs.CreateDefaultConfiguration();
          var spatialStructure = _simulationConfiguration.All<SpatialStructure>().First();
-         _organism = spatialStructure.TopContainers.ElementAt(0);
+         _organism = spatialStructure.TopContainers.Single(x => x.Name.Equals("Spatial Structure"));
          var volumeParameter = _organism.EntityAt<IParameter>(Constants.Parameters.VOLUME);
          volumeParameter.Persistable = true;
          _simulation = DomainFactoryForSpecs.CreateSimulationFor(_simulationConfiguration);
