@@ -262,6 +262,9 @@ namespace MoBi.Presentation.Presenter.Main
 
       private void notifyForUntraceableChanges(List<MoBiSimulation> simulationsWithUntraceableChanges)
       {
+         if (!simulationsWithUntraceableChanges.Any())
+            return;
+
          _dialogCreator.MessageBoxInfo(Captions.ProjectConversionResultedInSimulationsWithUntraceableChanges(simulationsWithUntraceableChanges.AllNames()));
       }
 

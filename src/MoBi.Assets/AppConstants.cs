@@ -2057,24 +2057,21 @@ namespace MoBi.Assets
 
          public static string ProjectConversionResultedInSimulationsWithUntraceableChanges(IReadOnlyList<string> simulationNames)
          {
-            if (simulationNames.Count > 1)
-            {
-               var sb = new StringBuilder();
-               sb.Append($"Some simulations have changes that cannot be commited back to building blocks after project conversion");
-               sb.AppendLine();
-               sb.Append(namesList(simulationNames));
-               sb.AppendLine();
-               return sb.ToString();
-            }
-            else
-            {
-               return $"The simulation '{simulationNames.Single()}' has changes that cannot be commited back to building blocks after project conversion";
-            }
+            var sb = new StringBuilder();
+            sb.AppendLine("During project conversion some changes to the simulation could not be traced back to building blocks.");
+            sb.AppendLine($"The simulation changes are still present in the simulations but cannot be committed to the building blocks in this version of {PRODUCT_NAME_WITH_TRADEMARK}.");
+            sb.AppendLine();
+            sb.AppendLine("You can reconfigure your simulation from the building blocks in this version, or go back to the previous version and synchronize the simulation with building blocks before project conversion.");
+            sb.AppendLine();
+            sb.AppendLine("The following simulations are affected:");
+            sb.Append(namesList(simulationNames));
+            sb.AppendLine();
+            return sb.ToString();
          }
 
          public static string SimulationHasChangesThatCannotBeCommitted(string simulationName)
          {
-            return $"The simulation '{simulationName}' had changes that could not be committed to building blocks when it was converted from a previous version.";
+            return $"During project conversion the simulation '{simulationName}' had changes that can not be committed to building blocks.\n\nChanges made in this version have been committed.";
          }
       }
 
