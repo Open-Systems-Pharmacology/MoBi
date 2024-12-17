@@ -35,7 +35,7 @@ namespace MoBi.UI.Diagram.DiagramManagers
                   AddObjectBase(diagramModel, topContainer, recursive: true, coupleAll: coupleAll);
                }
                if(topContainer.ParentPath != null)
-                  unusedNodeIds.Remove(topContainer.ParentPath);
+                  removeByPathRecursively(topContainer.ParentPath, unusedNodeIds);
                topContainer.GetAllContainersAndSelf<IContainer>().Each(x => unusedNodeIds.Remove(x.Id));
             }
 
@@ -51,6 +51,17 @@ namespace MoBi.UI.Diagram.DiagramManagers
          removeNodesById(unusedNodeIds);
 
          DiagramModel.ClearUndoStack();
+      }
+
+      private void removeByPathRecursively(ObjectPath parentPath, HashSet<string> unusedNodeIds)
+      {
+         unusedNodeIds.Remove(parentPath);
+         if (parentPath.Count <= 1) 
+            return;
+
+         var path = parentPath.Clone<ObjectPath>();
+         path.RemoveAt(path.Count - 1);
+         removeByPathRecursively(path, unusedNodeIds);
       }
 
       private void removeNodesById(IEnumerable<string> ids) => ids.Each(DiagramModel.RemoveNode);
