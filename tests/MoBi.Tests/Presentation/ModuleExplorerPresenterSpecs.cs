@@ -30,6 +30,7 @@ using System.Drawing;
 using System.Linq;
 using FakeItEasy.Core;
 using TreeNodeFactory = MoBi.Presentation.Nodes.TreeNodeFactory;
+using DevExpress.Utils.Extensions;
 
 namespace MoBi.Presentation
 {
@@ -574,7 +575,7 @@ namespace MoBi.Presentation
       private void storeBuildingBlockNode(IFakeObjectCall x)
       {
          var node = x.Arguments.Get<ITreeNode>(0);
-         if(Equals(node.TagAsObject, _module))
+         if (Equals(node.TagAsObject, _module))
             _moleculeBuildingBlockNode = node.Children.First(child => ReferenceEquals(child.TagAsObject, _buildingBlock));
       }
 
@@ -587,6 +588,116 @@ namespace MoBi.Presentation
       public void the_molecule_should_be_inserted_under_the_building_block()
       {
          _moleculeBuildingBlockNode.Children.Count().ShouldBeEqualTo(1);
+      }
+   }
+
+   public abstract class When_dragging_and_dropping_nodes : concern_for_ModuleExplorerPresenter
+   {
+      protected bool _result;
+      protected ITreeNode _dragNode;
+      protected ITreeNode _targetNode;
+      protected IBuildingBlock _dragBuildingBlock;
+      private Module _targetModule;
+      protected IMoBiSimulation _simulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _dragBuildingBlock = new MoBiSpatialStructure();
+         _targetModule = new Module();
+         _dragNode = new BuildingBlockNode(_dragBuildingBlock);
+         _targetNode = new ModuleNode(_targetModule);
+         _simulation = A.Fake<IMoBiSimulation>();
+      }
+   }
+
+   public abstract class When_dragging_and_dropping_nodes_not_used_in_simulation : When_dragging_and_dropping_nodes
+   {
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _simulation.Uses(_dragBuildingBlock)).Returns(false);
+         _context.CurrentProject.AddSimulation(_simulation);
+      }
+
+      protected override void Because()
+      {
+         _result = sut.CanDrop(_dragNode, _targetNode, GetKeyFlags());
+      }
+
+      protected abstract DragDropKeyFlags GetKeyFlags();
+   }
+
+   public abstract class When_dragging_and_dropping_nodes_used_in_simulation : When_dragging_and_dropping_nodes
+   {
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _simulation.Uses(_dragBuildingBlock)).Returns(true);
+         _context.CurrentProject.AddSimulation(_simulation);
+      }
+
+      protected override void Because()
+      {
+         _result = sut.CanDrop(_dragNode, _targetNode, GetKeyFlags());
+      }
+
+      protected abstract DragDropKeyFlags GetKeyFlags();
+   }
+
+   public class When_copying_a_node_not_used_in_simulation : When_dragging_and_dropping_nodes_not_used_in_simulation
+   {
+      protected override DragDropKeyFlags GetKeyFlags()
+      {
+         return DragDropKeyFlags.LeftMouseButton | DragDropKeyFlags.CtrlKey;
+      }
+
+      [Observation]
+      public void the_drag_drop_should_not_be_allowed()
+      {
+         _result.ShouldBeTrue();
+      }
+   }
+
+   public class When_moving_a_node_not_used_in_simulation : When_dragging_and_dropping_nodes_not_used_in_simulation
+   {
+      protected override DragDropKeyFlags GetKeyFlags()
+      {
+         return DragDropKeyFlags.LeftMouseButton;
+      }
+
+      [Observation]
+      public void the_drag_drop_should_not_be_allowed()
+      {
+         _result.ShouldBeTrue();
+      }
+   }
+
+   public class When_copying_a_node_used_in_simulation : When_dragging_and_dropping_nodes_used_in_simulation
+   {
+      protected override DragDropKeyFlags GetKeyFlags()
+      {
+         return DragDropKeyFlags.LeftMouseButton | DragDropKeyFlags.CtrlKey;
+      }
+
+      [Observation]
+      public void the_drag_drop_should_not_be_allowed()
+      {
+         _result.ShouldBeTrue();
+      }
+   }
+
+   public class When_moving_a_node_used_in_simulation : When_dragging_and_dropping_nodes_used_in_simulation
+   {
+      protected override DragDropKeyFlags GetKeyFlags()
+      {
+         return DragDropKeyFlags.LeftMouseButton;
+      }
+
+      [Observation]
+      public void the_drag_drop_should_not_be_allowed()
+      {
+         _result.ShouldBeFalse();
       }
    }
 }

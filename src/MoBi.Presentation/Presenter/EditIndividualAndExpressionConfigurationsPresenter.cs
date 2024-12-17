@@ -149,12 +149,14 @@ namespace MoBi.Presentation.Presenter
       public IndividualBuildingBlock SelectedIndividual => _individualSelectionDTO.IsNull() ? null : _individualSelectionDTO.SelectedIndividualBuildingBlock;
       public IReadOnlyList<ExpressionProfileBuildingBlock> ExpressionProfiles => _selectedExpressions;
 
+      public bool CopyAllowed() => false;
+
       public bool CanDrag(ITreeNode node)
       {
          return node.TagAsObject is ExpressionProfileBuildingBlock;
       }
 
-      public bool CanDrop(ITreeNode dragNode, ITreeNode targetNode)
+      public bool CanDrop(ITreeNode dragNode, ITreeNode targetNode, DragDropKeyFlags keyFlags)
       {
          var expression = expressionProfileFromNode(targetNode);
          return expression != null;

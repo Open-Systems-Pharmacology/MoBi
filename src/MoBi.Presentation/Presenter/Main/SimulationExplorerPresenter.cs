@@ -97,6 +97,8 @@ namespace MoBi.Presentation.Presenter.Main
                 _parameterAnalysablesInExplorerPresenter.CanDrag(node);
       }
 
+      public override bool CopyAllowed() => false;
+
       private ITreeNode addClassifiableSimulationToSimulationRootFolder(ClassifiableSimulation classifiableSimulation)
       {
          return AddClassifiableToTree(classifiableSimulation, RootNodeTypes.SimulationFolder, addClassifiableSimulationToTree);
@@ -114,9 +116,9 @@ namespace MoBi.Presentation.Presenter.Main
 
       public void Handle(SimulationAddedEvent eventToHandle) => addSimulationToTree(eventToHandle.Simulation);
 
-      private ITreeNode addSimulationToTree(IMoBiSimulation simulation)
+      private void addSimulationToTree(IMoBiSimulation simulation)
       {
-         return AddSubjectToClassifyToTree<IMoBiSimulation, ClassifiableSimulation>(simulation, addClassifiableSimulationToSimulationRootFolder);
+         AddSubjectToClassifyToTree<IMoBiSimulation, ClassifiableSimulation>(simulation, addClassifiableSimulationToSimulationRootFolder);
       }
 
       public void Handle(SimulationRemovedEvent eventToHandle) => RemoveNodeFor(eventToHandle.Simulation);
