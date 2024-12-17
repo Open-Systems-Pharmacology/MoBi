@@ -185,7 +185,7 @@ namespace MoBi.Presentation.Tasks.Edit
                tmpSpatialStructure.DiagramModel = existingSpatialStructure.DiagramModel.CreateCopy(container.Id);
          }
 
-         if(!expressionParametersToExport.Any() && !initialConditionsToExport.Any())
+         if (!expressionParametersToExport.Any() && !initialConditionsToExport.Any())
             _interactionTask.Save(tmpSpatialStructure, fileName);
          else
             exportSpatialStructureTransfer(tmpSpatialStructure, fileName, expressionParametersToExport, initialConditionsToExport, container.Name);

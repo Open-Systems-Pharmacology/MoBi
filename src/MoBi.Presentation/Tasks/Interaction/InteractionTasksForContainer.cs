@@ -11,11 +11,15 @@ namespace MoBi.Presentation.Tasks.Interaction
    public class InteractionTasksForContainer : InteractionTasksForContainerBase<IContainer>
    {
       public InteractionTasksForContainer(
-         IInteractionTaskContext interactionTaskContext, 
-         IEditTaskFor<IContainer> editTask, 
-         IObjectPathFactory objectPathFactory, 
-         IParameterValuesTask parameterValuesTask, 
+         IInteractionTaskContext interactionTaskContext,
+         IEditTaskFor<IContainer> editTask,
+         IObjectPathFactory objectPathFactory,
+         IParameterValuesTask parameterValuesTask,
          IInitialConditionsTask<InitialConditionsBuildingBlock> initialConditionsTask) : base(interactionTaskContext, editTask, objectPathFactory, parameterValuesTask, initialConditionsTask)
+      {
+      }
+
+      protected override void PerformPostAddActions(IContainer entity, IContainer parent, IBuildingBlock buildingBlock)
       {
       }
 

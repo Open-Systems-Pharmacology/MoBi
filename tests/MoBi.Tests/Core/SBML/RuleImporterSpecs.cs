@@ -104,7 +104,7 @@ namespace MoBi.Core.SBML
 
          var ss = SBMLModule.SpatialStructure;
          ss.ShouldNotBeNull();
-         var tc = ss.TopContainers.FirstOrDefault();
+         var tc = ss.TopContainers.Single(x => x.Name.Contains("TOPCONTAINERSBML"));
          tc.ShouldNotBeNull();
          tc.Children.Any(s => s.Name == "compartment").ShouldBeTrue();
 

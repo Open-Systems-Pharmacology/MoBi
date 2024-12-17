@@ -303,7 +303,6 @@ namespace MoBi.Assets
             return message;
          }
 
-
          public static string DisplayValue(string displayValue, string displayUnit)
          {
             if (string.IsNullOrEmpty(displayUnit))
@@ -2283,18 +2282,6 @@ namespace MoBi.Assets
       public static string CompositeNameFor(string name1, string name2)
       {
          return $"{name1}-{name2}";
-      }
-
-      public static string ProjectVersionCannotBeLoaded(int projectVersion, int currentVersion, bool projectIsTooOld, string downloadUrl)
-      {
-         if (projectIsTooOld)
-            return $"The project is too old (compatible version {projectVersion}) and cannot be loaded with this version. (compatible version {currentVersion}).\n" +
-                   $"Visit our download page at {downloadUrl} to download an older version of the software compatible with this project.";
-
-         if (projectVersion > currentVersion)
-            return $"The application is too old (compatible version {currentVersion}) and cannot load a project created with a newer version (project version {projectVersion}).\nVisit our download page at {downloadUrl}";
-
-         return $"Work in progress.\nThis project file is too old (version {projectVersion}) and cannot be loaded.\nSorry :-(";
       }
 
       public static class ProjectUpdateMessages

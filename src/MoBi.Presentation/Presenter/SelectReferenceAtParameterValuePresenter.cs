@@ -206,7 +206,7 @@ namespace MoBi.Presentation.Presenter
          AddSpatialStructures();
          addIndividuals();
          addExpressions();
-         _view.ChangeLocalisationAllowed = false;
+         _view.ChangeLocalisationAllowed = true;
       }
 
       private void addExpressions()
