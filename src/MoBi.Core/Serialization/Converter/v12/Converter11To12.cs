@@ -32,7 +32,7 @@ namespace MoBi.Core.Serialization.Converter.v12
          {
             var simulationChanges = simulationNode.DescendantsAndSelfNamed("BuildConfiguration").Any(hasSimulationChanges);
             if (simulationChanges)
-               simulationNode.AddAttribute("hasUntraceableChanges", true.ToString());
+               simulationNode.AddAttribute("hasUntraceableChanges", "true");
 
             _coreConverter.ConvertSimulation(simulationNode);
             conversionHappened = true;

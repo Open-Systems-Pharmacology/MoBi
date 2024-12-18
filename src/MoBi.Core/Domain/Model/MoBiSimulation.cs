@@ -74,6 +74,11 @@ namespace MoBi.Core.Domain.Model
       public string ParameterIdentificationWorkingDirectory { get; set; }
       public IDiagramManager<IMoBiSimulation> DiagramManager { get; set; }
       public OutputMappings OutputMappings { get; set; } = new OutputMappings();
+
+      /// <summary>
+      /// During project conversion from V11 to V12, any changes that are present in the simulation
+      /// won't be traceable back to a specific building block. This flag is used to indicate that to a user
+      /// </summary>
       public bool HasUntraceableChanges { get; set; }
 
       private readonly ICache<string, OriginalQuantityValue> _quantityValueCache = new Cache<string, OriginalQuantityValue>(onMissingKey: key => null);
