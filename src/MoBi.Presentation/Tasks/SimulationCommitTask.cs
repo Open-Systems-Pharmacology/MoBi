@@ -62,6 +62,12 @@ namespace MoBi.Presentation.Tasks
 
       public IMoBiCommand CommitSimulationChanges(IMoBiSimulation simulationWithChanges)
       {
+         if (simulationWithChanges.HasUntraceableChanges)
+         {
+            showErrorForUntraceableChanges(simulationWithChanges);
+            return new MoBiEmptyCommand();
+         }
+
          var moleculeChanges = changesFrom<MoleculeAmount>(simulationWithChanges).ToList();
          var parameterChanges = new List<(ObjectPath quantityPath, IParameter quantity)>();
          changesFrom<Parameter>(simulationWithChanges).Each(x => parameterChanges.Add(x));
@@ -96,15 +102,12 @@ namespace MoBi.Presentation.Tasks
          macroCommand.RunCommand(_context);
          _context.PublishEvent(new SimulationStatusChangedEvent(simulationWithChanges));
 
-         if (simulationWithChanges.HasUntraceableChanges)
-            showWarningDialogForUntraceableChanges(simulationWithChanges);
-
          return macroCommand;
       }
 
-      private void showWarningDialogForUntraceableChanges(IMoBiSimulation simulationWithChanges)
+      private void showErrorForUntraceableChanges(IMoBiSimulation simulationWithChanges)
       {
-         _interactionTaskContext.DialogCreator.MessageBoxInfo(AppConstants.Captions.SimulationHasChangesThatCannotBeCommitted(simulationWithChanges.Name));
+         _interactionTaskContext.DialogCreator.MessageBoxError(AppConstants.Captions.SimulationHasChangesThatCannotBeCommitted(simulationWithChanges.Name));
       }
 
       /// <summary>

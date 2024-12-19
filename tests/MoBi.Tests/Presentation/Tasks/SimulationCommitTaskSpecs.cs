@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using FakeItEasy;
 using MoBi.Assets;
+using MoBi.Core.Commands;
 using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Helper;
@@ -59,6 +60,8 @@ namespace MoBi.Presentation.Tasks
 
    public class When_committing_from_a_simulation_with_untraceable_changes : concern_for_SimulationCommitTask
    {
+      private IMoBiCommand _commands;
+
       protected override void Context()
       {
          base.Context();
@@ -67,15 +70,21 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         sut.CommitSimulationChanges(_simulationWithChanges);
+         _commands = sut.CommitSimulationChanges(_simulationWithChanges);
       }
 
       [Observation]
       public void a_dialog_reminds_user_about_the_project_conversion()
       {
-         A.CallTo(() => _interactionTaskContext.DialogCreator.MessageBoxInfo(
+         A.CallTo(() => _interactionTaskContext.DialogCreator.MessageBoxError(
             AppConstants.Captions.SimulationHasChangesThatCannotBeCommitted(_simulationWithChanges.Name)))
             .MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_commands_must_be_empty()
+      {
+         _commands.ShouldBeAnInstanceOf<MoBiEmptyCommand>();
       }
    }
 
