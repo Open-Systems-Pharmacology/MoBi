@@ -26,7 +26,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          var buildingBlock = _context.Get<InitialConditionsBuildingBlock>(dto.Id);
          base.InitializeWith(dto, presenter);
 
-         _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.Import)
+         _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.ImportFromExcel)
             .WithIcon(ApplicationIcons.InitialConditionsImport)
             .WithCommandFor<ImportInitialConditionsUICommand, IBuildingBlock>(buildingBlock, _container));
 
