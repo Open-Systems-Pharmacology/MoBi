@@ -149,6 +149,7 @@ namespace MoBi.Presentation.Tasks
          {
             NeighborhoodsContainer = new Container().WithName(Constants.NEIGHBORHOODS)
          };
+         _tmpSpatialStructure.AddTopContainer(new Container().WithName(Constants.EVENTS));
 
          A.CallTo(() => _selectIndividualAndExpressionFromProjectPresenter.GetPathIndividualAndExpressionsForExport(_containerToSave)).Returns(("FilePath", _individual, _expressionProfiles));
          A.CallTo(() => _spatialStructureFactory.Create()).Returns(_tmpSpatialStructure);
@@ -179,6 +180,7 @@ namespace MoBi.Presentation.Tasks
          _transfer.ParameterValues.FindByPath("Parent|Container1|expression1").ShouldNotBeNull();
          _transfer.InitialConditions.FindByPath("Parent|Container1|initialCondition1").ShouldNotBeNull();
          _transfer.SpatialStructure.ShouldBeEqualTo(_tmpSpatialStructure);
+         _transfer.SpatialStructure.TopContainers.SingleOrDefault(x => x.IsNamed(Constants.EVENTS)).ShouldBeNull();
       }
 
       [Observation]

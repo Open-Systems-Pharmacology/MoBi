@@ -158,6 +158,7 @@ namespace MoBi.Presentation.Tasks.Edit
       private void exportContainer(IContainer container, string fileName, IndividualBuildingBlock individual = null, IReadOnlyList<ExpressionProfileBuildingBlock> expressionProfileBuildingBlocks = null)
       {
          var tmpSpatialStructure = (MoBiSpatialStructure)_spatialStructureFactory.Create();
+         removeEventsContainer(tmpSpatialStructure);
 
          var clonedEntity = _cloneManager.Clone(container, tmpSpatialStructure.FormulaCache);
 
@@ -189,6 +190,13 @@ namespace MoBi.Presentation.Tasks.Edit
             _interactionTask.Save(tmpSpatialStructure, fileName);
          else
             exportSpatialStructureTransfer(tmpSpatialStructure, fileName, expressionParametersToExport, initialConditionsToExport, container.Name);
+      }
+
+      private void removeEventsContainer(MoBiSpatialStructure spatialStructure)
+      {
+         var eventsContainer = spatialStructure.TopContainers.FirstOrDefault(x => x.IsNamed(Constants.EVENTS));
+         if (eventsContainer != null)
+            spatialStructure.Remove(eventsContainer);
       }
 
       private void exportSpatialStructureTransfer(MoBiSpatialStructure tmpSpatialStructure, string fileName, IReadOnlyList<ExpressionParameter> expressionParametersToExport, IReadOnlyList<InitialCondition> initialConditionsToExport, string containerName)
