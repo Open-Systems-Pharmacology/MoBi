@@ -77,9 +77,9 @@ namespace MoBi.Presentation.Presenter.Main
          return base.ContextMenuFor(treeNode);
       }
 
-      public override bool CanDrop(ITreeNode nodeToDrop, ITreeNode targetNode)
+      public override bool CanDrop(ITreeNode nodeToDrop, ITreeNode targetNode, DragDropKeyFlags keyFlags)
       {
-         if (base.CanDrop(nodeToDrop, targetNode))
+         if (base.CanDrop(nodeToDrop, targetNode, keyFlags))
             return true;
 
          var (targetModuleNode, buildingBlockSourceNode) = convertToExpectedTypes(nodeToDrop, targetNode);
@@ -90,10 +90,22 @@ namespace MoBi.Presentation.Presenter.Main
          if (moduleAlreadyContainsNode(buildingBlockSourceNode, targetModuleNode))
             return false;
 
-         if (!isPossibleToAddBuildingBlockToModule(targetModuleNode, buildingBlockSourceNode))
+         if (!isPossibleToAddBuildingBlockToModule(targetModuleNode, buildingBlockSourceNode) || (isMove(keyFlags) && !canMove(buildingBlockSourceNode.Tag)))
             return false;
 
          return true;
+      }
+
+      public override bool CopyAllowed() => true;
+
+      private bool canMove(IBuildingBlock buildingBlockToMove)
+      {
+         return !_context.CurrentProject.Simulations.Any(x => x.Uses(buildingBlockToMove));
+      }
+
+      private static bool isMove(DragDropKeyFlags keyFlags)
+      {
+         return !keyFlags.HasFlag(DragDropKeyFlags.CtrlKey);
       }
 
       private static bool isPossibleToAddBuildingBlockToModule(ModuleNode targetModuleNode, ITreeNode<IBuildingBlock> buildingBlockSourceNode) =>

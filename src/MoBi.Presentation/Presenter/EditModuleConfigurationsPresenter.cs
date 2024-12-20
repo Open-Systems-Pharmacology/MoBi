@@ -210,7 +210,8 @@ namespace MoBi.Presentation.Presenter
 
       private bool nodeIsModuleConfiguration(ITreeNode node) => node?.TagAsObject is ModuleConfigurationDTO;
 
-      public bool CanDrop(ITreeNode dragNode, ITreeNode targetNode) => nodeIsModuleConfiguration(targetNode) && !Equals(dragNode, targetNode);
+      public bool CanDrop(ITreeNode dragNode, ITreeNode targetNode, DragDropKeyFlags keyFlags) => nodeIsModuleConfiguration(targetNode) && !Equals(dragNode, targetNode);
+
       public void DropNode(ITreeNode dragNode, ITreeNode targetNode, DragDropKeyFlags keyState = DragDropKeyFlags.None)
       {
          var movingConfiguration = moduleConfigurationDTOFor(dragNode);
@@ -221,6 +222,8 @@ namespace MoBi.Presentation.Presenter
          moveConfiguration(movingConfiguration, targetConfiguration);
          refreshSelectedModulesView(dragNode);
       }
+
+      public bool CopyAllowed() => false;
 
       public void MoveUp(ITreeNode selectedNode)
       {
