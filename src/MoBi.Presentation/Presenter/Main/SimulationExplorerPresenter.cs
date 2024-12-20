@@ -178,11 +178,17 @@ namespace MoBi.Presentation.Presenter.Main
          var changedTemplateBuildingBlocks = _interactionTasksForSimulation.FindChangedBuildingBlocks(simulation).ToList();
          var changedModules = _interactionTasksForSimulation.FindChangedModules(simulation).ToList();
 
-         // Set simulation to red if there are any module, building block, or quantity changes
-         simulationNode.Icon = changedModules.Any() || changedTemplateBuildingBlocks.Any() || simulation.OriginalQuantityValues.Any() ? ApplicationIcons.SimulationRed : ApplicationIcons.SimulationGreen;
+         simulationNode.Icon = shouldMarkSimulationAsNotSynchronized(simulation, changedModules, changedTemplateBuildingBlocks) ? ApplicationIcons.SimulationRed : ApplicationIcons.SimulationGreen;
 
          updateModuleIcons(changedModules, simulationNode.AllNodes.OfType<ModuleConfigurationNode>());
          updateBuildingBlockIcons(changedTemplateBuildingBlocks, simulationNode.AllNodes.OfType<BuildingBlockNode>());
+      }
+
+      private static bool shouldMarkSimulationAsNotSynchronized(IMoBiSimulation simulation, List<Module> changedModules, List<IBuildingBlock> changedTemplateBuildingBlocks)
+      {
+         // Set simulation to red if there are any module, building block, quantity changes,
+         // or if the simulation was converted from V11 and has untraceable changes
+         return changedModules.Any() || changedTemplateBuildingBlocks.Any() || simulation.OriginalQuantityValues.Any() || simulation.HasUntraceableChanges;
       }
 
       private void updateModuleIcons(IEnumerable<Module> changedModules, IEnumerable<ModuleConfigurationNode> simulationNodeChildren)

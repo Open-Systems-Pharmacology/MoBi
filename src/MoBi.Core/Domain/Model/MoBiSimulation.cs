@@ -51,6 +51,12 @@ namespace MoBi.Core.Domain.Model
       IReadOnlyCollection<OriginalQuantityValue> OriginalQuantityValues { get; }
 
       /// <summary>
+      /// During project conversion from V11 to V12, any changes that are present in the simulation
+      /// won't be traceable back to a specific building block. This flag is used to indicate that to a user
+      /// </summary>
+      bool HasUntraceableChanges { get; set; }
+
+      /// <summary>
       ///    Adds an original quantity value so that changes to quantities in the simulation can be tracked.
       ///    There can only be one original quantity value per path, adding a second <paramref name="quantityValue" />
       ///    with identical path has no affect
@@ -73,6 +79,12 @@ namespace MoBi.Core.Domain.Model
       public string ParameterIdentificationWorkingDirectory { get; set; }
       public IDiagramManager<IMoBiSimulation> DiagramManager { get; set; }
       public OutputMappings OutputMappings { get; set; } = new OutputMappings();
+
+      /// <summary>
+      /// During project conversion from V11 to V12, any changes that are present in the simulation
+      /// won't be traceable back to a specific building block. This flag is used to indicate that to a user
+      /// </summary>
+      public bool HasUntraceableChanges { get; set; }
 
       private readonly ICache<string, OriginalQuantityValue> _quantityValueCache = new Cache<string, OriginalQuantityValue>(onMissingKey: key => null);
       private bool _hasChanged;
@@ -191,6 +203,7 @@ namespace MoBi.Core.Domain.Model
          OutputMappings.SwapSimulation(sourceSimulation, this);
 
          sourceSimulation.OriginalQuantityValues.Each(x => AddOriginalQuantityValue(new OriginalQuantityValue().WithPropertiesFrom(x)));
+         HasUntraceableChanges = sourceSimulation.HasUntraceableChanges;
 
          this.UpdateDiagramFrom(sourceSimulation);
       }

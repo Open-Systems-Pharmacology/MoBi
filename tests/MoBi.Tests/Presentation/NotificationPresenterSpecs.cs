@@ -27,7 +27,7 @@ using OSPSuite.Utility.Collections;
 
 namespace MoBi.Presentation
 {
-   public abstract class concern_for_NotificationPresenter : ContextSpecification<INotificationPresenter>
+   public abstract class concern_for_NotificationPresenter : ContextSpecification<NotificationPresenter>
    {
       protected INotificationView _view;
       private IRegionResolver _regionResolver;
@@ -521,6 +521,101 @@ namespace MoBi.Presentation
       public override void Cleanup()
       {
          FileHelper.DeleteFile(_fileToExport);
+      }
+   }
+
+   public class When_handling_project_conversion_notifications_for_untraceable_changes : concern_for_NotificationPresenter
+   {
+      private ShowProjectConversionNotificationsEvent _notificationEvent;
+      private static MoBiSimulation _simulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = new MoBiSimulation
+         {
+            HasUntraceableChanges = true,
+            Name = "simName"
+         };
+         _notificationEvent = new ShowProjectConversionNotificationsEvent(messages());
+      }
+
+      private static IReadOnlyList<NotificationMessage> messages()
+      {
+         return new[]
+         {
+            new NotificationMessage(_simulation, MessageOrigin.Simulation, null, NotificationType.Warning)
+         };
+      }
+
+      protected override void Because()
+      {
+         sut.Handle(_notificationEvent);
+      }
+
+      [Observation]
+      public void should_rebind_to_the_view()
+      {
+         A.CallTo(() => _view.BindTo(A<NotifyList<NotificationMessageDTO>>._)).MustHaveHappened();
+         A.CallTo(() => _view.SetNotificationCount(NotificationType.Warning, 1)).MustHaveHappened();
+         A.CallTo(() => _view.SetNotificationCount(NotificationType.Error, 0)).MustHaveHappened();
+         A.CallTo(() => _view.SetNotificationCount(NotificationType.Info, 0)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_dialog_should_warn_the_user_about_project_conversion()
+      {
+         A.CallTo(() => _dialogCreator.MessageBoxInfo(A<string>.That.Matches(x => hasSimulationName(x)))).MustHaveHappened();
+      }
+
+      private bool hasSimulationName(string warningString)
+      {
+         return warningString.Contains(_simulation.Name);
+      }
+   }
+
+   public class When_handling_project_conversion_notifications_for_traceable_changes : concern_for_NotificationPresenter
+   {
+      private ShowProjectConversionNotificationsEvent _notificationEvent;
+      private static MoBiSimulation _simulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = new MoBiSimulation
+         {
+            HasUntraceableChanges = false,
+            Name = "simName"
+         };
+         _notificationEvent = new ShowProjectConversionNotificationsEvent(messages());
+      }
+
+      private static IReadOnlyList<NotificationMessage> messages()
+      {
+         return new[]
+         {
+            new NotificationMessage(_simulation, MessageOrigin.Simulation, null, NotificationType.Warning)
+         };
+      }
+
+      protected override void Because()
+      {
+         sut.Handle(_notificationEvent);
+      }
+
+      [Observation]
+      public void should_rebind_to_the_view()
+      {
+         A.CallTo(() => _view.BindTo(A<NotifyList<NotificationMessageDTO>>._)).MustHaveHappened();
+         A.CallTo(() => _view.SetNotificationCount(NotificationType.Warning, 1)).MustHaveHappened();
+         A.CallTo(() => _view.SetNotificationCount(NotificationType.Error, 0)).MustHaveHappened();
+         A.CallTo(() => _view.SetNotificationCount(NotificationType.Info, 0)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_dialog_should_not_warn_the_user_about_project_conversion()
+      {
+         A.CallTo(() => _dialogCreator.MessageBoxInfo(A<string>._)).MustNotHaveHappened();
       }
    }
 }

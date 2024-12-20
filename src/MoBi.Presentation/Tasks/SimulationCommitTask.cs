@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
@@ -61,6 +62,12 @@ namespace MoBi.Presentation.Tasks
 
       public IMoBiCommand CommitSimulationChanges(IMoBiSimulation simulationWithChanges)
       {
+         if (simulationWithChanges.HasUntraceableChanges)
+         {
+            showErrorForUntraceableChanges(simulationWithChanges);
+            return new MoBiEmptyCommand();
+         }
+
          var moleculeChanges = changesFrom<MoleculeAmount>(simulationWithChanges).ToList();
          var parameterChanges = new List<(ObjectPath quantityPath, IParameter quantity)>();
          changesFrom<Parameter>(simulationWithChanges).Each(x => parameterChanges.Add(x));
@@ -94,7 +101,13 @@ namespace MoBi.Presentation.Tasks
 
          macroCommand.RunCommand(_context);
          _context.PublishEvent(new SimulationStatusChangedEvent(simulationWithChanges));
+
          return macroCommand;
+      }
+
+      private void showErrorForUntraceableChanges(IMoBiSimulation simulationWithChanges)
+      {
+         _interactionTaskContext.DialogCreator.MessageBoxError(AppConstants.Captions.SimulationHasChangesThatCannotBeCommitted(simulationWithChanges.Name));
       }
 
       /// <summary>

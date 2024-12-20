@@ -188,6 +188,17 @@ namespace MoBi.Core.Events
       }
    }
 
+   public class ShowProjectConversionNotificationsEvent : ShowNotificationsEvent
+   {
+      public ShowProjectConversionNotificationsEvent(NotificationMessage notification) : base(notification)
+      {
+      }
+
+      public ShowProjectConversionNotificationsEvent(IReadOnlyList<NotificationMessage> notificationMessages) : base(notificationMessages)
+      {
+      }
+   }
+
    public class ShowNotificationsEvent
    {
       public IReadOnlyList<NotificationMessage> NotificationMessages { get; }

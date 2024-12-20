@@ -95,7 +95,7 @@ namespace MoBi.Core.Serialization.ORM
 
          var notificationMessages = _projectConverterLogger.AllMessages();
          if (notificationMessages.Any())
-            _eventPublisher.PublishEvent(new ShowNotificationsEvent(new ReadOnlyCollection<NotificationMessage>(notificationMessages.ToList())));
+            _eventPublisher.PublishEvent(new ShowProjectConversionNotificationsEvent(new ReadOnlyCollection<NotificationMessage>(notificationMessages.ToList())));
       }
 
       public void Save(IMoBiContext context)

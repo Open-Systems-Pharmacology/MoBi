@@ -2054,6 +2054,28 @@ namespace MoBi.Assets
          {
             return $"This item cannot be selected. {forbiddenReason}";
          }
+
+         public static string ProjectConversionResultedInSimulationsWithUntraceableChanges(IReadOnlyList<string> simulationNames)
+         {
+            var sb = new StringBuilder();
+            sb.AppendLine("===================== WARNING =====================");
+            sb.AppendLine();
+            sb.AppendLine("During project conversion some changes to the simulation could not be traced back to building blocks.");
+            sb.AppendLine($"The simulation changes are still present in the simulations but cannot be committed to the building blocks in this version of {PRODUCT_NAME_WITH_TRADEMARK}.");
+            sb.AppendLine();
+            sb.AppendLine("To preserve full commit functionality, go back to the previous version and synchronize the simulation with building blocks before opening with this version.");
+            sb.AppendLine("You can reconfigure the simulations from their building blocks in this version.");
+            sb.AppendLine();
+            sb.AppendLine("The following simulations are affected:");
+            sb.Append(namesList(simulationNames));
+            sb.AppendLine();
+            return sb.ToString();
+         }
+
+         public static string SimulationHasChangesThatCannotBeCommitted(string simulationName)
+         {
+            return $"During project conversion the simulation '{simulationName}' had changes that can not be committed to building blocks.\n\nAny new changes in the simulation cannot be committed to building blocks";
+         }
       }
 
       public static class Validation

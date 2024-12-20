@@ -51,9 +51,12 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          };
 
 
-         if (simulation.OriginalQuantityValues.Any())
+         if (simulation.OriginalQuantityValues.Any() || simulation.HasUntraceableChanges)
          {
             _allMenuItems.Add(createCommit(simulation));
+         }
+         if (simulation.OriginalQuantityValues.Any())
+         {
             _allMenuItems.Add(createShowDifferences(simulation));
          }
 

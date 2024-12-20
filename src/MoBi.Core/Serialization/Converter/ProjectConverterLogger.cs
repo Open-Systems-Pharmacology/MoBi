@@ -57,7 +57,7 @@ namespace MoBi.Core.Serialization.Converter
          AddMessage(new NotificationMessage(objectBase, MessageOrigin.Formula, buildingBlock, type)
             {
                Message = message,
-               BuildingBlockType = _objectTypeResolver.TypeFor(buildingBlock),
+               BuildingBlockType = buildingBlock == null ? string.Empty : _objectTypeResolver.TypeFor(buildingBlock),
                ObjectType = _objectTypeResolver.TypeFor(objectBase),
                Name = objectBase.Name
             });

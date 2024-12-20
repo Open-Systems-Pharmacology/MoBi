@@ -154,11 +154,18 @@ namespace MoBi.Core
             OutputSelection = new SimulationQuantitySelection(_moBiSimulation, new QuantitySelection("A|BC", QuantityType.Enzyme)),
             WeightedObservedData = new WeightedObservedData(DomainHelperForSpecs.ObservedData())
          });
+         _moBiSimulation.HasUntraceableChanges = true;
       }
 
       protected override void Because()
       {
          sut.UpdatePropertiesFrom(_moBiSimulation, _cloneManager);
+      }
+
+      [Observation]
+      public void should_have_transferred_properties()
+      {
+         sut.HasUntraceableChanges.ShouldBeEqualTo(_moBiSimulation.HasUntraceableChanges);
       }
 
       [Observation]

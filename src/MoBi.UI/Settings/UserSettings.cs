@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
+using System.Linq;
+using DevExpress.Utils;
 using DevExpress.XtraBars.Docking;
 using DevExpress.XtraBars.Ribbon;
 using MoBi.Assets;
 using MoBi.Core;
 using MoBi.Core.Domain;
+using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Presentation.Settings;
 using OSPSuite.Assets;
