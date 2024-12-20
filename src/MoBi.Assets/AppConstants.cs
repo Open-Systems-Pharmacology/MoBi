@@ -286,17 +286,17 @@ namespace MoBi.Assets
 
          public static string CommitingChangesToModulesMessage(ModuleConfiguration moduleConfiguration, bool hasMoleculeChanges, bool hasParameterChanges)
          {
-            string message = $"Changed parameter values will be committed to the parameter values building block of the module <i>{moduleConfiguration.Module.Name}</i>:{Environment.NewLine}";
+            var message = $"Values changed in a simulation are always committed to the last module of the simulation configuration. {Environment.NewLine}";
 
             if (hasMoleculeChanges)
             {
-               var icName = moduleConfiguration.SelectedInitialConditions == null ? "A new initial conditions building block will be created" : $"Initial conditions will be written to the initial conditions building block <i>{moduleConfiguration.SelectedInitialConditions.DisplayName}</i>";
+               var icName = moduleConfiguration.SelectedInitialConditions == null ? $"A new initial conditions building block will be created in module <i>{moduleConfiguration.Module.Name}</i>" : $"Initial conditions will be written to the initial conditions building block <i>{moduleConfiguration.SelectedInitialConditions.Name}</i> in module <i>{moduleConfiguration.Module.Name}</i>";
                message += $"{Environment.NewLine}- {icName}";
             }
 
             if (hasParameterChanges)
             {
-               var pvName = moduleConfiguration.SelectedParameterValues == null ? "A new parameter values building block will be created" : $"Parameter values will be written to the parameter values building block <i>{moduleConfiguration.SelectedParameterValues.DisplayName}</i>";
+               var pvName = moduleConfiguration.SelectedParameterValues == null ? $"A new parameter values building block will be created in module <i>{moduleConfiguration.Module.Name}</i>" : $"Parameter values will be written to the parameter values building block <i>{moduleConfiguration.SelectedParameterValues.Name}</i> in module <i>{moduleConfiguration.Module.Name}</i>";
                message += $"{Environment.NewLine}- {pvName}";
             }
 
