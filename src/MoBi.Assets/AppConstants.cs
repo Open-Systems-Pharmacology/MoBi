@@ -290,13 +290,13 @@ namespace MoBi.Assets
 
             if (hasMoleculeChanges)
             {
-               var icName = moduleConfiguration.SelectedInitialConditions == null ? "A new initial conditions building block will be created" : $"Initial conditions will be written to the initial conditions building block <i>{moduleConfiguration.SelectedInitialConditions.DisplayName}</i>";
+               var icName = moduleConfiguration.SelectedInitialConditions == null ? $"A new initial conditions building block will be created in the module <i>{moduleConfiguration.Module.Name}</i>" : $"Initial conditions will be written to the initial conditions building block <i>{moduleConfiguration.SelectedInitialConditions.Name}</i> in module <i>{moduleConfiguration.Module.Name}</i>";
                message += $"{Environment.NewLine}- {icName}";
             }
 
             if (hasParameterChanges)
             {
-               var pvName = moduleConfiguration.SelectedParameterValues == null ? "A new parameter values building block will be created" : $"Parameter values will be written to the parameter values building block <i>{moduleConfiguration.SelectedParameterValues.DisplayName}</i>";
+               var pvName = moduleConfiguration.SelectedParameterValues == null ? $"A new parameter values building block will be created in the module <i>{moduleConfiguration.Module.Name}</i>" : $"Parameter values will be written to the parameter values building block <i>{moduleConfiguration.SelectedParameterValues.Name}</i> in module <i>{moduleConfiguration.Module.Name}</i>";
                message += $"{Environment.NewLine}- {pvName}";
             }
 
