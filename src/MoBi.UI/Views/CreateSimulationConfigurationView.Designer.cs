@@ -30,9 +30,9 @@
       private void InitializeComponent()
       {
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
-         this.cbCreateProcessRate = new OSPSuite.UI.Controls.UxCheckEdit();
          this.tabWizard = new DevExpress.XtraTab.XtraTabControl();
          this.tbName = new DevExpress.XtraEditors.TextEdit();
+         this.cbCreateProcessRate = new OSPSuite.UI.Controls.UxCheckEdit();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemName = new DevExpress.XtraLayout.LayoutControlItem();
@@ -43,9 +43,9 @@
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
          this.layoutControl.SuspendLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.cbCreateProcessRate.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.tabWizard)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.tbName.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.cbCreateProcessRate.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemName)).BeginInit();
@@ -67,31 +67,31 @@
          this.layoutControl.TabIndex = 5;
          this.layoutControl.Text = "layoutControl1";
          // 
-         // cbCreateProcessRate
-         // 
-         this.cbCreateProcessRate.AllowClicksOutsideControlArea = false;
-         this.cbCreateProcessRate.Location = new System.Drawing.Point(408, 12);
-         this.cbCreateProcessRate.Name = "cbCreateProcessRate";
-         this.cbCreateProcessRate.Properties.AllowFocused = false;
-         this.cbCreateProcessRate.Properties.Caption = "cbCreateProcessRate";
-         this.cbCreateProcessRate.Size = new System.Drawing.Size(778, 20);
-         this.cbCreateProcessRate.StyleController = this.layoutControl;
-         this.cbCreateProcessRate.TabIndex = 6;
-         // 
          // tabWizard
          // 
-         this.tabWizard.Location = new System.Drawing.Point(12, 36);
+         this.tabWizard.Location = new System.Drawing.Point(12, 60);
          this.tabWizard.Name = "tabWizard";
-         this.tabWizard.Size = new System.Drawing.Size(1174, 674);
+         this.tabWizard.Size = new System.Drawing.Size(1174, 650);
          this.tabWizard.TabIndex = 5;
          // 
          // tbName
          // 
          this.tbName.Location = new System.Drawing.Point(103, 12);
          this.tbName.Name = "tbName";
-         this.tbName.Size = new System.Drawing.Size(301, 20);
+         this.tbName.Size = new System.Drawing.Size(1083, 20);
          this.tbName.StyleController = this.layoutControl;
          this.tbName.TabIndex = 4;
+         // 
+         // cbCreateProcessRate
+         // 
+         this.cbCreateProcessRate.AllowClicksOutsideControlArea = false;
+         this.cbCreateProcessRate.Location = new System.Drawing.Point(12, 36);
+         this.cbCreateProcessRate.Name = "cbCreateProcessRate";
+         this.cbCreateProcessRate.Properties.AllowFocused = false;
+         this.cbCreateProcessRate.Properties.Caption = "cbCreateProcessRate";
+         this.cbCreateProcessRate.Size = new System.Drawing.Size(1174, 20);
+         this.cbCreateProcessRate.StyleController = this.layoutControl;
+         this.cbCreateProcessRate.TabIndex = 6;
          // 
          // layoutControlGroup1
          // 
@@ -110,9 +110,9 @@
          // 
          this.layoutControlItem1.Control = this.tabWizard;
          this.layoutControlItem1.CustomizationFormText = "layoutControlItem1";
-         this.layoutControlItem1.Location = new System.Drawing.Point(0, 24);
+         this.layoutControlItem1.Location = new System.Drawing.Point(0, 48);
          this.layoutControlItem1.Name = "layoutControlItem1";
-         this.layoutControlItem1.Size = new System.Drawing.Size(1178, 678);
+         this.layoutControlItem1.Size = new System.Drawing.Size(1178, 654);
          this.layoutControlItem1.TextSize = new System.Drawing.Size(0, 0);
          this.layoutControlItem1.TextVisible = false;
          // 
@@ -122,15 +122,15 @@
          this.layoutItemName.CustomizationFormText = "layoutItemName";
          this.layoutItemName.Location = new System.Drawing.Point(0, 0);
          this.layoutItemName.Name = "layoutItemName";
-         this.layoutItemName.Size = new System.Drawing.Size(396, 24);
+         this.layoutItemName.Size = new System.Drawing.Size(1178, 24);
          this.layoutItemName.TextSize = new System.Drawing.Size(79, 13);
          // 
          // layoutControlItem2
          // 
          this.layoutControlItem2.Control = this.cbCreateProcessRate;
-         this.layoutControlItem2.Location = new System.Drawing.Point(396, 0);
+         this.layoutControlItem2.Location = new System.Drawing.Point(0, 24);
          this.layoutControlItem2.Name = "layoutControlItem2";
-         this.layoutControlItem2.Size = new System.Drawing.Size(782, 24);
+         this.layoutControlItem2.Size = new System.Drawing.Size(1178, 24);
          this.layoutControlItem2.TextSize = new System.Drawing.Size(0, 0);
          this.layoutControlItem2.TextVisible = false;
          // 
@@ -151,9 +151,9 @@
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
          this.layoutControl.ResumeLayout(false);
-         ((System.ComponentModel.ISupportInitialize)(this.cbCreateProcessRate.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.tabWizard)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.tbName.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.cbCreateProcessRate.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemName)).EndInit();
