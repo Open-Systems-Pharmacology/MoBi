@@ -11,6 +11,7 @@ using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Presentation.Nodes;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 
@@ -49,6 +50,7 @@ namespace MoBi.Presentation.Presenter
          {
             addExpressionChildren(dto, children);
             addIndividualChildren(dto, children);
+            addEventsChildren(dto, children);
          }
          else
          {
@@ -56,6 +58,32 @@ namespace MoBi.Presentation.Presenter
          }
 
          return children;
+      }
+
+      private void addEventsChildren(ObjectBaseDTO dto, List<ObjectBaseDTO> children)
+      {
+         var buildingBlock = _context.Get<EventGroupBuildingBlock>(dto.Id);
+         addChildrenFromEventBuildingBlock(children, buildingBlock);
+      }
+
+      private void addChildrenFromEventBuildingBlock(List<ObjectBaseDTO> children, EventGroupBuildingBlock eventGroupBuildingBlock)
+      {
+         if (eventGroupBuildingBlock == null)
+            return;
+
+         var rootContainer = new Container();
+
+         _containers[eventGroupBuildingBlock] = rootContainer;
+
+         eventGroupBuildingBlock.Each(x =>
+         {
+            if (!_containers[eventGroupBuildingBlock].Contains(x))
+               _containers[eventGroupBuildingBlock].Add(x);
+         });
+
+         children.AddRange(
+            _containers[eventGroupBuildingBlock].GetChildrenSortedByName<EventGroupBuilder>()
+               .MapAllUsing(_objectBaseDTOMapper));
       }
 
       public override IReadOnlyList<ObjectPath> GetAllSelections()
@@ -206,7 +234,16 @@ namespace MoBi.Presentation.Presenter
          AddSpatialStructures();
          addIndividuals();
          addExpressions();
+         addEvents();
          _view.ChangeLocalisationAllowed = true;
+      }
+
+      private void addEvents()
+      {
+         var events = _buildingBlockRepository.EventBlockCollection;
+         var nodes = events.Select(x => _referenceMapper.MapFrom(x).WithText(x.DisplayName));
+
+         View.AddNodes(nodes);
       }
 
       private void addExpressions()

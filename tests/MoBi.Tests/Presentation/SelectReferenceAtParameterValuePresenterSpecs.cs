@@ -388,30 +388,25 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_getting_child_objects_with_a_distributed_parameter : concern_for_SelectReferenceAtParameterValuePresenter
+   public class When_getting_eventGroup_parameters_for_building_block : concern_for_SelectReferenceAtParameterValuePresenter
    {
       private ObjectBaseDTO _objectBaseDTO;
       private List<ObjectBaseDTO> _children;
-      private IndividualBuildingBlock _individualBuildingBlock;
+      private EventGroupBuildingBlock _eventGroupBuildingBlock;
 
       protected override void Context()
       {
          base.Context();
-         _individualBuildingBlock = new IndividualBuildingBlock().WithId("1");
-         var pathAndValueEntity = new IndividualParameter().WithId("2");
-         pathAndValueEntity.Path = new ObjectPath("Root", "Container", "distributed parameter");
+         var eventGroupBuilder = new EventGroupBuilder().WithName("EG");
+         var eventGroupBuilderChildren = new Parameter().WithName("eventGroupBuilderChildren");
+         eventGroupBuilder.Add(eventGroupBuilderChildren);
+         _eventGroupBuildingBlock = new EventGroupBuildingBlock();
+         _eventGroupBuildingBlock.Add(eventGroupBuilder);
 
-         pathAndValueEntity.DistributionType = DistributionType.Normal;
-         _individualBuildingBlock.Add(pathAndValueEntity);
+         _objectBaseDTO = new ObjectBaseDTO(_eventGroupBuildingBlock);
 
-         pathAndValueEntity = new IndividualParameter().WithId("3");
-         pathAndValueEntity.Path = new ObjectPath("Root", "Container", "distributed parameter", "mean");
-         _individualBuildingBlock.Add(pathAndValueEntity);
-
-         _objectBaseDTO = new ObjectBaseDTO(_individualBuildingBlock);
-
-         A.CallTo(() => _context.ObjectRepository.ContainsObjectWithId(_individualBuildingBlock.Id)).Returns(true);
-         A.CallTo(() => _context.Get<IndividualBuildingBlock>(_individualBuildingBlock.Id)).Returns(_individualBuildingBlock);
+         A.CallTo(() => _context.ObjectRepository.ContainsObjectWithId(_eventGroupBuildingBlock.Id)).Returns(true);
+         A.CallTo(() => _context.Get<EventGroupBuildingBlock>(_eventGroupBuildingBlock.Id)).Returns(_eventGroupBuildingBlock);
          A.CallTo(() => _context.Get<ExpressionProfileBuildingBlock>(A<string>._)).Returns(null);
          A.CallTo(() => _objectBaseDTOMapper.MapFrom(A<IObjectBase>._)).ReturnsLazily(x => new ObjectBaseDTO(x.Arguments.Get<IObjectBase>(0)));
       }
@@ -422,15 +417,59 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void the_child_objects_added_to_the_view_should_contain_the_individual_parameters()
+      public void the_child_objects_added_to_the_view_should_contain_the_eventGroup_parameters()
       {
          _children.Count.ShouldBeEqualTo(1);
-         _children[0].ObjectBase.Name.ShouldBeEqualTo("Root");
-         var root = _children[0].ObjectBase as Container;
-         var container = root.Single() as Container;
-         container.Name.ShouldBeEqualTo("Container");
-         var distributedParameterContainer = container.Single() as IndividualParameter;
-         distributedParameterContainer.Name.ShouldBeEqualTo("distributed parameter");
+         _children[0].ObjectBase.Name.ShouldBeEqualTo("EG");
+         (_children[0].ObjectBase as EventGroupBuilder).ShouldNotBeNull();
+         (_children[0].ObjectBase as EventGroupBuilder).Children.Count().ShouldBeEqualTo(1);
+         (_children[0].ObjectBase as EventGroupBuilder).Children.FirstOrDefault().Name.ShouldBeEqualTo("eventGroupBuilderChildren");
+      }
+
+      public class When_getting_child_objects_with_a_distributed_parameter : concern_for_SelectReferenceAtParameterValuePresenter
+      {
+         private ObjectBaseDTO _objectBaseDTO;
+         private List<ObjectBaseDTO> _children;
+         private IndividualBuildingBlock _individualBuildingBlock;
+
+         protected override void Context()
+         {
+            base.Context();
+            _individualBuildingBlock = new IndividualBuildingBlock().WithId("1");
+            var pathAndValueEntity = new IndividualParameter().WithId("2");
+            pathAndValueEntity.Path = new ObjectPath("Root", "Container", "distributed parameter");
+
+            pathAndValueEntity.DistributionType = DistributionType.Normal;
+            _individualBuildingBlock.Add(pathAndValueEntity);
+
+            pathAndValueEntity = new IndividualParameter().WithId("3");
+            pathAndValueEntity.Path = new ObjectPath("Root", "Container", "distributed parameter", "mean");
+            _individualBuildingBlock.Add(pathAndValueEntity);
+
+            _objectBaseDTO = new ObjectBaseDTO(_individualBuildingBlock);
+
+            A.CallTo(() => _context.ObjectRepository.ContainsObjectWithId(_individualBuildingBlock.Id)).Returns(true);
+            A.CallTo(() => _context.Get<IndividualBuildingBlock>(_individualBuildingBlock.Id)).Returns(_individualBuildingBlock);
+            A.CallTo(() => _context.Get<ExpressionProfileBuildingBlock>(A<string>._)).Returns(null);
+            A.CallTo(() => _objectBaseDTOMapper.MapFrom(A<IObjectBase>._)).ReturnsLazily(x => new ObjectBaseDTO(x.Arguments.Get<IObjectBase>(0)));
+         }
+
+         protected override void Because()
+         {
+            _children = sut.GetChildObjects(_objectBaseDTO).ToList();
+         }
+
+         [Observation]
+         public void the_child_objects_added_to_the_view_should_contain_the_individual_parameters()
+         {
+            _children.Count.ShouldBeEqualTo(1);
+            _children[0].ObjectBase.Name.ShouldBeEqualTo("Root");
+            var root = _children[0].ObjectBase as Container;
+            var container = root.Single() as Container;
+            container.Name.ShouldBeEqualTo("Container");
+            var distributedParameterContainer = container.Single() as IndividualParameter;
+            distributedParameterContainer.Name.ShouldBeEqualTo("distributed parameter");
+         }
       }
    }
 }
