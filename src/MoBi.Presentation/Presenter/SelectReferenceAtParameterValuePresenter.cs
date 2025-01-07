@@ -11,6 +11,7 @@ using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Presentation.Nodes;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 
@@ -22,7 +23,8 @@ namespace MoBi.Presentation.Presenter
 
    public class SelectReferenceAtParameterValuePresenter : SelectReferencePresenterBase, ISelectReferenceAtParameterValuePresenter
    {
-      private readonly Cache<IBuildingBlock, IContainer> _containers;
+      // Cache to store the containers for the PathAndValueEntities only
+      private readonly Cache<IBuildingBlock, IContainer> _pathAndValueContainers;
 
       public SelectReferenceAtParameterValuePresenter(ISelectReferenceView view,
          IObjectBaseToObjectBaseDTOMapper objectBaseDTOMapper,
@@ -37,7 +39,7 @@ namespace MoBi.Presentation.Presenter
             objectBaseToMoleculeDummyMapper, dummyParameterDTOMapper, referenceMapper, objectPathCreator, Localisations.ContainerOnly, buildingBlockRepository)
       {
          view.EnableMultiSelect = true;
-         _containers = new Cache<IBuildingBlock, IContainer>();
+         _pathAndValueContainers = new Cache<IBuildingBlock, IContainer>();
       }
 
       public override IEnumerable<ObjectBaseDTO> GetChildObjects(ObjectBaseDTO dto)
@@ -49,6 +51,7 @@ namespace MoBi.Presentation.Presenter
          {
             addExpressionChildren(dto, children);
             addIndividualChildren(dto, children);
+            addEventsChildren(dto, children);
          }
          else
          {
@@ -56,6 +59,20 @@ namespace MoBi.Presentation.Presenter
          }
 
          return children;
+      }
+
+      private void addEventsChildren(ObjectBaseDTO dto, List<ObjectBaseDTO> children)
+      {
+         var buildingBlock = _context.Get<EventGroupBuildingBlock>(dto.Id);
+         addChildrenFromEventBuildingBlock(children, buildingBlock);
+      }
+
+      private void addChildrenFromEventBuildingBlock(List<ObjectBaseDTO> children, EventGroupBuildingBlock eventGroupBuildingBlock)
+      {
+         if (eventGroupBuildingBlock == null)
+            return;
+
+         children.AddRange(eventGroupBuildingBlock.MapAllUsing(_objectBaseDTOMapper));
       }
 
       public override IReadOnlyList<ObjectPath> GetAllSelections()
@@ -118,7 +135,7 @@ namespace MoBi.Presentation.Presenter
 
       private IContainer containerFrom(ObjectBaseDTO dto)
       {
-         if (dto.ObjectBase is IContainer container && _containers.Any(x => x.GetAllContainersAndSelf<IContainer>().Contains(container)))
+         if (dto.ObjectBase is IContainer container && _pathAndValueContainers.Any(x => x.GetAllContainersAndSelf<IContainer>().Contains(container)))
             return container;
 
          return null;
@@ -142,11 +159,11 @@ namespace MoBi.Presentation.Presenter
          if (pathAndValueEntities == null)
             return;
 
-         _containers[pathAndValueEntities] = getGroups(entitiesExceptSubParameters<TBuildingBlock, TEntity>(pathAndValueEntities));
+         _pathAndValueContainers[pathAndValueEntities] = getGroups(entitiesExceptSubParameters<TBuildingBlock, TEntity>(pathAndValueEntities));
 
-         pathAndValueEntities.Each(x => addToContainer(x, _containers[pathAndValueEntities]));
+         pathAndValueEntities.Each(x => addToContainer(x, _pathAndValueContainers[pathAndValueEntities]));
 
-         addPathAndValuesFromContainer(children, _containers[pathAndValueEntities]);
+         addPathAndValuesFromContainer(children, _pathAndValueContainers[pathAndValueEntities]);
       }
 
       private static IReadOnlyList<TEntity> entitiesExceptSubParameters<TBuildingBlock, TEntity>(TBuildingBlock pathAndValueEntities) where TBuildingBlock : PathAndValueEntityBuildingBlock<TEntity> where TEntity : PathAndValueEntity
@@ -206,7 +223,16 @@ namespace MoBi.Presentation.Presenter
          AddSpatialStructures();
          addIndividuals();
          addExpressions();
+         addEvents();
          _view.ChangeLocalisationAllowed = true;
+      }
+
+      private void addEvents()
+      {
+         var events = _buildingBlockRepository.EventBlockCollection;
+         var nodes = events.Select(x => _referenceMapper.MapFrom(x).WithText(x.DisplayName));
+
+         View.AddNodes(nodes);
       }
 
       private void addExpressions()

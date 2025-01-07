@@ -119,7 +119,7 @@ namespace MoBi.Presentation.Presenter
       public virtual IEnumerable<ObjectBaseDTO> GetChildObjects(ObjectBaseDTO dto)
       {
          var children = new List<ObjectBaseDTO>();
-
+         
          if (_context.ObjectRepository.ContainsObjectWithId(dto.Id))
          {
             var objectBase = _context.Get<IObjectBase>(dto.Id);
