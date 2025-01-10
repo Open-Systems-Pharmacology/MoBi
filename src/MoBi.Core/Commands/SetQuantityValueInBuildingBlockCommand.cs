@@ -26,7 +26,7 @@ namespace MoBi.Core.Commands
       protected override void ExecuteWith(IMoBiContext context)
       {
          base.ExecuteWith(context);
-         _oldValue = _quantity.Value;
+         _oldValue = _quantity.TryGetValue().value;
          _quantity.UpdateQuantityValue(_valueToSet);
          var newDisplayValue = _quantity.ValueInDisplayUnit;
          var oldDisplayValue = _quantity.ConvertToDisplayUnit(_oldValue);
