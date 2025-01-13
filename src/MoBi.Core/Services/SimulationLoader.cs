@@ -74,7 +74,11 @@ namespace MoBi.Core.Services
             return;
 
          if (originalSimulationName != moBiSimulation.Name) //has been renamed
+         {
             correctModuleNames(moBiSimulation.Modules, moBiSimulation.Name, project.Modules, originalSimulationName);
+            loadCommand.Add(new RenameModelCommand(moBiSimulation.Model, moBiSimulation.Name));
+         }
+
 
          addSimulationConfigurationToProject(moBiSimulation, loadCommand);
 
