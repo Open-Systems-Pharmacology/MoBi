@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
@@ -35,6 +36,30 @@ namespace MoBi.Core
       }
    }
 
+   public class When_the_parameter_value_cannot_be_calculated_and_throws_exception : concern_for_QuantityTask
+   {
+      private IFormula _formula;
+
+      protected override void Context()
+      {
+         base.Context();
+         _formula = A.Fake<IFormula>();
+         _parameter.Formula = _formula;
+         A.CallTo(() => _formula.Calculate(A<IUsingFormula>._)).Throws(x => new ArgumentException());
+      }
+
+      protected override void Because()
+      {
+         _result = sut.SetQuantityDisplayValue(_parameter, 1.0, _buildingBlock);
+      }
+
+      [Observation]
+      public void the_quantity_is_still_set()
+      {
+         _parameter.Value.ShouldBeEqualTo(1.0);
+      }
+   }
+
    public class When_resetting_the_value_of_a_quantity_in_a_simulation : concern_for_QuantityTask
    {
       protected override void Context()
@@ -49,7 +74,7 @@ namespace MoBi.Core
       }
 
       [Observation]
-      public void should_ensure_that_the_description_of_the_resulting_commmand_is_set()
+      public void should_ensure_that_the_description_of_the_resulting_command_is_set()
       {
          string.IsNullOrEmpty(_result.Description).ShouldBeFalse();
       }
