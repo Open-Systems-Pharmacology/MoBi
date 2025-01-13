@@ -98,6 +98,8 @@ namespace MoBi.Core
          _simulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(new Module().WithName("Sim1 1")));
          _simulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(new Module().WithName("Sim1 2")));
          _simulation.Name = "Sim1";
+         _simulation.Model = new Model { Neighborhoods = new Container() };
+         _simulation.Model.Root = new Container();
 
          A.CallTo(() => _cloneManager.CloneSimulationConfiguration(_simulationConfiguration)).Returns(_clonedSimulationConfiguration);
 
@@ -111,6 +113,13 @@ namespace MoBi.Core
       protected override void Because()
       {
          _commands = sut.AddSimulationToProject(_simulation) as MoBiMacroCommand;
+      }
+
+      [Observation]
+      public void the_model_and_root_container_are_renamed()
+      {
+         _simulation.Model.Name.ShouldBeEqualTo(_simulation.Name);
+         _simulation.Model.Root.Name.ShouldBeEqualTo(_simulation.Name);
       }
 
       [Observation]
