@@ -108,10 +108,6 @@ namespace MoBi.Core.Serialization.ORM.Mappers
       {
          if (simulationSettingsBlocks.Any() && _project.SimulationSettings == null)
             _project.SimulationSettings = simulationSettingsBlocks.First();
-
-         // TODO what if there is more than 1 simulation settings in the project being converted
-         // else
-         //    throw new MoBiException($"Project contains multiple simulation settings");
       }
 
       private void addModuleBuildingBlocks(List<IBuildingBlock> moduleBuildingBlocks)
