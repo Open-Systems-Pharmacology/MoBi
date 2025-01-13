@@ -9,6 +9,7 @@ using MoBi.Core.Services;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Utility;
 
@@ -55,6 +56,30 @@ namespace MoBi.Core
       public void there_should_only_be_one_module_loaded()
       {
          _project.Modules.Count.ShouldBeEqualTo(1);
+      }
+   }
+
+   public class When_mapping_metadata_without_any_simulation_settings : concern_for_ProjectMetaDataToProjectMapper
+   {
+      private SimulationSettings _simulationSettings;
+      protected override void Context()
+      {
+         base.Context();
+         _simulationSettings = new SimulationSettings();
+         _simulationSettings.Id = "SimulationSettingsId";
+         _projectMetaData.AddChild(new EntityMetaData { Id = ShortGuid.NewGuid() });
+         A.CallTo(() => _serializationService.Deserialize<object>(_projectMetaData.Children.First().Content.Data, A<MoBiProject>._, A<SerializationContext>._)).Returns(_simulationSettings);
+      }
+
+      protected override void Because()
+      {
+         sut.MapFrom(_projectMetaData);
+      }
+
+      [Observation]
+      public void the_simulation_setings_should_match_the_id()
+      {
+         _project.SimulationSettings.Id.ShouldBeEqualTo("SimulationSettingsId");
       }
    }
 
