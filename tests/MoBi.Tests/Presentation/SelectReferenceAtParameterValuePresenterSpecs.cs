@@ -364,6 +364,10 @@ namespace MoBi.Presentation
          pathAndValueEntity.Path = new ObjectPath("Root", "Container", "named parameter");
          _individualBuildingBlock.Add(pathAndValueEntity);
 
+         pathAndValueEntity = new IndividualParameter().WithId("2");
+         pathAndValueEntity.Path = new ObjectPath("Root", "Container", "anamed parameter");
+         _individualBuildingBlock.Add(pathAndValueEntity);
+
          _objectBaseDTO = new ObjectBaseDTO(_individualBuildingBlock);
 
          A.CallTo(() => _context.ObjectRepository.ContainsObjectWithId(_individualBuildingBlock.Id)).Returns(true);
@@ -380,11 +384,12 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void the_children_resolved_should_reflect_the_path_structure_of_the_container()
+      public void the_children_resolved_should_reflect_the_path_structure_of_the_container_in_alphabetic_order()
       {
          _children[0].ObjectBase.Name.ShouldBeEqualTo("Container");
-         var entity = (_children[0].ObjectBase as Container).Single();
-         entity.Name.ShouldBeEqualTo("named parameter");
+         var children = (_children[0].ObjectBase as Container).ToArray();
+         children[0].Name.ShouldBeEqualTo("anamed parameter");
+         children[1].Name.ShouldBeEqualTo("named parameter");
       }
    }
 

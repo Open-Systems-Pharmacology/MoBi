@@ -159,19 +159,21 @@ namespace MoBi.Presentation.Presenter
          if (pathAndValueEntities == null)
             return;
 
-         _pathAndValueContainers[pathAndValueEntities] = getGroups(entitiesExceptSubParameters<TBuildingBlock, TEntity>(pathAndValueEntities));
+         var orderedEntities = pathAndValueEntities.OrderBy(x => x.Path.PathAsString).ToList();
 
-         pathAndValueEntities.Each(x => addToContainer(x, _pathAndValueContainers[pathAndValueEntities]));
+         _pathAndValueContainers[pathAndValueEntities] = getGroups(entitiesExceptSubParameters(orderedEntities));
+
+         orderedEntities.Each(x => addToContainer(x, _pathAndValueContainers[pathAndValueEntities]));
 
          addPathAndValuesFromContainer(children, _pathAndValueContainers[pathAndValueEntities]);
       }
 
-      private static IReadOnlyList<TEntity> entitiesExceptSubParameters<TBuildingBlock, TEntity>(TBuildingBlock pathAndValueEntities) where TBuildingBlock : PathAndValueEntityBuildingBlock<TEntity> where TEntity : PathAndValueEntity
+      private static IReadOnlyList<TEntity> entitiesExceptSubParameters<TEntity>(IReadOnlyList<TEntity> pathAndValueEntities) where TEntity : PathAndValueEntity
       {
          return pathAndValueEntities.Where(x => !isSubParameter(x, pathAndValueEntities)).ToList();
       }
 
-      private static bool isSubParameter<TEntity>(TEntity pathAndValueEntity, PathAndValueEntityBuildingBlock<TEntity> buildingBlock) where TEntity : PathAndValueEntity
+      private static bool isSubParameter<TEntity>(TEntity pathAndValueEntity, IReadOnlyList<TEntity> buildingBlock) where TEntity : PathAndValueEntity
       {
          return buildingBlock.Any(pathAndValueEntity.IsDirectSubParameterOf);
       }
