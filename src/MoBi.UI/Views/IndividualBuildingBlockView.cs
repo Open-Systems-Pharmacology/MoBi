@@ -56,6 +56,12 @@ namespace MoBi.UI.Views
          _repositoryItemPopupContainerEdit.QueryDisplayText += (o, e) => OnEvent(queryText, e);
       }
 
+      public override void InitializeResources()
+      {
+         base.InitializeResources();
+         gridView.ShowColumnChooser = true;
+      }
+
       private void queryText(QueryDisplayTextEventArgs e)
       {
          var distributedParameter = _gridViewBinder.FocusedElement;
