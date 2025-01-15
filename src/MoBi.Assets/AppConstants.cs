@@ -1650,7 +1650,7 @@ namespace MoBi.Assets
          public static readonly string OriginalValue = "Original Value";
          public static readonly string CurrentValue = "Current Value";
          public static readonly string CreateProcessRateParameters = "Create a process rate parameter for each process in the simulation";
-         public static readonly string AddAndEditPathsDescription = "You can add paths by selecting the entity from the left and using the 'Add' button, or by manually entering them. You can also edit entered paths manually.";
+         public static readonly string AddAndEditPathsDescription = "You can add paths by selecting the entity from the left and using the 'Add' button, or by manually entering and editing paths in the text area below.";
          public static string SelectTheBuildingBlockWhereEntitiesWillBeAddedOrUpdated(string typeBeingAdded) => $"Select the building block where {typeBeingAdded} will be added or updated";
          public static readonly string SelectBuildingBlock = "Select Building Block";
          public static readonly string MakeDefault = "Make defaults";
