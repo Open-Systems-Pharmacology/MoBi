@@ -1,4 +1,5 @@
-﻿using DevExpress.XtraLayout;
+﻿using DevExpress.Utils;
+using DevExpress.XtraLayout;
 using DevExpress.XtraLayout.Utils;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
@@ -52,6 +53,13 @@ namespace MoBi.UI.Views
          ShowOrHideNamingItem(parameterValuesNameItem, show: cbParameterValues.Checked);
 
          lblDescription.AllowHtmlString = true;
+         lblDescription.HyperlinkClick += (o, e) => OnEvent(() => handleLink(e));
+         lblDescription.Appearance.TextOptions.WordWrap = WordWrap.Wrap;
+      }
+
+      private void handleLink(HyperlinkClickEventArgs e)
+      {
+         System.Diagnostics.Process.Start(e.Link);
       }
 
       public void SetBehaviorDescription(string description)
