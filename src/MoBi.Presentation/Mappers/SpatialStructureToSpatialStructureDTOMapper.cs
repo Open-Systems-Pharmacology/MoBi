@@ -1,4 +1,5 @@
-﻿using MoBi.Presentation.DTO;
+﻿using System.Linq;
+using MoBi.Presentation.DTO;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
@@ -22,8 +23,13 @@ namespace MoBi.Presentation.Mappers
       {
          var dto = Map(new SpatialStructureDTO(spatialStructure));
          dto.TopContainers = spatialStructure.TopContainers.MapAllUsing(_containerToDTOContainerMapper);
-         dto.Neighborhoods = _containerToDTOContainerMapper.MapFrom(spatialStructure.NeighborhoodsContainer);
-         dto.MoleculeProperties = _containerToDTOContainerMapper.MapFrom(spatialStructure.GlobalMoleculeDependentProperties);
+         
+         if(spatialStructure.NeighborhoodsContainer != null && spatialStructure.NeighborhoodsContainer.Any())
+            dto.Neighborhoods = _containerToDTOContainerMapper.MapFrom(spatialStructure.NeighborhoodsContainer);
+
+         if(spatialStructure.GlobalMoleculeDependentProperties != null && spatialStructure.GlobalMoleculeDependentProperties.Any())
+            dto.MoleculeProperties = _containerToDTOContainerMapper.MapFrom(spatialStructure.GlobalMoleculeDependentProperties);
+         
          dto.Name = spatialStructure.DisplayName;
 
          return dto;

@@ -8,6 +8,7 @@ using MoBi.Core.Domain.Repository;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
@@ -92,6 +93,10 @@ namespace MoBi.Presentation.Presenter
          if (parent.IsAnImplementationOf<IDistributedParameter>())
             return Array.Empty<ObjectBaseDTO>();
 
+         var spatialStructureDTO = parentDTO as SpatialStructureDTO;
+         if (spatialStructureDTO != null)
+            return mapSpatialStructureChildren(spatialStructureDTO);
+
          var container = parent as IContainer;
          if (container == null)
             return Array.Empty<ObjectBaseDTO>();
@@ -122,6 +127,21 @@ namespace MoBi.Presentation.Presenter
          list.Where(objectSelectionIsForbidden).Each(x => cannotSelectDescription(x, _forbiddenAssignees[x.ObjectBase]));
 
          return list;
+      }
+
+      private IReadOnlyList<ObjectBaseDTO> mapSpatialStructureChildren(SpatialStructureDTO spatialStructureDTO)
+      {
+         var objectBaseDTOs = new List<ObjectBaseDTO>();
+         if (spatialStructureDTO.MoleculeProperties != null)
+            objectBaseDTOs.Add(spatialStructureDTO.MoleculeProperties);
+
+         if(spatialStructureDTO.TopContainers != null && spatialStructureDTO.TopContainers.Any())
+            objectBaseDTOs.AddRange(spatialStructureDTO.TopContainers);
+
+         if(spatialStructureDTO.Neighborhoods != null)
+            objectBaseDTOs.Add(spatialStructureDTO.Neighborhoods);
+
+         return objectBaseDTOs;
       }
 
       private bool objectSelectionIsForbidden(ObjectBaseDTO x)

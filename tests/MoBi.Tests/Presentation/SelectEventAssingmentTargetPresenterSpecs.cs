@@ -3,6 +3,7 @@ using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
+using MoBi.Core.Repositories;
 using MoBi.Core.Services;
 using MoBi.Helpers;
 using MoBi.Presentation.DTO;
@@ -36,7 +37,7 @@ namespace MoBi.Presentation
       protected IParameter _localParameter;
       protected IParameter _globalParameter;
       protected ISelectEntityInTreePresenter _selectEntityInTreePresenter;
-      private ISpatialStructureToSpatialStructureDTOMapper _spatialStructureDTOMapper;
+      protected ISpatialStructureToSpatialStructureDTOMapper _spatialStructureDTOMapper;
       private IBuildingBlockRepository _buildingBlockRepository;
       private MoBiReactionBuildingBlock _reactionBB;
       private MoleculeBuildingBlock _moleculeBB;
@@ -53,7 +54,7 @@ namespace MoBi.Presentation
          _parameterMapper = A.Fake<IParameterToDummyParameterDTOMapper>();
          _dimensionRetriever = A.Fake<IReactionDimensionRetriever>();
          _selectEntityInTreePresenter = A.Fake<ISelectEntityInTreePresenter>();
-         _spatialStructureDTOMapper = A.Fake<ISpatialStructureToSpatialStructureDTOMapper>();
+         _spatialStructureDTOMapper = new SpatialStructureToSpatialStructureDTOMapper(new ContainerToContainerDTOMapper(_objectPathFactory, A.Fake<IIconRepository>()));
          _buildingBlockRepository = new BuildingBlockRepository(new MoBiProjectRetriever(_context));
 
          sut = new SelectEventAssignmentTargetPresenter(_view, _context, _objectBaseDTOMapper, _containerDTOMapper, _reactionMapper,
@@ -97,6 +98,88 @@ namespace MoBi.Presentation
       public void should_not_be_able_to_complete_the_selection()
       {
          sut.CanClose.ShouldBeFalse();
+      }
+   }
+
+   internal class When_getting_children_for_a_spatial_structure_without_molecule_properties_or_neighborhoods : concern_for_SelectEventAssignmentTargetPresenter
+   {
+      private ObjectBaseDTO[] _result;
+      private MoBiSpatialStructure _spatialStructure;
+      private ObjectBaseDTO _spatialStructureDTO;
+      private IContainer _topContainer;
+
+      protected override void Context()
+      {
+         base.Context();
+         var id = "ss";
+         _spatialStructure = new MoBiSpatialStructure
+         {
+            NeighborhoodsContainer = new Container().WithName("Neighborhoods"),
+            GlobalMoleculeDependentProperties = new Container().WithName("MoleculeProperties")
+         };
+
+         _topContainer = new Container().WithId("tc").WithName("Organism");
+         _spatialStructure.AddTopContainer(_topContainer);
+         _spatialStructureDTO = _spatialStructureDTOMapper.MapFrom(_spatialStructure);
+
+         A.CallTo(() => _context.Get<IObjectBase>(id)).Returns(_spatialStructure);
+         A.CallTo(() => _objectBaseDTOMapper.MapFrom(A<IObjectBase>._)).ReturnsLazily(x => new ObjectBaseDTO(x.Arguments.Get<IObjectBase>(0)));
+      }
+
+      protected override void Because()
+      {
+         _result = sut.GetChildren(_spatialStructureDTO).ToArray();
+      }
+
+      [Observation]
+      public void should_return_an_empty_list()
+      {
+         _result.Length.ShouldBeEqualTo(1);
+         _result[0].ObjectBase.ShouldBeEqualTo(_topContainer);
+      }
+   }
+
+   internal class When_getting_children_for_a_spatial_structure : concern_for_SelectEventAssignmentTargetPresenter
+   {
+      private ObjectBaseDTO[] _result;
+      private MoBiSpatialStructure _spatialStructure;
+      private ObjectBaseDTO _spatialStructureDTO;
+      private IContainer _topContainer;
+      private NeighborhoodBuilder _neighborhoodBuilder;
+
+      protected override void Context()
+      {
+         base.Context();
+         var id = "ss";
+         _spatialStructure = new MoBiSpatialStructure
+         {
+            NeighborhoodsContainer = new Container().WithName("Neighborhoods"),
+            GlobalMoleculeDependentProperties = new Container().WithName("MoleculeProperties")
+         };
+
+         _spatialStructure.GlobalMoleculeDependentProperties.Add(new Parameter());
+         _topContainer = new Container().WithId("tc").WithName("Organism");
+         _neighborhoodBuilder = new NeighborhoodBuilder().WithId("nb").WithName("NeighborhoodBuilder");
+         _spatialStructure.AddTopContainer(_topContainer);
+         _spatialStructure.AddNeighborhood(_neighborhoodBuilder);
+         _spatialStructureDTO = _spatialStructureDTOMapper.MapFrom(_spatialStructure);
+         
+         A.CallTo(() => _context.Get<IObjectBase>(id)).Returns(_spatialStructure);
+         A.CallTo(() => _objectBaseDTOMapper.MapFrom(A<IObjectBase>._)).ReturnsLazily(x => new ObjectBaseDTO(x.Arguments.Get<IObjectBase>(0)));
+      }
+
+      protected override void Because()
+      {
+         _result = sut.GetChildren(_spatialStructureDTO).ToArray();
+      }
+
+      [Observation]
+      public void should_return_an_empty_list()
+      {
+         _result.Length.ShouldBeEqualTo(3);
+         _result[0].Name.ShouldBeEqualTo("MoleculeProperties");
+         _result[1].ObjectBase.ShouldBeEqualTo(_topContainer);
+         _result[2].Name.ShouldBeEqualTo("Neighborhoods");
       }
    }
 
