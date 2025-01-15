@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using DevExpress.XtraEditors;
 using MoBi.Assets;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
@@ -29,6 +30,9 @@ namespace MoBi.UI.Views
          btnAdd.Click += (sender, args) => _presenter.AddSelection();
 
          pathsToBeAddedGroup.Text = AppConstants.Captions.ParameterPathsToAdd;
+         lblDescription.AutoSizeMode = LabelAutoSizeMode.Vertical;
+         lblDescription.Text = AppConstants.Captions.AddAndEditPathsDescription;
+         pathsToBeAddedGroup.Size = new Size(layoutControlItem4.Width, pathsToBeAddedGroup.Height);
       }
 
       protected override void OnLoad(EventArgs e)

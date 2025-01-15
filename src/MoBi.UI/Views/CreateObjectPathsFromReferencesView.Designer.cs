@@ -36,9 +36,11 @@
          this.layoutItemBtnAdd = new DevExpress.XtraLayout.LayoutControlItem();
          this.emptySpaceItem2 = new DevExpress.XtraLayout.EmptySpaceItem();
          this.emptySpaceItem3 = new DevExpress.XtraLayout.EmptySpaceItem();
-         this.layoutItemObjectPaths = new DevExpress.XtraLayout.LayoutControlItem();
          this.pathsToBeAddedGroup = new DevExpress.XtraLayout.LayoutControlGroup();
+         this.layoutItemObjectPaths = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutControlItem4 = new DevExpress.XtraLayout.LayoutControlItem();
+         this.lblDescription = new DevExpress.XtraEditors.LabelControl();
+         this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.uxLayoutControl)).BeginInit();
          this.uxLayoutControl.SuspendLayout();
@@ -48,14 +50,16 @@
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemBtnAdd)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem2)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem3)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemObjectPaths)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.pathsToBeAddedGroup)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemObjectPaths)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
          this.SuspendLayout();
          // 
          // uxLayoutControl
          // 
          this.uxLayoutControl.AllowCustomization = false;
+         this.uxLayoutControl.Controls.Add(this.lblDescription);
          this.uxLayoutControl.Controls.Add(this.memoEditObjectPaths);
          this.uxLayoutControl.Controls.Add(this.referenceSelectionPanel);
          this.uxLayoutControl.Controls.Add(this.btnAdd);
@@ -70,10 +74,10 @@
          // 
          // memoEditObjectPaths
          // 
-         this.memoEditObjectPaths.Location = new System.Drawing.Point(590, 45);
+         this.memoEditObjectPaths.Location = new System.Drawing.Point(912, 62);
          this.memoEditObjectPaths.Name = "memoEditObjectPaths";
          this.memoEditObjectPaths.Properties.ScrollBars = System.Windows.Forms.ScrollBars.None;
-         this.memoEditObjectPaths.Size = new System.Drawing.Size(385, 765);
+         this.memoEditObjectPaths.Size = new System.Drawing.Size(63, 748);
          this.memoEditObjectPaths.StyleController = this.uxLayoutControl;
          this.memoEditObjectPaths.TabIndex = 10;
          // 
@@ -88,7 +92,7 @@
          // 
          this.btnAdd.Location = new System.Drawing.Point(429, 279);
          this.btnAdd.Name = "btnAdd";
-         this.btnAdd.Size = new System.Drawing.Size(145, 22);
+         this.btnAdd.Size = new System.Drawing.Size(467, 22);
          this.btnAdd.StyleController = this.uxLayoutControl;
          this.btnAdd.TabIndex = 7;
          this.btnAdd.Text = "btnAdd";
@@ -112,7 +116,7 @@
          this.layoutItemBtnAdd.Control = this.btnAdd;
          this.layoutItemBtnAdd.Location = new System.Drawing.Point(417, 267);
          this.layoutItemBtnAdd.Name = "layoutItemBtnAdd";
-         this.layoutItemBtnAdd.Size = new System.Drawing.Size(149, 26);
+         this.layoutItemBtnAdd.Size = new System.Drawing.Size(471, 26);
          this.layoutItemBtnAdd.TextSize = new System.Drawing.Size(0, 0);
          this.layoutItemBtnAdd.TextVisible = false;
          // 
@@ -121,7 +125,7 @@
          this.emptySpaceItem2.AllowHotTrack = false;
          this.emptySpaceItem2.Location = new System.Drawing.Point(417, 293);
          this.emptySpaceItem2.Name = "emptySpaceItem2";
-         this.emptySpaceItem2.Size = new System.Drawing.Size(149, 521);
+         this.emptySpaceItem2.Size = new System.Drawing.Size(471, 521);
          this.emptySpaceItem2.TextSize = new System.Drawing.Size(0, 0);
          // 
          // emptySpaceItem3
@@ -129,25 +133,26 @@
          this.emptySpaceItem3.AllowHotTrack = false;
          this.emptySpaceItem3.Location = new System.Drawing.Point(417, 0);
          this.emptySpaceItem3.Name = "emptySpaceItem3";
-         this.emptySpaceItem3.Size = new System.Drawing.Size(149, 267);
+         this.emptySpaceItem3.Size = new System.Drawing.Size(471, 267);
          this.emptySpaceItem3.TextSize = new System.Drawing.Size(0, 0);
-         // 
-         // layoutItemObjectPaths
-         // 
-         this.layoutItemObjectPaths.Control = this.memoEditObjectPaths;
-         this.layoutItemObjectPaths.Location = new System.Drawing.Point(0, 0);
-         this.layoutItemObjectPaths.Name = "layoutItemObjectPaths";
-         this.layoutItemObjectPaths.Size = new System.Drawing.Size(389, 769);
-         this.layoutItemObjectPaths.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutItemObjectPaths.TextVisible = false;
          // 
          // pathsToBeAddedGroup
          // 
          this.pathsToBeAddedGroup.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutItemObjectPaths});
-         this.pathsToBeAddedGroup.Location = new System.Drawing.Point(566, 0);
+            this.layoutItemObjectPaths,
+            this.layoutControlItem1});
+         this.pathsToBeAddedGroup.Location = new System.Drawing.Point(888, 0);
          this.pathsToBeAddedGroup.Name = "pathsToBeAddedGroup";
-         this.pathsToBeAddedGroup.Size = new System.Drawing.Size(413, 814);
+         this.pathsToBeAddedGroup.Size = new System.Drawing.Size(91, 814);
+         // 
+         // layoutItemObjectPaths
+         // 
+         this.layoutItemObjectPaths.Control = this.memoEditObjectPaths;
+         this.layoutItemObjectPaths.Location = new System.Drawing.Point(0, 17);
+         this.layoutItemObjectPaths.Name = "layoutItemObjectPaths";
+         this.layoutItemObjectPaths.Size = new System.Drawing.Size(67, 752);
+         this.layoutItemObjectPaths.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutItemObjectPaths.TextVisible = false;
          // 
          // layoutControlItem4
          // 
@@ -157,6 +162,24 @@
          this.layoutControlItem4.Size = new System.Drawing.Size(417, 814);
          this.layoutControlItem4.TextSize = new System.Drawing.Size(0, 0);
          this.layoutControlItem4.TextVisible = false;
+         // 
+         // lblDescription
+         // 
+         this.lblDescription.Location = new System.Drawing.Point(912, 45);
+         this.lblDescription.Name = "lblDescription";
+         this.lblDescription.Size = new System.Drawing.Size(63, 13);
+         this.lblDescription.StyleController = this.uxLayoutControl;
+         this.lblDescription.TabIndex = 11;
+         this.lblDescription.Text = "lblDescription";
+         // 
+         // layoutControlItem1
+         // 
+         this.layoutControlItem1.Control = this.lblDescription;
+         this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
+         this.layoutControlItem1.Name = "layoutControlItem1";
+         this.layoutControlItem1.Size = new System.Drawing.Size(67, 17);
+         this.layoutControlItem1.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutControlItem1.TextVisible = false;
          // 
          // CreateObjectPathsFromReferencesView
          // 
@@ -174,9 +197,10 @@
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemBtnAdd)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem2)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem3)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemObjectPaths)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.pathsToBeAddedGroup)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemObjectPaths)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
          this.ResumeLayout(false);
 
       }
@@ -194,5 +218,7 @@
       private DevExpress.XtraLayout.LayoutControlItem layoutItemObjectPaths;
       private DevExpress.XtraLayout.LayoutControlGroup pathsToBeAddedGroup;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem4;
+      private DevExpress.XtraEditors.LabelControl lblDescription;
+      private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
    }
 }
