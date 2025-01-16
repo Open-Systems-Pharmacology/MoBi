@@ -345,6 +345,9 @@ namespace MoBi.Presentation.Presenter
 
          _formula = _formulaDecoder.GetFormula(_formulaOwner);
 
+         if (_formula == null)
+            return;
+
          rebind();
       }
 
