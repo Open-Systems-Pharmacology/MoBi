@@ -632,6 +632,11 @@ namespace MoBi.Assets
             return $"Updated initial condition at path: {path} with value: {value} {displayUnit},  present: {present},  scale divisor: {scaleFactor}, neg. values allowed: {negativeValuesAllowed}";
          }
 
+         public static string RemovedPathAndValueEntity(PathAndValueEntity pathAndValueEntity, string buildingBlockName, string entityType)
+         {
+            return $"Added a {entityType} to building block '{buildingBlockName}' at path: {pathAndValueEntity.Path}, with value: {pathAndValueEntity.Value} {pathAndValueEntity.DisplayUnit}";
+         }
+
          public static string AddedPathAndValueEntity(PathAndValueEntity pathAndValueEntity, string buildingBlockName, string entityType)
          {
             return $"Added a {entityType} to building block '{buildingBlockName}' at path: {pathAndValueEntity.Path}, with value: {pathAndValueEntity.Value} {pathAndValueEntity.DisplayUnit}";
