@@ -45,6 +45,12 @@ namespace MoBi.Core.Mapper
       }
 
       [Observation]
+      public void the_value_should_be_saved_in_the_distributed_parameter()
+      {
+         _result.Value.ShouldBeEqualTo(_individualParameter.Value.Value);
+      }
+
+      [Observation]
       public void should_create_a_distributed_parameter()
       {
          _result.Name.ShouldBeEqualTo("Name");

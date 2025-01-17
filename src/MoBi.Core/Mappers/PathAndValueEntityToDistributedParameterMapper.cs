@@ -23,6 +23,8 @@ namespace MoBi.Core.Mappers
       {
          var distributedParameter =  createParameter(pathAndValueEntity, distributionType);
          addSubParameters(subParameters, distributedParameter);
+         if (pathAndValueEntity.Value.HasValue)
+            distributedParameter.Value = pathAndValueEntity.Value.Value;
          return distributedParameter;
       }
 
