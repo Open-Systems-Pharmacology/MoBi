@@ -1,6 +1,7 @@
 ﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
+using MoBi.Core.Events;
 using MoBi.Core.Helper;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -111,6 +112,27 @@ namespace MoBi.Presentation
       public void the_update_formula_should_be_called_with_expected_formula()
       {
          A.CallTo(() => _moBiFormulaTask.UpdateFormula(_formulaOwner, _expectedOldFormula, A<IFormula>.Ignored, _formulaDecoder, A<IBuildingBlock>.Ignored)).MustHaveHappened();
+      }
+   }
+
+   public class When_handling_rename_events_and_formula_is_null : concern_for_EditFormulaInPathAndValuesPresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _pathAndValueEntity.Formula = null;
+         sut.Init(_entity, _buildingBlock, new UsingFormulaDecoder());
+      }
+
+      protected override void Because()
+      {
+         sut.Handle(new ObjectPropertyChangedEvent(_pathAndValueEntity));
+      }
+
+      [Observation]
+      public void the_formula_mapper_is_not_used()
+      {
+         A.CallTo(() => _formulaToFormulaInfoDTOMapper.MapFrom(A<IFormula>._)).MustHaveHappenedOnceExactly();
       }
    }
 }
