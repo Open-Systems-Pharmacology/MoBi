@@ -5,7 +5,7 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class AddPathAndValueEntityToBuildingBlockInSimulationCommand<T> : PathAndValueEntityBuildingBlockInSimulationCommandBase<T> where T : PathAndValueEntity
+   public class AddPathAndValueEntityToBuildingBlockInSimulationCommand<T> : BuildingBlockChangeCommandBase<PathAndValueEntityBuildingBlock<T>> where T : PathAndValueEntity
    {
       private readonly T _pathAndValueEntity;
       private ObjectPath _objectPath;
@@ -23,15 +23,15 @@ namespace MoBi.Core.Commands
             return;
 
          _objectPath = _pathAndValueEntity.Path;
-         if (_pathAndValueEntitiesBuildingBlock[_objectPath] != null)
+         if (_buildingBlock[_objectPath] != null)
             return;
 
-         _pathAndValueEntitiesBuildingBlock.Add(_pathAndValueEntity);
+         _buildingBlock.Add(_pathAndValueEntity);
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return new RemovePathAndValueEntityFromBuildingBlockInSimulationCommand<T>(_objectPath, _pathAndValueEntitiesBuildingBlock)
+         return new RemovePathAndValueEntityFromBuildingBlockInSimulationCommand<T>(_objectPath, _buildingBlock)
          {
             Visible = Visible
          }.AsInverseFor(this);
