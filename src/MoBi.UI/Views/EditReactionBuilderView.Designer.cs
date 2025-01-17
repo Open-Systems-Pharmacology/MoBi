@@ -44,7 +44,7 @@ namespace MoBi.UI.Views
          this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
          this.pnlKinetic = new DevExpress.XtraEditors.PanelControl();
          this.btName = new DevExpress.XtraEditors.ButtonEdit();
-         this.chkCreateParmeter = new OSPSuite.UI.Controls.UxCheckEdit();
+         this.chkCreateParameter = new OSPSuite.UI.Controls.UxCheckEdit();
          this.htmlEditor = new DevExpress.XtraEditors.MemoExEdit();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemDescription = new DevExpress.XtraLayout.LayoutControlItem();
@@ -84,7 +84,7 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.barManager)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.pnlKinetic)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.btName.Properties)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.chkCreateParmeter.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.chkCreateParameter.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.htmlEditor.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemDescription)).BeginInit();
@@ -145,7 +145,7 @@ namespace MoBi.UI.Views
          this.layoutControl1.Controls.Add(this.chkPlotParameter);
          this.layoutControl1.Controls.Add(this.pnlKinetic);
          this.layoutControl1.Controls.Add(this.btName);
-         this.layoutControl1.Controls.Add(this.chkCreateParmeter);
+         this.layoutControl1.Controls.Add(this.chkCreateParameter);
          this.layoutControl1.Controls.Add(this.htmlEditor);
          this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
          this.layoutControl1.Location = new System.Drawing.Point(0, 0);
@@ -223,14 +223,14 @@ namespace MoBi.UI.Views
          // 
          // chkCreateParmeter
          // 
-         this.chkCreateParmeter.AllowClicksOutsideControlArea = false;
-         this.chkCreateParmeter.Location = new System.Drawing.Point(12, 36);
-         this.chkCreateParmeter.MenuManager = this.barManager;
-         this.chkCreateParmeter.Name = "chkCreateParmeter";
-         this.chkCreateParmeter.Properties.Caption = "chkCreateParmeter";
-         this.chkCreateParmeter.Size = new System.Drawing.Size(404, 19);
-         this.chkCreateParmeter.StyleController = this.layoutControl1;
-         this.chkCreateParmeter.TabIndex = 7;
+         this.chkCreateParameter.AllowClicksOutsideControlArea = false;
+         this.chkCreateParameter.Location = new System.Drawing.Point(12, 36);
+         this.chkCreateParameter.MenuManager = this.barManager;
+         this.chkCreateParameter.Name = "chkCreateParameter";
+         this.chkCreateParameter.Properties.Caption = "chkCreateParmeter";
+         this.chkCreateParameter.Size = new System.Drawing.Size(404, 19);
+         this.chkCreateParameter.StyleController = this.layoutControl1;
+         this.chkCreateParameter.TabIndex = 7;
          // 
          // htmlEditor
          // 
@@ -270,7 +270,7 @@ namespace MoBi.UI.Views
          // 
          // layoutControlItem1
          // 
-         this.layoutControlItem1.Control = this.chkCreateParmeter;
+         this.layoutControlItem1.Control = this.chkCreateParameter;
          this.layoutControlItem1.CustomizationFormText = "layoutControlItem1";
          this.layoutControlItem1.Location = new System.Drawing.Point(0, 24);
          this.layoutControlItem1.Name = "layoutControlItem1";
@@ -523,7 +523,7 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.barManager)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.pnlKinetic)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.btName.Properties)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.chkCreateParmeter.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.chkCreateParameter.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.htmlEditor.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemDescription)).EndInit();
@@ -580,7 +580,7 @@ namespace MoBi.UI.Views
       private PanelControl pnlKinetic;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemKinetic;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
-      private UxCheckEdit chkCreateParmeter;
+      private UxCheckEdit chkCreateParameter;
       private UxCheckEdit chkPlotParameter;
       private DevExpress.XtraTab.XtraTabPage tabContainerCriteria;
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl3;
