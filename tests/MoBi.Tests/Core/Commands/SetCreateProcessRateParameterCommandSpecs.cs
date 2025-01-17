@@ -1,8 +1,12 @@
 ﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Services;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Services;
+using OSPSuite.Utility.Events;
 
 namespace MoBi.Core.Commands
 {
@@ -13,17 +17,20 @@ namespace MoBi.Core.Commands
       protected ReactionBuilder _reaactionBuilder;
       protected IMoBiContext _context;
       protected IBuildingBlock _buildingBlock;
+      private IBuildingBlockVersionUpdater _buildingBlockUpdater;
 
       protected override void Context()
       {
          _context = A.Fake<IMoBiContext>();
          _buildingBlock = A.Fake<IBuildingBlock>();
+         _buildingBlockUpdater = new BuildingBlockVersionUpdater(A.Fake<IMoBiProjectRetriever>(), A.Fake<IEventPublisher>(), A.Fake<IDialogCreator>());
          _buildingBlock.Module.IsPKSimModule = true;
          _newValue = false;
          _oldValue = true;
          _reaactionBuilder = new ReactionBuilder();
          _reaactionBuilder.CreateProcessRateParameter = _oldValue;
          _reaactionBuilder.ProcessRateParameterPersistable = true;
+         A.CallTo(() => _context.Resolve<IBuildingBlockVersionUpdater>()).Returns(_buildingBlockUpdater);
          sut = new SetCreateProcessRateParameterCommand(_newValue, _reaactionBuilder, _buildingBlock);
       }
    }
@@ -48,9 +55,9 @@ namespace MoBi.Core.Commands
       }
 
       [Observation]
-      public void the_module_remains_a_pk_sim_module()
+      public void the_module_is_converted_to_extension()
       {
-         _buildingBlock.Module.IsPKSimModule.ShouldBeTrue();
+         _buildingBlock.Module.IsPKSimModule.ShouldBeFalse();
       }
    }
 }

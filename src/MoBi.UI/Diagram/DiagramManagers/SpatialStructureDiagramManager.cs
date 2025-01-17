@@ -124,7 +124,7 @@ namespace MoBi.UI.Diagram.DiagramManagers
       {
          var (firstNeighborNode, secondNeighborNode) = base.GetNeighborHoodNodes(neighborhoodBase);
 
-         if (neighborhoodBase is NeighborhoodBuilder neighborhoodBuilder)
+         if (neighborhoodBase is NeighborhoodBuilder neighborhoodBuilder && isComplete(neighborhoodBuilder))
          {
             if (firstNeighborNode == null)
                firstNeighborNode = DiagramModel.GetNode<IContainerNode>(neighborhoodBuilder.FirstNeighborPath);
@@ -133,6 +133,11 @@ namespace MoBi.UI.Diagram.DiagramManagers
          }
            
          return (firstNeighborNode, secondNeighborNode);
+      }
+
+      private bool isComplete(NeighborhoodBuilder neighborhoodBuilder)
+      {
+         return neighborhoodBuilder.FirstNeighborPath != null && neighborhoodBuilder.SecondNeighborPath != null;
       }
    }
 }
