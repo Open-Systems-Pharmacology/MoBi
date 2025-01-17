@@ -6,12 +6,12 @@ using EntityExtensions = MoBi.Core.Domain.Extensions.EntityExtensions;
 
 namespace MoBi.Core
 {
-    public abstract class concern_forEntity_ExtensionsSpecs : StaticContextSpecification
+    public abstract class concern_for_EntityExtensions : StaticContextSpecification
     {
         
     }
 
-    class When_Checking_if_a_Reaction_Parameter_is_a_reaction_parameter : concern_forEntity_ExtensionsSpecs
+    class When_Checking_if_a_Reaction_Parameter_is_a_reaction_parameter : concern_for_EntityExtensions
     {
         private IParameter _reactionParameter;
         private bool _result;
@@ -36,7 +36,7 @@ namespace MoBi.Core
         }
     }
 
-    class When_Checking_if_a_not_Reaction_Parameter_is_a_reaction_parameter : concern_forEntity_ExtensionsSpecs
+    class When_Checking_if_a_not_Reaction_Parameter_is_a_reaction_parameter : concern_for_EntityExtensions
     {
         private IParameter _reactionParameter;
         private bool _result;
@@ -61,7 +61,7 @@ namespace MoBi.Core
         }
     }
 
-    class When_Checking_if_a_Molecule_Parameter_is_a_molecule_parameter : concern_forEntity_ExtensionsSpecs
+    class When_Checking_if_a_Molecule_Parameter_is_a_molecule_parameter : concern_for_EntityExtensions
     {
         private IParameter _moleculeParameter;
         private bool _result;
@@ -86,7 +86,7 @@ namespace MoBi.Core
         }
     }
 
-    class When_Checking_if_a_Molecule_Properties_Parameter_is_a_molecule_parameter : concern_forEntity_ExtensionsSpecs
+    class When_Checking_if_a_Molecule_Properties_Parameter_is_a_molecule_parameter : concern_for_EntityExtensions
     {
         private IParameter _moleculeParameter;
         private bool _result;
@@ -113,7 +113,7 @@ namespace MoBi.Core
         }
     }
 
-    class When_Checking_if_a_not_Molecule_Parameter_is_a_molecule_parameter : concern_forEntity_ExtensionsSpecs
+    class When_Checking_if_a_not_Molecule_Parameter_is_a_molecule_parameter : concern_for_EntityExtensions
     {
         private IParameter _moleculeParameter;
         private bool _result;
