@@ -65,7 +65,7 @@ namespace MoBi.Presentation.DTO
             return false;
 
          var assignmentTarget = assignmentPath.TryResolve<IUsingFormula>(assignmentBuilder);
-         return assignmentFormulaPaths.Any(path => path.TryResolve<IUsingFormula>(assignmentBuilder) == assignmentTarget);
+         return assignmentTarget != null && assignmentFormulaPaths.Any(path => path.TryResolve<IUsingFormula>(assignmentBuilder) == assignmentTarget);
       }
 
       private static bool canReferToAssignmentTarget(bool useAsValue, ObjectPath objectPath, IReadOnlyList<ObjectPath> formulaPaths)
