@@ -16,11 +16,7 @@ namespace MoBi.Presentation.DTO
       public BindingList<ReactionPartnerBuilderDTO> Educts { get; set; }
       public BindingList<ReactionPartnerBuilderDTO> Products { get; set; }
 
-      public bool CreateProcessRateParameter
-      {
-         get => ReactionBuilder.CreateProcessRateParameter;
-         set => ReactionBuilder.CreateProcessRateParameter = value;
-      }
+      public bool CreateProcessRateParameter => ReactionBuilder.CreateProcessRateParameter;
 
       public bool ProcessRateParameterPersistable
       {

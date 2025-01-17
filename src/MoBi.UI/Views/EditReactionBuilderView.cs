@@ -22,6 +22,7 @@ namespace MoBi.UI.Views
    {
       private IEditReactionBuilderPresenter _presenter;
       private ScreenBinder<ReactionBuilderDTO> _screenBinder;
+      private CheckEditElementBinder<ReactionBuilderDTO> _checkEditElementBinder;
 
       public EditReactionBuilderView(IImageListRetriever imageListRetriever)
       {
@@ -114,7 +115,7 @@ namespace MoBi.UI.Views
          _screenBinder.Bind(item => item.StoichiometricFormula).To(lblStoichiometricFormula);
          _screenBinder.Bind(item => item.Name).To(btName).OnValueUpdating += onValueUpdating;
          _screenBinder.Bind(item => item.Description).To(htmlEditor).OnValueUpdating += onValueUpdating;
-         _screenBinder.Bind(item => item.CreateProcessRateParameter).To(chkCreateParmeter).OnValueUpdating += onCreateParameterSet;
+         _screenBinder.Bind(item => item.CreateProcessRateParameter).To(chkCreateParameter).OnValueUpdating += onCreateParameterSet;
          _screenBinder.Bind(item => item.ProcessRateParameterPersistable).To(chkPlotParameter).OnValueUpdating += onPlotParameterSet;
 
          btName.ButtonClick += (o, e) => OnEvent(_presenter.RenameSubject);
@@ -130,6 +131,7 @@ namespace MoBi.UI.Views
       private void onCreateParameterSet(ReactionBuilderDTO dto, PropertyValueSetEventArgs<bool> e)
       {
          OnEvent(() => _presenter.SetCreateProcessRateParameter(e.NewValue));
+         chkCreateParameter.Checked = dto.CreateProcessRateParameter;
       }
 
       private void onValueUpdating<T>(ReactionBuilderDTO reactionBuilder, PropertyValueSetEventArgs<T> e)
@@ -150,7 +152,7 @@ namespace MoBi.UI.Views
          layoutItemKinetic.TextLocation = Locations.Top;
          layoutItemName.Text = AppConstants.Captions.Name.FormatForLabel();
          htmlEditor.Properties.ShowIcon = false;
-         chkCreateParmeter.Text = AppConstants.Captions.CreateProcessRateParameter;
+         chkCreateParameter.Text = AppConstants.Captions.CreateProcessRateParameter;
          chkPlotParameter.Text = AppConstants.Captions.PlotProcessRateParameter;
 
          tabStoichiometry.InitWith(AppConstants.Captions.Stoichiometry, ApplicationIcons.Formula);

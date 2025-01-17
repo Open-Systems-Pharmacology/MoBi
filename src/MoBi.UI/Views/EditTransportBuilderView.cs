@@ -83,9 +83,9 @@ namespace MoBi.UI.Views
             .To(htmlEditor)
             .OnValueUpdating += OnValueUpdating;
 
-         _screenBinder.Bind(dto => dto.CreateProcessRateParameter)
-            .To(chkCreateParameter)
-            .OnValueUpdating += onCreateParameterSet;
+         var checkEditElementBinder = _screenBinder.Bind(dto => dto.CreateProcessRateParameter)
+            .To(chkCreateParameter);
+         checkEditElementBinder.OnValueUpdating += onCreateParameterSet;
 
          _screenBinder.Bind(dto => dto.ProcessRateParameterPersistable)
             .To(chkPlotParameter)
@@ -104,6 +104,7 @@ namespace MoBi.UI.Views
       private void onCreateParameterSet(TransportBuilderDTO dto, PropertyValueSetEventArgs<bool> e)
       {
          OnEvent(() => _presenter.SetCreateProcessRateParameter(e.NewValue));
+         chkCreateParameter.Checked = dto.CreateProcessRateParameter;
       }
 
       public override bool HasError => base.HasError || _screenBinder.HasError;
