@@ -24,35 +24,34 @@ namespace MoBi.Presentation.Tasks
    public interface ICheckNameVisitor
    {
       /// <summary>
-      ///    Returns the changes required to be performed in the <paramref name="renamingContext" /> when renaming the
+      ///    Returns the changes required to be performed in the <paramref name="buildingBlock" /> when renaming the
       ///    <paramref name="objectToRename" />
       /// </summary>
       /// <param name="objectToRename">Object to rename</param>
       /// <param name="newName">New name for the object</param>
-      /// <param name="renamingContext">Context where the renaming applies (e.g. project but could also be a simple container)</param>
+      /// <param name="buildingBlock">Building block where the object to rename is defined</param>
       /// <param name="oldName"></param>
-      IReadOnlyList<IStringChange> GetPossibleChangesFrom(IObjectBase objectToRename, string newName, IObjectBase renamingContext, string oldName);
+      IReadOnlyList<IStringChange> GetPossibleChangesFrom(IObjectBase objectToRename, string newName, IBuildingBlock buildingBlock, string oldName);
    }
 
    public class CheckNameVisitor : ICheckNameVisitor,
       IVisitor<IObjectBase>,
       IVisitor<IFormula>,
-      IVisitor<IParameterStartValue>,
-      IVisitor<IMoleculeStartValue>,
-      IVisitor<IObserverBuilder>,
-      IVisitor<IReactionBuilder>,
-      IVisitor<IApplicationBuilder>,
-      IVisitor<IMoleculeBuilder>,
-      IVisitor<IEventAssignmentBuilder>,
-      IVisitor<IMoBiSimulation>,
+      IVisitor<ParameterValue>,
+      IVisitor<InitialCondition>,
+      IVisitor<ObserverBuilder>,
+      IVisitor<ReactionBuilder>,
+      IVisitor<ApplicationBuilder>,
+      IVisitor<MoleculeBuilder>,
+      IVisitor<EventAssignmentBuilder>,
       IVisitor<IBuildingBlock>,
       IVisitor<TransporterMoleculeContainer>,
-      IVisitor<ITransportBuilder>,
-      IVisitor<IApplicationMoleculeBuilder>,
-      IVisitor<ISimulationSettings>,
-      IVisitor<IEventGroupBuilder>
+      IVisitor<TransportBuilder>,
+      IVisitor<ApplicationMoleculeBuilder>,
+      IVisitor<SimulationSettings>,
+      IVisitor<EventGroupBuilder>,
+      IVisitor<NeighborhoodBuilder>
    {
-      private readonly StringChanges _changes = new StringChanges();
       private string _newName;
       private IObjectBase _objectToRename;
       private readonly IObjectTypeResolver _objectTypeResolver;
@@ -60,47 +59,45 @@ namespace MoBi.Presentation.Tasks
       private readonly string _namePropertyName;
       private readonly string _eventObjectPathPropertyName;
       private readonly string _appBuilderMoleculeNamePropertyName;
-      private readonly string _reactionPartnerMoleculeNamePropertyName;
       private IBuildingBlock _buildingBlock;
-      private readonly string _tranportNamePropertyName;
+      private readonly string _transportNamePropertyName;
       private string _oldName;
-      private readonly IParameterStartValuePathTask _psvPathTask;
-      private readonly IMoleculeStartValuePathTask _msvPathTask;
+      private readonly IParameterValuePathTask _parameterValuePathTask;
+      private readonly IInitialConditionPathTask _msvPathTask;
       private readonly ICloneManager _cloneManager;
+      private StringChanges _changes;
 
-      public CheckNameVisitor(IObjectTypeResolver objectTypeResolver, IAliasCreator aliasCreator, IParameterStartValuePathTask psvPathTask, IMoleculeStartValuePathTask msvPathTask, ICloneManager cloneManager)
+      public CheckNameVisitor(IObjectTypeResolver objectTypeResolver, IAliasCreator aliasCreator, IParameterValuePathTask parameterValuePathTask, IInitialConditionPathTask msvPathTask, ICloneManager cloneManager)
       {
          _objectTypeResolver = objectTypeResolver;
          _aliasCreator = aliasCreator;
-         _psvPathTask = psvPathTask;
+         _parameterValuePathTask = parameterValuePathTask;
          _msvPathTask = msvPathTask;
          _cloneManager = cloneManager;
 
          Expression<Func<IObjectBase, string>> nameString = x => x.Name;
          _namePropertyName = nameString.Name();
 
-         Expression<Func<IApplicationBuilder, string>> appBuilderMoleculeName = x => x.MoleculeName;
+         Expression<Func<ApplicationBuilder, string>> appBuilderMoleculeName = x => x.MoleculeName;
          _appBuilderMoleculeNamePropertyName = appBuilderMoleculeName.Name();
 
-         Expression<Func<IReactionPartnerBuilder, string>> reactionPartnerMoleculeName = x => x.MoleculeName;
-         _reactionPartnerMoleculeNamePropertyName = reactionPartnerMoleculeName.Name();
-
-         Expression<Func<IEventAssignmentBuilder, IObjectPath>> eventObjectPath = x => x.ObjectPath;
+         Expression<Func<EventAssignmentBuilder, ObjectPath>> eventObjectPath = x => x.ObjectPath;
          _eventObjectPathPropertyName = eventObjectPath.Name();
-         Expression<Func<TransporterMoleculeContainer, string>> tranportName = x => x.TransportName;
-         _tranportNamePropertyName = tranportName.Name();
+
+         Expression<Func<TransporterMoleculeContainer, string>> transportName = x => x.TransportName;
+         _transportNamePropertyName = transportName.Name();
       }
 
-      public IReadOnlyList<IStringChange> GetPossibleChangesFrom(IObjectBase objectToRename, string newName, IObjectBase renamingContext, string oldName)
+      public IReadOnlyList<IStringChange> GetPossibleChangesFrom(IObjectBase objectToRename, string newName, IBuildingBlock buildingBlock, string oldName)
       {
-         _changes.Clear();
+         _changes = new StringChanges(buildingBlock);
          _objectToRename = objectToRename;
          _newName = newName;
          _oldName = oldName;
 
          try
          {
-            renamingContext.AcceptVisitor(this);
+            buildingBlock.AcceptVisitor(this);
             return _changes.ToList();
          }
          finally
@@ -114,7 +111,7 @@ namespace MoBi.Presentation.Tasks
       public void Visit(IFormula formula)
       {
          checkObjectBase(formula);
-         // create aliases from name to change them acordingly
+         // create aliases from name to change them accordingly
          var oldAlias = _aliasCreator.CreateAliasFrom(_oldName);
          var newAlias = _aliasCreator.CreateAliasFrom(_newName);
          foreach (var path in formula.ObjectPaths)
@@ -123,26 +120,27 @@ namespace MoBi.Presentation.Tasks
             if (path.Contains(_oldName))
             {
                //var newPath = generateNewPath(path);
-               _changes.Add(formula, _buildingBlock, new ChangePathElementAtFormulaUseablePathCommand(_newName, formula, _oldName, path, _buildingBlock));
+               _changes.Add(formula, new ChangePathElementAtFormulaUseablePathCommand(_newName, formula, _oldName, path, _buildingBlock));
             }
 
             // possible alias Adjustments
             if (path.Alias.Equals(oldAlias))
             {
                var i = 0;
-               // change new alias and remember this for this formula to change formula strign right if nessesary
+               // change new alias and remember this for this formula to change formula string right if necessary
                while (formula.ObjectPaths.Select(x => x.Alias).Contains(newAlias))
                {
                   newAlias = $"{newAlias}{i}";
                   i++;
                }
 
-               _changes.Add(formula, _buildingBlock, new EditFormulaAliasCommand(formula, newAlias, oldAlias, _buildingBlock));
+               _changes.Add(formula, new EditFormulaAliasCommand(formula, newAlias, oldAlias, _buildingBlock));
             }
          }
 
          var explicitFormula = formula as ExplicitFormula;
-         if (explicitFormula == null) return;
+         if (explicitFormula == null)
+            return;
 
          // possible Formula string adjustments
          if (!containsWord(explicitFormula.FormulaString, oldAlias))
@@ -150,20 +148,52 @@ namespace MoBi.Presentation.Tasks
 
          var newFormulaString = wordReplace(explicitFormula.FormulaString, oldAlias, newAlias);
          var editFormulaStringCommand = new EditFormulaStringCommand(newFormulaString, explicitFormula, _buildingBlock);
-         _changes.Add(formula, _buildingBlock,
-            editFormulaStringCommand,
-            editFormulaStringCommand.Description);
+         _changes.Add(formula, editFormulaStringCommand, editFormulaStringCommand.Description);
       }
 
-      private string stringReplace(string replaceIn)
+      public void Visit(IObjectBase objectBase)
       {
-         return replaceIn.Replace(_oldName, _newName);
+         checkObjectBase(objectBase);
       }
 
-      private bool containsOldName(string stringToCheck)
+      public void Visit(NeighborhoodBuilder neighborhoodBuilder)
       {
-         return stringToCheck.Contains(_oldName);
+         checkObjectBase(neighborhoodBuilder);
+         //If not renaming a container or we are renaming a neighborhood builder, we exit
+         if (!(_objectToRename is IContainer) || !(_buildingBlock is SpatialStructure spatialStructure) || ReferenceEquals(neighborhoodBuilder, _objectToRename))
+            return;
+
+         //now the name of the container is used in the neighborhood name. Propose update
+         if (containsOldName(neighborhoodBuilder.Name))
+         {
+            var newNeighborhoodName = stringReplace(neighborhoodBuilder.Name);
+            _changes.Add(neighborhoodBuilder, renameCommand(neighborhoodBuilder, newNeighborhoodName), renameDescription(neighborhoodBuilder, neighborhoodBuilder.Name, newNeighborhoodName, _namePropertyName));
+         }
+
+         //check first and second neighbors
+         if (neighborhoodBuilder.FirstNeighborPath?.Contains(_oldName) ?? false)
+         {
+            var modifiedPath = renamedPathFrom(neighborhoodBuilder.FirstNeighborPath);
+            _changes.Add(neighborhoodBuilder, new ChangeFirstNeighborPathCommand(modifiedPath, neighborhoodBuilder, spatialStructure));
+         }
+
+         if (neighborhoodBuilder.SecondNeighborPath?.Contains(_oldName) ?? false)
+         {
+            var modifiedPath = renamedPathFrom(neighborhoodBuilder.SecondNeighborPath);
+            _changes.Add(neighborhoodBuilder, new ChangeSecondNeighborPathCommand(modifiedPath, neighborhoodBuilder, spatialStructure));
+         }
       }
+
+      private ObjectPath renamedPathFrom(ObjectPath path)
+      {
+         var modifiedPath = path.Clone<ObjectPath>();
+         modifiedPath.Replace(_oldName, _newName);
+         return modifiedPath;
+      }
+
+      private string stringReplace(string replaceIn) => replaceIn.Replace(_oldName, _newName);
+
+      private bool containsOldName(string stringToCheck) => stringToCheck.Contains(_oldName);
 
       private string wordReplace(string replaceIn, string oldValue, string newValue)
       {
@@ -177,11 +207,6 @@ namespace MoBi.Presentation.Tasks
          return Regex.IsMatch(stringToCheck, pattern);
       }
 
-      public void Visit(IObjectBase objectBase)
-      {
-         checkObjectBase(objectBase);
-      }
-
       private void checkObjectBase<T>(T objectBase) where T : IObjectBase
       {
          if (objectBase.IsAnImplementationOf<IContainer>())
@@ -191,43 +216,30 @@ namespace MoBi.Presentation.Tasks
             return;
 
          if (string.Equals(_oldName, objectBase.Name))
-         {
-            _changes.Add(objectBase, _buildingBlock, new EditObjectBasePropertyInBuildingBlockCommand(_namePropertyName, _newName, _oldName, objectBase, _buildingBlock),
-               AppConstants.Commands.EditDescription(_objectTypeResolver.TypeFor<T>(), _namePropertyName, _oldName, _newName, objectBase.Name));
-         }
+            _changes.Add(objectBase, renameCommand(objectBase, _newName), renameDescription(objectBase, _oldName, _newName, _namePropertyName));
       }
 
+      private IMoBiCommand renameCommand(IObjectBase objectBase, string newName) => new RenameObjectBaseCommand(objectBase, newName, _buildingBlock);
+
+      private string renameDescription(IObjectBase objectBase, string oldName, string newName, string propertyName) =>
+        AppConstants.Commands.EditDescription(_objectTypeResolver.TypeFor(objectBase), propertyName, oldName, newName, objectBase.Name);
+      
       private void checkTagsInContainer(IContainer container)
       {
          //Check Name Tags!
-         foreach (var tag in container.Tags)
-         {
-            if (tag.Value.Equals(_oldName))
-            {
-               _changes.Add(container, _buildingBlock, new ChangeContainerTagCommand(_newName, _oldName, container, _buildingBlock),
-                  AppConstants.Commands.EditDescription(ObjectTypes.Container, "Tag", _oldName, _newName, container.Name));
-            }
-         }
-      }
+         if (!container.Tags.Any(x => x.Value.Equals(_oldName)))
+            return;
 
-      private IObjectPath generateNewPath(IObjectPath containerPath)
-      {
-         var newPath = new ObjectPath();
-         foreach (var element in containerPath)
-         {
-            newPath.Add(element.Equals(_oldName) ? _newName : element);
-         }
-
-         return newPath;
+         _changes.Add(container, new ChangeContainerTagCommand(_newName, _oldName, container, _buildingBlock), renameDescription(container, _oldName, _newName, "Tag"));
       }
 
       public void Visit(IUsingFormula usingFormula)
       {
          checkObjectBase(usingFormula);
-         // Formula is not checked here, only checked in Chache cause double will cause errors in undo
+         // Formula is not checked here, only checked in cache cause double will cause errors in undo
       }
 
-      public void Visit(ITransportBuilder transportBuilder)
+      public void Visit(TransportBuilder transportBuilder)
       {
          checkMoleculeDependentBuilder(transportBuilder, _objectTypeResolver.TypeFor(transportBuilder));
          checkDescriptorCriteria(transportBuilder, x => x.SourceCriteria);
@@ -239,18 +251,16 @@ namespace MoBi.Presentation.Tasks
          checkObjectBase(transportBuilder);
          if (transportBuilder.MoleculeNames().Contains(_oldName))
          {
-            _changes.Add(transportBuilder, _buildingBlock,
-               new ChangeMoleculeNameAtMoleculeDependentBuilderCommand(_newName, _oldName, transportBuilder, _buildingBlock) {ObjectType = objectType});
+            _changes.Add(transportBuilder, new ChangeMoleculeNameAtMoleculeDependentBuilderCommand(_newName, _oldName, transportBuilder, _buildingBlock) {ObjectType = objectType});
          }
 
          if (transportBuilder.MoleculeNamesToExclude().Contains(_oldName))
          {
-            _changes.Add(transportBuilder, _buildingBlock,
-               new ChangeExcludeMoleculeNameAtMoleculeDependentBuilderCommand(_newName, _oldName, transportBuilder, _buildingBlock) {ObjectType = objectType});
+            _changes.Add(transportBuilder, new ChangeExcludeMoleculeNameAtMoleculeDependentBuilderCommand(_newName, _oldName, transportBuilder, _buildingBlock) {ObjectType = objectType});
          }
       }
 
-      public void Visit(IObserverBuilder observerBuilder)
+      public void Visit(ObserverBuilder observerBuilder)
       {
          checkMoleculeDependentBuilder(observerBuilder, ObjectTypes.ObserverBuilder);
          checkDescriptorCriteria(observerBuilder, x => x.ContainerCriteria);
@@ -264,17 +274,17 @@ namespace MoBi.Presentation.Tasks
                continue;
 
             var commandParameters = new TagConditionCommandParameters<T> {TaggedObject = taggedObject, BuildingBlock = _buildingBlock, DescriptorCriteriaRetriever = descriptorCriteriaRetriever};
-            _changes.Add(taggedObject, _buildingBlock, new EditTagCommand<T>(_newName, _oldName, commandParameters));
+            _changes.Add(taggedObject, new EditTagCommand<T>(_newName, _oldName, commandParameters));
          }
       }
 
-      public void Visit(IEventGroupBuilder eventGroupBuilder)
+      public void Visit(EventGroupBuilder eventGroupBuilder)
       {
          checkObjectBase(eventGroupBuilder);
          checkDescriptorCriteria(eventGroupBuilder, x => x.SourceCriteria);
       }
 
-      public void Visit(IReactionBuilder reaction)
+      public void Visit(ReactionBuilder reaction)
       {
          checkObjectBase(reaction);
          checkReactionPartnerIn(reaction.Educts, reaction, educt: true);
@@ -283,59 +293,49 @@ namespace MoBi.Presentation.Tasks
          checkDescriptorCriteria(reaction, x => x.ContainerCriteria);
       }
 
-      private void checkModifier(IReactionBuilder reaction)
+      private void checkModifier(ReactionBuilder reaction)
       {
-         if (!reaction.ModifierNames.Contains(_oldName)) return;
+         if (!reaction.ModifierNames.Contains(_oldName))
+            return;
 
-         var reactionBuildingBlock = getReactionBuildingBlockContaining(reaction);
-         _changes.Add(reaction, reactionBuildingBlock, new ChangeModifierCommand(_newName, _oldName, reaction, reactionBuildingBlock));
+         var reactionBuildingBlock = _buildingBlock.DowncastTo<MoBiReactionBuildingBlock>();
+         _changes.Add(reaction, new ChangeModifierCommand(_newName, _oldName, reaction, reactionBuildingBlock));
       }
 
-      private IMoBiReactionBuildingBlock getReactionBuildingBlockContaining(IReactionBuilder reaction)
+      private void checkReactionPartnerIn(IEnumerable<ReactionPartnerBuilder> reactionPartners, ReactionBuilder reaction, bool educt)
       {
-         return _buildingBlock as IMoBiReactionBuildingBlock;
-      }
-
-      private void checkReactionPartnerIn(IEnumerable<IReactionPartnerBuilder> reactionPartners, IReactionBuilder reaction, bool educt)
-      {
+         var reactionBuildingBlock = _buildingBlock.DowncastTo<MoBiReactionBuildingBlock>();
          foreach (var reactionPartner in reactionPartners.Where(reactionPartner => reactionPartner.MoleculeName.Equals(_oldName)))
          {
-            var command = new EditReactionPartnerMoleculeNameCommand(_newName, reaction, reactionPartner, getReactionBuildingBlockContaining(reaction));
-            _changes.Add(reactionPartner, _buildingBlock, command);
+            _changes.Add(reactionPartner, new EditReactionPartnerMoleculeNameCommand(_newName, reaction, reactionPartner, reactionBuildingBlock));
          }
       }
 
-      public void Visit(IApplicationBuilder applicationBuilder)
+      public void Visit(ApplicationBuilder applicationBuilder)
       {
-         Visit(applicationBuilder.DowncastTo<IEventGroupBuilder>());
+         Visit(applicationBuilder.DowncastTo<EventGroupBuilder>());
 
          if (!string.Equals(applicationBuilder.MoleculeName, _oldName))
             return;
 
-         _changes.Add(applicationBuilder, _buildingBlock,
-            new EditObjectBasePropertyInBuildingBlockCommand(_appBuilderMoleculeNamePropertyName, _newName, _oldName, applicationBuilder, _buildingBlock),
-            AppConstants.Commands.EditDescription(ObjectTypes.Application, _appBuilderMoleculeNamePropertyName, _oldName, _newName, applicationBuilder.Name));
+         _changes.Add(applicationBuilder, new EditObjectBasePropertyInBuildingBlockCommand(_appBuilderMoleculeNamePropertyName, _newName, _oldName, applicationBuilder, _buildingBlock),
+            renameDescription(applicationBuilder, _oldName, _newName, _appBuilderMoleculeNamePropertyName));
       }
 
-      public void Visit(IMoleculeBuilder moleculeBuilder)
+      public void Visit(MoleculeBuilder moleculeBuilder)
       {
          checkObjectBase(moleculeBuilder);
-         // Formula is not checked here, only checked in Chache cause double will cause errors in undo
+         // Formula is not checked here, only checked in cache cause double will cause errors in undo
       }
 
-      public void Visit(IEventAssignmentBuilder eventAssignmentBuilder)
+      public void Visit(EventAssignmentBuilder eventAssignmentBuilder)
       {
          Visit(eventAssignmentBuilder as IUsingFormula);
          if (!eventAssignmentBuilder.ObjectPath.Contains(_oldName)) return;
 
          var oldPath = eventAssignmentBuilder.ObjectPath;
-         var newPath = generateNewPath(eventAssignmentBuilder.ObjectPath);
-         _changes.Add(eventAssignmentBuilder, _buildingBlock, new EditObjectBasePropertyInBuildingBlockCommand(_eventObjectPathPropertyName, newPath, oldPath, eventAssignmentBuilder, _buildingBlock));
-      }
-
-      public void Visit(IMoBiSimulation simulation)
-      {
-         //Visit the specified Simulation. Does Nothing here because a simulation should not be renamed
+         var newPath = renamedPathFrom(eventAssignmentBuilder.ObjectPath);
+         _changes.Add(eventAssignmentBuilder, new EditObjectBasePropertyInBuildingBlockCommand(_eventObjectPathPropertyName, newPath, oldPath, eventAssignmentBuilder, _buildingBlock));
       }
 
       public void Visit(IBuildingBlock buildingBlock)
@@ -343,14 +343,14 @@ namespace MoBi.Presentation.Tasks
          checkBuildingBlock(buildingBlock);
       }
 
-      public void Visit(ISimulationSettings simulationSettings)
+      public void Visit(SimulationSettings simulationSettings)
       {
          checkBuildingBlock(simulationSettings);
          checkOutputSelectionIn(simulationSettings);
          checkChartTemplatesIn(simulationSettings);
       }
 
-      private void checkChartTemplatesIn(ISimulationSettings simulationSettings)
+      private void checkChartTemplatesIn(SimulationSettings simulationSettings)
       {
          var chartTemplates = simulationSettings.ChartTemplates.ToList();
          if (!referencesOldName(chartTemplates))
@@ -373,10 +373,10 @@ namespace MoBi.Presentation.Tasks
             newChartTemplates.Add(newChartTemplate);
          }
 
-         _changes.Add(simulationSettings, _buildingBlock, new ReplaceBuildingBlockTemplatesCommand(simulationSettings, newChartTemplates));
+         _changes.Add(simulationSettings, new ReplaceBuildingBlockTemplatesCommand(simulationSettings, newChartTemplates));
       }
 
-      private void checkOutputSelectionIn(ISimulationSettings simulationSettings)
+      private void checkOutputSelectionIn(SimulationSettings simulationSettings)
       {
          var outputSelections = simulationSettings.OutputSelections;
          if (!referencesOldName(outputSelections))
@@ -389,7 +389,7 @@ namespace MoBi.Presentation.Tasks
             newOutputSelection.AddOutput(new QuantitySelection(stringReplace(outputUsingOldName.Path), outputUsingOldName.QuantityType));
          }
 
-         _changes.Add(outputSelections, _buildingBlock, new UpdateOutputSelectionInBuildingBlockCommand(newOutputSelection, simulationSettings));
+         _changes.Add(outputSelections, new UpdateOutputSelectionInBuildingBlockCommand(newOutputSelection, simulationSettings));
       }
 
       private IReadOnlyList<QuantitySelection> outputsReferencingOldName(OutputSelections outputSelections)
@@ -412,7 +412,7 @@ namespace MoBi.Presentation.Tasks
          return outputsReferencingOldName(outputSelections).Any();
       }
 
-      private void checkBuildingBlock<TBuildingBlock>(TBuildingBlock buildingBlock) where TBuildingBlock : IBuildingBlock
+      private void checkBuildingBlock(IBuildingBlock buildingBlock)
       {
          // We keep actual BB to provide Information to user
          _buildingBlock = buildingBlock;
@@ -422,47 +422,48 @@ namespace MoBi.Presentation.Tasks
       public void Visit(TransporterMoleculeContainer transporterMoleculeContainer)
       {
          checkObjectBase(transporterMoleculeContainer);
-         if (!string.Equals(_oldName, transporterMoleculeContainer.TransportName)) return;
+         if (!string.Equals(_oldName, transporterMoleculeContainer.TransportName)) 
+            return;
 
-         _changes.Add(transporterMoleculeContainer, _buildingBlock,
-            new EditObjectBasePropertyInBuildingBlockCommand(_tranportNamePropertyName, _newName, _oldName, transporterMoleculeContainer, _buildingBlock),
-            AppConstants.Commands.EditDescription(_objectTypeResolver.TypeFor<TransporterMoleculeContainer>(), _tranportNamePropertyName, _oldName, _newName, transporterMoleculeContainer.Name));
+         _changes.Add(transporterMoleculeContainer,
+            new EditObjectBasePropertyInBuildingBlockCommand(_transportNamePropertyName, _newName, _oldName, transporterMoleculeContainer, _buildingBlock),
+            renameDescription(transporterMoleculeContainer, _oldName, _newName, _transportNamePropertyName));
       }
 
-      public void Visit(IMoleculeStartValue moleculeStartValue)
+      public void Visit(InitialCondition initialCondition)
       {
-         checkStartValue(moleculeStartValue, _msvPathTask);
+         checkPathAndValueEntity(initialCondition, _msvPathTask);
       }
 
-      public void Visit(IParameterStartValue parameterStartValue)
+      public void Visit(ParameterValue parameterValue)
       {
-         checkStartValue(parameterStartValue, _psvPathTask);
+         checkPathAndValueEntity(parameterValue, _parameterValuePathTask);
       }
 
-      private void checkStartValue<TStartValue, TBuildingBlock>(TStartValue startValue, IStartValuePathTask<TBuildingBlock, TStartValue> startValueTask)
-         where TStartValue : class, IStartValue
-         where TBuildingBlock : class, IStartValuesBuildingBlock<TStartValue>
+      private void checkPathAndValueEntity<TPathAndValueEntity, TBuildingBlock>(TPathAndValueEntity pathAndValueEntity, IPathAndValueEntityPathTask<TBuildingBlock, TPathAndValueEntity> startValueTask)
+         where TPathAndValueEntity : PathAndValueEntity
+         where TBuildingBlock : ILookupBuildingBlock<TPathAndValueEntity>
       {
-         if (Equals(_objectToRename, startValue)) return;
+         if (Equals(_objectToRename, pathAndValueEntity)) return;
 
-         var startValues = _buildingBlock as TBuildingBlock;
-         if (string.Equals(startValue.Name, _oldName))
-            _changes.Add(startValue, _buildingBlock, startValueTask.UpdateStartValueNameCommand(startValues, startValue, _newName));
+         var entities = _buildingBlock as ILookupBuildingBlock<TPathAndValueEntity>;
+         if (string.Equals(pathAndValueEntity.Name, _oldName))
+            _changes.Add(pathAndValueEntity, startValueTask.UpdateNameCommand(entities, pathAndValueEntity, _newName));
 
-         for (int i = 0; i < startValue.ContainerPath.Count; i++)
+         for (int i = 0; i < pathAndValueEntity.ContainerPath.Count; i++)
          {
-            if (string.Equals(startValue.ContainerPath[i], _oldName))
-               _changes.Add(startValue, _buildingBlock, startValueTask.UpdateStartValueContainerPathCommand(startValues, startValue, i, _newName));
+            if (string.Equals(pathAndValueEntity.ContainerPath[i], _oldName))
+               _changes.Add(pathAndValueEntity, startValueTask.UpdateContainerPathCommand(entities, pathAndValueEntity, i, _newName));
          }
       }
 
-      public void Visit(IApplicationMoleculeBuilder applicationMoleculeBuilder)
+      public void Visit(ApplicationMoleculeBuilder applicationMoleculeBuilder)
       {
          checkObjectBase(applicationMoleculeBuilder);
          // possible path adjustments
          if (applicationMoleculeBuilder.RelativeContainerPath.Contains(_oldName))
          {
-            _changes.Add(applicationMoleculeBuilder, _buildingBlock, new ChangePathElementAtContainerPathCommand(_newName, applicationMoleculeBuilder, _oldName, _buildingBlock));
+            _changes.Add(applicationMoleculeBuilder, new ChangePathElementAtContainerPathCommand(_newName, applicationMoleculeBuilder, _oldName, _buildingBlock));
          }
       }
    }

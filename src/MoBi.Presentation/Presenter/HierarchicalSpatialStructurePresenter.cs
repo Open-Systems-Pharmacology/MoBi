@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using MoBi.Core.Domain.Model;
@@ -18,36 +19,40 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IHierarchicalSpatialStructurePresenter : IEditPresenter<ISpatialStructure>,
+   public interface IHierarchicalSpatialStructurePresenter : IEditPresenter<SpatialStructure>,
       IHierarchicalStructurePresenter,
-      IListener<AddedEvent>, 
-      IListener<RemovedEvent>, 
+      IListener<AddedEvent>,
+      IListener<RemovedEvent>,
       IListener<EntitySelectedEvent>
    {
       void Select(IEntity entity);
+      void Refresh(IEntity entity);
    }
 
-   public class HierarchicalSpatialStructurePresenter : HierarchicalStructurePresenter,
-      IHierarchicalSpatialStructurePresenter
+   public class HierarchicalSpatialStructurePresenter : HierarchicalStructureEditPresenter, IHierarchicalSpatialStructurePresenter
    {
-      private ISpatialStructure _spatialStructure;
+      private SpatialStructure _spatialStructure;
       private readonly IViewItemContextMenuFactory _contextMenuFactory;
 
-      public HierarchicalSpatialStructurePresenter(IHierarchicalStructureView view, IMoBiContext context,
-         IObjectBaseToObjectBaseDTOMapper objectBaseMapper, IViewItemContextMenuFactory contextMenuFactory, ITreeNodeFactory treeNodeFactory)
-         : base(view, context, objectBaseMapper, treeNodeFactory)
+      public HierarchicalSpatialStructurePresenter(
+         IHierarchicalStructureView view,
+         IMoBiContext context,
+         IObjectBaseToObjectBaseDTOMapper objectBaseMapper,
+         IViewItemContextMenuFactory contextMenuFactory,
+         ITreeNodeFactory treeNodeFactory, INeighborhoodToNeighborDTOMapper neighborhoodToNeighborDTOMapper)
+         : base(view, context, objectBaseMapper, treeNodeFactory, neighborhoodToNeighborDTOMapper)
       {
          _contextMenuFactory = contextMenuFactory;
       }
 
-      public void InitializeWith(ISpatialStructure spatialStructure)
+      public void InitializeWith(SpatialStructure spatialStructure)
       {
          _spatialStructure = spatialStructure;
 
          _view.AddNode(_favoritesNode);
          _view.AddNode(_userDefinedNode);
 
-         var roots = new List<IObjectBaseDTO> {_objectBaseMapper.MapFrom(spatialStructure.GlobalMoleculeDependentProperties)};
+         var roots = new List<ObjectBaseDTO> { _objectBaseMapper.MapFrom(spatialStructure.GlobalMoleculeDependentProperties) };
          spatialStructure.TopContainers.Each(x => roots.Add(_objectBaseMapper.MapFrom(x)));
 
          var neighborhood = _objectBaseMapper.MapFrom(spatialStructure.NeighborhoodsContainer);
@@ -58,17 +63,14 @@ namespace MoBi.Presentation.Presenter
          _view.Show(roots);
       }
 
-      public void Edit(ISpatialStructure objectToEdit)
+      public void Edit(SpatialStructure spatialStructure)
       {
-         InitializeWith(objectToEdit);
+         InitializeWith(spatialStructure);
       }
 
       public object Subject => _spatialStructure;
 
-      public void Edit(object objectToEdit)
-      {
-         Edit(objectToEdit.DowncastTo<ISpatialStructure>());
-      }
+      public void Edit(object objectToEdit) => Edit(objectToEdit.DowncastTo<SpatialStructure>());
 
       protected override void RaiseFavoritesSelectedEvent()
       {
@@ -88,48 +90,93 @@ namespace MoBi.Presentation.Presenter
 
       public void Handle(AddedEvent eventToHandle)
       {
-         if (_spatialStructure == null) return;
+         if (_spatialStructure == null)
+            return;
+
          var entity = eventToHandle.AddedObject as IContainer;
 
-         if (entity.IsAnImplementationOf<IDistributedParameter>()) return;
-         if (entity == null) return;
+         if (entity == null)
+            return;
+
+         if (entity.IsAnImplementationOf<IDistributedParameter>())
+            return;
+
+         //not in the spatial structure? nothing to do here in the first place
+         if (!entityIsInSpatialStructure(entity))
+            return;
 
          var dto = _objectBaseMapper.MapFrom(entity);
-         if (_spatialStructure.Any(tc => tc.GetAllContainersAndSelf<IContainer>().Contains(entity.ParentContainer)))
-         {
-            _view.Add(dto, _objectBaseMapper.MapFrom(entity.ParentContainer));
-         }
-         else
-         {
-            if (eventToHandle.Parent != _spatialStructure) return;
+
+         // A root container in a spatial structure should be added to the root of the tree view
+         // The root container will have ParentContainer == null
+         if (entityIsRootContainer(entity))
             _view.AddRoot(dto);
-         }
+         else
+            _view.Add(dto, _objectBaseMapper.MapFrom(entity.ParentContainer));
       }
+
+      private bool entityIsRootContainer(IContainer entity) => entity.RootContainer == entity;
 
       public void Handle(RemovedEvent eventToHandle)
       {
          if (_spatialStructure == null) return;
-
-         foreach (var objectBase in eventToHandle.RemovedObjects.OfType<IEntity>())
-         {
-            _view.Remove(_objectBaseMapper.MapFrom(objectBase));
-         }
+         eventToHandle.RemovedObjects.OfType<IEntity>().Each(remove);
       }
 
-      public void Select(IEntity entity)
+      public void Select(IEntity entity) => _view.Select(entity);
+
+      public void Refresh(IEntity entity)
       {
-         _view.Select(entity.Id);
+         var dto = _objectBaseMapper.MapFrom(entity);
+         _view.Refresh(dto);
+      }
+
+      private void remove(IEntity entity) => _view.Remove(entity);
+
+      /// <summary>
+      ///    Entity is in spatial structure when its root container is either one of top container or the neighborhood container
+      /// </summary>
+      private bool entityIsInSpatialStructure(IEntity entity)
+      {
+         var rootContainer = entity.RootContainer;
+         return _spatialStructure.TopContainers.Contains(rootContainer) ||
+                Equals(_spatialStructure.NeighborhoodsContainer, rootContainer);
       }
 
       public void Handle(EntitySelectedEvent eventToHandle)
       {
-         if (eventToHandle.Sender == this) return;
+         if (eventToHandle.Sender == this)
+            return;
+
          var entity = eventToHandle.ObjectBase as IEntity;
-         if (entity == null || _spatialStructure == null) return;
-         if (!_spatialStructure.TopContainers.Contains(entity.RootContainer)) return;
+         if (entity == null || _spatialStructure == null)
+            return;
+
+         if (!entityIsInSpatialStructure(entity))
+            return;
 
          var entityToSelect = entity.IsAnImplementationOf<IParameter>() ? entity.ParentContainer : entity;
-         _view.Select(entityToSelect.Id);
+         _view.Select(entityToSelect);
+      }
+
+      protected override IEntity GetEntityForNeighbor(NeighborDTO neighborDTO)
+      {
+         return _spatialStructure.TopContainers.Select(x => neighborDTO.Path.TryResolve<IEntity>(x)).FirstOrDefault(x => x != default);
+      }
+
+      protected override IReadOnlyList<ObjectBaseDTO> GetChildrenSorted(IContainer container, Func<IEntity, bool> predicate)
+      {
+         if (container is NeighborhoodBuilder neighborhood)
+         {
+            return neighborsOf(neighborhood).Union(base.GetChildrenSorted(container, predicate)).ToList();
+         }
+
+         return base.GetChildrenSorted(container, predicate);
+      }
+
+      private IEnumerable<ObjectBaseDTO> neighborsOf(NeighborhoodBuilder neighborhoodBuilder)
+      {
+         return _neighborhoodToNeighborDTOMapper.MapFrom(neighborhoodBuilder);
       }
    }
 }

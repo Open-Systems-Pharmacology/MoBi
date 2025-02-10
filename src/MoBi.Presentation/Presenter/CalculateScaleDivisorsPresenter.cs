@@ -9,6 +9,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Extensions;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
+using MoBi.Presentation.Extensions;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
@@ -17,6 +18,7 @@ using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Assets;
 using OSPSuite.Utility.Exceptions;
+using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -38,7 +40,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IMoBiMacroCommand _commands;
       private readonly Cache<string, ScaleDivisorDTO> _scaleDivisors = new Cache<string, ScaleDivisorDTO>(x => x.PathAsString, onMissingKey: x => null);
       private IMoBiSimulation _simulation;
-      private PathCache<IMoleculeAmount> _allMoleculeAmounts;
+      private PathCache<MoleculeAmount> _allMoleculeAmounts;
 
       public CalculateScaleDivisorsPresenter(ICalculateScaleDivisorsView view, ICommandTask commandTask, IContainerTask containerTask,
          IScaleDivisorCalculator scaleDivisorCalculator, IMoleculeAmountTask moleculeAmountTask, IMoBiContext context)
@@ -87,14 +89,14 @@ namespace MoBi.Presentation.Presenter
       ///    Only molecule amounts defined in molecule start values can be scaled
       /// </summary>
       /// <returns></returns>
-      private PathCache<IMoleculeAmount> retrieveScalableMoleculeAmounts()
+      private PathCache<MoleculeAmount> retrieveScalableMoleculeAmounts()
       {
-         var allMoleculeAmounts = _containerTask.CacheAllChildren<IMoleculeAmount>(_simulation.Model.Root);
-         var moleculeStartValues = _simulation.BuildConfiguration.MoleculeStartValues;
+         var allMoleculeAmounts = _containerTask.CacheAllChildren<MoleculeAmount>(_simulation.Model.Root);
+         var buildingBlocks = _simulation.Configuration.All<InitialConditionsBuildingBlock>();
 
          foreach (var path in allMoleculeAmounts.Keys.ToList())
          {
-            if (moleculeStartValues[new ObjectPath(path.ToPathArray())] == null)
+            if (buildingBlocks.All(buildingBlock => buildingBlock[new ObjectPath(path.ToPathArray())] == null))
                allMoleculeAmounts.Remove(path);
          }
 
@@ -110,7 +112,7 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      private ScaleDivisorDTO scaleFactorDTOFor(string path, IMoleculeAmount moleculeAmount)
+      private ScaleDivisorDTO scaleFactorDTOFor(string path, MoleculeAmount moleculeAmount)
       {
          return new ScaleDivisorDTO(moleculeAmount)
          {
@@ -119,12 +121,10 @@ namespace MoBi.Presentation.Presenter
          };
       }
 
-      public bool HasAtLeastTwoDistinctValues(int pathElementIndex)
+      public bool HasAtLeastOneValue(int pathElementIndex)
       {
-         var allValuesForPathElement = _scaleDivisors.Select(x => x.PathElementByIndex(pathElementIndex)).Distinct().ToList();
-         return allValuesForPathElement.Count >= 2;
+         return _scaleDivisors.HasAtLeastOneValue(pathElementIndex);
       }
-
       public async Task StartScaleDivisorsCalculation()
       {
          try

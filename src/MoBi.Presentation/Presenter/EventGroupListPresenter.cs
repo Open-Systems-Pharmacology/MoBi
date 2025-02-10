@@ -19,18 +19,18 @@ using ITreeNodeFactory = MoBi.Presentation.Nodes.ITreeNodeFactory;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IEventGroupListPresenter : IEditPresenter<IEventGroupBuildingBlock>,
+   public interface IEventGroupListPresenter : IEditPresenter<EventGroupBuildingBlock>,
       IPresenterWithContextMenu<IViewItem>,
       IListener<AddedEvent>,
       IListener<RemovedEvent>
    {
       void Select(IObjectBase objectBase);
-      void Select(IObjectBaseDTO objectBaseDTO);
+      void Select(ObjectBaseDTO objectBaseDTO);
    }
 
-   public class EventGroupListPresenter : AbstractEditPresenter<IEventGroupsListView, IEventGroupListPresenter, IEventGroupBuildingBlock>, IEventGroupListPresenter
+   public class EventGroupListPresenter : AbstractEditPresenter<IEventGroupsListView, IEventGroupListPresenter, EventGroupBuildingBlock>, IEventGroupListPresenter
    {
-      private IEventGroupBuildingBlock _eventGroupBuildingBlock;
+      private EventGroupBuildingBlock _eventGroupBuildingBlock;
       private readonly IEventGroupBuilderToEventGroupBuilderDTOMapper _eventGroupBuilderDTOMapper;
       private readonly IViewItemContextMenuFactory _viewItemContextMenuFactory;
       private readonly IApplicationBuilderToApplicationBuilderDTOMapper _applicationBuilderToDTOApplicationBuilderMapper;
@@ -46,32 +46,32 @@ namespace MoBi.Presentation.Presenter
          _applicationBuilderToDTOApplicationBuilderMapper = applicationBuilderToDTOApplicationBuilderMapper;
          _favoritesNodes = treeNodeFactory.CreateForFavorites();
          _userDefinedNodes = treeNodeFactory.CreateForUserDefined();
+
+         _view.AddFixedNode(_favoritesNodes);
+         _view.AddFixedNode(_userDefinedNodes);
       }
 
-      public override void Edit(IEventGroupBuildingBlock eventGroupBuildingBlock)
+      public override void Edit(EventGroupBuildingBlock eventGroupBuildingBlock)
       {
          _eventGroupBuildingBlock = eventGroupBuildingBlock;
 
          var events = _eventGroupBuildingBlock
-            .Where(item => !item.IsAnImplementationOf<IApplicationBuilder>())
+            .Where(item => !item.IsAnImplementationOf<ApplicationBuilder>())
             .MapAllUsing(_eventGroupBuilderDTOMapper)
             .ToList();
 
          var applications = from groupBuilder in _eventGroupBuildingBlock
-            where groupBuilder.IsAnImplementationOf<IApplicationBuilder>()
-            let applicationBuilder = groupBuilder as IApplicationBuilder
+            where groupBuilder.IsAnImplementationOf<ApplicationBuilder>()
+            let applicationBuilder = groupBuilder as ApplicationBuilder
             select applicationBuilder;
 
          var applicationDTOList = applications.MapAllUsing(_applicationBuilderToDTOApplicationBuilderMapper);
          events.AddRange(applicationDTOList);
 
-         _view.Clear();
-         _view.AddNode(_favoritesNodes);
-         _view.AddNode(_userDefinedNodes);
          _view.Show(events);
       }
 
-      public void Select(IObjectBaseDTO objectBaseDTO)
+      public void Select(ObjectBaseDTO objectBaseDTO)
       {
          if (objectBaseDTO.Equals(_favoritesNodes.TagAsObject))
             raiseFavoritesSelectedEvent();
@@ -91,7 +91,7 @@ namespace MoBi.Presentation.Presenter
          _context.PublishEvent(new UserDefinedSelectedEvent(_eventGroupBuildingBlock));
       }
 
-      private void raiseEntitySelectedEvent(IObjectBaseDTO dtoObjectBase)
+      private void raiseEntitySelectedEvent(ObjectBaseDTO dtoObjectBase)
       {
          var objectBase = _context.Get<IObjectBase>(dtoObjectBase.Id);
          Select(objectBase);
@@ -104,7 +104,7 @@ namespace MoBi.Presentation.Presenter
 
       public override object Subject => _eventGroupBuildingBlock;
 
-      public void InitializeWith(IEnumerable<IEventGroupBuilder> initializer)
+      public void InitializeWith(IEnumerable<EventGroupBuilder> initializer)
       {
          Edit(initializer);
       }
@@ -117,10 +117,7 @@ namespace MoBi.Presentation.Presenter
 
       public void Handle(AddedEvent eventToHandle)
       {
-         if (_eventGroupBuildingBlock == null)
-            return;
-
-         if (!shouldShow(eventToHandle.Parent))
+         if (!canHandle(eventToHandle.Parent) || !shouldShow(eventToHandle.Parent))
             return;
 
          Edit(_eventGroupBuildingBlock);
@@ -128,21 +125,28 @@ namespace MoBi.Presentation.Presenter
 
       private bool shouldShow(IObjectBase testObject)
       {
-         return testObject.IsAnImplementationOf<IEventGroupBuilder>()
-                || testObject.IsAnImplementationOf<IEventBuilder>()
-                || testObject.IsAnImplementationOf<ITransportBuilder>()
+         return testObject.IsAnImplementationOf<EventGroupBuilder>()
+                || testObject.IsAnImplementationOf<EventBuilder>()
+                || testObject.IsAnImplementationOf<TransportBuilder>()
                 || testObject.IsAnImplementationOf<IContainer>();
       }
 
       public void Handle(RemovedEvent eventToHandle)
       {
-         if (_eventGroupBuildingBlock == null)
-            return;
-
-         if (!eventToHandle.RemovedObjects.Any(shouldShow))
+         if (!canHandle(eventToHandle.Parent) || !eventToHandle.RemovedObjects.Any(shouldShow))
             return;
 
          Edit(_eventGroupBuildingBlock);
+      }
+
+      private bool canHandle(IObjectBase eventParent)
+      {
+         return _eventGroupBuildingBlock != null && (buildingBlockContains(eventParent) || Equals(_eventGroupBuildingBlock, eventParent));
+      }
+
+      private bool buildingBlockContains(IObjectBase eventParent)
+      {
+         return _eventGroupBuildingBlock.Any(builder => builder.GetAllContainersAndSelf<IContainer>(child => Equals(child, eventParent)).Any());
       }
    }
 }

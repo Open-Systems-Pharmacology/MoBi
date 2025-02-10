@@ -5,7 +5,7 @@ using MoBi.Core;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.UnitSystem;
-using OSPSuite.Core.Commands.Core;
+using MoBi.Core.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -24,20 +24,20 @@ namespace MoBi.Engine.Sbml
 
    public class SpeciesImporter : SBMLImporter, IStartable, ISpeciesImporter
    {
-      private readonly IMoleculeStartValuesCreator _moleculeStartValuesCreator;
-      internal IMoleculeBuildingBlock MoleculeBuildingBlock;
-      private IMoleculeStartValuesBuildingBlock _moleculeStartValuesBuildingBlock;
+      private readonly IInitialConditionsCreator _initialConditionsCreator;
+      internal MoleculeBuildingBlock MoleculeBuildingBlock;
+      private InitialConditionsBuildingBlock _initialConditionsBuildingBlock;
       private readonly IMoleculeBuilderFactory _moleculeBuilderFactory;
       private readonly IMoBiDimensionFactory _moBiDimensionFactory;
       private readonly Dictionary<string, Dimension> _dimensionDictionary;
-      private IUnitDefinitionImporter _unitDefinitionImporter;
+      private readonly IUnitDefinitionImporter _unitDefinitionImporter;
       private int _counter;
 
-      public SpeciesImporter(IObjectPathFactory objectPathFactory, IObjectBaseFactory objectBaseFactory, IMoleculeBuilderFactory moleculeBuilderFactory, IMoleculeStartValuesCreator moleculeStartValuesCreator, IMoBiDimensionFactory moBiDimensionFactory, ASTHandler astHandler, IMoBiContext context, IUnitDefinitionImporter unitDefinitionImporter, IFormulaFactory formulaFactory)
-          : base(objectPathFactory, objectBaseFactory, astHandler, context)
+      public SpeciesImporter(IObjectPathFactory objectPathFactory, IObjectBaseFactory objectBaseFactory, IMoleculeBuilderFactory moleculeBuilderFactory, IInitialConditionsCreator initialConditionsCreator, IMoBiDimensionFactory moBiDimensionFactory, ASTHandler astHandler, IMoBiContext context, IUnitDefinitionImporter unitDefinitionImporter, IFormulaFactory formulaFactory)
+         : base(objectPathFactory, objectBaseFactory, astHandler, context)
       {
          _moleculeBuilderFactory = moleculeBuilderFactory;
-         _moleculeStartValuesCreator = moleculeStartValuesCreator;
+         _initialConditionsCreator = initialConditionsCreator;
          _moBiDimensionFactory = moBiDimensionFactory;
          _counter = 1;
          _dimensionDictionary = new Dictionary<string, Dimension>();
@@ -53,25 +53,26 @@ namespace MoBi.Engine.Sbml
          {
             CreateMoleculeFromSpecies(model.getSpecies(i));
          }
+
          CheckMoleculeNameContainer();
          CreateDummySpecies();
-         CreateMoleculeStartValueBuildingBlock(model);
-         SetMoleculeStartValues(model);
+         createInitialConditionsBuildingBlock(model);
+         setInitialConditions(model);
          SetDummyMSVs();
          AddToProject();
       }
 
-      private void CreateMoleculeStartValueBuildingBlock(Model model)
+      private void createInitialConditionsBuildingBlock(Model model)
       {
-         _moleculeStartValuesBuildingBlock = _moleculeStartValuesCreator.CreateFrom(GetMainSpatialStructure(model),
-            MoleculeBuildingBlock)
-            .WithId(SBMLConstants.SBML_MOLECULESTARTVALUES_BB)
-            .WithName(SBMLConstants.SBML_MOLECULESTARTVALUES_BB)
-            .WithDescription(SBMLConstants.SBML_MOLECULESTARTVALUES_DESCRIPTION);
+         _initialConditionsBuildingBlock = _initialConditionsCreator.CreateFrom(GetMainSpatialStructure(model),
+               MoleculeBuildingBlock.ToList())
+            .WithId(SBMLConstants.SBML_INITIAL_CONDITIONS_BB)
+            .WithName(SBMLConstants.SBML_INITIAL_CONDITIONS_BB)
+            .WithDescription(SBMLConstants.SBML_INITIAL_CONDITIONS_DESCRIPTION);
       }
 
       /// <summary>
-      ///     Creates one dummy Species for each Compartment.
+      ///    Creates one dummy Species for each Compartment.
       /// </summary>
       private void CreateDummySpecies()
       {
@@ -79,8 +80,8 @@ namespace MoBi.Engine.Sbml
          {
             if (child.Name == Constants.MOLECULE_PROPERTIES) continue;
             var mbuilder = _moleculeBuilderFactory.Create(MoleculeBuildingBlock.FormulaCache)
-                .WithName(SBMLConstants.SBML_DUMMYSPECIES + child.Name)
-                .WithDescription(SBMLConstants.SBML_DUMMYSPECIES + child.Name);
+               .WithName(SBMLConstants.SBML_DUMMYSPECIES + child.Name)
+               .WithDescription(SBMLConstants.SBML_DUMMYSPECIES + child.Name);
 
             MoleculeBuildingBlock.Add(mbuilder);
             _sbmlInformation.DummyNameContainerDictionary[mbuilder.Name] = child.Name;
@@ -88,16 +89,16 @@ namespace MoBi.Engine.Sbml
       }
 
       /// <summary>
-      ///     Creates the Molecule - and the Molecule Start Values Building Block.
+      ///    Creates the Molecule - and the Molecule Start Values Building Block.
       /// </summary>
       internal void CreateMoleculeBuildingBlock()
       {
-         MoleculeBuildingBlock = ObjectBaseFactory.Create<IMoleculeBuildingBlock>()
-             .WithName(SBMLConstants.SBML_SPECIES_BB);
+         MoleculeBuildingBlock = ObjectBaseFactory.Create<MoleculeBuildingBlock>()
+            .WithName(SBMLConstants.SBML_SPECIES_BB);
       }
 
       /// <summary>
-      ///     Creates a MoBi Molecule from a given SBML species. 
+      ///    Creates a MoBi Molecule from a given SBML species.
       /// </summary>
       internal void CreateMoleculeFromSpecies(Species species)
       {
@@ -114,7 +115,7 @@ namespace MoBi.Engine.Sbml
             }
             else
             {
-               var molecule = GetMoleculeFromSpecies(speciesName);
+               var molecule = getMoleculeFromSpecies(speciesName);
                var speciesCompartment = GetContainerFromCompartment_(species.getCompartment());
                var molinfo = _sbmlInformation.MoleculeInformation.FirstOrDefault(info => info.GetMoleculeBuilderName() == molecule.Name);
                if (molinfo == null) return;
@@ -136,7 +137,7 @@ namespace MoBi.Engine.Sbml
       }
 
       /// <summary>
-      ///     Creates a Molecule.
+      ///    Creates a Molecule.
       /// </summary>
       private void CreateMolecule(Species species, string name, bool existant)
       {
@@ -147,8 +148,8 @@ namespace MoBi.Engine.Sbml
          }
 
          var mbuilder = _moleculeBuilderFactory.Create(MoleculeBuildingBlock.FormulaCache)
-             .WithName(name)
-             .WithDescription(SBMLConstants.SBML_NOTES + species.getNotesString() + species.getId());
+            .WithName(name)
+            .WithDescription(SBMLConstants.SBML_NOTES + species.getNotesString() + species.getId());
 
          var molInfo = new MoleculeInformation(species, mbuilder);
          _sbmlInformation.MoleculeInformation.Add(molInfo);
@@ -159,8 +160,8 @@ namespace MoBi.Engine.Sbml
       }
 
       /// <summary>
-      ///     Check if for one key (moleculeName) more occurences of the same compartment are there.
-      ///     It's senseless if e.g. Beta_Catenin occurs more than once in Compartment c1.
+      ///    Check if for one key (moleculeName) more occurences of the same compartment are there.
+      ///    It's senseless if e.g. Beta_Catenin occurs more than once in Compartment c1.
       /// </summary>
       private void CheckMoleculeNameContainer()
       {
@@ -176,22 +177,22 @@ namespace MoBi.Engine.Sbml
       }
 
       /// <summary>
-      ///     Checks of a molecule with this name is already existant.
+      ///    Checks of a molecule with this name is already existant.
       /// </summary>
-      private IMoleculeBuilder GetMoleculeFromSpecies(string name)
+      private MoleculeBuilder getMoleculeFromSpecies(string name)
       {
          return MoleculeBuildingBlock.FirstOrDefault(mol => mol.Name == name);
       }
 
       /// <summary>
-      ///     Sets all the autogenerated Molecule Start Values to the right values and updates their 
-      ///     "IsPresent" property. 
+      ///    Sets all the autogenerated Molecule Start Values to the right values and updates their
+      ///    "IsPresent" property.
       /// </summary>
-      private void SetMoleculeStartValues(Model model)
+      private void setInitialConditions(Model model)
       {
          foreach (var molInfo in _sbmlInformation.MoleculeInformation)
          {
-            foreach (var msv in _moleculeStartValuesBuildingBlock)
+            foreach (var msv in _initialConditionsBuildingBlock)
             {
                if (msv.Name != molInfo.GetMoleculeBuilderName()) continue;
                if (molInfo.GetContainer().Any(x => x.Name == msv.ContainerPath.LastOrDefault()))
@@ -206,25 +207,26 @@ namespace MoBi.Engine.Sbml
                   //unit is set by the Unit of SubstanceUnit
                   if (sbmlSpecies.isSetInitialAmount())
                   {
-                     msv.StartValue = sbmlSpecies.getInitialAmount();
+                     msv.Value = sbmlSpecies.getInitialAmount();
                      if (amountDimension != null)
                      {
                         msv.Dimension = amountDimension;
                         molInfo.SetDimension(amountDimension);
                      }
                   }
+
                   if (!sbmlSpecies.isSetInitialConcentration()) continue;
 
                   //unit is {unit of amount}/{unit of size}
                   var baseValue = _unitDefinitionImporter.ToMobiBaseUnit(sbmlUnit, sbmlSpecies.getInitialConcentration());
-                  msv.StartValue = baseValue.value;
+                  msv.Value = baseValue.value;
                   msv.Formula = _context.Create<ExplicitFormula>($"{msv.Name}_0").WithName($"{msv.Name}_0").WithDimension(amountDimension).WithFormulaString($"{baseValue.value} * {Constants.VOLUME_ALIAS}");
                   msv.Formula.AddObjectPath(
                      ObjectPathFactory.CreateFormulaUsablePathFrom(ObjectPath.PARENT_CONTAINER, Constants.Parameters.VOLUME)
                         .WithAlias(Constants.VOLUME_ALIAS)
                         .WithDimension(_moBiDimensionFactory.Dimension(Constants.Dimension.VOLUME))
                   );
-                  _moleculeStartValuesBuildingBlock.AddFormula(msv.Formula);
+                  _initialConditionsBuildingBlock.AddFormula(msv.Formula);
                   msv.Dimension = amountDimension;
                   molInfo.SetDimension(amountDimension);
                   UseConcentrations = true;
@@ -232,14 +234,14 @@ namespace MoBi.Engine.Sbml
                else
                {
                   msv.IsPresent = false;
-                  msv.StartValue = 0;
+                  msv.Value = 0;
                }
             }
          }
       }
 
       /// <summary>
-      ///     Creates a new dimension by two known dimensions.
+      ///    Creates a new dimension by two known dimensions.
       /// </summary>
       private IDimension CreateNewDimension(IDimension amountDimension, IDimension sizeDimension)
       {
@@ -266,8 +268,8 @@ namespace MoBi.Engine.Sbml
       }
 
       /// <summary>
-      ///     Divides the Factors of two given Dimensions to get a new factor for a 
-      ///     new dimension to achieve: {unit of amount}/{unit of size}
+      ///    Divides the Factors of two given Dimensions to get a new factor for a
+      ///    new dimension to achieve: {unit of amount}/{unit of size}
       /// </summary>
       internal double GetNewFactor(IDimension amountDimension, IDimension sizeDimension)
       {
@@ -278,7 +280,8 @@ namespace MoBi.Engine.Sbml
       }
 
       /// <summary>
-      ///     Creates the BaseDimensionRepresentation for two BaseDimensionRepresentation (baserep1/baserep2 => substraction of the exponents)
+      ///    Creates the BaseDimensionRepresentation for two BaseDimensionRepresentation (baserep1/baserep2 => substraction of
+      ///    the exponents)
       /// </summary>
       private BaseDimensionRepresentation CreateNewBaseDimRepresentation(BaseDimensionRepresentation amountBaseRep, BaseDimensionRepresentation sizeBaseRep)
       {
@@ -296,13 +299,13 @@ namespace MoBi.Engine.Sbml
       }
 
       /// <summary>
-      ///     Gets the dimension of the size Parameter of the container/compartment in which the given Species is located.
+      ///    Gets the dimension of the size Parameter of the container/compartment in which the given Species is located.
       /// </summary>
       private IDimension GetSizeDimensionFromCompartment(Species species, Model model)
       {
          var compartmentSizeUnit = _unitDefinitionImporter.TranslateUnit(model.getCompartment(species.getCompartment()).getUnits());
 
-         var sizeDimension = _moBiDimensionFactory.TryGetDimensionCaseInsensitive(compartmentSizeUnit);
+         var sizeDimension = _moBiDimensionFactory.TryGetDimensionFromUnitNameCaseInsensitive(compartmentSizeUnit);
          if (sizeDimension == Constants.Dimension.NO_DIMENSION) return sizeDimension;
 
          if (_sbmlInformation.MobiDimension.ContainsKey(compartmentSizeUnit))
@@ -320,42 +323,42 @@ namespace MoBi.Engine.Sbml
       }
 
       /// <summary>
-      ///     Gets the path to a Container by a given compartment id.
+      ///    Gets the path to a Container by a given compartment id.
       /// </summary>
-      protected internal IObjectPath GetPathToContainerOfCompartmentId(string compartmentId)
+      protected internal ObjectPath GetPathToContainerOfCompartmentId(string compartmentId)
       {
          return (from container in GetMainTopContainer().Children where container.Name == compartmentId select ObjectPathFactory.CreateAbsoluteObjectPath(container)).FirstOrDefault();
       }
 
       /// <summary>
-      ///     Creates the Molecule Start Values Building Block, sets the Molecule Start Values and 
-      ///     adds the MBB and MSVBB to the SBMLProject.
+      ///    Creates the Molecule Start Values Building Block, sets the Molecule Start Values and
+      ///    adds the MBB and MSVBB to the SBMLProject.
       /// </summary>
       public override void AddToProject()
       {
-         _command.AddCommand(new AddBuildingBlockCommand<IMoleculeBuildingBlock>(MoleculeBuildingBlock).Run(_context));
-         _command.AddCommand(new AddBuildingBlockCommand<IMoleculeStartValuesBuildingBlock>(_moleculeStartValuesBuildingBlock).Run(_context));
+         _command.AddCommand(new AddBuildingBlockToModuleCommand<MoleculeBuildingBlock>(MoleculeBuildingBlock, _sbmlModule).RunCommand(_context));
+         _command.AddCommand(new AddBuildingBlockToModuleCommand<InitialConditionsBuildingBlock>(_initialConditionsBuildingBlock, _sbmlModule).RunCommand(_context));
       }
 
       /// <summary>
-      ///     Sets foreach Dummy Species their compartment. 
+      ///    Sets foreach Dummy Species their compartment.
       /// </summary>
       private void SetDummyMSVs()
       {
          foreach (var dummySpecies in _sbmlInformation.DummyNameContainerDictionary)
          {
-            foreach (var msv in _moleculeStartValuesBuildingBlock)
+            foreach (var msv in _initialConditionsBuildingBlock)
             {
                if (msv.Name != dummySpecies.Key) continue;
                if (dummySpecies.Value == msv.ContainerPath.LastOrDefault())
                {
                   msv.IsPresent = true;
-                  msv.StartValue = 0;
+                  msv.Value = 0;
                }
                else
                {
                   msv.IsPresent = false;
-                  msv.StartValue = 0;
+                  msv.Value = 0;
                }
             }
          }

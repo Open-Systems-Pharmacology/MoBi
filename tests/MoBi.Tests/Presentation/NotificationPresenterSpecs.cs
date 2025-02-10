@@ -12,6 +12,7 @@ using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.Main;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
+using OSPSuite.Assets;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -26,7 +27,7 @@ using OSPSuite.Utility.Collections;
 
 namespace MoBi.Presentation
 {
-   public abstract class concern_for_NotificationPresenter : ContextSpecification<INotificationPresenter>
+   public abstract class concern_for_NotificationPresenter : ContextSpecification<NotificationPresenter>
    {
       protected INotificationView _view;
       private IRegionResolver _regionResolver;
@@ -199,14 +200,32 @@ namespace MoBi.Presentation
       {
          base.Context();
          _userSettings.ShowPKSimObserverMessages = false;
+         _userSettings.ShowUnresolvedEndosomeMessagesForInitialConditions = false;
          _validationResult = new ValidationResult();
 
-         var staticObserver = A.Fake<IObserverBuilder>().WithId("1").WithName(AppConstants.DefaultNames.PKSimStaticObservers[0]);
-         var dynamicObserver = A.Fake<IObserverBuilder>().WithId("2").WithName($"{AppConstants.DefaultNames.PKSimDynamicObservers[0]}-HELLO");
+         var staticObserver = A.Fake<ObserverBuilder>().WithId("1").WithName(AppConstants.DefaultNames.PKSimStaticObservers[0]);
+         var dynamicObserver = A.Fake<ObserverBuilder>().WithId("2").WithName($"{AppConstants.DefaultNames.PKSimDynamicObservers[0]}-HELLO");
 
          _validationResult.AddMessage(NotificationType.Error, staticObserver, string.Empty);
          _validationResult.AddMessage(NotificationType.Error, dynamicObserver, string.Empty);
          _validationResult.AddMessage(NotificationType.Warning, A.Fake<IObjectBase>().WithId("2"), string.Empty);
+         _validationResult.AddMessage(NotificationType.Warning, A.Fake<IObjectBase>().WithId("2"), string.Empty);
+         var initialCondition = new InitialCondition
+         {
+            Name = "moleculeName",
+            ContainerPath = new ObjectPath("Endosome"),
+            Id = "3"
+         };
+         // this message should be hidden by ShowUnresolvedEndosomeMessagesForInitialConditions
+         _validationResult.AddMessage(NotificationType.Warning, initialCondition, Validation.StartValueDefinedForContainerThatCannotBeResolved("moleculeName", "Endosome"));
+         // this message should not be hidden by ShowUnresolvedEndosomeMessagesForInitialConditions because it a different type of warning for the same initial condition
+         initialCondition = new InitialCondition
+         {
+            Name = "molecule2Name",
+            ContainerPath = new ObjectPath("Endosome"),
+            Id = "4"
+         };
+         _validationResult.AddMessage(NotificationType.Warning, initialCondition, string.Empty);
       }
 
       protected override void Because()
@@ -217,14 +236,14 @@ namespace MoBi.Presentation
       [Observation]
       public void should_only_add_visible_notification()
       {
-         _allNotifications.Count().ShouldBeEqualTo(1);
+         _allNotifications.Count().ShouldBeEqualTo(2);
       }
 
       [Observation]
       public void should_update_the_count_for_all_notifications()
       {
          A.CallTo(() => _view.SetNotificationCount(NotificationType.Error, 0)).MustHaveHappened();
-         A.CallTo(() => _view.SetNotificationCount(NotificationType.Warning, 1)).MustHaveHappened();
+         A.CallTo(() => _view.SetNotificationCount(NotificationType.Warning, 2)).MustHaveHappened();
          A.CallTo(() => _view.SetNotificationCount(NotificationType.Info, 0)).MustHaveHappened();
       }
    }
@@ -399,7 +418,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.Handle(new RemovedEvent(_buildingBlock, A.Fake<IMoBiProject>()));
+         sut.Handle(new RemovedEvent(_buildingBlock, A.Fake<MoBiProject>()));
       }
 
       [Observation]
@@ -502,6 +521,101 @@ namespace MoBi.Presentation
       public override void Cleanup()
       {
          FileHelper.DeleteFile(_fileToExport);
+      }
+   }
+
+   public class When_handling_project_conversion_notifications_for_untraceable_changes : concern_for_NotificationPresenter
+   {
+      private ShowProjectConversionNotificationsEvent _notificationEvent;
+      private static MoBiSimulation _simulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = new MoBiSimulation
+         {
+            HasUntraceableChanges = true,
+            Name = "simName"
+         };
+         _notificationEvent = new ShowProjectConversionNotificationsEvent(messages());
+      }
+
+      private static IReadOnlyList<NotificationMessage> messages()
+      {
+         return new[]
+         {
+            new NotificationMessage(_simulation, MessageOrigin.Simulation, null, NotificationType.Warning)
+         };
+      }
+
+      protected override void Because()
+      {
+         sut.Handle(_notificationEvent);
+      }
+
+      [Observation]
+      public void should_rebind_to_the_view()
+      {
+         A.CallTo(() => _view.BindTo(A<NotifyList<NotificationMessageDTO>>._)).MustHaveHappened();
+         A.CallTo(() => _view.SetNotificationCount(NotificationType.Warning, 1)).MustHaveHappened();
+         A.CallTo(() => _view.SetNotificationCount(NotificationType.Error, 0)).MustHaveHappened();
+         A.CallTo(() => _view.SetNotificationCount(NotificationType.Info, 0)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_dialog_should_warn_the_user_about_project_conversion()
+      {
+         A.CallTo(() => _dialogCreator.MessageBoxInfo(A<string>.That.Matches(x => hasSimulationName(x)))).MustHaveHappened();
+      }
+
+      private bool hasSimulationName(string warningString)
+      {
+         return warningString.Contains(_simulation.Name);
+      }
+   }
+
+   public class When_handling_project_conversion_notifications_for_traceable_changes : concern_for_NotificationPresenter
+   {
+      private ShowProjectConversionNotificationsEvent _notificationEvent;
+      private static MoBiSimulation _simulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = new MoBiSimulation
+         {
+            HasUntraceableChanges = false,
+            Name = "simName"
+         };
+         _notificationEvent = new ShowProjectConversionNotificationsEvent(messages());
+      }
+
+      private static IReadOnlyList<NotificationMessage> messages()
+      {
+         return new[]
+         {
+            new NotificationMessage(_simulation, MessageOrigin.Simulation, null, NotificationType.Warning)
+         };
+      }
+
+      protected override void Because()
+      {
+         sut.Handle(_notificationEvent);
+      }
+
+      [Observation]
+      public void should_rebind_to_the_view()
+      {
+         A.CallTo(() => _view.BindTo(A<NotifyList<NotificationMessageDTO>>._)).MustHaveHappened();
+         A.CallTo(() => _view.SetNotificationCount(NotificationType.Warning, 1)).MustHaveHappened();
+         A.CallTo(() => _view.SetNotificationCount(NotificationType.Error, 0)).MustHaveHappened();
+         A.CallTo(() => _view.SetNotificationCount(NotificationType.Info, 0)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_dialog_should_not_warn_the_user_about_project_conversion()
+      {
+         A.CallTo(() => _dialogCreator.MessageBoxInfo(A<string>._)).MustNotHaveHappened();
       }
    }
 }

@@ -4,10 +4,11 @@ using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Assets;
+using OSPSuite.Core.Events;
 
 namespace MoBi.Core.Commands
 {
-   public abstract class OutputIntervalCommandBase : BuildingBlockChangeCommandBase<ISimulationSettings>
+   public abstract class OutputIntervalCommandBase : BuildingBlockChangeCommandBase<SimulationSettings>
    {
       protected OutputSchema _schema;
       protected OutputInterval _interval;
@@ -25,7 +26,7 @@ namespace MoBi.Core.Commands
          _schema = _buildingBlock.OutputSchema;
       }
 
-      protected OutputIntervalCommandBase(OutputSchema schema, OutputInterval interval, ISimulationSettings simulationSettings) : base(simulationSettings)
+      protected OutputIntervalCommandBase(OutputSchema schema, OutputInterval interval, SimulationSettings simulationSettings) : base(simulationSettings)
       {
          _schema = schema;
          _interval = interval;
@@ -35,7 +36,9 @@ namespace MoBi.Core.Commands
 
    public class AddOutputIntervalCommand : OutputIntervalCommandBase
    {
-      public AddOutputIntervalCommand(OutputSchema schema, OutputInterval interval, ISimulationSettings simulationSettings) : base(schema, interval, simulationSettings)
+      private string _addedIntervalId;
+
+      public AddOutputIntervalCommand(OutputSchema schema, OutputInterval interval, SimulationSettings simulationSettings) : base(schema, interval, simulationSettings)
       {
          CommandType = AppConstants.Commands.AddCommand;
          Description = AppConstants.Commands.AddOutputIntervalTo(simulationSettings.Name);
@@ -44,7 +47,16 @@ namespace MoBi.Core.Commands
       protected override void ExecuteWith(IMoBiContext context)
       {
          base.ExecuteWith(context);
+         context.Register(_interval);
          _schema.AddInterval(_interval);
+         _addedIntervalId = _interval.Id;
+         context.PublishEvent(new OutputSchemaChangedEvent(_schema));
+      }
+
+      public override void RestoreExecutionData(IMoBiContext context)
+      {
+         base.RestoreExecutionData(context);
+         _interval = context.Get<OutputInterval>(_addedIntervalId);
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
@@ -55,7 +67,9 @@ namespace MoBi.Core.Commands
 
    public class RemoveOutputIntervalCommand : OutputIntervalCommandBase
    {
-      public RemoveOutputIntervalCommand(OutputSchema schema, OutputInterval interval, ISimulationSettings simulationSettings) : base(schema, interval, simulationSettings)
+      private byte[] _serializedInterval;
+
+      public RemoveOutputIntervalCommand(OutputSchema schema, OutputInterval interval, SimulationSettings simulationSettings) : base(schema, interval, simulationSettings)
       {
          CommandType = AppConstants.Commands.DeleteCommand;
          Description = AppConstants.Commands.RemoveOutputIntervalFrom(simulationSettings.Name);
@@ -64,7 +78,16 @@ namespace MoBi.Core.Commands
       protected override void ExecuteWith(IMoBiContext context)
       {
          base.ExecuteWith(context);
+         _serializedInterval = context.Serialize(_interval);
          _schema.RemoveInterval(_interval);
+         context.Unregister(_interval);
+         context.PublishEvent(new OutputSchemaChangedEvent(_schema));
+      }
+
+      public override void RestoreExecutionData(IMoBiContext context)
+      {
+         base.RestoreExecutionData(context);
+         _interval = context.Deserialize<OutputInterval>(_serializedInterval);
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)

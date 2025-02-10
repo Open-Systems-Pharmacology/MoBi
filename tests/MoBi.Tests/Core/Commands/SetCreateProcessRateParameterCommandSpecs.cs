@@ -1,8 +1,12 @@
 ﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Services;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Services;
+using OSPSuite.Utility.Events;
 
 namespace MoBi.Core.Commands
 {
@@ -10,16 +14,24 @@ namespace MoBi.Core.Commands
    {
       protected bool _newValue;
       protected bool _oldValue;
-      protected IReactionBuilder _reaactionBuilder;
+      protected ReactionBuilder _reaactionBuilder;
+      protected IMoBiContext _context;
+      protected IBuildingBlock _buildingBlock;
+      private IBuildingBlockVersionUpdater _buildingBlockUpdater;
 
       protected override void Context()
       {
+         _context = A.Fake<IMoBiContext>();
+         _buildingBlock = A.Fake<IBuildingBlock>();
+         _buildingBlockUpdater = new BuildingBlockVersionUpdater(A.Fake<IMoBiProjectRetriever>(), A.Fake<IEventPublisher>(), A.Fake<IDialogCreator>());
+         _buildingBlock.Module.IsPKSimModule = true;
          _newValue = false;
          _oldValue = true;
          _reaactionBuilder = new ReactionBuilder();
          _reaactionBuilder.CreateProcessRateParameter = _oldValue;
          _reaactionBuilder.ProcessRateParameterPersistable = true;
-         sut = new SetCreateProcessRateParameterCommand(_newValue, _reaactionBuilder, A.Fake<IBuildingBlock>());
+         A.CallTo(() => _context.Resolve<IBuildingBlockVersionUpdater>()).Returns(_buildingBlockUpdater);
+         sut = new SetCreateProcessRateParameterCommand(_newValue, _reaactionBuilder, _buildingBlock);
       }
    }
 
@@ -27,7 +39,7 @@ namespace MoBi.Core.Commands
    {
       protected override void Because()
       {
-         sut.Execute(A.Fake<IMoBiContext>());
+         sut.Execute(_context);
       }
 
       [Observation]
@@ -40,6 +52,12 @@ namespace MoBi.Core.Commands
       public void should_set_the_plot_process_rate_parameter_to_false_if_the_create_process_rate_is_false()
       {
          _reaactionBuilder.ProcessRateParameterPersistable.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void the_module_is_converted_to_extension()
+      {
+         _buildingBlock.Module.IsPKSimModule.ShouldBeFalse();
       }
    }
 }

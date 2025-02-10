@@ -12,6 +12,7 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Assets;
+using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
@@ -40,39 +41,48 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
    public class ContextMenuSpecificationFactoryForPassiveTransportBuilder : ContextMenuSpecificationFactoryForTransportBuilderBase<IEditPassiveTransportBuildingBlockPresenter>
    {
-      public ContextMenuSpecificationFactoryForPassiveTransportBuilder(IMoBiContext context)
+      private readonly IContainer _container;
+
+      public ContextMenuSpecificationFactoryForPassiveTransportBuilder(IMoBiContext context, IContainer container)
          : base(context)
       {
+         _container = container;
       }
 
       public override IContextMenu CreateFor(TransportBuilderDTO transportBuilderDTO, IEditPassiveTransportBuildingBlockPresenter presenter)
       {
-         return new ContextMenuForPassiveTransportBuilder(_context).InitializeWith(transportBuilderDTO, presenter);
+         return new ContextMenuForPassiveTransportBuilder(_context, _container).InitializeWith(transportBuilderDTO, presenter);
       }
    }
 
    public class ContextMenuSpecificationFactoryForPassiveTransportBuilderAtEventGroup : ContextMenuSpecificationFactoryForTransportBuilderBase<IEventGroupListPresenter>
    {
-      public ContextMenuSpecificationFactoryForPassiveTransportBuilderAtEventGroup(IMoBiContext context) : base(context)
+      private readonly IContainer _container;
+
+      public ContextMenuSpecificationFactoryForPassiveTransportBuilderAtEventGroup(IMoBiContext context, IContainer container) : base(context)
       {
+         _container = container;
       }
 
       public override IContextMenu CreateFor(TransportBuilderDTO transportBuilderDTO, IEventGroupListPresenter presenter)
       {
-         return new ContextMenuForTransportBuilderAtEventGroup(_context).InitializeWith(transportBuilderDTO, presenter);
+         return new ContextMenuForTransportBuilderAtEventGroup(_context, _container).InitializeWith(transportBuilderDTO, presenter);
       }
    }
 
    public class ContextMenuSpecificationFactoryForTransportBuilderAtMoleculeBuilder : ContextMenuSpecificationFactoryForTransportBuilderBase<IMoleculeListPresenter>
    {
-      public ContextMenuSpecificationFactoryForTransportBuilderAtMoleculeBuilder(IMoBiContext context)
+      private readonly IContainer _container;
+
+      public ContextMenuSpecificationFactoryForTransportBuilderAtMoleculeBuilder(IMoBiContext context, IContainer container)
          : base(context)
       {
+         _container = container;
       }
 
       public override IContextMenu CreateFor(TransportBuilderDTO transportBuilderDTO, IMoleculeListPresenter presenter)
       {
-         return new ContextMenuForTransportBuilderAtMoleculeBuilder(_context).InitializeWith(transportBuilderDTO, presenter);
+         return new ContextMenuForTransportBuilderAtMoleculeBuilder(_context, _container).InitializeWith(transportBuilderDTO, presenter);
       }
    }
 
@@ -80,10 +90,12 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
    {
       private IList<IMenuBarItem> _allMenuItems;
       protected readonly IMoBiContext _context;
+      private readonly IContainer _container;
 
-      protected ContextMenuForTransportBuilderBase(IMoBiContext context)
+      protected ContextMenuForTransportBuilderBase(IMoBiContext context, IContainer container)
       {
          _context = context;
+         _container = container;
       }
 
       public override IEnumerable<IMenuBarItem> AllMenuItems()
@@ -93,7 +105,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       public IContextMenu InitializeWith(TransportBuilderDTO dto, IPresenter presenter)
       {
-         var transportBuilder = _context.Get<ITransportBuilder>(dto.Id);
+         var transportBuilder = _context.Get<TransportBuilder>(dto.Id);
          _allMenuItems = new List<IMenuBarItem>
          {
             createEditItemFor(transportBuilder),
@@ -104,37 +116,37 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return this;
       }
 
-      private IMenuBarItem createSaveItemFor(ITransportBuilder transportBuilder)
+      private IMenuBarItem createSaveItemFor(TransportBuilder transportBuilder)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.SaveAsPKML)
             .WithIcon(ApplicationIcons.PKMLSave)
-            .WithCommandFor<SaveUICommandFor<ITransportBuilder>, ITransportBuilder>(transportBuilder);
+            .WithCommandFor<SaveUICommandFor<TransportBuilder>, TransportBuilder>(transportBuilder, _container);
       }
 
-      private IMenuBarItem createEditItemFor(ITransportBuilder transportBuilder)
+      private IMenuBarItem createEditItemFor(TransportBuilder transportBuilder)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Edit)
-            .WithCommandFor<EditCommandFor<ITransportBuilder>, ITransportBuilder>(transportBuilder)
+            .WithCommandFor<EditCommandFor<TransportBuilder>, TransportBuilder>(transportBuilder, _container)
             .WithIcon(ApplicationIcons.Edit);
       }
 
-      protected abstract IMenuBarItem CreateRemoveItemFor(ITransportBuilder transportBuilder);
+      protected abstract IMenuBarItem CreateRemoveItemFor(TransportBuilder transportBuilder);
 
-      protected IMenuBarItem CreateRenameItemFor(ITransportBuilder transportBuilder)
+      protected IMenuBarItem CreateRenameItemFor(TransportBuilder transportBuilder)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Rename)
-            .WithCommandFor<RenameObjectCommand<ITransportBuilder>, ITransportBuilder>(transportBuilder)
+            .WithCommandFor<RenameObjectCommand<TransportBuilder>, TransportBuilder>(transportBuilder, _container)
             .WithIcon(ApplicationIcons.Rename);
       }
    }
 
    internal class ContextMenuForTransportBuilderAtMoleculeBuilder : ContextMenuForTransportBuilderBase
    {
-      public ContextMenuForTransportBuilderAtMoleculeBuilder(IMoBiContext context) : base(context)
+      public ContextMenuForTransportBuilderAtMoleculeBuilder(IMoBiContext context, IContainer container) : base(context, container)
       {
       }
 
-      protected override IMenuBarItem CreateRemoveItemFor(ITransportBuilder transportBuilder)
+      protected override IMenuBarItem CreateRemoveItemFor(TransportBuilder transportBuilder)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
             .WithRemoveCommand(transportBuilder.ParentContainer.DowncastTo<TransporterMoleculeContainer>(), transportBuilder)
@@ -144,29 +156,30 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
    public class ContextMenuForPassiveTransportBuilder : ContextMenuForTransportBuilderBase
    {
-      public ContextMenuForPassiveTransportBuilder(IMoBiContext context) : base(context)
+      public ContextMenuForPassiveTransportBuilder(IMoBiContext context, IContainer container) : base(context, container)
       {
       }
 
-      protected override IMenuBarItem CreateRemoveItemFor(ITransportBuilder transportBuilder)
+      protected override IMenuBarItem CreateRemoveItemFor(TransportBuilder transportBuilder)
       {
-         var buildingblock = _context.CurrentProject.PassiveTransportCollection.FirstOrDefault(x => x.Contains(transportBuilder));
+         // In order to resolve the remove command properly, the cast as PassiveTransportBuildingBlock is required.
+         var buildingBlock = transportBuilder.BuildingBlock as PassiveTransportBuildingBlock;
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
-            .WithRemoveCommand(buildingblock, transportBuilder)
+            .WithRemoveCommand(buildingBlock, transportBuilder)
             .WithIcon(ApplicationIcons.Delete);
       }
    }
 
    internal class ContextMenuForTransportBuilderAtEventGroup : ContextMenuForTransportBuilderBase
    {
-      public ContextMenuForTransportBuilderAtEventGroup(IMoBiContext context) : base(context)
+      public ContextMenuForTransportBuilderAtEventGroup(IMoBiContext context, IContainer container) : base(context, container)
       {
       }
 
-      protected override IMenuBarItem CreateRemoveItemFor(ITransportBuilder transportBuilder)
+      protected override IMenuBarItem CreateRemoveItemFor(TransportBuilder transportBuilder)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
-            .WithRemoveCommand(transportBuilder.ParentContainer.DowncastTo<IApplicationBuilder>(), transportBuilder)
+            .WithRemoveCommand(transportBuilder.ParentContainer.DowncastTo<ApplicationBuilder>(), transportBuilder)
             .WithIcon(ApplicationIcons.Delete);
       }
    }

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
-using OSPSuite.UI;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Utility.Extensions;
 using DevExpress.XtraBars;
@@ -8,7 +8,6 @@ using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
-using OSPSuite.Presentation;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI.Controls;
@@ -22,6 +21,7 @@ namespace MoBi.UI.Views
       private readonly UxTreeView _treeView;
       private readonly IDTOEventGroupBuilderToEventNodeMapper _dtoEventGroupToEventNodeMapper;
       private IEventGroupListPresenter _presenter;
+      private readonly List<string> _fixedNodeIds = new List<string>();
 
       public EventGroupsListView(IDTOEventGroupBuilderToEventNodeMapper dtoEventGroupToEventNodeMapper,
          IImageListRetriever imageListRetriever)
@@ -64,8 +64,13 @@ namespace MoBi.UI.Views
             {
                _presenter.CreatePopupMenuFor((IViewItem) node.TagAsObject).At(e.Location);
             }
-            _presenter.Select(node.TagAsObject.DowncastTo<IObjectBaseDTO>());
+            _presenter.Select(objectBaseFromNode(node));
          });
+      }
+
+      private static ObjectBaseDTO objectBaseFromNode(ITreeNode node)
+      {
+         return node.TagAsObject.DowncastTo<ObjectBaseDTO>();
       }
 
       public void AttachPresenter(IEventGroupListPresenter presenter)
@@ -73,25 +78,28 @@ namespace MoBi.UI.Views
          _presenter = presenter;
       }
 
-      public void Show(IEnumerable<EventGroupBuilderDTO> dtoEventGroupBuilders)
+      public void Show(IReadOnlyList<EventGroupBuilderDTO> dtoEventGroupBuilders)
       {
-         var nodes = dtoEventGroupBuilders.MapAllUsing(_dtoEventGroupToEventNodeMapper);
-         nodes.Each(node => _treeView.AddNode(node));
+         var nodesToAdd = dtoEventGroupBuilders.MapAllUsing(_dtoEventGroupToEventNodeMapper);
+         nodesToAdd.Each(_treeView.AddNode);
+
+         removeUnusedNodes(nodesToAdd);
+
+         _presenter.Select(objectBaseFromNode(_treeView.SelectedNode));
       }
 
-      public void AddNode(ITreeNode treeNode)
+      private void removeUnusedNodes(IReadOnlyList<ITreeNode> nodesAdded)
       {
+         var allNodeIds = nodesAdded.SelectMany(x => x.AllNodes).Select(x => x.Id).Concat(_fixedNodeIds);
+         _treeView.Nodes.SelectMany(x => _treeView.NodeFrom(x).AllNodes).Where(existingNode => !allNodeIds.Contains(existingNode.Id)).ToList().Each(_treeView.RemoveNode);
+      }
+
+      public void AddFixedNode(ITreeNode treeNode)
+      {
+         _fixedNodeIds.Add(treeNode.Id);
          _treeView.AddNode(treeNode);
       }
 
-      public void Clear()
-      {
-         _treeView.Clear();
-      }
-
-      public BarManager PopupBarManager
-      {
-         get { return barManager; }
-      }
+      public BarManager PopupBarManager => barManager;
    }
 }

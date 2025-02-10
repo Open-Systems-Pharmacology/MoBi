@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using MoBi.Assets;
 using MoBi.Core.Helper;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Extensions;
-using OSPSuite.Infrastructure.Reporting;
 using OSPSuite.Core.Services;
+using OSPSuite.Infrastructure.Reporting;
 using OSPSuite.TeXReporting.Builder;
 using OSPSuite.TeXReporting.Data;
 using OSPSuite.TeXReporting.Items;
@@ -105,7 +103,7 @@ namespace MoBi.Core.Reporting.TEXBuilder
       {
          if (col.DataInfo.MolWeight == null) return;
 
-         var dimension = _dimensionFactory.Dimension(AppConstants.Parameters.MOLECULAR_WEIGHT);
+         var dimension = _dimensionFactory.Dimension(OSPSuite.Core.Domain.Constants.Parameters.MOL_WEIGHT);
          var displayUnit = _reportingHelper.GetDisplayUnitFor(dimension);
          column.SetNotes(new[]
          {

@@ -8,14 +8,14 @@ using OSPSuite.Utility.Visitor;
 
 namespace MoBi.Core.Services
 {
-   public interface ISearchVisitor : IVisitor<IBuildingBlock>, IVisitor<IModelCoreSimulation>, IVisitor<IMoBiProject>
+   public interface ISearchVisitor : IVisitor<IBuildingBlock>, IVisitor<IModelCoreSimulation>, IVisitor<MoBiProject>
    {
       string SearchFor { get; set; }
       bool WholeWord { get; set; }
       bool RegExSearch { get; set; }
       IEnumerable<SearchResult> Result { get; }
       bool CaseSensitive { get; set; }
-      IEnumerable<SearchResult> SearchIn(IObjectBase searchTarget, IMoBiProject project);
+      IEnumerable<SearchResult> SearchIn(IObjectBase searchTarget, IReadOnlyList<IBuildingBlock> buildingBlocks);
    }
 
    class SearchVisitor : ISearchVisitor
@@ -71,12 +71,12 @@ namespace MoBi.Core.Services
 
       public IEnumerable<SearchResult> Result => _result;
 
-      public IEnumerable<SearchResult> SearchIn(IObjectBase searchTarget, IMoBiProject project)
+      public IEnumerable<SearchResult> SearchIn(IObjectBase searchTarget, IReadOnlyList<IBuildingBlock> buildingBlocks)
       {
          try
          {
             _result = new List<SearchResult>();
-            _allBuildingBlocks = project.AllBuildingBlocks();
+            _allBuildingBlocks = buildingBlocks;
             _searchExpressionCreated = false;
             _localVisitor = new LocalSearchVisitor(getSearchExpression()) {CaseSensitive = CaseSensitive};
             searchTarget.AcceptVisitor(this);
@@ -109,7 +109,7 @@ namespace MoBi.Core.Services
          searchObjectBase(objToVisit.Model, _projectItem);
       }
 
-      public void Visit(IMoBiProject objToVisit)
+      public void Visit(MoBiProject objToVisit)
       {
          // Do Nothing don't check the Project it self.
       }

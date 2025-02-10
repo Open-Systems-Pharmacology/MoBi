@@ -27,7 +27,6 @@ namespace MoBi.Presentation
       void Select(IObjectBase objectToSelect, IObjectBase projectItem, ICommandCollector commandCollector);
       IModalPresenter GetCreateViewFor<T>(T objectToEdit, ICommandCollector commandCollector);
       IModalPresenter GetCreateParameterViewFor<T, TParent>(T objectToEdit, TParent parent, ICommandCollector commandCollector);
-      IModalPresenter GetCreateViewForTransport<TPresenter>(ITransportBuilder transportBuilder, ICommandCollector commandCollector) where TPresenter : ICommandCollectorPresenter;
    }
 
    public class MoBiApplicationController : ApplicationController, IMoBiApplicationController
@@ -51,11 +50,6 @@ namespace MoBi.Presentation
          var modalPresenter = createModalPresenter(Start<ICreatePresenter<T>>(), commandCollector);
          modalPresenter.Text = AppConstants.Captions.NewWindow(_objectTypeResolver.TypeFor<T>());
          return modalPresenter;
-      }
-
-      public IModalPresenter GetCreateViewForTransport<TPresenter>(ITransportBuilder transportBuilder, ICommandCollector commandCollector) where TPresenter : ICommandCollectorPresenter
-      {
-         return createModalPresenter(Start<TPresenter>(), commandCollector);
       }
 
       private IModalPresenter createModalPresenter(ICommandCollectorPresenter editSubPresenter, ICommandCollector commandCollector)
@@ -93,34 +87,34 @@ namespace MoBi.Presentation
 
       protected override ISingleStartPresenter CreatePresenterForSubject<TSubject>(TSubject subject)
       {
-         if (subject.IsAnImplementationOf<IMoleculeBuildingBlock>())
+         if (subject.IsAnImplementationOf<MoleculeBuildingBlock>())
             return Start<IEditMoleculeBuildingBlockPresenter>();
 
-         if (subject.IsAnImplementationOf<IReactionBuildingBlock>())
+         if (subject.IsAnImplementationOf<ReactionBuildingBlock>())
             return Start<IEditReactionBuildingBlockPresenter>();
 
-         if (subject.IsAnImplementationOf<ISpatialStructure>())
+         if (subject.IsAnImplementationOf<SpatialStructure>())
             return Start<IEditSpatialStructurePresenter>();
 
-         if (subject.IsAnImplementationOf<IPassiveTransportBuildingBlock>())
+         if (subject.IsAnImplementationOf<PassiveTransportBuildingBlock>())
             return Start<IEditPassiveTransportBuildingBlockPresenter>();
 
-         if (subject.IsAnImplementationOf<IEventGroupBuildingBlock>())
+         if (subject.IsAnImplementationOf<EventGroupBuildingBlock>())
             return Start<IEditEventGroupBuildingBlockPresenter>();
 
-         if (subject.IsAnImplementationOf<IMoleculeStartValuesBuildingBlock>())
-            return Start<IEditMoleculeStartValuesPresenter>();
+         if (subject.IsAnImplementationOf<InitialConditionsBuildingBlock>())
+            return Start<IEditInitialConditionsPresenter>();
 
-         if (subject.IsAnImplementationOf<IParameterStartValuesBuildingBlock>())
-            return Start<IEditParameterStartValuesPresenter>();
+         if (subject.IsAnImplementationOf<ParameterValuesBuildingBlock>())
+            return Start<IEditParameterValuesPresenter>();
 
-         if (subject.IsAnImplementationOf<IObserverBuildingBlock>())
+         if (subject.IsAnImplementationOf<ObserverBuildingBlock>())
             return Start<IEditObserverBuildingBlockPresenter>();
 
          if (subject.IsAnImplementationOf<IModelCoreSimulation>())
             return Start<IEditSimulationPresenter>();
 
-         if (subject.IsAnImplementationOf<ISimulationSettings>())
+         if (subject.IsAnImplementationOf<SimulationSettings>())
             return Start<IEditSimulationSettingsPresenter>();
 
          if (subject.IsAnImplementationOf<CurveChart>())
@@ -137,6 +131,12 @@ namespace MoBi.Presentation
 
          if (subject.IsAnImplementationOf<ParameterIdentificationFeedback>())
             return Start<IParameterIdentificationFeedbackPresenter>();
+
+         if (subject.IsAnImplementationOf<ExpressionProfileBuildingBlock>())
+            return Start<IEditExpressionProfileBuildingBlockPresenter>();
+
+         if (subject.IsAnImplementationOf<IndividualBuildingBlock>())
+            return Start<IEditIndividualBuildingBlockPresenter>();
 
          throw new ArgumentException(AppConstants.Exceptions.UnknownProjectItem(subject.GetType()));
       }

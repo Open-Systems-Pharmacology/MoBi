@@ -5,12 +5,12 @@ using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.UICommand
 {
-   internal abstract class AbstractStartValueSubjectRetrieverUICommand<T, TStartValue> : ActiveObjectUICommand<T> where T : class, IStartValuesBuildingBlock<TStartValue> where TStartValue : class, IStartValue
+   public abstract class AbstractStartValueSubjectRetrieverUICommand<T, TPathAndValueEntity> : ActiveObjectUICommand<T> where T : PathAndValueEntityBuildingBlock<TPathAndValueEntity> where TPathAndValueEntity : PathAndValueEntity
    {
-      protected readonly IStartValuesTask<T, TStartValue> _startValueTasks;
+      protected readonly IInteractionTasksForExtendablePathAndValueEntity<T, TPathAndValueEntity> _startValueTasks;
       protected readonly IActiveSubjectRetriever _activeSubjectRetriever;
 
-      protected AbstractStartValueSubjectRetrieverUICommand(IStartValuesTask<T, TStartValue> startValueTasks, IActiveSubjectRetriever activeSubjectRetriever) : base(activeSubjectRetriever)
+      protected AbstractStartValueSubjectRetrieverUICommand(IInteractionTasksForExtendablePathAndValueEntity<T, TPathAndValueEntity> startValueTasks, IActiveSubjectRetriever activeSubjectRetriever) : base(activeSubjectRetriever)
       {
          _startValueTasks = startValueTasks;
          _activeSubjectRetriever = activeSubjectRetriever;

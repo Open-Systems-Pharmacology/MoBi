@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
+using MoBi.Core.Domain.Repository;
 using MoBi.Core.Exceptions;
+using MoBi.Core.Extensions;
 using MoBi.Core.Services;
 using MoBi.Presentation;
 using MoBi.Presentation.Presenter;
@@ -18,7 +19,6 @@ using MoBi.UI.UICommands;
 using Northwoods.Go;
 using OSPSuite.Assets;
 using OSPSuite.Core;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
@@ -30,22 +30,34 @@ using ToolTips = MoBi.Assets.ToolTips;
 
 namespace MoBi.UI.Presenters
 {
-   public class ReactionDiagramPresenter : MoBiBaseDiagramPresenter<IReactionDiagramView, IReactionDiagramPresenter, IMoBiReactionBuildingBlock>, IReactionDiagramPresenter
+   public class ReactionDiagramPresenter : MoBiBaseDiagramPresenter<IReactionDiagramView, IReactionDiagramPresenter, MoBiReactionBuildingBlock>, IReactionDiagramPresenter
    {
       private readonly IMoBiApplicationController _applicationController;
       private readonly IDiagramPopupMenuBase _moleculePopupMenu;
       private readonly IDiagramPopupMenuBase _reactionPopupMenu;
       private readonly IDiagramLayoutTask _diagramLayoutTask;
+      private readonly IBuildingBlockRepository _buildingBlockRepository;
 
-      public ReactionDiagramPresenter(IReactionDiagramView view, IContainerBaseLayouter layouter, IMoBiContext context, IUserSettings userSettings, IDialogCreator dialogCreator, IMoBiApplicationController applicationController, IDiagramTask diagramTask, IDiagramLayoutTask diagramLayoutTask,
-         IStartOptions runOptions, IDiagramModelFactory diagramModelFactory) :
+      public ReactionDiagramPresenter(
+         IReactionDiagramView view, 
+         IContainerBaseLayouter layouter, 
+         IMoBiContext context, 
+         IUserSettings userSettings, 
+         IDialogCreator dialogCreator, 
+         IMoBiApplicationController applicationController, 
+         IDiagramTask diagramTask, 
+         IDiagramLayoutTask diagramLayoutTask,
+         IStartOptions runOptions, 
+         IDiagramModelFactory diagramModelFactory,
+         IBuildingBlockRepository buildingBlockRepository) :
          base(view, layouter, dialogCreator, diagramModelFactory, userSettings, context, diagramTask, runOptions)
       {
          _applicationController = applicationController;
-         _diagramPopupMenu = new PopupMenuReactionDiagram(this, runOptions);
+         _diagramPopupMenu = new PopupMenuReactionDiagram(this, context, runOptions);
          _moleculePopupMenu = _diagramPopupMenu;
          _reactionPopupMenu = new PopupMenuReactionBuilder(this, context, runOptions);
          _diagramLayoutTask = diagramLayoutTask;
+         _buildingBlockRepository = buildingBlockRepository;
       }
 
       public bool DisplayEductsRight(IBaseNode node)
@@ -62,7 +74,7 @@ namespace MoBi.UI.Presenters
          return reactionNode != null;
       }
 
-      public override void Edit(IMoBiReactionBuildingBlock reactionBuildingBlock)
+      public override void Edit(MoBiReactionBuildingBlock reactionBuildingBlock)
       {
          base.Edit(reactionBuildingBlock);
          _view.GridVisible = DiagramManager.DiagramOptions.SnapGridVisible;
@@ -104,19 +116,19 @@ namespace MoBi.UI.Presenters
                Description = AppConstants.Commands.AddManyMoleculesDescription
             };
             moleculeNames.Each(nodeName => addMoleculeNode(nodeName, command));
-            AddCommand(command.Run(_context));
+            AddCommand(command.RunCommand(_context));
          }
       }
 
       private IEnumerable<string> getMoleculeNames()
       {
-         var moleculeBB = _context.CurrentProject.MoleculeBlockCollection;
+         var moleculeBB = _buildingBlockRepository.MoleculeBlockCollection;
          return moleculeBB.SelectMany(bb => bb.Select(molecule => molecule.Name)).Distinct().OrderBy(moleculeName => moleculeName);
       }
 
       private void addMoleculeNode(string moleculeName, MoBiMacroCommand command)
       {
-         if (moleculeName.Equals(String.Empty)) return;
+         if (moleculeName.Equals(string.Empty)) return;
 
          var moleculeNodes = reactionDiagramManager.GetMoleculeNodes(moleculeName);
 
@@ -135,7 +147,7 @@ namespace MoBi.UI.Presenters
             return;
          }
 
-         AddCommand(new RemoveMoleculeFromReactionBuildingBlockCommand(_model, moleculeNode.Id).Run(_context));
+         AddCommand(new RemoveMoleculeFromReactionBuildingBlockCommand(_model, moleculeNode.Id).RunCommand(_context));
       }
 
       private void promptForRemoveLinks()
@@ -157,7 +169,7 @@ namespace MoBi.UI.Presenters
             promptForRemoveLinks();
       }
 
-      public void Select(IReactionBuilder reactionBuilder)
+      public void Select(ReactionBuilder reactionBuilder)
       {
          var reactionNode = reactionDiagramManager?.ReactionNodeFor(reactionBuilder);
          if (reactionNode == null) return;
@@ -199,16 +211,16 @@ namespace MoBi.UI.Presenters
 
       public void RemoveReactionNode(ReactionNode reactionNode)
       {
-         var removeCommand = _context.Resolve<RemoveCommandFor<IMoBiReactionBuildingBlock, IReactionBuilder>>();
+         var removeCommand = _context.Resolve<RemoveCommandFor<MoBiReactionBuildingBlock, ReactionBuilder>>();
          removeCommand.Parent = _model;
-         removeCommand.Child = _context.Get<IReactionBuilder>(reactionNode.Id);
+         removeCommand.Child = _context.Get<ReactionBuilder>(reactionNode.Id);
          removeCommand.Execute();
       }
 
       public override void Link(IBaseNode node1, IBaseNode node2, object portObject1, object portObject2)
       {
          getLinkProperties(node1, node2, portObject1, portObject2, out var reactionNode, out var moleculeNode, out var reactionLinkType);
-         var reactionBuilder = _context.Get<IReactionBuilder>(reactionNode.Id);
+         var reactionBuilder = _context.Get<ReactionBuilder>(reactionNode.Id);
 
          var addLinkCommand = new AddNamedPartnerUICommand(_context, _model, reactionBuilder, moleculeNode.Name, reactionLinkType);
          addLinkCommand.Execute();
@@ -227,7 +239,7 @@ namespace MoBi.UI.Presenters
 
          getLinkProperties(node1, node2, portObject1, portObject2, out reactionNode, out moleculeNode, out reactionLinkType);
 
-         var reactionBuilder = _context.Get<IReactionBuilder>(reactionNode.Id);
+         var reactionBuilder = _context.Get<ReactionBuilder>(reactionNode.Id);
 
          var removeLinkCommand = new RemoveNamedPartnerUICommand(_context, _model, reactionBuilder, moleculeNode.Name, reactionLinkType);
          removeLinkCommand.Execute();

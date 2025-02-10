@@ -10,19 +10,16 @@ namespace MoBi.Presentation.DTO
       /// <summary>
       ///    The Quantity Values that were imported
       /// </summary>
-      public NotifyList<ImportedQuantityDTO> QuantitDTOs { private set; get; }
+      public NotifyList<ImportedQuantityDTO> QuantityDTOs { get; }
 
       public QuantityImporterDTO()
       {
          _log = new List<string>();
-         QuantitDTOs = new NotifyList<ImportedQuantityDTO>();
-         QuantitDTOs.CollectionChanged += (o, e) => OnPropertyChanged(() => Count);
+         QuantityDTOs = new NotifyList<ImportedQuantityDTO>();
+         QuantityDTOs.CollectionChanged += (o, e) => OnPropertyChanged(() => Count);
       }
 
-      public int Count
-      {
-         get { return QuantitDTOs.Count; }
-      }
+      public int Count => QuantityDTOs.Count;
 
       public void AddToLog(string message)
       {
@@ -32,9 +29,6 @@ namespace MoBi.Presentation.DTO
       /// <summary>
       ///    Log of the messages resulting from importing quantity values
       /// </summary>
-      public IReadOnlyList<string> Log
-      {
-         get { return _log; }
-      }
+      public IReadOnlyList<string> Log => _log;
    }
 }

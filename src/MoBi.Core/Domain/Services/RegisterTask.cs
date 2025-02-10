@@ -1,7 +1,7 @@
-﻿using OSPSuite.Utility.Extensions;
-using MoBi.Core.Domain.Model;
+﻿using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Domain.Services
 {
@@ -16,7 +16,7 @@ namespace MoBi.Core.Domain.Services
       /// <summary>
       ///    Registers all objects defined in the <paramref name="project" /> but the simulations
       /// </summary>
-      void Register(IMoBiProject project);
+      void Register(MoBiProject project);
    }
 
    public class RegisterTask : AbstractRegistrationTask, IRegisterTask
@@ -32,7 +32,8 @@ namespace MoBi.Core.Domain.Services
 
       private void register(IWithId objectBase)
       {
-         if (objectBase == null) return;
+         if (objectBase == null) 
+            return;
          _withIdRepository.Register(objectBase);
       }
 
@@ -43,7 +44,7 @@ namespace MoBi.Core.Domain.Services
 
       public void RegisterAllIn(IWithId objectToRegister)
       {
-         //If already registered, no need to register the whole hiearchy again
+         //If already registered, no need to register the whole hierarchy again
          if (_withIdRepository.ContainsObjectWithId(objectToRegister.Id))
             return;
 
@@ -54,11 +55,13 @@ namespace MoBi.Core.Domain.Services
             objectBase.AcceptVisitor(this);
       }
 
-      public void Register(IMoBiProject project)
+      public void Register(MoBiProject project)
       {
          register(project);
-         project.AllBuildingBlocks().Each(RegisterAllIn);
+         project.IndividualsCollection.Each(RegisterAllIn);
+         project.ExpressionProfileCollection.Each(RegisterAllIn);
          project.AllObservedData.Each(RegisterAllIn);
+         project.Modules.Each(RegisterAllIn);
       }
    }
 }

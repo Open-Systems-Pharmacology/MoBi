@@ -6,13 +6,13 @@ namespace MoBi.Core.Commands
 {
    public class AddContainerToSpatialStructureCommand : AddObjectBaseCommand<IContainer, IContainer>
    {
-      private IMoBiSpatialStructure _spatialStructure;
-      public string SpatialStructureId { get; set; }
+      private MoBiSpatialStructure _spatialStructure;
+      private readonly string _spatialStructureId;
 
-      public AddContainerToSpatialStructureCommand(IContainer parent, IContainer child, IMoBiSpatialStructure spatialStructure) : base(parent, child, spatialStructure)
+      public AddContainerToSpatialStructureCommand(IContainer parent, IContainer child, MoBiSpatialStructure spatialStructure) : base(parent, child, spatialStructure)
       {
          _spatialStructure = spatialStructure;
-         SpatialStructureId = spatialStructure.Id;
+         _spatialStructureId = spatialStructure.Id;
       }
 
       protected override void ClearReferences()
@@ -24,7 +24,7 @@ namespace MoBi.Core.Commands
       public override void RestoreExecutionData(IMoBiContext context)
       {
          base.RestoreExecutionData(context);
-         _spatialStructure = context.Get<IMoBiSpatialStructure>(SpatialStructureId);
+         _spatialStructure = context.Get<MoBiSpatialStructure>(_spatialStructureId);
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)

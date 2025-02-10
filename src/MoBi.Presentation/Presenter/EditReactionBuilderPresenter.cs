@@ -1,12 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
+using MoBi.Core.Extensions;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
@@ -21,11 +22,11 @@ using OSPSuite.Presentation.Presenters.ContextMenus;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IEditReactionBuilderPresenter : IEditPresenter<IReactionBuilder>,
+   public interface IEditReactionBuilderPresenter : IEditPresenter<ReactionBuilder>,
       IPresenterWithContextMenu<IViewItem>,
       ICanEditPropertiesPresenter,
       IPresenterWithFormulaCache,
-      ICreatePresenter<IReactionBuilder>,
+      ICreatePresenter<ReactionBuilder>,
       IListener<RemovedReactionPartnerEvent>,
       IListener<AddedReactionPartnerEvent>,
       IListener<AddedReactionModifierEvent>,
@@ -42,22 +43,22 @@ namespace MoBi.Presentation.Presenter
    {
       private readonly IViewItemContextMenuFactory _viewItemContextMenuFactory;
       private readonly IReactionBuilderToReactionBuilderDTOMapper _reactionBuilderToReactionBuilderDTOMapper;
-      private IReactionBuilder _reactionBuilder;
-      private readonly IEditTaskFor<IReactionBuilder> _editTasks;
+      private ReactionBuilder _reactionBuilder;
+      private readonly IEditTaskFor<ReactionBuilder> _editTasks;
       private readonly IFormulaToFormulaBuilderDTOMapper _formulaToDTOFormulaBuilderMapper;
       private readonly IEditParametersInContainerPresenter _editReactionParametersPresenter;
       private readonly IMoBiContext _context;
-      private readonly IDescriptorConditionListPresenter<IReactionBuilder> _containerCriteriaPresenter;
+      private readonly IDescriptorConditionListPresenter<ReactionBuilder> _containerCriteriaPresenter;
       private IBuildingBlock _buildingBlock;
       private readonly IReactionEductsPresenter _reactionEductPresenter;
       private readonly IReactionProductsPresenter _reactionProductPresenter;
       private readonly IReactionModifiersPresenter _reactionModifiersPresenter;
 
-      public EditReactionBuilderPresenter(IEditReactionBuilderView view, IEditFormulaPresenter editFormulaPresenter,
+      public EditReactionBuilderPresenter(IEditReactionBuilderView view, IEditFormulaInContainerPresenter editFormulaPresenter,
          ISelectReferenceAtReactionPresenter selectReferencesPresenter, IReactionBuilderToReactionBuilderDTOMapper reactionBuilderToReactionBuilderDTOMapper,
-         IViewItemContextMenuFactory viewItemContextMenuFactory, IEditTaskFor<IReactionBuilder> editTasks,
-         IFormulaToFormulaBuilderDTOMapper formulaBuilderMapper, IEditParametersInContainerPresenter editReactionParametersPresenter, IMoBiContext context, 
-         IDescriptorConditionListPresenter<IReactionBuilder> containerCriteriaPresenter, IReactionEductsPresenter reactionEductPresenter, IReactionProductsPresenter reactionProductPresenter,
+         IViewItemContextMenuFactory viewItemContextMenuFactory, IEditTaskFor<ReactionBuilder> editTasks,
+         IFormulaToFormulaBuilderDTOMapper formulaBuilderMapper, IEditParametersInContainerPresenter editReactionParametersPresenter, IMoBiContext context,
+         IDescriptorConditionListPresenter<ReactionBuilder> containerCriteriaPresenter, IReactionEductsPresenter reactionEductPresenter, IReactionProductsPresenter reactionProductPresenter,
          IReactionModifiersPresenter reactionModifiersPresenter)
          : base(view, editFormulaPresenter, selectReferencesPresenter)
       {
@@ -83,10 +84,10 @@ namespace MoBi.Presentation.Presenter
 
       public void Edit(object objectToEdit)
       {
-         Edit(objectToEdit.DowncastTo<IReactionBuilder>());
+         Edit(objectToEdit.DowncastTo<ReactionBuilder>());
       }
 
-      public void Edit(IReactionBuilder reactionBuilder, IEnumerable<IObjectBase> existingObjectsInParent)
+      public void Edit(ReactionBuilder reactionBuilder, IReadOnlyList<IObjectBase> existingObjectsInParent)
       {
          _reactionBuilder = reactionBuilder;
          if (_reactionBuilder == null)
@@ -94,6 +95,7 @@ namespace MoBi.Presentation.Presenter
             _view.Visible = false;
             return;
          }
+
          setUpFormulaEditView();
          _editReactionParametersPresenter.Edit(_reactionBuilder);
          _containerCriteriaPresenter.Edit(_reactionBuilder, x => x.ContainerCriteria, BuildingBlock);
@@ -107,9 +109,9 @@ namespace MoBi.Presentation.Presenter
          _view.PlotProcessRateParameterEnabled = _reactionBuilder.CreateProcessRateParameter;
       }
 
-      public void Edit(IReactionBuilder reactionBuilder)
+      public void Edit(ReactionBuilder reactionBuilder)
       {
-         Edit(reactionBuilder, Enumerable.Empty<IObjectBase>());
+         Edit(reactionBuilder, Array.Empty<IObjectBase>());
       }
 
       private void setUpFormulaEditView()
@@ -122,7 +124,7 @@ namespace MoBi.Presentation.Presenter
 
       public virtual void SetPropertyValueFromView<T>(string propertyName, T newValue, T oldValue)
       {
-         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, _reactionBuilder, BuildingBlock).Run(_context));
+         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, _reactionBuilder, BuildingBlock).RunCommand(_context));
       }
 
       public void RenameSubject()
@@ -132,7 +134,7 @@ namespace MoBi.Presentation.Presenter
 
       public void SetCreateProcessRateParameter(bool createProcessRate)
       {
-         AddCommand(new SetCreateProcessRateParameterCommand(createProcessRate, _reactionBuilder, BuildingBlock).Run(_context));
+         AddCommand(new SetCreateProcessRateParameterCommand(createProcessRate, _reactionBuilder, BuildingBlock).RunCommand(_context));
          _view.PlotProcessRateParameterEnabled = createProcessRate;
       }
 
@@ -163,7 +165,7 @@ namespace MoBi.Presentation.Presenter
 
       public IBuildingBlock BuildingBlock
       {
-         get { return _buildingBlock; }
+         get => _buildingBlock;
          set
          {
             _buildingBlock = value;
@@ -185,7 +187,7 @@ namespace MoBi.Presentation.Presenter
          Edit(_reactionBuilder);
       }
 
-      private bool canHandle(IReactionBuilder reactionBuilder)
+      private bool canHandle(ReactionBuilder reactionBuilder)
       {
          if (_reactionBuilder == null) return false;
          return _reactionBuilder.Equals(reactionBuilder);

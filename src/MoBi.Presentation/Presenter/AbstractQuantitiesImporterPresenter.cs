@@ -92,7 +92,7 @@ namespace MoBi.Presentation.Presenter
 
       protected NotifyList<ImportedQuantityDTO> GetQuantitiesFromDTO(QuantityImporterDTO quantityImporterDTO)
       {
-         return quantityImporterDTO.QuantitDTOs;
+         return quantityImporterDTO.QuantityDTOs;
       }
 
       public abstract void TransferImportedQuantities();

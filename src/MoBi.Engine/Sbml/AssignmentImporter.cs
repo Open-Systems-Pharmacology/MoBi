@@ -1,10 +1,8 @@
 ﻿using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
-using OSPSuite.Core.Commands.Core;
+using MoBi.Core.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Utility.Container;
 using Model = libsbmlcs.Model;
 
 namespace MoBi.Engine.Sbml
@@ -21,35 +19,27 @@ namespace MoBi.Engine.Sbml
       }
 
       /// <summary>
-      ///     Creates a Rule and an Initial Assignment Importer to import SBML Rules and Initital Assignments.
+      ///    Creates a Rule and an Initial Assignment Importer to import SBML Rules and Initial Assignments.
       /// </summary>
       protected override void Import(Model model)
       {
-         CreateParameterStartValuesBuildingBlock(model);
-         _initialAssignmentImporter.DoImport(model,_sbmlProject,_sbmlInformation, _command);
-         _ruleImporter.DoImport(model, _sbmlProject, _sbmlInformation, _command);
+         CreateParameterValuesBuildingBlock(model);
+         _initialAssignmentImporter.DoImport(model, _sbmlModule, _sbmlInformation, _command);
+         _ruleImporter.DoImport(model, _sbmlModule, _sbmlInformation, _command);
       }
 
       /// <summary>
-      ///     Creates a Parameter Start Values Building Block and adds it to the MoBi Project.
+      ///    Creates a Parameter Start Values Building Block and adds it to the MoBi Project.
       /// </summary>
-      protected internal void CreateParameterStartValuesBuildingBlock(Model model)
+      protected internal void CreateParameterValuesBuildingBlock(Model model)
       {
-         var parameterStartValuesCreator = IoC.Resolve<IParameterStartValuesCreator>();
-         var ss = GetMainSpatialStructure(model);
-         var mb = GetMainMoleculeBuildingBlock();
-         if (ss == null || mb == null) return;
-
-         var psvBb = parameterStartValuesCreator.CreateFrom(GetMainSpatialStructure(model), GetMainMoleculeBuildingBlock())
-            .WithId(SBMLConstants.SBML_PARAMETERSTARTVALUES_BB)
-            .WithName(SBMLConstants.SBML_PARAMETERSTARTVALUES_BB);
-         _command.AddCommand(new AddBuildingBlockCommand<IParameterStartValuesBuildingBlock>(psvBb).Run(_context));
+         var parameterValuesBuildingBlock = new ParameterValuesBuildingBlock().WithId(SBMLConstants.SBML_PARAMETER_VALUES_BB).WithName(SBMLConstants.SBML_PARAMETER_VALUES_BB);
+         _command.AddCommand(new AddBuildingBlockToModuleCommand<ParameterValuesBuildingBlock>(parameterValuesBuildingBlock, _sbmlModule).RunCommand(_context));
       }
 
       //For Rate Rule only
       public override void AddToProject()
       {
-         
       }
    }
 }

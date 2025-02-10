@@ -46,6 +46,26 @@ namespace MoBi.Core.Events
       }
    }
 
+   public class NeighborhoodChangedEvent
+   {
+      public NeighborhoodBuilder NeighborhoodBuilder { get; }
+
+      public NeighborhoodChangedEvent(NeighborhoodBuilder neighborhoodBuilder)
+      {
+         NeighborhoodBuilder = neighborhoodBuilder;
+      }
+   }
+
+   public class DefaultSimulationSettingsUpdatedEvent
+   {
+      public SimulationSettings NewSimulationSettings { get; }
+
+      public DefaultSimulationSettingsUpdatedEvent(SimulationSettings newSimulationSettings)
+      {
+         NewSimulationSettings = newSimulationSettings;
+      }
+   }
+
    public abstract class AddedEvent
    {
       protected AddedEvent(IObjectBase addedObject, IObjectBase parent)
@@ -92,7 +112,7 @@ namespace MoBi.Core.Events
       }
 
       public RemovedEvent(IObjectBase removedObject, IObjectBase parent)
-         : this(new[] {removedObject})
+         : this(new[] { removedObject })
       {
          Parent = parent;
       }
@@ -100,10 +120,10 @@ namespace MoBi.Core.Events
 
    public class AddedReactionPartnerEvent
    {
-      public IReactionPartnerBuilder ReactionPartnerBuilder { get; set; }
-      public IReactionBuilder Reaction { get; set; }
+      public ReactionPartnerBuilder ReactionPartnerBuilder { get; set; }
+      public ReactionBuilder Reaction { get; set; }
 
-      public AddedReactionPartnerEvent(IReactionPartnerBuilder value, IReactionBuilder reaction)
+      public AddedReactionPartnerEvent(ReactionPartnerBuilder value, ReactionBuilder reaction)
       {
          ReactionPartnerBuilder = value;
          Reaction = reaction;
@@ -112,10 +132,10 @@ namespace MoBi.Core.Events
 
    public class RemovedReactionPartnerEvent
    {
-      public IReactionPartnerBuilder ReactionPartnerBuilder { get; set; }
-      public IReactionBuilder Reaction { get; set; }
+      public ReactionPartnerBuilder ReactionPartnerBuilder { get; set; }
+      public ReactionBuilder Reaction { get; set; }
 
-      public RemovedReactionPartnerEvent(IReactionPartnerBuilder reactionPartnerBuilder, IReactionBuilder reaction)
+      public RemovedReactionPartnerEvent(ReactionPartnerBuilder reactionPartnerBuilder, ReactionBuilder reaction)
       {
          ReactionPartnerBuilder = reactionPartnerBuilder;
          Reaction = reaction;
@@ -158,17 +178,48 @@ namespace MoBi.Core.Events
       }
    }
 
+   public class ClearNotificationsEvent
+   {
+      public MessageOrigin MessageOrigin { get; }
+
+      public ClearNotificationsEvent(MessageOrigin messageOrigin)
+      {
+         MessageOrigin = messageOrigin;
+      }
+   }
+
+   public class ShowProjectConversionNotificationsEvent : ShowNotificationsEvent
+   {
+      public ShowProjectConversionNotificationsEvent(NotificationMessage notification) : base(notification)
+      {
+      }
+
+      public ShowProjectConversionNotificationsEvent(IReadOnlyList<NotificationMessage> notificationMessages) : base(notificationMessages)
+      {
+      }
+   }
+
    public class ShowNotificationsEvent
    {
       public IReadOnlyList<NotificationMessage> NotificationMessages { get; }
 
-      public ShowNotificationsEvent(NotificationMessage notification) : this(new[] {notification})
+      public ShowNotificationsEvent(NotificationMessage notification) : this(new[] { notification })
       {
       }
 
       public ShowNotificationsEvent(IReadOnlyList<NotificationMessage> notificationMessages)
       {
          NotificationMessages = notificationMessages;
+      }
+   }
+
+   public class ModuleStatusChangedEvent
+   {
+      public Module Module { get; }
+
+      public ModuleStatusChangedEvent(Module module)
+      {
+         Module = module;
       }
    }
 

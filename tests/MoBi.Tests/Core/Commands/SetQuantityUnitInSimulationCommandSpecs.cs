@@ -4,9 +4,13 @@ using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
+using MoBi.Core.Services;
 using MoBi.Helpers;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Utility.Events;
 
 namespace MoBi.Core.Commands
 {
@@ -27,9 +31,9 @@ namespace MoBi.Core.Commands
          _quantity.DisplayUnit = _oldUnit;
          _simulation = new MoBiSimulation
          {
-            BuildConfiguration = new MoBiBuildConfiguration()
+            Configuration = new SimulationConfiguration()
          };
-
+         A.CallTo(() => _context.Resolve<IQuantityValueInSimulationChangeTracker>()).Returns(DomainHelperForSpecs.QuantityValueChangeTracker(A.Fake<IEventPublisher>()));
          sut = new SetQuantityUnitInSimulationCommand(_quantity, _newUnit, _simulation);
       }
    }

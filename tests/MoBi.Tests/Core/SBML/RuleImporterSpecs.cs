@@ -21,19 +21,19 @@ namespace MoBi.Core.SBML
       [Observation]
       public void Species_AssignmentCreationTest()
       {
-         var msvbb = _moBiProject.MoleculeStartValueBlockCollection.FirstOrDefault();
+         var msvbb = SBMLModule.InitialConditionsCollection.FirstOrDefault();
          msvbb.ShouldNotBeNull();
          foreach (var msv in msvbb)
          {
             if (msv.Name == "s1" && msv.IsPresent)
-               msv.StartValue.ShouldBeEqualTo(7);
+               msv.Value.ShouldBeEqualTo(7);
          }
       }
 
       [Observation]
       public void Parameter_AssignmentCreationTest()
       {
-         var psvbb = _moBiProject.ParametersStartValueBlockCollection.FirstOrDefault();
+         var psvbb = SBMLModule.ParameterValuesCollection.FirstOrDefault();
          psvbb.ShouldNotBeNull();
          foreach (var psv in psvbb)
          {
@@ -45,12 +45,12 @@ namespace MoBi.Core.SBML
       [Observation, Ignore("Test is unstable")]
       public void Compartment_AssignmentCreationTest()
       {
-         _moBiProject.ShouldNotBeNull();
-         _moBiProject.SpatialStructureCollection.ShouldNotBeNull();
-         _moBiProject.ParametersStartValueBlockCollection.ShouldNotBeNull();
-         _moBiProject.ParametersStartValueBlockCollection.FirstOrDefault().ShouldNotBeNull();
+         SBMLModule.ShouldNotBeNull();
+         SBMLModule.SpatialStructure.ShouldNotBeNull();
+         SBMLModule.ParameterValuesCollection.ShouldNotBeNull();
+         SBMLModule.ParameterValuesCollection.FirstOrDefault().ShouldNotBeNull();
 
-         foreach (var psv in _moBiProject.ParametersStartValueBlockCollection.FirstOrDefault())
+         foreach (var psv in SBMLModule.ParameterValuesCollection.FirstOrDefault())
          {
             if (psv.Name == SBMLConstants.SIZE)
             {
@@ -72,20 +72,20 @@ namespace MoBi.Core.SBML
       [Observation]
       public void Species_RateRuleCreationTest()
       {
-         _moBiProject.MoleculeStartValueBlockCollection.ShouldNotBeNull();
-         var msvbb = _moBiProject.MoleculeStartValueBlockCollection.FirstOrDefault();
+         SBMLModule.InitialConditionsCollection.ShouldNotBeNull();
+         var msvbb = SBMLModule.InitialConditionsCollection.FirstOrDefault();
          msvbb.ShouldNotBeNull();
          foreach (var msv in msvbb)
          {
             if (msv.Name == "s1" && msv.IsPresent)
-               msv.StartValue.ShouldBeEqualTo(7);
+               msv.Value.ShouldBeEqualTo(7);
          }
       }
 
       [Observation]
       public void Parameter_RateRuleCreationTest()
       {
-         var psvbb = _moBiProject.ParametersStartValueBlockCollection.FirstOrDefault();
+         var psvbb = SBMLModule.ParameterValuesCollection.FirstOrDefault();
          psvbb.ShouldNotBeNull();
          foreach (var psv in psvbb)
          {
@@ -97,18 +97,18 @@ namespace MoBi.Core.SBML
       [Observation]
       public void Compartment_RateRuleCreationTest()
       {
-         _moBiProject.ShouldNotBeNull();
-         _moBiProject.SpatialStructureCollection.ShouldNotBeNull();
-         _moBiProject.ParametersStartValueBlockCollection.ShouldNotBeNull();
-         _moBiProject.ParametersStartValueBlockCollection.FirstOrDefault().ShouldNotBeNull();
+         SBMLModule.ShouldNotBeNull();
+         SBMLModule.SpatialStructure.ShouldNotBeNull();
+         SBMLModule.ParameterValuesCollection.ShouldNotBeNull();
+         SBMLModule.ParameterValuesCollection.FirstOrDefault().ShouldNotBeNull();
 
-         var ss = _moBiProject.SpatialStructureCollection.FirstOrDefault();
+         var ss = SBMLModule.SpatialStructure;
          ss.ShouldNotBeNull();
-         var tc = ss.TopContainers.FirstOrDefault();
+         var tc = ss.TopContainers.Single(x => x.Name.Contains("TOPCONTAINERSBML"));
          tc.ShouldNotBeNull();
          tc.Children.Any(s => s.Name == "compartment").ShouldBeTrue();
 
-         foreach (var psv in _moBiProject.ParametersStartValueBlockCollection.FirstOrDefault())
+         foreach (var psv in SBMLModule.ParameterValuesCollection.FirstOrDefault())
          {
             if (psv.Name == SBMLConstants.SIZE)
             {

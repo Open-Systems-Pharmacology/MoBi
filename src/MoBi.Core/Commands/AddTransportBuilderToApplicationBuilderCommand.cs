@@ -4,9 +4,9 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class AddTransportBuilderToApplicationBuilderCommand : AddObjectBaseCommand<ITransportBuilder, IApplicationBuilder>
+   public class AddTransportBuilderToApplicationBuilderCommand : AddObjectBaseCommand<TransportBuilder, ApplicationBuilder>
    {
-      public AddTransportBuilderToApplicationBuilderCommand(IApplicationBuilder parent, ITransportBuilder itemToAdd, IBuildingBlock buildingBlock)
+      public AddTransportBuilderToApplicationBuilderCommand(ApplicationBuilder parent, TransportBuilder itemToAdd, IBuildingBlock buildingBlock)
          : base(parent, itemToAdd, buildingBlock)
       {
       }
@@ -16,15 +16,15 @@ namespace MoBi.Core.Commands
          return new RemoveTransportBuilderFromApplicationBuilderCommand(_parent, _itemToAdd, _buildingBlock).AsInverseFor(this);
       }
 
-      protected override void AddTo(ITransportBuilder child, IApplicationBuilder parent, IMoBiContext context)
+      protected override void AddTo(TransportBuilder child, ApplicationBuilder parent, IMoBiContext context)
       {
          parent.AddTransport(child);
       }
    }
 
-   public class RemoveTransportBuilderFromApplicationBuilderCommand : RemoveObjectBaseCommand<ITransportBuilder, IApplicationBuilder>
+   public class RemoveTransportBuilderFromApplicationBuilderCommand : RemoveObjectBaseCommand<TransportBuilder, ApplicationBuilder>
    {
-      public RemoveTransportBuilderFromApplicationBuilderCommand(IApplicationBuilder parent, ITransportBuilder itemToRemove, IBuildingBlock buildingBlock)
+      public RemoveTransportBuilderFromApplicationBuilderCommand(ApplicationBuilder parent, TransportBuilder itemToRemove, IBuildingBlock buildingBlock)
          : base(parent, itemToRemove, buildingBlock)
       {
       }
@@ -34,7 +34,7 @@ namespace MoBi.Core.Commands
          return new AddTransportBuilderToApplicationBuilderCommand(_parent, _itemToRemove, _buildingBlock).AsInverseFor(this);
       }
 
-      protected override void RemoveFrom(ITransportBuilder childToRemove, IApplicationBuilder parent, IMoBiContext context)
+      protected override void RemoveFrom(TransportBuilder childToRemove, ApplicationBuilder parent, IMoBiContext context)
       {
          _parent.RemoveTransport(_itemToRemove);
       }

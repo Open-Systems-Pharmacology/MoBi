@@ -2,36 +2,36 @@
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Core.Events;
+using OSPSuite.Assets;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Assets;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Commands
 {
    public class AddedReactionModifierEvent
    {
-      public IReactionBuilder Reaction { get; set; }
+      public ReactionBuilder Reaction { get; set; }
       public string ModifierName { get; set; }
 
-      public AddedReactionModifierEvent(IReactionBuilder reaction, string modifierName)
+      public AddedReactionModifierEvent(ReactionBuilder reaction, string modifierName)
       {
          Reaction = reaction;
          ModifierName = modifierName;
       }
    }
 
-   public abstract class AddItemToReactionCommand<T> : AddItemCommand<T, IReactionBuilder, IMoBiReactionBuildingBlock>
+   public abstract class AddItemToReactionCommand<T> : AddItemCommand<T, ReactionBuilder, MoBiReactionBuildingBlock>
    {
-      private readonly Func<IReactionBuilder, Action<T>> _addMethod;
+      private readonly Func<ReactionBuilder, Action<T>> _addMethod;
       protected string _moleculeName;
 
-      protected AddItemToReactionCommand(IMoBiReactionBuildingBlock reactionBuildingBlock, T itemToAdd, IReactionBuilder reactionBuilder, Func<IReactionBuilder, Action<T>> addMethod)
+      protected AddItemToReactionCommand(MoBiReactionBuildingBlock reactionBuildingBlock, T itemToAdd, ReactionBuilder reactionBuilder, Func<ReactionBuilder, Action<T>> addMethod)
          : base(reactionBuilder, itemToAdd, reactionBuildingBlock)
       {
          _addMethod = addMethod;
@@ -64,26 +64,26 @@ namespace MoBi.Core.Commands
          context.PublishEvent(new FormulaChangedEvent(formula));
       }
 
-      private IFormulaUsablePath createPath(string moleculeName, IEnumerable<string> usedAliases, IMoBiContext context)
+      private FormulaUsablePath createPath(string moleculeName, IEnumerable<string> usedAliases, IMoBiContext context)
       {
          var dimensionRetriever = context.Resolve<IReactionDimensionRetriever>();
          var aliasCreator = context.Resolve<IAliasCreator>();
          var objectPathFactory = context.Resolve<IObjectPathFactory>();
 
-         var pathToRefernecedObject = new List<string> {ObjectPath.PARENT_CONTAINER, moleculeName};
+         var pathToReferencedObject = new List<string> {ObjectPath.PARENT_CONTAINER, moleculeName};
          //in case of concentration, we need to add a reference to the concentration parameter
          if (dimensionRetriever.SelectedDimensionMode == ReactionDimensionMode.ConcentrationBased)
-            pathToRefernecedObject.Add(AppConstants.Parameters.CONCENTRATION);
+            pathToReferencedObject.Add(Constants.Parameters.CONCENTRATION);
 
-         return objectPathFactory.CreateFormulaUsablePathFrom(pathToRefernecedObject)
+         return objectPathFactory.CreateFormulaUsablePathFrom(pathToReferencedObject)
             .WithDimension(dimensionRetriever.MoleculeDimension)
             .WithAlias(aliasCreator.CreateAliasFrom(moleculeName, usedAliases));
       }
    }
 
-   public abstract class AddPartnerToReactionCommand<T> : AddItemToReactionCommand<T> where T : IReactionPartnerBuilder
+   public abstract class AddPartnerToReactionCommand<T> : AddItemToReactionCommand<T> where T : ReactionPartnerBuilder
    {
-      protected AddPartnerToReactionCommand(IMoBiReactionBuildingBlock reactionBuildingBlock, T reactionPartnerBuilder, IReactionBuilder reactionBuilder, Func<IReactionBuilder, Action<T>> addMethod) :
+      protected AddPartnerToReactionCommand(MoBiReactionBuildingBlock reactionBuildingBlock, T reactionPartnerBuilder, ReactionBuilder reactionBuilder, Func<ReactionBuilder, Action<T>> addMethod) :
          base(reactionBuildingBlock, reactionPartnerBuilder, reactionBuilder, addMethod)
       {
       }
@@ -100,12 +100,12 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class AddReactionPartnerToEductCollection : AddPartnerToReactionCommand<IReactionPartnerBuilder>
+   public class AddReactionPartnerToEductCollection : AddPartnerToReactionCommand<ReactionPartnerBuilder>
    {
-      public AddReactionPartnerToEductCollection(IMoBiReactionBuildingBlock reactionBuildingBlock, IReactionPartnerBuilder reactionPartnerBuilder, IReactionBuilder reactionBuilder) :
+      public AddReactionPartnerToEductCollection(MoBiReactionBuildingBlock reactionBuildingBlock, ReactionPartnerBuilder reactionPartnerBuilder, ReactionBuilder reactionBuilder) :
          base(reactionBuildingBlock, reactionPartnerBuilder, reactionBuilder, x => x.AddEduct)
       {
-         ObjectType =ObjectTypes.Educt;
+         ObjectType = ObjectTypes.Educt;
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
@@ -120,12 +120,12 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class AddReactionPartnerToProductCollection : AddPartnerToReactionCommand<IReactionPartnerBuilder>
+   public class AddReactionPartnerToProductCollection : AddPartnerToReactionCommand<ReactionPartnerBuilder>
    {
-      public AddReactionPartnerToProductCollection(IMoBiReactionBuildingBlock reactionBuildingBlock, IReactionPartnerBuilder reactionPartnerBuilder, IReactionBuilder reactionBuilder) :
+      public AddReactionPartnerToProductCollection(MoBiReactionBuildingBlock reactionBuildingBlock, ReactionPartnerBuilder reactionPartnerBuilder, ReactionBuilder reactionBuilder) :
          base(reactionBuildingBlock, reactionPartnerBuilder, reactionBuilder, x => x.AddProduct)
       {
-         ObjectType =ObjectTypes.Product;
+         ObjectType = ObjectTypes.Product;
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
@@ -142,10 +142,10 @@ namespace MoBi.Core.Commands
 
    public class AddItemToModifierCollectionCommand : AddItemToReactionCommand<string>
    {
-      public AddItemToModifierCollectionCommand(IMoBiReactionBuildingBlock reactionBuildingBlock, string modifier, IReactionBuilder reactionBuilder) :
+      public AddItemToModifierCollectionCommand(MoBiReactionBuildingBlock reactionBuildingBlock, string modifier, ReactionBuilder reactionBuilder) :
          base(reactionBuildingBlock, modifier, reactionBuilder, x => x.AddModifier)
       {
-         ObjectType =ObjectTypes.Modifier;
+         ObjectType = ObjectTypes.Modifier;
       }
 
       protected override void ExecuteWith(IMoBiContext context)

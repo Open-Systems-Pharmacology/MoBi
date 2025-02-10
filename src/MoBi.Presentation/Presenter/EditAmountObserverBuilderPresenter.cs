@@ -8,32 +8,29 @@ using OSPSuite.Presentation.Presenters.ContextMenus;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IEditAmountObserverBuilderPresenter : IEditObserverBuilderPresenter, ICreatePresenter<IAmountObserverBuilder>
+   public interface IEditAmountObserverBuilderPresenter : IEditObserverBuilderPresenter, ICreatePresenter<AmountObserverBuilder>
    {
    }
 
-   public class EditAmountObserverBuilderPresenter : EditObserverBuilderPresenter<IAmountObserverBuilder>, IEditAmountObserverBuilderPresenter
+   public class EditAmountObserverBuilderPresenter : EditObserverBuilderPresenter<AmountObserverBuilder>, IEditAmountObserverBuilderPresenter
    {
       private readonly IObserverBuilderToDTOObserverBuilderMapper _observerBuilderMapper;
 
       public EditAmountObserverBuilderPresenter(
          IEditObserverBuilderView view,
          IMoBiContext context,
-         IEditTaskFor<IAmountObserverBuilder> editTasks,
+         IEditTaskFor<AmountObserverBuilder> editTasks,
          IObserverBuilderToDTOObserverBuilderMapper observerBuilderMapper,
          IViewItemContextMenuFactory viewItemContextMenuFactory,
-         IEditFormulaPresenter editFormulaPresenter,
+         IEditFormulaInContainerPresenter editFormulaPresenter,
          ISelectReferenceAtAmountObserverPresenter selectReferencePresenter,
          IMoleculeDependentBuilderPresenter moleculeListPresenter,
-         IDescriptorConditionListPresenter<IObserverBuilder> descriptorConditionListPresenter)
+         IDescriptorConditionListPresenter<ObserverBuilder> descriptorConditionListPresenter)
          : base(view, editFormulaPresenter, selectReferencePresenter, context, viewItemContextMenuFactory, editTasks, moleculeListPresenter, descriptorConditionListPresenter)
       {
          _observerBuilderMapper = observerBuilderMapper;
       }
 
-      protected override ObserverBuilderDTO MapFrom(IAmountObserverBuilder observerBuilder)
-      {
-         return _observerBuilderMapper.MapFrom(observerBuilder);
-      }
+      protected override ObserverBuilderDTO MapFrom(AmountObserverBuilder observerBuilder) => _observerBuilderMapper.MapFrom(observerBuilder);
    }
 }

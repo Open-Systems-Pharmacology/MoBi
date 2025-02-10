@@ -2,12 +2,12 @@
 using System.Linq;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Extensions;
+using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -21,29 +21,29 @@ namespace MoBi.Presentation.Tasks
    {
       private readonly IMoBiContext _context;
       private readonly ITagVisitor _tagVisitor;
-      private readonly IDialogCreator _dialogCreator;
+      private readonly IObjectBaseNamingTask _namingTask;
 
-      public EntityTask(IMoBiContext context, ITagVisitor tagVisitor, IDialogCreator dialogCreator)
+      public EntityTask(IMoBiContext context, ITagVisitor tagVisitor, IObjectBaseNamingTask namingTask)
       {
          _context = context;
          _tagVisitor = tagVisitor;
-         _dialogCreator = dialogCreator;
+         _namingTask = namingTask;
       }
 
       public IMoBiCommand AddNewTagTo(IEntity entity, IBuildingBlock buildingBlock)
       {
-         var tag = _dialogCreator.AskForInput("New Tag for Container", "New Tag", string.Empty, entity.Tags.Select(x => x.Value), getUsedTags());
+         var tag = _namingTask.NewName("New Tag for Container", "New Tag", string.Empty, entity.Tags.Select(x => x.Value), getUsedTags());
          if (string.IsNullOrEmpty(tag))
             return new MoBiEmptyCommand();
 
-         return new AddTagCommand(tag, entity, buildingBlock).Run(_context);
+         return new AddTagCommand(tag, entity, buildingBlock).RunCommand(_context);
       }
 
       private IEnumerable<string> getUsedTags() => _tagVisitor.AllTags();
 
       public IMoBiCommand RemoveTagFrom(TagDTO tagDTO, IEntity entity, IBuildingBlock buildingBlock)
       {
-         return new RemoveTagCommand(tagDTO.Value, entity, buildingBlock).Run(_context);
+         return new RemoveTagCommand(tagDTO.Value, entity, buildingBlock).RunCommand(_context);
       }
    }
 }

@@ -21,7 +21,7 @@ namespace MoBi.Presentation.Mappers
 
       public TableFormulaWithXArgumentDTO MapFrom(TableFormulaWithXArgument tableFormulaWithXArgument)
       {
-         var dto = Map<TableFormulaWithXArgumentDTO>(tableFormulaWithXArgument);
+         var dto = Map(new TableFormulaWithXArgumentDTO(tableFormulaWithXArgument));
 
          var xArgumentObjectPath = getPathByAlias(tableFormulaWithXArgument, tableFormulaWithXArgument.XArgumentAlias);
          if (xArgumentObjectPath != null)
@@ -38,7 +38,7 @@ namespace MoBi.Presentation.Mappers
          return dto;
       }
 
-      private static IFormulaUsablePath getPathByAlias(TableFormulaWithXArgument tableFormulaWithXArgument, string pathAlias)
+      private static FormulaUsablePath getPathByAlias(TableFormulaWithXArgument tableFormulaWithXArgument, string pathAlias)
       {
          return tableFormulaWithXArgument.ObjectPaths.SingleOrDefault(x => x.Alias.Equals(pathAlias));
       }

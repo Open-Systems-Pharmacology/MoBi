@@ -4,6 +4,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Diagram;
 using OSPSuite.Presentation.Diagram.Elements;
 using OSPSuite.Presentation.Extensions;
@@ -16,8 +17,8 @@ namespace MoBi.UI.Diagram.DiagramManagers
    {
       public SimulationDiagramManager()
       {
-         RegisterUpdateMethod(typeof(IObserver), updateObserver);
-         RegisterUpdateMethod(typeof(IReaction), UpdateReaction);
+         RegisterUpdateMethod<Observer>(updateObserver);
+         RegisterUpdateMethod<Reaction>(UpdateReaction);
       }
 
       // complement and update ViewModel from PkModel and couple ViewModel and PkModel
@@ -34,7 +35,7 @@ namespace MoBi.UI.Diagram.DiagramManagers
 
          neighborhoodsContainerNode.IsVisible = false;
 
-         foreach (var topContainer in simulation.Model.Root.GetAllContainersAndSelf<IContainer>())
+         foreach (var topContainer in simulation.Model.Root.GetChildren<IContainer>())
          {
             if (topContainer.ContainerType == ContainerType.Organism
                 || topContainer.ContainerType == ContainerType.Organ
@@ -42,7 +43,7 @@ namespace MoBi.UI.Diagram.DiagramManagers
                AddObjectBase(diagramModel, topContainer, true, coupleAll);
          }
 
-         foreach (var neighborhood in simulation.Model.Neighborhoods.GetAllChildren<INeighborhood>())
+         foreach (var neighborhood in simulation.Model.Neighborhoods.GetAllChildren<Neighborhood>())
          {
             AddNeighborhood(neighborhood);
          }
@@ -55,7 +56,7 @@ namespace MoBi.UI.Diagram.DiagramManagers
       {
          DecoupleObjectBase(PkModel.Model.Root, recursive: true);
 
-         foreach (var neighborhood in PkModel.Model.Neighborhoods.GetAllChildren<INeighborhood>())
+         foreach (var neighborhood in PkModel.Model.Neighborhoods.GetAllChildren<Neighborhood>())
          {
             DecoupleObjectBase(neighborhood, recursive: true);
          }
@@ -63,13 +64,13 @@ namespace MoBi.UI.Diagram.DiagramManagers
 
       protected override bool DecoupleObjectBase(IObjectBase objectBase, bool recursive)
       {
-         if (Decouple<IMoleculeAmount, MoleculeNode>(objectBase as IMoleculeAmount))
+         if (Decouple<MoleculeAmount, MoleculeNode>(objectBase as MoleculeAmount))
             return true;
 
-         if (Decouple<IObserver, ObserverNode>(objectBase as IObserver))
+         if (Decouple<Observer, ObserverNode>(objectBase as Observer))
             return true;
 
-         if (Decouple<IReaction, ReactionNode>(objectBase as IReaction))
+         if (Decouple<Reaction, ReactionNode>(objectBase as Reaction))
             return true;
 
          if (base.DecoupleObjectBase(objectBase, recursive))
@@ -103,12 +104,12 @@ namespace MoBi.UI.Diagram.DiagramManagers
 
       protected override IBaseNode AddObjectBase(IContainerBase parent, IObjectBase objectBase, bool recursive, bool coupleAll)
       {
-         IElementBaseNode eNode = AddAndCoupleNode<IMoleculeAmount, MoleculeNode>(parent, objectBase as IMoleculeAmount, coupleAll);
+         IElementBaseNode eNode = AddAndCoupleNode<MoleculeAmount, MoleculeNode>(parent, objectBase as MoleculeAmount, coupleAll);
          if (eNode == null)
-            eNode = AddAndCoupleNode<IObserver, ObserverNode>(parent, objectBase as IObserver, coupleAll);
+            eNode = AddAndCoupleNode<Observer, ObserverNode>(parent, objectBase as Observer, coupleAll);
 
          if (eNode == null)
-            eNode = AddAndCoupleNode<IReaction, ReactionNode>(parent, objectBase as IReaction, coupleAll);
+            eNode = AddAndCoupleNode<Reaction, ReactionNode>(parent, objectBase as Reaction, coupleAll);
 
          if (eNode != null)
          {
@@ -121,9 +122,9 @@ namespace MoBi.UI.Diagram.DiagramManagers
 
       protected override bool RemoveObjectBase(IObjectBase objectBase, bool recursive)
       {
-         if (RemoveAndDecoupleNode<IMoleculeAmount, MoleculeNode>(objectBase as IMoleculeAmount)) return true;
-         if (RemoveAndDecoupleNode<IObserver, ObserverNode>(objectBase as IObserver)) return true;
-         if (RemoveAndDecoupleNode<IReaction, ReactionNode>(objectBase as IReaction)) return true;
+         if (RemoveAndDecoupleNode<MoleculeAmount, MoleculeNode>(objectBase as MoleculeAmount)) return true;
+         if (RemoveAndDecoupleNode<Observer, ObserverNode>(objectBase as Observer)) return true;
+         if (RemoveAndDecoupleNode<Reaction, ReactionNode>(objectBase as Reaction)) return true;
 
          if (base.RemoveObjectBase(objectBase, recursive)) return true;
 
@@ -132,7 +133,7 @@ namespace MoBi.UI.Diagram.DiagramManagers
 
       protected virtual void UpdateReaction(IObjectBase reactionAsEntity, IBaseNode reactionNodeAsBaseNode)
       {
-         var reaction = reactionAsEntity.DowncastTo<IReaction>();
+         var reaction = reactionAsEntity.DowncastTo<Reaction>();
          var reactionNode = reactionNodeAsBaseNode.DowncastTo<ReactionNode>();
 
          reactionNode.ClearLinks();
@@ -182,14 +183,14 @@ namespace MoBi.UI.Diagram.DiagramManagers
          return moleculeNode;
       }
 
-      private IMoleculeAmount getModifierNode(IReaction reaction, string modifierName)
+      private MoleculeAmount getModifierNode(Reaction reaction, string modifierName)
       {
-         return reaction.ParentContainer.GetChildren<IMoleculeAmount>(mol => mol.Name == modifierName).FirstOrDefault();
+         return reaction.ParentContainer.GetChildren<MoleculeAmount>(mol => mol.Name == modifierName).FirstOrDefault();
       }
 
       private void updateObserver(IObjectBase observerAsEntity, IBaseNode observerNodeAsBaseNode)
       {
-         var observer = observerAsEntity.DowncastTo<IObserver>();
+         var observer = observerAsEntity.DowncastTo<Observer>();
          var observerNode = observerNodeAsBaseNode.DowncastTo<ObserverNode>();
          observerNode.ClearLinks();
 
@@ -223,7 +224,7 @@ namespace MoBi.UI.Diagram.DiagramManagers
          // add transport nodes 
          // it is required, that the moleculeAmounts already exist, because in transport only source and target amount ids are given,
          // and it cannot be determined, whether a source amount had to be created in first or second container of neighborhood.
-         foreach (var transport in neighborhood.GetAllChildren<ITransport>())
+         foreach (var transport in neighborhood.GetAllChildren<Transport>())
          {
             var sourceAmountNode = DiagramModel.GetNode<MoleculeNode>(transport.SourceAmount.Id);
             var targetAmountNode = DiagramModel.GetNode<MoleculeNode>(transport.TargetAmount.Id);

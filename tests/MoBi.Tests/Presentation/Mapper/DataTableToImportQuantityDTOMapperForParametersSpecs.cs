@@ -16,14 +16,14 @@ namespace MoBi.Presentation.Mapper
 {
    public abstract class concern_for_DataTableToImportQuantityDTOMapperForParameters : ContextSpecificationForImportStartValues<DataTableToImportQuantityDTOMapperForParameters>
    {
-      protected IParameterStartValuesBuildingBlock _startValuesBuildingBlock;
+      protected ParameterValuesBuildingBlock _startValuesBuildingBlock;
 
       protected override void Context()
       {
          CreateDimensionFactory();
 
          sut = new DataTableToImportQuantityDTOMapperForParameters(_dimensionFactory);
-         _startValuesBuildingBlock = new ParameterStartValuesBuildingBlock();
+         _startValuesBuildingBlock = new ParameterValuesBuildingBlock();
       }
    }
 
@@ -36,7 +36,7 @@ namespace MoBi.Presentation.Mapper
       {
          base.Context();
          _tables = new DataTableProvider().ImportTables();
-         _startValuesBuildingBlock.Add(new ParameterStartValue
+         _startValuesBuildingBlock.Add(new ParameterValue
          {
             ContainerPath = ContainerPathFromDataTableRow(_tables, 0),
             Name = "ParameterName",
@@ -53,7 +53,7 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void a_warning_should_have_been_produced()
       {
-         _result.QuantitDTOs[0].HasWarning().ShouldBeTrue();
+         _result.QuantityDTOs[0].HasWarning().ShouldBeTrue();
       }
    }
 
@@ -70,7 +70,7 @@ namespace MoBi.Presentation.Mapper
          _similarDimension.AddUnit("mol", 10, 0);
 
          _tables = new DataTableProvider(numberOfRowsToImport: 1).ImportTables();
-         _startValuesBuildingBlock.Add(new ParameterStartValue
+         _startValuesBuildingBlock.Add(new ParameterValue
          {
             ContainerPath = ContainerPathFromDataTableRow(_tables, 0),
             Name = "ParameterName",
@@ -87,13 +87,13 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void should_have_changed_the_imported_dimension()
       {
-         _result.QuantitDTOs[0].Dimension.ShouldBeEqualTo(_similarDimension);
+         _result.QuantityDTOs[0].Dimension.ShouldBeEqualTo(_similarDimension);
       }
 
       [Observation]
       public void should_have_changed_the_imported_value_to_the_new_base_value()
       {
-         _result.QuantitDTOs[0].QuantityInBaseUnit.ShouldBeEqualTo(10);
+         _result.QuantityDTOs[0].QuantityInBaseUnit.ShouldBeEqualTo(10);
       }
    }
 
@@ -107,7 +107,7 @@ namespace MoBi.Presentation.Mapper
          base.Context();
 
          // We'll need a real building block for this test so that it will return null when asked for a start value from a path
-         _startValuesBuildingBlock = new ParameterStartValuesBuildingBlock();
+         _startValuesBuildingBlock = new ParameterValuesBuildingBlock();
          _tables = new DataTableProvider().ImportTables();
          _tables.Rows[0][2] = string.Empty;
       }
@@ -120,7 +120,7 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void should_fail_to_validate_When_missing_a_quantity()
       {
-         _result.QuantitDTOs.ShouldBeEmpty();
+         _result.QuantityDTOs.ShouldBeEmpty();
       }
    }
 
@@ -134,7 +134,7 @@ namespace MoBi.Presentation.Mapper
          base.Context();
 
          // We'll need a real building block for this test so that it will return null when asked for a start value from a path
-         _startValuesBuildingBlock = new ParameterStartValuesBuildingBlock();
+         _startValuesBuildingBlock = new ParameterValuesBuildingBlock();
          _tables = new WithDimensionColumnDataTable().ImportTables();
       }
 
@@ -146,8 +146,8 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void should_fail_to_validate_When_missing_a_quantity()
       {
-         _result.QuantitDTOs[0].Dimension.Name.ShouldBeEqualTo("Becquerel");
-         _result.QuantitDTOs[1].Dimension.Name.ShouldBeEqualTo("Inversed time");
+         _result.QuantityDTOs[0].Dimension.Name.ShouldBeEqualTo("Becquerel");
+         _result.QuantityDTOs[1].Dimension.Name.ShouldBeEqualTo("Inversed time");
       }
    }
 
@@ -158,7 +158,7 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void no_results_should_be_mapped()
       {
-         _result.QuantitDTOs.Count.ShouldBeEqualTo(0);
+         _result.QuantityDTOs.Count.ShouldBeEqualTo(0);
       }
    }
 
@@ -166,7 +166,7 @@ namespace MoBi.Presentation.Mapper
    {
       protected override void Because()
       {
-         _result = sut.MapFrom(new TableNotImplementedExceptionIsThrown().ImportTables(), A.Fake<IStartValuesBuildingBlock<IParameterStartValue>>());
+         _result = sut.MapFrom(new TableNotImplementedExceptionIsThrown().ImportTables(), A.Fake<PathAndValueEntityBuildingBlock<ParameterValue>>());
       }
 
       [Observation]
@@ -180,7 +180,7 @@ namespace MoBi.Presentation.Mapper
    {
       protected override void Because()
       {
-         _result = sut.MapFrom(new InvalidImportDataTable().ImportTables(), A.Fake<IStartValuesBuildingBlock<IParameterStartValue>>());
+         _result = sut.MapFrom(new InvalidImportDataTable().ImportTables(), A.Fake<PathAndValueEntityBuildingBlock<ParameterValue>>());
       }
 
       [Observation]
@@ -194,7 +194,7 @@ namespace MoBi.Presentation.Mapper
    {
       protected override void Because()
       {
-         _result = sut.MapFrom(new InvalidUnitsDataTable().ImportTables(), A.Fake<IStartValuesBuildingBlock<IParameterStartValue>>());
+         _result = sut.MapFrom(new InvalidUnitsDataTable().ImportTables(), A.Fake<PathAndValueEntityBuildingBlock<ParameterValue>>());
       }
 
       [Observation]
@@ -208,7 +208,7 @@ namespace MoBi.Presentation.Mapper
    {
       protected override void Because()
       {
-         _result = sut.MapFrom(new IncorrectFormatDataTableProvider().ImportTables(), A.Fake<IStartValuesBuildingBlock<IParameterStartValue>>());
+         _result = sut.MapFrom(new IncorrectFormatDataTableProvider().ImportTables(), A.Fake<PathAndValueEntityBuildingBlock<ParameterValue>>());
       }
 
       [Observation]
@@ -230,20 +230,20 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void should_convert_values_to_base_units_When_necessary()
       {
-         _result.QuantitDTOs[1].QuantityInBaseUnit.ShouldBeEqualTo(2 / 1000.0);
-         _result.QuantitDTOs[2].QuantityInBaseUnit.ShouldBeEqualTo(3 / 60.0);
+         _result.QuantityDTOs[1].QuantityInBaseUnit.ShouldBeEqualTo(2 / 1000.0);
+         _result.QuantityDTOs[2].QuantityInBaseUnit.ShouldBeEqualTo(3 / 60.0);
       }
 
       [Observation]
       public void should_return_correct_number_of_quantities()
       {
-         _result.QuantitDTOs.Count.ShouldBeEqualTo(3);
+         _result.QuantityDTOs.Count.ShouldBeEqualTo(3);
       }
 
       [Observation]
       public void should_determine_appropriate_path_arguments()
       {
-         foreach (var t in _result.QuantitDTOs)
+         foreach (var t in _result.QuantityDTOs)
          {
             t.ContainerPath.Count.ShouldBeEqualTo(5);
          }

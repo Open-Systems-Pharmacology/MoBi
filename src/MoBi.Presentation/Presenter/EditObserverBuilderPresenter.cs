@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
-using OSPSuite.Core.Commands.Core;
+using System.Linq;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
+using MoBi.Core.Extensions;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Tasks.Edit;
@@ -24,9 +25,9 @@ namespace MoBi.Presentation.Presenter
    public interface IEditObserverBuilderPresenter : IPresenter<IEditObserverBuilderView>,
       ICanEditPropertiesPresenter,
       IPresenterWithContextMenu<IViewItem>,
-      IEditPresenter<IObserverBuilder>,
+      IEditPresenter<ObserverBuilder>,
       IPresenterWithFormulaCache,
-      ICreatePresenter<IObserverBuilder>
+      ICreatePresenter<ObserverBuilder>
    {
       IReadOnlyList<IDimension> AllDimensions();
       void UpdateDimension(IDimension newDimension);
@@ -35,20 +36,20 @@ namespace MoBi.Presentation.Presenter
    public abstract class EditObserverBuilderPresenter<TObserverBuilder> : AbstractSubPresenterWithFormula<IEditObserverBuilderView, IEditObserverBuilderPresenter>,
       IEditObserverBuilderPresenter,
       IListener<AddedEvent<IFormula>>
-      where TObserverBuilder : class, IObserverBuilder
+      where TObserverBuilder : ObserverBuilder
    {
       protected TObserverBuilder _observerBuilder;
       protected readonly IMoBiContext _context;
       private readonly IViewItemContextMenuFactory _viewItemContextMenuFactory;
       private readonly IEditTaskFor<TObserverBuilder> _editTasks;
       private readonly IMoleculeDependentBuilderPresenter _moleculeListPresenter;
-      private readonly IDescriptorConditionListPresenter<IObserverBuilder> _descriptorConditionListPresenter;
+      private readonly IDescriptorConditionListPresenter<ObserverBuilder> _descriptorConditionListPresenter;
       private IBuildingBlock _buildingBlock;
 
-      protected EditObserverBuilderPresenter(IEditObserverBuilderView view, IEditFormulaPresenter editFormulaPresenter,
+      protected EditObserverBuilderPresenter(IEditObserverBuilderView view, IEditFormulaInContainerPresenter editFormulaPresenter,
          ISelectReferenceAtObserverPresenter selectReferencePresenter, IMoBiContext context,
          IViewItemContextMenuFactory viewItemContextMenuFactory, IEditTaskFor<TObserverBuilder> editTasks,
-         IMoleculeDependentBuilderPresenter moleculeListPresenter, IDescriptorConditionListPresenter<IObserverBuilder> descriptorConditionListPresenter) :
+         IMoleculeDependentBuilderPresenter moleculeListPresenter, IDescriptorConditionListPresenter<ObserverBuilder> descriptorConditionListPresenter) :
             base(view, editFormulaPresenter, selectReferencePresenter)
       {
          _viewItemContextMenuFactory = viewItemContextMenuFactory;
@@ -63,7 +64,7 @@ namespace MoBi.Presentation.Presenter
          AddSubPresenters(_moleculeListPresenter, _descriptorConditionListPresenter);
       }
 
-      public void Edit(TObserverBuilder observerBuilder, IEnumerable<IObjectBase> existingObjectsInParent)
+      public void Edit(TObserverBuilder observerBuilder, IReadOnlyList<IObjectBase> existingObjectsInParent)
       {
          _observerBuilder = observerBuilder;
          _moleculeListPresenter.Edit(observerBuilder);
@@ -71,14 +72,14 @@ namespace MoBi.Presentation.Presenter
          RefreshView(observerBuilder, existingObjectsInParent);
       }
 
-      public void Edit(IObserverBuilder observerBuilder, IEnumerable<IObjectBase> existingObjectsInParent)
+      public void Edit(ObserverBuilder observerBuilder, IReadOnlyList<IObjectBase> existingObjectsInParent)
       {
          Edit(observerBuilder.DowncastTo<TObserverBuilder>(), existingObjectsInParent);
       }
 
       public void Edit(TObserverBuilder observerBuilder)
       {
-         Edit(observerBuilder, observerBuildingBlock);
+         Edit(observerBuilder, observerBuildingBlock.ToList());
       }
 
       public IBuildingBlock BuildingBlock
@@ -100,7 +101,7 @@ namespace MoBi.Presentation.Presenter
          FormulaChanged();
       }
 
-      private IObserverBuildingBlock observerBuildingBlock => BuildingBlock as IObserverBuildingBlock;
+      private ObserverBuildingBlock observerBuildingBlock => BuildingBlock as ObserverBuildingBlock;
 
       protected override void FormulaChanged()
       {
@@ -116,11 +117,11 @@ namespace MoBi.Presentation.Presenter
 
       public void UpdateDimension(IDimension newDimension)
       {
-         AddCommand(new UpdateDimensionInObserverBuilderCommand(_observerBuilder, newDimension, BuildingBlock).Run(_context));
+         AddCommand(new UpdateDimensionInObserverBuilderCommand(_observerBuilder, newDimension, BuildingBlock).RunCommand(_context));
          setUpFormulaEditView();
       }
 
-      public void Edit(IObserverBuilder observerBuilder)
+      public void Edit(ObserverBuilder observerBuilder)
       {
          Edit(observerBuilder.DowncastTo<TObserverBuilder>());
       }
@@ -140,7 +141,7 @@ namespace MoBi.Presentation.Presenter
 
       public void SetPropertyValueFromView<T>(string propertyName, T newValue, T oldValue)
       {
-         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, _observerBuilder, BuildingBlock).Run(_context));
+         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, _observerBuilder, BuildingBlock).RunCommand(_context));
       }
 
       public void RenameSubject()

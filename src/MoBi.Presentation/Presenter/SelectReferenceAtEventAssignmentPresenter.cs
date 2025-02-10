@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
@@ -13,12 +14,15 @@ namespace MoBi.Presentation.Presenter
 
    public class SelectReferenceAtEventAssignmentPresenter : SelectReferencePresenterBase, ISelectReferenceAtEventAssignmentPresenter
    {
-      public SelectReferenceAtEventAssignmentPresenter(ISelectReferenceView view, IObjectBaseToObjectBaseDTOMapper objectBaseDTOMapper,
-         IMoBiContext context, IUserSettings userSettings, IObjectBaseToDummyMoleculeDTOMapper objectBaseToMoleculeDummyMapper,
-         IParameterToDummyParameterDTOMapper dummyParameterDTOMapper, IObjectBaseDTOToReferenceNodeMapper referenceMapper, IObjectPathCreatorAtEventAssingment objectPathCreator)
-         : base(
-            view, objectBaseDTOMapper, context, userSettings,
-            objectBaseToMoleculeDummyMapper, dummyParameterDTOMapper, referenceMapper, objectPathCreator, Localisations.ContainerOnly)
+      public SelectReferenceAtEventAssignmentPresenter(ISelectReferenceView view, 
+         IObjectBaseToObjectBaseDTOMapper objectBaseDTOMapper,
+         IMoBiContext context, IUserSettings userSettings, 
+         IObjectBaseToDummyMoleculeDTOMapper objectBaseToMoleculeDummyMapper,
+         IParameterToDummyParameterDTOMapper dummyParameterDTOMapper, 
+         IObjectBaseDTOToReferenceNodeMapper referenceMapper, 
+         IObjectPathCreatorAtEventAssignment objectPathCreator, 
+         IBuildingBlockRepository buildingBlockRepository)
+         : base(view, objectBaseDTOMapper, context, userSettings, objectBaseToMoleculeDummyMapper, dummyParameterDTOMapper, referenceMapper, objectPathCreator, Localisations.ContainerOnly, buildingBlockRepository)
       {
       }
 
@@ -28,7 +32,7 @@ namespace MoBi.Presentation.Presenter
          AddSpatialStructures();
       }
 
-      public override void Init(IEntity assignment, IEnumerable<IObjectBase> contextSpecificEntitiesToAddToReferenceTree, IUsingFormula editedObject)
+      public override void Init(IEntity assignment, IReadOnlyList<IObjectBase> contextSpecificEntitiesToAddToReferenceTree, IUsingFormula editedObject)
       {
          base.Init(assignment, contextSpecificEntitiesToAddToReferenceTree, editedObject);
          addEventGroupParameter(assignment.RootContainer);

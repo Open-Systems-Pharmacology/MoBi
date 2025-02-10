@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
-using MoBi.Presentation.Settings;
+using MoBi.Core.Extensions;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.Builder;
@@ -28,7 +27,7 @@ namespace MoBi.Presentation.Presenter
    {
       private readonly ISolverSettingsToDTOSolverSettingsMapper _solverSettingsMapper;
       private readonly IMoBiContext _context;
-      private ISimulationSettings _simulationSettings;
+      private SimulationSettings _simulationSettings;
       private IMoBiSimulation _simulation;
 
 
@@ -49,15 +48,12 @@ namespace MoBi.Presentation.Presenter
          //always convert the value to the actual property type
          var oldValueToUse = _context.DeserializeValueTo(solverOptionDTO.Type, oldValue);
          var newValueToUse = _context.DeserializeValueTo(solverOptionDTO.Type, newValue);
-         AddCommand(createEditCommandFor(solverOptionDTO.Name, newValueToUse, oldValueToUse).Run(_context));
+         AddCommand(createEditCommandFor(solverOptionDTO.Name, newValueToUse, oldValueToUse).RunCommand(_context));
       }
 
       private IMoBiCommand createEditCommandFor(string name, object newValue, object oldValue)
       {
-         if (_simulation == null)
-            return new EditSolverPropertyCommand(name, newValue, oldValue, _simulationSettings);
-
-         return new EditSolverPropertyInSimulationCommand(name, newValue, oldValue, _simulation);
+         return new EditSolverPropertyCommand(name, newValue, oldValue, _simulationSettings);
       }
 
       public override ApplicationIcon Icon => ApplicationIcons.Solver;
@@ -65,10 +61,10 @@ namespace MoBi.Presentation.Presenter
       public void Edit(IMoBiSimulation simulation)
       {
          _simulation = simulation;
-         Edit(_simulation.SimulationSettings);
+         Edit(_simulation.Settings);
       }
 
-      public void Edit(ISimulationSettings simulationSettings)
+      public void Edit(SimulationSettings simulationSettings)
       {
          _simulationSettings = simulationSettings;
          _view.Show(_solverSettingsMapper.MapFrom(_simulationSettings.Solver));

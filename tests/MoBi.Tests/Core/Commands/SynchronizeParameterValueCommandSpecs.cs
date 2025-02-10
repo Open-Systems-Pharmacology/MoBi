@@ -1,61 +1,67 @@
 ﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
-using MoBi.Helpers;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.UnitSystem;
 
 namespace MoBi.Core.Commands
 {
    public abstract class concern_for_SynchronizeParameterValueCommand : ContextSpecification<SynchronizeParameterValueCommand>
    {
-      protected IParameter _sourceParameter;
-      protected IParameter _targetParameter;
+      protected ParameterValue _parameterStartValue;
+      protected IParameter _parameter;
       protected IMoBiContext _context;
 
       protected override void Context()
       {
-         _sourceParameter = new Parameter().WithFormula(new ConstantFormula(5));
-         _sourceParameter.Dimension = DomainHelperForSpecs.AmountDimension;
-         _targetParameter = new Parameter().WithFormula(new ConstantFormula(10));
-         _targetParameter.Dimension = DomainHelperForSpecs.TimeDimension;
-
-         sut = new SynchronizeParameterValueCommand(_sourceParameter, _targetParameter);
-
+         _parameter = new Parameter();
+         _parameterStartValue = new ParameterValue();
          _context = A.Fake<IMoBiContext>();
+         sut = new SynchronizeParameterValueCommand(_parameter, _parameterStartValue, new ParameterValuesBuildingBlock());
       }
    }
 
-   public class When_executing_the_synchronize_parameter_value_command : concern_for_SynchronizeParameterValueCommand
+   public class synchronizing_a_parameter_value_with_a_parameter : concern_for_SynchronizeParameterValueCommand
    {
+      protected override void Context()
+      {
+         base.Context();
+         _parameter.Value = 5;
+         _parameter.Dimension = A.Fake<IDimension>();
+         _parameter.ValueOrigin.Description = "BLA BLA";
+         _parameter.ValueOrigin.Method = ValueOriginDeterminationMethods.Assumption;
+         _parameter.DisplayUnit = A.Fake<Unit>();
+      }
+
       protected override void Because()
       {
          sut.Execute(_context);
       }
 
       [Observation]
-      public void should_ensure_that_the_target_parameter_has_the_same_value_as_the_source_parameter()
+      public void should_update_the_value()
       {
-         _targetParameter.Value.ShouldBeEqualTo(_sourceParameter.Value);
+         _parameterStartValue.Value.ShouldBeEqualTo(_parameter.Value);
       }
 
       [Observation]
-      public void should_ensure_that_the_target_parameter_has_the_same_value_origin_as_the_source_parameter()
+      public void should_update_the_dimension()
       {
-         _targetParameter.ValueOrigin.ShouldBeEqualTo(_sourceParameter.ValueOrigin);
+         _parameterStartValue.Dimension.ShouldBeEqualTo(_parameter.Dimension);
       }
 
       [Observation]
-      public void should_ensure_that_the_target_parameter_has_the_same_dimension_as_the_source_parameter()
+      public void should_update_the_display_unit()
       {
-         _targetParameter.Dimension.ShouldBeEqualTo(_sourceParameter.Dimension);
+         _parameterStartValue.DisplayUnit.ShouldBeEqualTo(_parameter.DisplayUnit);
       }
 
       [Observation]
-      public void should_ensure_that_the_target_parameter_has_the_same_display_unit_as_the_source_parameter()
+      public void should_update_the_value_description()
       {
-         _targetParameter.DisplayUnit.ShouldBeEqualTo(_sourceParameter.DisplayUnit);
+         _parameterStartValue.ValueOrigin.ShouldBeEqualTo(_parameter.ValueOrigin);
       }
    }
 }

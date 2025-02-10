@@ -18,10 +18,10 @@
       public const string PASSIVE_TRANSPORT_BUILDING_BLOCK = "Passive Transports";
       public const string REACTION_BUILDING_BLOCKS = "Reactions";
       public const string REACTION_BUILDING_BLOCK = "Reactions";
-      public const string MOLECULE_START_VALUES_BUILDING_BLOCKS = "Molecule Start Values";
-      public const string MOLECULE_START_VALUES_BUILDING_BLOCK = "Molecule Start Values";
-      public const string PARAMETER_START_VALUES_BUILDING_BLOCKS = "Parameter Start Values";
-      public const string PARAMETER_START_VALUES_BUILDING_BLOCK = "Parameter Start Values";
+      public const string INITIAL_CONDITIONS_BUILDING_BLOCKS = "Initial Conditions";
+      public const string INITIAL_CONDITIONS_BUILDING_BLOCK = "Initial Conditions";
+      public const string PARAMETER_VALUES_BUILDING_BLOCKS = "Parameter Values";
+      public const string PARAMETER_VALUES_BUILDING_BLOCK = "Parameter Values";
       public const string SIMULATION_SETTINGS = "Simulation Settings";
       public const string SIMULATIONS = "Simulations";
       public const string SIMULATION = "Simulation";
@@ -85,8 +85,8 @@
       public const string MOLECULE = "Molecule";
       public const string MOLECULES = "Molecules";
       public const string BY_MOLECULES = "By Molecules";
-      public const string MOLECULE_START_VALUES = "Molecule Start Values";
-      public const string PARAMETER_START_VALUES = "Parameter Start Values";
+      public const string INITIAL_CONDITIONS = "Initial Conditions";
+      public const string PARAMETER_VALUES = "Parameter Values";
       public const string APPLICATION_BUILDER = "Application Builder";
       public const string APPLICATION_MOLECULE_BUILDER = "Application Molecule Builder";
       public const string GLOBAL_MOLECULE_DEPENDENT_PROPERTIES = "Global Molecule Dependent Properties";

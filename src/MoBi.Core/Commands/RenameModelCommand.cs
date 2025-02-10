@@ -47,8 +47,8 @@ namespace MoBi.Core.Commands
          updateFormulasInContainer(root);
          updateFormulasInContainer(_model.Neighborhoods);
 
-         var allEventAssingements = root.GetAllChildren<IEventAssignment>();
-         allEventAssingements.Each(ea => updateObjectPath(ea.ObjectPath));
+         var allEventAssignments = root.GetAllChildren<EventAssignment>();
+         allEventAssignments.Each(ea => updateObjectPath(ea.ObjectPath));
       }
 
       private void updateFormulasInContainer(IContainer root)
@@ -64,7 +64,7 @@ namespace MoBi.Core.Commands
          formula.ObjectPaths.Each(updateObjectPath);
       }
 
-      private void updateObjectPath(IObjectPath path)
+      private void updateObjectPath(ObjectPath path)
       {
          if (!path.First().Equals(_oldName)) return;
          path.Remove(_oldName);

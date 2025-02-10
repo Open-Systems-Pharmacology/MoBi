@@ -46,20 +46,20 @@ namespace MoBi.Presentation.DTO
       public DistributionParameterDTO Maximum { get; set; }
       public DistributionParameterDTO Minimum { get; set; }
 
-      public DistributedParameterDTO(IDistributedParameter distributedParameter)
+      public DistributedParameterDTO(IDistributedParameter distributedParameter):base(distributedParameter)
       {
          _distributedParameter = distributedParameter;
       }
 
       public IDimension Dimension
       {
-         get { return Value.Dimension; }
-         set { Value.Dimension = value; }
+         get => Value.Dimension;
+         set => Value.Dimension = value;
       }
 
       public double Percentile
       {
-         get { return _distributedParameter.Percentile; }
+         get => _distributedParameter.Percentile;
          set
          {
             /*nothing to do is taken care of by commands*/

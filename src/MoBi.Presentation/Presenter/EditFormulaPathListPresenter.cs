@@ -43,7 +43,7 @@ namespace MoBi.Presentation.Presenter
       ///    Sets the alias of the <paramref name="formulaUsablePath" /> being edited to <paramref name="newAlias" /> from
       ///    <paramref name="oldAlias" />
       /// </summary>
-      void SetAlias(string newAlias, string oldAlias, IFormulaUsablePath formulaUsablePath);
+      void SetAlias(string newAlias, string oldAlias, FormulaUsablePath formulaUsablePath);
 
       void SetFormulaUsablePath(string newPath, FormulaUsablePathDTO dto);
 
@@ -68,7 +68,7 @@ namespace MoBi.Presentation.Presenter
 
       Func<ReferenceDTO, bool> DragDropAllowedFor { get; set; }
 
-      void AddPathToFormula(IFormulaUsablePath path);
+      void AddPathToFormula(FormulaUsablePath path);
 
       bool ReadOnly { set; get; }
 
@@ -111,7 +111,7 @@ namespace MoBi.Presentation.Presenter
          _formulaUsablePathDTOMapper = formulaUsablePathDTOMapper;
       }
 
-      public void SetAlias(string newAlias, string oldAlias, IFormulaUsablePath formulaUsablePath)
+      public void SetAlias(string newAlias, string oldAlias, FormulaUsablePath formulaUsablePath)
       {
          if (string.Equals(newAlias, oldAlias))
             return;
@@ -141,16 +141,16 @@ namespace MoBi.Presentation.Presenter
       public void ClonePath(FormulaUsablePathDTO formulaUsablePathToClone)
       {
          var path = getPathFrom(formulaUsablePathToClone);
-         AddPathToFormula(path.Clone<IFormulaUsablePath>());
+         AddPathToFormula(path.Clone<FormulaUsablePath>());
       }
 
       public void CreateNewPath()
       {
-         var path = new FormulaUsablePath().WithDimension(_dimensionFactory.TryGetDimension(_userSettings.ParameterDefaultDimension));
+         var path = new FormulaUsablePath().WithDimension(_dimensionFactory.TryGetDimension(_userSettings.ParameterDefaultDimension, fallBackDimension: _dimensionFactory.NoDimension));
          AddPathToFormula(path);
       }
 
-      private IFormulaUsablePath getPathFrom(FormulaUsablePathDTO dto)
+      private FormulaUsablePath getPathFrom(FormulaUsablePathDTO dto)
       {
          return _formula.ObjectPaths.FirstOrDefault(usablePath => string.Equals(usablePath.Alias, dto.Alias));
       }
@@ -169,7 +169,7 @@ namespace MoBi.Presentation.Presenter
 
       public override object Subject => _formula;
 
-      public void AddPathToFormula(IFormulaUsablePath path)
+      public void AddPathToFormula(FormulaUsablePath path)
       {
          if (path == null) return;
 
@@ -179,13 +179,13 @@ namespace MoBi.Presentation.Presenter
          AddCommand(_moBiFormulaTask.AddFormulaUsablePath(_formula, path, BuildingBlock));
       }
 
-      private void checkForCircularReference(IFormulaUsablePath path)
+      private void checkForCircularReference(FormulaUsablePath path)
       {
          if (hasCircularReference(path))
             throw new OSPSuiteException(AppConstants.Exceptions.CircularReferenceException(path, _formula));
       }
 
-      private bool hasCircularReference(IFormulaUsablePath path)
+      private bool hasCircularReference(FormulaUsablePath path)
       {
          return CheckCircularReference && _formulaOwner != null && _circularReferenceChecker.HasCircularReference(path, _formulaOwner);
       }
@@ -202,7 +202,7 @@ namespace MoBi.Presentation.Presenter
          AddPathToFormula(droppedReferenceDTO.Path);
       }
 
-      private void makeAliasUnique(IFormulaUsablePath path, IEnumerable<IFormulaUsablePath> objectPaths)
+      private void makeAliasUnique(FormulaUsablePath path, IEnumerable<FormulaUsablePath> objectPaths)
       {
          var aliases = objectPaths.Select(usedPath => usedPath.Alias).ToList();
          var alias = path.Alias;

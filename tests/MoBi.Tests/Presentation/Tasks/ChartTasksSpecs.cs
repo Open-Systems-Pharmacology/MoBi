@@ -3,12 +3,14 @@ using FakeItEasy;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
+using MoBi.Helpers;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -19,7 +21,7 @@ namespace MoBi.Presentation.Tasks
       protected IMoBiApplicationController _moBiApplicationController;
       protected IChartFactory _chartFactory;
       protected IDialogCreator _dialogCreator;
-      protected IMoBiProject _currentProject;
+      protected MoBiProject _currentProject;
       private IMoBiProjectRetriever _projectRetriever;
 
       protected override void Context()
@@ -29,7 +31,7 @@ namespace MoBi.Presentation.Tasks
          _moBiApplicationController = A.Fake<IMoBiApplicationController>();
          _chartFactory = A.Fake<IChartFactory>();
          _dialogCreator = A.Fake<IDialogCreator>();
-         _currentProject = A.Fake<IMoBiProject>();
+         _currentProject = DomainHelperForSpecs.NewProject();
          _projectRetriever = A.Fake<IMoBiProjectRetriever>();
 
          sut = new ChartTasks(_moBiContext, _eventPublisher, _moBiApplicationController,
@@ -77,6 +79,7 @@ namespace MoBi.Presentation.Tasks
       {
          base.Context();
          _charts = new List<CurveChart> {new CurveChart()};
+         _charts.Each(_currentProject.AddChart);
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
       }
 
@@ -88,7 +91,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_remove_the_charts()
       {
-         A.CallTo(() => _currentProject.RemoveChart(A<CurveChart>.Ignored)).MustHaveHappened();
+         _charts.Each(chart => _currentProject.Charts.ShouldNotContain(chart));
       }
    }
 
@@ -100,6 +103,7 @@ namespace MoBi.Presentation.Tasks
       {
          base.Context();
          _charts = new List<CurveChart> {new CurveChart()};
+         _charts.Each(_currentProject.AddChart);
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.No);
       }
 
@@ -111,29 +115,29 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_not_remove_the_charts()
       {
-         A.CallTo(() => _currentProject.RemoveChart(A<CurveChart>.Ignored)).MustNotHaveHappened();
+         _charts.Each(chart => _currentProject.Charts.ShouldContain(chart));
       }
    }
 
    public class When_showing_historical_results_as_chart : concern_for_ChartTasks
    {
-      private DataRepository _historialResult;
+      private DataRepository _historicalResult;
 
       protected override void Context()
       {
          base.Context();
-         _historialResult = new DataRepository();
+         _historicalResult = new DataRepository();
       }
 
       protected override void Because()
       {
-         sut.ShowData(_historialResult);
+         sut.ShowData(_historicalResult);
       }
 
       [Observation]
       public void should_automatically_set_the_persistable_flag_to_true()
       {
-         _historialResult.IsPersistable().ShouldBeTrue();
+         _historicalResult.IsPersistable().ShouldBeTrue();
       }
    }
 }

@@ -7,7 +7,7 @@ namespace MoBi.Core.Services
 {
    public interface IMoBiProjectRetriever : IProjectRetriever
    {
-      IMoBiProject Current { get; }
+      MoBiProject Current { get; }
    }
 
    public class MoBiProjectRetriever : IMoBiProjectRetriever
@@ -19,7 +19,7 @@ namespace MoBi.Core.Services
          _moBiContext = moBiContext;
       }
 
-      public IMoBiProject Current => _moBiContext.CurrentProject;
+      public MoBiProject Current => _moBiContext.CurrentProject;
 
       public void AddToHistory(ICommand command)
       {

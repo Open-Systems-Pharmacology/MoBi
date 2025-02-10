@@ -8,13 +8,13 @@ using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.UICommand
 {
-   internal class AddNewApplicationMoleculeBuilderUICommand : ObjectUICommand<IApplicationBuilder>
+   internal class AddNewApplicationMoleculeBuilderUICommand : ObjectUICommand<ApplicationBuilder>
    {
-      private readonly IInteractionTasksForChildren<IApplicationBuilder, IApplicationMoleculeBuilder> _interactionTasks;
+      private readonly IInteractionTasksForChildren<ApplicationBuilder, ApplicationMoleculeBuilder> _interactionTasks;
       private readonly IMoBiContext _context;
       private readonly IActiveSubjectRetriever _activeSubjectRetriever;
 
-      public AddNewApplicationMoleculeBuilderUICommand(IInteractionTasksForChildren<IApplicationBuilder, IApplicationMoleculeBuilder> interactionTasks, IMoBiContext context, IActiveSubjectRetriever activeSubjectRetriever)
+      public AddNewApplicationMoleculeBuilderUICommand(IInteractionTasksForChildren<ApplicationBuilder, ApplicationMoleculeBuilder> interactionTasks, IMoBiContext context, IActiveSubjectRetriever activeSubjectRetriever)
       {
          _interactionTasks = interactionTasks;
          _activeSubjectRetriever = activeSubjectRetriever;
@@ -29,13 +29,13 @@ namespace MoBi.Presentation.UICommand
 
    internal class RemoveApplicationMoleculeBuilderUICommand : IUICommand
    {
-      private readonly IInteractionTasksForChildren<IApplicationBuilder, IApplicationMoleculeBuilder> _interactionTasks;
-      private IApplicationMoleculeBuilder _applicationMoleculeBuilder;
+      private readonly IInteractionTasksForChildren<ApplicationBuilder, ApplicationMoleculeBuilder> _interactionTasks;
+      private ApplicationMoleculeBuilder _applicationMoleculeBuilder;
       private readonly IMoBiContext _context;
       private readonly IActiveSubjectRetriever _activeSubjectRetriever;
-      private IApplicationBuilder _parent;
+      private ApplicationBuilder _parent;
 
-      public RemoveApplicationMoleculeBuilderUICommand(IInteractionTasksForChildren<IApplicationBuilder, IApplicationMoleculeBuilder> interactionTasks, IMoBiContext context, IActiveSubjectRetriever activeSubjectRetriever)
+      public RemoveApplicationMoleculeBuilderUICommand(IInteractionTasksForChildren<ApplicationBuilder, ApplicationMoleculeBuilder> interactionTasks, IMoBiContext context, IActiveSubjectRetriever activeSubjectRetriever)
       {
          _interactionTasks = interactionTasks;
          _context = context;
@@ -48,7 +48,7 @@ namespace MoBi.Presentation.UICommand
          _context.AddToHistory(_interactionTasks.Remove(_applicationMoleculeBuilder,_parent, buildingBlock));
       }
 
-      public IUICommand Initialze(IApplicationMoleculeBuilder applicationMoleculeBuilder, IApplicationBuilder parent)
+      public IUICommand Initialze(ApplicationMoleculeBuilder applicationMoleculeBuilder, ApplicationBuilder parent)
       {
          _applicationMoleculeBuilder = applicationMoleculeBuilder;
         _parent = parent;

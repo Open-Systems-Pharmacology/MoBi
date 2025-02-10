@@ -10,6 +10,7 @@ using DevExpress.XtraGrid.Views.Base;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using MoBi.UI.Extensions;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
@@ -19,6 +20,7 @@ using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.UI.Binders;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
 using OSPSuite.UI.Services;
 using OSPSuite.UI.Views;
@@ -59,9 +61,10 @@ namespace MoBi.UI.Views
          _gridControl.MouseDoubleClick += onDoubleClick;
          _gridView.MouseDown += (o, e) => OnEvent(onGridViewMouseDown, e);
          _favoriteRepository = new UxRepositoryItemCheckEdit(_gridView);
-         PopupBarManager = new BarManager {Form = this, Images = imageListRetriever.AllImages16x16};
+         PopupBarManager = new BarManager { Form = this, Images = imageListRetriever.AllImages16x16 };
 
-         var toolTipController = new ToolTipController {AllowHtmlText = true};
+         var toolTipController = new ToolTipController { AllowHtmlText = true };
+         toolTipController.Initialize();
          toolTipController.GetActiveObjectInfo += onToolTipControllerGetActiveObjectInfo;
          _gridControl.ToolTipController = toolTipController;
       }
@@ -69,17 +72,11 @@ namespace MoBi.UI.Views
       private void onToolTipControllerGetActiveObjectInfo(object sender, ToolTipControllerGetActiveObjectInfoEventArgs e)
       {
          var parameterDTO = _gridViewBinder.ElementAt(e);
-         if (parameterDTO == null) return;
 
-         var superToolTip = getToolTipFor(parameterDTO);
+         if (parameterDTO == null)
+            return;
 
-         //An object that uniquely identifies a row cell
-         e.Info = new ToolTipControlInfo(parameterDTO, string.Empty) {SuperTip = superToolTip, ToolTipType = ToolTipType.SuperTip};
-      }
-
-      private SuperToolTip getToolTipFor(ParameterDTO parameterDTO)
-      {
-         return _toolTipCreator.ToolTipFor(parameterDTO);
+         e.Info = _gridView.CreateToolTipControlInfoFor(parameterDTO, e.ControlMousePosition, _toolTipCreator.ToolTipFor);
       }
 
       private void onGridViewMouseDown(MouseEventArgs e)
@@ -120,7 +117,7 @@ namespace MoBi.UI.Views
 
          _pathBinder.InitializeBinding(_gridViewBinder);
          _gridViewBinder.Bind(dto => dto.Value)
-            .WithFormat(dto => dto.ParameterFormatter(checkForEditable:false))
+            .WithFormat(dto => dto.ParameterFormatter(checkForEditable: false))
             .WithRepository(repositoryForValue)
             .WithEditorConfiguration(configureRepository)
             .WithToolTip(ToolTips.ParameterList.SetParameterValue)
@@ -170,7 +167,7 @@ namespace MoBi.UI.Views
       private void createResetButtonItem()
       {
          _isFixedParameterEditRepository = new UxRepositoryItemButtonImage(ApplicationIcons.Reset,
-            ToolTips.ResetParameterToolTip) {TextEditStyle = TextEditStyles.Standard};
+            ToolTips.ResetParameterToolTip) { TextEditStyle = TextEditStyles.Standard };
          _isFixedParameterEditRepository.Buttons[0].IsLeft = true;
       }
 
@@ -214,6 +211,7 @@ namespace MoBi.UI.Views
       public void SetVisibility(PathElementId pathElement, bool isVisible)
       {
          _pathBinder.SetVisibility(pathElement, isVisible);
+         _pathBinder.ColumnAt(pathElement).WithShowInColumnChooser(!isVisible);
       }
 
       public IReadOnlyList<ParameterDTO> SelectedParameters

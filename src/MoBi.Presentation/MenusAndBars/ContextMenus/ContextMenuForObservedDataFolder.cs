@@ -20,14 +20,16 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       private readonly ITreeNode<RootNodeType> _treeNode;
       private readonly IExplorerPresenter _presenter;
       private readonly IUserSettings _userSettings;
+      private readonly IContainer _container;
 
       public ContextMenuForObservedDataFolder(IMenuBarItemRepository menuBarItemRepository, ITreeNode<RootNodeType> treeNode,
-         IExplorerPresenter presenter, IUserSettings userSettings)
+         IExplorerPresenter presenter, IUserSettings userSettings, IContainer container)
       {
          _menuBarItemRepository = menuBarItemRepository;
          _treeNode = treeNode;
          _presenter = presenter;
          _userSettings = userSettings;
+         _container = container;
       }
 
       public override IEnumerable<IMenuBarItem> AllMenuItems()
@@ -36,7 +38,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          yield return _menuBarItemRepository[MenuBarItemIds.LoadObservedData];
 
          if (_treeNode.AllLeafNodes.OfType<ObservedDataNode>().Any())
-            yield return ObservedDataClassificationCommonContextMenuItems.EditMultipleMetaData(_treeNode).AsGroupStarter();
+            yield return ObservedDataClassificationCommonContextMenuItems.EditMultipleMetaData(_treeNode, _container).AsGroupStarter();
 
 
          yield return ClassificationCommonContextMenuItems.CreateClassificationUnderMenu(_treeNode, _presenter);
@@ -79,7 +81,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          var explorerPresenter = presenter.DowncastTo<IExplorerPresenter>();
          return new ContextMenuForObservedDataFolder(_container.Resolve<IMenuBarItemRepository>(),
-            explorerPresenter.NodeByType(RootNodeTypes.ObservedDataFolder), explorerPresenter, _userSettings);
+            explorerPresenter.NodeByType(RootNodeTypes.ObservedDataFolder), explorerPresenter, _userSettings, _container);
       }
 
       public bool IsSatisfiedBy(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter)

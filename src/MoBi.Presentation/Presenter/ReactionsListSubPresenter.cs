@@ -18,7 +18,7 @@ using OSPSuite.Presentation.Presenters.ContextMenus;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IReactionsListSubPresenter : IEditPresenter<IReactionBuildingBlock>,
+   public interface IReactionsListSubPresenter : IEditPresenter<ReactionBuildingBlock>,
       IPresenterWithContextMenu<IViewItem>,
       IPresenterWithContextMenu<ReactionInfoDTO>,
       IListener<AddedEvent>,
@@ -28,11 +28,11 @@ namespace MoBi.Presentation.Presenter
       void Select(string id);
    }
 
-   public class ReactionsListSubPresenter : AbstractEditPresenter<IReactionListView, IReactionsListSubPresenter, IReactionBuildingBlock>, IReactionsListSubPresenter, IListener<AddedReactionPartnerEvent>, IListener<RemovedReactionPartnerEvent>, IListener<EditReactionPartnerEvent>
+   public class ReactionsListSubPresenter : AbstractEditPresenter<IReactionListView, IReactionsListSubPresenter, ReactionBuildingBlock>, IReactionsListSubPresenter, IListener<AddedReactionPartnerEvent>, IListener<RemovedReactionPartnerEvent>, IListener<EditReactionPartnerEvent>
    {
       private readonly IViewItemContextMenuFactory _viewItemContextMenuFactory;
       private readonly IReactionBuilderToReactionInfoDTOMapper _reactionBuilderBuilderToDtoReactionInfoMapper;
-      private IReactionBuildingBlock _reactionBuildingBlock;
+      private ReactionBuildingBlock _reactionBuildingBlock;
       private readonly IMoBiContext _context;
       private IEnumerable<ReactionInfoDTO> _dtoReactions;
 
@@ -61,7 +61,7 @@ namespace MoBi.Presentation.Presenter
          contextMenu.Show(_view, popupLocation);
       }
 
-      public override void Edit(IReactionBuildingBlock objectToEdit)
+      public override void Edit(ReactionBuildingBlock objectToEdit)
       {
          _dtoReactions = objectToEdit.MapAllUsing(_reactionBuilderBuilderToDtoReactionInfoMapper);
          _view.Show(_dtoReactions);
@@ -85,7 +85,7 @@ namespace MoBi.Presentation.Presenter
       public void Handle(RemovedEvent eventToHandle)
       {
          if (_reactionBuildingBlock == null) return;
-         if (eventToHandle.RemovedObjects.Any(item => item.IsAnImplementationOf<IReactionBuilder>()))
+         if (eventToHandle.RemovedObjects.Any(item => item.IsAnImplementationOf<ReactionBuilder>()))
          {
             Edit(_reactionBuildingBlock);
          }
@@ -106,7 +106,7 @@ namespace MoBi.Presentation.Presenter
          performBaseEventHandlingFor(eventToHandle.Reaction);
       }
 
-      private void performBaseEventHandlingFor(IReactionBuilder reactionBuilder)
+      private void performBaseEventHandlingFor(ReactionBuilder reactionBuilder)
       {
          if (!canHandleEventFor(reactionBuilder))
             return;
@@ -116,7 +116,7 @@ namespace MoBi.Presentation.Presenter
          dto.StoichiometricFormula = upadteDTO.StoichiometricFormula;
       }
 
-      private bool canHandleEventFor(IReactionBuilder reactionBuilder)
+      private bool canHandleEventFor(ReactionBuilder reactionBuilder)
       {
          if (_reactionBuildingBlock == null) return false;
          return _reactionBuildingBlock.Contains(reactionBuilder);

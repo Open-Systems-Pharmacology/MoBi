@@ -3,17 +3,17 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Extensions;
-using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Domain.UnitSystem;
 using MoBi.Core.Exceptions;
+using MoBi.Core.Extensions;
 using MoBi.Core.Services;
 using MoBi.Presentation.Tasks.Edit;
-using OSPSuite.Core.Commands;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
+using MoBi.Presentation.Settings;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
@@ -70,9 +70,9 @@ namespace MoBi.Presentation.Tasks.Interaction
       private readonly IQuantityTask _quantityTask;
 
       public InteractionTasksForParameter(
-         IInteractionTaskContext interactionTaskContext, 
-         IEditTaskFor<IParameter> editTasks, 
-         IMoBiDimensionFactory dimensionFactory, 
+         IInteractionTaskContext interactionTaskContext,
+         IEditTaskFor<IParameter> editTasks,
+         IMoBiDimensionFactory dimensionFactory,
          IMoBiFormulaTask formulaTask,
          IQuantityTask quantityTask) :
          base(interactionTaskContext, editTasks)
@@ -86,7 +86,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
          var parameter = base.CreateNewEntity(parent)
             .WithParentContainer(parent)
-            .WithDimension(_dimensionFactory.TryGetDimension(_interactionTaskContext.UserSettings.ParameterDefaultDimension))
+            .WithDimension(_dimensionFactory.TryGetDimension(_interactionTaskContext.UserSettings.ParameterDefaultDimension, fallBackDimension: _dimensionFactory.NoDimension))
             .WithMode(parent.DefaultParameterBuildMode())
             .WithGroup(Constants.Groups.MOBI);
 
@@ -112,15 +112,15 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public IMoBiCommand SetDimensionForParameter(IParameter parameter, IDimension newDimension, IBuildingBlock buildingBlock)
       {
-         return new SetParameterDimensionInBuildingBlockCommand(parameter, newDimension, buildingBlock).Run(Context);
+         return new SetParameterDimensionInBuildingBlockCommand(parameter, newDimension, buildingBlock).RunCommand(Context);
       }
 
       public IMoBiCommand ResetRHSFormulaFor(IParameter parameter, IBuildingBlock buildingBlock)
       {
-         if (parameter.RHSFormula==null)
+         if (parameter.RHSFormula == null)
             return new MoBiEmptyCommand();
 
-         return new EditParameterRHSFormulaInBuildingBlockCommand(null, parameter.RHSFormula, parameter, buildingBlock).Run(Context);
+         return new EditParameterRHSFormulaInBuildingBlockCommand(null, parameter.RHSFormula, parameter, buildingBlock).RunCommand(Context);
       }
 
       public IMoBiCommand SetNameForParameter(IParameter parameter, string newName, IBuildingBlock buildingBlock)
@@ -143,10 +143,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (container == null)
             return true;
 
-         if (parameter.IsNamed(Constants.Parameters.VOLUME) && container.Mode == ContainerMode.Physical)
-            return false;
-
-         if (parameter.IsNamed(Constants.Parameters.CONCENTRATION) && container.IsAnImplementationOf<IMoleculeBuilder>())
+         if (parameter.IsNamed(Constants.Parameters.CONCENTRATION) && container.IsAnImplementationOf<MoleculeBuilder>())
             return false;
 
          return true;

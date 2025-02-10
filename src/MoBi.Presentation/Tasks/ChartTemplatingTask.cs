@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Extensions;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Chart.Mappers;
 using OSPSuite.Core.Commands.Core;
@@ -23,7 +24,7 @@ namespace MoBi.Presentation.Tasks
       /// <summary>
       ///    Returns the command that was used when replacing all the templates from a simulation settings
       /// </summary>
-      ICommand ReplaceTemplatesInBuildingBlockCommand(ISimulationSettings simulationSettings, IEnumerable<CurveChartTemplate> curveChartTemplates);
+      ICommand ReplaceTemplatesInBuildingBlockCommand(SimulationSettings simulationSettings, IEnumerable<CurveChartTemplate> curveChartTemplates);
 
       void InitFromTemplate(ICache<DataRepository, IMoBiSimulation> simulations, CurveChart chart, IChartEditorPresenter chartEditorPresenter, CurveChartTemplate chartTemplate, Func<DataColumn, string> curveNameDefinition, bool triggeredManually, bool propogateChartChangeEvent = true);
    }
@@ -42,12 +43,12 @@ namespace MoBi.Presentation.Tasks
 
       public AddChartTemplateToSimulationSettingsCommand AddChartTemplateToSimulationSettings(CurveChartTemplate template, ISimulation withSimulationSettings)
       {
-         return new AddChartTemplateToSimulationSettingsCommand(template, withSimulationSettings as IMoBiSimulation).Run(_context);
+         return new AddChartTemplateToSimulationSettingsCommand(template, withSimulationSettings as IMoBiSimulation).RunCommand(_context);
       }
 
-      public ICommand ReplaceTemplatesInBuildingBlockCommand(ISimulationSettings simulationSettings, IEnumerable<CurveChartTemplate> curveChartTemplates)
+      public ICommand ReplaceTemplatesInBuildingBlockCommand(SimulationSettings simulationSettings, IEnumerable<CurveChartTemplate> curveChartTemplates)
       {
-         return new ReplaceBuildingBlockTemplatesCommand(simulationSettings, curveChartTemplates).Run(_context);
+         return new ReplaceBuildingBlockTemplatesCommand(simulationSettings, curveChartTemplates).RunCommand(_context);
       }
 
       public void InitFromTemplate(ICache<DataRepository, IMoBiSimulation> simulations, CurveChart chart, IChartEditorPresenter chartEditorPresenter, CurveChartTemplate chartTemplate, Func<DataColumn, string> curveNameDefinition, bool triggeredManually, bool propogateChartChangeEvent = true)
@@ -68,7 +69,7 @@ namespace MoBi.Presentation.Tasks
       public override ICommand AddChartTemplateCommand(CurveChartTemplate template, IWithChartTemplates withChartTemplates)
       {
          if (withChartTemplates.IsAnImplementationOf<IMoBiSimulation>())
-            return new AddChartTemplateToSimulationSettingsCommand(template, withChartTemplates.DowncastTo<IMoBiSimulation>()).Run(_context);
+            return new AddChartTemplateToSimulationSettingsCommand(template, withChartTemplates.DowncastTo<IMoBiSimulation>()).RunCommand(_context);
 
          return updateChartTemplates(withChartTemplates, x => x.AddChartTemplate(template));
       }
@@ -76,7 +77,7 @@ namespace MoBi.Presentation.Tasks
       public override ICommand UpdateChartTemplateCommand(CurveChartTemplate curveChartTemplate, IWithChartTemplates withChartTemplates, string templateName)
       {
          if (withChartTemplates.IsAnImplementationOf<IMoBiSimulation>())
-            return new UpdateChartTemplateInSimulationSettingsCommand(curveChartTemplate, withChartTemplates.DowncastTo<IMoBiSimulation>(), templateName).Run(_context);
+            return new UpdateChartTemplateInSimulationSettingsCommand(curveChartTemplate, withChartTemplates.DowncastTo<IMoBiSimulation>(), templateName).RunCommand(_context);
 
          return updateChartTemplates(withChartTemplates, x =>
          {
@@ -89,7 +90,7 @@ namespace MoBi.Presentation.Tasks
       protected override ICommand ReplaceTemplatesCommand(IWithChartTemplates withChartTemplates, IEnumerable<CurveChartTemplate> curveChartTemplates)
       {
          if (withChartTemplates.IsAnImplementationOf<IMoBiSimulation>())
-            return new ReplaceSimulationTemplatesCommand(withChartTemplates.DowncastTo<IMoBiSimulation>(), curveChartTemplates).Run(_context);
+            return new ReplaceSimulationTemplatesCommand(withChartTemplates.DowncastTo<IMoBiSimulation>(), curveChartTemplates).RunCommand(_context);
 
          return updateChartTemplates(withChartTemplates, x =>
          {

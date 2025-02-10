@@ -2,10 +2,10 @@
 using MoBi.Assets;
 using OSPSuite.Core.Commands.Core;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Assets;
+using MoBi.Core.Services;
 
 namespace MoBi.Core.Commands
 {
@@ -15,7 +15,7 @@ namespace MoBi.Core.Commands
       private IReadOnlyCollection<ScaleDivisor> _scaleFactors;
 
       public UpdateMoleculeAmountScaleDivisorsInSimulationCommand(IReadOnlyCollection<ScaleDivisor> scaleFactors, IMoBiSimulation simulation)
-         : base(scaleFactors, simulation)
+         : base(simulation)
       {
          _scaleFactors = scaleFactors;
          _oldScaleFactors = new List<ScaleDivisor>();
@@ -32,10 +32,9 @@ namespace MoBi.Core.Commands
       protected override void DoExecute(IMoBiContext context)
       {
          var containerTask = context.Resolve<IContainerTask>();
-         var msvBuildingBlockSynchronizer = context.Resolve<IQuantitySynchronizer>();
-         var allMoleculeAmounts = containerTask.CacheAllChildren<IMoleculeAmount>(_simulation.Model.Root);
-         var moleculeStartValues = _simulation.BuildConfiguration.MoleculeStartValues;
-
+         var allMoleculeAmounts = containerTask.CacheAllChildren<MoleculeAmount>(_simulation.Model.Root);
+         var changeTracker = context.Resolve<IQuantityValueInSimulationChangeTracker>();
+         
          foreach (var scaleDivisor in _scaleFactors)
          {
             var moleculeAmount = allMoleculeAmounts[scaleDivisor.QuantityPath];
@@ -45,8 +44,7 @@ namespace MoBi.Core.Commands
                continue;
 
             _oldScaleFactors.Add(new ScaleDivisor { QuantityPath = scaleDivisor.QuantityPath, Value = moleculeAmount.ScaleDivisor });
-            moleculeAmount.ScaleDivisor = scaleDivisor.Value;
-            msvBuildingBlockSynchronizer.SynchronizeMoleculeStartValues(moleculeAmount, moleculeStartValues);
+            changeTracker.TrackScaleChange(moleculeAmount, _simulation, x => x.ScaleDivisor = scaleDivisor.Value);
          }
       }
 

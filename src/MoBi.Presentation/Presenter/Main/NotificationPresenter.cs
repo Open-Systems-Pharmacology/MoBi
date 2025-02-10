@@ -3,26 +3,26 @@ using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using MoBi.Assets;
-using OSPSuite.Core.Services;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
-using MoBi.Presentation.Settings;
 using MoBi.Presentation.Mappers;
+using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
-using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Events;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Main;
 using OSPSuite.Presentation.Regions;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
+using static MoBi.Assets.AppConstants;
+using Validation = OSPSuite.Assets.Validation;
 
 namespace MoBi.Presentation.Presenter.Main
 {
@@ -33,6 +33,8 @@ namespace MoBi.Presentation.Presenter.Main
       IListener<FormulaInvalidEvent>,
       IListener<ProjectClosedEvent>,
       IListener<ShowNotificationsEvent>,
+      IListener<ShowProjectConversionNotificationsEvent>,
+      IListener<ClearNotificationsEvent>,
       IListener<RemovedEvent>
    {
       void Toggle(NotificationType typeToToggle);
@@ -77,16 +79,13 @@ namespace MoBi.Presentation.Presenter.Main
          VisibleNotification = _userSettings.VisibleNotification;
       }
 
-      public void ToggleVisibility()
-      {
-         _region.ToggleVisibility();
-      }
+      public void ToggleVisibility() => _region.ToggleVisibility();
 
       public override void Initialize()
       {
          _region = _regionResolver.RegionWithName(RegionNames.NotificationList);
          _region.Add(_view);
-         new[] {NotificationType.Error, NotificationType.Info, NotificationType.Warning}.Each(t => _view.Show(t, isShowing(t)));
+         new[] { NotificationType.Error, NotificationType.Info, NotificationType.Warning }.Each(t => _view.Show(t, isShowing(t)));
          _allNotifications = new NotifyList<NotificationMessageDTO>();
          bindToView();
       }
@@ -104,25 +103,19 @@ namespace MoBi.Presentation.Presenter.Main
          updateCountFor(NotificationType.Info);
       }
 
-      private void updateCountFor(NotificationType notificationType)
-      {
-         _view.SetNotificationCount(notificationType, _allNotifications.Count(x => x.Type == notificationType));
-      }
+      private void updateCountFor(NotificationType notificationType) => _view.SetNotificationCount(notificationType, _allNotifications.Count(x => x.Type == notificationType));
 
-      public bool ShouldShow(NotificationMessageDTO notification)
-      {
-         return notification.Type.Is(VisibleNotification);
-      }
+      public bool ShouldShow(NotificationMessageDTO notification) => notification.Type.Is(VisibleNotification);
 
       private bool isPKSimObserverMessage(NotificationMessageDTO notification)
       {
-         if (!notification.Object.IsAnImplementationOf<IObserverBuilder>())
+         if (!notification.Object.IsAnImplementationOf<ObserverBuilder>())
             return false;
 
-         if (AppConstants.DefaultNames.PKSimStaticObservers.Contains(notification.ObjectName))
+         if (DefaultNames.PKSimStaticObservers.Contains(notification.ObjectName))
             return true;
 
-         return AppConstants.DefaultNames.PKSimDynamicObservers.Any(notification.ObjectName.StartsWith);
+         return DefaultNames.PKSimDynamicObservers.Any(notification.ObjectName.StartsWith);
       }
 
       public void ClearNotifications(MessageOrigin messageOrigin)
@@ -133,58 +126,51 @@ namespace MoBi.Presentation.Presenter.Main
          bindToView();
       }
 
-      public void ClearAllNotification()
-      {
-         ClearNotifications(MessageOrigin.All);
-      }
+      public void ClearAllNotification() => ClearNotifications(MessageOrigin.All);
 
       public void GoToObject(NotificationMessageDTO notificationMessage)
       {
-         if (notificationMessage == null) return;
+         if (notificationMessage == null)
+            return;
+
          _applicationController.Select(notificationMessage.Object, notificationMessage.BuildingBlock, _context.HistoryManager);
       }
 
       public void ExportToFile()
       {
-         var file = _dialogCreator.AskForFileToSave(AppConstants.Captions.SaveLogToFile, Constants.Filter.CSV_FILE_FILTER, Constants.DirectoryKey.REPORT);
+         var file = _dialogCreator.AskForFileToSave(Captions.SaveLogToFile, Constants.Filter.CSV_FILE_FILTER, Constants.DirectoryKey.REPORT);
          if (string.IsNullOrEmpty(file)) return;
 
          var dataTable = new DataTable();
 
-         dataTable.Columns.Add(AppConstants.Captions.Type, typeof (string));
-         dataTable.Columns.Add(AppConstants.Captions.ObjectType, typeof (string));
-         dataTable.Columns.Add(AppConstants.Captions.ObjectName, typeof (string));
-         dataTable.Columns.Add(AppConstants.Captions.BuildingBlockType, typeof (string));
-         dataTable.Columns.Add(AppConstants.Captions.BuildingBlockName, typeof (string));
-         dataTable.Columns.Add(AppConstants.Captions.Message, typeof (string));
-         dataTable.Columns.Add(AppConstants.Captions.MessageOrigin, typeof(string));
+         dataTable.Columns.Add(Captions.Type, typeof(string));
+         dataTable.Columns.Add(Captions.ObjectType, typeof(string));
+         dataTable.Columns.Add(Captions.ObjectName, typeof(string));
+         dataTable.Columns.Add(Captions.BuildingBlockType, typeof(string));
+         dataTable.Columns.Add(Captions.BuildingBlockName, typeof(string));
+         dataTable.Columns.Add(Captions.Message, typeof(string));
+         dataTable.Columns.Add(Captions.MessageOrigin, typeof(string));
 
 
          foreach (var message in _allNotifications.Where(x => isShowing(x.Type)))
          {
             var newRow = dataTable.NewRow();
-            newRow[AppConstants.Captions.Type] = message.Type;
-            newRow[AppConstants.Captions.ObjectType] = message.ObjectType;
-            newRow[AppConstants.Captions.ObjectName] = message.ObjectName;
-            newRow[AppConstants.Captions.BuildingBlockType] = message.BuildingBlockType;
-            newRow[AppConstants.Captions.BuildingBlockName] = message.BuildingBlockName;
-            newRow[AppConstants.Captions.Message] = message.NotificationMessage + Environment.NewLine + message.Details.ToString(Environment.NewLine);
-            newRow[AppConstants.Captions.MessageOrigin] = Enum.GetName(typeof(MessageOrigin), message.MessageOrigin);
+            newRow[Captions.Type] = message.Type;
+            newRow[Captions.ObjectType] = message.ObjectType;
+            newRow[Captions.ObjectName] = message.ObjectName;
+            newRow[Captions.BuildingBlockType] = message.BuildingBlockType;
+            newRow[Captions.BuildingBlockName] = message.BuildingBlockName;
+            newRow[Captions.Message] = message.NotificationMessage + Environment.NewLine + message.Details.ToString(Environment.NewLine);
+            newRow[Captions.MessageOrigin] = Enum.GetName(typeof(MessageOrigin), message.MessageOrigin);
             dataTable.Rows.Add(newRow);
          }
 
          dataTable.ExportToCSV(file);
       }
 
-      private bool isShowing(NotificationType notificationType)
-      {
-         return VisibleNotification.Is(notificationType);
-      }
+      private bool isShowing(NotificationType notificationType) => VisibleNotification.Is(notificationType);
 
-      public void Toggle(NotificationType typeToToggle)
-      {
-         VisibleNotification = VisibleNotification ^ typeToToggle;
-      }
+      public void Toggle(NotificationType typeToToggle) => VisibleNotification ^= typeToToggle;
 
       public void Handle(ShowValidationResultsEvent validationResultsEvent)
       {
@@ -195,7 +181,6 @@ namespace MoBi.Presentation.Presenter.Main
       {
          _allNotifications = new NotifyList<NotificationMessageDTO>(_allNotifications);
 
-     
          notificationMessages.Where(notificationIsVisible).Each(m =>
          {
             if (!_allNotifications.Contains(m))
@@ -207,7 +192,25 @@ namespace MoBi.Presentation.Presenter.Main
 
       private bool notificationIsVisible(NotificationMessageDTO message)
       {
-         return _userSettings.ShowPKSimObserverMessages || !isPKSimObserverMessage(message);
+         if (isUnresolvedEndosomeForInitialConditionMessage(message))
+            return _userSettings.ShowUnresolvedEndosomeMessagesForInitialConditions;
+
+         if (isPKSimObserverMessage(message))
+            return _userSettings.ShowPKSimObserverMessages;
+
+         return true;
+      }
+
+      private bool isUnresolvedEndosomeForInitialConditionMessage(NotificationMessageDTO message)
+      {
+         if (!(message.Object is InitialCondition initialCondition))
+            return false;
+
+         // Only applies to endosome containers. Don't ignore other unresolved containers
+         if (!string.Equals(initialCondition.ContainerPath.Last(), Endosome))
+            return false;
+
+         return message.NotificationMessage.Message.Equals(Validation.StartValueDefinedForContainerThatCannotBeResolved(message.ObjectName, initialCondition.ContainerPath));
       }
 
       public void Handle(FormulaValidEvent eventToHandle)
@@ -246,9 +249,23 @@ namespace MoBi.Presentation.Presenter.Main
          contextMenu.Show(_view, popupLocation);
       }
 
+      public void Handle(ShowProjectConversionNotificationsEvent eventToHandle)
+      {
+         Handle(eventToHandle as ShowNotificationsEvent);
+         notifyForUntraceableChanges(eventToHandle.NotificationMessages.Select(x => x.Object as MoBiSimulation).Where(x => x != null && x.HasUntraceableChanges).Distinct().ToList());
+      }
+
       public void Handle(ShowNotificationsEvent eventToHandle)
       {
          updateNotificationWith(eventToHandle.NotificationMessages.Select(x => new NotificationMessageDTO(x)));
+      }
+
+      private void notifyForUntraceableChanges(List<MoBiSimulation> simulationsWithUntraceableChanges)
+      {
+         if (!simulationsWithUntraceableChanges.Any())
+            return;
+
+         _dialogCreator.MessageBoxInfo(Captions.ProjectConversionResultedInSimulationsWithUntraceableChanges(simulationsWithUntraceableChanges.AllNames()));
       }
 
       public void Handle(RemovedEvent eventToHandle)
@@ -261,28 +278,32 @@ namespace MoBi.Presentation.Presenter.Main
       {
          return _allNotifications.Where(n => possibleObjects.Contains(n.Object) || possibleObjects.Contains(n.BuildingBlock)).ToList();
       }
+
+      public void Handle(ClearNotificationsEvent eventToHandle)
+      {
+         ClearNotifications(eventToHandle.MessageOrigin);
+      }
    }
 
    public class NotificationMessageDTO : IViewItem
    {
-      private readonly NotificationMessage _notificationMessage;
-
       public NotificationMessageDTO(NotificationMessage notificationMessage)
       {
-         _notificationMessage = notificationMessage;
+         NotificationMessage = notificationMessage;
       }
 
-      public Image Image => _notificationMessage.Image.ToImage();
-      public NotificationType Type => _notificationMessage.Type;
-      public NotificationMessage NotificationMessage => _notificationMessage;
-      public IObjectBase Object => _notificationMessage.Object;
-      public IObjectBase BuildingBlock => _notificationMessage.BuildingBlock;
-      public string ObjectType => _notificationMessage.ObjectType;
-      public string ObjectName => _notificationMessage.ObjectName;
-      public string BuildingBlockType => _notificationMessage.BuildingBlockType;
-      public string BuildingBlockName => _notificationMessage.BuildingBlockName;
-      public MessageOrigin MessageOrigin => _notificationMessage.MessageOrigin;
-      public IEnumerable<string> Details => _notificationMessage.Details;
+      public Image Image => NotificationMessage.Image.ToImage();
+      public NotificationType Type => NotificationMessage.Type;
+      public NotificationMessage NotificationMessage { get; }
+
+      public IObjectBase Object => NotificationMessage.Object;
+      public IObjectBase BuildingBlock => NotificationMessage.BuildingBlock;
+      public string ObjectType => NotificationMessage.ObjectType;
+      public string ObjectName => NotificationMessage.ObjectName;
+      public string BuildingBlockType => NotificationMessage.BuildingBlockType;
+      public string BuildingBlockName => NotificationMessage.BuildingBlockName;
+      public MessageOrigin MessageOrigin => NotificationMessage.MessageOrigin;
+      public IEnumerable<string> Details => NotificationMessage.Details;
 
       public override int GetHashCode()
       {

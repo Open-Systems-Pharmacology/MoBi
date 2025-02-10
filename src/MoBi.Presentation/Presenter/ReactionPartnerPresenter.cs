@@ -4,6 +4,7 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Extensions;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
@@ -42,16 +43,16 @@ namespace MoBi.Presentation.Presenter
       public void SetStoichiometricCoefficient(double newCoefficient, ReactionPartnerBuilderDTO reactionPartnerDTO)
       {
          var partner = reactionPartnerDTO.PartnerBuilder;
-         AddCommand(new EditReactionPartnerStoichiometricCoefficientCommand(newCoefficient, _reactionBuilderDTO.ReactionBuilder, partner, ReactionBuildingBlock).Run(_context));
+         AddCommand(new EditReactionPartnerStoichiometricCoefficientCommand(newCoefficient, _reactionBuilderDTO.ReactionBuilder, partner, ReactionBuildingBlock).RunCommand(_context));
       }
 
       public void SetPartnerMoleculeName(string newMoleculeName, ReactionPartnerBuilderDTO reactionPartnerDTO)
       {
          var partner = reactionPartnerDTO.PartnerBuilder;
-         AddCommand(new EditReactionPartnerMoleculeNameCommand(newMoleculeName, _reactionBuilderDTO.ReactionBuilder, partner, ReactionBuildingBlock).Run(_context));
+         AddCommand(new EditReactionPartnerMoleculeNameCommand(newMoleculeName, _reactionBuilderDTO.ReactionBuilder, partner, ReactionBuildingBlock).RunCommand(_context));
       }
 
-      protected IMoBiReactionBuildingBlock ReactionBuildingBlock => _buildingBlock.DowncastTo<IMoBiReactionBuildingBlock>();
+      protected MoBiReactionBuildingBlock ReactionBuildingBlock => _buildingBlock.DowncastTo<MoBiReactionBuildingBlock>();
 
       public virtual void Edit(ReactionBuilderDTO reactionBuilderDTO, IBuildingBlock buildingBlock)
       {
@@ -67,7 +68,7 @@ namespace MoBi.Presentation.Presenter
       public void AddNewReactionPartnerBuilder()
       {
          var moleculeNames = _reactionBuilderTask.SelectMoleculeNames(ReactionBuildingBlock, ExistingPartners(), _reactionBuilderDTO.Name, PartnerType);
-         moleculeNames.Each(moleculeName => AddCommand(AddCommandFor(moleculeName).Run(_context)));
+         moleculeNames.Each(moleculeName => AddCommand(AddCommandFor(moleculeName).RunCommand(_context)));
       }
 
       public abstract string PartnerType { get; }
@@ -78,7 +79,7 @@ namespace MoBi.Presentation.Presenter
 
       public void Remove(TReactionPartnerBuilder reactionPartnerBuilderDTO)
       {
-         AddCommand(RemoveCommandFor(reactionPartnerBuilderDTO).Run(_context));
+         AddCommand(RemoveCommandFor(reactionPartnerBuilderDTO).RunCommand(_context));
       }
 
       protected abstract ICommand<IMoBiContext> RemoveCommandFor(TReactionPartnerBuilder reactionPartnerBuilderDTO);

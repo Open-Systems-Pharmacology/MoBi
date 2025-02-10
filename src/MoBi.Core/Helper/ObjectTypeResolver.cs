@@ -28,48 +28,50 @@ namespace MoBi.Core.Helper
       public ObjectTypeResolver()
       {
          _typeCache = new Cache<Type, string>();
-         addToCache<IMoleculeBuildingBlock>(ObjectTypes.MoleculeBuildingBlock);
-         addToCache<IReactionBuildingBlock>(ObjectTypes.ReactionBuildingBlock);
-         addToCache<ISpatialStructure>(ObjectTypes.SpatialStructure);
-         addToCache<IPassiveTransportBuildingBlock>(ObjectTypes.PassiveTransportBuildingBlock);
-         addToCache<IObserverBuildingBlock>(ObjectTypes.ObserverBuildingBlock);
-         addToCache<IEventGroupBuildingBlock>(ObjectTypes.EventGroupBuildingBlock);
-         addToCache<IMoleculeStartValuesBuildingBlock>(ObjectTypes.MoleculeStartValuesBuildingBlock);
-         addToCache<IParameterStartValuesBuildingBlock>(ObjectTypes.ParameterStartValuesBuildingBlock);
-         addToCache<IMoleculeBuilder>(ObjectTypes.Molecule);
+         addToCache<MoleculeBuildingBlock>(ObjectTypes.MoleculeBuildingBlock);
+         addToCache<ReactionBuildingBlock>(ObjectTypes.ReactionBuildingBlock);
+         addToCache<NeighborhoodBuilder>(ObjectTypes.Neighborhood);
+         addToCache<Neighborhood>(ObjectTypes.Neighborhood);
+         addToCache<SpatialStructure>(ObjectTypes.SpatialStructure);
+         addToCache<PassiveTransportBuildingBlock>(ObjectTypes.PassiveTransportBuildingBlock);
+         addToCache<ObserverBuildingBlock>(ObjectTypes.ObserverBuildingBlock);
+         addToCache<EventGroupBuildingBlock>(ObjectTypes.EventGroupBuildingBlock);
+         addToCache<InitialConditionsBuildingBlock>(ObjectTypes.InitialConditionsBuildingBlock);
+         addToCache<ParameterValuesBuildingBlock>(ObjectTypes.ParameterValuesBuildingBlock);
+         addToCache<MoleculeBuilder>(ObjectTypes.Molecule);
          addToCache<TransporterMoleculeContainer>(ObjectTypes.TransporterMoleculeContainer);
-         addToCache<ITransportBuilder>(ObjectTypes.TransportBuilder);
-         addToCache<ITransport>(ObjectTypes.Transport);
+         addToCache<TransportBuilder>(ObjectTypes.TransportBuilder);
+         addToCache<Transport>(ObjectTypes.Transport);
          addToCache<IDistributedParameter>(ObjectTypes.DistributedParameter);
          addToCache<IParameter>(ObjectTypes.Parameter);
-         addToCache<IReactionBuilder>(ObjectTypes.Reaction);
-         addToCache<IAmountObserverBuilder>(ObjectTypes.AmountObserverBuilder);
-         addToCache<IContainerObserverBuilder>(ObjectTypes.ContainerObserverBuilder);
-         addToCache<IApplicationBuilder>(ObjectTypes.Application);
-         addToCache<IEventGroupBuilder>(ObjectTypes.EventGroupBuilder);
-         addToCache<IEventBuilder>(ObjectTypes.EventBuilder);
-         addToCache<IEventAssignmentBuilder>(ObjectTypes.EventAssignmentBuilder);
-         addToCache<IApplicationMoleculeBuilder>(ObjectTypes.ApplicationMoleculeBuilder);
+         addToCache<ReactionBuilder>(ObjectTypes.Reaction);
+         addToCache<AmountObserverBuilder>(ObjectTypes.AmountObserverBuilder);
+         addToCache<ContainerObserverBuilder>(ObjectTypes.ContainerObserverBuilder);
+         addToCache<ApplicationBuilder>(ObjectTypes.Application);
+         addToCache<EventGroupBuilder>(ObjectTypes.EventGroupBuilder);
+         addToCache<EventBuilder>(ObjectTypes.EventBuilder);
+         addToCache<EventAssignmentBuilder>(ObjectTypes.EventAssignmentBuilder);
+         addToCache<ApplicationMoleculeBuilder>(ObjectTypes.ApplicationMoleculeBuilder);
          addToCache<IFormula>(ObjectTypes.Formula);
-         addToCache<IReactionPartnerBuilder>(ObjectTypes.ReactionPartnerBuilder);
+         addToCache<ReactionPartnerBuilder>(ObjectTypes.ReactionPartnerBuilder);
          addToCache<ConstantFormula>(ObjectTypes.ConstantFormula);
          addToCache<ExplicitFormula>(ObjectTypes.ExplicitFormula);
          addToCache<BlackBoxFormula>(ObjectTypes.BlackBoxFormula);
          addToCache<IMoBiSimulation>(ObjectTypes.Simulation);
          addToCache<DataRepository>(ObjectTypes.ObservedData);
-         addToCache<ISimulationSettings>(ObjectTypes.SimulationSettings);
+         addToCache<SimulationSettings>(ObjectTypes.SimulationSettings);
          addToCache<CurveChartTemplate>(ObjectTypes.ChartTemplate);
-         addToCache<IMoleculeStartValue>(ObjectTypes.MoleculeStartValue);
-         addToCache<IParameterStartValue>(ObjectTypes.ParameterStartValue);
-         addToCache<IObserverBuilder>(ObjectTypes.ObserverBuilder);
+         addToCache<InitialCondition>(ObjectTypes.InitialCondition);
+         addToCache<ParameterValue>(ObjectTypes.ParameterValue);
+         addToCache<ObserverBuilder>(ObjectTypes.ObserverBuilder);
          addToCache<TimePath>(ObjectTypes.Reference);
          addToCache<ObjectPath>(ObjectTypes.Reference);
          addToCache<ObjectReference>(ObjectTypes.Reference);
          addToCache<IMoBiHistoryManager>(ObjectTypes.History);
-         addToCache<IMoBiProject>(ObjectTypes.Project);
+         addToCache<MoBiProject>(ObjectTypes.Project);
          addToCache<IDiagramModel>(ObjectTypes.DiagramModel);
          addToCache<IContainer>(ObjectTypes.Container);
-         addToCache<IFormulaUsablePath>(ObjectTypes.FormulaUsablePath);
+         addToCache<FormulaUsablePath>(ObjectTypes.FormulaUsablePath);
          addToCache<ParameterIdentificationCovarianceMatrix>(Captions.ParameterIdentification.CovarianceMatrix);
          addToCache<ParameterIdentificationCorrelationMatrix>(Captions.ParameterIdentification.CorrelationMatrix);
          addToCache<ParameterIdentificationResidualHistogram>(Captions.ParameterIdentification.ResidualHistogramAnalysis);
@@ -95,7 +97,7 @@ namespace MoBi.Core.Helper
          if (item.IsAnImplementationOf<IEnumerable<DataRepository>>())
             return AppConstants.Captions.ListOf(ObjectTypes.ObservedData);
 
-         if (item.IsAnImplementationOf<IEnumerable<IBuildingBlock>>())
+         if (!item.IsAnImplementationOf<Module>() && item.IsAnImplementationOf<IEnumerable<IBuildingBlock>>())
          {
             var col = item.DowncastTo<IEnumerable<IBuildingBlock>>().ToList();
             if (col.Any())

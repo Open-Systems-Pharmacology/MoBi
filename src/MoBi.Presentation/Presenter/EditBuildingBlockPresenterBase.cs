@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Linq;
 using MoBi.Core.Events;
 using MoBi.Presentation.Views;
@@ -17,8 +17,8 @@ namespace MoBi.Presentation.Presenter
       IListener<EntitySelectedEvent>
       where TView : IView<TPresenter>, IEditBuildingBlockBaseView
       where TPresenter : IPresenter, ISingleStartPresenter
-      where TBuildingBlock : IBuildingBlock<TBuilder>
-      where TBuilder : class, IObjectBase
+      where TBuildingBlock : IBuildingBlock, IEnumerable<TBuilder>
+      where TBuilder : class
    {
       private readonly IFormulaCachePresenter _formulaCachePresenter;
 
@@ -43,12 +43,12 @@ namespace MoBi.Presentation.Presenter
 
       protected TBuildingBlock BuildingBlock => Subject.DowncastTo<TBuildingBlock>();
 
-      protected virtual Tuple<bool, IObjectBase> SpecificCanHandle(IObjectBase selectedObject)
+      protected virtual (bool canHandle, IContainer containerObject) SpecificCanHandle(EntitySelectedEvent entitySelectedEvent)
       {
-         return new Tuple<bool, IObjectBase>(false, selectedObject);
+         return (false, null);
       }
 
-      protected virtual void EnsureItemsVisibility(IObjectBase parentObject, IParameter parameter = null)
+      protected virtual void EnsureItemsVisibility(IContainer container, IParameter parameter = null)
       {
          /*nothing to do here*/
       }
@@ -58,11 +58,10 @@ namespace MoBi.Presentation.Presenter
          _view.ShowDefault();
       }
 
-      private void selectObjectAndParent(IObjectBase parentObject, IObjectBase selectedObject)
+      private void selectObjectAndContainer(IContainer containerObject, IObjectBase selectedObject)
       {
          _view.Display();
-         var formula = selectedObject as IFormula;
-         if (formula != null)
+         if (selectedObject is IFormula formula)
          {
             _view.ShowFormulas();
             _formulaCachePresenter.Select(formula);
@@ -70,44 +69,42 @@ namespace MoBi.Presentation.Presenter
          }
 
          _view.ShowDefault();
-         if (selectedObject.IsAnImplementationOf<IApplicationMoleculeBuilder>())
+         if (selectedObject.IsAnImplementationOf<ApplicationMoleculeBuilder>())
          {
             return;
          }
 
-         var builder = selectedObject as TBuilder;
-         if (builder != null)
+         if (selectedObject is TBuilder builder)
          {
             SelectBuilder(builder);
             return;
          }
 
-         EnsureItemsVisibility(parentObject, selectedObject as IParameter);
+         EnsureItemsVisibility(containerObject, selectedObject as IParameter);
       }
 
       public void Handle(EntitySelectedEvent eventToHandle)
       {
-         var handled = CanHandle(eventToHandle.ObjectBase);
-         if (!handled.Item1) return;
-
-         selectObjectAndParent(handled.Item2, eventToHandle.ObjectBase);
+         var (canHandle, containerObject) = CanHandle(eventToHandle);
+         if (!canHandle)
+            return;
+         
+         selectObjectAndContainer(containerObject, eventToHandle.ObjectBase);
       }
 
-      internal virtual Tuple<bool, IObjectBase> CanHandle(IObjectBase selectedObject)
+      internal virtual (bool canHandle, IContainer containerObject) CanHandle(EntitySelectedEvent entitySelectedEvent)
       {
-         var formula = selectedObject as IFormula;
-         if (formula != null)
-            return new Tuple<bool, IObjectBase>(BuildingBlock.FormulaCache.Contains(formula), formula);
+         var selectedObject = entitySelectedEvent.ObjectBase;
+         if (selectedObject is IFormula formula)
+            return (BuildingBlock.FormulaCache.Contains(formula), null);
 
-         var parameter = selectedObject as IParameter;
-         if (parameter != null)
-            return new Tuple<bool, IObjectBase>(buildingBlockContains(parameter.RootContainer as TBuilder), parameter.ParentContainer);
+         if (selectedObject is IParameter parameter)
+            return (buildingBlockContains(parameter.RootContainer as TBuilder), parameter.ParentContainer);
 
-         var builder = selectedObject as TBuilder;
-         if (builder != null)
-            return new Tuple<bool, IObjectBase>(BuildingBlock.Contains(builder), builder);
+         if (selectedObject is TBuilder builder)
+            return (BuildingBlock.Contains(builder), null);
 
-         return SpecificCanHandle(selectedObject);
+         return SpecificCanHandle(entitySelectedEvent);
       }
 
       private bool buildingBlockContains(TBuilder builder)

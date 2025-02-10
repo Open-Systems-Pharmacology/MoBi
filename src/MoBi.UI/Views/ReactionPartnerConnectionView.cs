@@ -1,10 +1,9 @@
 using MoBi.Assets;
+using MoBi.Presentation.DTO;
+using MoBi.Presentation.Views;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.UI;
-using MoBi.Presentation.DTO;
-using MoBi.Presentation.Views;
 using OSPSuite.UI.Services;
 using OSPSuite.UI.Views;
 
@@ -20,7 +19,7 @@ namespace MoBi.UI.Views
       {
          _gridBinder.Bind(item => item.MoleculeName)
             .AsReadOnly()
-            .WithCaption(AppConstants.Captions.MoleculeNames)
+            .WithCaption(AppConstants.Captions.MoleculeName)
             .OnValueUpdating += onMoleculeNameSet;
 
          _gridBinder.Bind(item => item.StoichiometricCoefficient)

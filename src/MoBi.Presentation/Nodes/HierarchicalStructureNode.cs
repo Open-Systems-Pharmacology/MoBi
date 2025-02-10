@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using OSPSuite.Presentation.Nodes;
-using OSPSuite.Utility.Extensions;
 using MoBi.Presentation.DTO;
+using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters.Nodes;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Nodes
 {
-   public class HierarchicalStructureNode : ObjectWithIdAndNameNode<IObjectBaseDTO>
+   public class HierarchicalStructureNode : ObjectWithIdAndNameNode<ObjectBaseDTO>
    {
       private bool _childrenLoaded;
-      public Func<IObjectBaseDTO, IEnumerable<ITreeNode>> GetChildren { get; set; }
+      public Func<ObjectBaseDTO, IEnumerable<ITreeNode>> GetChildren { get; set; }
 
-      public HierarchicalStructureNode(IObjectBaseDTO objectBaseDTO) : base(objectBaseDTO)
+      public HierarchicalStructureNode(ObjectBaseDTO objectBaseDTO) : base(objectBaseDTO)
       {
          _childrenLoaded = false;
       }
@@ -23,10 +23,13 @@ namespace MoBi.Presentation.Nodes
          {
             if (!_childrenLoaded)
             {
+               //remove all children before adding new ones
+               DeleteChildren();
                var children = GetChildren(Tag);
                children.Each(AddChild);
                _childrenLoaded = true;
             }
+
             return base.Children;
          }
       }

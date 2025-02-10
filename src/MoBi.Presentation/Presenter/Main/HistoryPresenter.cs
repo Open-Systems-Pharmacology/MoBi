@@ -3,16 +3,15 @@ using MoBi.Assets;
 using OSPSuite.Utility.Events;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
+using MoBi.Core.Extensions;
 using OSPSuite.Core;
 using OSPSuite.Core.Commands;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters.Commands;
 using OSPSuite.Presentation.Presenters.Main;
 using OSPSuite.Presentation.Regions;
 using OSPSuite.Presentation.Views;
-using OSPSuite.Assets;
 
 namespace MoBi.Presentation.Presenter.Main
 {
@@ -62,10 +61,10 @@ namespace MoBi.Presentation.Presenter.Main
 
       public void Handle(ProjectLoadedEvent eventToHandle)
       {
-         refrehHistory();
+         refreshHistory();
       }
 
-      private void refrehHistory()
+      private void refreshHistory()
       {
          _historyBrowserPresenter.HistoryManager = _context.HistoryManager;
          _historyBrowserPresenter.UpdateHistory();
@@ -76,19 +75,13 @@ namespace MoBi.Presentation.Presenter.Main
          //nothing to do
       }
 
-      public bool CanClose
-      {
-         get { return true; }
-      }
+      public bool CanClose => true;
 
-      public IView BaseView
-      {
-         get { return null; }
-      }
+      public IView BaseView => null;
 
       public void Handle(ProjectClosedEvent eventToHandle)
       {
-         refrehHistory();
+         refreshHistory();
       }
 
       public void ReleaseFrom(IEventPublisher eventPublisher)
@@ -108,7 +101,7 @@ namespace MoBi.Presentation.Presenter.Main
             Description = AppConstants.Commands.ObjectConvertedCommand(objectName, objectType, fromVersion.VersionDisplay, _applicationConfiguration.Version),
          };
 
-         command.Run(_context);
+         command.RunCommand(_context);
          _context.AddToHistory(command);
       }
    }

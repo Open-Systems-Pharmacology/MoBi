@@ -43,26 +43,26 @@ namespace MoBi.Core.Service
    internal class When_asking_building_block_retriever_to_get_a_buiding_block_for_an_objectbase : concern_for_BuildingBlockRetriever
    {
       private IList<IBuildingBlock> _returnedBuildingBlocks;
-      private IReactionBuilder _childReactionBuilder;
+      private ReactionBuilder _childReactionBuilder;
 
-      private IReactionBuildingBlock _reactionBuildingBlock;
-      private IMoleculeBuilder _moleculeBuilder;
-      private IMoleculeBuildingBlock _moleculeBuildingBlock;
-      private IObserverBuilder _obseverBuilder;
-      private IObserverBuildingBlock _observerBuildingBlock;
-      private ITransportBuilder _passiveTranportBuilder;
-      private IPassiveTransportBuildingBlock _passiveTranportBuildingBlock;
-      private IApplicationBuilder _applicationBuilder;
-      private IEventGroupBuildingBlock _eventGroupBuildingBlock;
+      private ReactionBuildingBlock _reactionBuildingBlock;
+      private MoleculeBuilder _moleculeBuilder;
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
+      private ObserverBuilder _observerBuilder;
+      private ObserverBuildingBlock _observerBuildingBlock;
+      private TransportBuilder _passiveTransportBuilder;
+      private PassiveTransportBuildingBlock _passiveTransportBuildingBlock;
+      private ApplicationBuilder _applicationBuilder;
+      private EventGroupBuildingBlock _eventGroupBuildingBlock;
       private IParameter _parameter;
-      private IMoBiSpatialStructure _spatialStructure;
+      private MoBiSpatialStructure _spatialStructure;
       private IObjectBaseFactory _objectBaseFactory;
       private IFormula _formula;
-      private ParameterStartValue _parameterStartValue;
-      private ParameterStartValuesBuildingBlock _parameterStartValueBuildingBlock;
-      private MoleculeStartValue _moleculeStartValue;
-      private MoleculeStartValuesBuildingBlock _moleculeStartValuesBuildingBlock;
-      private IParameterFactory _parmaeterFactory;
+      private ParameterValue _parameterValue;
+      private ParameterValuesBuildingBlock _parameterValuesBuildingBlock;
+      private InitialCondition _initialCondition;
+      private InitialConditionsBuildingBlock _initialConditionsBuildingBlock;
+      private IParameterFactory _parameterFactory;
 
       protected override void Context()
       {
@@ -74,12 +74,12 @@ namespace MoBi.Core.Service
          _moleculeBuilder = new MoleculeBuilder();
          _moleculeBuildingBlock = new MoleculeBuildingBlock() { _moleculeBuilder };
          _allBuildingBlocks.Add(_moleculeBuildingBlock);
-         _obseverBuilder = new ObserverBuilder();
-         _observerBuildingBlock = new ObserverBuildingBlock() { _obseverBuilder };
+         _observerBuilder = new ObserverBuilder();
+         _observerBuildingBlock = new ObserverBuildingBlock() { _observerBuilder };
          _allBuildingBlocks.Add(_observerBuildingBlock);
-         _passiveTranportBuilder = new TransportBuilder();
-         _passiveTranportBuildingBlock = new PassiveTransportBuildingBlock() { _passiveTranportBuilder };
-         _allBuildingBlocks.Add(_passiveTranportBuildingBlock);
+         _passiveTransportBuilder = new TransportBuilder();
+         _passiveTransportBuildingBlock = new PassiveTransportBuildingBlock() { _passiveTransportBuilder };
+         _allBuildingBlocks.Add(_passiveTransportBuildingBlock);
          _applicationBuilder = new ApplicationBuilder();
          _eventGroupBuildingBlock = new EventGroupBuildingBlock() { _applicationBuilder };
          _allBuildingBlocks.Add(_eventGroupBuildingBlock);
@@ -87,63 +87,63 @@ namespace MoBi.Core.Service
          var container = new Container().WithName("Cont");
          container.Add(_parameter);
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
-         _parmaeterFactory = A.Fake<IParameterFactory>();
+         _parameterFactory = A.Fake<IParameterFactory>();
          A.CallTo(() => _objectBaseFactory.Create<IContainer>()).Returns(A.Fake<IContainer>());
-         A.CallTo(() => _objectBaseFactory.Create<IMoBiSpatialStructure>()).Returns(new MoBiSpatialStructure());
+         A.CallTo(() => _objectBaseFactory.Create<MoBiSpatialStructure>()).Returns(new MoBiSpatialStructure());
          var diagramManagerFactory = A.Fake<IDiagramManagerFactory>();
-         _spatialStructure = new MoBiSpatialStructureFactory(_objectBaseFactory, _parmaeterFactory, A.Fake<IconRepository>(), diagramManagerFactory).Create().DowncastTo<IMoBiSpatialStructure>();
+         _spatialStructure = new MoBiSpatialStructureFactory(_objectBaseFactory, _parameterFactory, A.Fake<IconRepository>(), diagramManagerFactory).Create().DowncastTo<MoBiSpatialStructure>();
          _spatialStructure.AddTopContainer(container);
          _allBuildingBlocks.Add(_spatialStructure);
          _formula = new ExplicitFormula();
          _moleculeBuildingBlock.AddFormula(_formula);
-         _parameterStartValue = new ParameterStartValue { Path = new ObjectPath { "test" }, StartValue = 1, Dimension = A.Fake<IDimension>() };
-         _parameterStartValueBuildingBlock = new ParameterStartValuesBuildingBlock() { _parameterStartValue };
-         _allBuildingBlocks.Add(_parameterStartValueBuildingBlock);
-         _moleculeStartValue = new MoleculeStartValue { ContainerPath = new ObjectPath { "test" }, Name = "drug" };
-         _moleculeStartValuesBuildingBlock = new MoleculeStartValuesBuildingBlock() { _moleculeStartValue };
-         _allBuildingBlocks.Add(_moleculeStartValuesBuildingBlock);
+         _parameterValue = new ParameterValue { Path = new ObjectPath { "test" }, Value = 1, Dimension = A.Fake<IDimension>() };
+         _parameterValuesBuildingBlock = new ParameterValuesBuildingBlock { _parameterValue };
+         _allBuildingBlocks.Add(_parameterValuesBuildingBlock);
+         _initialCondition = new InitialCondition { ContainerPath = new ObjectPath { "test" }, Name = "drug" };
+         _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock() { _initialCondition };
+         _allBuildingBlocks.Add(_initialConditionsBuildingBlock);
       }
 
       protected override void Because()
       {
          _returnedBuildingBlocks.Add(sut.GetBuildingBlockFor(_childReactionBuilder, null));
          _returnedBuildingBlocks.Add(sut.GetBuildingBlockFor(_moleculeBuilder, null));
-         _returnedBuildingBlocks.Add(sut.GetBuildingBlockFor(_obseverBuilder, null));
-         _returnedBuildingBlocks.Add(sut.GetBuildingBlockFor(_passiveTranportBuilder, null));
+         _returnedBuildingBlocks.Add(sut.GetBuildingBlockFor(_observerBuilder, null));
+         _returnedBuildingBlocks.Add(sut.GetBuildingBlockFor(_passiveTransportBuilder, null));
          _returnedBuildingBlocks.Add(sut.GetBuildingBlockFor(_applicationBuilder, null));
          _returnedBuildingBlocks.Add(sut.GetBuildingBlockFor(_parameter, null));
          _returnedBuildingBlocks.Add(sut.GetBuildingBlockFor(_formula, null));
-         _returnedBuildingBlocks.Add(sut.GetBuildingBlockFor(_parameterStartValue, null));
-         _returnedBuildingBlocks.Add(sut.GetBuildingBlockFor(_moleculeStartValue, null));
+         _returnedBuildingBlocks.Add(sut.GetBuildingBlockFor(_parameterValue, null));
+         _returnedBuildingBlocks.Add(sut.GetBuildingBlockFor(_initialCondition, null));
       }
 
       [Observation]
       public void should_return_the_containing_building_block()
       {
-         _returnedBuildingBlocks.ShouldOnlyContainInOrder(_reactionBuildingBlock, _moleculeBuildingBlock, _observerBuildingBlock, _passiveTranportBuildingBlock, _eventGroupBuildingBlock, _spatialStructure, _moleculeBuildingBlock, _parameterStartValueBuildingBlock, _moleculeStartValuesBuildingBlock);
+         _returnedBuildingBlocks.ShouldOnlyContainInOrder(_reactionBuildingBlock, _moleculeBuildingBlock, _observerBuildingBlock, _passiveTransportBuildingBlock, _eventGroupBuildingBlock, _spatialStructure, _moleculeBuildingBlock, _parameterValuesBuildingBlock, _initialConditionsBuildingBlock);
       }
    }
 
    internal class When_asking_building_block_retriever_to_get_a_buiding_block_for_an_parameter : concern_for_BuildingBlockRetriever
    {
       private IList<IBuildingBlock> _returnedBuildingBlocks;
-      private IReactionBuilder _childReactionBuilder;
+      private ReactionBuilder _childReactionBuilder;
 
-      private IReactionBuildingBlock _reactionBuildingBlock;
-      private IMoleculeBuilder _moleculeBuilder;
-      private IMoleculeBuildingBlock _moleculeBuildingBlock;
-      private ITransportBuilder _passiveTranportBuilder;
-      private IPassiveTransportBuildingBlock _passiveTranportBuildingBlock;
-      private IApplicationBuilder _applicationBuilder;
-      private IEventGroupBuildingBlock _eventGroupBuildingBlock;
+      private ReactionBuildingBlock _reactionBuildingBlock;
+      private MoleculeBuilder _moleculeBuilder;
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
+      private TransportBuilder _passiveTranportBuilder;
+      private PassiveTransportBuildingBlock _passiveTranportBuildingBlock;
+      private ApplicationBuilder _applicationBuilder;
+      private EventGroupBuildingBlock _eventGroupBuildingBlock;
       private IParameter _parameter;
-      private IMoBiSpatialStructure _spatialStructure;
+      private MoBiSpatialStructure _spatialStructure;
       private IObjectBaseFactory _objectBaseFactory;
       private IFormula _formula;
       private IParameter _moleculeParameter;
       private Parameter _reactionParameter;
       private Parameter _passiveTransportParameter;
-      private IApplicationBuilder _applicationBuilderParameter;
+      private ApplicationBuilder _applicationBuilderParameter;
       private IParameterFactory _parameterFactory;
 
       protected override void Context()
@@ -176,9 +176,9 @@ namespace MoBi.Core.Service
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
          _parameterFactory = A.Fake<IParameterFactory>();
          A.CallTo(() => _objectBaseFactory.Create<IContainer>()).Returns(new Container());
-         A.CallTo(() => _objectBaseFactory.Create<IMoBiSpatialStructure>()).Returns(new MoBiSpatialStructure());
+         A.CallTo(() => _objectBaseFactory.Create<MoBiSpatialStructure>()).Returns(new MoBiSpatialStructure());
          var diagramManagerFactory = A.Fake<IDiagramManagerFactory>();
-         _spatialStructure = new MoBiSpatialStructureFactory(_objectBaseFactory, _parameterFactory, A.Fake<IIconRepository>(), diagramManagerFactory).Create() as IMoBiSpatialStructure;
+         _spatialStructure = new MoBiSpatialStructureFactory(_objectBaseFactory, _parameterFactory, A.Fake<IIconRepository>(), diagramManagerFactory).Create() as MoBiSpatialStructure;
          _spatialStructure.AddTopContainer(container);
          _allBuildingBlocks.Add(_spatialStructure);
          _formula = new ExplicitFormula();
@@ -206,8 +206,8 @@ namespace MoBi.Core.Service
    public class When_retrieving_the_building_block_for_a_formula_defined_in_a_molecule_start_values : concern_for_BuildingBlockRetriever
    {
       private IFormula _formula;
-      private IMoleculeStartValuesBuildingBlock _moleculeStartValues;
-      private IMoleculeStartValuesBuildingBlock _moleculeStartValuesTemplate;
+      private InitialConditionsBuildingBlock _initialConditions;
+      private InitialConditionsBuildingBlock _initialConditionsTemplate;
       private ExplicitFormula _templateFormula;
 
       protected override void Context()
@@ -215,30 +215,30 @@ namespace MoBi.Core.Service
          base.Context();
          _formula = new ExplicitFormula().WithName("F1").WithId("F11");
          _templateFormula = new ExplicitFormula().WithName("F1").WithId("F12");
-         _moleculeStartValues = new MoleculeStartValuesBuildingBlock().WithName("MSV");
-         _moleculeStartValuesTemplate = new MoleculeStartValuesBuildingBlock().WithName("MSV");
-         _moleculeStartValuesTemplate.AddFormula(_templateFormula);
-         _allBuildingBlocks.Add(_moleculeStartValuesTemplate);
+         _initialConditions = new InitialConditionsBuildingBlock().WithName("MSV");
+         _initialConditionsTemplate = new InitialConditionsBuildingBlock().WithName("MSV");
+         _initialConditionsTemplate.AddFormula(_templateFormula);
+         _allBuildingBlocks.Add(_initialConditionsTemplate);
       }
 
       [Observation]
       public void should_return_the_building_block_with_the_same_name_as_the_given_building_block_in_the_project()
       {
-         sut.GetBuildingBlockFor(_formula, _moleculeStartValues).ShouldBeEqualTo(_moleculeStartValuesTemplate);
+         sut.GetBuildingBlockFor(_formula, _initialConditions).ShouldBeEqualTo(_initialConditionsTemplate);
       }
 
       [Observation]
       public void should_return_null_if_the_building_block_is_not_found_with_the_same_name()
       {
-         _moleculeStartValues.Name = "ANOTHER NAME";
-         sut.GetBuildingBlockFor(_formula, _moleculeStartValues).ShouldBeNull();
+         _initialConditions.Name = "ANOTHER NAME";
+         sut.GetBuildingBlockFor(_formula, _initialConditions).ShouldBeNull();
       }
 
       [Observation]
       public void should_return_null_if_the_building_block_is_found_with_the_same_name_but_the_formula_is_not()
       {
          _formula.Name = "ANOTHER_NAME";
-         sut.GetBuildingBlockFor(_formula, _moleculeStartValues).ShouldBeNull();
+         sut.GetBuildingBlockFor(_formula, _initialConditions).ShouldBeNull();
       }
    }
 }

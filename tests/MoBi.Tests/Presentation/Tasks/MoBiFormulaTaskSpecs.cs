@@ -10,7 +10,7 @@ using MoBi.Core.Helper;
 using MoBi.Core.Services;
 using MoBi.Helpers;
 using MoBi.Presentation.Presenter;
-using OSPSuite.Assets;
+using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
@@ -33,9 +33,9 @@ namespace MoBi.Presentation.Tasks
       protected IBuildingBlock _buildingBlock;
       protected UsingFormulaDecoder _withFormulaDecoder;
       protected IUsingFormula _usingFormulaObject;
-      protected IDialogCreator _dialogCreator;
       protected IQuantityTask _quantityTask;
       protected IEntitiesInBuildingBlockRetriever<IParameter> _parametersInBuildingBlockRetriever;
+      protected IObjectBaseNamingTask _namingTask;
 
       protected override void Context()
       {
@@ -43,14 +43,14 @@ namespace MoBi.Presentation.Tasks
          _buildingBlock = A.Fake<IBuildingBlock>();
          A.CallTo(() => _buildingBlock.FormulaCache).Returns(new FormulaCache());
          _context = A.Fake<IMoBiContext>();
-         _dialogCreator = A.Fake<IDialogCreator>();
          _applicationController = A.Fake<IMoBiApplicationController>();
          _formulaTask = A.Fake<IFormulaTask>();
          _nameCorrector = A.Fake<INameCorrector>();
          _quantityTask = A.Fake<IQuantityTask>();
          _parametersInBuildingBlockRetriever = A.Fake<IEntitiesInBuildingBlockRetriever<IParameter>>();
+         _namingTask = A.Fake<IObjectBaseNamingTask>();
 
-         sut = new MoBiFormulaTask(_context, _applicationController, _formulaTask, _nameCorrector, _dialogCreator, _quantityTask, _parametersInBuildingBlockRetriever);
+         sut = new MoBiFormulaTask(_context, _applicationController, _formulaTask, _nameCorrector, _quantityTask, _parametersInBuildingBlockRetriever, _namingTask);
 
          _usingFormulaObject = A.Fake<IUsingFormula>();
          _usingFormulaObject.Formula = MvExplicitFormula();
@@ -61,7 +61,7 @@ namespace MoBi.Presentation.Tasks
       protected static ExplicitFormula MvExplicitFormula2() => new ExplicitFormula("M/V/V") {Name = "MOverV"};
    }
 
-   public class When_the_formulat_task_is_editing_a_new_formula : concern_for_MoBiFormulaTask
+   public class When_the_formula_task_is_editing_a_new_formula : concern_for_MoBiFormulaTask
    {
       private IParameter _parameter;
       private IFormula _formula;
@@ -111,7 +111,7 @@ namespace MoBi.Presentation.Tasks
          base.Context();
          _formulaDimension = DomainHelperForSpecs.ConcentrationDimension;
          _existingNames = new List<string>();
-         A.CallTo(_dialogCreator).WithReturnType<string>().Returns(null);
+         A.CallTo(_namingTask).WithReturnType<string>().Returns(null);
       }
 
       protected override void Because()
@@ -144,7 +144,7 @@ namespace MoBi.Presentation.Tasks
          base.Context();
          _formulaDimension = DomainHelperForSpecs.ConcentrationDimension;
          _existingNames = new List<string>();
-         A.CallTo(() => _dialogCreator.AskForInput(AppConstants.Captions.NewName, AppConstants.Captions.EnterNewFormulaName, string.Empty, _existingNames, null, null)).Returns("FORMULA");
+         A.CallTo(() => _namingTask.NewName(AppConstants.Captions.NewName, AppConstants.Captions.EnterNewFormulaName, string.Empty, _existingNames, null, null)).Returns("FORMULA");
       }
 
       protected override void Because()
@@ -224,7 +224,7 @@ namespace MoBi.Presentation.Tasks
          tableFormula.XDimension.ShouldBeEqualTo(_timeDimension);
          tableFormula.XName.ShouldBeEqualTo(_timeDimension.DisplayName);
          tableFormula.YName.ShouldBeEqualTo(AppConstants.Captions.DisplayNameYValue);
-         tableFormula.AllPoints().Count().ShouldBeEqualTo(1);
+         tableFormula.AllPoints.Count.ShouldBeEqualTo(1);
       }
 
       [Observation]
@@ -379,7 +379,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_return_the_expected_caption_for_a_transport_builder()
       {
-         sut.GetFormulaCaption(A.Fake<ITransportBuilder>(), ReactionDimensionMode.ConcentrationBased, true).ShouldBeEqualTo(AppConstants.Captions.AmountRightHandSide);
+         sut.GetFormulaCaption(A.Fake<TransportBuilder>(), ReactionDimensionMode.ConcentrationBased, true).ShouldBeEqualTo(AppConstants.Captions.AmountRightHandSide);
       }
 
       [Observation]
@@ -392,13 +392,13 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_return_an_amount_based_caption_for_a_reaction_in_amount_base_mode()
       {
-         sut.GetFormulaCaption(A.Fake<IReactionBuilder>(), ReactionDimensionMode.AmountBased, true).ShouldBeEqualTo(AppConstants.Captions.AmountRightHandSide);
+         sut.GetFormulaCaption(A.Fake<ReactionBuilder>(), ReactionDimensionMode.AmountBased, true).ShouldBeEqualTo(AppConstants.Captions.AmountRightHandSide);
       }
 
       [Observation]
       public void should_return_a_concentration_based_caption_for_a_reaction_in_amount_base_mode()
       {
-         sut.GetFormulaCaption(A.Fake<IReactionBuilder>(), ReactionDimensionMode.ConcentrationBased, false).ShouldBeEqualTo(AppConstants.Captions.ConcentrationRightHandSide);
+         sut.GetFormulaCaption(A.Fake<ReactionBuilder>(), ReactionDimensionMode.ConcentrationBased, false).ShouldBeEqualTo(AppConstants.Captions.ConcentrationRightHandSide);
       }
    }
 

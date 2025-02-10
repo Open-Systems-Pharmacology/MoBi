@@ -4,7 +4,7 @@ using libsbmlcs;
 using MoBi.Core;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
-using OSPSuite.Core.Commands.Core;
+using MoBi.Core.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Descriptors;
@@ -18,9 +18,9 @@ namespace MoBi.Engine.Sbml
    public class EventImporter : SBMLImporter
    {
       internal EventGroupBuildingBlock EventGroupBuildingBlock;
-      private readonly List<IEventAssignment> _eventAssignmentList;
+      private readonly List<EventAssignment> _eventAssignmentList;
 
-      public List<IEventAssignment> EventAssignmentList
+      public List<EventAssignment> EventAssignmentList
       {
          get { return _eventAssignmentList; }
       }
@@ -31,7 +31,7 @@ namespace MoBi.Engine.Sbml
 
       public EventImporter(IObjectPathFactory objectPathFactory, IObjectBaseFactory objectBaseFactory, ASTHandler astHandler, IMoBiContext context) : base(objectPathFactory, objectBaseFactory, astHandler, context)
       {
-         _eventAssignmentList = new List<IEventAssignment>();
+         _eventAssignmentList = new List<EventAssignment>();
          _counter = 0;
       }
 
@@ -114,7 +114,7 @@ namespace MoBi.Engine.Sbml
       {
          if (sbmlEvent.isSetDelay())
          {
-            var msg = new NotificationMessage(_sbmlProject, MessageOrigin.All, null, NotificationType.Warning)
+            var msg = new NotificationMessage(_sbmlModule, MessageOrigin.All, null, NotificationType.Warning)
             {
                Message = SBMLConstants.SBML_FEATURE_NOT_SUPPORTED + ": Delay of Events is not considered."
             };
@@ -122,7 +122,7 @@ namespace MoBi.Engine.Sbml
          }
 
          if (!sbmlEvent.isSetPriority()) return;
-         var msg2 = new NotificationMessage(_sbmlProject, MessageOrigin.All, null, NotificationType.Warning)
+         var msg2 = new NotificationMessage(_sbmlModule, MessageOrigin.All, null, NotificationType.Warning)
          {
             Message = SBMLConstants.SBML_FEATURE_NOT_SUPPORTED + ": Priority of Events is not considered."
          };
@@ -134,7 +134,7 @@ namespace MoBi.Engine.Sbml
       /// </summary>
       internal void CreateCondition(Trigger trigger)
       {
-         var formula = _astHandler.Parse(trigger.getMath(), trigger.getId(), _sbmlProject, _sbmlInformation) ??
+         var formula = _astHandler.Parse(trigger.getMath(), trigger.getId(), _sbmlModule, _sbmlInformation) ??
                        ObjectBaseFactory.Create<ExplicitFormula>().WithFormulaString(String.Empty).WithName(SBMLConstants.DEFAULT_FORMULA_NAME);
          EventBuilder.Formula = formula;
       }
@@ -165,12 +165,12 @@ namespace MoBi.Engine.Sbml
          if (eventAssignment.isSetNotes()) description += eventAssignment.getNotesString();
          if (eventAssignment.isSetSBOTerm()) description += (SBMLConstants.SPACE + eventAssignment.getSBOTerm());
 
-         IEventAssignmentBuilder eab = new EventAssignmentBuilder()
+         EventAssignmentBuilder eab = new EventAssignmentBuilder()
             .WithId(eventAssignment.getId() + SBMLConstants.SPACE + eventAssignment.getName() + SBMLConstants.SPACE + alias)
             .WithName(SBMLConstants.SBML_EVENT_ASSIGNMENT + eventAssignment.getId())
             .WithDescription(description);
 
-         var formula = _astHandler.Parse(eventAssignment.getMath(), eab, assignmentVar, _sbmlProject, _sbmlInformation) ??
+         var formula = _astHandler.Parse(eventAssignment.getMath(), eab, assignmentVar, _sbmlModule, _sbmlInformation) ??
                        ObjectBaseFactory.Create<ExplicitFormula>().WithFormulaString(String.Empty).WithName(SBMLConstants.DEFAULT_FORMULA_NAME);
          eab.Formula = formula;
          EventGroupBuildingBlock.FormulaCache.Add(formula);
@@ -182,7 +182,7 @@ namespace MoBi.Engine.Sbml
       /// </summary>
       public override void AddToProject()
       {
-         _context.HistoryManager.AddCommand(new AddBuildingBlockCommand<IEventGroupBuildingBlock>(EventGroupBuildingBlock).Run(_context));
+         _context.HistoryManager.AddCommand(new AddBuildingBlockToModuleCommand<EventGroupBuildingBlock>(EventGroupBuildingBlock, _sbmlModule).RunCommand(_context));
       }
    }
 }

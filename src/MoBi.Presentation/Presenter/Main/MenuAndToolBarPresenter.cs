@@ -1,27 +1,27 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Visitor;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Presentation.MenusAndBars;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.SensitivityAnalyses;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Journal;
+using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Presenters.Events;
 using OSPSuite.Presentation.Presenters.Main;
 using OSPSuite.Presentation.Repositories;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
-using OSPSuite.Assets;
-using OSPSuite.Presentation.Presenters.Events;
-using System.Collections.Generic;
-using OSPSuite.Core.Services;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Visitor;
 
 namespace MoBi.Presentation.Presenter.Main
 {
@@ -42,7 +42,6 @@ namespace MoBi.Presentation.Presenter.Main
       IListener<SensitivityAnalysisStartedEvent>,
       IListener<SensitivityAnalysisTerminatedEvent>
 
-
    {
    }
 
@@ -55,7 +54,9 @@ namespace MoBi.Presentation.Presenter.Main
       private readonly IButtonGroupRepository _buttonGroupRepository;
 
       private readonly ISkinManager _skinManager;
+
       private readonly IMoBiContext _context;
+
       //cache containing the name of the ribbon category corresponding to a given type.Returns an empty string if not found
       private readonly ICache<Type, string> _dynamicRibbonPageCache = new Cache<Type, string>(t => string.Empty);
       private bool _sensitivityRunning;
@@ -63,7 +64,7 @@ namespace MoBi.Presentation.Presenter.Main
       private readonly IActiveSubjectRetriever _activeSubjectRetriever;
 
       public MenuAndToolBarPresenter(IMenuAndToolBarView view, IMenuBarItemRepository menuBarItemRepository,
-         IButtonGroupRepository buttonGroupRepository, IMRUProvider mruProvider, ISkinManager skinManager, 
+         IButtonGroupRepository buttonGroupRepository, IMRUProvider mruProvider, ISkinManager skinManager,
          IMoBiContext context, IActiveSubjectRetriever activeSubjectRetriever)
          : base(view, menuBarItemRepository, mruProvider)
       {
@@ -78,7 +79,7 @@ namespace MoBi.Presentation.Presenter.Main
       {
          _view.AddApplicationMenu(_buttonGroupRepository.Find(ButtonGroupIds.File));
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.BuildingBlocks), AppConstants.RibbonPages.Modeling);
-         _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.Workflows), AppConstants.RibbonPages.Modeling);
+         _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.ProjectSimulationSettings), AppConstants.RibbonPages.Modeling);
 
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.ParameterIdentification), RibbonPages.ParameterIdentificationAndSensitivity);
          _view.AddPageGroupToPage(_buttonGroupRepository.Find(ButtonGroupIds.SensitivityAnalysis), RibbonPages.ParameterIdentificationAndSensitivity);
@@ -103,44 +104,43 @@ namespace MoBi.Presentation.Presenter.Main
          _view.AddPageHeaderItemLinks(_menuBarItemRepository[MenuBarItemIds.Help]);
       }
 
-      
       private void initializeDynamicPages()
       {
          _view.CreateDynamicPageCategory(AppConstants.RibbonCategories.Molecules, Color.LightGreen);
          _view.CreateDynamicPageCategory(AppConstants.RibbonCategories.Reactions, Color.LightGreen);
-         _view.CreateDynamicPageCategory(AppConstants.RibbonCategories.Organisms, Color.LightGreen);
+         _view.CreateDynamicPageCategory(AppConstants.RibbonCategories.SpatialStructures, Color.LightGreen);
          _view.CreateDynamicPageCategory(AppConstants.RibbonCategories.PassiveTransports, Color.LightGreen);
          _view.CreateDynamicPageCategory(AppConstants.RibbonCategories.Observers, Color.LightGreen);
          _view.CreateDynamicPageCategory(AppConstants.RibbonCategories.Events, Color.LightGreen);
-         _view.CreateDynamicPageCategory(AppConstants.RibbonCategories.MoleculesStartValues, Color.LightGreen);
-         _view.CreateDynamicPageCategory(AppConstants.RibbonCategories.ParameterStartValues, Color.LightGreen);
+         _view.CreateDynamicPageCategory(AppConstants.RibbonCategories.InitialConditions, Color.LightGreen);
+         _view.CreateDynamicPageCategory(AppConstants.RibbonCategories.ParameterValues, Color.LightGreen);
          _view.CreateDynamicPageCategory(AppConstants.RibbonCategories.Simulation, Color.LightGreen);
          _view.CreateDynamicPageCategory(RibbonCategories.ParameterIdentification, Color.LightGreen);
          _view.CreateDynamicPageCategory(RibbonCategories.SensitivityAnalysis, Color.LightGreen);
 
-         _dynamicRibbonPageCache.Add(typeof (IMoleculeBuildingBlock), AppConstants.RibbonCategories.Molecules);
-         _dynamicRibbonPageCache.Add(typeof (IReactionBuildingBlock), AppConstants.RibbonCategories.Reactions);
-         _dynamicRibbonPageCache.Add(typeof (IObserverBuildingBlock), AppConstants.RibbonCategories.Observers);
-         _dynamicRibbonPageCache.Add(typeof (ISpatialStructure), AppConstants.RibbonCategories.Organisms);
+         _dynamicRibbonPageCache.Add(typeof(MoleculeBuildingBlock), AppConstants.RibbonCategories.Molecules);
+         _dynamicRibbonPageCache.Add(typeof(ReactionBuildingBlock), AppConstants.RibbonCategories.Reactions);
+         _dynamicRibbonPageCache.Add(typeof(ObserverBuildingBlock), AppConstants.RibbonCategories.Observers);
+         _dynamicRibbonPageCache.Add(typeof(SpatialStructure), AppConstants.RibbonCategories.SpatialStructures);
 
-         _dynamicRibbonPageCache.Add(typeof (IPassiveTransportBuildingBlock), AppConstants.RibbonCategories.PassiveTransports);
-         _dynamicRibbonPageCache.Add(typeof (IEventGroupBuildingBlock), AppConstants.RibbonCategories.Events);
-         _dynamicRibbonPageCache.Add(typeof (IMoleculeStartValuesBuildingBlock), AppConstants.RibbonCategories.MoleculesStartValues);
-         _dynamicRibbonPageCache.Add(typeof (IParameterStartValuesBuildingBlock), AppConstants.RibbonCategories.ParameterStartValues);
-         _dynamicRibbonPageCache.Add(typeof (IMoBiSimulation), AppConstants.RibbonCategories.Simulation);
+         _dynamicRibbonPageCache.Add(typeof(PassiveTransportBuildingBlock), AppConstants.RibbonCategories.PassiveTransports);
+         _dynamicRibbonPageCache.Add(typeof(EventGroupBuildingBlock), AppConstants.RibbonCategories.Events);
+         _dynamicRibbonPageCache.Add(typeof(InitialConditionsBuildingBlock), AppConstants.RibbonCategories.InitialConditions);
+         _dynamicRibbonPageCache.Add(typeof(ParameterValuesBuildingBlock), AppConstants.RibbonCategories.ParameterValues);
+         _dynamicRibbonPageCache.Add(typeof(IMoBiSimulation), AppConstants.RibbonCategories.Simulation);
          _dynamicRibbonPageCache.Add(typeof(ParameterIdentification), RibbonCategories.ParameterIdentification);
          _dynamicRibbonPageCache.Add(typeof(SensitivityAnalysis), RibbonCategories.SensitivityAnalysis);
 
          _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.AddMolecule), AppConstants.RibbonPages.DynamicMolecules, AppConstants.RibbonCategories.Molecules);
          _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.AddReaction), AppConstants.RibbonPages.DynamicReactions, AppConstants.RibbonCategories.Reactions);
          _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.EditDiagram), AppConstants.RibbonPages.DynamicReactions, AppConstants.RibbonCategories.Reactions);
-         _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.AddOrganism), AppConstants.RibbonPages.DynamicOrganisms, AppConstants.RibbonCategories.Organisms);
-         _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.EditDiagram), AppConstants.RibbonPages.DynamicOrganisms, AppConstants.RibbonCategories.Organisms);
+         _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.AddSpatialStructure), AppConstants.RibbonPages.DynamicSpatialStructures, AppConstants.RibbonCategories.SpatialStructures);
+         _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.EditDiagram), AppConstants.RibbonPages.DynamicSpatialStructures, AppConstants.RibbonCategories.SpatialStructures);
          _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.AddPassiveTransport), AppConstants.RibbonPages.DynamicPassiveTransports, AppConstants.RibbonCategories.PassiveTransports);
          _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.AddObserver), AppConstants.RibbonPages.DynamicObservers, AppConstants.RibbonCategories.Observers);
          _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.AddEvent), AppConstants.RibbonPages.DynamicEvents, AppConstants.RibbonCategories.Events);
-         _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.EditMoleculeStartValues), AppConstants.RibbonPages.DynamicMoleculeStartValues, AppConstants.RibbonCategories.MoleculesStartValues);
-         _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.EditParameterStartValues), AppConstants.RibbonPages.DynamicParameterStartValues, AppConstants.RibbonCategories.ParameterStartValues);
+         _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.EditInitialConditions), AppConstants.RibbonPages.DynamicInitialConditions, AppConstants.RibbonCategories.InitialConditions);
+         _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.EditParameterValues), AppConstants.RibbonPages.DynamicParameterValues, AppConstants.RibbonCategories.ParameterValues);
          _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.Simulation), AppConstants.RibbonPages.DynamicRunSimulation, AppConstants.RibbonCategories.Simulation);
 
          _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.RunParameterIdentification), RibbonPages.RunParameterIdentification, RibbonCategories.ParameterIdentification);
@@ -173,7 +173,7 @@ namespace MoBi.Presentation.Presenter.Main
          _menuBarItemRepository[MenuBarItemIds.NotificationView].Enabled = true;
          _menuBarItemRepository[MenuBarItemIds.ComparisonView].Enabled = true;
          _menuBarItemRepository[MenuBarItemIds.OpenSimulation].Enabled = true;
-         _menuBarItemRepository[MenuBarItemIds.BuildingBlockExplorerView].Enabled = true;
+         _menuBarItemRepository[MenuBarItemIds.ModuleExplorerView].Enabled = true;
          _menuBarItemRepository[MenuBarItemIds.SimulationExplorerView].Enabled = true;
          _menuBarItemRepository[MenuBarItemIds.GarbageCollection].Enabled = true;
          _menuBarItemRepository[MenuBarItemIds.Exit].Enabled = true;
@@ -219,13 +219,12 @@ namespace MoBi.Presentation.Presenter.Main
             _menuBarItemRepository[MenuBarItemIds.ManageProjectDisplayUnits].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.UpdateAllToDisplayUnits].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.NewSimulation].Enabled = enabled;
-            _menuBarItemRepository[MenuBarItemIds.NewEventBB].Enabled = enabled;
-            _menuBarItemRepository[MenuBarItemIds.NewMoleculesBB].Enabled = enabled;
-            _menuBarItemRepository[MenuBarItemIds.NewObserverBB].Enabled = enabled;
-            _menuBarItemRepository[MenuBarItemIds.NewPassiveTransportBB].Enabled = enabled;
-            _menuBarItemRepository[MenuBarItemIds.NewReactionBB].Enabled = enabled;
-            _menuBarItemRepository[MenuBarItemIds.NewSimulationSettingsBB].Enabled = enabled;
-            _menuBarItemRepository[MenuBarItemIds.NewSpatialStructure].Enabled = enabled;
+            _menuBarItemRepository[MenuBarItemIds.NewIndividual].Enabled = enabled;
+            _menuBarItemRepository[MenuBarItemIds.NewExpressionProfile].Enabled = enabled;
+            _menuBarItemRepository[MenuBarItemIds.NewModule].Enabled = enabled;
+            _menuBarItemRepository[MenuBarItemIds.EditProjectSimulationSettings].Enabled = enabled;
+            _menuBarItemRepository[MenuBarItemIds.SaveProjectSimulationSettings].Enabled = enabled;
+            _menuBarItemRepository[MenuBarItemIds.LoadProjectSimulationSettings].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.LoadSimulationIntoProject].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.HistoryReportGroup].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.ExportHistoryToExcel].Enabled = enabled;
@@ -258,14 +257,15 @@ namespace MoBi.Presentation.Presenter.Main
             _menuBarItemRepository[MenuBarItemIds.ZoomIn].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.ZoomOut].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.FitToPage].Enabled = enabled;
+            _menuBarItemRepository[MenuBarItemIds.NewNeighborhood].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.AddObservedData].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.LoadObservedData].Enabled = enabled;
-            _menuBarItemRepository[MenuBarItemIds.MoleculeStartValuesExtend].Enabled = enabled;
-            _menuBarItemRepository[MenuBarItemIds.ParameterStartValuesExtend].Enabled = enabled;
-            _menuBarItemRepository[MenuBarItemIds.Merge].Enabled = enabled;
+            _menuBarItemRepository[MenuBarItemIds.InitialConditionsExtend].Enabled = enabled;
+            _menuBarItemRepository[MenuBarItemIds.ParameterValuesExtend].Enabled = enabled;
+            _menuBarItemRepository[MenuBarItemIds.AddProteinExpression].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.SearchView].Enabled = enabled;
-            _menuBarItemRepository[MenuBarItemIds.NewParameterStartValue].Enabled = enabled;
-            _menuBarItemRepository[MenuBarItemIds.NewMoleculeStartValue].Enabled = enabled;
+            _menuBarItemRepository[MenuBarItemIds.NewParameterValue].Enabled = enabled;
+            _menuBarItemRepository[MenuBarItemIds.NewInitialConditions].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.CreateJournalPage].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.SelectJournal].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.LoadFavorites].Enabled = enabled;
@@ -301,7 +301,7 @@ namespace MoBi.Presentation.Presenter.Main
 
       public void Handle(ScreenActivatedEvent screenActivatedEvent)
       {
-         hideAllDyamicCategories();
+         hideAllDynamicCategories();
 
          var subject = screenActivatedEvent.Presenter.Subject;
          if (subject == null) return;
@@ -317,10 +317,10 @@ namespace MoBi.Presentation.Presenter.Main
       public void Handle(NoActiveScreenEvent eventToHandle)
       {
          enableActiveSimulationItems = false;
-         hideAllDyamicCategories();
+         hideAllDynamicCategories();
       }
 
-      private void hideAllDyamicCategories()
+      private void hideAllDynamicCategories()
       {
          AppConstants.RibbonCategories.AllDynamicCategories()
             .Each(c => _view.SetPageCategoryVisibility(c, visible: false));
@@ -341,7 +341,6 @@ namespace MoBi.Presentation.Presenter.Main
          enableJournalItems = false;
       }
 
-
       private bool enableJournalItems
       {
          set
@@ -354,13 +353,13 @@ namespace MoBi.Presentation.Presenter.Main
 
       public void Visit(ParameterIdentification parameterIdentification)
       {
-         updateParameterIdentifcationItems(parameterIdentification);
+         updateParameterIdentificationItems(parameterIdentification);
       }
 
       public void Handle(ParameterIdentificationStartedEvent parameterIdentificationEvent)
       {
          _runningParameterIdentifications.Add(parameterIdentificationEvent.ParameterIdentification);
-         updateParameterIdentifcationItems(parameterIdentificationEvent.ParameterIdentification);
+         updateParameterIdentificationItems(parameterIdentificationEvent.ParameterIdentification);
       }
 
       public void Handle(ParameterIdentificationTerminatedEvent parameterIdentificationEvent)
@@ -370,10 +369,10 @@ namespace MoBi.Presentation.Presenter.Main
          //only update if selected subject in the actual parameter identification terminated
          var activeSubject = _activeSubjectRetriever.Active<ParameterIdentification>();
          if (Equals(activeSubject, parameterIdentification))
-            updateParameterIdentifcationItems(parameterIdentification);
+            updateParameterIdentificationItems(parameterIdentification);
       }
 
-      private void updateParameterIdentifcationItems(ParameterIdentification parameterIdentification)
+      private void updateParameterIdentificationItems(ParameterIdentification parameterIdentification)
       {
          var parameterIdentificationRunning = _runningParameterIdentifications.Contains(parameterIdentification);
          var hasResult = !parameterIdentificationRunning && parameterIdentification.HasResults;
@@ -394,7 +393,6 @@ namespace MoBi.Presentation.Presenter.Main
       {
          enableActiveSimulationItems = true;
       }
-
 
       public void Handle(SensitivityAnalysisStartedEvent sensitivityAnalysisEvent)
       {

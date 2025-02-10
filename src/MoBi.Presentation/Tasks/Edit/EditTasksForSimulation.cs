@@ -4,6 +4,7 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Extensions;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Commands.Core;
@@ -116,13 +117,12 @@ namespace MoBi.Presentation.Tasks.Edit
 
       public void RenameResults(IMoBiSimulation simulation, DataRepository dataRepository)
       {
-         string newName = _dialogCreator.AskForInput(AppConstants.Dialog.AskForNewName(dataRepository.Name), AppConstants.Captions.NewName,
-            dataRepository.Name, allUsedResultsNameIn(simulation));
+         var newName = _interactionTaskContext.NamingTask.RenameFor(dataRepository, allUsedResultsNameIn(simulation));
 
          if (string.IsNullOrEmpty(newName))
             return;
 
-         addCommand(new RenameSimulationResultsCommand(dataRepository, simulation, newName).Run(_context));
+         addCommand(new RenameSimulationResultsCommand(dataRepository, simulation, newName).RunCommand(_context));
       }
 
       public void ExportODEForMatlab(IMoBiSimulation simulation)
@@ -158,9 +158,9 @@ namespace MoBi.Presentation.Tasks.Edit
          }
       }
 
-      private IEnumerable<string> allUsedResultsNameIn(IMoBiSimulation simulation)
+      private IReadOnlyList<string> allUsedResultsNameIn(IMoBiSimulation simulation)
       {
-         return simulation.HistoricResults.Select(x => x.Name).Union(new[] {simulation.ResultsDataRepository.Name});
+         return simulation.HistoricResults.Select(x => x.Name).Union(new[] { simulation.ResultsDataRepository.Name }).ToList();
       }
 
       private void addCommand(IMoBiCommand command)
@@ -177,7 +177,7 @@ namespace MoBi.Presentation.Tasks.Edit
       {
          var fileName = _dialogCreator.AskForFileToSave(AppConstants.Captions.Save, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART, simulation.Name);
          if (fileName.IsNullOrEmpty()) return;
-         _simulationPersistor.Save(new SimulationTransfer {Simulation = simulation}, fileName);
+         _simulationPersistor.Save(new SimulationTransfer { Simulation = simulation }, fileName);
       }
 
       public void ExportSimModelXml(IMoBiSimulation simulation)

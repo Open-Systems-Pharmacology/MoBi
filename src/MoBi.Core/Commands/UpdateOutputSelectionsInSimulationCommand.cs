@@ -1,8 +1,8 @@
 ﻿using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
 using MoBi.Core.Domain.Model;
-using OSPSuite.Core.Domain;
 using OSPSuite.Assets;
+using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Events;
 
 namespace MoBi.Core.Commands
@@ -12,7 +12,7 @@ namespace MoBi.Core.Commands
       private OutputSelections _outputSelections;
       private OutputSelections _oldOutputSelections;
 
-      public UpdateOutputSelectionsInSimulationCommand(OutputSelections outputSelections, IMoBiSimulation simulation) : base(outputSelections, simulation)
+      public UpdateOutputSelectionsInSimulationCommand(OutputSelections outputSelections, IMoBiSimulation simulation) : base(simulation)
       {
          _outputSelections = outputSelections;
          CommandType = AppConstants.Commands.EditCommand;
@@ -33,7 +33,7 @@ namespace MoBi.Core.Commands
       protected override void DoExecute(IMoBiContext context)
       {
          _oldOutputSelections = _simulation.OutputSelections;
-         _simulation.SimulationSettings.OutputSelections = _outputSelections;
+         _simulation.Settings.OutputSelections = _outputSelections;
          Description = AppConstants.Commands.UpdateOutputSelectionInSimulationDescription(_simulation.Name);
 
          context.PublishEvent(new SimulationOutputSelectionsChangedEvent(_simulation));

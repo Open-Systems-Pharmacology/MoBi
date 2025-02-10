@@ -5,7 +5,7 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface IApplicationBuilderToApplicationBuilderDTOMapper : IMapper<IApplicationBuilder, ApplicationBuilderDTO>
+   public interface IApplicationBuilderToApplicationBuilderDTOMapper : IMapper<ApplicationBuilder, ApplicationBuilderDTO>
    {
    }
 
@@ -21,13 +21,13 @@ namespace MoBi.Presentation.Mappers
          _applicationMoleculeBuilderDTOMapper = applicationMoleculeBuilderDTOMapper;
       }
 
-      public ApplicationBuilderDTO MapFrom(IApplicationBuilder input)
+      public ApplicationBuilderDTO MapFrom(ApplicationBuilder applicationBuilder)
       {
          _applicationBuilderToDTOApplicationBuilderMapper = this;
-         var dto = MapEventGroupProperties(input, new ApplicationBuilderDTO());
-         dto.MoleculeName = input.MoleculeName;
-         dto.Transports = input.Transports.MapAllUsing(_transportBuilderDTOMapper);
-         dto.Molecules = input.Molecules.MapAllUsing(_applicationMoleculeBuilderDTOMapper);
+         var dto = MapEventGroupProperties(applicationBuilder, new ApplicationBuilderDTO(applicationBuilder));
+         dto.MoleculeName = applicationBuilder.MoleculeName;
+         dto.Transports = applicationBuilder.Transports.MapAllUsing(_transportBuilderDTOMapper);
+         dto.Molecules = applicationBuilder.Molecules.MapAllUsing(_applicationMoleculeBuilderDTOMapper);
          return dto;
       }
    }

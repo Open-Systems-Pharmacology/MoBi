@@ -1,18 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Domain.UnitSystem;
+using MoBi.Core.Extensions;
 using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
 using OSPSuite.Core;
 using OSPSuite.Core.Commands;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Serialization.Journal;
 using OSPSuite.Infrastructure.Serialization.ORM.History;
 using OSPSuite.Utility.Events;
@@ -22,18 +25,19 @@ using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.Core.Domain.Model
 {
-   public interface IMoBiContext : IOSPSuiteExecutionContext<IMoBiProject>, IWorkspace
+   public interface IMoBiContext : IOSPSuiteExecutionContext<MoBiProject>, IWorkspace
    {
       IMoBiDimensionFactory DimensionFactory { get; }
       IObjectBaseFactory ObjectBaseFactory { get; }
       IWithIdRepository ObjectRepository { get; }
+
       T Create<T>(string id) where T : class, IObjectBase;
       T Create<T>() where T : class, IObjectBase;
 
       IMoBiHistoryManager HistoryManager { get; set; }
       IObjectPathFactory ObjectPathFactory { get; }
       void NewProject();
-      void LoadFrom(IMoBiProject project);
+      void LoadFrom(MoBiProject project);
 
       /// <summary>
       ///    Converts the given <paramref name="value" /> to a representation that should be saved in commands. The returned
@@ -50,26 +54,28 @@ namespace MoBi.Core.Domain.Model
       object DeserializeValueTo(Type propertyType, string valueAsString);
 
       void UnregisterSimulation(IMoBiSimulation simulation);
+
+      void PromptForCancellation(ICommand command);
    }
 
-   public class MoBiContext : Workspace<IMoBiProject>, IMoBiContext
+   public class MoBiContext : Workspace<MoBiProject>, IMoBiContext
    {
       private readonly IXmlSerializationService _serializationService;
       private readonly IHistoryManagerFactory _historyManagerFactory;
       private readonly IRegisterTask _registerTask;
       private readonly IUnregisterTask _unregisterTask;
       private readonly IClipboardManager _clipboardManager;
-      private readonly IContainer _container;
       private readonly IObjectTypeResolver _objectTypeResolver;
       private readonly ICloneManagerForBuildingBlock _cloneManager;
       private readonly ILazyLoadTask _lazyLoadTask;
+      private readonly IDialogCreator _dialogCreator;
       private readonly IJournalSession _journalSession;
 
+      public IContainer Container { get; }
       public IMoBiHistoryManager HistoryManager { get; set; }
       public IMoBiDimensionFactory DimensionFactory { get; }
       public IObjectBaseFactory ObjectBaseFactory { get; }
       public IObjectPathFactory ObjectPathFactory { get; }
-      public ICoreCalculationMethodRepository CalculationMethodRepository { get; set; }
       public IEventPublisher EventPublisher { get; }
       public IWithIdRepository ObjectRepository { get; }
 
@@ -77,7 +83,8 @@ namespace MoBi.Core.Domain.Model
          IXmlSerializationService serializationService, IObjectPathFactory objectPathFactory, IWithIdRepository objectBaseRepository,
          IHistoryManagerFactory historyManagerFactory, IRegisterTask registerTask, IUnregisterTask unregisterTask,
          IClipboardManager clipboardManager, IContainer container, IObjectTypeResolver objectTypeResolver,
-         ICloneManagerForBuildingBlock cloneManager, IJournalSession journalSession, IFileLocker fileLocker, ILazyLoadTask lazyLoadTask) : base(eventPublisher, fileLocker)
+         ICloneManagerForBuildingBlock cloneManager, IJournalSession journalSession, IFileLocker fileLocker, ILazyLoadTask lazyLoadTask,
+         IDialogCreator dialogCreator) : base(eventPublisher, fileLocker)
       {
          ObjectBaseFactory = objectBaseFactory;
          ObjectRepository = objectBaseRepository;
@@ -85,10 +92,11 @@ namespace MoBi.Core.Domain.Model
          DimensionFactory = dimensionFactory;
          ObjectPathFactory = objectPathFactory;
          _serializationService = serializationService;
-         _container = container;
+         Container = container;
          _objectTypeResolver = objectTypeResolver;
          _cloneManager = cloneManager;
          _lazyLoadTask = lazyLoadTask;
+         _dialogCreator = dialogCreator;
          _historyManagerFactory = historyManagerFactory;
          _registerTask = registerTask;
          _unregisterTask = unregisterTask;
@@ -96,7 +104,7 @@ namespace MoBi.Core.Domain.Model
          _journalSession = journalSession;
       }
 
-      public IMoBiProject CurrentProject
+      public MoBiProject CurrentProject
       {
          get => _project;
          set => _project = value;
@@ -121,6 +129,7 @@ namespace MoBi.Core.Domain.Model
       {
          return id != null ? ObjectBaseFactory.Create<T>(id) : ObjectBaseFactory.Create<T>();
       }
+
 
       public void AddToHistory(ICommand command)
       {
@@ -148,11 +157,10 @@ namespace MoBi.Core.Domain.Model
       public void NewProject()
       {
          Clear();
-         CurrentProject = ObjectBaseFactory.Create<IMoBiProject>();
-
+         CurrentProject = ObjectBaseFactory.Create<MoBiProject>();
          HistoryManager = _historyManagerFactory.Create() as IMoBiHistoryManager;
          LoadFrom(CurrentProject);
-         AddToHistory(new CreateProjectCommand().Run(this));
+         AddToHistory(new CreateProjectCommand().RunCommand(this));
       }
 
       public override void Clear()
@@ -191,10 +199,10 @@ namespace MoBi.Core.Domain.Model
 
       public T Resolve<T>()
       {
-         return _container.Resolve<T>();
+         return Container.Resolve<T>();
       }
 
-      public void LoadFrom(IMoBiProject project)
+      public void LoadFrom(MoBiProject project)
       {
          CurrentProject = project;
          _registerTask.Register(project);
@@ -203,7 +211,7 @@ namespace MoBi.Core.Domain.Model
       public string SerializeValue(object value)
       {
          if (value == null)
-            return String.Empty;
+            return string.Empty;
 
          if (value.IsAnImplementationOf<IObjectBase>())
             return value.DowncastTo<IObjectBase>().Id;
@@ -211,8 +219,8 @@ namespace MoBi.Core.Domain.Model
          if (value.IsAnImplementationOf<IDimension>())
             return value.DowncastTo<IDimension>().Name;
 
-         if (value.IsAnImplementationOf<IObjectPath>())
-            return value.DowncastTo<IObjectPath>().PathAsString;
+         if (value.IsAnImplementationOf<ObjectPath>())
+            return value.DowncastTo<ObjectPath>().PathAsString;
 
          if (value.IsAnImplementationOf<Unit>())
             return value.DowncastTo<Unit>().Name;
@@ -237,8 +245,8 @@ namespace MoBi.Core.Domain.Model
          if (propertyType.IsAnImplementationOf<IDimension>())
             return DimensionFactory.Dimension(valueAsString);
 
-         if (propertyType.IsAnImplementationOf<IObjectPath>())
-            return ObjectPathFactory.CreateObjectPathFrom(valueAsString.ToPathArray());
+         if (propertyType.IsAnImplementationOf<ObjectPath>())
+            return valueAsString.ToObjectPath();
 
          if (propertyType.IsAnImplementationOf<Unit>())
             return DimensionFactory.DimensionForUnit(valueAsString).UnitOrDefault(valueAsString);
@@ -255,14 +263,42 @@ namespace MoBi.Core.Domain.Model
          unregisterCachedFormulaInModel(simulation.Model);
       }
 
+      public void PromptForCancellation(ICommand command)
+      {
+         promptForCancellation(command, new List<Module>());
+      }
+
+      private void promptForCancellation(ICommand command, List<Module> confirmedModuleConversions)
+      {
+         if(command is IMacroCommand macroCommand)
+            macroCommand.All().Each(x => promptForCancellation(x, confirmedModuleConversions));
+
+         if (!(command is IWillConvertPKSimModuleToExtensionModule changeCommand))
+            return;
+
+         if (!changeCommand.WillConvertPKSimModuleToExtensionModule)
+            return;
+
+         if (!CurrentProject.Modules.Contains(changeCommand.Module))
+            return;
+
+         if (confirmedModuleConversions.Contains(changeCommand.Module))
+            return;
+
+         if(_dialogCreator.MessageBoxYesNo(AppConstants.Captions.ThisWillConvertPkSimModuleToExtensionModule(changeCommand.Module?.Name), defaultButton: ViewResult.Yes) == ViewResult.No)
+            throw new CancelCommandRunException();
+
+         confirmedModuleConversions.Add(changeCommand.Module);
+      }
+
       private void unregisterCachedFormulaInModel(IModel model)
       {
          //Cacheable Formulas are not automatically unregistered we need to do this in an extra step
-         unregisterAllCachableFormulasIn(model.Root);
-         unregisterAllCachableFormulasIn(model.Neighborhoods);
+         unregisterAllCacheableFormulasIn(model.Root);
+         unregisterAllCacheableFormulasIn(model.Neighborhoods);
       }
 
-      private void unregisterAllCachableFormulasIn(OSPSuite.Core.Domain.IContainer container)
+      private void unregisterAllCacheableFormulasIn(OSPSuite.Core.Domain.IContainer container)
       {
          container.GetAllChildren<IUsingFormula>(x => x.Formula.IsCachable()).Each(x => Unregister(x.Formula));
       }

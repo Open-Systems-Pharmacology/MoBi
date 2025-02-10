@@ -15,33 +15,32 @@ namespace MoBi.BatchTool.Runners
    {
       private readonly IBatchLogger _logger;
       private readonly IModelConstructor _modelConstructor;
-      private readonly IBuildConfigurationFactory _buildConfigurationFactory;
       private readonly IMoBiContext _context;
       private readonly ISimModelManager _simModelManager;
 
-      public SimulationBatchRunner(IBatchLogger logger, IModelConstructor modelConstructor, IBuildConfigurationFactory buildConfigurationFactory, 
+      public SimulationBatchRunner(IBatchLogger logger, IModelConstructor modelConstructor, 
          IMoBiContext context, ISimModelManager simModelManager)
       {
          _logger = logger;
          _modelConstructor = modelConstructor;
-         _buildConfigurationFactory = buildConfigurationFactory;
          _context = context;
          _simModelManager = simModelManager;
       }
 
       public void Compute(IMoBiSimulation simulation)
       {
-         var buildConfiguration = _buildConfigurationFactory.CreateFromReferencesUsedIn(simulation.MoBiBuildConfiguration);
-         buildConfiguration.ShowProgress = false;
+         // var buildConfiguration = _buildConfigurationFactory.CreateFromReferencesUsedIn(simulation.MoBiBuildConfiguration);
+         // buildConfiguration.ShowProgress = false;
 
          _logger.AddDebug("Creating new simulation from loaded building blocks");
-         var results = _modelConstructor.CreateModelFrom(buildConfiguration, "BatchRun");
+         var results = _modelConstructor.CreateModelFrom(simulation.Configuration, "BatchRun");
          if (results.IsInvalid)
             _logger.AddWarning(results.ValidationResult.Messages.SelectMany(x => x.Details).ToString());
 
          var newSimulation = new MoBiSimulation
          {
-            BuildConfiguration = buildConfiguration,
+            // TODO SIMULATION_CONFIGURATION
+            Configuration = simulation.Configuration,
             Model = results.Model,
             Id = "Sim"
          };

@@ -2,10 +2,9 @@
 using System.Linq;
 using MoBi.Assets;
 using OSPSuite.Assets;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Services
 {
@@ -17,7 +16,7 @@ namespace MoBi.Core.Services
       ///    A dialog will be used to ask the user for confirmation of the new name
       /// </summary>
       /// <param name="alreadyExistingNamedObjects">
-      ///    The list of objects whose names are exlcuded from consideration for a name
+      ///    The list of objects whose names are excluded from consideration for a name
       ///    correction
       /// </param>
       /// <param name="objectForRename">The object whose name is being corrected</param>
@@ -48,17 +47,19 @@ namespace MoBi.Core.Services
       /// </param>
       /// <param name="objectForRename">The object whose name is being corrected</param>
       void AutoCorrectName<T>(IEnumerable<string> alreadyUsedNames, T objectForRename) where T : IObjectBase;
+
+      string PromptForCorrectName<T>(IReadOnlyList<string> alreadyUsedNames, T objectForRename) where T : IObjectBase;
    }
 
    internal class NameCorrector : INameCorrector
    {
-      private readonly IDialogCreator _dialogCreator;
+      private readonly IObjectBaseNamingTask _namingTask;
       private readonly IObjectTypeResolver _objectTypeResolver;
       private readonly IContainerTask _containerTask;
 
-      public NameCorrector(IDialogCreator dialogCreator, IObjectTypeResolver objectTypeResolver, IContainerTask containerTask)
+      public NameCorrector(IObjectBaseNamingTask namingTask, IObjectTypeResolver objectTypeResolver, IContainerTask containerTask)
       {
-         _dialogCreator = dialogCreator;
+         _namingTask = namingTask;
          _objectTypeResolver = objectTypeResolver;
          _containerTask = containerTask;
       }
@@ -71,22 +72,8 @@ namespace MoBi.Core.Services
 
       public bool CorrectName<T>(IEnumerable<string> alreadyUsedNames, T objectForRename) where T : IObjectBase
       {
-         var usedNames = alreadyUsedNames.ToList();
-         var oldName = objectForRename.Name;
-         var newName = oldName;
-         var typeName = _objectTypeResolver.TypeFor<T>();
-         usedNames.AddRange(AppConstants.UnallowedNames);
+         var newName = PromptForCorrectName(alreadyUsedNames.ToList(), objectForRename);
 
-         if (usedNames.Contains(oldName))
-         {
-            newName = _dialogCreator.AskForInput(
-               AppConstants.Dialog.AskForChangedName(oldName, typeName),
-               Captions.Rename,
-               getNextSuggestedName(usedNames, oldName),
-               usedNames,
-               iconName: ApplicationIcons.Rename.IconName);
-
-         }
          //Rename was canceled
          if (newName.IsNullOrEmpty())
             return false;
@@ -95,17 +82,38 @@ namespace MoBi.Core.Services
          return true;
       }
 
+      public string PromptForCorrectName<T>(IReadOnlyList<string> alreadyUsedNames, T objectForRename) where T : IObjectBase
+      {
+         var usedNames = alreadyUsedNames.ToList();
+         var oldName = objectForRename.Name;
+         var newName = oldName;
+         var typeName = _objectTypeResolver.TypeFor<T>();
+         usedNames.AddRange(AppConstants.UnallowedNames);
+
+         if (usedNames.Contains(oldName))
+         {
+            newName = _namingTask.NewName(
+               AppConstants.Dialog.AskForChangedName(oldName, typeName),
+               Captions.Rename,
+               getNextSuggestedName(usedNames, oldName),
+               usedNames,
+               iconName: ApplicationIcons.Rename.IconName);
+         }
+
+         return newName;
+      }
+
       public void AutoCorrectName<T>(IEnumerable<string> alreadyUsedNames, T objectForRename) where T : IObjectBase
       {
          var oldName = objectForRename.Name;
-         var updatedName = getNextSuggestedName(alreadyUsedNames, oldName);
+         var updatedName = getNextSuggestedName(alreadyUsedNames, oldName, canUseBaseName: true);
 
          objectForRename.Name = updatedName;
       }
 
-      private string getNextSuggestedName(IEnumerable<string> usedNames, string oldName)
+      private string getNextSuggestedName(IEnumerable<string> usedNames, string oldName, bool canUseBaseName = false)
       {
-         return _containerTask.CreateUniqueName(usedNames.ToList(), oldName);
+         return _containerTask.CreateUniqueName(usedNames.ToList(), oldName, canUseBaseName);
       }
    }
 }

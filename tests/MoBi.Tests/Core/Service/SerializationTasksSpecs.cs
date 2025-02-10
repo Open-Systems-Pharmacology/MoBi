@@ -74,7 +74,7 @@ namespace MoBi.Core.Service
 
       protected override void Because()
       {
-         _result = sut.LoadMany<IEventGroupBuildingBlock>(DomainHelperForSpecs.TestFileFullPath("Events.pkml"), false);
+         _result = sut.LoadMany<EventGroupBuildingBlock>(DomainHelperForSpecs.TestFileFullPath("Events.pkml"), false);
       }
 
       [Observation]
@@ -92,7 +92,7 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_convert_to_concentration_model_if_required()
       {
-         A.CallTo(() => _postSerializationSteps.PerformPostDeserializationFor(A<IReadOnlyList<IEventGroupBuildingBlock>>._, ProjectVersions.Current, false)).MustHaveHappened();
+         A.CallTo(() => _postSerializationSteps.PerformPostDeserializationFor(A<IReadOnlyList<EventGroupBuildingBlock>>._, ProjectVersions.Current, false)).MustHaveHappened();
       }
    }
 

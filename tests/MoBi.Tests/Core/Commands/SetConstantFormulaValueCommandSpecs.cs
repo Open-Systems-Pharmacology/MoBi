@@ -1,9 +1,9 @@
 ﻿using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Commands.Core;
 using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Extensions;
 using MoBi.Helpers;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -27,7 +27,7 @@ namespace MoBi.Core.Commands
             newValue: 4.0, 
             displayUnit: DomainHelperForSpecs.AmountDimension.DefaultUnit, 
             oldUnit: DomainHelperForSpecs.ConcentrationDimension.DefaultUnit, 
-            buildingBlock: new ParameterStartValuesBuildingBlock(), 
+            buildingBlock: new ParameterValuesBuildingBlock(), 
             formulaOwner: _owner);
          A.CallTo(() => _context.Get<IEntity>("id")).Returns(_owner);
       }
@@ -53,7 +53,7 @@ namespace MoBi.Core.Commands
    {
       protected override void Because()
       {
-         sut.Run(_context);
+         sut.RunCommand(_context);
       }
 
       [Observation]

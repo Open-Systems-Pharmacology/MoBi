@@ -27,7 +27,7 @@ namespace MoBi.Presentation.Mappers
          if (formula == null)
             return FormulaBuilderDTO.NULL;
 
-         var dto = Map<FormulaBuilderDTO>(formula);
+         var dto = Map(new FormulaBuilderDTO(formula));
          if (formula.IsConstant())
             dto.FormulaString = ((ConstantFormula) formula).Value.ConvertedTo<string>();
 

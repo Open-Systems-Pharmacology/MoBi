@@ -34,7 +34,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
    class ContextMenuForContainerInMoleculeBuildingBlock : ContextMenuForContainerBase<InteractionContainer>, IContextMenuForContainerInMoleculeBuildingBlock
    {
-      public ContextMenuForContainerInMoleculeBuildingBlock(IMoBiContext context, IObjectTypeResolver objectTypeResolver) : base(context, objectTypeResolver)
+      public ContextMenuForContainerInMoleculeBuildingBlock(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IContainer container) : base(context, objectTypeResolver, container)
       {
       }
 
@@ -42,7 +42,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
             .WithIcon(ApplicationIcons.Delete)
-            .WithCommandFor<RemoveCommandForContainerAtMolecule, InteractionContainer>(interactionContainer);
+            .WithCommandFor<RemoveCommandForContainerAtMolecule, InteractionContainer>(interactionContainer, _container);
       }
    }
 }

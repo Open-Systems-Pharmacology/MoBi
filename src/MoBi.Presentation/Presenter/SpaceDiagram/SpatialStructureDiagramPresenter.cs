@@ -1,45 +1,50 @@
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using OSPSuite.Core.Services;
-using OSPSuite.Utility.Container;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
-using MoBi.Presentation.Settings;
 using MoBi.Presentation.Presenter.BaseDiagram;
+using MoBi.Presentation.Settings;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views.BaseDiagram;
 using OSPSuite.Core;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Diagram.Elements;
 using OSPSuite.Presentation.Presenters;
-using IContainer = OSPSuite.Core.Domain.IContainer;
 
 namespace MoBi.Presentation.Presenter.SpaceDiagram
 {
-   public interface ISpatialStructureDiagramPresenter : IMoBiBaseDiagramPresenter<IMoBiSpatialStructure>, IPresenter<ISpatialStructureDiagramView>
+   public interface ISpatialStructureDiagramPresenter : IMoBiBaseDiagramPresenter<MoBiSpatialStructure>, IPresenter<ISpatialStructureDiagramView>
    {
-
    }
 
-   public class SpatialStructureDiagramPresenter : MoBiBaseDiagramPresenter<ISpatialStructureDiagramView, ISpatialStructureDiagramPresenter, IMoBiSpatialStructure>, ISpatialStructureDiagramPresenter
+   public class SpatialStructureDiagramPresenter : MoBiBaseDiagramPresenter<ISpatialStructureDiagramView, ISpatialStructureDiagramPresenter, MoBiSpatialStructure>, ISpatialStructureDiagramPresenter
    {
       private readonly IMoBiConfiguration _configuration;
 
-      public SpatialStructureDiagramPresenter(ISpatialStructureDiagramView view, IContainerBaseLayouter layouter, IUserSettings userSettings, IMoBiContext context, IDialogCreator dialogCreator, IMoBiConfiguration configuration, IDiagramTask diagramTask, IStartOptions runOptions, IDiagramModelFactory diagramModelFactory)
-         : base(view, layouter, dialogCreator,diagramModelFactory, userSettings, context, diagramTask, runOptions)
+      public SpatialStructureDiagramPresenter(
+         ISpatialStructureDiagramView view,
+         IContainerBaseLayouter layouter,
+         IUserSettings userSettings,
+         IMoBiContext context,
+         IDialogCreator dialogCreator,
+         IMoBiConfiguration configuration,
+         IDiagramTask diagramTask,
+         IStartOptions runOptions,
+         IDiagramModelFactory diagramModelFactory)
+         : base(view, layouter, dialogCreator, diagramModelFactory, userSettings, context, diagramTask, runOptions)
       {
          _configuration = configuration;
-         _diagramPopupMenu = new PopupMenuSpaceDiagram(this, runOptions);
-         _containerPopupMenu = new PopupMenuFullContainerWithParametersNode(this, _context, runOptions);
-         _neighborhoodPopupMenu = new PopupMenuFullEntityNode<INeighborhoodBuilder>(this, _context, runOptions);
+         _diagramPopupMenu = new PopupMenuSpaceDiagram(this, context, runOptions);
+         _containerPopupMenu = new PopupMenuFullContainerWithParametersNode(this, context, runOptions);
+         _neighborhoodPopupMenu = new PopupMenuFullEntityNode<NeighborhoodBuilder>(this, context, runOptions);
       }
 
-      public override void Edit(IMoBiSpatialStructure spatialStructure)
+      public override void Edit(MoBiSpatialStructure spatialStructure)
       {
          base.Edit(spatialStructure);
 
@@ -50,29 +55,25 @@ namespace MoBi.Presentation.Presenter.SpaceDiagram
             if (firstTopContainer == null)
                return;
 
-            fixTopContainerNodeLocation(firstTopContainer.Id);   
+            fixTopContainerNodeLocation(firstTopContainer.Id);
          }
 
          if (!DiagramModel.IsLayouted)
          {
-            string organismTemplateFile = _configuration.SpaceOrganismBaseTemplate;
+            var organismTemplateFile = _configuration.SpaceOrganismBaseTemplate;
             if (File.Exists(_configuration.SpaceOrganismUserTemplate))
                organismTemplateFile = _configuration.SpaceOrganismUserTemplate;
 
-            foreach (var topContainerNode in DiagramModel.GetDirectChildren<IContainerNode>())
-            {
-               var topContainer = _context.Get<IContainer>(topContainerNode.Id);
-               if (topContainer != null && topContainer.ContainerType == ContainerType.Organism)
-                  ApplyLayoutTemplate(topContainerNode, organismTemplateFile, false);
-            }
+            ApplyLayoutFromTemplate(organismTemplateFile);
          }
+
          Refresh();
 
          //to avoid scrollbar error
          ResetViewSize();
       }
 
-      private IContainer firstTopContainerWithNode(IMoBiSpatialStructure spatialStructure)
+      private IContainer firstTopContainerWithNode(MoBiSpatialStructure spatialStructure)
       {
          return spatialStructure.TopContainers.FirstOrDefault(topContainer => DiagramModel.GetAllChildren<IBaseNode>().Any(node => string.Equals(node.Id, topContainer.Id)));
       }
@@ -86,15 +87,19 @@ namespace MoBi.Presentation.Presenter.SpaceDiagram
 
       public override void Link(IBaseNode node1, IBaseNode node2, object portObject1, object portObject2)
       {
-         if (!node1.IsAnImplementationOf<IContainerNode>() || !node2.IsAnImplementationOf<IContainerNode>()) return;
+         if (!(node1 is IContainerNode containerNode1) || !(node2 is IContainerNode containerNode2))
+            return;
 
-         var container1 = _context.Get<IContainer>(node1.Id);
-         var container2 = _context.Get<IContainer>(node2.Id);
-
-         var addNeighborhoodTask = IoC.Resolve<IInteractionTasksForNeighborhood>();
-         AddCommand(addNeighborhoodTask.Add(container1, container2));
+         var addNeighborhoodTask = _context.Resolve<IInteractionTasksForNeighborhood>();
+         AddCommand(addNeighborhoodTask.Add(objectPathFor(containerNode1), objectPathFor(containerNode2)));
          //because cannot undo this action, reset undo stack
-         DiagramModel.ClearUndoStack(); 
+         DiagramModel.ClearUndoStack();
+      }
+
+      private ObjectPath objectPathFor(IContainerNode containerNode)
+      {
+         var container = _context.Get<IContainer>(containerNode.Id);
+         return container != null ? _context.ObjectPathFactory.CreateAbsoluteObjectPath(container) : DiagramManager.PathForNodeWithoutEntity(containerNode);
       }
 
       protected override void Unlink(IBaseNode node1, IBaseNode node2, object portObject1, object portObject2)
@@ -102,6 +107,5 @@ namespace MoBi.Presentation.Presenter.SpaceDiagram
          //because cannot undo this action, reset undo stack
          DiagramModel.ClearUndoStack();
       }
-
    }
 }

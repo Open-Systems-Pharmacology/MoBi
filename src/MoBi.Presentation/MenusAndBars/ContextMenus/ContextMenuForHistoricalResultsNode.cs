@@ -18,6 +18,12 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
    public class ContextMenuForHistoricalResultsNode : ContextMenuBase
    {
+      private readonly IContainer _container;
+
+      public ContextMenuForHistoricalResultsNode(IContainer container)
+      {
+         _container = container;
+      }
       private IList<IMenuBarItem> _allMenuItems;
 
       public override IEnumerable<IMenuBarItem> AllMenuItems()
@@ -31,21 +37,21 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.CompareSimulationResults)
             .WithIcon(ApplicationIcons.SimulationComparison)
-            .WithCommandFor<ShowDataRepositoryUICommand, DataRepository>(dataRepository));
+            .WithCommandFor<ShowDataRepositoryUICommand, DataRepository>(dataRepository, _container));
 
          if (!Equals(simulation.ResultsDataRepository, dataRepository))
          {
             var persitableCommand = CreateMenuButton.WithCaption(dataRepository.IsPersistable() ? AppConstants.MenuNames.DiscardResults : AppConstants.MenuNames.KeepResults)
-               .WithCommandFor<SwitchHistoricalResultPersistanceUICommand, DataRepository>(dataRepository);
+               .WithCommandFor<SwitchHistoricalResultPersistanceUICommand, DataRepository>(dataRepository, _container);
             _allMenuItems.Add(persitableCommand);
          }
 
-         var exportAllCommmand = IoC.Resolve<ExportSimulationResultsToExcelCommand>().InitializeWith(simulation, dataRepository);
+         var exportAllCommmand = _container.Resolve<ExportSimulationResultsToExcelCommand>().InitializeWith(simulation, dataRepository);
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.ExportSimulationResultsToExcel)
             .WithCommand(exportAllCommmand)
             .WithIcon(ApplicationIcons.ObservedData));
 
-         var command = IoC.Resolve<RenameSimulationResultsUICommand>();
+         var command = _container.Resolve<RenameSimulationResultsUICommand>();
          command.Subject = dataRepository;
          command.Simulation = simulation;
 
@@ -54,7 +60,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithCommand(command));
 
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
-            .WithCommandFor<RemoveDataRepositoryUICommand, DataRepository>(dataRepository)
+            .WithCommandFor<RemoveDataRepositoryUICommand, DataRepository>(dataRepository, _container)
             .AsGroupStarter()
             .WithIcon(ApplicationIcons.Delete));
 
@@ -64,9 +70,16 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
    internal class ContextMenuFactoryForHistoricalResultsNode : IContextMenuSpecificationFactory<IViewItem>
    {
+      private readonly IContainer _container;
+
+      public ContextMenuFactoryForHistoricalResultsNode(IContainer container)
+      {
+         _container = container;
+      }
+      
       public IContextMenu CreateFor(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter)
       {
-         var contextMenu = new ContextMenuForHistoricalResultsNode();
+         var contextMenu = new ContextMenuForHistoricalResultsNode(_container);
          var historicalResultNode = viewItem.DowncastTo<HistoricalResultsNode>();
          var simulationNode = historicalResultNode.ParentNode.DowncastTo<SimulationNode>();
          var simulation = simulationNode.Simulation;

@@ -1,4 +1,5 @@
 using MoBi.Assets;
+using MoBi.Core.Domain;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Model;
@@ -21,8 +22,9 @@ namespace MoBi.Core.Commands
          _createProcessRate = createProcessRate;
          _oldCreateProcessRate = _processBuilder.CreateProcessRateParameter;
          CommandType = AppConstants.Commands.EditCommand;
-         ObjectType = processBuilder.IsAnImplementationOf<IReactionBuilder>() ? ObjectTypes.Reaction : ObjectTypes.ApplicationTransport;
+         ObjectType = processBuilder.IsAnImplementationOf<ReactionBuilder>() ? ObjectTypes.Reaction : ObjectTypes.ApplicationTransport;
          Description = AppConstants.Commands.EditDescription(ObjectType, AppConstants.Captions.CreateProcessRateParameter, _oldCreateProcessRate.ToString(), _createProcessRate.ToString(), _processBuilder.Name);
+         ConversionOption = PKSimModuleConversion.SetAsExtensionModule;
       }
 
       protected override void ExecuteWith(IMoBiContext context)

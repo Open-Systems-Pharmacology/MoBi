@@ -1,13 +1,9 @@
-using System.Collections.Generic;
-using System.Drawing;
-using OSPSuite.Presentation.Nodes;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.Classifications;
 using OSPSuite.Presentation.Presenters.ContextMenus;
@@ -15,6 +11,10 @@ using OSPSuite.Presentation.Presenters.Main;
 using OSPSuite.Presentation.Regions;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
+using System.Collections.Generic;
+using System.Drawing;
 using ITreeNodeFactory = MoBi.Presentation.Nodes.ITreeNodeFactory;
 
 namespace MoBi.Presentation.Presenter.Main
@@ -46,7 +46,7 @@ namespace MoBi.Presentation.Presenter.Main
          _multipleTreeNodeContextMenuFactory = multipleTreeNodeContextMenuFactory;
       }
 
-      protected abstract void AddProjectToTree(IMoBiProject project);
+      protected abstract void AddProjectToTree(MoBiProject project);
 
       protected void ReloadProject()
       {
@@ -55,7 +55,7 @@ namespace MoBi.Presentation.Presenter.Main
 
       protected override void AddProjectToTree(IProject project)
       {
-         AddProjectToTree(project.DowncastTo<IMoBiProject>());
+         AddProjectToTree(project.DowncastTo<MoBiProject>());
       }
 
       public void ShowContextMenu(IViewItem viewItem, Point popupLocation)
@@ -72,7 +72,7 @@ namespace MoBi.Presentation.Presenter.Main
 
       public override void NodeDoubleClicked(ITreeNode node)
       {
-         if (IsFolderNode(node))
+         if (IsExpandable(node))
          {
             base.NodeDoubleClicked(node);
             return;

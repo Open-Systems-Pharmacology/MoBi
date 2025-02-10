@@ -12,7 +12,7 @@ namespace MoBi.Core
 {
    public class When_asking_if_a_container_is_in_a_SpatialStructure : StaticContextSpecification
    {
-      private ISpatialStructure _testStructure;
+      private SpatialStructure _testStructure;
       private IContainer _testContainer;
       private bool _result;
 
@@ -41,7 +41,7 @@ namespace MoBi.Core
 
    class When_Asking_If_A_Top_Container_Is_In_A_SpatialStructure : StaticContextSpecification
    {
-      private ISpatialStructure _testStructure;
+      private SpatialStructure _testStructure;
       private IContainer _testContainer;
       private bool _result;
 

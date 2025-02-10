@@ -18,7 +18,7 @@ namespace MoBi.Core.Commands
       protected override void SetUnitAndPoints()
       {
          _tableFormula.YDisplayUnit = _newDisplayUnit;
-         foreach (var point in _tableFormula.AllPoints())
+         foreach (var point in _tableFormula.AllPoints)
          {
             point.Y = ConvertToNewUnit(_tableFormula.Dimension, point.Y);
          }

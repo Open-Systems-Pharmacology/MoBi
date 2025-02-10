@@ -4,6 +4,7 @@ using libsbmlcs;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Engine.Sbml;
+using MoBi.Helpers;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -74,7 +75,7 @@ namespace MoBi.Core.SBML
 
 
          _sbmlModel.addUnitDefinition(_unitDef);
-         sut.DoImport(_sbmlModel, new MoBiProject(), A.Fake<SBMLInformation>(), new MoBiMacroCommand());
+         sut.DoImport(_sbmlModel, new Module(), A.Fake<SBMLInformation>(), new MoBiMacroCommand());
       }
 
       [Observation]
@@ -96,7 +97,7 @@ namespace MoBi.Core.SBML
       [Observation]
       public void ParameterWithVolumeUnitTest()
       {
-         var tc = _moBiProject.SpatialStructureCollection.First().TopContainers.First();
+         var tc = SBMLModule.SpatialStructure.TopContainers.Single(x => x.Name.Equals("TOPCONTAINERSBML "));
          var parameter = tc.GetSingleChildByName<IParameter>("k1");
          parameter.ShouldNotBeNull();
          parameter.DisplayUnit.ToString().ShouldBeEqualTo("l");
@@ -105,7 +106,7 @@ namespace MoBi.Core.SBML
       [Observation]
       public void SpeciesWithAmountUnitTest()
       {
-         var mbb = _moBiProject.MoleculeBlockCollection.First();
+         var mbb = SBMLModule.Molecules;
          var mol = mbb.FindByName("s1");
          mol.ShouldNotBeNull();
          mol.Dimension.ShouldNotBeNull();
@@ -115,7 +116,7 @@ namespace MoBi.Core.SBML
       [Observation]
       public void SpeciesWithConcentrationUnitTest()
       {
-         var mbb = _moBiProject.MoleculeBlockCollection.First();
+         var mbb = SBMLModule.Molecules;
          var mol = mbb.FindByName("s2");
          mol.ShouldNotBeNull();
          mol.Dimension.ShouldNotBeNull();
@@ -134,7 +135,7 @@ namespace MoBi.Core.SBML
       [Observation]
       public void should_find_combined_dimensions()
       {
-         var tc = _moBiProject.SpatialStructureCollection.First().TopContainers.First();
+         var tc = SBMLModule.SpatialStructure.TopContainers.Single(x => x.Name.Contains("TOPCONTAINERSBML Keating2019"));
          var parameter = tc.Parameter("Vmax_ATPASE");
          parameter.ShouldNotBeNull();
          parameter.DisplayUnit.ToString().ShouldBeEqualTo("kat");

@@ -1,14 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Windows.Forms;
-using DevExpress.XtraBars.Docking;
-using DevExpress.XtraBars.Ribbon;
+﻿using System;
+using System.Collections.Generic;
 using FakeItEasy;
-using MoBi.Core;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
-using MoBi.UI.Settings;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Chart;
@@ -21,10 +17,8 @@ using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters.Charts;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Nodes;
-using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Services.Charts;
 using OSPSuite.Presentation.Views.Charts;
-using OSPSuite.UI.Core;
 using IApplicationSettings = OSPSuite.Core.IApplicationSettings;
 using IChartTemplatingTask = MoBi.Presentation.Tasks.IChartTemplatingTask;
 
@@ -143,4 +137,25 @@ namespace MoBi.Presentation
          _observedDataAddedEventCounter.ShouldBeEqualTo(1);
       }
    }
+
+   public class When_adding_observed_data_to_the_chart : concern_for_SimulationChartPresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _userSettings.ColorGroupObservedDataFromSameFolder = false;
+      }
+
+      protected override void Because()
+      {
+         _chartDisplayPresenter.OnDragDrop(_dragEvent);
+      }
+
+      [Observation]
+      public void columns_showing_should_be_default()
+      {
+         A.CallTo(() => _chartPresenterContext.EditorPresenter.SetShowDataColumnInDataBrowserDefinition(A<Func<DataColumn, bool>>.Ignored)).MustNotHaveHappened();
+      }
+   }
+
 }

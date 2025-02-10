@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
+using System.Linq;
+using DevExpress.Utils;
 using DevExpress.XtraBars.Docking;
 using DevExpress.XtraBars.Ribbon;
 using MoBi.Assets;
 using MoBi.Core;
 using MoBi.Core.Domain;
+using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Presentation.Settings;
 using OSPSuite.Assets;
@@ -74,6 +78,7 @@ namespace MoBi.UI.Settings
          get => ChartOptions.ColorGroupObservedDataFromSameFolder;
          set => ChartOptions.ColorGroupObservedDataFromSameFolder = value;
       }
+
       public bool RenameDependentObjectsDefault { get; set; }
       public IDiagramOptions DiagramOptions { get; set; }
       public IForceLayoutConfiguration ForceLayoutConfigutation { get; set; }
@@ -82,7 +87,7 @@ namespace MoBi.UI.Settings
       public ObjectPathType ObjectPathType { get; set; }
       public string ParameterDefaultDimension { get; set; }
       public string RibbonLayout { get; set; }
-      public ISimulationSettings LastSimulationSettings { get; set; }
+      public SimulationSettings LastSimulationSettings { get; set; }
       public NotificationType VisibleNotification { get; set; }
       public OutputSelections OutputSelections { get; set; }
       public DisplayUnitsManager DisplayUnits { get; set; }
@@ -117,13 +122,13 @@ namespace MoBi.UI.Settings
          ShowAdvancedParameters = true;
          GroupParameters = false;
          VisibleNotification = NotificationType.Warning | NotificationType.Error;
-         ValidationSettings = new ValidationSettings {CheckDimensions = true, CheckCircularReference = true};
+         ValidationSettings = new ValidationSettings { CheckDimensions = true, CheckCircularReference = true };
          DisplayUnits = new DisplayUnitsManager();
          DefaultChartYScaling = Scalings.Log;
          IconSizeTreeView = IconSizes.Size24x24;
          IconSizeTab = IconSizes.Size16x16;
          IconSizeContextMenu = IconSizes.Size16x16;
-         ComparerSettings = new ComparerSettings {CompareHiddenEntities = true};
+         ComparerSettings = new ComparerSettings { CompareHiddenEntities = true };
          JournalPageEditorSettings = new JournalPageEditorSettings();
          ParameterIdentificationFeedbackEditorSettings = new ParameterIdentificationFeedbackEditorSettings();
          SensitivityAnalysisFeedbackEditorSettings = new SensitivityAnalysisFeedbackEditorSettings();
@@ -152,6 +157,12 @@ namespace MoBi.UI.Settings
          set => ChartOptions.DefaultLayoutName = value;
       }
 
+      public bool ShowUnresolvedEndosomeMessagesForInitialConditions
+      {
+         set => ValidationSettings.ShowUnresolvedEndosomesWarningsForInitialConditions = value;
+         get => ValidationSettings.ShowUnresolvedEndosomesWarningsForInitialConditions;
+      }
+
       public bool ShowPKSimObserverMessages
       {
          set => ValidationSettings.ShowPKSimObserverMessages = value;
@@ -178,7 +189,6 @@ namespace MoBi.UI.Settings
          set => _numericFormatterOptions.DecimalPlace = value;
       }
 
-   
       public DirectoryMapSettings DirectoryMapSettings { get; }
 
       public IEnumerable<DirectoryMap> UsedDirectories => DirectoryMapSettings.UsedDirectories;
@@ -186,21 +196,30 @@ namespace MoBi.UI.Settings
       public void SaveLayout()
       {
          LayoutVersion = AppConstants.LayoutVersion;
-         var streamMainView = new MemoryStream();
-         _dockManager.SaveLayoutToStream(streamMainView);
-         MainViewLayout = streamToString(streamMainView);
+         MainViewLayout = mainViewLayoutToString();
          var streamRibbon = new MemoryStream();
          _ribbonManager.Ribbon.Toolbar.SaveLayoutToStream(streamRibbon);
          RibbonLayout = streamToString(streamRibbon);
+      }
+
+      private string mainViewLayoutToString()
+      {
+         var streamMainView = new MemoryStream();
+         _dockManager.SaveLayoutToStream(streamMainView);
+         return streamToString(streamMainView);
       }
 
       public void RestoreLayout()
       {
          if (LayoutVersion != AppConstants.LayoutVersion)
             resetLayout();
+         var defaultLayout = mainViewLayoutToString();
 
          if (!MainViewLayout.IsNullOrEmpty())
             _dockManager.RestoreFromStream(streamFromString(MainViewLayout));
+
+         if (_dockManager.Panels.Count == 0)
+            _dockManager.RestoreFromStream(streamFromString(defaultLayout));
 
          if (!RibbonLayout.IsNullOrEmpty())
             _ribbonManager.RestoreFromStream(streamFromString(RibbonLayout));

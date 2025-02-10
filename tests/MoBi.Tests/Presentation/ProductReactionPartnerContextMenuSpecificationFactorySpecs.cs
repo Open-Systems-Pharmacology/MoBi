@@ -5,16 +5,20 @@ using MoBi.Presentation.DTO;
 using MoBi.Presentation.MenusAndBars.ContextMenus;
 using MoBi.Presentation.Presenter;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation
 {
    public abstract class concern_for_ProductReactionPartnerContextMenuSpecificationFactory : ContextSpecification<IReactionProductContextMenuSpecificationFactory>
    {
       protected IReactionProductsPresenter _reactionProductsPresenter;
+      private IContainer _container;
+
       protected override void Context()
       {
          _reactionProductsPresenter = A.Fake<IReactionProductsPresenter>();
-         sut = new ReactionProductPartnerContextMenuSpecificationFactory();
+         _container = A.Fake<IContainer>();
+         sut = new ReactionProductPartnerContextMenuSpecificationFactory(_container);
       }
    }
 

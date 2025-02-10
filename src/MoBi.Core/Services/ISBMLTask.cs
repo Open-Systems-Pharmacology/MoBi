@@ -5,6 +5,6 @@ namespace MoBi.Core.Services
 {
    public interface ISbmlTask
    {
-      IMoBiCommand ImportModelFromSbml(string filename, IMoBiProject project);
+      IMoBiCommand ImportModelFromSbml(string filename, MoBiProject project);
    }
 }

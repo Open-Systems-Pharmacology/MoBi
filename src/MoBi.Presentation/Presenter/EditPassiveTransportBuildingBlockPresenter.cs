@@ -1,10 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Events;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -15,10 +12,12 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IEditPassiveTransportBuildingBlockPresenter : ISingleStartPresenter<IPassiveTransportBuildingBlock>,
+   public interface IEditPassiveTransportBuildingBlockPresenter : ISingleStartPresenter<PassiveTransportBuildingBlock>,
       IPresenterWithContextMenu<IViewItem>,
       IListener<RemovedEvent>, IListener<AddedEvent>, IListener<EntitySelectedEvent>
 
@@ -27,13 +26,13 @@ namespace MoBi.Presentation.Presenter
       void Select(TransportBuilderDTO transportBuilder);
    }
 
-   public class EditPassiveTransportBuildingBlockPresenter : EditBuildingBlockPresenterBase<IEditPassiveTransportBuildingBlockView, IEditPassiveTransportBuildingBlockPresenter, IPassiveTransportBuildingBlock, ITransportBuilder>, IEditPassiveTransportBuildingBlockPresenter
+   public class EditPassiveTransportBuildingBlockPresenter : EditBuildingBlockPresenterBase<IEditPassiveTransportBuildingBlockView, IEditPassiveTransportBuildingBlockPresenter, PassiveTransportBuildingBlock, TransportBuilder>, IEditPassiveTransportBuildingBlockPresenter
    {
       private readonly ITransportBuilderToTransportBuilderDTOMapper _transportBuilderToDTOTransportBuilderMapper;
       private readonly IEditTransportBuilderPresenter _editTransportBuilderPresenter;
       private readonly IViewItemContextMenuFactory _viewItemContextMenuFactory;
       private readonly IFormulaToFormulaBuilderDTOMapper _formulaToFormulaDTOBuilderMapper;
-      private IPassiveTransportBuildingBlock _passiveTransports;
+      private PassiveTransportBuildingBlock _passiveTransports;
 
       public EditPassiveTransportBuildingBlockPresenter(IEditPassiveTransportBuildingBlockView view,
          ITransportBuilderToTransportBuilderDTOMapper transportBuilderToDTOTransportBuilderMapper,
@@ -48,7 +47,7 @@ namespace MoBi.Presentation.Presenter
          AddSubPresenters(_editTransportBuilderPresenter);
       }
 
-      public override void Edit(IPassiveTransportBuildingBlock passiveTransports)
+      public override void Edit(PassiveTransportBuildingBlock passiveTransports)
       {
          _passiveTransports = passiveTransports;
          _editTransportBuilderPresenter.BuildingBlock = _passiveTransports;
@@ -56,7 +55,7 @@ namespace MoBi.Presentation.Presenter
          _view.Display();
       }
 
-      private void refresh(IPassiveTransportBuildingBlock passiveTransports)
+      private void refresh(PassiveTransportBuildingBlock passiveTransports)
       {
          EditFormulas(_passiveTransports);
          _view.Show(passiveTransports.MapAllUsing(_transportBuilderToDTOTransportBuilderMapper));
@@ -64,7 +63,7 @@ namespace MoBi.Presentation.Presenter
          UpdateCaption();
       }
 
-      private void editChild(ITransportBuilder passiveTransports)
+      private void editChild(TransportBuilder passiveTransports)
       {
          if (passiveTransports == null)
          {
@@ -80,7 +79,7 @@ namespace MoBi.Presentation.Presenter
 
       protected override void UpdateCaption()
       {
-         _view.Caption = AppConstants.Captions.PassiveTransportCaption(_passiveTransports.Name);
+         _view.Caption = AppConstants.Captions.PassiveTransportCaption(_passiveTransports.DisplayName);
       }
 
       public void ShowContextMenu(IViewItem objectRequestingPopup, Point popupLocation)
@@ -102,7 +101,7 @@ namespace MoBi.Presentation.Presenter
 
       public IFormulaCache FormulaCache => BuildingBlock.FormulaCache;
 
-      private ITransportBuilder builderFrom(TransportBuilderDTO transportBuilder)
+      private TransportBuilder builderFrom(TransportBuilderDTO transportBuilder)
       {
          if (transportBuilder == null)
             return null;
@@ -112,7 +111,7 @@ namespace MoBi.Presentation.Presenter
       public void Handle(RemovedEvent eventToHandle)
       {
          if (_passiveTransports == null) return;
-         if (eventToHandle.RemovedObjects.Any(removedObject => removedObject.IsAnImplementationOf<ITransportBuilder>()))
+         if (eventToHandle.RemovedObjects.Any(removedObject => removedObject.IsAnImplementationOf<TransportBuilder>()))
          {
             refresh(_passiveTransports);
          }
@@ -126,35 +125,34 @@ namespace MoBi.Presentation.Presenter
             return;
 
          refresh(_passiveTransports);
-         editChild(addedObject as ITransportBuilder);
+         editChild(addedObject as TransportBuilder);
       }
 
       private bool shouldHandleAdd(IObjectBase addedObject, IObjectBase parent)
       {
-         return addedObject.IsAnImplementationOf<ITransportBuilder>() && parent.Equals(_passiveTransports);
+         return addedObject.IsAnImplementationOf<TransportBuilder>() && parent.Equals(_passiveTransports);
       }
 
-      private class RootViewItemPassiveTransport : IRootViewItem<ITransportBuilder>
+      private class RootViewItemPassiveTransport : IRootViewItem<TransportBuilder>
       {
       }
 
-      protected override Tuple<bool, IObjectBase> SpecificCanHandle(IObjectBase selectedObject)
+      protected override (bool canHandle, IContainer containerObject) SpecificCanHandle(EntitySelectedEvent entitySelectedEvent)
       {
-         var transportBuilder = selectedObject as ITransportBuilder;
-         if (transportBuilder != null)
-            return new Tuple<bool, IObjectBase>(_passiveTransports.Contains(transportBuilder), transportBuilder);
+         if (entitySelectedEvent.ObjectBase is TransportBuilder transportBuilder)
+            return (_passiveTransports.Contains(transportBuilder), transportBuilder);
 
-         return new Tuple<bool, IObjectBase>(false, selectedObject);
+         return (false, null);
       }
 
-      protected override void SelectBuilder(ITransportBuilder builder)
+      protected override void SelectBuilder(TransportBuilder builder)
       {
          editChild(builder);
       }
 
-      protected override void EnsureItemsVisibility(IObjectBase parentObject, IParameter parameter = null)
+      protected override void EnsureItemsVisibility(IContainer parentObject, IParameter parameter = null)
       {
-         SelectBuilder(parentObject as ITransportBuilder);
+         SelectBuilder(parentObject as TransportBuilder);
          _editTransportBuilderPresenter.SelectParameter(parameter);
       }
    }

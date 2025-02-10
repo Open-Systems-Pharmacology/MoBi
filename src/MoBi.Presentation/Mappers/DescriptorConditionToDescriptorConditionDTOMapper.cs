@@ -7,13 +7,13 @@ using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface IDescriptorConditionToDescriptorConditionDTOMapper : IMapper<IDescriptorCondition, DescriptorConditionDTO>
+   public interface IDescriptorConditionToDescriptorConditionDTOMapper : IMapper<ITagCondition, DescriptorConditionDTO>
    {
    }
 
    internal class DescriptorConditionToDescriptorConditionDTOMapper : IDescriptorConditionToDescriptorConditionDTOMapper
    {
-      public DescriptorConditionDTO MapFrom(IDescriptorCondition descriptorCondition)
+      public DescriptorConditionDTO MapFrom(ITagCondition descriptorCondition)
       {
          switch (descriptorCondition)
          {
@@ -27,6 +27,10 @@ namespace MoBi.Presentation.Mappers
                return new DescriptorConditionDTO(notMatchTagCondition.Tag, TagType.NotMatch, AppConstants.NotMatch);
             case NotInContainerCondition notInContainerCondition:
                return new DescriptorConditionDTO(notInContainerCondition.Tag, TagType.NotInContainer, AppConstants.NotInContainer);
+            case InParentCondition _:
+               return new DescriptorConditionDTO(string.Empty, TagType.InParent, AppConstants.InParent);
+            case InChildrenCondition _:
+               return new DescriptorConditionDTO(string.Empty, TagType.InChildren, AppConstants.InChildren);
             default:
                throw new ArgumentException($"Cannot create descriptor condition for {descriptorCondition.GetType().Name}");
          }

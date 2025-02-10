@@ -5,6 +5,7 @@ using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Repositories;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
@@ -26,8 +27,30 @@ namespace MoBi.Presentation
          _favoriteRepository = A.Fake<IFavoriteRepository>();
          _view = A.Fake<IEditFavoritesView>();
          _editParameterListPresenter = A.Fake<IEditParameterListPresenter>();
-         _favoriteTask= A.Fake<IFavoriteTask>();
+         _favoriteTask = A.Fake<IFavoriteTask>();
          sut = new EditFavoritesInSimulationPresenter(_view, _favoriteRepository, _entityPathResolver, _editParameterListPresenter, _favoriteTask);
+      }
+   }
+
+   public class When_editing_a_simulation : concern_for_EditFavoritesInSimulationPresenter
+   {
+      private IMoBiSimulation _simulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = A.Fake<IMoBiSimulation>();
+      }
+
+      protected override void Because()
+      {
+         sut.Edit(_simulation);
+      }
+
+      [Observation]
+      public void the_simulation_should_be_cached()
+      {
+         A.CallTo(() => _editParameterListPresenter.SetVisibility(PathElementId.Simulation, false)).MustHaveHappened();
       }
    }
 
@@ -40,11 +63,11 @@ namespace MoBi.Presentation
       {
          base.Context();
          _quantity = new Parameter();
-         A.CallTo(() => _favoriteRepository.All()).Returns(new[] {string.Empty});
+         A.CallTo(() => _favoriteRepository.All()).Returns(new[] { string.Empty });
 
          _simulation = new MoBiSimulation
          {
-            BuildConfiguration = new MoBiBuildConfiguration(),
+            Configuration = new SimulationConfiguration(),
             Model = new Model
             {
                Root = new Container()

@@ -20,10 +20,10 @@ namespace MoBi.Presentation.Presenter
          return path;
       }
 
-      protected IFormulaUsablePath GenerateLocalReference(IFormulaUsable formulaUsable,  IUsingFormula editedObject)
+      protected FormulaUsablePath GenerateLocalReference(IFormulaUsable formulaUsable, IUsingFormula editedObject)
       {
          if (editedObject == null) return null;
-         IFormulaUsablePath path;
+         FormulaUsablePath path;
          if (formulaUsable.ParentContainer.Equals(editedObject.ParentContainer))
          {
             path = _objectPathFactory.CreateFormulaUsablePathFrom(ObjectPath.PARENT_CONTAINER, formulaUsable.Name);
@@ -33,6 +33,7 @@ namespace MoBi.Presentation.Presenter
             path = _objectPathFactory.CreateFormulaUsablePathFrom(ObjectPath.PARENT_CONTAINER, ObjectPath.PARENT_CONTAINER,
                formulaUsable.ParentContainer.Name, formulaUsable.Name);
          }
+
          path.Dimension = formulaUsable.Dimension;
          path.Alias = formulaUsable.Name;
          return path;
@@ -49,7 +50,7 @@ namespace MoBi.Presentation.Presenter
       {
       }
 
-      public override ReferenceDTO CreatePathFromParameterDummy(IObjectBaseDTO objectBaseDTO, bool shouldCreateAbsolutePaths, IEntity refObject, IUsingFormula editedObject)
+      public override ReferenceDTO CreatePathFromParameterDummy(ObjectBaseDTO objectBaseDTO, bool shouldCreateAbsolutePaths, IEntity refObject, IUsingFormula editedObject)
       {
          var dto = base.CreatePathFromParameterDummy(objectBaseDTO, shouldCreateAbsolutePaths, refObject, editedObject);
          var dtoDummy = objectBaseDTO as DummyParameterDTO;
@@ -58,16 +59,18 @@ namespace MoBi.Presentation.Presenter
             // We need here the Molecule name even in relative paths
             dto.Path.Replace(ObjectPathKeywords.MOLECULE, dtoDummy.ModelParentName);
          }
+
          return dto;
       }
 
-      protected override IFormulaUsablePath CreateRelativePath(IFormulaUsable formulaUsable, IEntity refObject,IUsingFormula editedObject)
+      protected override FormulaUsablePath CreateRelativePath(IFormulaUsable formulaUsable, IEntity refObject, IUsingFormula editedObject)
       {
          if (formulaUsable.IsAtReaction())
          {
-            return GenerateLocalReference(formulaUsable,editedObject);
+            return GenerateLocalReference(formulaUsable, editedObject);
          }
-         return base.CreateRelativePath(formulaUsable, refObject,editedObject);
+
+         return base.CreateRelativePath(formulaUsable, refObject, editedObject);
       }
 
       protected override T AdjustReferences<T>(IEntity parameterToUse, T path)
@@ -90,13 +93,13 @@ namespace MoBi.Presentation.Presenter
       {
       }
 
-      protected override IFormulaUsablePath CreateRelativePath(IFormulaUsable formulaUseable, IEntity refObject, IUsingFormula editedObject)
+      protected override FormulaUsablePath CreateRelativePath(IFormulaUsable formulaUseable, IEntity refObject, IUsingFormula editedObject)
       {
-         IFormulaUsablePath path;
+         FormulaUsablePath path;
 
          if (!formulaUseable.IsAtMolecule())
          {
-            path = base.CreateRelativePath(formulaUseable, refObject,editedObject);
+            path = base.CreateRelativePath(formulaUseable, refObject, editedObject);
          }
          else
          {
@@ -109,12 +112,12 @@ namespace MoBi.Presentation.Presenter
          return path;
       }
 
-      public override ReferenceDTO CreatePathFromParameterDummy(IObjectBaseDTO objectBaseDTO, bool shouldCreateAbsolutePaths,
+      public override ReferenceDTO CreatePathFromParameterDummy(ObjectBaseDTO objectBaseDTO, bool shouldCreateAbsolutePaths,
          IEntity refObject, IUsingFormula editedObject)
       {
          var referenceDTO = base.CreatePathFromParameterDummy(objectBaseDTO, shouldCreateAbsolutePaths, refObject, editedObject);
-         var dtoDummyParameter = (DummyParameterDTO) objectBaseDTO;
-         
+         var dtoDummyParameter = (DummyParameterDTO)objectBaseDTO;
+
          if (Equals(dtoDummyParameter.ModelParentName, editedObject.ParentContainer.Name))
             referenceDTO.Path.Replace(editedObject.ParentContainer.Name, ObjectPathKeywords.MOLECULE);
          return referenceDTO;

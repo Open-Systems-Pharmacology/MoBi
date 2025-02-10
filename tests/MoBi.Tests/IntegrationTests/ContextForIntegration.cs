@@ -79,6 +79,7 @@ namespace MoBi.IntegrationTests
             container.RegisterImplementationOf(A.Fake<IContainerBaseLayouter>());
             container.RegisterImplementationOf(A.Fake<ILayerLayouter>());
             container.RegisterImplementationOf(A.Fake<IEntityValidationTask>());
+            container.RegisterImplementationOf(A.Fake<IDiagramLayoutTask>());
 
             container.Register<IDiagramModelToXmlMapper, DiagramModelToXmlMapperForSpecs>();
             container.Register<IMoBiConfiguration, MoBiConfiguration>(LifeStyle.Singleton);

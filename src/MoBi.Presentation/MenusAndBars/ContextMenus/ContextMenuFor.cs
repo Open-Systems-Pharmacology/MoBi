@@ -13,12 +13,13 @@ using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Utility.Container;
+using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
    public interface IContextMenuFor : IContextMenu
    {
-      IContextMenu InitializeWith(IObjectBaseDTO dto, IPresenter presenter);
+      IContextMenu InitializeWith(ObjectBaseDTO dto, IPresenter presenter);
    }
 
    public interface IContextMenuFor<TObjectBase> : IContextMenuFor
@@ -31,17 +32,19 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
    public abstract class ContextMenuFor<TObjectBase> : ContextMenuBase, IContextMenuFor<TObjectBase> where TObjectBase : class, IObjectBase
    {
-      protected ContextMenuFor(IMoBiContext context, IObjectTypeResolver objectTypeResolver)
+      protected ContextMenuFor(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IContainer container)
       {
          _context = context;
          _objectTypeResolver = objectTypeResolver;
+         _container = container;
       }
 
       protected readonly IMoBiContext _context;
       protected IList<IMenuBarItem> _allMenuItems;
       protected IObjectTypeResolver _objectTypeResolver;
+      protected readonly IContainer _container;
 
-      public virtual IContextMenu InitializeWith(IObjectBaseDTO dto, IPresenter presenter)
+      public virtual IContextMenu InitializeWith(ObjectBaseDTO dto, IPresenter presenter)
       {
          try
          {
@@ -49,10 +52,11 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
             _allMenuItems = new List<IMenuBarItem> {CreateEditItemFor(objectBase)};
 
-            if (dto.Name.IsSpecialName()) return this;
+            if (dto.Name.IsSpecialName()) 
+               return this;
 
             _allMenuItems.Add(CreateRenameItemFor(objectBase));
-            _allMenuItems.Add(createSaveItemFor(objectBase));
+            AddSaveItems(objectBase);
             _allMenuItems.Add(CreateDeleteItemFor(objectBase));
             return this;
          }
@@ -62,26 +66,31 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          }
       }
 
+      protected virtual void AddSaveItems(TObjectBase objectBase)
+      {
+         _allMenuItems.Add(createSaveItemFor(objectBase));
+      }
+
       protected abstract IMenuBarItem CreateDeleteItemFor(TObjectBase objectBase);
 
       private IMenuBarItem createSaveItemFor(TObjectBase objectBase)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.SaveAsPKML)
             .WithIcon(ApplicationIcons.SaveIconFor(typeof(TObjectBase).Name))
-            .WithCommandFor<SaveUICommandFor<TObjectBase>, TObjectBase>(objectBase);
+            .WithCommandFor<SaveUICommandFor<TObjectBase>, TObjectBase>(objectBase, _container);
       }
 
       protected IMenuBarItem CreateEditItemFor(TObjectBase objectToEdit)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Edit)
-            .WithCommandFor<EditCommandFor<TObjectBase>, TObjectBase>(objectToEdit)
+            .WithCommandFor<EditCommandFor<TObjectBase>, TObjectBase>(objectToEdit, _container)
             .WithIcon(ApplicationIcons.Edit);
       }
 
-      protected IMenuBarItem CreateRenameItemFor(TObjectBase objectToEdit)
+      protected virtual IMenuBarItem CreateRenameItemFor(TObjectBase objectToEdit)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Rename)
-            .WithCommandFor<RenameObjectCommand<TObjectBase>, TObjectBase>(objectToEdit)
+            .WithCommandFor<RenameObjectCommand<TObjectBase>, TObjectBase>(objectToEdit, _container)
             .WithIcon(ApplicationIcons.Rename);
       }
 
@@ -94,7 +103,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       protected IMenuBarItem AddToJournal(TObjectBase objectBase)
       {
-         return ObjectBaseCommonContextMenuItems.AddToJournal(objectBase);
+         return ObjectBaseCommonContextMenuItems.AddToJournal(objectBase, _container);
       }
    }
 }

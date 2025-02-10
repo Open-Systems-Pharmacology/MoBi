@@ -18,6 +18,7 @@ namespace MoBi.Presentation.Repositories
       {
          yield return applicationButtonGroup;
          yield return buildingBlocksButtonGroup;
+         yield return projectGroup;
          yield return toolsButtonGroup;
          yield return simulationButtonGroup;
          yield return viewButtonGroup;
@@ -26,13 +27,12 @@ namespace MoBi.Presentation.Repositories
          yield return addMoleculeButtonGroup;
          yield return addReactionButtonGroup;
          yield return editDiagramButtonGroup;
-         yield return addOrganismButtonGroup;
+         yield return addSpatialStructureButtonGroup;
          yield return addPassiveTransportButtonGroup;
          yield return addObserverButtonGroup;
          yield return addEventButtonGroup;
-         yield return addMoleculeStartValueButtonGroup;
-         yield return addParameterStartValueButtonGroup;
-         yield return workflowButtonGroup;
+         yield return addInitialConditionButtonGroup;
+         yield return addParameterValueButtonGroup;
          yield return displayUnitsButtonGroup;
          yield return journalButtonGroup;
          yield return favoritesButtonGroup;
@@ -42,7 +42,7 @@ namespace MoBi.Presentation.Repositories
          yield return parameterIdentificationConfidenceIntervalButtonGroup;
          yield return parameterSensitivityButtonGroup;
          yield return runSensitivityAnalysisButtonGroup;
-         yield return senstivityAnalysisButtonGroup;
+         yield return sensitivityAnalysisButtonGroup;
          yield return historyButtonGroup;
       }
 
@@ -115,11 +115,12 @@ namespace MoBi.Presentation.Repositories
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewReactionMolecule)))
          .WithId(ButtonGroupIds.AddReaction);
 
-      private IButtonGroup addOrganismButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Add)
+      private IButtonGroup addSpatialStructureButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Add)
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewTopContainer)).WithCaption(AppConstants.RibbonButtonNames.New))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.LoadTopContainer)).WithCaption(AppConstants.RibbonButtonNames.Load))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.LoadTopContainerFromTemplate)).WithCaption(AppConstants.RibbonButtonNames.LoadFromTemplate))
-         .WithId(ButtonGroupIds.AddOrganism);
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewNeighborhood)).WithCaption(ObjectTypes.Neighborhood))
+         .WithId(ButtonGroupIds.AddSpatialStructure);
 
       private IButtonGroup addPassiveTransportButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Add)
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewPassiveTransport)).WithCaption(AppConstants.RibbonButtonNames.New))
@@ -157,10 +158,10 @@ namespace MoBi.Presentation.Repositories
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.FitToPage)))
          .WithId(ButtonGroupIds.EditDiagram);
 
-      private IButtonGroup addMoleculeStartValueButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Edit)
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.MoleculeStartValuesExtend)))
-         .WithId(ButtonGroupIds.EditMoleculeStartValues)
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewMoleculeStartValue)));
+      private IButtonGroup addInitialConditionButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Edit)
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.InitialConditionsExtend)))
+         .WithId(ButtonGroupIds.EditInitialConditions)
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewInitialConditions)));
 
       private IButtonGroup importButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Import)
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.LoadSimulationIntoProject)).WithCaption(AppConstants.MenuNames.LoadIntoProject))
@@ -173,15 +174,17 @@ namespace MoBi.Presentation.Repositories
          .WithId(ButtonGroupIds.Export);
 
       private IButtonGroup buildingBlocksButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.BuildingBlocks)
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewSpatialStructure)).WithCaption(AppConstants.RibbonButtonNames.SpatialStructure))
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewMoleculesBB)).WithCaption(AppConstants.RibbonButtonNames.Molecules))
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewReactionBB)).WithCaption(AppConstants.RibbonButtonNames.Reactions))
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewPassiveTransportBB)).WithCaption(AppConstants.RibbonButtonNames.PassiveTransport))
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewObserverBB)).WithCaption(AppConstants.RibbonButtonNames.Observer))
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewEventBB)).WithCaption(AppConstants.RibbonButtonNames.Events))
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewSimulationSettingsBB)).WithCaption(AppConstants.RibbonButtonNames.SimulationSettings))
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewModule)).WithCaption(AppConstants.RibbonButtonNames.NewModule))
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewExpressionProfile)))
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewIndividual)).WithCaption(AppConstants.RibbonButtonNames.Individual))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewSimulation)).WithCaption(AppConstants.RibbonButtonNames.Simulation))
          .WithId(ButtonGroupIds.BuildingBlocks);
+
+      private IButtonGroup projectGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.SimulationSettings)
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.EditProjectSimulationSettings)).WithCaption(AppConstants.RibbonButtonNames.Edit))
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.SaveProjectSimulationSettings)).WithCaption(AppConstants.RibbonButtonNames.Save))
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.LoadProjectSimulationSettings)).WithCaption(AppConstants.RibbonButtonNames.Load))
+         .WithId(ButtonGroupIds.ProjectSimulationSettings);
 
       private IButtonGroup toolsButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Tools)
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.GarbageCollection)))
@@ -189,7 +192,7 @@ namespace MoBi.Presentation.Repositories
          .WithId(ButtonGroupIds.Tools);
 
       private IButtonGroup viewButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Views)
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.BuildingBlockExplorerView)))
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ModuleExplorerView)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.SimulationExplorerView)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.HistoryView)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ComparisonView)))
@@ -207,14 +210,11 @@ namespace MoBi.Presentation.Repositories
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.CalculateScaleFactors)))
          .WithId(ButtonGroupIds.Simulation);
 
-      private IButtonGroup workflowButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Workflows)
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.Merge)))
-         .WithId(ButtonGroupIds.Workflows);
-
-      private IButtonGroup addParameterStartValueButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Edit)
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ParameterStartValuesExtend)))
-         .WithId(ButtonGroupIds.EditParameterStartValues)
-         .WithButton((CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewParameterStartValue))));
+      private IButtonGroup addParameterValueButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Edit)
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ParameterValuesExtend)))
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.AddProteinExpression)))
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.NewParameterValue)))
+         .WithId(ButtonGroupIds.EditParameterValues);
 
       private IButtonGroup journalButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Journal)
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.CreateJournalPage)))
@@ -241,7 +241,7 @@ namespace MoBi.Presentation.Repositories
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.SensitivityAnalysisFeedbackView)))
          .WithId(ButtonGroupIds.RunSensitivityAnalysis);
 
-      private IButtonGroup senstivityAnalysisButtonGroup => CreateButtonGroup.WithCaption(Ribbons.ParameterSensitivityAnalyses)
+      private IButtonGroup sensitivityAnalysisButtonGroup => CreateButtonGroup.WithCaption(Ribbons.ParameterSensitivityAnalyses)
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.SensitivityAnalysisPKParameterAnalysis)))
          .WithId(ButtonGroupIds.SensitivityAnalysisPKParameterAnalyses);
 

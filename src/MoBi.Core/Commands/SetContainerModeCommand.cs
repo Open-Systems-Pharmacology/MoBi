@@ -1,10 +1,9 @@
 ﻿using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Events;
+using OSPSuite.Assets;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Assets;
 
 namespace MoBi.Core.Commands
 {
@@ -31,36 +30,7 @@ namespace MoBi.Core.Commands
       {
          base.ExecuteWith(context);
          _container.Mode = _newContainerMode;
-         addContainerVolumeParameter(context);
          Description = AppConstants.Commands.EditDescription(ObjectTypes.Container, AppConstants.Captions.ContainerMode, _oldContainerMode.ToString(), _newContainerMode.ToString(), _container.Name);
-      }
-
-      private void addContainerVolumeParameter(IMoBiContext context)
-      {
-         var volume = _container.GetSingleChildByName<IParameter>(Constants.Parameters.VOLUME);
-
-         //switch from physical to logical. If volume was created here, this command is an inverse and volume should be removed
-         if (_newContainerMode == ContainerMode.Logical)
-         {
-            if (_volumeParameterCreatedHere && volume != null)
-            {
-               _container.RemoveChild(volume);
-               context.Unregister(volume);
-               context.PublishEvent(new RemovedEvent(volume, _container));
-            }
-         }
-         //we switched from Logical to physical. Add volume parameter if not available
-         else
-         {
-            if (volume != null) return;
-            var parameterFactory = context.Resolve<IParameterFactory>();
-            volume = parameterFactory.CreateVolumeParameter();
-
-            _container.Add(volume);
-            context.Register(volume);
-            _volumeParameterCreatedHere = true;
-            context.PublishEvent(new AddedEvent<IParameter>(volume, _container));
-         }
       }
 
       protected override void ClearReferences()

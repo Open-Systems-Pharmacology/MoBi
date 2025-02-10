@@ -95,7 +95,7 @@ namespace MoBi.UI.Views
       {
          for (int i = 0; i < _pathElementsColumns.Count; i++)
          {
-            _pathElementsColumns[i].Visible = _presenter.HasAtLeastTwoDistinctValues(i);
+            _pathElementsColumns[i].Visible = _presenter.HasAtLeastOneValue(i);
          }
       }
 

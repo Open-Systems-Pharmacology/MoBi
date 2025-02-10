@@ -19,12 +19,12 @@ namespace MoBi.IntegrationTests
       public void should_be_able_to_find_a_diff_builder_for_a_simulation()
       {
          var diffBuilderRepository = IoC.Resolve<IDiffBuilderRepository>();
-         var simuationDiffBuilder = diffBuilderRepository.BuilderFor(new MoBiSimulation());
-         simuationDiffBuilder.ShouldBeAnInstanceOf<MoBiSimulationDiffBuilder>();
+         var simulationDiffBuilder = diffBuilderRepository.BuilderFor(new MoBiSimulation());
+         simulationDiffBuilder.ShouldBeAnInstanceOf<MoBiSimulationDiffBuilder>();
       }
 
       [Observation]
-      public void should_be_able_to_find_a_base_presenter_for_a_simulation_diamgram_manager()
+      public void should_be_able_to_find_a_base_presenter_for_a_simulation_diagram_manager()
       {
          var presenter = IoC.Resolve<IBaseDiagramPresenter<IMoBiSimulation>>();
          presenter.ShouldNotBeNull();

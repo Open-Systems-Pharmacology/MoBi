@@ -7,18 +7,18 @@ using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
-   public interface IRemoveRootEventBuilderFromEventGroupBuilderUICommand : IObjectUICommand<IEventBuilder>
+   public interface IRemoveRootEventBuilderFromEventGroupBuilderUICommand : IObjectUICommand<EventBuilder>
    {
    }
 
    public class RemoveRootEventBuilderFromEventGroupBuilderUICommand : IRemoveRootEventBuilderFromEventGroupBuilderUICommand
    {
-      private readonly IInteractionTasksForChildren<IEventGroupBuilder,IEventBuilder> _interactionTasks;
+      private readonly IInteractionTasksForChildren<EventGroupBuilder,EventBuilder> _interactionTasks;
       private readonly IMoBiContext _context;
       private readonly IActiveSubjectRetriever _activeSubjectRetriever;
-      private IEventGroupBuilder _parent;
+      private EventGroupBuilder _parent;
 
-      public RemoveRootEventBuilderFromEventGroupBuilderUICommand(IInteractionTasksForChildren<IEventGroupBuilder, IEventBuilder> interactionTasks, IMoBiContext context, IActiveSubjectRetriever activeSubjectRetriever)
+      public RemoveRootEventBuilderFromEventGroupBuilderUICommand(IInteractionTasksForChildren<EventGroupBuilder, EventBuilder> interactionTasks, IMoBiContext context, IActiveSubjectRetriever activeSubjectRetriever)
       {
          _interactionTasks = interactionTasks;
          _context = context;
@@ -31,23 +31,23 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          _context.AddToHistory(_interactionTasks.Remove(Subject, _parent, buildingBlock));
       }
 
-      public IObjectUICommand<IEventBuilder> For(IEventBuilder eventBuilder)
+      public IObjectUICommand<EventBuilder> For(EventBuilder eventBuilder)
       {
-         _parent = (IEventGroupBuilder) eventBuilder.ParentContainer;
+         _parent = (EventGroupBuilder) eventBuilder.ParentContainer;
          Subject = eventBuilder;
          return this;
       }
 
-      public IEventBuilder Subject { get; set; }
+      public EventBuilder Subject { get; set; }
    }
 
-   internal class RemoveEventBuilderFromEventGroupBuilderUICommand : ObjectUICommand<IEventGroupBuilder>
+   internal class RemoveEventBuilderFromEventGroupBuilderUICommand : ObjectUICommand<EventGroupBuilder>
    {
-      private readonly IInteractionTasksForChildren<IEventGroupBuilder, IEventGroupBuilder> _interactionTasks;
+      private readonly IInteractionTasksForChildren<EventGroupBuilder, EventGroupBuilder> _interactionTasks;
       private readonly IMoBiContext _context;
       private readonly IActiveSubjectRetriever _activeSubjectRetriever;
 
-      public RemoveEventBuilderFromEventGroupBuilderUICommand(IInteractionTasksForChildren<IEventGroupBuilder, IEventGroupBuilder> interactionTasks, IMoBiContext context, IActiveSubjectRetriever activeSubjectRetriever)
+      public RemoveEventBuilderFromEventGroupBuilderUICommand(IInteractionTasksForChildren<EventGroupBuilder, EventGroupBuilder> interactionTasks, IMoBiContext context, IActiveSubjectRetriever activeSubjectRetriever)
       {
          _interactionTasks = interactionTasks;
          _context = context;
@@ -57,7 +57,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       protected override void PerformExecute()
       {
          var buildingBlock = _activeSubjectRetriever.Active<IBuildingBlock>();
-         _context.AddToHistory(_interactionTasks.Remove(Subject, (IEventGroupBuilder)Subject.ParentContainer, buildingBlock));
+         _context.AddToHistory(_interactionTasks.Remove(Subject, (EventGroupBuilder)Subject.ParentContainer, buildingBlock));
       }
    }
 }

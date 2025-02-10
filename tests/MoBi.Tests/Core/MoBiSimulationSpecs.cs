@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Data;
-using System.Linq;
+﻿using System.Linq;
 using FakeItEasy;
+using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Core.Domain.UnitSystem;
@@ -13,9 +12,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Extensions;
-using DataColumn = OSPSuite.Core.Domain.Data.DataColumn;
 
 namespace MoBi.Core
 {
@@ -24,6 +20,89 @@ namespace MoBi.Core
       protected override void Context()
       {
          sut = new MoBiSimulation();
+      }
+   }
+
+   public class When_checking_if_a_simulation_uses_a_module : concern_for_MoBiSimulation
+   {
+      private bool _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         sut.Configuration = new SimulationConfiguration();
+         sut.Configuration.AddModuleConfiguration(new ModuleConfiguration(new Module().WithName("a Module")));
+      }
+
+      protected override void Because()
+      {
+         _result = sut.Uses(new Module().WithName("a Module"));
+      }
+
+      [Observation]
+      public void the_simulation_should_indicate_it_uses_the_module()
+      {
+         _result.ShouldBeTrue();
+      }
+   }
+
+   public class When_checking_if_a_simulation_uses_a_building_block_but_the_building_block_is_used_when_the_module_is_used : concern_for_MoBiSimulation
+   {
+      private bool _result;
+      private SpatialStructure _templateBuildingBlock;
+
+      protected override void Context()
+      {
+         base.Context();
+         sut.Configuration = new SimulationConfiguration();
+         var simulationModule = new Module().WithName("a Module");
+         simulationModule.Add(new SpatialStructure().WithName("a Building Block"));
+
+         sut.Configuration.AddModuleConfiguration(new ModuleConfiguration(simulationModule));
+
+         _templateBuildingBlock = new SpatialStructure
+         {
+            Module = new Module().WithName("a Module")
+         }.WithName("a Building Block");
+      }
+
+      protected override void Because()
+      {
+         _result = sut.Uses(_templateBuildingBlock);
+      }
+
+      [Observation]
+      public void the_simulation_should_indicate_it_uses_the_building_block_because_the_module_is_used()
+      {
+         _result.ShouldBeTrue();
+      }
+   }
+
+   public class When_checking_if_a_simulation_uses_a_building_block_but_the_building_block_is_not_used_when_the_module_is_used : concern_for_MoBiSimulation
+   {
+      private bool _result;
+      private SpatialStructure _templateBuildingBlock;
+
+      protected override void Context()
+      {
+         base.Context();
+         sut.Configuration = new SimulationConfiguration();
+         sut.Configuration.AddModuleConfiguration(new ModuleConfiguration(new Module().WithName("a Module")));
+         _templateBuildingBlock = new SpatialStructure
+         {
+            Module = new Module().WithName("a Module")
+         };
+      }
+
+      protected override void Because()
+      {
+         _result = sut.Uses(_templateBuildingBlock);
+      }
+
+      [Observation]
+      public void the_simulation_should_indicate_it_uses_the_building_block_because_the_module_is_used()
+      {
+         _result.ShouldBeFalse();
       }
    }
 
@@ -60,20 +139,41 @@ namespace MoBi.Core
          base.Context();
          _cloneManager = A.Fake<ICloneManager>();
          _simulationDiagramManager = A.Fake<ISimulationDiagramManager>();
-         _moBiSimulation = new MoBiSimulation {DiagramManager = _simulationDiagramManager};
+         _moBiSimulation = new MoBiSimulation { DiagramManager = _simulationDiagramManager };
          sut.Model = new Model();
          sut.Model.Root = new Container();
+
+         var originalQuantityValue = new OriginalQuantityValue
+         {
+            Path = "A|BC",
+         };
+         _moBiSimulation.AddOriginalQuantityValue(originalQuantityValue);
 
          _moBiSimulation.OutputMappings.Add(new OutputMapping
          {
             OutputSelection = new SimulationQuantitySelection(_moBiSimulation, new QuantitySelection("A|BC", QuantityType.Enzyme)),
             WeightedObservedData = new WeightedObservedData(DomainHelperForSpecs.ObservedData())
          });
+         _moBiSimulation.HasUntraceableChanges = true;
       }
 
       protected override void Because()
       {
          sut.UpdatePropertiesFrom(_moBiSimulation, _cloneManager);
+      }
+
+      [Observation]
+      public void should_have_transferred_properties()
+      {
+         sut.HasUntraceableChanges.ShouldBeEqualTo(_moBiSimulation.HasUntraceableChanges);
+      }
+
+      [Observation]
+      public void the_simulation_has_updated_original_quantity_values()
+      {
+         sut.OriginalQuantityValues.Count.ShouldBeEqualTo(1);
+         sut.OriginalQuantityValues.ElementAt(0).Path.ShouldBeEqualTo("A|BC");
+         sut.OriginalQuantityValues.ElementAt(0).ShouldNotBeEqualTo(_moBiSimulation.OriginalQuantityValues.First());
       }
 
       [Observation]
@@ -147,7 +247,7 @@ namespace MoBi.Core
          _curve.SetyData(_dataColumn, new MoBiDimensionFactory());
          _chart.AddCurve(_curve);
 
-         sut.Update(A.Fake<IMoBiBuildConfiguration>(), A.Fake<IModel>());
+         sut.Update(A.Fake<SimulationConfiguration>(), A.Fake<IModel>());
          sut.Chart = _chart;
          sut.HasChanged = false;
          //make sure we do have curves initially
@@ -169,6 +269,96 @@ namespace MoBi.Core
       public void the_observed_data_should_have_been_removed()
       {
          sut.Chart.Curves.ShouldBeEmpty();
+      }
+   }
+
+   public abstract class Using_selectable_building_blocks<TBuildingBlock> : concern_for_MoBiSimulation where TBuildingBlock : BuildingBlock, new()
+   {
+      protected bool _result;
+      protected TBuildingBlock _templateBuildingBlock;
+      protected TBuildingBlock _simulationBuildingBlock;
+      private SimulationConfiguration _simulationConfiguration;
+      protected ModuleConfiguration _moduleConfiguration;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulationConfiguration = new SimulationConfiguration();
+         sut.Configuration = _simulationConfiguration;
+         var simulationModule = new Module().WithName("a Module");
+         _simulationBuildingBlock = new TBuildingBlock().WithName("bb");
+         simulationModule.Add(_simulationBuildingBlock);
+         _moduleConfiguration = new ModuleConfiguration(simulationModule);
+         sut.Configuration.AddModuleConfiguration(_moduleConfiguration);
+
+
+         var templateModule = new Module().WithName("a Module");
+         _templateBuildingBlock = new TBuildingBlock().WithName("bb");
+         templateModule.Add(_templateBuildingBlock);
+         SelectBuildingBlock();
+      }
+
+      public abstract void SelectBuildingBlock();
+
+      protected override void Because()
+      {
+         _result = sut.Uses(_templateBuildingBlock);
+      }
+   }
+
+   public class When_checking_if_a_simulation_uses_an_selected_initial_condition : Using_selectable_building_blocks<InitialConditionsBuildingBlock>
+   {
+      [Observation]
+      public void the_simulation_should_indicate_the_building_block_is_not_used()
+      {
+         _result.ShouldBeTrue();
+      }
+
+      public override void SelectBuildingBlock()
+      {
+         _moduleConfiguration.SelectedInitialConditions = _templateBuildingBlock;
+      }
+   }
+
+   public class When_checking_if_a_simulation_uses_an_selected_parameter_values : Using_selectable_building_blocks<ParameterValuesBuildingBlock>
+   {
+      [Observation]
+      public void the_simulation_should_indicate_the_building_block_is_not_used()
+      {
+         _result.ShouldBeTrue();
+      }
+
+      public override void SelectBuildingBlock()
+      {
+         _moduleConfiguration.SelectedParameterValues = _templateBuildingBlock;
+      }
+   }
+
+   public class When_checking_if_a_simulation_uses_an_unselected_initial_condition : Using_selectable_building_blocks<InitialConditionsBuildingBlock>
+   {
+      [Observation]
+      public void the_simulation_should_indicate_the_building_block_is_not_used()
+      {
+         _result.ShouldBeFalse();
+      }
+
+      public override void SelectBuildingBlock()
+      {
+         _moduleConfiguration.SelectedInitialConditions = null;
+      }
+   }
+
+   public class When_checking_if_a_simulation_uses_an_unselected_parameter_values : Using_selectable_building_blocks<ParameterValuesBuildingBlock>
+   {
+      [Observation]
+      public void the_simulation_should_indicate_the_building_block_is_not_used()
+      {
+         _result.ShouldBeFalse();
+      }
+
+      public override void SelectBuildingBlock()
+      {
+         _moduleConfiguration.SelectedParameterValues = null;
       }
    }
 }

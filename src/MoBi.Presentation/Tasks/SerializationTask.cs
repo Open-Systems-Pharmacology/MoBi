@@ -83,7 +83,7 @@ namespace MoBi.Presentation.Tasks
          var project = _context.CurrentProject;
          if (project == null) return;
 
-         //try to lock the file if it exisits or is not lock already
+         //try to lock the file if it exists or is not lock already
          _context.LockFile(project.FilePath);
 
          _contextPersistor.Save(_context);
@@ -95,15 +95,9 @@ namespace MoBi.Presentation.Tasks
          _context.ProjectIsReadOnly = false;
       }
 
-      public void CloseProject()
-      {
-         _contextPersistor.CloseProject(_context);
-      }
+      public void CloseProject() => _contextPersistor.CloseProject(_context);
 
-      public void NewProject()
-      {
-         _contextPersistor.NewProject(_context);
-      }
+      public MoBiProject NewProject() => _contextPersistor.NewProject(_context);
 
       public void LoadJournal(string journalPath, string projectFullPath = null, bool showJournal = false)
       {
@@ -148,7 +142,7 @@ namespace MoBi.Presentation.Tasks
 
          var notificationMessages = _projectConverterLogger.AllMessages().ToList();
          if (notificationMessages.Any())
-            _context.PublishEvent(new ShowNotificationsEvent(notificationMessages));
+            _context.PublishEvent(new ShowProjectConversionNotificationsEvent(notificationMessages));
 
          _postSerializationSteps.PerformPostDeserializationFor(deserializedObjects, version, resetIds);
 
@@ -198,8 +192,8 @@ namespace MoBi.Presentation.Tasks
          if (expectedElementName.Equals(AppConstants.XmlNames.MoleculeBuildingBlock)) return AppConstants.XmlNames.Molecules;
          if (expectedElementName.Equals(AppConstants.XmlNames.ObserverBuildingBlock)) return AppConstants.XmlNames.Observers;
          if (expectedElementName.Equals(AppConstants.XmlNames.EventGroupBuildingBlock)) return AppConstants.XmlNames.EventGroups;
-         if (expectedElementName.Equals(AppConstants.XmlNames.MoleculeStartValuesBuildingBlock)) return AppConstants.XmlNames.MoleculeStartValues;
-         if (expectedElementName.Equals(AppConstants.XmlNames.ParameterStartValuesBuildingBlock)) return AppConstants.XmlNames.ParameterStartValues;
+         if (expectedElementName.Equals(AppConstants.XmlNames.InitialConditionsBuildingBlock)) return AppConstants.XmlNames.InitialConditions;
+         if (expectedElementName.Equals(AppConstants.XmlNames.ParameterValuesBuildingBlock)) return AppConstants.XmlNames.ParameterValues;
          if (expectedElementName.Equals(AppConstants.XmlNames.MoBiReactionBuildingBlock)) return AppConstants.XmlNames.Reactions;
          if (expectedElementName.Equals(AppConstants.XmlNames.ReactionBuildingBlock)) return AppConstants.XmlNames.Reactions;
          if (expectedElementName.Equals(AppConstants.XmlNames.MoBiSpatialStructure)) return AppConstants.XmlNames.SpatialStructure;

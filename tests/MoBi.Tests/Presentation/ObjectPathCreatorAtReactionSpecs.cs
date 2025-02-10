@@ -35,23 +35,19 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         _concentrationDTO = new DummyParameterDTO().WithId("Dum");
-         
-         ObjectBaseDTO concentrationParameterDTO = new ObjectBaseDTO().WithName("Concentration").WithId(Guid.NewGuid().ToString());
-         
-         _concentrationDTO.ParameterToUse = concentrationParameterDTO;
+         var concentrationParameter =
+            new Parameter().WithName("Concentration")
+               .WithId("CondId")
+               .WithDimension(_dimension)
+               .WithParentContainer(new MoleculeBuilder().WithName("Drug"));
+         _concentrationDTO = new DummyParameterDTO(concentrationParameter).WithId("Dum");
          _concentrationDTO.ModelParentName = "Drug";
+
          _localCompartment = new Container().WithName("Plasma");
          IContainer moleculeProperties = new Container().WithName(Constants.MOLECULE_PROPERTIES).WithParentContainer(_localCompartment);
          _concentrationDTO.Parent = moleculeProperties;
          _dimension = A.Fake<IDimension>();
-         var concentrationParameter =
-            new Parameter().WithName("Concentration")
-                           .WithId(concentrationParameterDTO.Id)
-                           .WithDimension(_dimension)
-                           .WithParentContainer(new MoleculeBuilder().WithName("Drug"));
          concentrationParameter.BuildMode = ParameterBuildMode.Local;
-         A.CallTo(() => _context.Get<IParameter>(concentrationParameterDTO.Id)).Returns(concentrationParameter);
       }
 
       protected override void Because()
@@ -60,7 +56,7 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_return_correct_refernece_dto()
+      public void should_return_correct_reference_dto()
       {
          _referenceDTO.BuildMode.ShouldBeEqualTo(ParameterBuildMode.Local);
          _referenceDTO.Path.ShouldOnlyContainInOrder(ObjectPath.PARENT_CONTAINER, "Drug", "Concentration");

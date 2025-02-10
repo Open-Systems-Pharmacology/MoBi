@@ -10,7 +10,7 @@ namespace MoBi.Core.Commands
 {
    public abstract class concern_for_ChangeModifierCommand : ContextSpecification<ChangeModifierCommand>
    {
-      private IMoBiReactionBuildingBlock _reactionBuildingBlock;
+      private MoBiReactionBuildingBlock _reactionBuildingBlock;
       protected ReactionBuilder _reaction;
       private IMoBiReactionDiagramManager _moBiReactionDiagramManager;
 

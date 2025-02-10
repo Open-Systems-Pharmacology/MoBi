@@ -9,7 +9,7 @@ using OSPSuite.Infrastructure.Reporting;
 
 namespace MoBi.Core.Reporting.TEXBuilder
 {
-   class EventGroupBuilderTEXBuilder : OSPSuiteTeXBuilder<IEventGroupBuilder>
+   class EventGroupBuilderTEXBuilder : OSPSuiteTeXBuilder<EventGroupBuilder>
    {
       private readonly ITeXBuilderRepository _builderRepository;
 
@@ -18,7 +18,7 @@ namespace MoBi.Core.Reporting.TEXBuilder
          _builderRepository = builderRepository;
       }
 
-      public override void Build(IEventGroupBuilder eventGroupBuilder, OSPSuiteTracker buildTracker)
+      public override void Build(EventGroupBuilder eventGroupBuilder, OSPSuiteTracker buildTracker)
       {
          var listToReport = new List<object>();
          listToReport.Add(new Paragraph(Constants.EVENT_GROUP_BUILDER));
@@ -46,7 +46,7 @@ namespace MoBi.Core.Reporting.TEXBuilder
             listToReport.Add(new LineBreak());
             listToReport.Add(applicationBuilder.SourceCriteria);
 
-            listToReport.AddRange(applicationBuilder.GetChildren<ITransportBuilder>());
+            listToReport.AddRange(applicationBuilder.GetChildren<TransportBuilder>());
 
             listToReport.AddRange(applicationBuilder.GetChildren<IContainer>());
          }

@@ -13,33 +13,32 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Assets;
+using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
-   public interface IContextMenuForAmountObserverBuilder : IContextMenuFor<IAmountObserverBuilder>
+   public interface IContextMenuForAmountObserverBuilder : IContextMenuFor<AmountObserverBuilder>
    {
    }
 
-   public interface IContextMenuForContainerObserverBuilder : IContextMenuFor<IContainerObserverBuilder>
+   public interface IContextMenuForContainerObserverBuilder : IContextMenuFor<ContainerObserverBuilder>
    {
    }
 
-   public class ContextMenuForContainerObserverBuilder : ContextMenuForObserverBuilder<IContainerObserverBuilder>, IContextMenuForContainerObserverBuilder
+   public class ContextMenuForContainerObserverBuilder : ContextMenuForObserverBuilder<ContainerObserverBuilder>, IContextMenuForContainerObserverBuilder
    {
-      public ContextMenuForContainerObserverBuilder(
-         IMoBiContext context,
+      public ContextMenuForContainerObserverBuilder(IMoBiContext context,
          IObjectTypeResolver objectTypeResolver,
-         IActiveSubjectRetriever activeSubjectRetriever) : base(context, objectTypeResolver, activeSubjectRetriever)
+         IActiveSubjectRetriever activeSubjectRetriever, IContainer container) : base(context, objectTypeResolver, activeSubjectRetriever, container)
       {
       }
    }
 
-   public class ContextMenuForAmountObserverBuilder : ContextMenuForObserverBuilder<IAmountObserverBuilder>, IContextMenuForAmountObserverBuilder
+   public class ContextMenuForAmountObserverBuilder : ContextMenuForObserverBuilder<AmountObserverBuilder>, IContextMenuForAmountObserverBuilder
    {
-      public ContextMenuForAmountObserverBuilder(
-         IMoBiContext context,
+      public ContextMenuForAmountObserverBuilder(IMoBiContext context,
          IObjectTypeResolver objectTypeResolver,
-         IActiveSubjectRetriever activeSubjectRetriever) : base(context, objectTypeResolver, activeSubjectRetriever)
+         IActiveSubjectRetriever activeSubjectRetriever, IContainer container) : base(context, objectTypeResolver, activeSubjectRetriever, container)
       {
       }
    }
@@ -48,15 +47,15 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
    {
       private readonly IActiveSubjectRetriever _activeSubjectRetriever;
 
-      public ContextMenuForObserverBuilder(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IActiveSubjectRetriever activeSubjectRetriever)
-         : base(context, objectTypeResolver)
+      public ContextMenuForObserverBuilder(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IActiveSubjectRetriever activeSubjectRetriever, IContainer container)
+         : base(context, objectTypeResolver, container)
       {
          _activeSubjectRetriever = activeSubjectRetriever;
       }
 
       protected override IMenuBarItem CreateDeleteItemFor(T objectToRemove)
       {
-         var buildingBlock = _activeSubjectRetriever.Active<IObserverBuildingBlock>();
+         var buildingBlock = _activeSubjectRetriever.Active<ObserverBuildingBlock>();
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
             .WithIcon(ApplicationIcons.Delete)
             .WithRemoveCommand(buildingBlock, objectToRemove);
@@ -69,7 +68,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          if (viewItem.IsAnImplementationOf<AmountObserverBuilderRootItem>())
          {
-            return IoC.Resolve<IRootContextMenuFor<IObserverBuildingBlock, IAmountObserverBuilder>>().InitializeWith(presenter);
+            return IoC.Resolve<IRootContextMenuFor<ObserverBuildingBlock, AmountObserverBuilder>>().InitializeWith(presenter);
          }
          return IoC.Resolve<IContextMenuForAmountObserverBuilder>().InitializeWith(viewItem as ObserverBuilderDTO, presenter);
       }
@@ -87,7 +86,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          if (viewItem.IsAnImplementationOf<AmountObserverBuilderRootItem>())
          {
-            return IoC.Resolve<IRootContextMenuFor<IObserverBuildingBlock, IContainerObserverBuilder>>().InitializeWith(presenter);
+            return IoC.Resolve<IRootContextMenuFor<ObserverBuildingBlock, ContainerObserverBuilder>>().InitializeWith(presenter);
          }
          return IoC.Resolve<IContextMenuForContainerObserverBuilder>().InitializeWith(viewItem as ObserverBuilderDTO, presenter);
       }

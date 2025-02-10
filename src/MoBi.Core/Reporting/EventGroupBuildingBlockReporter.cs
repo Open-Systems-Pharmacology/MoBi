@@ -2,7 +2,7 @@
 
 namespace MoBi.Core.Reporting
 {
-   internal class EventGroupBuildingBlockReporter : BuildingBlockReporter<IEventGroupBuildingBlock, IEventGroupBuilder>
+   internal class EventGroupBuildingBlockReporter : BuildingBlockReporter<EventGroupBuildingBlock, EventGroupBuilder>
    {
       public EventGroupBuildingBlockReporter() : base(Constants.EVENT_BUILDING_BLOCK, Constants.EVENT_BUILDING_BLOCKS)
       {

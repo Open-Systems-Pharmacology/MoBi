@@ -6,27 +6,23 @@ namespace MoBi.Presentation.DTO
 {
    public class TransportBuilderDTO : ObjectBaseDTO
    {
-      public ITransportBuilder TransporBuilder { get; private set; }
+      public TransportBuilder TransportBuilder { get; }
 
-      public TransportBuilderDTO(ITransportBuilder transportBuilder)
+      public TransportBuilderDTO(TransportBuilder transportBuilder):base(transportBuilder)  
       {
-         TransporBuilder = transportBuilder;
+         TransportBuilder = transportBuilder;
       }
 
       public FormulaBuilderDTO Formula { get; set; }
       public IEnumerable<ParameterDTO> Parameters { get; set; }
       public TransportType TransportType { get; set; }
 
-      public bool CreateProcessRateParameter
-      {
-         get { return TransporBuilder.CreateProcessRateParameter; }
-         set { TransporBuilder.CreateProcessRateParameter = value; }
-      }
+      public bool CreateProcessRateParameter => TransportBuilder.CreateProcessRateParameter;
 
       public bool ProcessRateParameterPersistable
       {
-         get { return TransporBuilder.ProcessRateParameterPersistable; }
-         set { TransporBuilder.ProcessRateParameterPersistable = value; }
+         get => TransportBuilder.ProcessRateParameterPersistable;
+         set => TransportBuilder.ProcessRateParameterPersistable = value;
       }
    }
 }

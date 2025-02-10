@@ -1,16 +1,18 @@
 ﻿using System;
-using OSPSuite.Utility.Events;
+using System.Drawing;
 using MoBi.Presentation.Views;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Events;
 
 namespace MoBi.Presentation
 {
    public interface IModalPresenter : IDisposablePresenter
    {
       void Encapsulate(IPresenter subPresenter);
-      bool Show();
       string Text { get; set; }
       IPresenter SubPresenter { get; }
+      bool CanCancel { get; set; }
+      bool Show(Size? modalSize = null);
    }
 
    internal class ModalPresenter : AbstractDisposablePresenter<IContainerModalView, IModalPresenter>, IModalPresenter
@@ -18,10 +20,19 @@ namespace MoBi.Presentation
       private readonly IEventPublisher _eventPublisher;
       public IPresenter SubPresenter { get; protected set; }
 
-      public ModalPresenter(IContainerModalView view, IEventPublisher eventPublisher) : base(view)
+      public bool CanCancel
       {
-         _eventPublisher = eventPublisher;
+         get => _view.CancelVisible;
+         set
+         {
+            _view.CanClose = value;
+            _view.CancelVisible = value;
+         }
       }
+
+      public bool Show(Size? modalSize) => modalSize == null ? _view.Show() : _view.Show(modalSize.Value);
+
+      public ModalPresenter(IContainerModalView view, IEventPublisher eventPublisher) : base(view) => _eventPublisher = eventPublisher;
 
       public void Encapsulate(IPresenter subPresenter)
       {
@@ -30,15 +41,9 @@ namespace MoBi.Presentation
          _view.AddSubView(subPresenter.BaseView);
       }
 
-      private void subPresenterChanged(object sender, EventArgs eventArgs)
-      {
-         updateView();
-      }
+      private void subPresenterChanged(object sender, EventArgs eventArgs) => updateView();
 
-      private void updateView()
-      {
-         _view.OkEnabled = CanClose;
-      }
+      private void updateView() => _view.OkEnabled = CanClose;
 
       public bool Show()
       {
@@ -48,8 +53,8 @@ namespace MoBi.Presentation
 
       public string Text
       {
-         get { return _view.Caption; }
-         set { _view.Caption = value; }
+         get => _view.Caption;
+         set => _view.Caption = value;
       }
 
       public override bool CanClose

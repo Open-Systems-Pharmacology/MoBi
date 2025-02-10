@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using MoBi.Core.Domain.Extensions;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Chart.Simulations;
 using OSPSuite.Core.Diagram;
@@ -20,25 +21,55 @@ namespace MoBi.Core.Domain.Model
       SimulationPredictedVsObservedChart PredictedVsObservedChart { get; set; }
       SimulationResidualVsTimeChart ResidualVsTimeChart { get; set; }
 
-      IMoBiBuildConfiguration MoBiBuildConfiguration { get; }
-      string ParameterIdentificationWorkingDirectory { get; set; }
-      void Update(IMoBiBuildConfiguration buildConfiguration, IModel model);
+      void Update(SimulationConfiguration simulationConfiguration, IModel model);
       SolverSettings Solver { get; }
       OutputSchema OutputSchema { get; }
 
       /// <summary>
-      ///    Returns true if the simulation as created using the <paramref name="templateBuildingBlock" /> otherwise false.
+      ///    Returns true if the simulation uses <paramref name="templateBuildingBlock" />.
+      ///    For module building blocks, the test checks if the <paramref name="templateBuildingBlock" /> is a member of
+      ///    a module that's in use <see cref="Uses(Module)" />. If the <paramref name="templateBuildingBlock" /> is not a module
+      ///    building block
+      ///    the test is based on building block name and type.
       /// </summary>
-      bool IsCreatedBy(IBuildingBlock templateBuildingBlock);
+      /// <returns>True if the simulation uses the <paramref name="templateBuildingBlock" />, otherwise false</returns>
+      bool Uses(IBuildingBlock templateBuildingBlock);
+
+      /// <summary>
+      ///    Checks if the simulation has a module that shares a name with <paramref name="module" />
+      ///    This indicates that the <paramref name="module" /> was used as a template
+      /// </summary>
+      /// <returns>True if the simulation has a matching module, otherwise false</returns>
+      bool Uses(Module module);
 
       void MarkResultsOutOfDate();
 
       bool HasResults { get; }
+      IReadOnlyList<Module> Modules { get; }
+      IReadOnlyList<IBuildingBlock> BuildingBlocks();
+
+      IReadOnlyCollection<OriginalQuantityValue> OriginalQuantityValues { get; }
+
+      /// <summary>
+      /// During project conversion from V11 to V12, any changes that are present in the simulation
+      /// won't be traceable back to a specific building block. This flag is used to indicate that to a user
+      /// </summary>
+      bool HasUntraceableChanges { get; set; }
+
+      /// <summary>
+      ///    Adds an original quantity value so that changes to quantities in the simulation can be tracked.
+      ///    There can only be one original quantity value per path, adding a second <paramref name="quantityValue" />
+      ///    with identical path has no affect
+      /// </summary>
+      void AddOriginalQuantityValue(OriginalQuantityValue quantityValue);
+
+      void RemoveOriginalQuantityValue(OriginalQuantityValue quantityValue);
+      OriginalQuantityValue OriginalQuantityValueFor(OriginalQuantityValue quantityValue);
+      void ClearOriginalQuantities();
    }
 
    public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
    {
-      private bool _hasChanged;
       private readonly IList<ISimulationAnalysis> _allSimulationAnalyses = new List<ISimulationAnalysis>();
       private DataRepository _results;
       public IDiagramModel DiagramModel { get; set; }
@@ -49,6 +80,15 @@ namespace MoBi.Core.Domain.Model
       public IDiagramManager<IMoBiSimulation> DiagramManager { get; set; }
       public OutputMappings OutputMappings { get; set; } = new OutputMappings();
 
+      /// <summary>
+      /// During project conversion from V11 to V12, any changes that are present in the simulation
+      /// won't be traceable back to a specific building block. This flag is used to indicate that to a user
+      /// </summary>
+      public bool HasUntraceableChanges { get; set; }
+
+      private readonly ICache<string, OriginalQuantityValue> _quantityValueCache = new Cache<string, OriginalQuantityValue>(onMissingKey: key => null);
+      private bool _hasChanged;
+
       public MoBiSimulation()
       {
          HistoricResults = new Cache<string, DataRepository>(x => x.Id, x => null);
@@ -56,38 +96,84 @@ namespace MoBi.Core.Domain.Model
 
       public bool HasChanged
       {
-         get => _hasChanged || MoBiBuildConfiguration.HasChangedBuildingBlocks();
+         get => _hasChanged || _quantityValueCache.Any();
          set => _hasChanged = value;
       }
 
-      public OutputSchema OutputSchema => SimulationSettings.OutputSchema;
+      public OutputSchema OutputSchema => Settings.OutputSchema;
 
-      public CurveChartTemplate ChartTemplateByName(string chartTemplate)
+      public CurveChartTemplate ChartTemplateByName(string chartTemplate) => Settings.ChartTemplateByName(chartTemplate);
+
+      public void RemoveAllChartTemplates() => Settings.RemoveAllChartTemplates();
+
+      public bool Uses(IBuildingBlock templateBuildingBlock)
       {
-         return SimulationSettings.ChartTemplateByName(chartTemplate);
+         // We can consider the building block in-use if it belongs to a module that is in use.
+         if (templateBuildingBlock.Module != null)
+            return usesModuleBuildingBlock(templateBuildingBlock);
+
+         // Simple name match for building blocks that do not belong to a module
+         switch (templateBuildingBlock)
+         {
+            case IndividualBuildingBlock individualBuildingBlock:
+               return string.Equals(Configuration.Individual?.Name, individualBuildingBlock.Name);
+            case ExpressionProfileBuildingBlock expressionProfileBuildingBlock:
+               return Configuration.ExpressionProfiles.ExistsByName(expressionProfileBuildingBlock.Name);
+         }
+
+         return false;
       }
 
-      public void RemoveAllChartTemplates()
+      private bool usesModuleBuildingBlock(IBuildingBlock templateBuildingBlock) => BuildingBlocks().Any(buildingBlock => buildingBlock.IsTemplateMatchFor(templateBuildingBlock));
+
+      public IReadOnlyList<Module> Modules => Configuration.ModuleConfigurations.Select(x => x.Module).ToList();
+
+      public IReadOnlyList<IBuildingBlock> BuildingBlocks()
       {
-         SimulationSettings.RemoveAllChartTemplates();
+         var buildingBlocks = Configuration.ModuleConfigurations.SelectMany(usedBuildingBlocksFrom).Concat(Configuration.ExpressionProfiles).ToList();
+
+         if (Configuration.Individual != null)
+            buildingBlocks.Add(Configuration.Individual);
+         return buildingBlocks;
       }
 
-      public bool IsCreatedBy(IBuildingBlock templateBuildingBlock)
+      private IReadOnlyList<IBuildingBlock> usedBuildingBlocksFrom(ModuleConfiguration moduleConfiguration)
       {
-         return MoBiBuildConfiguration.BuildingInfoForTemplate(templateBuildingBlock) != null;
+         var module = moduleConfiguration.Module;
+         // Only add selected InitialConditions and ParameterValues, not ones that are not selected
+         return module.BuildingBlocks
+            .Except(module.ParameterValuesCollection.Concat<IBuildingBlock>(module.InitialConditionsCollection))
+            .Concat(new List<IBuildingBlock> {moduleConfiguration.SelectedInitialConditions, moduleConfiguration.SelectedParameterValues})
+            .Where(x => x != null).ToList();
       }
 
-      public SolverSettings Solver => SimulationSettings.Solver;
+      public IReadOnlyCollection<OriginalQuantityValue> OriginalQuantityValues => _quantityValueCache;
+
+      public void AddOriginalQuantityValue(OriginalQuantityValue quantityValue)
+      {
+         // if there's already a value set for this path and type, then ignore the add
+         // we only store the first instance for a path
+         if (_quantityValueCache[quantityValue.Id] == null)
+            _quantityValueCache[quantityValue.Id] = quantityValue;
+      }
+
+      public void RemoveOriginalQuantityValue(OriginalQuantityValue quantityValue) => _quantityValueCache.Remove(quantityValue.Id);
+
+      public OriginalQuantityValue OriginalQuantityValueFor(OriginalQuantityValue quantityValue) => _quantityValueCache[quantityValue.Id];
+
+      public void ClearOriginalQuantities()
+      {
+         _quantityValueCache.Clear();
+      }
+
+      public SolverSettings Solver => Settings.Solver;
 
       public bool UsesObservedData(DataRepository dataRepository)
       {
          return OutputMappings.Any(x => x.UsesObservedData(dataRepository)) || Charts.Any(x => chartUsesObservedData(dataRepository, x));
       }
 
-      private bool chartUsesObservedData(DataRepository dataRepository, CurveChart curveChart)
-      {
-         return curveChart != null && curveChart.Curves.Any(c => Equals(c.yData.Repository, dataRepository));
-      }
+      private bool chartUsesObservedData(DataRepository dataRepository, CurveChart curveChart) => curveChart != null && curveChart.Curves.Any(c => Equals(c.yData.Repository, dataRepository));
 
       public override void AcceptVisitor(IVisitor visitor)
       {
@@ -95,20 +181,15 @@ namespace MoBi.Core.Domain.Model
          Chart?.AcceptVisitor(visitor);
       }
 
-      public void Update(IMoBiBuildConfiguration buildConfiguration, IModel model)
+      public void Update(SimulationConfiguration simulationConfiguration, IModel model)
       {
-         BuildConfiguration = buildConfiguration;
+         Configuration = simulationConfiguration;
          Model = model;
       }
 
       public ICache<string, DataRepository> HistoricResults { get; }
 
-      public IMoBiBuildConfiguration MoBiBuildConfiguration => BuildConfiguration as IMoBiBuildConfiguration;
-
-      public void AddHistoricResults(DataRepository results)
-      {
-         HistoricResults.Add(results);
-      }
+      public void AddHistoricResults(DataRepository results) => HistoricResults.Add(results);
 
       public override void UpdatePropertiesFrom(IUpdatable source, ICloneManager cloneManager)
       {
@@ -121,12 +202,10 @@ namespace MoBi.Core.Domain.Model
          //and make sure the output mapping is referencing THIS simulation
          OutputMappings.SwapSimulation(sourceSimulation, this);
 
-         this.UpdateDiagramFrom(sourceSimulation);
-      }
+         sourceSimulation.OriginalQuantityValues.Each(x => AddOriginalQuantityValue(new OriginalQuantityValue().WithPropertiesFrom(x)));
+         HasUntraceableChanges = sourceSimulation.HasUntraceableChanges;
 
-      public double? TotalDrugMassPerBodyWeightFor(string compoundName)
-      {
-         return null;
+         this.UpdateDiagramFrom(sourceSimulation);
       }
 
       public void RemoveUsedObservedData(DataRepository dataRepository)
@@ -138,7 +217,7 @@ namespace MoBi.Core.Domain.Model
          if (!curveToRemove.Any())
             return;
 
-         curveToRemove.Each(curve => Chart.RemoveCurve(curve.Id) );
+         curveToRemove.Each(curve => Chart.RemoveCurve(curve.Id));
 
          HasChanged = true;
       }
@@ -154,25 +233,13 @@ namespace MoBi.Core.Domain.Model
          get { yield return Chart; }
       }
 
-      public new IReactionBuildingBlock Reactions
-      {
-         get => BuildConfiguration.Reactions;
-         set => BuildConfiguration.Reactions = value;
-      }
+      public void AddChartTemplate(CurveChartTemplate chartTemplate) => Settings.AddChartTemplate(chartTemplate);
 
-      public void AddChartTemplate(CurveChartTemplate chartTemplate)
-      {
-         SimulationSettings.AddChartTemplate(chartTemplate);
-      }
+      public void RemoveChartTemplate(string chartTemplateName) => Settings.RemoveChartTemplate(chartTemplateName);
 
-      public void RemoveChartTemplate(string chartTemplateName)
-      {
-         SimulationSettings.RemoveChartTemplate(chartTemplateName);
-      }
+      public IEnumerable<CurveChartTemplate> ChartTemplates => Settings.ChartTemplates;
 
-      public IEnumerable<CurveChartTemplate> ChartTemplates => SimulationSettings.ChartTemplates;
-
-      public CurveChartTemplate DefaultChartTemplate => SimulationSettings.DefaultChartTemplate;
+      public CurveChartTemplate DefaultChartTemplate => Settings.DefaultChartTemplate;
 
       public bool IsLoaded { get; set; }
 
@@ -193,12 +260,11 @@ namespace MoBi.Core.Domain.Model
 
       public bool HasUpToDateResults { get; private set; }
 
-      public void MarkResultsOutOfDate()
-      {
-         HasUpToDateResults = false;
-      }
+      public void MarkResultsOutOfDate() => HasUpToDateResults = false;
 
       public bool HasResults => ResultsDataRepository != null;
+
+      public bool Uses(Module module) => Configuration.ModuleConfigurations.Any(x => Equals(x.Module.Name, module.Name));
 
       public DataRepository ResultsDataRepository
       {

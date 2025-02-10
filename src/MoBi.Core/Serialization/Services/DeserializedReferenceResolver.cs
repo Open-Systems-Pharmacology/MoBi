@@ -1,6 +1,7 @@
 ﻿using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Services;
@@ -10,7 +11,7 @@ namespace MoBi.Core.Serialization.Services
 {
    public interface IDeserializedReferenceResolver
    {
-      void ResolveFormulaAndTemplateReferences(object deserializedObject, IMoBiProject project);
+      void ResolveFormulaAndTemplateReferences(object deserializedObject, MoBiProject project);
    }
 
    public class DeserializedReferenceResolver : IDeserializedReferenceResolver
@@ -26,32 +27,26 @@ namespace MoBi.Core.Serialization.Services
          _simulationParameterOriginIdUpdater = simulationParameterOriginIdUpdater;
       }
 
-      public void ResolveFormulaAndTemplateReferences(object deserializedObject, IMoBiProject project)
+      public void ResolveFormulaAndTemplateReferences(object deserializedObject, MoBiProject project)
       {
-         if (deserializedObject.IsAnImplementationOf<IMoBiProject>())
+         switch (deserializedObject)
          {
-            var deserializedProject = deserializedObject.DowncastTo<IMoBiProject>();
-            _buildingBlockReferenceUpdater.UpdateTemplatesReferencesIn(deserializedProject);
-         }
-         else if (deserializedObject.IsAnImplementationOf<IMoBiSimulation>())
-         {
-            var simulation = deserializedObject.DowncastTo<IMoBiSimulation>();
-            resolveReferences(simulation);
-         }
-         else if (deserializedObject.IsAnImplementationOf<SimulationTransfer>())
-         {
-            var simulationTransfer = deserializedObject.DowncastTo<SimulationTransfer>();
-            var simulation = simulationTransfer.Simulation.DowncastTo<IMoBiSimulation>();
-            updateOutputMappings(simulation, simulationTransfer.OutputMappings);
-            resolveReferences(simulation);
-         }
-         else if (deserializedObject.IsAnImplementationOf<IMoBiBuildConfiguration>())
-         {
-            _buildingBlockReferenceUpdater.UpdateTemplatesReferencesIn(deserializedObject.DowncastTo<IMoBiBuildConfiguration>(), project);
-         }
-         else if (deserializedObject.IsAnImplementationOf<IModel>())
-         {
-            resolveReferences(deserializedObject.DowncastTo<IModel>());
+            case MoBiProject proj:
+               _buildingBlockReferenceUpdater.UpdateTemplatesReferencesIn(proj);
+               proj.All<SpatialStructure>().Each(resolveReferences);
+               proj.Simulations.Each(resolveReferences);
+               break;
+            case IMoBiSimulation simulation:
+               resolveReferences(simulation);
+               break;
+            case SimulationTransfer simulationTransfer:
+               var sim = simulationTransfer.Simulation.DowncastTo<IMoBiSimulation>();
+               updateOutputMappings(sim, simulationTransfer.OutputMappings);
+               resolveReferences(sim);
+               break;
+            case IModel model:
+               resolveReferences(model);
+               break;
          }
       }
 
@@ -70,6 +65,7 @@ namespace MoBi.Core.Serialization.Services
          if (simulation == null) return;
          //no need to update building block references at that stage. It will be done when the project itself is being deserialized
          resolveReferences(simulation.Model);
+         resolveReferences(simulation.Configuration);
          _simulationParameterOriginIdUpdater.UpdateSimulationId(simulation);
       }
 
@@ -77,6 +73,13 @@ namespace MoBi.Core.Serialization.Services
       {
          if (model == null) return;
          _referencesResolver.ResolveReferencesIn(model);
+      }
+
+      private void resolveReferences(SimulationConfiguration simulationConfiguration) => simulationConfiguration?.All<SpatialStructure>().Each(resolveReferences);
+
+      private void resolveReferences(SpatialStructure spatialStructure)
+      {
+         spatialStructure?.ResolveReferencesInNeighborhoods();
       }
    }
 }

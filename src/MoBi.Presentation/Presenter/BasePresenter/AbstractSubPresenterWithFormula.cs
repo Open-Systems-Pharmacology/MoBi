@@ -7,10 +7,10 @@ namespace MoBi.Presentation.Presenter.BasePresenter
    public abstract class AbstractSubPresenterWithFormula<TView, TPresenter> : AbstractCommandCollectorPresenter<TView, TPresenter> where TPresenter : IPresenter
       where TView : IView<TPresenter>, IViewWithFormula
    {
-      protected readonly IEditFormulaPresenter _editFormulaPresenter;
+      protected readonly IEditFormulaInContainerPresenter _editFormulaPresenter;
       protected ISelectReferencePresenter _referencePresenter;
 
-      protected AbstractSubPresenterWithFormula(TView view, IEditFormulaPresenter editFormulaPresenter, ISelectReferencePresenter referencePresenter) : base(view)
+      protected AbstractSubPresenterWithFormula(TView view, IEditFormulaInContainerPresenter editFormulaPresenter, ISelectReferencePresenter referencePresenter) : base(view)
       {
          _editFormulaPresenter = editFormulaPresenter;
          _referencePresenter = referencePresenter;

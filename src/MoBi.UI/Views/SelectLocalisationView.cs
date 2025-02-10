@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.UI;
-using OSPSuite.Assets;
-using OSPSuite.Presentation.Nodes;
-using OSPSuite.Utility.Extensions;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using OSPSuite.Assets;
+using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.UI.Views
 {
@@ -40,12 +39,9 @@ namespace MoBi.UI.Views
          }
       }
 
-      public IObjectBaseDTO Selected
-      {
-         get { return SelectedNode.TagAsObject as IObjectBaseDTO; }
-      }
+      public ObjectBaseDTO Selected => SelectedNode.TagAsObject as ObjectBaseDTO;
 
-      public void Show(List<IObjectBaseDTO> dtos)
+      public void Show(List<ObjectBaseDTO> dtos)
       {
          foreach (var dto in dtos)
          {
@@ -70,6 +66,7 @@ namespace MoBi.UI.Views
          {
             buildingBlockNode.AddChild(_nodeMapper.MapFrom(dtoBuilder));
          }
+
          return buildingBlockNode;
       }
 
@@ -81,14 +78,17 @@ namespace MoBi.UI.Views
          {
             spatialStructureNode.AddChild(_nodeMapper.MapFrom(dtoSpatialStructure.MoleculeProperties));
          }
-         if (dtoSpatialStructure.TopContainer != null && dtoSpatialStructure.TopContainer.Any())
+
+         if (dtoSpatialStructure.TopContainers != null && dtoSpatialStructure.TopContainers.Any())
          {
-            dtoSpatialStructure.TopContainer.Each(dto => spatialStructureNode.AddChild(_nodeMapper.MapFrom(dto)));
+            dtoSpatialStructure.TopContainers.Each(dto => spatialStructureNode.AddChild(_nodeMapper.MapFrom(dto)));
          }
+
          if (dtoSpatialStructure.Neighborhoods != null)
          {
             spatialStructureNode.AddChild(_nodeMapper.MapFrom(dtoSpatialStructure.Neighborhoods));
          }
+
          return spatialStructureNode;
       }
 
@@ -116,10 +116,7 @@ namespace MoBi.UI.Views
 
       public bool HasError
       {
-         get
-         {
-            return !_presenter.SelectionIsValid(Selected);
-         }
+         get { return !_presenter.SelectionIsValid(Selected); }
       }
 
       public event EventHandler CaptionChanged = delegate { };

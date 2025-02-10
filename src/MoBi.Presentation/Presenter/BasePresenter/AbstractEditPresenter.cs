@@ -35,11 +35,11 @@ namespace MoBi.Presentation.Presenter.BasePresenter
       {
       }
 
-      public abstract void Edit(TEntity entity, IEnumerable<IObjectBase> existingObjectsInParent);
+      public abstract void Edit(TEntity entity, IReadOnlyList<IObjectBase> existingObjectsInParent);
 
       public override void Edit(TEntity entity)
       {
-         Edit(entity, entity.ParentContainer);
+         Edit(entity, entity.ParentContainer?.Children);
       }
    }
 }

@@ -9,8 +9,8 @@ namespace MoBi.Presentation.Presenter
 {
    public interface ISelectFormulaUsablePathPresenter : IDisposablePresenter
    {
-      void Init(Func<IObjectBase, bool> predicate, IEntity refObject, IEnumerable<IObjectBase> entities, string caption, ISelectReferencePresenter referencePresenter);
-      IFormulaUsablePath GetSelection();
+      void Init(Func<IObjectBase, bool> predicate, IEntity refObject, IReadOnlyList<IObjectBase> entities, string caption, ISelectReferencePresenter referencePresenter);
+      FormulaUsablePath GetSelection();
    }
 
    internal class SelectFormulaUsablePathPresenter : AbstractDisposablePresenter<ISelectFormulaUsablePathView, ISelectFormulaUsablePathPresenter>, ISelectFormulaUsablePathPresenter
@@ -28,7 +28,7 @@ namespace MoBi.Presentation.Presenter
          _view.OkEnabled = _referencePresenter.LegalObjectSelected;
       }
 
-      public void Init(Func<IObjectBase, bool> predicate, IEntity refObject, IEnumerable<IObjectBase> entities, string caption, ISelectReferencePresenter referencePresenter)
+      public void Init(Func<IObjectBase, bool> predicate, IEntity refObject, IReadOnlyList<IObjectBase> entities, string caption, ISelectReferencePresenter referencePresenter)
       {
          _view.Text = caption;
          _referencePresenter = referencePresenter;
@@ -38,7 +38,7 @@ namespace MoBi.Presentation.Presenter
          _view.AddSelectionView(_referencePresenter.View);
       }
 
-      public IFormulaUsablePath GetSelection()
+      public FormulaUsablePath GetSelection()
       {
          _view.Display();
          if (_view.Canceled) return null;
@@ -46,7 +46,7 @@ namespace MoBi.Presentation.Presenter
          return _objectPathFactory.CreateFormulaUsablePathFrom(selectedPath).WithAlias(selectedPath.Last());
       }
 
-      private IObjectPath getSelectedPath()
+      private ObjectPath getSelectedPath()
       {
          return _referencePresenter.GetSelection();
       }

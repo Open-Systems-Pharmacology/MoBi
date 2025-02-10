@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using FakeItEasy;
-using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
@@ -87,7 +86,6 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _simModelManagerFactory.Create()).MustNotHaveHappened();
       }
    }
-
 
    public class When_running_a_simulation_for_which_selection_is_canceled : concern_for_SimulationRunner
    {
@@ -197,7 +195,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_have_updated_the_simulation_output_selection()
       {
-         _simulation.SimulationSettings.OutputSelections.ShouldBeEqualTo(_newOutputSelection);
+         _simulation.Settings.OutputSelections.ShouldBeEqualTo(_newOutputSelection);
       }
 
       [Observation]
@@ -215,28 +213,35 @@ namespace MoBi.Presentation.Tasks
       private SimulationRunResults _simulationResults;
       private DataRepository _newResults;
       private DataRepository _oldResults;
-      private IMoleculeBuilder _drug;
       private DataColumn _concentrationColumn;
       private DataColumn _fractionColumn;
+      private Parameter _moleculeWeight;
 
       protected override void Context()
       {
          base.Context();
-         _simulation = new MoBiSimulation();
+         _simulation = new MoBiSimulation
+         {
+            Model = new Model
+            {
+               Root = new Container()
+            }
+         };
+         var globalMoleculeContainer = new Container {Name = "DRUG" };
+         _moleculeWeight = new Parameter()
+            .WithName(Constants.Parameters.MOL_WEIGHT)
+            .WithFormula(new ConstantFormula(400))
+            .Under(globalMoleculeContainer);
+
+         _simulation.Model.Root.Add(globalMoleculeContainer);
          _simModelManager = A.Fake<ISimModelManager>();
          _outputSelections = new OutputSelections();
-         _drug = new MoleculeBuilder().WithName("DRUG");
-         _drug.AddParameter(new Parameter().WithName(AppConstants.Parameters.MOLECULAR_WEIGHT).WithFormula(new ConstantFormula(400)));
          _outputSelections.AddOutput(new QuantitySelection("A", QuantityType.Drug));
-         _simulation.BuildConfiguration = new MoBiBuildConfiguration
+         _simulation.Configuration = new SimulationConfiguration
          {
             SimulationSettings = new SimulationSettings
             {
                OutputSelections = _outputSelections
-            },
-            Molecules = new MoleculeBuildingBlock
-            {
-               _drug
             }
          };
 
@@ -252,7 +257,7 @@ namespace MoBi.Presentation.Tasks
          _fractionColumn = new DataColumn("Fraction", DomainHelperForSpecs.FractionDimension, baseGrid);
          _newResults.Add(_concentrationColumn);
          _newResults.Add(_fractionColumn);
-         A.CallTo(() => _keyPathMapper.MoleculeNameFrom(_concentrationColumn)).Returns(_drug.Name);
+         A.CallTo(() => _keyPathMapper.MoleculeNameFrom(_concentrationColumn)).Returns(globalMoleculeContainer.Name);
          A.CallTo(() => _eventValidationTask.Validate(_simulation)).Returns(true);
       }
 
@@ -306,7 +311,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_update_the_molecule_weight_of_all_concentration_columns_related_to_a_molecule_with_a_mol_weight_parameter()
       {
-         _concentrationColumn.DataInfo.MolWeight.ShouldBeEqualTo(_drug.Parameter(AppConstants.Parameters.MOLECULAR_WEIGHT).Value);
+         _concentrationColumn.DataInfo.MolWeight.ShouldBeEqualTo(_moleculeWeight.Value);
          _fractionColumn.DataInfo.MolWeight.ShouldBeNull();
       }
    }

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text;
 using OSPSuite.Assets;
+using OSPSuite.Assets.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -14,11 +16,13 @@ namespace MoBi.Assets
 {
    public static class AppConstants
    {
-      public static readonly int LayoutVersion = 24;
+      public static readonly int LayoutVersion = 25;
       public static readonly string NotMatch = "not tagged with";
       public static readonly string Match = "tagged with";
       public static readonly string MatchAll = "in all containers";
       public static readonly string InContainer = "in container";
+      public static readonly string InParent = "in parent";
+      public static readonly string InChildren = "in children";
       public static readonly string NotInContainer = "not in container";
       public static readonly string NullFormulaDescription = "No Formula";
       public static readonly string DefaultSkin = "Office 2013 Light Gray";
@@ -48,8 +52,6 @@ namespace MoBi.Assets
 
       public static class Parameters
       {
-         public static readonly string CONCENTRATION = "Concentration";
-         public static readonly string MOLECULAR_WEIGHT = "Molecular weight";
          public static readonly string EFFECTIVE_MOLECULAR_WEIGHT = "Effective molecular weight";
          public static readonly string SURFACE_AREA_INTERSTITIAL_INTRACELLULAR = "Surface area (interstitial/intracellular)";
          public static readonly string BSA = "BSA";
@@ -87,15 +89,9 @@ namespace MoBi.Assets
 
       public static class DefaultNames
       {
-         public static readonly string MoleculeBuildingBlock = "Molecules";
-         public static readonly string ReactionBuildingBlock = "Reaction";
-         public static readonly string SpatialStructure = "Organism";
-         public static readonly string PassiveTransportBuildingBlock = "Passive Transports";
-         public static readonly string EventBuildingBlock = "Events";
-         public static readonly string ObserverBuildingBlock = "Observer";
-         public static readonly string SimulationSettings = "Simulation Settings";
          public static readonly string EmptyCalculationMethod = "No Calculation Method";
          public static readonly string EmptyCalculationMethodDescription = "";
+         public static readonly string DefaultSingleModuleName = "Module1";
 
          public static readonly string GlobalEventTag = "Events";
 
@@ -107,7 +103,7 @@ namespace MoBi.Assets
             "Fraction excreted",
             "Whole Blood",
             "Interstitial Unbound",
-            "Intracellular Unbound", 
+            "Intracellular Unbound",
             "Whole Organ",
             "Fraction of oral drug mass absorbed into mucosa segment"
          };
@@ -137,8 +133,8 @@ namespace MoBi.Assets
          public static readonly string MoleculeBuildingBlock = "MoleculeBuildingBlock";
          public static readonly string ObserverBuildingBlock = "ObserverBuildingBlock";
          public static readonly string EventGroupBuildingBlock = "EventGroupBuildingBlock";
-         public static readonly string MoleculeStartValuesBuildingBlock = "MoleculeStartValuesBuildingBlock";
-         public static readonly string ParameterStartValuesBuildingBlock = "ParameterStartValuesBuildingBlock";
+         public static readonly string InitialConditionsBuildingBlock = "InitialConditionsBuildingBlock";
+         public static readonly string ParameterValuesBuildingBlock = "ParameterValuesBuildingBlock";
          public static readonly string PassiveTransportBuildingBlock = "PassiveTransportBuildingBlock";
          public static readonly string MoBiReactionBuildingBlock = "MoBiReactionBuildingBlock";
          public static readonly string ReactionBuildingBlock = "ReactionBuildingBlock";
@@ -149,8 +145,8 @@ namespace MoBi.Assets
          public static readonly string PassiveTransports = "PassiveTransports";
          public static readonly string Reactions = "Reactions";
          public static readonly string SpatialStructure = "SpatialStructure";
-         public static readonly string ParameterStartValues = "ParameterStartValues";
-         public static readonly string MoleculeStartValues = "MoleculeStartValues";
+         public static readonly string ParameterValues = "ParameterValues";
+         public static readonly string InitialConditions = "InitialConditions";
          public static readonly string Model = "Model";
          public static readonly string MoBiSimulation = "MoBiSimulation";
          public static readonly string NameAttribute = "name";
@@ -172,12 +168,12 @@ namespace MoBi.Assets
          public static readonly string Utilities = "Utilities";
          public static readonly string DynamicMolecules = "Edit Molecule";
          public static readonly string DynamicReactions = "Edit Reaction";
-         public static readonly string DynamicOrganisms = "Edit Organism";
+         public static readonly string DynamicSpatialStructures = "Edit Spatial Structure";
          public static readonly string DynamicPassiveTransports = "Edit Passive Transport";
          public static readonly string DynamicObservers = "Edit Observer";
          public static readonly string DynamicEvents = "Edit Event";
-         public static readonly string DynamicMoleculeStartValues = "Edit Molecule Start Values";
-         public static readonly string DynamicParameterStartValues = "Edit Parameter Start Values";
+         public static readonly string DynamicInitialConditions = "Edit Initial Conditions";
+         public static readonly string DynamicParameterValues = "Edit Parameter Values";
          public static readonly string DynamicRunSimulation = "Run & Analyze";
          public static readonly string Views = "Views";
          public static readonly string ParameterIdentification = "Parameter Identification";
@@ -187,12 +183,12 @@ namespace MoBi.Assets
       {
          public static readonly string Molecules = "Molecules";
          public static readonly string Reactions = "Reactions";
-         public static readonly string Organisms = "Organisms";
+         public static readonly string SpatialStructures = "Spatial Structures";
          public static readonly string PassiveTransports = "Passive Transports";
          public static readonly string Observers = "Observers";
          public static readonly string Events = "Events";
-         public static readonly string MoleculesStartValues = "Molecule Start Values";
-         public static readonly string ParameterStartValues = "Parameter Start Values";
+         public static readonly string InitialConditions = "Initial Conditions";
+         public static readonly string ParameterValues = "Parameter Values";
          public static readonly string Simulation = "Simulation";
          public static readonly string Skins = "Skins";
 
@@ -202,12 +198,12 @@ namespace MoBi.Assets
             {
                Molecules,
                Reactions,
-               Organisms,
+               SpatialStructures,
                PassiveTransports,
                Observers,
                Events,
-               MoleculesStartValues,
-               ParameterStartValues,
+               InitialConditions,
+               ParameterValues,
                Simulation,
                OSPSuite.Assets.RibbonCategories.ParameterIdentification,
                OSPSuite.Assets.RibbonCategories.SensitivityAnalysis
@@ -217,6 +213,8 @@ namespace MoBi.Assets
 
       public static class Commands
       {
+         public static readonly string CopyCommand = Command.CommandTypeCopy;
+         public static readonly string MoveCommand = Command.CommandTypeMove;
          public static readonly string AddCommand = Command.CommandTypeAdd;
          public static readonly string DeleteCommand = Command.CommandTypeDelete;
          public static readonly string CreateCommand = Command.CommandTypeCreate;
@@ -224,17 +222,17 @@ namespace MoBi.Assets
          public static readonly string RenameCommand = Command.CommandTypeRename;
          public static readonly string SetToDefaultDefaultDescription = "Sets Values to Defaults defined in Molecules and Spatial Structure";
          public static readonly string SetToDefaultDefaultType = "Set To Default";
-         public static readonly string ExtendDescription = "Adding new start values from Molecules and Spatial Structure";
+         public static readonly string ExtendDescription = "Adding new values";
          public static readonly string AddManyMoleculesDescription = "Add some Molecules to Reaction Diagram";
          public static readonly string MergeCommand = "Merge";
          public static readonly string AddParameterIdentificationResults = "Add parameter identification results to start values collection";
-         public static readonly string ImportParameterStartValues = "Parameter Start Values were imported";
-         public static readonly string ImportMoleculeStartValues = "Molecule Start Values were imported";
-         public static readonly string RemoveManyParameterStartValues = "Remove some Parameter Start Values";
-         public static readonly string RemoveManyMoleculeStartValues = "Remove some Molecule Start Values";
+         public static readonly string ImportParameterValues = "Parameter Values were imported";
+         public static readonly string ImportInitialConditions = "Initial Conditions were imported";
+         public static readonly string RemoveManyParameterValues = "Remove some Parameter Values";
+         public static readonly string RemoveManyInitialConditions = "Remove some Initial Conditions";
          public static readonly string CommitCommand = "Commit";
-         public static readonly string UpdateManyParameterStartValues = "Update some Parameter Start Values";
-         public static readonly string UpdateManyMoleculeStartValues = "Update some Molecule Start Values";
+         public static readonly string UpdateManyParameterValues = "Update some Parameter Values";
+         public static readonly string UpdateManyInitialConditions = "Update some Initial Conditions";
          public static readonly string UpdateCommand = "Update";
          public static readonly string ImportCommand = "Import";
          public static readonly string MergeBuildingBlocks = "Merging two building blocks";
@@ -242,11 +240,15 @@ namespace MoBi.Assets
          public static readonly string MatchTagCondition = "Match Tag Condition";
          public static readonly string NotMatchTagCondition = "Not Match Tag Condition";
          public static readonly string InContainerCondition = "In Container Condition";
+         public static readonly string InParentCondition = "In Parent Condition";
+         public static readonly string InChildrenCondition = "In Children Condition";
          public static readonly string NotInContainerCondition = "Not In Container Condition";
          public static readonly string Name = "Name";
          public static readonly string UpdateDimensionsAndUnits = "Changing dimensions and units";
-         public static readonly string RefreshStartValuesFromBuildingBlocks = "Refreshing start values from original building blocks";
-         public static readonly string SetStartValueAndFormula = "Set start value and formula";
+         public static readonly string RefreshParameterValuesFromBuildingBlocks = "Refreshing parameter values from original building blocks";
+         public static readonly string RefreshInitialConditionsFromBuildingBlocks = "Refreshing initial conditions from original building blocks";
+         public static readonly string SetValueAndFormula = "Set value and formula";
+         public static readonly string SetExpressionValue = "Set expression value";
          public static readonly string AddFormulaToBuildingBlock = "Add formula to building block";
          public static readonly string ExtendCommand = "Extend";
          public static readonly string ImportMultipleParameters = "Importing multiple parameter values";
@@ -254,10 +256,23 @@ namespace MoBi.Assets
          public static readonly string DeleteAllResultsFromAllSimulations = "Delete all results from all simulations";
          public static readonly string RemoveSimulationsFromProject = "Remove simulations from project";
          public static readonly string RemoveMultipleResultsFromSimulations = "Remove multiple results from simulations";
-         public static readonly string RemoveMultipleStartValues = "Remove multiple start values";
+         public static readonly string RemoveMultipleParameterValues = "Remove multiple parameter values";
+         public static readonly string RemoveMultipleInitialConditions = "Remove multiple initial conditions";
+         public static readonly string RemoveMultipleModules = "Remove multiple modules";
+         public static readonly string RemoveMultipleBuildingBlocks = "Remove multiple building blocks";
          public static readonly string SimulationType = "simulation";
          public static readonly string BuildingBlockType = "building block";
          public static readonly string ParameterType = "parameter";
+         public static readonly string UpdateRelativeExpressions = "Update relative expressions";
+         public static readonly string UpdateProjectDefaultSimulationSettings = "Update project default simulation settings";
+         public static readonly string RemoveTrackedQuantityChanges = "Remove tracked quantity changes";
+         public static readonly string RestoreTrackedQuantityChanges = "Restore tracked quantity changes";
+         public static readonly string AddedMultipleBuildingBlocksFromFile = "Added multiple building blocks from file";
+         public static string AddNewParameterValues(string buildingBlockName) => $"Add new Parameter Values to {buildingBlockName}";
+
+         public static string ConvertDistributedPathAndValueEntityToConstantValue(string type, string path) => $"Convert distributed {type} '{path}' to constant value";
+
+         public static string UpdateSimulationSolverSettingsAndSchemaInSimulation(string simulationName) => $"Update simulation solver settings and output schema in simulation {simulationName}";
 
          public static string DeleteResultsFromSimulation(string simulationName)
          {
@@ -267,6 +282,25 @@ namespace MoBi.Assets
          public static string DisplayValue(double displayValue, string displayUnit)
          {
             return DisplayValue(displayValue.ConvertedTo<string>(), displayUnit);
+         }
+
+         public static string CommitingChangesToModulesMessage(ModuleConfiguration moduleConfiguration, bool hasMoleculeChanges, bool hasParameterChanges)
+         {
+            var message = $"Values changed in a simulation are always committed to the last module of the simulation configuration. {Environment.NewLine}";
+
+            if (hasMoleculeChanges)
+            {
+               var icName = moduleConfiguration.SelectedInitialConditions == null ? $"A new initial conditions building block will be created in module <i>{moduleConfiguration.Module.Name}</i>" : $"Initial conditions will be written to the initial conditions building block <i>{moduleConfiguration.SelectedInitialConditions.Name}</i> in module <i>{moduleConfiguration.Module.Name}</i>";
+               message += $"{Environment.NewLine}- {icName}";
+            }
+
+            if (hasParameterChanges)
+            {
+               var pvName = moduleConfiguration.SelectedParameterValues == null ? $"A new parameter values building block will be created in module <i>{moduleConfiguration.Module.Name}</i>" : $"Parameter values will be written to the parameter values building block <i>{moduleConfiguration.SelectedParameterValues.Name}</i> in module <i>{moduleConfiguration.Module.Name}</i>";
+               message += $"{Environment.NewLine}- {pvName}";
+            }
+
+            return message;
          }
 
          public static string DisplayValue(string displayValue, string displayUnit)
@@ -285,6 +319,16 @@ namespace MoBi.Assets
          public static string SimulationLabelComment(int warningsCount)
          {
             return $"Solver reports {warningsCount} Warnings";
+         }
+
+         public static string AddBuildingBlocksToModule(string moduleName)
+         {
+            return $"Add selected building blocks to {moduleName}";
+         }
+
+         public static string MoveBuildingBlockToModule(string buildingBlock, string moduleName)
+         {
+            return $"Move building block {buildingBlock} to module {moduleName}";
          }
 
          public static string AddToProjectDescription(string objectType, string objectName)
@@ -315,6 +359,11 @@ namespace MoBi.Assets
          public static string RemoveMoleculeFromListDescription(string moleculeName, string parentType, string parentPath, string listType)
          {
             return $"Remove molecule '{moleculeName}' from the {listType.ToLowerInvariant()} of {parentType} '{parentPath}'";
+         }
+
+         public static string CopyToDescription(string objectType, string objectName, string parentName)
+         {
+            return $"Copy {objectType} '{objectName}' to '{parentName}'";
          }
 
          public static string AddToDescription(string objectType, string objectName, string parentName)
@@ -418,6 +467,11 @@ namespace MoBi.Assets
             return $"Replace '{oldElement}' with '{newElement}' in container path of application molecule builder:'{name}'";
          }
 
+         public static string ChangeNeighborPathDescription(string name, string newPath, string oldPath, string type)
+         {
+            return $"Change {type.ToLower()} path from '{oldPath}' to '{newPath}' in neighborhood '{name}'";
+         }
+
          public static string AddMany(string objectName)
          {
             return $"Add many {objectName}s";
@@ -488,9 +542,14 @@ namespace MoBi.Assets
             return string.Format("Remove {3} X: '{0} {5}' Y: '{1} {6}' from {4} '{2}'", xDisplayValue, yDisplayValue, formulaName, ObjectTypes.ValuePoint, ObjectTypes.TableFormula, xDisplayUnit.Name, yDisplayUnit.Name);
          }
 
-         public static string CommitCommandDescription(IBuildingBlock buildingBlock, IModelCoreSimulation simulation, string buildingBlockType)
+         public static string CommitCommandDescription(IModelCoreSimulation simulation, Module module)
          {
-            return $"Commit changes made in Simulation: '{simulation.Name}' to {buildingBlockType}: '{buildingBlock.Name}'";
+            return $"Commit changes made in Simulation: '{simulation.Name}' to module: '{module.Name}'";
+         }
+
+         public static string CommitToModuleCommandDescription(Module module, IModelCoreSimulation simulation, string moduleParent)
+         {
+            return $"Commit changes made in Simulation: '{simulation.Name}' to {moduleParent} module: '{module.Name}'";
          }
 
          public static string UpdateCommandDescription(string simulationName, string buildingBlockName, string buildingBlockType)
@@ -563,19 +622,24 @@ namespace MoBi.Assets
             return $"Chart Templates edited in simulation '{simulationName}'";
          }
 
-         public static string UpdateParameterStartValue(IObjectPath path, double? value, Unit displayUnit)
+         public static string UpdateParameterValue(ObjectPath path, double? value, Unit displayUnit)
          {
-            return $"Updated parameter start value at path {path} with value {value} {displayUnit}";
+            return $"Updated parameter value at path {path} with value {value} {displayUnit}";
          }
 
-         public static string UpdateMoleculeStartValue(IObjectPath path, double? value, bool present, Unit displayUnit, double scaleFactor, bool negativeValuesAllowed)
+         public static string UpdateInitialCondition(ObjectPath path, double? value, bool present, Unit displayUnit, double scaleFactor, bool negativeValuesAllowed)
          {
-            return $"Updated molecule start value at path: {path} with value: {value} {displayUnit},  present: {present},  scale divisor: {scaleFactor}, neg. values allowed: {negativeValuesAllowed}";
+            return $"Updated initial condition at path: {path} with value: {value} {displayUnit},  present: {present},  scale divisor: {scaleFactor}, neg. values allowed: {negativeValuesAllowed}";
          }
 
-         public static string AddedStartValue(IStartValue startValue, string buildingBlockName)
+         public static string RemovedPathAndValueEntity(PathAndValueEntity pathAndValueEntity, string buildingBlockName, string entityType)
          {
-            return $"Added a Start Value to building block '{buildingBlockName}' at path: {startValue.Path}, with value: {startValue.StartValue} {startValue.DisplayUnit}";
+            return $"Added a {entityType} to building block '{buildingBlockName}' at path: {pathAndValueEntity.Path}, with value: {pathAndValueEntity.Value} {pathAndValueEntity.DisplayUnit}";
+         }
+
+         public static string AddedPathAndValueEntity(PathAndValueEntity pathAndValueEntity, string buildingBlockName, string entityType)
+         {
+            return $"Added a {entityType} to building block '{buildingBlockName}' at path: {pathAndValueEntity.Path}, with value: {pathAndValueEntity.Value} {pathAndValueEntity.DisplayUnit}";
          }
 
          public static string RemoveOutputIntervalFrom(string objectName)
@@ -588,9 +652,9 @@ namespace MoBi.Assets
             return $"Output interval was added to '{objectName}'";
          }
 
-         public static string RemoveStartValue(IStartValue startValue, string buildingBlockName)
+         public static string RemovePathAndValueEntity(PathAndValueEntity pathAndValueEntity, string buildingBlockName, string entityType)
          {
-            return string.Format("Removed a Start Value from building block '{3}' at path {0}, with value: {1} {2}", startValue.Path, startValue.ConvertToDisplayUnit(startValue.StartValue), startValue.DisplayUnit, buildingBlockName);
+            return $"Removed a {entityType} from building block '{buildingBlockName}' at path {pathAndValueEntity.Path}, with value: {pathAndValueEntity.ConvertToDisplayUnit(pathAndValueEntity.Value)} {pathAndValueEntity.DisplayUnit}";
          }
 
          public static string UpdateScaleDivisorValue(string name, double oldScaleDivisor, double newScaleDivisor)
@@ -603,9 +667,14 @@ namespace MoBi.Assets
             return $"Calculate scale divisor for simulation '{name}'";
          }
 
-         public static string EditPath(string objectType, IObjectPath originalPath, IObjectPath newPath)
+         public static string EditPath(string objectType, ObjectPath originalPath, ObjectPath newPath)
          {
             return $"Changing {objectType} original path {originalPath} to new path {newPath}";
+         }
+
+         public static string EditPathAndName(string objectType, ObjectPath originalPath, ObjectPath newPath, string originalName, string newName)
+         {
+            return $"Changing {objectType} original name from {originalName} to {newName} and original path from {originalPath} to {newPath}";
          }
 
          public static string UpdateDimensions(string objectName, string objectType, IDimension oldDimension, IDimension newDimension, string buildingBlockName)
@@ -618,7 +687,7 @@ namespace MoBi.Assets
             return $"Creating new formula named '{formulaName}'";
          }
 
-         public static string SetConstantValueFormula(string objectType,  string newValueInDisplayUnits, string oldValueInDisplayUnits, string ownerIdentifier)
+         public static string SetConstantValueFormula(string objectType, string newValueInDisplayUnits, string oldValueInDisplayUnits, string ownerIdentifier)
          {
             return string.Format("Value of {3} '{2}' set from '{1}' to '{0}'", newValueInDisplayUnits, oldValueInDisplayUnits, ownerIdentifier, objectType.ToLowerInvariant());
          }
@@ -633,14 +702,15 @@ namespace MoBi.Assets
             return $"Update dimension for parameter '{parameterPath}' from '{oldDimensionName}' to '{newDimensionName}'";
          }
 
-         public static string UpdateAssignmentObjectPath(string assignmentPath, string path)
-         {
-            return $"Update object path for assignment '{assignmentPath}' to '{path}'";
-         }
+         public static string UpdateAssignmentObjectPath(string assignmentPath, string path) =>
+            $"Update object path for assignment '{assignmentPath}' to '{path}'";
 
-         public static string UpdateMoleculeStartValueScaleDivisor(string path, double oldScaleDivisor, double newScaleDivisor)
+         public static string UpdateParentPath(string containerPath, string parentPath) =>
+            $"Update parent path for '{containerPath}' to '{parentPath}'";
+
+         public static string UpdateInitialConditionScaleDivisor(string path, double oldScaleDivisor, double newScaleDivisor)
          {
-            return $"Updating Scale Divisor for start value with path {path} from {oldScaleDivisor} to {newScaleDivisor}";
+            return $"Updating Scale Divisor for initial condition with path {path} from {oldScaleDivisor} to {newScaleDivisor}";
          }
 
          public static string UpdateDistributedFormulaCommandDescription(string parameterPath, string formulaType)
@@ -683,14 +753,14 @@ namespace MoBi.Assets
             return $"Adding parameter '{parameterName}' to container '{containerPath}' in building block '{buildingBlockName}'";
          }
 
-         public static string UpdateMoleculeStartValueIsPresent(string startValuePath, bool oldIsPresent, bool newIsPresent)
+         public static string UpdateInitialConditionIsPresent(string initialConditionPath, bool oldIsPresent, bool newIsPresent)
          {
-            return $"Changed Is Present for molecule start value path '{startValuePath}' from {oldIsPresent} to {newIsPresent}";
+            return $"Changed Is Present for initial condition path '{initialConditionPath}' from {oldIsPresent} to {newIsPresent}";
          }
 
-         public static string UpdateMoleculeStartValueNegativeValuesAllowed(string startValuePath, bool oldNegativeValuesAllowed, bool newNegativeValuesAllowed)
+         public static string UpdateInitialConditionNegativeValuesAllowed(string initialConditionPath, bool oldNegativeValuesAllowed, bool newNegativeValuesAllowed)
          {
-            return $"Changed negative values allowed for molecule start value path '{startValuePath}' from {oldNegativeValuesAllowed} to {newNegativeValuesAllowed}";
+            return $"Changed negative values allowed for initial condition path '{initialConditionPath}' from {oldNegativeValuesAllowed} to {newNegativeValuesAllowed}";
          }
 
          public static string SetTableFormulaYDisplayUnits(string tableFormulaName, string oldUnit, string newUnit, string buildingBlockName)
@@ -773,9 +843,19 @@ namespace MoBi.Assets
             return Command.UpdateValueOriginFrom(oldValueOrigin, newValueOrigin, quantityType, parameterName, SimulationType, simulationName);
          }
 
-         public static string UpdateStartValueValueOrigin(string startValuePath, string oldValueOrigin, string newValueOrigin, string startValueType, string startValueBuildingBlockName)
+         public static string UpdatePathAndValueEntityValueOrigin(string path, string oldValueOrigin, string newValueOrigin, string pathAndValueEntityType, string buildingBlockName)
          {
-            return Command.UpdateValueOriginFrom(oldValueOrigin, newValueOrigin, startValueType, startValuePath, BuildingBlockType, startValueBuildingBlockName);
+            return Command.UpdateValueOriginFrom(oldValueOrigin, newValueOrigin, pathAndValueEntityType, path, BuildingBlockType, buildingBlockName);
+         }
+
+         public static string ChangeSimulationConfiguration(string simulationName)
+         {
+            return $"Changed the simulation configuration of simulation '{simulationName}'";
+         }
+
+         public static string SetModuleMergeBehavior(string moduleName, string newMergeBehavior)
+         {
+            return $"Set merge behavior to '{newMergeBehavior}' for module '{moduleName}'";
          }
       }
 
@@ -791,11 +871,11 @@ namespace MoBi.Assets
          public static readonly string Simulation = MenuNames.Simulation;
          public static readonly string NotificationList = "Notifications";
          public static readonly string Comparison = "Comparison";
-         public static readonly string Workflows = "Workflows";
          public static readonly string BuildingBlocks = "Create";
          public static readonly string Views = "Views";
          public static readonly string Add = "Add";
          public static readonly string Edit = "Edit";
+         public static readonly string SimulationSettings = "Simulation Settings";
          public static readonly string Journal = "Journal";
          public static readonly string File = "File";
          public static readonly string Favorites = "Favorites";
@@ -804,6 +884,8 @@ namespace MoBi.Assets
       public static class RibbonButtonNames
       {
          public static readonly string ObservedData = "Observed Data";
+         public static readonly string Individual = Captions.Individual;
+         public static readonly string NewModule = "Module";
          public static readonly string Simulation = MenuNames.Simulation;
          public static readonly string Molecules = "Molecules";
          public static readonly string Reactions = "Reactions";
@@ -811,12 +893,13 @@ namespace MoBi.Assets
          public static readonly string PassiveTransport = "Passive Transport";
          public static readonly string Events = "Events";
          public static readonly string Observer = "Observer";
-         public static readonly string SimulationSettings = "Simulation Settings";
+         public static readonly string Edit = "Edit";
          public static readonly string New = "New";
          public static readonly string Load = "Load";
          public static readonly string LoadFromTemplate = "Load From Template";
          public static readonly string NewMolecule = "Insert Molecule";
          public static readonly string AddPKSimMolecule = "PK-Sim Molecule";
+         public static readonly string Save = "Save";
       }
 
       public static class Dialog
@@ -830,6 +913,9 @@ namespace MoBi.Assets
          public static readonly string ApplyDefaultNaming = "Apply default renaming";
          public static readonly string RemoveSelectedResultsFromSimulations = "Do you really want to remove the selected results from simulations";
          public static readonly string RemoveSelectedResultsFromProject = "Do you really want to remove the selected result(s) from the project";
+         public static readonly string RemoveMultipleModules = "Do you really want to remove the selected Modules?";
+         public static readonly string RemoveMultipleBuildingBlocks = "Do you really want to remove the selected building blocks?";
+         public static readonly string BuildingBlocksUsedInSimulation = "The following building blocks could not be removed from the project";
 
          public static string RemoveSimulationsFromProject(string projectName)
          {
@@ -858,7 +944,7 @@ namespace MoBi.Assets
 
          public static string Remove(string objectType, string objectName, string parentName)
          {
-            var baseString = $"Do you really want to remove {objectType} '{objectName}' from {parentName}.";
+            var baseString = $"Do you really want to remove {objectType} '{objectName}' from {parentName}?";
             if (string.Equals(objectType, ObjectTypes.Simulation))
                return baseString + $"  {objectName} will also be removed from parameter identifications and sensitivity analyses";
 
@@ -951,7 +1037,7 @@ namespace MoBi.Assets
          public static readonly string SaveProject = "&Save";
          public static readonly string SaveAs = "Save As...";
          public static readonly string NewSimulation = "Create";
-         public static readonly string Merge = "Merge";
+         public static readonly string NewModule = AddNew("Module");
          public static readonly string CloseProject = "&Close";
          public static readonly string GarbageCollection = "Start Garbage Collection";
          public static readonly string About = "&About...";
@@ -985,21 +1071,16 @@ namespace MoBi.Assets
          public static readonly string LoadObservedData = AddExisting(ObjectTypes.ObservedData);
          public static readonly string CompareSimulationResults = "Compare Results...";
          public static readonly string SaveGroup = "Save";
-         public static readonly string NewMoleculeBuildingBlock = AddNew("Molecule Building Block");
-         public static readonly string NewReactionBuildingBlock = AddNew("Reaction Building Block");
-         public static readonly string NewPassiveTransportBuildingBlock = AddNew("Passive Transport Building Block");
-         public static readonly string NewEventsBuildingBlock = AddNew("Event Building Block");
-         public static readonly string NewObserverBuildingBlock = AddNew("Observer Building Block");
-         public static readonly string NewSimulationSettingsBuildingBlock = AddNew("Simulation Settings Building Block");
          public static readonly string RelativePath = "Relative Path";
          public static readonly string AbsolutePath = "Absolute Path";
          public static readonly string ExportHistory = Captions.ExportHistory;
          public static readonly string StartPopulationSimulation = "Send Simulation to PK-Sim for Population Simulation...";
-         public static readonly string BuildingBlockExplorer = "Building Blocks";
+         public static readonly string ModuleExplorer = "Modules";
          public static readonly string SimulationExplorer = "Simulations";
          public static readonly string New = "New";
          public static readonly string NewMolecule = AddNew(ObjectTypes.Molecule);
          public static readonly string LoadMolecule = AddExisting(ObjectTypes.Molecule);
+         public static readonly string LoadExpressionProfile = AddExisting(ObjectTypes.ExpressionProfileBuildingBlock);
          public static readonly string LoadMoleculeFromTemplate = AddExistingFromTemplate(ObjectTypes.Molecule);
          public static readonly string NewReaction = AddNew(ObjectTypes.Reaction);
          public static readonly string LoadReaction = AddExisting(ObjectTypes.Reaction);
@@ -1020,6 +1101,7 @@ namespace MoBi.Assets
          public static readonly string LoadEvent = AddExisting(ObjectTypes.EventBuilder);
          public static readonly string LoadEventFromTemplate = AddExistingFromTemplate(ObjectTypes.EventBuilder);
          public static readonly string NewPassiveTransport = AddNew(ObjectTypes.ActiveTransport);
+         public static readonly string NewNeighborhood = AddNew(ObjectTypes.Neighborhood);
          public static readonly string LoadPassiveTransport = AddExisting(ObjectTypes.ActiveTransport);
          public static readonly string LoadPassiveTransportFromTemplate = AddExistingFromTemplate(ObjectTypes.ActiveTransport);
          public static readonly string AddPKSimMolecule = "Add PK-Sim Molecule...";
@@ -1046,8 +1128,8 @@ namespace MoBi.Assets
          public static readonly string GoTo = "Go To...";
          public static readonly string DiscardResults = "Discard";
          public static readonly string KeepResults = "Keep";
-         public static readonly string Commit = "Commit to building block ...";
-         public static readonly string Update = "Update from building block ...";
+         public static readonly string UpdateFromBuildingBlocks = "Update from building blocks";
+         public static readonly string CommitToBuildingBlocks = "Commit to building blocks";
          public static readonly string RemoveAll = "Remove All";
          public static readonly string Import = "Import ...";
          public static readonly string LoadChartTemplate = "Apply Template";
@@ -1057,20 +1139,38 @@ namespace MoBi.Assets
          public static readonly string UpdateExistingTemplate = "Update Existing";
          public static readonly string ChartTemplate = "Chart Templates";
          public static readonly string ManageTemplates = "Manage Templates...";
-         public static readonly string NewParameterStartValue = "New Parameter Start Value";
-         public static readonly string NewMoleculeStartValue = "New Molecule Start Value";
+         public static readonly string NewParameterValue = "New Parameter Value";
+         public static readonly string NewInitialCondition = "New Initial Condition";
          public static readonly string ModelParts = "Model Parts";
          public static readonly string ImportSBML = "Open SBML Model...";
          public static readonly string SaveAsPKML = "Save As PKML...";
          public static readonly string ReloadAll = "Reload all under same settings...";
+         public static readonly string AddBuildingBlocks = "Add Building Blocks...";
+         public static readonly string LoadBuildingBlocks = "Load Building Blocks...";
+         public static readonly string LoadBuildingBlocksFromTemplate = "Load Building Blocks from Template...";
+         public static readonly string MakeProjectDefaults = "Make project defaults";
+         public static readonly string RefreshFromProjectDefaults = "Refresh from project defaults";
+         public static readonly string AddLocalMoleculeParameters = "Add Local Molecule Parameters";
+         public static readonly string AddProteinExpression = "Add Protein Expression";
+         public static readonly string OutputSelections = "Output Selections";
+         public static readonly string SettingsAndSchema = "Output Intervals and Solver Settings";
+         public static readonly string MergeBehavior = "Merge Behavior";
+         public static readonly string ExportToExcel = "Export to Excel®...";
+         public static readonly string ImportFromExcel = "Import from Excel®...";
+         public static readonly string ShowChanges = "Show Changes";
 
          public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
 
+         public static string AddExistingAs(string objectTypeName, string targetTypeName) => $"Load {objectTypeName} as {targetTypeName}...";
          public static string AddExisting(string objectTypeName) => $"Load {objectTypeName}...";
+         public static string ExtendFrom(string objectTypeName) => $"Extend from {objectTypeName}...";
 
          public static string AddExistingFromTemplate(string objectTypeName) => $"Load {objectTypeName} from Template...";
 
-       
+         public static string AddModuleWithBuildingBlocks = "Create Module";
+         public static string EditDefaultSimulationSettings = "Edit Default Simulation Settings";
+         public static string SaveProjectSimulationSettings = "Save Default Simulation Settings";
+         public static string LoadProjectSimulationSettings = "Load Default Simulation Settings";
       }
 
       public static class DimensionNames
@@ -1103,7 +1203,7 @@ namespace MoBi.Assets
             return $"The imported dimension '{importedDimension}' does not match the existing dimension '{existingDimension}' with the path {path}.";
          }
 
-         public static string FormatAsStartValueImportWarning(int rowIndex, string dataRowString, string suggestion)
+         public static string FormatAsPathAndValueEntityImportWarning(int rowIndex, string dataRowString, string suggestion)
          {
             return $"WARNING: row #{rowIndex} => {dataRowString} {suggestion}";
          }
@@ -1113,35 +1213,35 @@ namespace MoBi.Assets
             return string.Format("Cannot find a parameter for path {1} in simulation {0} during import. Only updates are allowed", name, path);
          }
 
+         public static readonly string CheckDimensionOfAddedParameters = $"The <i>Dimension</i> property of the added parameters will not be automatically set.{Environment.NewLine}Please set the <i>Dimension</i> of all added parameters.";
          public static readonly string ThisItNotATemplateBuildingBlock = "This is not the template building block!";
       }
 
       public class Exceptions
       {
          public static readonly string CanNotRemoveLastItem = "You can not remove the last item";
-         public static readonly string UnableToCreateStartValues = "Unable to create start values. At least one molecule and one spatial structure building block are required.";
+         public static readonly string BuildingBlock = "Unable to create building block. At least one molecule and one spatial structure building block are required.";
          public static readonly string NoSelectionWithNew = "You need to select an item or create new one";
          public static readonly string NoBuildingBlockAvailable = "No building block available";
          public static readonly string SelectUniqueMolecules = "Select Unique Molecules";
          public static readonly string MergeBuildingBlocksCountError = "Building blocks to merge and target building blocks do not have the same length";
          public static readonly string MissingName = "Name missing";
          public static readonly string DeserializationFailed = "Deserialization failed";
-         public static readonly string SourceBuildingBlockNotInProject = "Building Block used to create start values is not present in project";
+         public static string SourceBuildingBlockNotInProject(string entityType) => $"Building Block used to create {entityType} is not present in project";
          public static readonly string ShouldNeverHappen = "Should never happen";
          public static readonly string ErrorInFormula = "Error in Formula";
          public static readonly string AppliedMoleculeNotInProject = "Applied Molecule is not in Project";
          public static readonly string CouldNotCreateSimulation = "Unable to create the simulation. Please check warnings or errors in the notification view.";
          public static readonly string TemplateShouldContainAtLeastOneCurve = "Template should contain at least one curve.";
-         public static readonly string StartValueDimensionModeDoesNotMatchBuildingBlockDimensionMode = "The imported start value dimension mode does not match the building block dimension mode. Modify the start value or the building block so that they are both concentration based, or amount based";
          public static readonly string FrameworkExceptionOccurred = "An exception occurred";
          public static readonly string MergingSpatialStructuresIsNotSupported = "Merging Spatial Structures is not supported.";
-         public static readonly string ImportedStartValueMustHaveName = "The imported start value must have a name";
-         public static readonly string ImportedStartValueMustHaveContainerPath = "The imported start value must have a container path";
+         public static readonly string ImportedValueMustHaveName = "The imported value must have a name";
+         public static readonly string ImportedValueMustHaveContainerPath = "The imported value must have a container path";
          public static readonly string ReactionNodeMissingInLink = "Reaction Node missing in Link";
          public static readonly string MoleculeNodeMissingInLink = "Molecule Node missing in Link";
          public static readonly string FileInNotAnExcelFile = "File is not an Excel file";
 
-         public static string DuplicatedImportedStartValue(string path) => $"Duplicated entry for imported start value with path '{path}'";
+         public static string DuplicatedImportedValue(string path) => $"Duplicated entry for imported value with path '{path}'";
 
          public static string CannotConvertAConcentrationModelBasedIntoAnAmountBasedModel(string modelType)
          {
@@ -1156,9 +1256,9 @@ namespace MoBi.Assets
 
          public static string ProjectWillBeOpenedAsReadOnly(string errorMessage) => $"{errorMessage}\nAny change made to the project will not be saved.";
 
-         public static string InvalidStartValuesConfiguration(string startValuesBuildingBlock, string buildingBlockType)
+         public static string InvalidBuildingBlockConfiguration(string buildingBlock, string buildingBlockType)
          {
-            return $"Selected {buildingBlockType.ToLower()} '{startValuesBuildingBlock}' does not match the selected {ObjectTypes.MoleculeBuildingBlock.ToLower()} and {ObjectTypes.SpatialStructure.ToLower()}.";
+            return $"Selected {buildingBlockType.ToLower()} '{buildingBlock}' does not match the selected {ObjectTypes.MoleculeBuildingBlock.ToLower()} and {ObjectTypes.SpatialStructure.ToLower()}.";
          }
 
          public static string CouldNotFindAReporterFor(Type type) => $"Unable to find a reporter for {type.Name}";
@@ -1180,7 +1280,7 @@ namespace MoBi.Assets
             return $"File contains no loadable content for  '{typeName}'";
          }
 
-         public static string CircularReferenceException(IFormulaUsablePath path, IFormula formula)
+         public static string CircularReferenceException(ObjectPath path, IFormula formula)
          {
             return $"Not adding path {path.PathAsString} to formula {formula.Name}.\nAdding path would create circular reference";
          }
@@ -1200,6 +1300,11 @@ namespace MoBi.Assets
          public static string NoEditPresenterFoundFor(IObjectBase objectToEdit)
          {
             return $"No edit presenter found for {objectToEdit.Name}. {ShouldNeverHappen}";
+         }
+
+         public static string MoreThanOneBuildingBlocks(string buildingBlockType)
+         {
+            return $"A module is allowed to have only one Building Block of type {buildingBlockType}. The file you are trying to load contains multiple.";
          }
 
          public static string FormulaInUse(IFormula formula) => $"Unable to remove Formula '{formula.Name}' still in use.";
@@ -1226,10 +1331,8 @@ namespace MoBi.Assets
 
          public static string CouldNotFindDimension(string dimension) => $"Could not find the dimension: {dimension}";
 
-         public static string CannotRemoveParameter(string parameterName, string containerName, string containerType)
-         {
-            return string.Format("Parameter '{0}' is a mandatory parameter of {2} '{1}' and cannot be removed.", parameterName, containerName, containerType.ToLowerInvariant());
-         }
+         public static string CannotRemoveParameter(string parameterName, string containerName, string containerType) =>
+            $"Parameter '{parameterName}' is a mandatory parameter of {containerType.ToLowerInvariant()} '{containerName}' and cannot be removed.";
 
          public static string AliasNotUnique(string alias, string formulaName) => $"Alias '{alias}' is not unique in formula '{formulaName}'.";
 
@@ -1252,22 +1355,21 @@ namespace MoBi.Assets
          public static readonly string Dimension = "Dimension";
          public static readonly string Unit = "Unit";
          public static readonly string FormulaCreationCaption = "Formula Creation Wizard";
-         public static readonly string SimulationCreationCaption = "Simulation Creation Wizard";
+         public static readonly string SimulationConfigurationWizard = "Simulation Configuration Wizard";
          public static readonly string ProjectExplorer = "Project Explorer";
          public static readonly string BuildingBlockExplorer = "Building Block Explorer";
          public static readonly string WarningsCaption = "Solver Warnings";
          public static readonly string HistoryBrowser = "History";
-         public static readonly string RenameWizardCaption = "Rename also";
+         public static readonly string RenameRelatedEntities = "Rename related entities";
          public static readonly string AddReactionMolecule = "Molecule Name";
          public static readonly string NewName = "New Name";
          public static readonly string Tag = "Tag";
          public static readonly string ValidationMessages = "Validation Results";
          public static readonly string SelectReferencesView = "References to add";
          public static readonly string References = "References";
-         public static readonly string NewMoleculeStartValues = "Create New Molecule Start Values";
-         public static readonly string NewParameterStartValues = "Create New Parameter Start values";
+         public static readonly string NewInitialConditions = "Create New Initial Conditions";
+         public static readonly string NewParameterValues = "Create New Parameter values";
          public static readonly string ExportHistory = "Export History";
-         public static readonly string MoleculeNames = "Molecule Name";
          public static readonly string StoichiometricCoefficient = "Stoichiometric Coefficient";
          public static readonly string FormulaType = "Formula Type";
          public static readonly string FormulaName = "Formula Name";
@@ -1289,8 +1391,11 @@ namespace MoBi.Assets
          public static readonly string ObservedData = "Observed Data";
          public static readonly string PassiveTransports = "Passive Transports";
          public static readonly string Reactions = "Reactions";
-         public static readonly string MoleculeStartValues = "Molecule Start Values";
-         public static readonly string ParameterStartValues = "Parameter Start Values";
+         public static readonly string InitialConditions = "Initial Conditions";
+         public static readonly string ParameterValues = "Parameter Values";
+         public static readonly string ExpressionProfiles = "Expression Profiles";
+         public static readonly string ExpressionProfile = "Expression Profile";
+         public static readonly string Individual = "Individual";
          public static readonly string NextButton = "&Next";
          public static readonly string PreviousButton = "&Previous";
          public static readonly string FinishButton = "&Finish";
@@ -1313,14 +1418,15 @@ namespace MoBi.Assets
          public static readonly string SelectFormulasForObjectBaseSelection = "Select formula for objects";
          public static readonly string SimulationSettings = "Simulation Settings";
          public static readonly string SimulationSettingsDescription = "Select the curves that will be generated by the simulation.";
-         public static readonly string ShouldRenameDependentObjects = "Rename Dependent Objects";
          public static readonly string SimulationPathForMerge = "Simulation path";
          public static readonly string SourceSimulationFileForMerge = "Select simulation file containing the building blocks to merge";
          public static readonly string BuildingBlockToMerge = "Source building block";
          public static readonly string TargetBuildingBlock = "Embed in target building block";
          public static readonly string MergeSimulationIntoProject = "Merge Simulation into Project";
          public static readonly string ImportAsNew = "<Import as new>";
-         public static readonly string CreatingSimulation = "Creating...";
+         public const string CreatingSimulation = "Creating...";
+         public const string ConfiguringSimulation = "Configuring...";
+         public const string UpdatingSimulation = "Updating...";
          public static readonly string AddParameter = "Add Parameter ";
          public static readonly string AddMolecule = "Add Molecule";
          public static readonly string LoadParameter = "Load Parameter ";
@@ -1367,23 +1473,16 @@ namespace MoBi.Assets
          public static readonly string ChangedEntityPath = "Changed entity path";
          public static readonly string ChangedEntity = "Changed entity";
          public static readonly string NewFormula = "New formula";
-         public static readonly string StartValue = "Start Value";
+         public static readonly string ParameterValue = "Parameter Value";
+         public static readonly string InitialCondition = "Initial Condition";
          public static readonly string ScaleDivisor = "Scale Divisor";
          public static readonly string IsPresent = "Is Present";
          public static readonly string NegativeValuesAllowed = "Neg. Values Allowed";
-         public static readonly string NegativeValues = "Neg. Values";
+         public static readonly string NegativeValues = "Negative Values";
          public static readonly string MoleculeName = "Molecule Name";
          public static readonly string ParameterName = "Parameter Name";
-         public static readonly string AllPresent = "Mark all as present";
-         public static readonly string AllNotPresent = "Mark all as not present";
-         public static readonly string SelectedNotPresent = "Mark selected as not present";
-         public static readonly string SelectedPresent = "Mark selected as present";
-         public static readonly string AllNegativeValuesAllowed = "Mark all as allowing neg. values";
-         public static readonly string AllNegativeValuesNotAllowed = "Mark all as not allowing neg. values";
-         public static readonly string SelectedNegativeValuesAllowed = "Mark selected as allowing neg. values";
-         public static readonly string SelectedNegativeValuesNotAllowed = "Mark selected as not allowing neg. values";
-         public static readonly string PerformCheckSelection = "Apply";
-         public static readonly string BuildConfiguration = "Configuration";
+         public static readonly string Apply = "Apply";
+         public static readonly string SimulationConfiguration = "Configuration";
          public static readonly string Search = "Search";
          public static readonly string SearchScope = "Scope";
          public static readonly string SearchResults = "Search results";
@@ -1398,7 +1497,6 @@ namespace MoBi.Assets
          public static readonly string IsAdvancedParameter = "Advanced parameter";
          public static readonly string CaseSensitive = "Match case";
          public static readonly string AddValuePoint = "Add Point";
-         public static readonly string UseDerivedValues = "Use derivative values";
          public static readonly string OffsetObjectPath = "Path to offset object";
          public static readonly string XArgumentObjectPath = "Path to X-Argument object";
          public static readonly string TableObjectPath = "Path to table object";
@@ -1414,6 +1512,8 @@ namespace MoBi.Assets
          public static readonly string NewInContainerCondition = "New \"In container\" condition";
          public static readonly string NewNotInContainerCondition = "New \"Not in container\" condition";
          public static readonly string AddMatchAllCondition = "Add \"Match all tag\" condition";
+         public static readonly string AddInParentCondition = "Add \"In parent\" condition";
+         public static readonly string AddInChildrenCondition = "Add \"In children\" condition";
          public static readonly string Persistable = "Plot parameter";
          public static readonly string Properties = "Properties";
          public static readonly string Tags = "Tags";
@@ -1463,17 +1563,16 @@ namespace MoBi.Assets
          public static readonly string DisplayUnit = "Display Unit";
          public static readonly string DefaultDisplayUnits = "Default Display Units";
          public static readonly string ApplicationSettings = "Application";
-         public static readonly string OutputSelections = "Output Selections";
          public static readonly string StartImport = "Start Import";
-         public static readonly string ImportParameterStartValues = "Import Parameter Start Values";
+         public static readonly string ImportParameterValues = "Import Parameter Values";
          public static readonly string ImportParameterQuantitiesFileFormatHint = "The file format must have at least 4 columns. Columns should be Container Path, Parameter Name, Value, and Units." + Environment.NewLine + "The first row is ignored for import.";
          public static readonly string Transfer = "Transfer";
          public static readonly string ManageChartTemplates = "Manage Chart Templates";
          public static readonly string AddTemplate = "Add Template";
          public static readonly string CurveAndAxisSettings = "Curve and Axis Settings";
          public static readonly string ChartSettings = "Chart Options";
-         public static readonly string ImportMoleculeStartValues = "Import Molecule Start Values";
-         public static readonly string ImportMoleculeStartValuesFileFormatHint = "The file format must have at least 7 columns. Columns should be Container Path, Molecule Name, Is Present, Value, Units, Scale Divisor and Neg. Values Allowed." + Environment.NewLine + "The first row is ignored for import.";
+         public static readonly string ImportInitialConditions = "Import Initial Conditions";
+         public static readonly string ImportInitialConditionsFileFormatHint = "The file format must have at least 7 columns. Columns should be Container Path, Molecule Name, Is Present, Value, Units, Scale Divisor and Neg. Values Allowed." + Environment.NewLine + "The first row is ignored for import.";
          public static readonly string RunSimulation = "Run Simulation";
          public static readonly string CreateProcessRateParameter = "Create process rate parameter";
          public static readonly string SaveSimulationSettings = "Save Settings into";
@@ -1486,9 +1585,7 @@ namespace MoBi.Assets
          public static readonly string Calculate = "Calculate";
          public static readonly string CalculateScaleDivisor = "Calculate Scale Divisor";
          public static readonly string CreatePKSimMoleculeFromTemplate = "Create PK-Sim Molecule From Template";
-         public static readonly string RefreshValues = "Start Values";
-         public static readonly string RefreshAll = "Refresh all from source";
-         public static readonly string RefreshSelected = "Refresh selected from source";
+         public static readonly string RefreshValues = "Refresh Values";
          public static readonly string SaveUnitsToFile = "Save Units";
          public static readonly string LoadUnitsFromFile = "Load Units";
          public static readonly string SaveUnits = "Save Units";
@@ -1503,8 +1600,8 @@ namespace MoBi.Assets
          public static readonly string AmountBasedModel = "Amount based reactions";
          public static readonly string ConcentrationBasedModel = "Concentration based reactions";
          public static readonly string ContainerMode = "Container Mode";
-         public static readonly string ShowOnlyChangedStartValues = "Show only changed values";
-         public static readonly string ShowOnlyNewStartValues = "Show only new values";
+         public static readonly string ShowOnlyChangedValues = "Show only changed values";
+         public static readonly string ShowOnlyNewValues = "Show only new values";
          public static readonly string Cancel = "Cancel";
          public static readonly string KeepExisting = "Keep existing";
          public static readonly string ReplaceWithMerged = "Use the newly merged";
@@ -1524,17 +1621,58 @@ namespace MoBi.Assets
          public static readonly string MoleculesToExclude = "Molecules to Exclude";
          public static readonly string MoleculesToInclude = "Molecules to Include";
          public static readonly string Data = "Data";
-         public static readonly string StartValueIsModified = "Start value is modified";
+         public static readonly string ValueIsModified = "Value is modified";
          public static readonly string ExportSelectedObservedDataDescription = "Select the curve that will be exported.";
          public static readonly string ValidationOptions = "Validation Options";
          public static readonly string MRUListItemCount = "Number of recent file items shown";
          public static readonly string ShowPKSimParameterWarnings = "Show known dimension warnings for PK-Sim parameters";
          public static readonly string ShowUnableCalculateWarnings = "Show warnings when formulas dimension could not be calculated";
          public static readonly string ValidatePKSimStandardObserver = "Show warnings from PK-Sim standard observers";
+         public static readonly string ShowUnresolvedEndosomeWarningsForInitialConditions = "Show warnings for unresolved endosome containers";
          public static readonly string PlotProcessRateParameter = "Plot process rate parameter";
          public static readonly string Source = "Source";
          public static readonly string Target = "Target";
-         public static readonly string CouldNotResolveSource = "Source of start value not defined";
+         public static readonly string DatabaseQuery = "Database Query";
+         public static readonly string SelectSpatialStructureAndMolecules = "Select a spatial structure and molecules";
+         public static readonly string SelectOrganAndMolecules = "Select an organ and molecules";
+         public static readonly string SelectSpatialStructure = "Select a spatial structure";
+         public static readonly string ExtendDescription = "<b>The building block will be extended with new values for selected <i>molecules</i> in all physical containers in the selected <i>spatial structure</i></b>";
+         public static readonly string RefreshDescription = "<b>The initial conditions will be refreshed from the selected <i>molecules</i></b>";
+         public static readonly string AddExpressionDescription = "<b>The building block will be extended with expression parameter values for selected <i>molecules</i> in the selected <i>organ</i> </b>";
+         public static readonly string AddDefaultCurveForNewSimulations = "Add default curve for new simulations";
+         public static readonly string ChangeDefaultCurveForNewSimulations = "Change default curve for new simulations";
+         public static readonly string IndividualParameters = "Individual Parameters";
+         public static readonly string ParameterPathsToAdd = "Parameter Paths to Add";
+         public static readonly string Allowed = "Allowed";
+         public static readonly string NotAllowed = "Not Allowed";
+         public static readonly string Presence = "Presence";
+         public static readonly string Present = "Present";
+         public static readonly string NotPresent = "Not Present";
+         public static readonly string EditFormula = "Edit Formula";
+         public static readonly string AssigningFormulaCreatesCircularReference = "Assigning formula creates circular reference";
+         public static readonly string Changes = "Changes";
+         public static readonly string SimulationChangesSinceConfiguration = "Simulation changes since configuration";
+         public static readonly string OriginalValue = "Original Value";
+         public static readonly string CurrentValue = "Current Value";
+         public static readonly string CreateProcessRateParameters = "Create a process rate parameter for each process in the simulation";
+         public static readonly string AddAndEditPathsDescription = "You can add paths by selecting the entity from the left and using the 'Add' button, or by manually entering and editing paths in the text area below.";
+         public static string SelectTheBuildingBlockWhereEntitiesWillBeAddedOrUpdated(string typeBeingAdded) => $"Select the building block where {typeBeingAdded} will be added or updated";
+         public static readonly string SelectBuildingBlock = "Select Building Block";
+         public static readonly string MakeDefault = "Make defaults";
+         public static readonly string LoadFromDefaults = "Load from defaults";
+         public static readonly string MergeBehavior = "Merge Behavior";
+         private static readonly string mergelink = "See <a href='https://github.com/Open-Systems-Pharmacology/OSMOSES/blob/develop/Documentation/Modularization-concept.md#combination-rules'>description of merge behaviours</a>.";
+         public static readonly string ExtendMergeBehaviorDescription = $"The module containers will be merged recursively using add and update behavior.{Environment.NewLine}{mergelink}";
+         public static readonly string OverwriteMergeBehaviorDescription = $"The module containers will be replaced by path.{Environment.NewLine}{mergelink}";
+         public static readonly string ExportToExcel = "Export to Excel®";
+         public static readonly string DistributedTableFormula = "Distributed Table Formula";
+         public static readonly string ImportTableFormula = "Import Table Formula";
+         public static string SelectEntitiesThatWillBeReplaced(string entityType) => $"Select {entityType.Pluralize()} that will be replaced";
+         public static string SelectEntitiesThatWillBeReplacedDescription(string entityType, string buildingBlockName) => $"<b>Selected <i>{entityType.Pluralize()}</i> will replace existing <i>{entityType.Pluralize()}</i> in the building block <i>{buildingBlockName}</i></b>";
+         public static string ExportContainerDescription(string exportedContainerPath) => $"<b>Select a <i>file path</i> and optional <i>individual</i> and <i>expression profiles</i> for container export. Parameters from the <i>individual</i> and <i>expression profiles</i> that match the path {exportedContainerPath} will be added to the container before exporting.</b>";
+         public static readonly string SelectIndividualAndPathForContainerExport = "Select an individual and path for container export";
+         public static readonly string AddInterval = "Add Interval";
+         public static string CouldNotResolveSource(string sourceType) => $"{sourceType} source not defined";
          public static readonly string CurveName = "Curve Name";
          public static readonly string XDataPath = "X-Path";
          public static readonly string YDataPath = "Y-Path";
@@ -1569,7 +1707,6 @@ namespace MoBi.Assets
          public static readonly string OpenLayoutFromFile = OSPSuite.Assets.Captions.OpenLayoutFromFile;
          public static readonly string SaveChanges = "Save Changes";
          public static readonly string EnableEditing = "Enable Editing";
-         public static readonly string DeleteSelected = "Delete Selected";
          public static readonly string DeleteSourceNotDefined = "Delete Source Not Defined";
          public static readonly string DeleteValues = "Delete Values";
          public static readonly string DeleteLinksFromMoleculesFirst = "Delete links from molecules first";
@@ -1600,43 +1737,61 @@ namespace MoBi.Assets
          public static readonly string GeometricDeviation = "Geometric Deviation";
          public static readonly string List = "List";
          public static readonly string UserDefined = "User Defined";
+         public static readonly string AddMetabolizingEnzyme = "Add Metabolizing Enzyme";
+         public static readonly string AddTransportProtein = "Add Transport Protein";
+         public static readonly string AddSpecificBindingPartner = "Add Binding Partner";
+         public static readonly string AddIndividual = "Add Individual";
+         public static readonly string Individuals = "Individuals";
+         public static readonly string OriginData = "Origin Data";
+         public static readonly string PKSimVersion = "PK-Sim Version";
+         public static readonly string ModulesFolder = "Modules";
+         public static readonly string Module = "Module";
+         public static readonly string CreateBuildingBlocks = "Create Building Blocks";
+         public static readonly string AddSelectedBuildingBlocks = "Add Selected Building Blocks";
+         public static readonly string ParentPath = "Parent Path";
+         public static readonly string SelectContainer = "Select Container";
+         public static readonly string FirstNeighbor = "First Neighbor";
+         public static readonly string SecondNeighbor = "Second Neighbor";
+         public static readonly string DefaultSimulationSettings = "Default Simulation Settings";
+         public static readonly string SelectBuildingBlockType = "Select the type of Building Block you want to load to the module";
+         public static readonly string AddingBuildingBlockToModuleClarification = "The Building Block Types that are already present in the module and cannot have multiple items are not listed in the list above";
+         public static readonly string SelectValues = "Select Values";
+         public static readonly string NoInitialConditions = "No Initial Conditions";
+         public static readonly string NoParameterValues = "No Parameter Values";
+         public static readonly string ConfigureModules = "Configure Modules";
+         public static readonly string SimulationModules = "Simulation Modules";
+         public static readonly string ProjectModules = "Project Modules";
+         public static readonly string ConfigureIndividualAndExpressions = "Configure Individual and Expressions";
+         public static readonly string IndividualNotSelected = "Individual Not Selected";
+         public static readonly string CopyPath = "Copy Path";
+         public static readonly string CopyFormula = "Copy Formula";
+         public static readonly string PasteFormula = "Paste Formula";
+         public static readonly string SelectOutputFolder = "Select output folder";
+         public static readonly string SelectParameter = "Select parameter";
+         public static readonly string ExpressionParameters = "Expression Parameters";
+         public static string AddBuildingBlocksToModule(string moduleName) => $"Add Building Blocks to Module:  {moduleName}";
+         public static string LoadBuildingBlockToModule(string moduleName) => $"Load Building Block to Module:  {moduleName}";
 
          public static string SumFormulaDescription(string iterationPattern) => $"Sum formula is defined as R1*…*Rm*∑{iterationPattern}*Q1_#i*…Qn_#i where R1…Rm (m>=0) are the quantities of an independent object (as absolute path or relative path); {iterationPattern} is a control variable (parameter, molecule amount, … defined by certain conditions); and Q1_#i…Qn_#i (n>=0) are the quantities that are obtained from a path relative to {iterationPattern}";
 
+         public static string ManageDisplayUnits(string type) => $"Manage {type} Display Units";
 
-         public static string ManageDisplayUnits(string type)  
+         public static string ParameterRightHandSide(string name) => $"d{name}/dt = ";
+
+         public static string ReportCreationStartedMessage(string reportFullPath) => "This might take a while...";
+
+         public static string ReportCreationFinishedMessage(string reportFullPath) => $"Report can be found at {reportFullPath}";
+
+         public static string ConvertingExcelSheetToQuantities(string tableName) => $"Converting Excel sheet {tableName}";
+
+         public static string AddingInitialCondition(ObjectPath moleculePath, double initialConditionInDisplayUnit, Unit displayUnit, bool isPresent, string moleculeName, bool negativeValueAllowed)
          {
-            return $"Manage {type} Display Units";
+            return $"Adding Initial Condition {moleculePath}={initialConditionInDisplayUnit} {displayUnit}, Is Present={isPresent}, Molecule Name={moleculeName}, Neg. Values Allowed={negativeValueAllowed}";
          }
 
-         public static string ParameterRightHandSide(string name)
+         public static string AddingParameterValue(ObjectPath parameterPath, double parameterValueInDisplayUnit, Unit displayUnit)
          {
-            return $"d{name}/dt = ";
-         }
-
-         public static string ReportCreationStartedMessage(string reportFullPath)
-         {
-            return "This might take a while...";
-         }
-
-         public static string ReportCreationFinishedMessage(string reportFullPath)
-         {
-            return $"Report can be found at {reportFullPath}";
-         }
-
-         public static string ConvertingExcelSheetToQuantities(string tableName)
-         {
-            return $"Converting Excel sheet {tableName}";
-         }
-
-         public static string AddingMoleculeStartValue(IObjectPath moleculePath, double startValueInDisplayUnit, Unit displayUnit, bool isPresent, string moleculeName, bool negativeValueAllowed)
-         {
-            return $"Adding Molecule Start Value {moleculePath}={startValueInDisplayUnit} {displayUnit}, Is Present={isPresent}, Molecule Name={moleculeName}, Neg. Values Allowed={negativeValueAllowed}";
-         }
-
-         public static string AddingParameterStartValue(IObjectPath parameterPath, double startValueInDisplayUnit, Unit displayUnit)
-         {
-            return $"Adding Parameter Start Value {parameterPath}={startValueInDisplayUnit} {displayUnit}";
+            return $"Adding Parameter Value {parameterPath}={parameterValueInDisplayUnit} {displayUnit}";
          }
 
          public static string ListOf(string item)
@@ -1679,14 +1834,24 @@ namespace MoBi.Assets
             return buildingBlockCaption(Reactions, name);
          }
 
-         public static string MoleculeStartValuesBuildingBlockCaption(string name)
+         public static string IndividualBuildingBlockCaption(string name)
          {
-            return buildingBlockCaption(MoleculeStartValues, name);
+            return buildingBlockCaption(Individual, name);
          }
 
-         public static string ParameterStartValuesBuildingBlockCaption(string name)
+         public static string ExpressionProfileBuildingBlockCaption(string name)
          {
-            return buildingBlockCaption(ParameterStartValues, name);
+            return buildingBlockCaption(ExpressionProfile, name);
+         }
+
+         public static string InitialConditionsBuildingBlockCaption(string name)
+         {
+            return buildingBlockCaption(InitialConditions, name);
+         }
+
+         public static string ParameterValuesBuildingBlockCaption(string name)
+         {
+            return buildingBlockCaption(ParameterValues, name);
          }
 
          public static string SpatialStructureBuildingBlockCaption(string name)
@@ -1709,11 +1874,6 @@ namespace MoBi.Assets
             return $"New {objectName}";
          }
 
-         public static string TemporaryStartValuesBasedOn(string startValueType, string name)
-         {
-            return $"{startValueType} used in simulation based on '{name}'";
-         }
-
          public static string SelectEntitiesToLoad(string searchedEntityType)
          {
             return $"Select {searchedEntityType.ToLower()}s to load";
@@ -1734,11 +1894,6 @@ namespace MoBi.Assets
             return $"Number of curves to generate for this simulation : {numberOfSelectedMolecules}";
          }
 
-         public static string UpdatingSimulation(IObjectBase moBiSimulation)
-         {
-            return $"Updating simulation: '{moBiSimulation.Name}'";
-         }
-
          public static string CommitToBuildingBlock(IBuildingBlock buildingBlock)
          {
             return $"Commiting changes to building block: '{buildingBlock.Name}'";
@@ -1749,7 +1904,7 @@ namespace MoBi.Assets
             return $"Configure Simulation: {simulationName}";
          }
 
-         public const string StartValueNotAvailable = "<Not Available>";
+         public const string ValueNotAvailable = "<Not Available>";
          public const string FormulaNotAvailable = "<Not Available>";
 
          public static string ApplyToRemaining(int remainingConflicts)
@@ -1767,24 +1922,24 @@ namespace MoBi.Assets
             return $"Select file containing the {buildingBlockType.ToLowerInvariant()} to merge";
          }
 
-         public static string UpdatingMoleculeStartValue(IObjectPath moleculePath, double startValueInDisplayUnit, Unit displayUnit, bool isPresent, string moleculeName, bool negativeStartValueAllowed)
+         public static string UpdatingInitialCondition(ObjectPath moleculePath, double initialConditionInDisplayUnit, Unit displayUnit, bool isPresent, string moleculeName, bool negativeInitialConditionAllowed)
          {
-            return !double.IsNaN(startValueInDisplayUnit)
-               ? $"Updating Molecule Start Value {moleculePath}={startValueInDisplayUnit} {displayUnit}, Is Present={isPresent}, Molecule Name={moleculeName}, Neg. Values Allowed={negativeStartValueAllowed}"
-               : $"Updating Molecule Start Value {moleculePath}, Is Present={isPresent}, Molecule Name={moleculeName}, Neg. Values Allowed={negativeStartValueAllowed}";
+            return !double.IsNaN(initialConditionInDisplayUnit)
+               ? $"Updating Initial Condition {moleculePath}={initialConditionInDisplayUnit} {displayUnit}, Is Present={isPresent}, Molecule Name={moleculeName}, Neg. Values Allowed={negativeInitialConditionAllowed}"
+               : $"Updating Initial Condition {moleculePath}, Is Present={isPresent}, Molecule Name={moleculeName}, Neg. Values Allowed={negativeInitialConditionAllowed}";
          }
 
-         public static string UpdatingParameterStartValue(IObjectPath parameterPath, double startValueInDisplayUnit, Unit displayUnit)
+         public static string UpdatingParameterValue(ObjectPath parameterPath, double parameterValueInDisplayUnit, Unit displayUnit)
          {
-            return $"Updating Parameter Start Value {parameterPath}={startValueInDisplayUnit} {displayUnit}";
+            return $"Updating Parameter Value {parameterPath}={parameterValueInDisplayUnit} {displayUnit}";
          }
 
-         public static string UpdatingParameterValueInSimulation(IObjectPath path, double valueInDisplayUnit, Unit displayUnit)
+         public static string UpdatingParameterValueInSimulation(ObjectPath path, double valueInDisplayUnit, Unit displayUnit)
          {
             return $"Updating parameter value in simulation {path}={valueInDisplayUnit} {displayUnit}";
          }
 
-         public static string AddingParameterValueToSimulation(IObjectPath path, double valueInDisplayUnit, Unit displayUnit)
+         public static string AddingParameterValueToSimulation(ObjectPath path, double valueInDisplayUnit, Unit displayUnit)
          {
             return $"Adding parameter value in simulation {path}={valueInDisplayUnit} {displayUnit}";
          }
@@ -1798,13 +1953,142 @@ namespace MoBi.Assets
          {
             return $"{partnerType} for reaction '{reactionName}'";
          }
+
+         public static string SelectBuildingBlocksToCloneFrom(Module module)
+         {
+            return $"Select building blocks to clone from {module.Name}";
+         }
+
+         public static string CouldNotRemoveModules(List<string> modulesNotRemoved)
+         {
+            var numberOfModules = modulesNotRemoved.Count;
+            var sb = new StringBuilder();
+
+            if (numberOfModules == 1)
+               sb.AppendLine("A module could not be deleted");
+            else
+               sb.AppendLine("Some modules could not be deleted");
+
+            sb.AppendLine(namesList(modulesNotRemoved));
+
+            if (numberOfModules == 1)
+               sb.AppendLine("It is used in one ore move simulations");
+            else
+               sb.AppendLine("They are used in one or more simulations");
+
+            return sb.ToString();
+         }
+
+         public static string AlsoImportIndividualsAndExpressions(string individualName, IReadOnlyList<string> expressionNames)
+         {
+            var numberOfIndividuals = string.IsNullOrEmpty(individualName) ? 0 : 1;
+            var numberOfExpressions = expressionNames.Count;
+            var sb = new StringBuilder();
+
+            var expression = $"Expression Profile".PluralizeIf(numberOfExpressions);
+
+            if (numberOfExpressions == 0)
+               return $"Also import individual {individualName}?";
+
+            if (numberOfIndividuals == 0)
+            {
+               sb.Append($"Also import {expression}");
+               sb.AppendLine();
+               sb.Append(namesList(expressionNames));
+               return sb.ToString();
+            }
+
+            sb.AppendLine("Do you want to import additional building blocks?");
+            sb.AppendLine();
+
+            sb.Append("<b>Individual</b>");
+            sb.AppendLine(namesList(new[] { individualName }));
+            sb.Append($"<b>{expression}</b>");
+            sb.AppendLine(namesList(expressionNames));
+
+            return sb.ToString();
+         }
+
+         public static string CouldNotAddExpressionProfilesDuplicatingProtein(IReadOnlyList<string> proteinNames)
+         {
+            var sb = new StringBuilder();
+            sb.Append($"Expression profiles cannot be added for");
+            sb.AppendLine();
+            sb.Append(namesList(proteinNames));
+            sb.AppendLine();
+            if (proteinNames.Count > 1)
+               sb.Append("because an expression profile is already selected for those proteins");
+            else
+               sb.Append("because an expression profile is already selected for that protein");
+            return sb.ToString();
+         }
+
+         private static string namesList(IReadOnlyList<string> allNames)
+         {
+            var sb = new StringBuilder();
+            sb.AppendLine();
+            sb.Append(" - ");
+            sb.AppendLine(allNames.ToString("\n - "));
+            return sb.ToString();
+         }
+
+         public static string BuildingBlockAlreadyContains(IReadOnlyList<string> paths)
+         {
+            var pathsNotAdded = paths.Count;
+            var sb = new StringBuilder();
+
+            if (pathsNotAdded == 1)
+               sb.AppendLine("A Parameter Value could not be added");
+            else
+               sb.AppendLine("Some parameter values could not be added");
+
+            sb.AppendLine(namesList(paths));
+
+            if (pathsNotAdded == 1)
+               sb.AppendLine("It already exists in the building block");
+            else
+               sb.AppendLine("They already exist in the building block");
+
+            return sb.ToString();
+         }
+
+         public static string ThisWillConvertPkSimModuleToExtensionModule(string moduleName)
+         {
+            return $"This will convert PK-Sim module '{moduleName}' to an extension module {Environment.NewLine} Continue?";
+         }
+
+         public static string ObjectCannotBeSelected(string forbiddenReason)
+         {
+            return $"This item cannot be selected. {forbiddenReason}";
+         }
+
+         public static string ProjectConversionResultedInSimulationsWithUntraceableChanges(IReadOnlyList<string> simulationNames)
+         {
+            var sb = new StringBuilder();
+            sb.AppendLine("===================== WARNING =====================");
+            sb.AppendLine();
+            sb.AppendLine("During project conversion some changes to the simulation could not be traced back to building blocks.");
+            sb.AppendLine($"The simulation changes are still present in the simulations but cannot be committed to the building blocks in this version of {PRODUCT_NAME_WITH_TRADEMARK}.");
+            sb.AppendLine();
+            sb.AppendLine("To preserve full commit functionality, go back to the previous version and synchronize the simulation with building blocks before opening with this version.");
+            sb.AppendLine("You can reconfigure the simulations from their building blocks in this version.");
+            sb.AppendLine();
+            sb.AppendLine("The following simulations are affected:");
+            sb.Append(namesList(simulationNames));
+            sb.AppendLine();
+            return sb.ToString();
+         }
+
+         public static string SimulationHasChangesThatCannotBeCommitted(string simulationName)
+         {
+            return $"During project conversion the simulation '{simulationName}' had changes that can not be committed to building blocks.\n\nAny new changes in the simulation cannot be committed to building blocks";
+         }
       }
 
       public static class Validation
       {
          public static readonly string EmptyName = "Name has to be specified";
          public static readonly string EmptyTransportName = "Transport Name has to be specified";
-         public static readonly string MissingStartValues = "Invalid Start Values, create new ones or expand these";
          public static readonly string Percentile = "Percentile should be between 0 and 100";
          public static readonly string EmptyFormula = "Formula has to be specified";
          public static readonly string UndefinedParameter = "Parameter value is not defined, may cause error during computation";
@@ -1818,6 +2102,15 @@ namespace MoBi.Assets
          public static readonly string EmptyAlias = "Alias has to be specified";
          public static readonly string AliasAlreadyUsed = "Alias is already in use";
          public static readonly string EmptyPath = "Path has to be specified";
+         public static readonly string SpeciesCannotBeEmpty = "Species cannot be empty";
+         public static readonly string MoleculeNameCannotBeEmpty = "Molecule name cannot be empty";
+         public static readonly string CategoryCannotBeEmpty = "Category cannot be empty";
+         public static readonly string ModuleNameCannotBeEmpty = "Module name cannot be empty";
+         public static readonly string ExtendingRequiresMoleculeBuildingBlock = "Extending requires a molecule building block";
+         public static readonly string ExtendingRequiresSpatialStructure = "Extending requires a spatial structure";
+         public static readonly string CannotAssignAFormulaThatReferencesTheAssignmentTarget = "Cannot assign a formula that references the assignment target";
+         public static readonly string CannotCreateANeighborhoodThatConnectsAContainerToItself = "Cannot create a neighborhood that connects a container to itself";
+         public static string AnotherMoleculeNamedIsSelected(string moleculeName) => $"Another molecule named {moleculeName} is selected";
 
          public static string XDimensionColumnMustNotHaveRepeatedValues(string dimensionName)
          {
@@ -1849,7 +2142,7 @@ namespace MoBi.Assets
             return $"{objectName} should be greater or equal than 0";
          }
 
-         public static string RenameReaction(string oldName, string newName, IReactionBuildingBlock buildingBlock)
+         public static string RenameReaction(string oldName, string newName, ReactionBuildingBlock buildingBlock)
          {
             return string.Format("'{2}' already contains a different reaction named '{0}'. Renamed to '{1}'", oldName, newName, buildingBlock.Name);
          }
@@ -1881,7 +2174,7 @@ namespace MoBi.Assets
 
          public static string DoesNotEvaluateTo(string dimensionName) => $"does not evaluate to the dimension '{dimensionName}'";
 
-         public static string PathIsIdenticalToExistingPath(IObjectPath path)
+         public static string PathIsIdenticalToExistingPath(ObjectPath path)
          {
             return $"The path {path} is identical to an existing path in the building block";
          }
@@ -1893,17 +2186,24 @@ namespace MoBi.Assets
 
          public static string ValueNotValidForInsert(string path)
          {
-            return $"The value with path {path} does not contain a start value and an existing start value with the same path cannot be found";
+            return $"The value with path {path} does not contain a value and an existing value with the same path cannot be found";
          }
 
          public static string ValueNotValidForUpdate(string path)
          {
-            return $"The value with path {path} does not contain either a start value or scale divisor. It must contain one for updating the existing start value";
+            return $"The value with path {path} does not contain either a value or scale divisor. It must contain one for updating the existing value";
          }
 
          public static string NameIsAlreadyUsedInThisContainer(string containerPath, string name)
          {
-            return $"A start value with the name '{name}' already exists for the container {containerPath}";
+            return $"A value with the name '{name}' already exists for the container {containerPath}";
+         }
+
+         public static string ThePathIsAlreadySelectedAsAnOutput(ObjectPath objectPath) => $"The path {objectPath} is already selected as an output.";
+
+         public static string HasEquivalentNeighborhood(string firstNeighborPath, string secondNeighborPath)
+         {
+            return $"A neighborhood already exists between '{firstNeighborPath}' and '{secondNeighborPath}'";
          }
       }
 
@@ -1913,8 +2213,9 @@ namespace MoBi.Assets
       public static readonly string BrowseForFile = "Select File";
       public static readonly string Undefined = "Undefined";
       public static readonly string PleaseSelectCurveInChartEditor = "Please select a curve from the chart editor to be displayed in the chart";
-      public static readonly IReadOnlyList<string> DefaultObservedDataCategories = new[] { Constants.ObservedData.MOLECULE, Constants.ObservedData.COMPARTMENT, Constants.ObservedData.ORGAN};
-
+      public static readonly IReadOnlyList<string> DefaultObservedDataCategories = new[] { Constants.ObservedData.MOLECULE, Constants.ObservedData.COMPARTMENT, Constants.ObservedData.ORGAN };
+      public static readonly string Clone = "Clone";
+      public static readonly string Endosome = "Endosome";
 
       public static string PathType(string pathTypeAsString)
       {
@@ -1991,7 +2292,6 @@ namespace MoBi.Assets
       };
 
       public static readonly string None = "<None>";
-      public static readonly string PKSimTopContainer = "Organism";
       public static readonly string AmountAlias = "M";
       public static readonly string NeighborhoodTag = "Neighborhood";
       public static readonly string OutputIntervalId = "OutputIntervalId";
@@ -2013,29 +2313,17 @@ namespace MoBi.Assets
          return $"{name1}-{name2}";
       }
 
-      public static string ProjectVersionCannotBeLoaded(int projectVersion, int currentVersion, bool projectIsTooOld, string downloadUrl)
-      {
-         if (projectIsTooOld)
-            return $"The project is too old (compatible version {projectVersion}) and cannot be loaded with this version. (compatible version {currentVersion}).\n" +
-                   $"Visit our download page at {downloadUrl} to download an older version of the software compatible with this project.";
-
-         if (projectVersion > currentVersion)
-            return $"The application is too old (compatible version {currentVersion}) and cannot load a project created with a newer version (project version {projectVersion}).\nVisit our download page at {downloadUrl}";
-
-         return $"Work in progress.\nThis project file is too old (version {projectVersion}) and cannot be loaded.\nSorry :-(";
-      }
-
       public static class ProjectUpdateMessages
       {
-         public static string UpdatePSV(string name)
+         public static string UpdateParameterValues(string name)
          {
-            return $"Update Parameter Start Values Building Block: '{name}'. Adding Dimension Information";
+            return $"Update Parameter Values Building Block: '{name}'. Adding Dimension Information";
          }
 
-         public static string UnableToGetDimensionFor(IParameterStartValue psv, string parentName)
+         public static string UnableToGetDimensionFor(ParameterValue parameterValue, string parentName)
          {
             return
-               $"Unable to get dimension information for Parameter Start Value: '{psv.Path.PathAsString}' in Parameter Start Values Building Block: '{parentName}'. Dimension is set to No Dimension";
+               $"Unable to get dimension information for Parameter Value: '{parameterValue.Path.PathAsString}' in Parameter Values Building Block: '{parentName}'. Dimension is set to No Dimension";
          }
 
          public static string UpdateErrors(string projectName, IEnumerable<string> messages)
@@ -2058,7 +2346,16 @@ namespace MoBi.Assets
       {
          public static readonly string PopulationSimulationArgument = "/pop";
          public static readonly string JournalFileArgument = "/j";
-         public static readonly string NotInstalled = "PK-Sim was not found on current system. Please make sure that PK-Sim was installed using the provided setup. Alternatively, you can specify where PK-Sim is installed on your system under Utilities -> Options";
+         public static readonly string NotInstalled = "PK-Sim was not found on current system. Please make sure that PK-Sim was installed using the provided setup.\nAlternatively, you can specify where PK-Sim is installed on your system under Utilities -> Options";
+
+         public static readonly string IncompatibleVersionInstalled = "PK-Sim was found on the system, but it was not compatible with this feature. Please make sure that a compatible version of PK-Sim was installed using the provided setup.\n" +
+                                                                      "Alternatively, you can specify where PK-Sim is installed on your system under Utilities -> Options -> Application tab\n" +
+                                                                      "After changing the PK-Sim installation path, please restart MoBi.";
+      }
+
+      public static string DefaultFileNameForBuildingBlockExport(string projectName, IBuildingBlock buildingBlock)
+      {
+         return $"{projectName}_{buildingBlock.Name}";
       }
 
       public static string DefaultFileNameForModelPartsExport(string projectName, string simulationName)
@@ -2066,15 +2363,34 @@ namespace MoBi.Assets
          return $"{projectName}_{simulationName}_Model_Parts";
       }
 
-      public static string CannotRemoveBuildingBlockFromProject(string buildingBlockName, IEnumerable<string> referringBuildingBlockNames)
+      public static string CannotRemoveModuleFromProject(string buildingBlockName, IEnumerable<string> referringBuildingBlockNames)
       {
-         return $"Cannot remove building block {buildingBlockName} from the project. It is being used as a template by {referringBuildingBlockNames.ToString(", ")}";
+         return cannotRemoveTypeFromProject("module", buildingBlockName, referringBuildingBlockNames);
       }
 
-      public class UIConstants
+      public static StringBuilder ListOfBuildingBlocksNotRemoved(List<Tuple<IReadOnlyList<string>, string>> referringSimulationsAndBuildingBlocks)
       {
-         public static readonly int LargeButtonWidth = 140;
-         public static readonly int ButtonHeight = 24;
+         var messageBuilder = new StringBuilder();
+
+         messageBuilder.AppendLine(Dialog.BuildingBlocksUsedInSimulation);
+         messageBuilder.AppendLine();
+
+         foreach (var (referringSimulations, buildingBlock) in referringSimulationsAndBuildingBlocks)
+         {
+            messageBuilder.AppendLine($"\t- {CannotRemoveBuildingBlockFromProject(buildingBlock, referringSimulations)}");
+         }
+
+         return messageBuilder;
+      }
+
+      public static string CannotRemoveBuildingBlockFromProject(string buildingBlockName, IEnumerable<string> referringBuildingBlockNames)
+      {
+         return cannotRemoveTypeFromProject("building block", buildingBlockName, referringBuildingBlockNames);
+      }
+
+      private static string cannotRemoveTypeFromProject(string typeName, string objectName, IEnumerable<string> referringBuildingBlockNames)
+      {
+         return $"Cannot remove {typeName} {objectName} from the project. It is being used as a template by {referringBuildingBlockNames.ToString(", ")}";
       }
 
       public class Diff
@@ -2093,6 +2409,5 @@ namespace MoBi.Assets
       {
          public static readonly string Data = "Data";
       }
-
    }
 }

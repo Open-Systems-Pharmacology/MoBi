@@ -7,7 +7,7 @@ namespace MoBi.Presentation.Nodes
    {
       private string _id;
 
-      public ReferenceNode(IObjectBaseDTO objectBaseDTO) : base(objectBaseDTO)
+      public ReferenceNode(ObjectBaseDTO objectBaseDTO) : base(objectBaseDTO)
       {
       }
 

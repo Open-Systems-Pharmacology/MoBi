@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
+using MoBi.Core.Extensions;
 using OSPSuite.Core.Commands;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
@@ -38,7 +40,7 @@ namespace MoBi.Core.Services
          var loadCommand = createLoadCommand(simulation);
          var shouldCloneSimulation = _context.CurrentProject.Simulations.ExistsById(simulation.Id);
          addSimulationToProject(simulation, loadCommand, shouldCloneSimulation);
-         return loadCommand.Run(_context);
+         return loadCommand.RunCommand(_context);
       }
 
       private static MoBiMacroCommand createLoadCommand(IMoBiSimulation simulation)
@@ -53,20 +55,59 @@ namespace MoBi.Core.Services
       {
          var moBiSimulation = simulation;
 
-         simulation.MoBiBuildConfiguration.AllBuildingBlockInfos().Each(checkTemplateBuildingBlock);
          var project = _context.CurrentProject;
 
          if (shouldCloneSimulation)
             moBiSimulation = cloneSimulation(moBiSimulation);
 
-         addBuildConfigurationToProject(project, moBiSimulation.MoBiBuildConfiguration, loadCommand);
+         renameCollidingEntities(moBiSimulation.Configuration.ExpressionProfiles, project.ExpressionProfileCollection);
+
+         if (moBiSimulation.Configuration.Individual != null)
+            renameCollidingEntities(new[] { moBiSimulation.Configuration.Individual }, project.IndividualsCollection);
+
+         renameCollidingEntities(moBiSimulation.Modules, project.Modules);
 
          moBiSimulation.ResultsDataRepository = simulation.ResultsDataRepository;
+
+         var originalSimulationName = moBiSimulation.Name;
          if (!_nameCorrector.CorrectName(project.Simulations, moBiSimulation))
             return;
 
+         if (originalSimulationName != moBiSimulation.Name) //has been renamed
+         {
+            correctModuleNames(moBiSimulation.Modules, moBiSimulation.Name, project.Modules, originalSimulationName);
+            loadCommand.Add(new RenameModelCommand(moBiSimulation.Model, moBiSimulation.Name));
+         }
+
+
+         addSimulationConfigurationToProject(moBiSimulation, loadCommand);
+
          moBiSimulation.HasChanged = true;
          loadCommand.AddCommand(new AddSimulationCommand(moBiSimulation));
+      }
+
+      private void correctModuleNames(IReadOnlyList<Module> modulesToRename, string simulationName, IReadOnlyList<Module> existingModules, string originalSimulationName)
+      {
+         //these names are unique so better creating a HashSet.
+         var takenNames = existingModules.AllNames().ToHashSet();
+
+         modulesToRename
+            .Each(module=> renameModulesAfterSimulation(module, simulationName, originalSimulationName));
+
+         // Correct any remaining name conflicts
+         modulesToRename.Where(x => takenNames.Contains(x.Name)).Each(x => _nameCorrector.AutoCorrectName(takenNames, x));
+      }
+
+      private void renameModulesAfterSimulation(Module module, string simulationName, string originalSimulationName)
+      {
+         if (module.Name.StartsWith(originalSimulationName))
+            module.Name = module.Name.Replace(originalSimulationName, simulationName);
+      }
+      
+      private void renameCollidingEntities<T>(IEnumerable<T> entitiesToRename, IReadOnlyList<IWithName> existingEntities) where T : IObjectBase
+      {
+         var takenNames = existingEntities.AllNames();
+         entitiesToRename.Where(x => takenNames.Contains(x.Name)).Each(x => _nameCorrector.AutoCorrectName(takenNames, x));
       }
 
       public ICommand AddSimulationToProject(SimulationTransfer simulationTransfer)
@@ -78,7 +119,7 @@ namespace MoBi.Core.Services
          //We always clone the simulation from Transfer as it may be loaded twice
          addSimulationToProject(simulation, loadCommand, shouldCloneSimulation: true);
          addObservedDataToProject(simulationTransfer.AllObservedData, loadCommand);
-         return loadCommand.Run(_context);
+         return loadCommand.RunCommand(_context);
       }
 
       private void addObservedDataToProject(IEnumerable<DataRepository> allObservedData, MoBiMacroCommand loadCommand)
@@ -92,82 +133,24 @@ namespace MoBi.Core.Services
             .Each(x => loadCommand.AddCommand(new AddObservedDataToProjectCommand(x)));
       }
 
-      private void checkTemplateBuildingBlock(IBuildingBlockInfo buildingBlockInfo)
-      {
-         if (!string.IsNullOrEmpty(buildingBlockInfo.TemplateBuildingBlockId)) 
-            return;
-
-         buildingBlockInfo.TemplateBuildingBlockId = buildingBlockInfo.UntypedBuildingBlock.Id;
-         buildingBlockInfo.UntypedTemplateBuildingBlock = buildingBlockInfo.UntypedBuildingBlock;
-      }
-
       private IMoBiSimulation cloneSimulation(IMoBiSimulation simulation)
       {
          return _cloneManager.CloneSimulation(simulation);
       }
 
-      private void addBuildConfigurationToProject(IMoBiProject project, IMoBiBuildConfiguration config, ICommandCollector commandCollector)
+      private void addSimulationConfigurationToProject(IMoBiSimulation simulation, ICommandCollector commandCollector)
       {
-         var copyMolecules = addToProject(commandCollector, createForProject(project.MoleculeBlockCollection, config.MoleculesInfo));
-         if (copyMolecules == null)
-            copyMolecules = config.Molecules;
+         var cloneForProjectEntities = _cloneManager.CloneSimulationConfiguration(simulation.Configuration);
+         cloneForProjectEntities.ModuleConfigurations.Each(moduleConfiguration => commandCollector.AddCommand(new AddModuleCommand(moduleConfiguration.Module) { Silent = true }));
 
-         var copySpatialStructure = addToProject(commandCollector, createForProject(project.SpatialStructureCollection, config.SpatialStructureInfo));
-         if (copySpatialStructure == null)
-            copySpatialStructure = config.MoBiSpatialStructure;
-
-         addToProject(commandCollector, createForProject(project.ReactionBlockCollection, config.ReactionsInfo));
-         addToProject(commandCollector, createForProject(project.PassiveTransportCollection, config.PassiveTransportsInfo));
-         addToProject(commandCollector, createForProject(project.ObserverBlockCollection, config.ObserversInfo));
-         addToProject(commandCollector, createForProject(project.SimulationSettingsCollection, config.SimulationSettingsInfo));
-         addToProject(commandCollector, createForProject(project.EventBlockCollection, config.EventGroupsInfo));
-
-         var psv = addToProject(commandCollector, createForProject(project.ParametersStartValueBlockCollection, config.ParameterStartValuesInfo));
-         if (psv != null)
-         {
-            updateTemplateBuildingBlockIds(psv, copyMolecules.Id, copySpatialStructure.Id, config.ParameterStartValuesInfo.BuildingBlock);
-         }
-
-         var msv = addToProject(commandCollector, createForProject(project.MoleculeStartValueBlockCollection, config.MoleculeStartValuesInfo));
-         if (msv != null)
-         {
-            updateTemplateBuildingBlockIds(msv, copyMolecules.Id, copySpatialStructure.Id, config.MoleculeStartValuesInfo.BuildingBlock);
-         }
+         addToProject(commandCollector, cloneForProjectEntities.Individual, individual => new AddIndividualBuildingBlockToProjectCommand(individual));
+         cloneForProjectEntities.ExpressionProfiles.Each(expressionProfile => addToProject(commandCollector, expressionProfile, ep => new AddExpressionProfileBuildingBlockToProjectCommand(ep)));
       }
 
-      private static void updateTemplateBuildingBlockIds<T>(IStartValuesBuildingBlock<T> startValues, string moleculeBuildingBlockId,
-         string spatialStructureId, IStartValuesBuildingBlock<T> buildingBlock) where T : class, IStartValue
-      {
-         startValues.MoleculeBuildingBlockId = moleculeBuildingBlockId;
-         startValues.SpatialStructureId = spatialStructureId;
-         buildingBlock.MoleculeBuildingBlockId = startValues.MoleculeBuildingBlockId;
-         buildingBlock.SpatialStructureId = startValues.SpatialStructureId;
-      }
-
-      private T createForProject<T>(IReadOnlyCollection<T> projectBuildingBlocks, IBuildingBlockInfo<T> buildingBlockInfo)
-         where T : class, IBuildingBlock
-      {
-         //this was already added to the project
-         var templateBuildingBlock = projectBuildingBlocks.FindById(buildingBlockInfo.TemplateBuildingBlockId);
-         if (templateBuildingBlock != null)
-         {
-            buildingBlockInfo.TemplateBuildingBlock = templateBuildingBlock;
-            return null;
-         }
-
-         templateBuildingBlock = buildingBlockInfo.BuildingBlock;
-         if (!_nameCorrector.CorrectName(projectBuildingBlocks, templateBuildingBlock))
-            return null;
-
-         buildingBlockInfo.TemplateBuildingBlock = templateBuildingBlock;
-         buildingBlockInfo.BuildingBlock = _cloneManager.CloneBuildingBlock(templateBuildingBlock);
-         return templateBuildingBlock;
-      }
-
-      private T addToProject<T>(ICommandCollector commandCollector, T buildingBlock) where T : class, IBuildingBlock
+      private T addToProject<T>(ICommandCollector commandCollector, T buildingBlock, Func<T, ICommand> commandCreatorFunc) where T : class, IBuildingBlock
       {
          if (buildingBlock != null)
-            commandCollector.AddCommand(new AddBuildingBlockCommand<T>(buildingBlock));
+            commandCollector.AddCommand(commandCreatorFunc(buildingBlock));
 
          return buildingBlock;
       }

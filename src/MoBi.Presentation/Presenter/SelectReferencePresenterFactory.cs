@@ -22,15 +22,15 @@ namespace MoBi.Presentation.Presenter
 
       public ISelectReferenceAtParameterPresenter ReferenceAtParameterFor(IContainer container)
       {
-         return ReferenceAtParameterFor(container.GetType());
+         return ReferenceAtParameterFor(container?.GetType());
       }
 
       public ISelectReferenceAtParameterPresenter ReferenceAtParameterFor(Type parentType)
       {
-         if (parentType.IsAnImplementationOf<IReactionBuilder>())
+         if (parentType.IsAnImplementationOf<ReactionBuilder>())
             return _applicationController.Start<ISelectReferenceAtReactionParameterPresenter>();
 
-         if (parentType.IsAnImplementationOf<IMoleculeBuilder>())
+         if (parentType.IsAnImplementationOf<MoleculeBuilder>())
             return _applicationController.Start<ISelectReferenceAtMoleculeParameterPresenter>();
 
          return _applicationController.Start<ISelectReferenceAtParameterPresenter>();

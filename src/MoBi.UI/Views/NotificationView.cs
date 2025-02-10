@@ -1,23 +1,22 @@
-﻿using System.Collections.Generic;
-using System.Windows.Forms;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.Assets;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Extensions;
+﻿using System.Windows.Forms;
 using DevExpress.Utils;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Base;
 using MoBi.Assets;
-using MoBi.Core;
 using MoBi.Presentation.Presenter.Main;
 using MoBi.Presentation.Views;
+using OSPSuite.Assets;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
 using OSPSuite.UI.Views;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
 using IToolTipCreator = MoBi.UI.Services.IToolTipCreator;
 
 namespace MoBi.UI.Views
@@ -29,7 +28,6 @@ namespace MoBi.UI.Views
       private readonly ICache<NotificationType, BarButtonItem> _buttonCache;
       private readonly GridViewBinder<NotificationMessageDTO> _gridViewBinder;
       private readonly RepositoryItemPictureEdit _statusIconRepository;
-      private readonly BarManager _popupBarManager;
       private readonly IStartOptions _runOptions;
 
       public NotificationView(IImageListRetriever imageListRetriever, IToolTipCreator toolTipCreator, IStartOptions runOptions)
@@ -38,13 +36,13 @@ namespace MoBi.UI.Views
          _runOptions = runOptions;
          InitializeComponent();
          _barManager.Images = imageListRetriever.AllImages16x16;
-         _popupBarManager = new BarManager {Form = this, Images = imageListRetriever.AllImages16x16};
+         PopupBarManager = new BarManager { Form = this, Images = imageListRetriever.AllImages16x16 };
          _buttonCache = new Cache<NotificationType, BarButtonItem>();
          _gridViewBinder = new GridViewBinder<NotificationMessageDTO>(gridViewMessages);
          gridViewMessages.CustomRowFilter += customRowFilter;
          _statusIconRepository = new RepositoryItemPictureEdit();
-         var toolTipController = new ToolTipController {ImageList = imageListRetriever.AllImages16x16};
-         toolTipController.AutoPopDelay = AppConstants.NotificationToolTipDelay;
+         var toolTipController = new ToolTipController { ImageList = imageListRetriever.AllImages16x16 };
+         toolTipController.Initialize();
          toolTipController.GetActiveObjectInfo += onToolTipControllerGetActiveObjectInfo;
          gridMessages.ToolTipController = toolTipController;
          gridViewMessages.MouseDown += (o, e) => this.DoWithinExceptionHandler(() => onGridViewMouseDown(e));
@@ -93,7 +91,7 @@ namespace MoBi.UI.Views
             return;
 
          //An object that uniquely identifies a row cell
-         e.Info = new ToolTipControlInfo(notification, string.Empty) {SuperTip = superToolTip, ToolTipType = ToolTipType.SuperTip};
+         e.Info = new ToolTipControlInfo(notification, string.Empty) { SuperTip = superToolTip, ToolTipType = ToolTipType.SuperTip };
       }
 
       public override void InitializeBinding()
@@ -183,9 +181,6 @@ namespace MoBi.UI.Views
          gridViewMessages.RefreshData();
       }
 
-      public BarManager PopupBarManager
-      {
-         get { return _popupBarManager; }
-      }
+      public BarManager PopupBarManager { get; }
    }
 }

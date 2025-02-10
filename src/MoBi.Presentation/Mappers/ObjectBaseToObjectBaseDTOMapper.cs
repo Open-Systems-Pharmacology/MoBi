@@ -1,37 +1,50 @@
 using MoBi.Presentation.DTO;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility;
+using ToolTips = MoBi.Assets.ToolTips;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface IObjectBaseToObjectBaseDTOMapper : IMapper<IObjectBase, IObjectBaseDTO>
+   public interface IObjectBaseToObjectBaseDTOMapper : IMapper<IObjectBase, ObjectBaseDTO>
    {
    }
 
    public abstract class ObjectBaseToObjectBaseDTOMapperBase
    {
-      protected T Map<T>(IObjectBase objectBase) where T : IObjectBaseDTO, new()
+      protected T Map<T>(T dto) where T : ObjectBaseDTO
       {
-         var dto = new T();
-         MapProperties(objectBase, dto);
+         MapProperties(dto.ObjectBase, dto);
          return dto;
       }
 
-      protected void MapProperties(IObjectBase objectBase, IObjectBaseDTO objectBaseDTO)
+      protected void MapProperties(IObjectBase objectBase, ObjectBaseDTO objectBaseDTO)
       {
          objectBaseDTO.Name = objectBase.Name;
-         objectBaseDTO.Description = objectBase.Description;
-         objectBaseDTO.Id = objectBase.Id;
-         objectBaseDTO.Icon = objectBase.Icon;
-         objectBase.PropertyChanged += objectBaseDTO.HandlePropertyChanged;
+         objectBaseDTO.Description = descriptionFor(objectBase);
+         objectBaseDTO.Icon = ApplicationIcons.IconByName(objectBase.Icon);
+      }
+
+      private static string descriptionFor(IObjectBase objectBase)
+      {
+         //special case for neighborhood where we can create a dynamic description if not there
+         if (!string.IsNullOrEmpty(objectBase.Description))
+            return objectBase.Description;
+
+
+         if (!(objectBase is NeighborhoodBuilder neighborhood))
+            return string.Empty;
+
+         return ToolTips.Neighborhood.Between(neighborhood);
       }
    }
 
    public class ObjectBaseToObjectBaseDTOMapper : ObjectBaseToObjectBaseDTOMapperBase, IObjectBaseToObjectBaseDTOMapper
    {
-      public IObjectBaseDTO MapFrom(IObjectBase objectBase)
+      public ObjectBaseDTO MapFrom(IObjectBase objectBase)
       {
-         return Map<ObjectBaseDTO>(objectBase);
+         return Map(new ObjectBaseDTO(objectBase));
       }
    }
 }

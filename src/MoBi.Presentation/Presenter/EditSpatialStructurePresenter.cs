@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Extensions;
@@ -7,126 +6,147 @@ using MoBi.Core.Events;
 using MoBi.Presentation.Presenter.SpaceDiagram;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
-using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IEditSpatialStructurePresenter : ISingleStartPresenter<IMoBiSpatialStructure>,
+   public interface IEditSpatialStructurePresenter : ISingleStartPresenter<MoBiSpatialStructure>,
       IDiagramBuildingBlockPresenter,
-      IListener<EntitySelectedEvent>,
       IListener<RemovedEvent>,
-      IListener<FavoritesSelectedEvent>,
-      IListener<UserDefinedSelectedEvent>
+      IListener<NeighborhoodChangedEvent>
    {
       void LoadDiagram();
    }
 
-   public class EditSpatialStructurePresenter : EditBuildingBlockWithFavoriteAndUserDefinedPresenterBase<IEditSpatialStructureView, IEditSpatialStructurePresenter, IMoBiSpatialStructure, IContainer>,
+   public class EditSpatialStructurePresenter : EditBuildingBlockWithFavoriteAndUserDefinedPresenterBase<IEditSpatialStructureView, IEditSpatialStructurePresenter, MoBiSpatialStructure, IContainer>,
       IEditSpatialStructurePresenter
    {
-      private IMoBiSpatialStructure _spatialStructure;
+      private MoBiSpatialStructure _spatialStructure;
       private readonly IHierarchicalSpatialStructurePresenter _hierarchicalSpatialStructurePresenter;
       private readonly ISpatialStructureDiagramPresenter _spatialStructureDiagramPresenter;
-      private readonly IEditContainerPresenter _editPresenter;
+      private readonly IEditContainerPresenter _editContainerPresenter;
       private bool _diagramLoaded;
       private readonly IHeavyWorkManager _heavyWorkManager;
+      private readonly IEditNeighborhoodBuilderPresenter _neighborhoodBuilderPresenter;
 
-      public EditSpatialStructurePresenter(
-         IEditSpatialStructureView view,
-         IHierarchicalSpatialStructurePresenter hierarchicalSpatialStructurePresenter,
+      public EditSpatialStructurePresenter(IEditSpatialStructureView view,
          IFormulaCachePresenter formulaCachePresenter,
-         IEditContainerPresenter editPresenter,
-         ISpatialStructureDiagramPresenter spatialStructureDiagramPresenter,
-         IHeavyWorkManager heavyWorkManager,
          IEditFavoritesInSpatialStructurePresenter favoritesPresenter,
-         IUserDefinedParametersPresenter userDefinedParametersPresenter) :
+         IUserDefinedParametersPresenter userDefinedParametersPresenter,
+         IHierarchicalSpatialStructurePresenter hierarchicalSpatialStructurePresenter,
+         ISpatialStructureDiagramPresenter spatialStructureDiagramPresenter,
+         IEditContainerPresenter editContainerPresenter,
+         IHeavyWorkManager heavyWorkManager,
+         IEditNeighborhoodBuilderPresenter neighborhoodBuilderPresenter) :
          base(view, formulaCachePresenter, favoritesPresenter, userDefinedParametersPresenter)
       {
          _hierarchicalSpatialStructurePresenter = hierarchicalSpatialStructurePresenter;
          _spatialStructureDiagramPresenter = spatialStructureDiagramPresenter;
          _heavyWorkManager = heavyWorkManager;
+         _neighborhoodBuilderPresenter = neighborhoodBuilderPresenter;
          favoritesPresenter.ShouldHandleRemovedEvent = shouldHandleRemoved;
-         _editPresenter = editPresenter;
-         _view.SetEditView(_editPresenter.BaseView);
+         _editContainerPresenter = editContainerPresenter;
+         ShowView(_editContainerPresenter.BaseView);
          _view.SetHierarchicalStructureView(_hierarchicalSpatialStructurePresenter.BaseView);
          _view.SetSpaceDiagramView(spatialStructureDiagramPresenter.View);
-         AddSubPresenters(editPresenter, hierarchicalSpatialStructurePresenter, spatialStructureDiagramPresenter);
+         AddSubPresenters(_editContainerPresenter, hierarchicalSpatialStructurePresenter, spatialStructureDiagramPresenter, _neighborhoodBuilderPresenter);
       }
 
-      public override void Edit(IMoBiSpatialStructure spatialStructure)
+      public override void Edit(MoBiSpatialStructure spatialStructure)
       {
          _diagramLoaded = (_spatialStructure == spatialStructure) && _diagramLoaded;
          _spatialStructure = spatialStructure;
          EditFormulas(spatialStructure);
-         _editPresenter.BuildingBlock = _spatialStructure;
+         _editContainerPresenter.BuildingBlock = _spatialStructure;
+         _neighborhoodBuilderPresenter.BuildingBlock = _spatialStructure;
          _hierarchicalSpatialStructurePresenter.Edit(spatialStructure);
          _favoritesPresenter.Edit(spatialStructure);
-         setInitalView();
+         setInitialView();
          UpdateCaption();
          _view.Display();
       }
 
-      private void setInitalView()
+      private void setInitialView()
       {
          ShowView(_favoritesPresenter.BaseView);
       }
 
       public override object Subject => _spatialStructure;
 
-      protected override Tuple<bool, IObjectBase> SpecificCanHandle(IObjectBase selectedObject)
+      protected override (bool canHandle, IContainer containerObject) SpecificCanHandle(EntitySelectedEvent entitySelectedEvent)
       {
-         return new Tuple<bool, IObjectBase>(shoudHandleSelection(selectedObject as IEntity), selectedObject);
+         if(entitySelectedEvent.ObjectBase == null && entitySelectedEvent.Sender == _hierarchicalSpatialStructurePresenter)
+            return (canHandle:true, containerObject: null);
+
+         return (shouldHandleSelection(entitySelectedEvent.ObjectBase as IEntity), null);
       }
 
-      internal override Tuple<bool, IObjectBase> CanHandle(IObjectBase selectedObject)
+      internal override (bool canHandle, IContainer containerObject) CanHandle(EntitySelectedEvent entitySelectedEvent)
       {
-         var specificCanHandle = SpecificCanHandle(selectedObject);
+         var specificCanHandle = SpecificCanHandle(entitySelectedEvent);
          if (specificCanHandle.Item1)
             return specificCanHandle;
 
-         return base.CanHandle(selectedObject);
+         return base.CanHandle(entitySelectedEvent);
       }
 
-      protected override void EnsureItemsVisibility(IObjectBase parentObject, IParameter parameter = null)
+      protected override void EnsureItemsVisibility(IContainer parentObject, IParameter parameter = null)
       {
-         ShowView(_editPresenter.BaseView);
-         _editPresenter.Edit(parentObject);
-         _editPresenter.SelectParameter(parameter);
+         setupEditPresenterFor(parentObject, parameter);
       }
 
       protected override void SelectBuilder(IContainer builder)
       {
-         if (builder.IsAnImplementationOf<IDistributedParameter>())
+         setupEditPresenterFor(builder);
+      }
+
+      private void showPresenter<T>(IEditPresenterWithParameters<T> presenter, T objectToEdit, IParameter parameter)
+      {
+         presenter.Edit(objectToEdit);
+         ShowView(presenter.BaseView);
+
+         if (parameter != null)
+            presenter.SelectParameter(parameter);
+      }
+
+      private void setupEditPresenterFor(IContainer container, IParameter parameter = null)
+      {
+         if (container == null)
          {
-            EnsureItemsVisibility(builder.ParentContainer, (IDistributedParameter) builder);
+            _view.SetEditView(null);
+            return;
          }
-         else
+
+         switch (container)
          {
-            _view.SetEditView(_editPresenter.BaseView);
-            _editPresenter.Edit(builder);
+            case IDistributedParameter distributedParameter:
+               setupEditPresenterFor(distributedParameter.ParentContainer, distributedParameter);
+               return;
+            case NeighborhoodBuilder neighborhoodBuilder:
+               showPresenter(_neighborhoodBuilderPresenter, neighborhoodBuilder, parameter);
+               return;
+            default:
+               showPresenter(_editContainerPresenter, container, parameter);
+               return;
          }
       }
 
-      private bool shoudHandleSelection(IEntity entity)
+      private bool shouldHandleSelection(IEntity entity)
       {
-         return entity.IsAnImplementationOf<IContainer>() &&
-                !entity.IsAnImplementationOf<IDistributedParameter>() &&
-                IsInSubject((IContainer) entity);
-      }
+         if (!(entity is IContainer container))
+            return false;
 
-      public bool IsInSubject(IContainer container)
-      {
-         return _spatialStructure.IsInSpatialStructure(container);
+         return !container.IsAnImplementationOf<IDistributedParameter>() && _spatialStructure.IsInSpatialStructure(container);
       }
 
       protected override void UpdateCaption()
       {
-         _view.Caption = AppConstants.Captions.SpatialStructureBuildingBlockCaption(_spatialStructure.Name);
+         _view.Caption = AppConstants.Captions.SpatialStructureBuildingBlockCaption(_spatialStructure.DisplayName);
       }
 
       public void ZoomIn()
@@ -154,13 +174,10 @@ namespace MoBi.Presentation.Presenter
          if (!eventToHandle.RemovedObjects.Any(shouldHandleRemoved))
             return;
 
-         setInitalView();
+         setInitialView();
       }
 
-      private bool shouldHandleRemoved(IObjectBase objectBase)
-      {
-         return Equals(objectBase, _editPresenter.Subject);
-      }
+      private bool shouldHandleRemoved(IObjectBase objectBase) => Equals(objectBase, _editContainerPresenter.Subject);
 
       public void LoadDiagram()
       {
@@ -170,5 +187,19 @@ namespace MoBi.Presentation.Presenter
       }
 
       protected override void ShowView(IView viewToShow) => _view.SetEditView(viewToShow);
+
+      public void Handle(NeighborhoodChangedEvent neighborhoodChangedEvent)
+      {
+         if (!canHandleNeighborhoodChange(neighborhoodChangedEvent))
+            return;
+
+         //The neighborhood has changed. We need to refresh the presenter to reflect changes 
+         _hierarchicalSpatialStructurePresenter.Refresh(neighborhoodChangedEvent.NeighborhoodBuilder);
+      }
+
+      private bool canHandleNeighborhoodChange(NeighborhoodChangedEvent neighborhoodChangedEvent)
+      {
+         return _spatialStructure.Neighborhoods.Contains(neighborhoodChangedEvent.NeighborhoodBuilder);
+      }
    }
 }

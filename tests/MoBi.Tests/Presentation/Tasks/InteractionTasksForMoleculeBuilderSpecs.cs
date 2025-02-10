@@ -25,7 +25,7 @@ namespace MoBi.Presentation.Tasks
    public abstract class concern_for_InteractionTasksForMoleculeBuilder : ContextSpecification<InteractionTasksForMoleculeBuilder>
    {
       protected IInteractionTaskContext _interactionTaskContext;
-      private IEditTaskFor<IMoleculeBuilder> _editTasks;
+      private IEditTaskFor<MoleculeBuilder> _editTasks;
       private ICoreCalculationMethodRepository _calculation;
       protected IReactionDimensionRetriever _dimensionRetriever;
       protected IParameterFactory _parameterFactory;
@@ -36,7 +36,7 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
-         _editTasks = A.Fake<IEditTaskFor<IMoleculeBuilder>>();
+         _editTasks = A.Fake<IEditTaskFor<MoleculeBuilder>>();
          _calculation = A.Fake<ICoreCalculationMethodRepository>();
          _dimensionRetriever = A.Fake<IReactionDimensionRetriever>();
          _parameterFactory = A.Fake<IParameterFactory>();
@@ -50,14 +50,51 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
+   public class When_creating_a_new_default_molecule_builder : concern_for_InteractionTasksForMoleculeBuilder
+   {
+      private MoleculeBuilder _builder;
+      private ConstantFormula _constantFormula;
+
+      protected override void Context()
+      {
+         base.Context();
+         _constantFormula = new ConstantFormula(1.0);
+         A.CallTo(() => _formulaTask.CreateNewFormula<ConstantFormula>(_dimensionRetriever.MoleculeDimension)).Returns(_constantFormula);
+      }
+
+      protected override void Because()
+      {
+         _builder = sut.CreateDefault("moleculeName");
+      }
+
+      [Observation]
+      public void the_default_dimension_should_be_set()
+      {
+         _builder.Dimension.ShouldBeEqualTo(_dimensionRetriever.MoleculeDimension);
+      }
+
+      [Observation]
+      public void the_default_start_formula_should_be_set()
+      {
+         _builder.DefaultStartFormula.ShouldBeEqualTo(_constantFormula);
+      }
+
+      [Observation]
+      public void the_builder_name_should_be_set()
+      {
+         _builder.Name.ShouldBeEqualTo("moleculeName");
+      }
+   }
+
+
    public class When_creating_a_new_molecule_builder : concern_for_InteractionTasksForMoleculeBuilder
    {
-      private IMoleculeBuildingBlock _moleculeBuilderBuildingBlock;
-      private IMoleculeBuilder _moleculeBuilder;
+      private MoleculeBuildingBlock _moleculeBuilderBuildingBlock;
+      private MoleculeBuilder _moleculeBuilder;
       private IDimension _amountDimension;
       private Unit _displayUnit;
       private IModalPresenter _modalPresenter;
-      private IEditPresenter<IMoleculeBuilder> _editMoleculeBuilderPresenter;
+      private IEditPresenter<MoleculeBuilder> _editMoleculeBuilderPresenter;
       private ConstantFormula _defaultStartFormula;
 
       protected override void Context()
@@ -66,15 +103,15 @@ namespace MoBi.Presentation.Tasks
          _modalPresenter = A.Fake<IModalPresenter>();
          _amountDimension = A.Fake<IDimension>();
          _displayUnit = A.Fake<Unit>();
-         _editMoleculeBuilderPresenter = A.Fake<IEditPresenter<IMoleculeBuilder>>();
+         _editMoleculeBuilderPresenter = A.Fake<IEditPresenter<MoleculeBuilder>>();
          _moleculeBuilderBuildingBlock = new MoleculeBuildingBlock();
 
-         A.CallTo(() => _context.Create<IMoleculeBuilder>()).Returns(new MoleculeBuilder());
+         A.CallTo(() => _context.Create<MoleculeBuilder>()).Returns(new MoleculeBuilder());
          A.CallTo(() => _dimensionRetriever.MoleculeDimension).Returns(_amountDimension);
          A.CallTo(_interactionTaskContext.ApplicationController).WithReturnType<IModalPresenter>().Returns(_modalPresenter);
          A.CallTo(_interactionTaskContext).WithReturnType<Unit>().Returns(_displayUnit);
          A.CallTo(() => _modalPresenter.SubPresenter).Returns(_editMoleculeBuilderPresenter);
-         A.CallTo(() => _parameterFactory.CreateConcentrationParameter(_moleculeBuilderBuildingBlock.FormulaCache)).Returns(new Parameter {Name = AppConstants.Parameters.CONCENTRATION});
+         A.CallTo(() => _parameterFactory.CreateConcentrationParameter(_moleculeBuilderBuildingBlock.FormulaCache)).Returns(new Parameter {Name = Constants.Parameters.CONCENTRATION });
 
          _defaultStartFormula = new ConstantFormula();
          A.CallTo(_formulaTask).WithReturnType<ConstantFormula>().Returns(_defaultStartFormula);
@@ -101,7 +138,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_add_the_readonly_concentration_parameter_to_the_molecule_builder()
       {
-         var concentrationParameter = _moleculeBuilder.Parameters.FindByName(AppConstants.Parameters.CONCENTRATION);
+         var concentrationParameter = _moleculeBuilder.Parameters.FindByName(Constants.Parameters.CONCENTRATION);
          concentrationParameter.ShouldNotBeNull();
       }
 
@@ -114,9 +151,9 @@ namespace MoBi.Presentation.Tasks
 
    public class When_adding_a_pksim_molecule_to_a_molecule_building_block_ : concern_for_InteractionTasksForMoleculeBuilder
    {
-      private IMoleculeBuildingBlock _moleculeBuildingBlock;
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
       private ICreatePKSimMoleculePresenter _createMoleculePresenter;
-      private IMoleculeBuilder _molecule;
+      private MoleculeBuilder _molecule;
       private ICommand _command;
       private ConstantFormula _defaultStartFormula;
 
@@ -156,25 +193,25 @@ namespace MoBi.Presentation.Tasks
 
    public class When_adding_a_molecule_to_a_molecule_building_block : concern_for_InteractionTasksForMoleculeBuilder
    {
-      private IMoleculeBuildingBlock _moleculeBuildingBlock;
-      private IMoleculeBuilder _moleculeBuilderToAdd;
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
+      private MoleculeBuilder _moleculeBuilderToAdd;
       private IMoBiCommand _command;
-      private AddedEvent<IMoleculeBuilder> _addEvent;
+      private AddedEvent<MoleculeBuilder> _addEvent;
 
       protected override void Context()
       {
          base.Context();
-         _moleculeBuildingBlock = A.Fake<IMoleculeBuildingBlock>();
+         _moleculeBuildingBlock = A.Fake<MoleculeBuildingBlock>();
          _moleculeBuilderToAdd = new MoleculeBuilder();
          A.CallTo(() => _interactionTask.AdjustFormula(_moleculeBuilderToAdd, _moleculeBuildingBlock, A<IMoBiMacroCommand>._)).Returns(true);
          A.CallTo(() => _interactionTask.CorrectName(_moleculeBuilderToAdd, A<IEnumerable<string>>._)).Returns(true);
-         A.CallTo(() => _context.PublishEvent(A<AddedEvent<IMoleculeBuilder>>._))
-            .Invokes(x => _addEvent = x.GetArgument<AddedEvent<IMoleculeBuilder>>(0));
+         A.CallTo(() => _context.PublishEvent(A<AddedEvent<MoleculeBuilder>>._))
+            .Invokes(x => _addEvent = x.GetArgument<AddedEvent<MoleculeBuilder>>(0));
       }
 
       protected override void Because()
       {
-         _command = sut.AddToProject(_moleculeBuilderToAdd, _moleculeBuildingBlock, _moleculeBuildingBlock);
+         _command = sut.AddTo(_moleculeBuilderToAdd, _moleculeBuildingBlock, _moleculeBuildingBlock);
       }
 
       [Observation]
@@ -194,24 +231,24 @@ namespace MoBi.Presentation.Tasks
 
    public class When_adding_a_molecule_to_a_molecule_building_block_already_containing_a_molecule_with_the_same_name_and_the_user_cancels_the_action : concern_for_InteractionTasksForMoleculeBuilder
    {
-      private IMoleculeBuildingBlock _moleculeBuildingBlock;
-      private IMoleculeBuilder _moleculeBuilderToAdd;
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
+      private MoleculeBuilder _moleculeBuilderToAdd;
       private IMoBiCommand _command;
-      private AddedEvent<IMoleculeBuilder> _addEvent;
+      private AddedEvent<MoleculeBuilder> _addEvent;
 
       protected override void Context()
       {
          base.Context();
-         _moleculeBuildingBlock = A.Fake<IMoleculeBuildingBlock>();
+         _moleculeBuildingBlock = A.Fake<MoleculeBuildingBlock>();
          _moleculeBuilderToAdd = new MoleculeBuilder();
          A.CallTo(() => _interactionTask.CorrectName(_moleculeBuilderToAdd, A<IEnumerable<string>>._)).Returns(false);
-         A.CallTo(() => _context.PublishEvent(A<AddedEvent<IMoleculeBuilder>>._))
-            .Invokes(x => _addEvent = x.GetArgument<AddedEvent<IMoleculeBuilder>>(0));
+         A.CallTo(() => _context.PublishEvent(A<AddedEvent<MoleculeBuilder>>._))
+            .Invokes(x => _addEvent = x.GetArgument<AddedEvent<MoleculeBuilder>>(0));
       }
 
       protected override void Because()
       {
-         _command = sut.AddToProject(_moleculeBuilderToAdd, _moleculeBuildingBlock, _moleculeBuildingBlock);
+         _command = sut.AddTo(_moleculeBuilderToAdd, _moleculeBuildingBlock, _moleculeBuildingBlock);
       }
 
       [Observation]
@@ -229,21 +266,21 @@ namespace MoBi.Presentation.Tasks
 
    public class When_adding_a_molecule_to_a_molecule_building_block_already_containing_a_similar_formula_and_the_adjustement_is_canceled : concern_for_InteractionTasksForMoleculeBuilder
    {
-      private IMoleculeBuildingBlock _moleculeBuildingBlock;
-      private IMoleculeBuilder _moleculeBuilderToAdd;
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
+      private MoleculeBuilder _moleculeBuilderToAdd;
       private IMoBiCommand _command;
-      private AddedEvent<IMoleculeBuilder> _addEvent;
+      private AddedEvent<MoleculeBuilder> _addEvent;
       private IMoBiCommand _cancelCommand;
 
       protected override void Context()
       {
          base.Context();
-         _moleculeBuildingBlock = A.Fake<IMoleculeBuildingBlock>();
+         _moleculeBuildingBlock = A.Fake<MoleculeBuildingBlock>();
          _moleculeBuilderToAdd = new MoleculeBuilder();
          A.CallTo(() => _interactionTask.CorrectName(_moleculeBuilderToAdd, A<IEnumerable<string>>._)).Returns(true);
          A.CallTo(() => _interactionTask.AdjustFormula(_moleculeBuilderToAdd, _moleculeBuildingBlock, A<IMoBiMacroCommand>._)).Returns(false);
-         A.CallTo(() => _context.PublishEvent(A<AddedEvent<IMoleculeBuilder>>._))
-            .Invokes(x => _addEvent = x.GetArgument<AddedEvent<IMoleculeBuilder>>(0));
+         A.CallTo(() => _context.PublishEvent(A<AddedEvent<MoleculeBuilder>>._))
+            .Invokes(x => _addEvent = x.GetArgument<AddedEvent<MoleculeBuilder>>(0));
 
          _cancelCommand= A.Fake<IMoBiCommand>();
          A.CallTo(() => _interactionTaskContext.CancelCommand(A<IMoBiCommand>._)).Returns(_cancelCommand);
@@ -251,7 +288,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         _command = sut.AddToProject(_moleculeBuilderToAdd, _moleculeBuildingBlock, _moleculeBuildingBlock);
+         _command = sut.AddTo(_moleculeBuilderToAdd, _moleculeBuildingBlock, _moleculeBuildingBlock);
       }
 
       [Observation]

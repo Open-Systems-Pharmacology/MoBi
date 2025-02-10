@@ -1,19 +1,20 @@
 using System;
-using OSPSuite.Utility.Extensions;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Assets;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Repositories
 {
    public interface IIconRepository
    {
-      string IconFor<T>(T objectBase) where T : IObjectBase;
+      string IconNameFor<T>(T objectBase) where T : IObjectBase;
+      ApplicationIcon IconFor<T>(T objectBase) where T : IObjectBase;
    }
 
    public class IconRepository : IIconRepository
    {
-      public string IconFor<T>(T objectBase) where T : IObjectBase
+      public string IconNameFor<T>(T objectBase) where T : IObjectBase
       {
          if (!string.IsNullOrEmpty(objectBase.Icon))
             return objectBase.Icon;
@@ -21,23 +22,33 @@ namespace MoBi.Core.Repositories
          return iconFor(objectBase).IconName;
       }
 
+      public ApplicationIcon IconFor<T>(T objectBase) where T : IObjectBase
+      {
+         var iconName = IconNameFor(objectBase);
+         return ApplicationIcons.IconByName(iconName);
+      }
+
       private ApplicationIcon iconFor<T>(T objectBase)
       {
-         if (objectBase.IsAnImplementationOf<IMoleculeBuilder>())
-            return getMoleculeBuilderIconFor(objectBase.DowncastTo<IMoleculeBuilder>());
+         //no icons for neighborhood (as they are all displayed in a list)
+         if (objectBase.IsAnImplementationOf<INeighborhoodBase>())
+            return ApplicationIcons.EmptyIcon;
+
+         if (objectBase.IsAnImplementationOf<MoleculeBuilder>())
+            return getMoleculeBuilderIconFor(objectBase.DowncastTo<MoleculeBuilder>());
 
          if (objectBase.IsAnImplementationOf<IContainer>())
             return getContainerIconFor(objectBase.DowncastTo<IContainer>());
 
-         if (objectBase.IsAnImplementationOf<IObserverBuilder>())
+         if (objectBase.IsAnImplementationOf<ObserverBuilder>())
             return ApplicationIcons.Observer;
 
          return getIconByTypeName(objectBase);
       }
 
-      private ApplicationIcon getMoleculeBuilderIconFor(IMoleculeBuilder objectBase)
+      private ApplicationIcon getMoleculeBuilderIconFor(MoleculeBuilder objectBase)
       {
-         var iconName = Enum.GetName(typeof (QuantityType), objectBase.QuantityType);
+         var iconName = Enum.GetName(typeof(QuantityType), objectBase.QuantityType);
          return iconByName(iconName) ?? ApplicationIcons.Drug;
       }
 
@@ -53,14 +64,14 @@ namespace MoBi.Core.Repositories
 
          if (!ApplicationIcons.HasIconNamed(typeName))
             typeName = typeName.Remove(typeName.Length - "Builder".Length);
-         
+
          return ApplicationIcons.IconByName(typeName);
       }
 
       private ApplicationIcon getContainerIconFor(IContainer container)
       {
          return iconByName(container.Name) ??
-                iconByName(Enum.GetName(typeof (ContainerType), container.ContainerType)) ??
+                iconByName(Enum.GetName(typeof(ContainerType), container.ContainerType)) ??
                 getIconByTypeName(container);
       }
 

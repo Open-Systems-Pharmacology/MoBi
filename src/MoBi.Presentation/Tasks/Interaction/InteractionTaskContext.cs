@@ -1,12 +1,15 @@
-﻿using OSPSuite.Core.Services;
+﻿using System.Collections.Generic;
 using MoBi.Core;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
 using MoBi.Core.Domain.Services;
+using MoBi.Core.Services;
 using MoBi.Presentation.Settings;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Services;
 
 namespace MoBi.Presentation.Tasks.Interaction
@@ -16,13 +19,16 @@ namespace MoBi.Presentation.Tasks.Interaction
       IMoBiContext Context { get; }
       IInteractionTask InteractionTask { get; }
       IMoBiApplicationController ApplicationController { get; }
+      IBuildingBlockRepository BuildingBlockRepository { get; }
       T Active<T>() where T : class;
       IUserSettings UserSettings { get; }
       IDialogCreator DialogCreator { get; }
       IMoBiFormulaTask MoBiFormulaTask { get; }
+      ICheckNameVisitor CheckNamesVisitor { get; }
       Unit DisplayUnitFor(IWithDimension withDimension);
       Unit DisplayUnitFor(IDimension dimension);
       IDimension DimensionByName(string dimensionName);
+      IObjectBaseNamingTask NamingTask { get; }
 
       /// <summary>
       ///    Cancels the commands and returns an empty command
@@ -52,20 +58,24 @@ namespace MoBi.Presentation.Tasks.Interaction
       private readonly IObjectTypeResolver _objectTypeResolver;
       private readonly IMoBiConfiguration _configuration;
       private readonly DirectoryMapSettings _directoryMapSettings;
-      public IMoBiContext Context { get; private set; }
-      public IMoBiApplicationController ApplicationController { get; private set; }
-      public IInteractionTask InteractionTask { get; private set; }
-      public IActiveSubjectRetriever ActiveSubjectRetriever { get; private set; }
-      public IUserSettings UserSettings { get; private set; }
-      public IDialogCreator DialogCreator { get; private set; }
-      public IMoBiFormulaTask MoBiFormulaTask { get; private set; }
-      public IDisplayUnitRetriever DisplayUnitRetriever { get; private set; }
+      public IMoBiContext Context { get; }
+      public IMoBiApplicationController ApplicationController { get; }
+      public IBuildingBlockRepository BuildingBlockRepository { get; }
+      public IInteractionTask InteractionTask { get; }
+      public IActiveSubjectRetriever ActiveSubjectRetriever { get; }
+      public IUserSettings UserSettings { get; }
+      public IDialogCreator DialogCreator { get; }
+      public IMoBiFormulaTask MoBiFormulaTask { get; }
+      public ICheckNameVisitor CheckNamesVisitor { get; }
+      public IDisplayUnitRetriever DisplayUnitRetriever { get; }
+      public IObjectBaseNamingTask NamingTask { get; }
 
       public InteractionTaskContext(IMoBiContext context, IMoBiApplicationController applicationController,
          IInteractionTask interactionTask, IActiveSubjectRetriever activeSubjectRetriever, IUserSettings userSettings,
          IDisplayUnitRetriever displayUnitRetriever, IDialogCreator dialogCreator,
          ICommandTask commandTask, IObjectTypeResolver objectTypeResolver, IMoBiFormulaTask moBiFormulaTask,
-         IMoBiConfiguration configuration, DirectoryMapSettings directoryMapSettings)
+         IMoBiConfiguration configuration, DirectoryMapSettings directoryMapSettings, ICheckNameVisitor checkNamesVisitor, IBuildingBlockRepository buildingBlockRepository,
+         IObjectBaseNamingTask namingTask)
       {
          DialogCreator = dialogCreator;
          Context = context;
@@ -78,7 +88,10 @@ namespace MoBi.Presentation.Tasks.Interaction
          _objectTypeResolver = objectTypeResolver;
          _configuration = configuration;
          _directoryMapSettings = directoryMapSettings;
+         NamingTask = namingTask;
          MoBiFormulaTask = moBiFormulaTask;
+         CheckNamesVisitor = checkNamesVisitor;
+         BuildingBlockRepository = buildingBlockRepository;
       }
 
       public Unit DisplayUnitFor(IWithDimension withDimension)
@@ -120,7 +133,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
          return Context.DimensionFactory.Dimension(dimensionName);
       }
-
+      
       public T Active<T>() where T : class
       {
          return ActiveSubjectRetriever.Active<T>();

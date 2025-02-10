@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Xml.Linq;
-using OSPSuite.Serializer.Xml;
-using OSPSuite.Serializer.Xml.Extensions;
-using OSPSuite.Utility.Compression;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
+using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Serialization.Converter;
@@ -15,15 +11,20 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Serialization.Xml;
+using OSPSuite.Serializer.Xml;
+using OSPSuite.Serializer.Xml.Extensions;
+using OSPSuite.Utility.Compression;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Serialization.Xml.Services
 {
    public interface IXmlSerializationService
    {
       XElement SerializeModelPart<T>(T entityToSerialize);
-      T Deserialize<T>(XElement element, IMoBiProject project, int version);
-      T Deserialize<T>(string xmlString, IMoBiProject project);
-      T Deserialize<T>(byte[] compressedBytes, IMoBiProject project, SerializationContext serializationContext = null);
+      T Deserialize<T>(XElement element, MoBiProject project, int version);
+      T Deserialize<T>(string xmlString, MoBiProject project);
+      T Deserialize<T>(byte[] compressedBytes, MoBiProject project, SerializationContext serializationContext = null);
       string ElementNameFor(Type type);
       string SerializeAsString<T>(T entityToSerialize);
       byte[] SerializeAsBytes<T>(T entityToSerialize);
@@ -38,10 +39,16 @@ namespace MoBi.Core.Serialization.Xml.Services
       private readonly ISerializationContextFactory _serializationContextFactory;
       private readonly IEventPublisher _eventPublisher;
       private readonly IDeserializedReferenceResolver _deserializedReferenceResolver;
+      private readonly IProjectConverterLogger _projectConverterLogger;
       private readonly IXmlSerializer<SerializationContext> _formulaCacheSerializer;
 
-      public XmlSerializationService(IMoBiXmlSerializerRepository repository, ICompression compression, IMoBiObjectConverterFinder objectConverterFinder,
-         ISerializationContextFactory serializationContextFactory, IEventPublisher eventPublisher, IDeserializedReferenceResolver deserializedReferenceResolver)
+      public XmlSerializationService(IMoBiXmlSerializerRepository repository, 
+         ICompression compression, 
+         IMoBiObjectConverterFinder objectConverterFinder,
+         ISerializationContextFactory serializationContextFactory, 
+         IEventPublisher eventPublisher, 
+         IDeserializedReferenceResolver deserializedReferenceResolver, 
+         IProjectConverterLogger projectConverterLogger)
       {
          _repository = repository;
          _compression = compression;
@@ -49,6 +56,7 @@ namespace MoBi.Core.Serialization.Xml.Services
          _serializationContextFactory = serializationContextFactory;
          _eventPublisher = eventPublisher;
          _deserializedReferenceResolver = deserializedReferenceResolver;
+         _projectConverterLogger = projectConverterLogger;
          _formulaCacheSerializer = _repository.SerializerFor<IFormulaCache>();
       }
 
@@ -82,24 +90,25 @@ namespace MoBi.Core.Serialization.Xml.Services
          return _formulaCacheSerializer.Serialize(formulas, serializationContext);
       }
 
-      public T Deserialize<T>(XElement element, IMoBiProject project, int version)
+      public T Deserialize<T>(XElement element, MoBiProject project, int version)
       {
-         return deserialize(element, project, version, typeof (T)).DowncastTo<T>();
+         return deserialize(element, project, version, typeof(T)).DowncastTo<T>();
       }
 
-      public T Deserialize<T>(byte[] compressedBytes, IMoBiProject project, SerializationContext serializationContext = null)
+      public T Deserialize<T>(byte[] compressedBytes, MoBiProject project, SerializationContext serializationContext = null)
       {
          var decompressesBytes = _compression.Decompress(compressedBytes);
          var element = XmlHelper.ElementFromBytes(decompressesBytes);
          return deserialize(element, project, VersionFrom(element), parentSerializationContext: serializationContext).DowncastTo<T>();
       }
 
-      private object deserialize(XElement element, IMoBiProject project, int version, Type type = null, SerializationContext parentSerializationContext = null)
+      private object deserialize(XElement element, MoBiProject project, int version, Type type = null, SerializationContext parentSerializationContext = null)
       {
          object deserializedObject;
-         bool conversionHappened;
          IXmlSerializer<SerializationContext> serializer;
          Type deserializedType;
+
+         var conversionHappened = convertXml(element, version, project);
 
          if (type == null)
          {
@@ -114,8 +123,6 @@ namespace MoBi.Core.Serialization.Xml.Services
 
          using (var serializationContext = _serializationContextFactory.Create(deserializedType, parentSerializationContext))
          {
-            conversionHappened = convertXml(element, version, project);
-
             var formulaCacheElement = getFormulaCacheElementFor(element, deserializedType);
             conversionHappened = convertXml(formulaCacheElement, version, project) || conversionHappened;
             deserializeFormula(formulaCacheElement, version, project, serializationContext);
@@ -135,7 +142,7 @@ namespace MoBi.Core.Serialization.Xml.Services
          return deserializedObject;
       }
 
-      private bool convertXml(XElement sourceElement, int version, IMoBiProject project)
+      private bool convertXml(XElement sourceElement, int version, MoBiProject project)
       {
          if (sourceElement == null)
             return false;
@@ -150,19 +157,25 @@ namespace MoBi.Core.Serialization.Xml.Services
       ///    Converts the TObject to convert after the deserialization was made.
       /// </summary>
       /// <returns><c>true</c> if a conversion was performed otherwise <c>false</c></returns>
-      private bool convert(object deserializedObject, int objectVersion, IMoBiProject project)
+      private bool convert(object deserializedObject, int objectVersion, MoBiProject project)
       {
          var conversionHappened = convert(deserializedObject, project, objectVersion, x => x.Convert);
-         var simulation = deserializedObject as IMoBiSimulation;
 
          //Ensure that a simulation is marked as changed so that converted changes will also be persisted when the project is saved
-         if (simulation != null)
+         if (deserializedObject is IMoBiSimulation simulation)
+         {
             simulation.HasChanged = conversionHappened;
+            if (conversionHappened && simulation.HasUntraceableChanges)
+               _projectConverterLogger.AddWarning(
+                  AppConstants.Captions.ProjectConversionResultedInSimulationsWithUntraceableChanges(new[] { simulation.Name }),
+                  simulation,
+                  null);
+         }
 
          return conversionHappened;
       }
 
-      private bool convert<T>(T objectToConvert, IMoBiProject project, int originalVersion, Func<IMoBiObjectConverter, Func<T, IMoBiProject, (int, bool)>> converterAction)
+      private bool convert<T>(T objectToConvert, MoBiProject project, int originalVersion, Func<IMoBiObjectConverter, Func<T, MoBiProject, (int, bool)>> converterAction)
       {
          int version = originalVersion;
          bool conversionHappened = false;
@@ -181,8 +194,7 @@ namespace MoBi.Core.Serialization.Xml.Services
       {
          return deserializeType.IsAnImplementationOf<IModelCoreSimulation>()
                 || deserializeType.IsAnImplementationOf<IBuildingBlock>()
-                || deserializeType.IsAnImplementationOf<IBuildConfiguration>()
-                || deserializeType.IsAnImplementationOf<IMoBiProject>()
+                || deserializeType.IsAnImplementationOf<MoBiProject>()
                 || deserializeType.IsAnImplementationOf<IModel>()
                 || deserializeType.IsAnImplementationOf<SimulationTransfer>();
       }
@@ -196,7 +208,7 @@ namespace MoBi.Core.Serialization.Xml.Services
          return formulaCacheElement ?? getFormulaCacheElementFor(element.Parent, deserializeType);
       }
 
-      private void deserializeFormula(XElement formulaCacheElement, int version, IMoBiProject project, SerializationContext serializationContext)
+      private void deserializeFormula(XElement formulaCacheElement, int version, MoBiProject project, SerializationContext serializationContext)
       {
          if (formulaCacheElement == null) return;
          _formulaCacheSerializer.Deserialize(formulaCacheElement, serializationContext);
@@ -212,7 +224,7 @@ namespace MoBi.Core.Serialization.Xml.Services
          return versionString.ConvertedTo<int>();
       }
 
-      public T Deserialize<T>(string xmlString, IMoBiProject project)
+      public T Deserialize<T>(string xmlString, MoBiProject project)
       {
          var element = XmlHelper.RootElementFromString(xmlString);
          return Deserialize<T>(element, project, VersionFrom(element));

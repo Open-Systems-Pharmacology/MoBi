@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain.Descriptors;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Core;
 
 namespace MoBi.Presentation.DTO
@@ -23,6 +24,8 @@ namespace MoBi.Presentation.DTO
          Tag = tag;
          TagDescription = tagDescription;
       }
+
+      public bool IsReadOnly => TagType.IsOneOf(TagType.MatchAll, TagType.InParent, TagType.InChildren);
    }
 
    public class ContainerDescriptorRootItem : IRootViewItem<DescriptorConditionDTO>

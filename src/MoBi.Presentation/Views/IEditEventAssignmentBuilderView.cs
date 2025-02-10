@@ -8,6 +8,6 @@ namespace MoBi.Presentation.Views
    {
       void Show(EventAssignmentBuilderDTO eventAssignmentBuilderDTO);
       void SetFormulaView(IView subView);
-      string TargetPath { get; set; }
+      void ValidateAll();
    }
 }

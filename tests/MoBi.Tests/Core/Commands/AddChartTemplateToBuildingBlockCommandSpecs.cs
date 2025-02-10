@@ -10,7 +10,7 @@ namespace MoBi.Core.Commands
 {
    public abstract class concern_for_AddChartTemplateToBuildingBlockCommand : ContextSpecification<AddChartTemplateToBuildingBlockCommand>
    {
-      protected ISimulationSettings _buildingBlock;
+      protected SimulationSettings _buildingBlock;
       protected CurveChartTemplate _chartTemplate;
 
       protected override void Context()
@@ -53,7 +53,7 @@ namespace MoBi.Core.Commands
       {
          base.Context();
          _context = A.Fake<IMoBiContext>();
-         A.CallTo(() => _context.Get<ISimulationSettings>(A<string>._)).Returns(_buildingBlock);
+         A.CallTo(() => _context.Get<SimulationSettings>(A<string>._)).Returns(_buildingBlock);
       }
 
       protected override void Because()

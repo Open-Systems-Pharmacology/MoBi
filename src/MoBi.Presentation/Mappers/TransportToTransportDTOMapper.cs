@@ -4,7 +4,7 @@ using OSPSuite.Core.Domain;
 
 namespace MoBi.Presentation.Mappers
 {
-   internal interface ITransportToTransportDTOMapper : IMapper<ITransport, TransportDTO>
+   internal interface ITransportToTransportDTOMapper : IMapper<Transport, TransportDTO>
    {
    }
 
@@ -17,9 +17,9 @@ namespace MoBi.Presentation.Mappers
          _pathFactory = pathFactory;
       }
 
-      public TransportDTO MapFrom(ITransport transport)
+      public TransportDTO MapFrom(Transport transport)
       {
-         var dto = Map<TransportDTO>(transport);
+         var dto = Map(new TransportDTO(transport));
          dto.Molecule = transport.SourceAmount.Name;
          dto.Source = _pathFactory.CreateAbsoluteObjectPath(transport.SourceAmount.ParentContainer).PathAsString;
          dto.Target = _pathFactory.CreateAbsoluteObjectPath(transport.TargetAmount.ParentContainer).PathAsString;

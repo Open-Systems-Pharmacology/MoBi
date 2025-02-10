@@ -17,15 +17,15 @@ namespace MoBi.Presentation
    public abstract class concern_for_EditReactionBuilderPresenter : ContextSpecification<IEditReactionBuilderPresenter>
    {
       protected IEditReactionBuilderView _view;
-      private IEditFormulaPresenter _editFormulaPresenter;
+      private IEditFormulaInContainerPresenter _editFormulaPresenter;
       private ISelectReferenceAtReactionPresenter _selectReferencesPresenter;
       protected IReactionBuilderToReactionBuilderDTOMapper _reactionBuilderMapper;
       private IViewItemContextMenuFactory _viewItemContextMenuFactory;
-      private IEditTaskFor<IReactionBuilder> _editTasks;
+      private IEditTaskFor<ReactionBuilder> _editTasks;
       private IMoBiContext _context;
       private IFormulaToFormulaBuilderDTOMapper _formulaBuilderMapper;
       protected IEditParametersInContainerPresenter _editReactionParameters;
-      private IDescriptorConditionListPresenter<IReactionBuilder> _containerCriteriaPresenter;
+      private IDescriptorConditionListPresenter<ReactionBuilder> _containerCriteriaPresenter;
       protected IReactionEductsPresenter _reactionEductsPresenter;
       protected IReactionProductsPresenter _reactionProductsPresenter;
       protected IReactionModifiersPresenter _reactionModifiersPresenter;
@@ -33,15 +33,15 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          _view = A.Fake<IEditReactionBuilderView>();
-         _editFormulaPresenter = A.Fake<IEditFormulaPresenter>();
+         _editFormulaPresenter = A.Fake<IEditFormulaInContainerPresenter>();
          _selectReferencesPresenter = A.Fake<ISelectReferenceAtReactionPresenter>();
          _reactionBuilderMapper = A.Fake<IReactionBuilderToReactionBuilderDTOMapper>();
          _viewItemContextMenuFactory = A.Fake<IViewItemContextMenuFactory>();
-         _editTasks = A.Fake<IEditTaskFor<IReactionBuilder>>();
+         _editTasks = A.Fake<IEditTaskFor<ReactionBuilder>>();
          _context = A.Fake<IMoBiContext>();
          _formulaBuilderMapper = A.Fake<IFormulaToFormulaBuilderDTOMapper>();
          _editReactionParameters = A.Fake<IEditParametersInContainerPresenter>();
-         _containerCriteriaPresenter = A.Fake<IDescriptorConditionListPresenter<IReactionBuilder>>();
+         _containerCriteriaPresenter = A.Fake<IDescriptorConditionListPresenter<ReactionBuilder>>();
          _reactionEductsPresenter = A.Fake<IReactionEductsPresenter>();
          _reactionProductsPresenter = A.Fake<IReactionProductsPresenter>();
          _reactionModifiersPresenter = A.Fake<IReactionModifiersPresenter>();
@@ -61,7 +61,7 @@ namespace MoBi.Presentation
 
    public class When_editing_a_reaction : concern_for_EditReactionBuilderPresenter
    {
-      private IReactionBuilder _reactionBuilder;
+      private ReactionBuilder _reactionBuilder;
       private ReactionBuilderDTO _reactionBuilderDTO;
 
       protected override void Context()

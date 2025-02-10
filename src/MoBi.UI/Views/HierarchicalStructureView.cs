@@ -1,18 +1,18 @@
-﻿using System.Collections.Generic;
-using System.Windows.Forms;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Presentation.Nodes;
-using DevExpress.XtraBars;
+﻿using DevExpress.XtraBars;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
-using OSPSuite.Presentation;
-using OSPSuite.UI.Controls;
-using OSPSuite.UI.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Extensions;
+using OSPSuite.Presentation.Nodes;
+using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
+using OSPSuite.UI.Views;
+using OSPSuite.Utility.Extensions;
+using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace MoBi.UI.Views
 {
@@ -30,6 +30,7 @@ namespace MoBi.UI.Views
          treeView.MouseClick += onMouseClicked;
          treeView.StateImageList = imageListRetriever.AllImages16x16;
          barManager.Images = imageListRetriever.AllImages16x16;
+         treeView.ToolTipController.Initialize();
       }
 
       private void onMouseClicked(object sender, MouseEventArgs mouseEventArgs)
@@ -40,21 +41,38 @@ namespace MoBi.UI.Views
             if (hitInfo.Node != null)
             {
                var treeNode = treeView.NodeFrom(hitInfo.Node);
-               _presenter.CreatePopupMenuFor(treeNode.TagAsObject as IObjectBaseDTO).At(mouseEventArgs.Location);
+               _presenter.CreatePopupMenuFor(treeNode.TagAsObject as ObjectBaseDTO).At(mouseEventArgs.Location);
             }
             else
             {
                _presenter.CreatePopupMenuFor(null).At(mouseEventArgs.Location);
             }
          }
+
          if (hitInfo.Node != null)
          {
             var treeNode = treeView.NodeFrom(hitInfo.Node);
-            OnEvent(() => _presenter.Select(treeNode.TagAsObject as IObjectBaseDTO));
+            OnEvent(() => selectionChanged(treeNode));
          }
       }
 
-      public void Show(IEnumerable<IObjectBaseDTO> roots)
+      private void selectionChanged(ITreeNode treeNode)
+      {
+         _presenter.Select(treeNode.TagAsObject as ObjectBaseDTO);
+      }
+
+      public void Refresh(ObjectBaseDTO objectToRefresh)
+      {
+         var existingNode = treeView.NodeById(objectToRefresh.Id);
+         //node does not exist. Nothing to do
+         if(existingNode ==null) 
+            return;
+
+         var nodeToRefresh = _spatialStructureNodeMapper.MapFrom(objectToRefresh);
+         treeView.RefreshNode(nodeToRefresh);
+      }
+
+      public void Show(IEnumerable<ObjectBaseDTO> roots)
       {
          _spatialStructureNodeMapper.Initialize(dto => _presenter.GetChildObjects(dto, child => !child.IsAnImplementationOf<IParameter>()));
          roots.Each(AddRoot);
@@ -65,30 +83,25 @@ namespace MoBi.UI.Views
          _presenter = presenter;
       }
 
-      public BarManager PopupBarManager
-      {
-         get { return barManager; }
-      }
+      public BarManager PopupBarManager => barManager;
 
-      public void Add(IObjectBaseDTO newChild, IObjectBaseDTO parent)
+      public void Add(ObjectBaseDTO newChild, ObjectBaseDTO parent)
       {
          var newNode = _spatialStructureNodeMapper.MapFrom(newChild);
          var parentNode = treeView.NodeById(parent.Id);
-         //Check if parentNode is allreadyDisplayed? else it's not nessesary to add new Node
-         if (parentNode != null)
-         {
-            parentNode.AddChild(newNode);
-            treeView.AddNode(newNode);
-         }
+         //Check if parentNode is already displayed? else it's not necessary to add new Node
+         if (parentNode == null)
+            return;
+
+         parentNode.AddChild(newNode);
+         treeView.AddNode(newNode);
       }
 
-      public void Remove(IObjectBaseDTO dtoObjectBaseToRemove)
+      public void Remove(IWithId withId)
       {
-         ITreeNode nodeById = treeView.NodeById(dtoObjectBaseToRemove.Id);
-         if (nodeById != null)
-         {
-            treeView.DestroyNode(nodeById);
-         }
+         var nodeById = treeView.NodeById(withId.Id);
+         if (nodeById == null) return;
+         treeView.DestroyNode(nodeById);
       }
 
       public void AddNode(ITreeNode newNode)
@@ -96,19 +109,21 @@ namespace MoBi.UI.Views
          treeView.AddNode(newNode);
       }
 
-      public void AddRoot(IObjectBaseDTO dto)
+      public void AddRoot(ObjectBaseDTO dto)
       {
          treeView.AddNode(_spatialStructureNodeMapper.MapFrom(dto));
       }
 
-      public void Select(string id)
+      public void Select(IWithId withId)
       {
-         var node = treeView.NodeById(id);
-         if (node != null)
-         {
-            treeView.SelectNode(node);
-         }
+         var nodeById = treeView.NodeById(withId.Id);
+         if (nodeById == null) 
+            return;
+         treeView.SelectNode(nodeById);
+         selectionChanged(nodeById);
       }
+
+      public void CopyToClipBoard(string text) => Clipboard.SetText(text);
 
       public void Clear()
       {

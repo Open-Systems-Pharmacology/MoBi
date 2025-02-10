@@ -15,20 +15,15 @@ using OSPSuite.Utility.Extensions;
 namespace MoBi.Presentation.Presenter
 {
    public interface IEditEventGroupBuildingBlockPresenter :
-      ISingleStartPresenter<IEventGroupBuildingBlock>,
-      IListener<EntitySelectedEvent>,
-      IListener<AddedEvent>,
-      IListener<RemovedEvent>,
-      IListener<FavoritesSelectedEvent>,
-      IListener<UserDefinedSelectedEvent>
-
+      ISingleStartPresenter<EventGroupBuildingBlock>,
+      IListener<AddedEvent>
    {
    }
 
-   public class EditEventGroupBuildingBlockPresenter : EditBuildingBlockWithFavoriteAndUserDefinedPresenterBase<IEditEventGroupBuildingBlockView, IEditEventGroupBuildingBlockPresenter, IEventGroupBuildingBlock, IEventGroupBuilder>,
+   public class EditEventGroupBuildingBlockPresenter : EditBuildingBlockWithFavoriteAndUserDefinedPresenterBase<IEditEventGroupBuildingBlockView, IEditEventGroupBuildingBlockPresenter, EventGroupBuildingBlock, EventGroupBuilder>,
       IEditEventGroupBuildingBlockPresenter
    {
-      private IEventGroupBuildingBlock _eventGroupBuildingBlock;
+      private EventGroupBuildingBlock _eventGroupBuildingBlock;
       private readonly IEventGroupListPresenter _eventGroupListPresenter;
       private readonly IEditApplicationBuilderPresenter _editApplicationBuilderPresenter;
       private readonly IEditEventGroupPresenter _editEventGroupPresenter;
@@ -64,7 +59,7 @@ namespace MoBi.Presentation.Presenter
             _editEventGroupPresenter, _eventGroupListPresenter, _editApplicationBuilderPresenter);
       }
 
-      public override void Edit(IEventGroupBuildingBlock eventGroupBuildingBlock)
+      public override void Edit(EventGroupBuildingBlock eventGroupBuildingBlock)
       {
          _eventGroupBuildingBlock = eventGroupBuildingBlock;
          _eventGroupListPresenter.Edit(_eventGroupBuildingBlock);
@@ -81,7 +76,7 @@ namespace MoBi.Presentation.Presenter
 
       protected override void UpdateCaption()
       {
-         _view.Caption = AppConstants.Captions.EventsBuildingBlockCaption(_eventGroupBuildingBlock.Name);
+         _view.Caption = AppConstants.Captions.EventsBuildingBlockCaption(_eventGroupBuildingBlock.DisplayName);
       }
 
       private void setupEditPresenterFor(IObjectBase objectToEdit, IParameter parameter = null)
@@ -94,19 +89,19 @@ namespace MoBi.Presentation.Presenter
 
          switch (objectToEdit)
          {
-            case IApplicationMoleculeBuilder applicationMoleculeBuilder:
+            case ApplicationMoleculeBuilder applicationMoleculeBuilder:
                setupEditPresenterFor(applicationMoleculeBuilder.ParentContainer);
                return;
-            case IApplicationBuilder applicationBuilder:
+            case ApplicationBuilder applicationBuilder:
                showPresenter(_editApplicationBuilderPresenter, applicationBuilder, parameter);
                return;
-            case IEventGroupBuilder eventGroupBuilder:
+            case EventGroupBuilder eventGroupBuilder:
                showPresenter(_editEventGroupPresenter, eventGroupBuilder, parameter);
                return;
-            case IEventBuilder eventBuilder:
+            case EventBuilder eventBuilder:
                showPresenter(_editEventBuilderPresenter, eventBuilder, parameter);
                return;
-            case ITransportBuilder transportBuilder:
+            case TransportBuilder transportBuilder:
                showPresenter(_editApplicationTransportBuilderPresenter, transportBuilder, parameter);
                return;
             case IContainer container:
@@ -133,17 +128,17 @@ namespace MoBi.Presentation.Presenter
          return AllSubPresenters.OfType<T>();
       }
 
-      protected override Tuple<bool, IObjectBase> SpecificCanHandle(IObjectBase selectedObject)
+      protected override (bool canHandle, IContainer containerObject) SpecificCanHandle(EntitySelectedEvent entitySelectedEvent)
       {
-         return new Tuple<bool, IObjectBase>(shouldShow(selectedObject), selectedObject);
+         return (shouldShow(entitySelectedEvent.ObjectBase), entitySelectedEvent.ObjectBase as IContainer);
       }
 
-      protected override void EnsureItemsVisibility(IObjectBase parentObject, IParameter parameter = null)
+      protected override void EnsureItemsVisibility(IContainer parentObject, IParameter parameter = null)
       {
          setupEditPresenterFor(parentObject, parameter);
       }
 
-      protected override void SelectBuilder(IEventGroupBuilder builder)
+      protected override void SelectBuilder(EventGroupBuilder builder)
       {
          setupEditPresenterFor(builder);
       }
@@ -164,14 +159,13 @@ namespace MoBi.Presentation.Presenter
          if (_eventGroupBuildingBlock.Equals(objectBase))
             return true;
 
-         var testEntity = objectBase as IEntity;
-         if (testEntity != null)
+         if (objectBase is IEntity testEntity)
             return eventGroupContainsEntity(testEntity);
 
-         if (!objectBase.IsAnImplementationOf<ITransportBuilder>())
+         if (!objectBase.IsAnImplementationOf<TransportBuilder>())
             return false;
 
-         return eventGroupContainesTranportBuilder(objectBase);
+         return eventGroupContainsTransportBuilder(objectBase);
       }
 
       private bool eventGroupContainsEntity(IEntity testEntity)
@@ -185,16 +179,15 @@ namespace MoBi.Presentation.Presenter
          return false;
       }
 
-      private bool eventGroupContainesTranportBuilder(IObjectBase objectBase)
+      private bool eventGroupContainsTransportBuilder(IObjectBase objectBase)
       {
-         var tranportBuilder = (ITransportBuilder) objectBase;
+         var transportBuilder = (TransportBuilder)objectBase;
          foreach (var eventGroup in _eventGroupBuildingBlock)
          {
-            var applicationBuilder = eventGroup as IApplicationBuilder;
-            if (applicationBuilder != null && applicationBuilder.Transports.Contains(tranportBuilder))
+            if (eventGroup is ApplicationBuilder applicationBuilder && applicationBuilder.Transports.Contains(transportBuilder))
                return true;
 
-            if (eventGroup.GetAllChildren<IApplicationBuilder>().Any(ab => ab.Transports.Contains(tranportBuilder)))
+            if (eventGroup.GetAllChildren<ApplicationBuilder>().Any(ab => ab.Transports.Contains(transportBuilder)))
                return true;
          }
 
@@ -214,33 +207,20 @@ namespace MoBi.Presentation.Presenter
 
       private bool isShowableType(IObjectBase addedObject)
       {
-         return addedObject.IsAnImplementationOf<IEventGroupBuilder>()
-                || addedObject.IsAnImplementationOf<IEventBuilder>()
-                || addedObject.IsAnImplementationOf<IApplicationMoleculeBuilder>()
+         return addedObject.IsAnImplementationOf<EventGroupBuilder>()
+                || addedObject.IsAnImplementationOf<EventBuilder>()
+                || addedObject.IsAnImplementationOf<ApplicationMoleculeBuilder>()
                 || addedObject.IsAnImplementationOf<IContainer>()
-                || addedObject.IsAnImplementationOf<ITransportBuilder>();
+                || addedObject.IsAnImplementationOf<TransportBuilder>();
       }
 
-      public void Handle(RemovedEvent eventToHandle)
+      internal override (bool canHandle, IContainer containerObject) CanHandle(EntitySelectedEvent entitySelectedEvent)
       {
-         if (!eventToHandle.RemovedObjects.Any(isShowableType))
-            return;
-
-         //If only a Application Molecule Builder is removed we do not need to update the edit presenter
-         if (eventToHandle.RemovedObjects.Count() != 1 ||
-             !eventToHandle.RemovedObjects.First().IsAnImplementationOf<IApplicationMoleculeBuilder>())
-         {
-            setupEditPresenterFor(_eventGroupBuildingBlock.FirstOrDefault());
-         }
-      }
-
-      internal override Tuple<bool, IObjectBase> CanHandle(IObjectBase selectedObject)
-      {
-         var specificCanHandle = SpecificCanHandle(selectedObject);
-         if (specificCanHandle.Item1)
+         var specificCanHandle = SpecificCanHandle(entitySelectedEvent);
+         if (specificCanHandle.canHandle)
             return specificCanHandle;
 
-         return base.CanHandle(selectedObject);
+         return base.CanHandle(entitySelectedEvent);
       }
 
       protected override void ShowView(IView viewToShow)

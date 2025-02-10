@@ -1,48 +1,56 @@
 ﻿using OSPSuite.Core.Commands.Core;
-using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
+using MoBi.Assets;
+using OSPSuite.Assets;
 
 namespace MoBi.Core.Commands
 {
-   public class SynchronizeParameterValueCommand : MoBiReversibleCommand
+   public class SynchronizeParameterValueCommand : BuildingBlockChangeCommandBase<ParameterValuesBuildingBlock>
    {
-      private IParameter _sourceParameter;
-      private IParameter _targetParameter;
-      private readonly string _sourceParameterId;
-      private readonly string _targetParameterId;
+      private IParameter _parameter;
+      private readonly ParameterValue _parameterValue;
+      private readonly string _parameterId;
 
-      public SynchronizeParameterValueCommand(IParameter sourceParameter, IParameter targetParameter)
+      public SynchronizeParameterValueCommand(IParameter parameter, ParameterValue parameterValue, ParameterValuesBuildingBlock changingBuildingBlock) : base(changingBuildingBlock)
       {
-         _sourceParameter = sourceParameter;
-         _sourceParameterId = sourceParameter.Id;
-         _targetParameter = targetParameter;
-         _targetParameterId = targetParameter.Id;
+         _parameter = parameter;
+         _parameterId = parameter.Id;
+         _parameterValue = parameterValue;
+         CommandType = AppConstants.Commands.UpdateCommand;
+         ObjectType = ObjectTypes.ParameterValue;
       }
 
       protected override void ExecuteWith(IMoBiContext context)
       {
-         _targetParameter.Dimension = _sourceParameter.Dimension;
-         _targetParameter.DisplayUnit = _sourceParameter.DisplayUnit;
-         _targetParameter.UpdateValueOriginFrom(_sourceParameter.ValueOrigin);
-         _targetParameter.UpdateQuantityValue(_sourceParameter.Value);
+         base.ExecuteWith(context);
+         _parameterValue.Value = _parameter.Value;
+         _parameterValue.Dimension = _parameter.Dimension;
+         _parameterValue.DisplayUnit = _parameter.DisplayUnit;
+         _parameterValue.UpdateValueOriginFrom(_parameter.ValueOrigin);
+
+         Description = AppConstants.Commands.UpdateParameterValue(_parameterValue.Path, _parameterValue.Value, _parameterValue.DisplayUnit);
       }
 
       protected override void ClearReferences()
       {
-         _sourceParameter = null;
-         _targetParameter = null;
+         base.ClearReferences();
+         _parameter = null;
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return new SynchronizeParameterValueCommand(_sourceParameter, _targetParameter).AsInverseFor(this);
+         return new SynchronizeParameterValueCommand(_parameter, _parameterValue, _buildingBlock)
+         {
+            Visible = Visible
+         }.AsInverseFor(this);
       }
 
       public override void RestoreExecutionData(IMoBiContext context)
       {
-         _sourceParameter = context.Get<IParameter>(_sourceParameterId);
-         _targetParameter = context.Get<IParameter>(_targetParameterId);
+         base.RestoreExecutionData(context);
+         _parameter = context.Get<IParameter>(_parameterId);
       }
    }
 }

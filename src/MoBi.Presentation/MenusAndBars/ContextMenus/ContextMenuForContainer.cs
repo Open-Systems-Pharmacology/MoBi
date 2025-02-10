@@ -1,4 +1,5 @@
-﻿using MoBi.Assets;
+﻿using System.Windows;
+using MoBi.Assets;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
@@ -6,6 +7,7 @@ using MoBi.Presentation.UICommand;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Presenters;
@@ -13,24 +15,25 @@ using OSPSuite.Presentation.Presenters.ContextMenus;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
-   public interface IContextMenuForContainer : IContextMenuFor<IContainer>
+   public abstract class ContextMenuForContainerBase<TContainer> : ContextMenuFor<TContainer> where TContainer : class, IContainer
    {
-   }
-
-   public class ContextMenuForContainerBase<TContainer> : ContextMenuFor<TContainer> where TContainer : class, IContainer
-   {
-      public ContextMenuForContainerBase(IMoBiContext context, IObjectTypeResolver objectTypeResolver) : base(context, objectTypeResolver)
+      protected ContextMenuForContainerBase(IMoBiContext context, IObjectTypeResolver objectTypeResolver, OSPSuite.Utility.Container.IContainer container) : base(context, objectTypeResolver, container)
       {
       }
 
-      public override IContextMenu InitializeWith(IObjectBaseDTO dto, IPresenter presenter)
+      public override IContextMenu InitializeWith(ObjectBaseDTO dto, IPresenter presenter)
       {
          base.InitializeWith(dto, presenter);
          var container = _context.Get<TContainer>(dto.Id);
-         _allMenuItems.Add(CreateAddNewChild<IParameter>(container));
+         AddParameterToContainerMenus(container);
+         return this;
+      }
+
+      protected void AddParameterToContainerMenus(TContainer container)
+      {
+         _allMenuItems.Add(CreateAddNewChild<IParameter>(container).AsGroupStarter());
          _allMenuItems.Add(createAddExistingChild<IParameter>(container));
          _allMenuItems.Add(createAddExistingFromTemplateItemFor<IParameter>(container));
-         return this;
       }
 
       protected virtual IMenuBarItem CreateAddExistingItemFor(TContainer selectedObject)
@@ -47,11 +50,11 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          if (objectToRemove.ParentContainer != null)
             return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
-               .WithCommandFor<RemoveCommandForContainer, IContainer>(objectToRemove)
+               .WithCommandFor<RemoveCommandForContainer, IContainer>(objectToRemove, _container)
                .WithIcon(ApplicationIcons.Delete);
 
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
-            .WithCommandFor<RemoveTopContainerCommand, IContainer>(objectToRemove)
+            .WithCommandFor<RemoveTopContainerCommand, IContainer>(objectToRemove, _container)
             .WithIcon(ApplicationIcons.Delete);
       }
 
@@ -60,7 +63,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          var typeName = _objectTypeResolver.TypeFor<T>();
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExisting(typeName))
             .WithIcon(ApplicationIcons.LoadIconFor(typeName))
-            .WithCommandFor<AddExistingCommandFor<IContainer, T>, IContainer>(container);
+            .WithCommandFor<AddExistingCommandFor<IContainer, T>, IContainer>(container, _container);
       }
 
       private IMenuBarItem createAddExistingFromTemplateItemFor<T>(TContainer parent) where T : class
@@ -68,7 +71,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          var typeName = _objectTypeResolver.TypeFor<T>();
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExistingFromTemplate(typeName))
             .WithIcon(ApplicationIcons.LoadTemplateIconFor(typeName))
-            .WithCommandFor<AddExistingFromTemplateCommandFor<IContainer, T>, IContainer>(parent);
+            .WithCommandFor<AddExistingFromTemplateCommandFor<IContainer, T>, IContainer>(parent, _container);
       }
 
       protected IMenuBarItem CreateAddNewChild<T>(TContainer container) where T : class, IEntity
@@ -76,20 +79,24 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          var typeName = _objectTypeResolver.TypeFor<T>();
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddNew(typeName))
             .WithIcon(ApplicationIcons.AddIconFor(typeName))
-            .WithCommandFor<AddNewCommandFor<IContainer, T>, IContainer>(container);
+            .WithCommandFor<AddNewCommandFor<IContainer, T>, IContainer>(container, _container);
       }
    }
 
-   public class ContextMenuForContainer : ContextMenuForContainerBase<IContainer>, IContextMenuForContainer
+   public class ContextMenuForContainer : ContextMenuForContainerBase<IContainer>
    {
-      public ContextMenuForContainer(IMoBiContext context, IObjectTypeResolver objectTypeResolver) : base(context, objectTypeResolver)
+      private readonly IEntityPathResolver _entityPathResolver;
+
+      public ContextMenuForContainer(IMoBiContext context, IObjectTypeResolver objectTypeResolver, OSPSuite.Utility.Container.IContainer container, IEntityPathResolver entityPathResolver) : base(context, objectTypeResolver, container)
       {
+         _entityPathResolver = entityPathResolver;
       }
 
-      public override IContextMenu InitializeWith(IObjectBaseDTO dto, IPresenter presenter)
+      public override IContextMenu InitializeWith(ObjectBaseDTO dto, IPresenter presenter)
       {
          base.InitializeWith(dto, presenter);
          var container = _context.Get<IContainer>(dto.Id);
+
          if (!dto.Name.IsSpecialName())
          {
             _allMenuItems.Add(CreateAddNewItemFor(container));
@@ -99,15 +106,22 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          _allMenuItems.Add(CreateAddNewChild<IDistributedParameter>(container));
          return this;
       }
+
+      protected override void AddSaveItems(IContainer container)
+      {
+         _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.SaveAsPKML.WithEllipsis())
+            .WithCommandFor<SaveWithIndividualAndExpressionUICommand, IContainer>(container, _container)
+            .WithIcon(ApplicationIcons.PKMLSave));
+
+         _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.Captions.CopyPath)
+            .WithActionCommand(() => Clipboard.SetText(_entityPathResolver.FullPathFor(container)))
+            .WithIcon(ApplicationIcons.Copy));
+      }
    }
 
-   public interface IContextMenuForContainerInEventGroups : IContextMenuFor<IContainer>
+   public class ContextMenuForContainerInEventGroups : ContextMenuForContainerBase<IContainer>
    {
-   }
-
-   public class ContextMenuForContainerInEventGroups : ContextMenuForContainerBase<IContainer>, IContextMenuForContainerInEventGroups
-   {
-      public ContextMenuForContainerInEventGroups(IMoBiContext context, IObjectTypeResolver objectTypeResolver) : base(context, objectTypeResolver)
+      public ContextMenuForContainerInEventGroups(IMoBiContext context, IObjectTypeResolver objectTypeResolver, OSPSuite.Utility.Container.IContainer container) : base(context, objectTypeResolver, container)
       {
       }
 
@@ -115,7 +129,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
             .WithIcon(ApplicationIcons.Delete)
-            .WithCommandFor<RemoveCommandForContainerAtEventGroup, IContainer>(objectToRemove);
+            .WithCommandFor<RemoveCommandForContainerAtEventGroup, IContainer>(objectToRemove, _container);
       }
    }
 }

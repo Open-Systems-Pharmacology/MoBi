@@ -177,9 +177,9 @@ namespace MoBi.UI.Services
          rep.GetAllCategoriesDefault().Each(cm => rep.AddCalculationMethod(createDefaultCalculationMethodForCategory(cm.Category, objectBaseFactory)));
       }
 
-      private static ICoreCalculationMethod createDefaultCalculationMethodForCategory(string category, IObjectBaseFactory objectBaseFactory)
+      private static CoreCalculationMethod createDefaultCalculationMethodForCategory(string category, IObjectBaseFactory objectBaseFactory)
       {
-         var cm = objectBaseFactory.Create<ICoreCalculationMethod>()
+         var cm = objectBaseFactory.Create<CoreCalculationMethod>()
             .WithName(AppConstants.DefaultNames.EmptyCalculationMethod)
             .WithDescription(AppConstants.DefaultNames.EmptyCalculationMethodDescription);
 

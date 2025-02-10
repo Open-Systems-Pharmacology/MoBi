@@ -10,6 +10,7 @@ using OSPSuite.Assets;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
@@ -59,7 +60,7 @@ namespace MoBi.Presentation.Presenter.Main
          _parameterAnalysablesInExplorerPresenter.InitializeWith(this, classificationPresenter);
       }
 
-      protected override void AddProjectToTree(IMoBiProject project)
+      protected override void AddProjectToTree(MoBiProject project)
       {
          using (new BatchUpdate(_view))
          {
@@ -96,13 +97,7 @@ namespace MoBi.Presentation.Presenter.Main
                 _parameterAnalysablesInExplorerPresenter.CanDrag(node);
       }
 
-      public override void NodeDoubleClicked(ITreeNode node)
-      {
-         if (node.IsAnImplementationOf<BuildingBlockInfoNode>())
-            return;
-
-         base.NodeDoubleClicked(node);
-      }
+      public override bool CopyAllowed() => false;
 
       private ITreeNode addClassifiableSimulationToSimulationRootFolder(ClassifiableSimulation classifiableSimulation)
       {
@@ -117,25 +112,16 @@ namespace MoBi.Presentation.Presenter.Main
          return simulationNode;
       }
 
-      private void addChartTreeNode(CurveChart chart)
+      private void addChartTreeNode(CurveChart chart) => _view.AddNode(_treeNodeFactory.CreateFor(chart));
+
+      public void Handle(SimulationAddedEvent eventToHandle) => addSimulationToTree(eventToHandle.Simulation);
+
+      private void addSimulationToTree(IMoBiSimulation simulation)
       {
-         _view.AddNode(_treeNodeFactory.CreateFor(chart));
+         AddSubjectToClassifyToTree<IMoBiSimulation, ClassifiableSimulation>(simulation, addClassifiableSimulationToSimulationRootFolder);
       }
 
-      public void Handle(SimulationAddedEvent eventToHandle)
-      {
-         addSimulationToTree(eventToHandle.Simulation);
-      }
-
-      private ITreeNode addSimulationToTree(IMoBiSimulation simulation)
-      {
-         return AddSubjectToClassifyToTree<IMoBiSimulation, ClassifiableSimulation>(simulation, addClassifiableSimulationToSimulationRootFolder);
-      }
-
-      public void Handle(SimulationRemovedEvent eventToHandle)
-      {
-         RemoveNodeFor(eventToHandle.Simulation);
-      }
+      public void Handle(SimulationRemovedEvent eventToHandle) => RemoveNodeFor(eventToHandle.Simulation);
 
       public override void Handle(SimulationRunFinishedEvent eventToHandle)
       {
@@ -143,96 +129,86 @@ namespace MoBi.Presentation.Presenter.Main
          reCreateSimulationNode(eventToHandle.Simulation);
       }
 
-      public void Handle(RemovedDataEvent eventToHandle)
-      {
-         RemoveNodeFor(eventToHandle.Repository);
-      }
+      public void Handle(RemovedDataEvent eventToHandle) => RemoveNodeFor(eventToHandle.Repository);
 
-      public void Handle(ChartAddedEvent eventToHandle)
-      {
-         addChartTreeNode(eventToHandle.Chart);
-      }
+      public void Handle(ChartAddedEvent eventToHandle) => addChartTreeNode(eventToHandle.Chart);
 
-      public void Handle(ChartDeletedEvent eventToHandle)
-      {
-         RemoveNodeFor(eventToHandle.Chart);
-      }
-
-      public void Handle(SimulationStatusChangedEvent eventToHandle)
-      {
-         refreshDisplayedSimulation(eventToHandle.Simulation);
-      }
+      public void Handle(ChartDeletedEvent eventToHandle) => RemoveNodeFor(eventToHandle.Chart);
+      
+      public void Handle(SimulationStatusChangedEvent eventToHandle) => refreshDisplayedSimulation(eventToHandle.Simulation);
 
       protected override IContextMenu ContextMenuFor(ITreeNode treeNode)
       {
-         var simulation = treeNode.TagAsObject as ClassifiableSimulation;
-         if (simulation != null)
+         if (treeNode.TagAsObject is ClassifiableSimulation simulation)
             return ContextMenuFor(new SimulationViewItem(simulation.Simulation));
 
-         var buildingBlockInfo = treeNode.TagAsObject as IBuildingBlockInfo;
-         if (buildingBlockInfo != null)
-         {
-            var simulationNode = parentSimulationNodeFor(treeNode);
-            return ContextMenuFor(new BuildingBlockInfoViewItem(buildingBlockInfo, simulationNode.Simulation));
-         }
+         // Order is important here because SimulationSettings is also an IBuildingBlock
+         if(treeNode.TagAsObject is SimulationSettingsDTO settingsDTO)
+            return ContextMenuFor(settingsDTO);
+
+         if (treeNode.TagAsObject is IBuildingBlock buildingBlock)
+            return ContextMenuFor(new SimulationBuildingBlockViewItem(buildingBlock));
 
          return base.ContextMenuFor(treeNode);
       }
 
-      private SimulationNode parentSimulationNodeFor(ITreeNode treeNode)
-      {
-         var simulationNode = treeNode as SimulationNode;
-         if (simulationNode != null)
-            return simulationNode;
-
-         return parentSimulationNodeFor(treeNode.ParentNode);
-      }
-
-      public void Handle(SimulationReloadEvent eventToHandle)
-      {
-         reCreateSimulationNode(eventToHandle.Simulation);
-      }
+      public void Handle(SimulationReloadEvent eventToHandle) => reCreateSimulationNode(eventToHandle.Simulation);
 
       private void reCreateSimulationNode(IMoBiSimulation simulation)
       {
          var simulationNode = _view.NodeById(simulation.Id);
-         var configurationNode = simulationConfigurationNodeUnder(simulationNode);
+
+         // In case of a cloned simulation, the reload event will be published by the command
+         // before the simulation is added to the project
+         if (simulationNode == null)
+            return;
+
          bool simulationNodeExpanded = _view.IsNodeExpanded(simulationNode);
-         bool configurationNodeExpanded = _view.IsNodeExpanded(configurationNode);
          var parentNode = simulationNode.ParentNode.DowncastTo<ITreeNode<IClassification>>();
          RemoveNodeFor(simulation);
          var classifiableSimulation = _projectRetriever.CurrentProject.GetOrCreateClassifiableFor<ClassifiableSimulation, IMoBiSimulation>(simulation);
          simulationNode = addClassifiableSimulationToTree(parentNode, classifiableSimulation);
-         configurationNode = simulationConfigurationNodeUnder(simulationNode);
          _view.ExpandNodeIfRequired(simulationNode, simulationNodeExpanded);
-         _view.ExpandNodeIfRequired(configurationNode, configurationNodeExpanded);
       }
 
       private void refreshDisplayedSimulation(IMoBiSimulation simulation)
       {
          var simulationNode = _view.NodeById(simulation.Id);
 
-         //Update Simulation Icon
-         var isChangedSimulation = simulation.MoBiBuildConfiguration.HasChangedBuildingBlocks();
-         simulationNode.Icon = isChangedSimulation ? ApplicationIcons.SimulationRed : ApplicationIcons.SimulationGreen;
+         var changedTemplateBuildingBlocks = _interactionTasksForSimulation.FindChangedBuildingBlocks(simulation).ToList();
+         var changedModules = _interactionTasksForSimulation.FindChangedModules(simulation).ToList();
 
-         // Update Building block
-         simulationConfigurationNodeUnder(simulationNode).Children.Each(refreshDisplayedBuildingBlock);
+         simulationNode.Icon = shouldMarkSimulationAsNotSynchronized(simulation, changedModules, changedTemplateBuildingBlocks) ? ApplicationIcons.SimulationRed : ApplicationIcons.SimulationGreen;
+
+         updateModuleIcons(changedModules, simulationNode.AllNodes.OfType<ModuleConfigurationNode>());
+         updateBuildingBlockIcons(changedTemplateBuildingBlocks, simulationNode.AllNodes.OfType<BuildingBlockNode>());
       }
 
-      private ITreeNode simulationConfigurationNodeUnder(ITreeNode simulationNode)
+      private static bool shouldMarkSimulationAsNotSynchronized(IMoBiSimulation simulation, List<Module> changedModules, List<IBuildingBlock> changedTemplateBuildingBlocks)
       {
-         return simulationNode.Children<BuildConfigurationNode>().First();
+         // Set simulation to red if there are any module, building block, quantity changes,
+         // or if the simulation was converted from V11 and has untraceable changes
+         return changedModules.Any() || changedTemplateBuildingBlocks.Any() || simulation.OriginalQuantityValues.Any() || simulation.HasUntraceableChanges;
       }
 
-      private void refreshDisplayedBuildingBlock(ITreeNode treeNode)
+      private void updateModuleIcons(IEnumerable<Module> changedModules, IEnumerable<ModuleConfigurationNode> simulationNodeChildren)
       {
-         var buildingBlockInfo = treeNode.TagAsObject as IBuildingBlockInfo;
-         if (buildingBlockInfo == null) return;
+         simulationNodeChildren.Each(x => updateModuleIcon(x, changedModules));
+      }
 
-         //Update TreeNode Icon
-         var icon = buildingBlockInfo.BuildingBlockChanged ? ApplicationIcons.RedOverlayFor(buildingBlockInfo.IconName) : ApplicationIcons.GreenOverlayFor(buildingBlockInfo.IconName);
-         treeNode.Icon = icon;
+      private void updateBuildingBlockIcons(IEnumerable<IBuildingBlock> changedSimulationBuildingBlocks, IEnumerable<BuildingBlockNode> simulationNodeChildren)
+      {
+         simulationNodeChildren.Each(x => updateBuildingBlockIcon(x, changedSimulationBuildingBlocks));
+      }
+
+      private void updateModuleIcon(ModuleConfigurationNode moduleConfigurationNode, IEnumerable<Module> changedModules)
+      {
+         moduleConfigurationNode.Icon = changedModules.AllNames().Contains(moduleConfigurationNode.ModuleName) ? ApplicationIcons.RedOverlayFor(moduleConfigurationNode.BaseIcon) : ApplicationIcons.GreenOverlayFor(moduleConfigurationNode.BaseIcon);
+      }
+
+      private static void updateBuildingBlockIcon(BuildingBlockNode buildingBlock, IEnumerable<IBuildingBlock> changedSimulationBuildingBlocks)
+      {
+         buildingBlock.Icon = changedSimulationBuildingBlocks.Contains(buildingBlock.Tag) ? ApplicationIcons.RedOverlayFor(buildingBlock.BaseIcon) : ApplicationIcons.GreenOverlayFor(buildingBlock.BaseIcon);
       }
 
       public override IEnumerable<ClassificationTemplate> AvailableClassificationCategories(ITreeNode<IClassification> parentClassificationNode)

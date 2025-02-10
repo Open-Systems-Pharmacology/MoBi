@@ -9,7 +9,7 @@ using OSPSuite.Assets;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface IPassiveTransportBuilderToObjectBaseSummaryDTOMapper : IMapper<ITransportBuilder, ObjectBaseSummaryDTO>
+   public interface IPassiveTransportBuilderToObjectBaseSummaryDTOMapper : IMapper<TransportBuilder, ObjectBaseSummaryDTO>
    {
        
    }
@@ -23,7 +23,7 @@ namespace MoBi.Presentation.Mappers
          _objectTypeResolver = objectTypeResolver;
       }
 
-      public ObjectBaseSummaryDTO MapFrom(ITransportBuilder transportBuilder)
+      public ObjectBaseSummaryDTO MapFrom(TransportBuilder transportBuilder)
       {
          var dto = new ObjectBaseSummaryDTO
          {

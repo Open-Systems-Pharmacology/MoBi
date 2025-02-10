@@ -30,7 +30,7 @@ namespace MoBi.Presentation.Presenter
          if (entity.IsAnImplementationOf<IQuantity>())
             return _container.Resolve<IEditQuantityInSimulationPresenter>();
 
-         if (entity.IsAnImplementationOf<IReaction>())
+         if (entity.IsAnImplementationOf<Reaction>())
             return _container.Resolve<IEditReactionInSimulationPresenter>();
 
          if (entity.IsAnImplementationOf<IContainer>())

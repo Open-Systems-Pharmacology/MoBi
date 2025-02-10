@@ -14,46 +14,46 @@ namespace MoBi.Presentation.Tasks.Interaction
 {
    public interface IInteractionTasksForReactionBuilder
    {
-      IEnumerable<string> SelectMoleculeNames(IMoBiReactionBuildingBlock reactionBuildingBlock, IEnumerable<string> unallowedNames, string reactionName, string partnerType);
+      IEnumerable<string> SelectMoleculeNames(MoBiReactionBuildingBlock reactionBuildingBlock, IEnumerable<string> unallowedNames, string reactionName, string partnerType);
    }
 
-   public class InteractionTasksForReactionBuilder : InteractionTasksForBuilder<IReactionBuilder, IMoBiReactionBuildingBlock>, IInteractionTasksForReactionBuilder
+   public class InteractionTasksForReactionBuilder : InteractionTasksForBuilder<ReactionBuilder, MoBiReactionBuildingBlock>, IInteractionTasksForReactionBuilder
    {
       private readonly IReactionDimensionRetriever _dimensionRetriever;
 
-      public InteractionTasksForReactionBuilder(IInteractionTaskContext interactionTaskContext, IEditTaskFor<IReactionBuilder> editTask, IReactionDimensionRetriever dimensionRetriever)
+      public InteractionTasksForReactionBuilder(IInteractionTaskContext interactionTaskContext, IEditTaskFor<ReactionBuilder> editTask, IReactionDimensionRetriever dimensionRetriever)
          : base(interactionTaskContext, editTask)
       {
          _dimensionRetriever = dimensionRetriever;
       }
 
-      public override IMoBiCommand GetRemoveCommand(IReactionBuilder reactionBuilderToRemove, IMoBiReactionBuildingBlock parent, IBuildingBlock buildingBlock)
+      public override IMoBiCommand GetRemoveCommand(ReactionBuilder reactionBuilderToRemove, MoBiReactionBuildingBlock parent, IBuildingBlock buildingBlock)
       {
-         return new RemoveReactionBuilderCommand(parent.DowncastTo<IMoBiReactionBuildingBlock>(), reactionBuilderToRemove);
+         return new RemoveReactionBuilderCommand(parent.DowncastTo<MoBiReactionBuildingBlock>(), reactionBuilderToRemove);
       }
 
-      public override IMoBiCommand GetRemoveCommand(IReactionBuilder builder, IMoBiReactionBuildingBlock buildingBlock)
+      public override IMoBiCommand GetRemoveCommand(ReactionBuilder builder, MoBiReactionBuildingBlock buildingBlock)
       {
          return GetRemoveCommand(builder, buildingBlock, null);
       }
 
-      public override IMoBiCommand GetAddCommand(IReactionBuilder reactionBuilderToAdd, IMoBiReactionBuildingBlock parent, IBuildingBlock buildingBlock)
+      public override IMoBiCommand GetAddCommand(ReactionBuilder reactionBuilderToAdd, MoBiReactionBuildingBlock parent, IBuildingBlock buildingBlock)
       {
          return GetAddCommand(reactionBuilderToAdd, parent);
       }
 
-      public override IReactionBuilder CreateNewEntity(IMoBiReactionBuildingBlock reactionBuildingBlock)
+      public override ReactionBuilder CreateNewEntity(MoBiReactionBuildingBlock reactionBuildingBlock)
       {
          return base.CreateNewEntity(reactionBuildingBlock)
             .WithDimension(_dimensionRetriever.ReactionDimension);
       }
 
-      public override IMoBiCommand GetAddCommand(IReactionBuilder builder, IMoBiReactionBuildingBlock buildingBlock)
+      public override IMoBiCommand GetAddCommand(ReactionBuilder builder, MoBiReactionBuildingBlock buildingBlock)
       {
-         return new AddReactionBuilderCommand(buildingBlock.DowncastTo<IMoBiReactionBuildingBlock>(), builder);
+         return new AddReactionBuilderCommand(buildingBlock.DowncastTo<MoBiReactionBuildingBlock>(), builder);
       }
 
-      public IEnumerable<string> SelectMoleculeNames(IMoBiReactionBuildingBlock reactionBuildingBlock, IEnumerable<string> unallowedNames, string reactionName, string partnerType)
+      public IEnumerable<string> SelectMoleculeNames(MoBiReactionBuildingBlock reactionBuildingBlock, IEnumerable<string> unallowedNames, string reactionName, string partnerType)
       {
          using (var moleculeSelectionPresenter = ApplicationController.Start<IMultipleStringSelectionPresenter>())
          {

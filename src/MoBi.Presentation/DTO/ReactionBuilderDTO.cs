@@ -6,9 +6,9 @@ namespace MoBi.Presentation.DTO
 {
    public class ReactionBuilderDTO : ReactionInfoDTO
    {
-      public IReactionBuilder ReactionBuilder { get; private set; }
+      public ReactionBuilder ReactionBuilder { get; }
 
-      public ReactionBuilderDTO(IReactionBuilder reactionBuilder)
+      public ReactionBuilderDTO(ReactionBuilder reactionBuilder) : base(reactionBuilder)
       {
          ReactionBuilder = reactionBuilder;
       }
@@ -16,16 +16,12 @@ namespace MoBi.Presentation.DTO
       public BindingList<ReactionPartnerBuilderDTO> Educts { get; set; }
       public BindingList<ReactionPartnerBuilderDTO> Products { get; set; }
 
-      public bool CreateProcessRateParameter
-      {
-         get { return ReactionBuilder.CreateProcessRateParameter; }
-         set { ReactionBuilder.CreateProcessRateParameter = value; }
-      }
+      public bool CreateProcessRateParameter => ReactionBuilder.CreateProcessRateParameter;
 
       public bool ProcessRateParameterPersistable
       {
-         get { return ReactionBuilder.ProcessRateParameterPersistable; }
-         set { ReactionBuilder.ProcessRateParameterPersistable = value; }
+         get => ReactionBuilder.ProcessRateParameterPersistable;
+         set => ReactionBuilder.ProcessRateParameterPersistable = value;
       }
    }
 
@@ -41,19 +37,19 @@ namespace MoBi.Presentation.DTO
 
    public class ReactionPartnerBuilderDTO : IViewItem
    {
-      public IReactionPartnerBuilder PartnerBuilder { get; }
+      public ReactionPartnerBuilder PartnerBuilder { get; }
 
-      public ReactionPartnerBuilderDTO(IReactionPartnerBuilder reactionPartnerBuilder)
+      public ReactionPartnerBuilderDTO(ReactionPartnerBuilder reactionPartnerBuilder)
       {
          PartnerBuilder = reactionPartnerBuilder;
       }
 
       public string MoleculeName
       {
-         get { return PartnerBuilder.MoleculeName; }
+         get => PartnerBuilder.MoleculeName;
          set
          {
-            /*nothign to do here. Set in command*/
+            /*nothing to do here. Set in command*/
          }
       }
 
@@ -61,10 +57,10 @@ namespace MoBi.Presentation.DTO
 
       public double StoichiometricCoefficient
       {
-         get { return PartnerBuilder.StoichiometricCoefficient; }
+         get => PartnerBuilder.StoichiometricCoefficient;
          set
          {
-            /*nothign to do here. Set in command*/
+            /*nothing to do here. Set in command*/
          }
       }
    }

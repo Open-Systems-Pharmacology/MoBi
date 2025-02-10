@@ -12,13 +12,15 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
    internal class ContextMenuForEductBuilder : ContextMenuBase
    {
-      private readonly IReactionBuilder _reactionBuilder;
-      private readonly IReactionPartnerBuilder _reactionPartnerBuilder;
+      private readonly ReactionBuilder _reactionBuilder;
+      private readonly ReactionPartnerBuilder _reactionPartnerBuilder;
+      private readonly IContainer _container;
 
-      public ContextMenuForEductBuilder(IReactionBuilder reactionBuilder, IReactionPartnerBuilder reactionPartnerBuilder)
+      public ContextMenuForEductBuilder(ReactionBuilder reactionBuilder, ReactionPartnerBuilder reactionPartnerBuilder, IContainer container)
       {
          _reactionBuilder = reactionBuilder;
          _reactionPartnerBuilder = reactionPartnerBuilder;
+         _container = container;
       }
 
       public override IEnumerable<IMenuBarItem> AllMenuItems()
@@ -29,17 +31,17 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          yield return createAddItem(_reactionBuilder);
       }
 
-      private IMenuBarItem createAddItem(IReactionBuilder reactionBuilder)
+      private IMenuBarItem createAddItem(ReactionBuilder reactionBuilder)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.New.WithEllipsis())
-            .WithIcon(ApplicationIcons.Create).WithCommandFor<AddEductUICommand, IReactionBuilder>(reactionBuilder);
+            .WithIcon(ApplicationIcons.Create).WithCommandFor<AddEductUICommand, ReactionBuilder>(reactionBuilder, _container);
       }
 
-      private IMenuBarItem createRemoveItem(IReactionBuilder reactionBuilder, IReactionPartnerBuilder reactionPartnerBuilder)
+      private IMenuBarItem createRemoveItem(ReactionBuilder reactionBuilder, ReactionPartnerBuilder reactionPartnerBuilder)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
             .WithIcon(ApplicationIcons.Delete)
-            .WithCommand(IoC.Resolve<RemoveEductUICommand>().Initialize(reactionPartnerBuilder, reactionBuilder));
+            .WithCommand(_container.Resolve<RemoveEductUICommand>().Initialize(reactionPartnerBuilder, reactionBuilder));
       }
    }
 }

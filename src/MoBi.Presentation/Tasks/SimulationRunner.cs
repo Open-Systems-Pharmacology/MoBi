@@ -6,12 +6,12 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
+using MoBi.Core.Extensions;
 using MoBi.Core.Services;
 using MoBi.Presentation.Presenter;
 using OSPSuite.Core.Commands;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
@@ -35,13 +35,13 @@ namespace MoBi.Presentation.Tasks
       private readonly IKeyPathMapper _keyPathMapper;
       private readonly IEntityValidationTask _entityValidationTask;
 
-      public SimulationRunner(IMoBiContext context, 
+      public SimulationRunner(IMoBiContext context,
          IMoBiApplicationController applicationController,
-         IOutputSelectionsRetriever outputSelectionsRetriever, 
+         IOutputSelectionsRetriever outputSelectionsRetriever,
          ISimulationPersistableUpdater simulationPersistableUpdater,
-         IDisplayUnitUpdater displayUnitUpdater, 
-         ISimModelManagerFactory simModelManagerFactory, 
-         IKeyPathMapper keyPathMapper, 
+         IDisplayUnitUpdater displayUnitUpdater,
+         ISimModelManagerFactory simModelManagerFactory,
+         IKeyPathMapper keyPathMapper,
          IEntityValidationTask entityValidationTask)
       {
          _context = context;
@@ -83,7 +83,7 @@ namespace MoBi.Presentation.Tasks
             return;
 
          //they are different. Issue an update command
-         addCommand(new UpdateOutputSelectionsInSimulationCommand(outputSelections, simulation).Run(_context));
+         addCommand(new UpdateOutputSelectionsInSimulationCommand(outputSelections, simulation).RunCommand(_context));
       }
 
       private bool settingsRequired(IMoBiSimulation simulation, bool defineSettings)
@@ -91,7 +91,7 @@ namespace MoBi.Presentation.Tasks
          if (defineSettings)
             return true;
 
-         if (simulation.SimulationSettings == null)
+         if (simulation.Settings == null)
             return true;
 
          return !simulation.OutputSelections.HasSelection;
@@ -178,21 +178,11 @@ namespace MoBi.Presentation.Tasks
 
       private void setMolecularWeight(IMoBiSimulation simulation, DataColumn column)
       {
-         var molecule = getMoleculeFor(simulation, column);
-
-         var mwPara = molecule?.Parameter(AppConstants.Parameters.MOLECULAR_WEIGHT);
-         if (mwPara == null) return;
-
-         column.DataInfo.MolWeight = mwPara.Value;
-      }
-
-      private IMoleculeBuilder getMoleculeFor(IMoBiSimulation simulation, DataColumn dataColumn)
-      {
-         var moleculeName = _keyPathMapper.MoleculeNameFrom(dataColumn);
+         var moleculeName = _keyPathMapper.MoleculeNameFrom(column);
          if (string.IsNullOrEmpty(moleculeName))
-            return null;
+            return;
 
-         return simulation.BuildConfiguration.Molecules[moleculeName];
+         column.DataInfo.MolWeight = simulation.MolWeightFor(moleculeName);
       }
 
       private bool isConcentrationColumn(DataColumn column)

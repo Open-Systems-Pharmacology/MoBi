@@ -15,32 +15,32 @@ namespace MoBi.Presentation
    public abstract class concern_for_EditTransportBuilderSpecs : ContextSpecification<IEditTransportBuilderPresenter>
    {
       private ITransportBuilderToTransportBuilderDTOMapper _transporBuilderMapper;
-      private IEditTaskFor<ITransportBuilder> _taskForPassiveTranportBuilder;
+      private IEditTaskFor<TransportBuilder> _taskForPassiveTranportBuilder;
       private IViewItemContextMenuFactory _contexteMenuFactory;
       protected IEditTransportBuilderView _view;
       private IFormulaToFormulaBuilderDTOMapper _formulaMapper;
       protected IEditParametersInContainerPresenter _parameterPresenter;
-      private IEditFormulaPresenter _formulaPresenter;
+      private IEditFormulaInContainerPresenter _formulaPresenter;
       private ISelectReferenceAtTransportPresenter _referencePresenter;
       private IMoBiContext _context;
       private IMoleculeDependentBuilderPresenter _moleculeDepdendentBuilderPresenter;
-      private IDescriptorConditionListPresenter<ITransportBuilder> _sourceCriteriaPresenter;
-      private IDescriptorConditionListPresenter<ITransportBuilder> _targetCriteriaPresenter;
+      private IDescriptorConditionListPresenter<TransportBuilder> _sourceCriteriaPresenter;
+      private IDescriptorConditionListPresenter<TransportBuilder> _targetCriteriaPresenter;
 
       protected override void Context()
       {
          _transporBuilderMapper=A.Fake<ITransportBuilderToTransportBuilderDTOMapper>();
-         _taskForPassiveTranportBuilder= A.Fake<IEditTasksForBuildingBlock<ITransportBuilder>>();
+         _taskForPassiveTranportBuilder= A.Fake<IEditTasksForBuildingBlock<TransportBuilder>>();
          _contexteMenuFactory = A.Fake<IViewItemContextMenuFactory>();
          _view= A.Fake<IEditTransportBuilderView>();
          _formulaMapper = A.Fake<IFormulaToFormulaBuilderDTOMapper>();
          _parameterPresenter = A.Fake<IEditParametersInContainerPresenter>();
-         _formulaPresenter = A.Fake<IEditFormulaPresenter>();
+         _formulaPresenter = A.Fake<IEditFormulaInContainerPresenter>();
          _referencePresenter= A.Fake<ISelectReferenceAtTransportPresenter>();
          _context = A.Fake<IMoBiContext>();
          _moleculeDepdendentBuilderPresenter= A.Fake<IMoleculeDependentBuilderPresenter>();
-         _sourceCriteriaPresenter= A.Fake<IDescriptorConditionListPresenter<ITransportBuilder>>();
-         _targetCriteriaPresenter = A.Fake<IDescriptorConditionListPresenter<ITransportBuilder>>();
+         _sourceCriteriaPresenter= A.Fake<IDescriptorConditionListPresenter<TransportBuilder>>();
+         _targetCriteriaPresenter = A.Fake<IDescriptorConditionListPresenter<TransportBuilder>>();
          sut = new EditTransportBuilderPresenter(_view,_transporBuilderMapper, _taskForPassiveTranportBuilder,
                                                         _contexteMenuFactory, _formulaMapper, _parameterPresenter,
                                                         _formulaPresenter, _referencePresenter, _context,

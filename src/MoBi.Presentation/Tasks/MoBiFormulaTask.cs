@@ -6,6 +6,7 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Events;
+using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
 using MoBi.Core.Services;
 using MoBi.Presentation.Presenter;
@@ -16,7 +17,6 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
-using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks
@@ -27,26 +27,26 @@ namespace MoBi.Presentation.Tasks
       private readonly IMoBiApplicationController _applicationController;
       private readonly IFormulaTask _formulaTask;
       private readonly INameCorrector _nameCorrector;
-      private readonly IDialogCreator _dialogCreator;
       private readonly IQuantityTask _quantityTask;
       private readonly IEntitiesInBuildingBlockRetriever<IParameter> _parameterInBuildingBlockRetriever;
+      private readonly IObjectBaseNamingTask _namingTask;
 
       public MoBiFormulaTask(
          IMoBiContext context,
          IMoBiApplicationController applicationController,
          IFormulaTask formulaTask,
          INameCorrector nameCorrector,
-         IDialogCreator dialogCreator,
          IQuantityTask quantityTask,
-         IEntitiesInBuildingBlockRetriever<IParameter> parameterInBuildingBlockRetriever)
+         IEntitiesInBuildingBlockRetriever<IParameter> parameterInBuildingBlockRetriever,
+         IObjectBaseNamingTask namingTask)
       {
          _context = context;
          _applicationController = applicationController;
          _formulaTask = formulaTask;
          _nameCorrector = nameCorrector;
-         _dialogCreator = dialogCreator;
          _quantityTask = quantityTask;
          _parameterInBuildingBlockRetriever = parameterInBuildingBlockRetriever;
+         _namingTask = namingTask;
       }
 
       public bool EditNewFormula(IFormula formula, ICommandCollector command, IBuildingBlock buildingBlock, IParameter parameter)
@@ -91,13 +91,13 @@ namespace MoBi.Presentation.Tasks
          if (usingObject == null)
             return string.Empty;
 
-         if (usingObject.IsAnImplementationOf<ITransportBuilder>())
+         if (usingObject.IsAnImplementationOf<TransportBuilder>())
             return AppConstants.Captions.AmountRightHandSide;
 
          if (usingObject.IsAnImplementationOf<IParameter>() && isRHS)
             return AppConstants.Captions.ParameterRightHandSide(usingObject.Name);
 
-         if (usingObject.IsAnImplementationOf<IReactionBuilder>())
+         if (usingObject.IsAnImplementationOf<ReactionBuilder>())
             return reactionMode == ReactionDimensionMode.AmountBased ? AppConstants.Captions.AmountRightHandSide : AppConstants.Captions.ConcentrationRightHandSide;
 
          return string.Empty;
@@ -127,23 +127,23 @@ namespace MoBi.Presentation.Tasks
 
       public IMoBiCommand SetFormulaString(FormulaWithFormulaString formula, string newFormulaString, IBuildingBlock buildingBlock)
       {
-         var command = new EditFormulaStringCommand(newFormulaString, formula, buildingBlock).Run(_context);
+         var command = new EditFormulaStringCommand(newFormulaString, formula, buildingBlock).RunCommand(_context);
          return withUpdatedDefaultStateAndValueOrigin(command, formula, buildingBlock);
       }
 
-      public IMoBiCommand EditAliasInFormula(IFormula formula, string newAlias, string oldAlias, IFormulaUsablePath formulaUsablePath, IBuildingBlock buildingBlock)
+      public IMoBiCommand EditAliasInFormula(IFormula formula, string newAlias, string oldAlias, FormulaUsablePath formulaUsablePath, IBuildingBlock buildingBlock)
       {
-         return new EditFormulaAliasCommand(formula, newAlias, oldAlias, buildingBlock).Run(_context);
+         return new EditFormulaAliasCommand(formula, newAlias, oldAlias, buildingBlock).RunCommand(_context);
       }
 
       public IMoBiCommand SetFormulaPathDimension(IFormula formula, IDimension newDimension, string alias, IBuildingBlock buildingBlock)
       {
-         return new UpdateDimensionOfFormulaUsablePathCommand(newDimension, formula, alias, buildingBlock).Run(_context);
+         return new UpdateDimensionOfFormulaUsablePathCommand(newDimension, formula, alias, buildingBlock).RunCommand(_context);
       }
 
-      public IMoBiCommand RemoveFormulaUsablePath(IFormula formula, IFormulaUsablePath path, IBuildingBlock buildingBlock)
+      public IMoBiCommand RemoveFormulaUsablePath(IFormula formula, FormulaUsablePath path, IBuildingBlock buildingBlock)
       {
-         return new RemoveFormulaUsablePathCommand(formula, path, buildingBlock).Run(_context);
+         return new RemoveFormulaUsablePathCommand(formula, path, buildingBlock).RunCommand(_context);
       }
 
       public (bool valid, string validationMessage) Validate(string formulaString, FormulaWithFormulaString formula, IBuildingBlock buildingBlock)
@@ -158,73 +158,73 @@ namespace MoBi.Presentation.Tasks
          return (valid, validationMessage);
       }
 
-      public IMoBiCommand ChangePathInFormula(IFormula formula, ObjectPath newPath, IFormulaUsablePath formulaUsablePath, IBuildingBlock buildingBlock)
+      public IMoBiCommand ChangePathInFormula(IFormula formula, ObjectPath newPath, FormulaUsablePath formulaUsablePath, IBuildingBlock buildingBlock)
       {
-         var command = new EditPathAtUsablePathCommand(formula, newPath, formulaUsablePath, buildingBlock).Run(_context);
+         var command = new EditPathAtUsablePathCommand(formula, newPath, formulaUsablePath, buildingBlock).RunCommand(_context);
          return withUpdatedDefaultStateAndValueOrigin(command, formula, buildingBlock);
       }
 
-      public IMoBiCommand AddFormulaUsablePath(IFormula formula, IFormulaUsablePath path, IBuildingBlock buildingBlock)
+      public IMoBiCommand AddFormulaUsablePath(IFormula formula, FormulaUsablePath path, IBuildingBlock buildingBlock)
       {
-         return new AddFormulaUsablePathCommand(formula, path, buildingBlock).Run(_context);
+         return new AddFormulaUsablePathCommand(formula, path, buildingBlock).RunCommand(_context);
       }
 
       public IMoBiCommand ChangeVariableName(SumFormula formula, string newVariableName, IBuildingBlock buildingBlock)
       {
-         return new ChangeVariableNameCommand(formula, newVariableName, buildingBlock).Run(_context);
+         return new ChangeVariableNameCommand(formula, newVariableName, buildingBlock).RunCommand(_context);
       }
 
       public IMoBiCommand AddValuePoint(TableFormula formula, ValuePoint newValuePoint, IBuildingBlock buildingBlock)
       {
-         var command = new AddValuePointCommand(formula, newValuePoint, buildingBlock).Run(_context);
+         var command = new AddValuePointCommand(formula, newValuePoint, buildingBlock).RunCommand(_context);
          return withUpdatedDefaultStateAndValueOrigin(command, formula, buildingBlock);
       }
 
       public IMoBiCommand EditUseDerivedValues(TableFormula formula, bool newValue, bool oldValue, IBuildingBlock buildingBlock)
       {
-         var command = new EditUseDerivedValuesCommand(formula, newValue, oldValue, buildingBlock).Run(_context);
+         var command = new EditUseDerivedValuesCommand(formula, newValue, oldValue, buildingBlock).RunCommand(_context);
          return withUpdatedDefaultStateAndValueOrigin(command, formula, buildingBlock);
       }
 
       public IMoBiCommand RemoveValuePointFromTableFormula(TableFormula formula, ValuePoint valuePoint, IBuildingBlock buildingBlock)
       {
-         var command = new RemoveValuePointFromTableFormulaCommand(formula, valuePoint, buildingBlock).Run(_context);
+         var command = new RemoveValuePointFromTableFormulaCommand(formula, valuePoint, buildingBlock).RunCommand(_context);
          return withUpdatedDefaultStateAndValueOrigin(command, formula, buildingBlock);
       }
 
-      public IMoBiCommand ChangeOffsetObject(TableFormulaWithOffset formula, IFormulaUsablePath path, IBuildingBlock buildingBlock)
+      public IMoBiCommand ChangeOffsetObject(TableFormulaWithOffset formula, FormulaUsablePath path, IBuildingBlock buildingBlock)
       {
-         var command = new ChangeTableFormulaWithOffsetOffsetObjectPathCommand(formula, path, buildingBlock).Run(_context);
+         var command = new ChangeTableFormulaWithOffsetOffsetObjectPathCommand(formula, path, buildingBlock).RunCommand(_context);
          return withUpdatedDefaultStateAndValueOrigin(command, formula, buildingBlock);
       }
 
-      public IMoBiCommand ChangeTableObject(TableFormulaWithOffset formula, IFormulaUsablePath path, IBuildingBlock buildingBlock)
+      public IMoBiCommand ChangeTableObject(TableFormulaWithOffset formula, FormulaUsablePath path, IBuildingBlock buildingBlock)
       {
-         var command = new ChangeTableFormulaWithOffsetTableObjectPathCommand(formula, path, buildingBlock).Run(_context);
+         var command = new ChangeTableFormulaWithOffsetTableObjectPathCommand(formula, path, buildingBlock).RunCommand(_context);
          return withUpdatedDefaultStateAndValueOrigin(command, formula, buildingBlock);
       }
 
-      public IMoBiCommand ChangeXArgumentObject(TableFormulaWithXArgument formula, IFormulaUsablePath path, IBuildingBlock buildingBlock)
+      public IMoBiCommand ChangeXArgumentObject(TableFormulaWithXArgument formula, FormulaUsablePath path, IBuildingBlock buildingBlock)
       {
-         var command = new ChangeTableFormulaWithXArgumentXArgumentObjectPathCommand(formula, path, buildingBlock).Run(_context);
+         var command = new ChangeTableFormulaWithXArgumentXArgumentObjectPathCommand(formula, path, buildingBlock).RunCommand(_context);
          return withUpdatedDefaultStateAndValueOrigin(command, formula, buildingBlock);
       }
 
-      public IMoBiCommand ChangeTableObject(TableFormulaWithXArgument formula, IFormulaUsablePath path, IBuildingBlock buildingBlock)
+      public IMoBiCommand ChangeTableObject(TableFormulaWithXArgument formula, FormulaUsablePath path, IBuildingBlock buildingBlock)
       {
-         var command = new ChangeTableFormulaWithXArgumentTableObjectPathCommand(formula, path, buildingBlock).Run(_context);
+         var command = new ChangeTableFormulaWithXArgumentTableObjectPathCommand(formula, path, buildingBlock).RunCommand(_context);
          return withUpdatedDefaultStateAndValueOrigin(command, formula, buildingBlock);
       }
 
       public IMoBiCommand SetConstantFormulaValue(ConstantFormula formula, double kernelValue, Unit newDisplayUnit, Unit oldDisplayUnit, IBuildingBlock buildingBlock, IEntity formulaOwner)
       {
-         var command = new SetConstantFormulaValueCommand(formula, kernelValue, newDisplayUnit, oldDisplayUnit, buildingBlock, formulaOwner).Run(_context);
+         var command = new SetConstantFormulaValueCommand(formula, kernelValue, newDisplayUnit, oldDisplayUnit, buildingBlock, formulaOwner).RunCommand(_context);
          return withUpdatedDefaultStateAndValueOrigin(command, formula, buildingBlock);
       }
 
       public IMoBiCommand UpdateFormula(IEntity usingFormula, IFormula oldFormula, IFormula newFormula, FormulaDecoder formulaDecoder, IBuildingBlock buildingBlock)
       {
-         var command = new EditObjectBasePropertyInBuildingBlockCommand(formulaDecoder.PropertyName, newFormula, oldFormula, usingFormula, buildingBlock).Run(_context);
+         var command = new EditObjectBasePropertyInBuildingBlockCommand(formulaDecoder.PropertyName, newFormula, oldFormula, usingFormula, buildingBlock).RunCommand(_context);
          var quantity = usingFormula as IQuantity;
          if (quantity == null)
             return command;
@@ -239,15 +239,22 @@ namespace MoBi.Presentation.Tasks
          return macroCommand;
       }
 
-      public (IMoBiCommand command, IFormula formula) CreateNewFormulaInBuildingBlock(Type formulaType, IDimension formulaDimension, IEnumerable<string> existingFormulaNames, IBuildingBlock buildingBlock)
+      public (IMoBiCommand command, IFormula formula) CreateNewFormulaInBuildingBlock(Type formulaType, IDimension formulaDimension, IEnumerable<string> existingFormulaNames, IBuildingBlock buildingBlock, string newFormulaName = null)
       {
-         var newName = _dialogCreator.AskForInput(AppConstants.Captions.NewName, AppConstants.Captions.EnterNewFormulaName, string.Empty, existingFormulaNames);
-         if (string.IsNullOrEmpty(newName))
+         if(shouldNameFormula(newFormulaName, buildingBlock.FormulaCache.AllNames()))
+            newFormulaName = _namingTask.NewName(AppConstants.Captions.NewName, AppConstants.Captions.EnterNewFormulaName, string.Empty, existingFormulaNames);
+
+         if (string.IsNullOrEmpty(newFormulaName))
             return (new MoBiEmptyCommand(), null);
 
-         var formula = CreateNewFormula(formulaType, formulaDimension).WithName(newName);
+         var formula = CreateNewFormula(formulaType, formulaDimension).WithName(newFormulaName);
 
-         return (new AddFormulaToFormulaCacheCommand(buildingBlock, formula).Run(_context), formula);
+         return (new AddFormulaToFormulaCacheCommand(buildingBlock, formula).RunCommand(_context), formula);
+      }
+
+      private static bool shouldNameFormula(string newFormulaName, IReadOnlyList<string> forbiddenNames)
+      {
+         return string.IsNullOrEmpty(newFormulaName) || forbiddenNames.Contains(newFormulaName);
       }
 
       public IFormula CreateNewFormula(Type formulaType, IDimension formulaDimension)
@@ -260,11 +267,11 @@ namespace MoBi.Presentation.Tasks
          return CreateNewFormula(typeof(TFormula), formulaDimension).DowncastTo<TFormula>();
       }
 
-      public IMoBiCommand UpdateDistributedFormula(IDistributedParameter distributedParameter, IDistributionFormula newDistributedFormula, string formulaType, IBuildingBlock buildingBlock)
+      public IMoBiCommand UpdateDistributedFormula(IDistributedParameter distributedParameter, DistributionFormula newDistributedFormula, string formulaType, IBuildingBlock buildingBlock)
       {
          _context.Register(newDistributedFormula);
          _context.Register(distributedParameter.Formula);
-         var command = new UpdateDistributedFormulaCommand(distributedParameter, newDistributedFormula, formulaType, buildingBlock).Run(_context);
+         var command = new UpdateDistributedFormulaCommand(distributedParameter, newDistributedFormula, formulaType, buildingBlock).RunCommand(_context);
          return withUpdatedDefaultStateAndValueOrigin(command, newDistributedFormula, buildingBlock);
       }
 

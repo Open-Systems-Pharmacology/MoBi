@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Drawing;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Assets;
@@ -10,12 +9,12 @@ namespace MoBi.Core
    {
       private string _message;
       private readonly List<string> _details;
-      public NotificationType Type { get; private set; }
+      public NotificationType Type { get; }
 
       /// <summary>
       ///    Building block containing the object for which the message was created
       /// </summary>
-      public IBuildingBlock BuildingBlock { get; private set; }
+      public IBuildingBlock BuildingBlock { get; }
 
       /// <summary>
       ///    Type of the object for which the notification was created
@@ -30,12 +29,12 @@ namespace MoBi.Core
       /// <summary>
       ///    Specifies where the message comes from (Simulation Creation, formulation validation etc..)
       /// </summary>
-      public MessageOrigin MessageOrigin { get; private set; }
+      public MessageOrigin MessageOrigin { get; }
 
       /// <summary>
       ///    Object for which the message was initiated. Typically a builder object
       /// </summary>
-      public IObjectBase Object { get; private set; }
+      public IObjectBase Object { get; }
 
       public NotificationMessage(IObjectBase objectBase, MessageOrigin messageOrigin, IBuildingBlock buildingBlock, NotificationType notificationType)
       {
@@ -60,7 +59,7 @@ namespace MoBi.Core
          get
          {
             if (BuildingBlock != null)
-               return BuildingBlock.Name;
+               return BuildingBlock.DisplayName;
             return string.Empty;
          }
       }
@@ -76,10 +75,7 @@ namespace MoBi.Core
          }
       }
 
-      public void AddDetails(IEnumerable<string> details)
-      {
-         _details.AddRange(details);
-      }
+      public void AddDetails(IEnumerable<string> details) => _details.AddRange(details);
 
       public IEnumerable<string> Details => _details;
 
@@ -99,6 +95,11 @@ namespace MoBi.Core
                   return ApplicationIcons.Info;
             }
          }
+      }
+
+      public override string ToString()
+      {
+         return _message;
       }
    }
 }

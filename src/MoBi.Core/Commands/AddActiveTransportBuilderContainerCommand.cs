@@ -4,9 +4,9 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class RemoveActiveTransportBuilderContainerCommand : RemoveObjectBaseCommand<TransporterMoleculeContainer,IMoleculeBuilder>
+   public class RemoveActiveTransportBuilderContainerCommand : RemoveObjectBaseCommand<TransporterMoleculeContainer,MoleculeBuilder>
    {
-      public RemoveActiveTransportBuilderContainerCommand(IMoleculeBuilder parent, TransporterMoleculeContainer itemToRemove, IBuildingBlock buildingBlock)
+      public RemoveActiveTransportBuilderContainerCommand(MoleculeBuilder parent, TransporterMoleculeContainer itemToRemove, IBuildingBlock buildingBlock)
          : base(parent, itemToRemove, buildingBlock)
       {
       }
@@ -16,15 +16,15 @@ namespace MoBi.Core.Commands
          return new AddActiveTransportBuilderContainerCommand(_parent,_itemToRemove,_buildingBlock).AsInverseFor(this);
       }
 
-      protected override void RemoveFrom(TransporterMoleculeContainer childToRemove, IMoleculeBuilder parent, IMoBiContext context)
+      protected override void RemoveFrom(TransporterMoleculeContainer childToRemove, MoleculeBuilder parent, IMoBiContext context)
       {
          parent.RemoveTransporterMoleculeContainer(childToRemove);
       }
    }
 
-   public class AddActiveTransportBuilderContainerCommand : AddObjectBaseCommand<TransporterMoleculeContainer, IMoleculeBuilder>
+   public class AddActiveTransportBuilderContainerCommand : AddObjectBaseCommand<TransporterMoleculeContainer, MoleculeBuilder>
    {
-      public AddActiveTransportBuilderContainerCommand(IMoleculeBuilder parent, TransporterMoleculeContainer itemToAdd, IBuildingBlock buildingBlock)
+      public AddActiveTransportBuilderContainerCommand(MoleculeBuilder parent, TransporterMoleculeContainer itemToAdd, IBuildingBlock buildingBlock)
          : base(parent, itemToAdd, buildingBlock)
       {
       }
@@ -34,7 +34,7 @@ namespace MoBi.Core.Commands
          return new RemoveActiveTransportBuilderContainerCommand(_parent, _itemToAdd, _buildingBlock).AsInverseFor(this);
       }
 
-      protected override void AddTo(TransporterMoleculeContainer child, IMoleculeBuilder parent, IMoBiContext context)
+      protected override void AddTo(TransporterMoleculeContainer child, MoleculeBuilder parent, IMoBiContext context)
       {
          parent.AddTransporterMoleculeContainer(child);
       }

@@ -2,25 +2,22 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using OSPSuite.Presentation.Nodes;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Events;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
-using ITreeNodeFactory = MoBi.Presentation.Nodes.ITreeNodeFactory;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
    public interface IHierarchicalStructurePresenter : IPresenterWithContextMenu<IViewItem>
    {
-      IReadOnlyList<IObjectBaseDTO> GetChildObjects(IObjectBaseDTO dto, Func<IEntity, bool> predicate);
-      void Select(IObjectBaseDTO objectBaseDTO);
+      IReadOnlyList<ObjectBaseDTO> GetChildObjects(ObjectBaseDTO dto, Func<IEntity, bool> predicate);
+      void Select(ObjectBaseDTO objectBaseDTO);
       void Clear();
    }
 
@@ -28,27 +25,23 @@ namespace MoBi.Presentation.Presenter
    {
       protected readonly IMoBiContext _context;
       protected IObjectBaseToObjectBaseDTOMapper _objectBaseMapper;
-      protected ITreeNode _favoritesNode;
-      protected ITreeNode _userDefinedNode;
 
-      protected HierarchicalStructurePresenter(IHierarchicalStructureView view, IMoBiContext context,
-         IObjectBaseToObjectBaseDTOMapper objectBaseMapper, ITreeNodeFactory treeNodeFactory)
+      protected HierarchicalStructurePresenter(
+         IHierarchicalStructureView view,
+         IMoBiContext context,
+         IObjectBaseToObjectBaseDTOMapper objectBaseMapper)
          : base(view)
       {
          _context = context;
          _objectBaseMapper = objectBaseMapper;
-         _favoritesNode = treeNodeFactory.CreateForFavorites();
-         _userDefinedNode = treeNodeFactory.CreateForUserDefined();
       }
 
-      public virtual IReadOnlyList<IObjectBaseDTO> GetChildObjects(IObjectBaseDTO dto, Func<IEntity, bool> predicate)
+      public virtual IReadOnlyList<ObjectBaseDTO> GetChildObjects(ObjectBaseDTO dto, Func<IEntity, bool> predicate)
       {
-         var container = _context.Get<IContainer>(dto.Id);
-         return container == null ? new List<IObjectBaseDTO>() : GetChildrenSorted(container, predicate);
+         return (dto.ObjectBase is IContainer container) ? GetChildrenSorted(container, predicate) : Array.Empty<ObjectBaseDTO>();
       }
 
-      protected virtual IReadOnlyList<IObjectBaseDTO> GetChildrenSorted(IContainer container,
-         Func<IEntity, bool> predicate)
+      protected virtual IReadOnlyList<ObjectBaseDTO> GetChildrenSorted(IContainer container, Func<IEntity, bool> predicate)
       {
          return container.GetChildren(predicate)
             .OrderBy(groupingTypeFor)
@@ -62,24 +55,6 @@ namespace MoBi.Presentation.Presenter
          return container?.ContainerType ?? ContainerType.Other;
       }
 
-      public virtual void Select(IObjectBaseDTO objectBaseDTO)
-      {
-         if (objectBaseDTO ==_favoritesNode.TagAsObject)
-            RaiseFavoritesSelectedEvent();
-
-         else if(objectBaseDTO == _userDefinedNode.TagAsObject)
-            RaiseUserDefinedSelectedEvent();
-    
-         else
-            raiseEntitySelectedEvent(objectBaseDTO);
-      }
-
-      private void raiseEntitySelectedEvent(IObjectBaseDTO dtoObjectBase)
-      {
-         var objectBase = _context.Get<IObjectBase>(dtoObjectBase.Id);
-         _context.PublishEvent(new EntitySelectedEvent(objectBase, this));
-      }
-
       public override void ReleaseFrom(IEventPublisher eventPublisher)
       {
          base.ReleaseFrom(eventPublisher);
@@ -90,10 +65,6 @@ namespace MoBi.Presentation.Presenter
       {
          _view.Clear();
       }
-
-      protected abstract void RaiseFavoritesSelectedEvent();
-
-      protected abstract void RaiseUserDefinedSelectedEvent();
 
       public abstract void ShowContextMenu(IViewItem objectRequestingPopup, Point popupLocation);
    }

@@ -15,6 +15,7 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.DTO;
@@ -26,24 +27,26 @@ namespace MoBi.Presentation
       protected IEditParametersInContainerView _view;
       protected IFormulaToFormulaBuilderDTOMapper _formulaMapper;
       protected IParameterToParameterDTOMapper _parameterMapper;
-      protected IInteractionTasksForParameter _inteactionTasks;
+      protected IInteractionTasksForParameter _interactionTasks;
       protected IEditDistributedParameterPresenter _distributeParameterPresenter;
       protected IEditParameterPresenter _parameterPresenter;
       protected IParameter _parameter;
       protected IParameter _advancedParameter;
       protected IQuantityTask _quantityTask;
       protected IInteractionTaskContext _interactionTaskContext;
-      private IClipboardManager _clipboardManager;
-      private IEditTaskFor<IParameter> _editTask;
+      protected IClipboardManager _clipboardManager;
+      protected IEditTaskFor<IParameter> _editTask;
       protected ISelectReferencePresenterFactory _selectReferencePresenterFactory;
       protected IFavoriteTask _favoriteTask;
+      protected IObjectTypeResolver _typeResolver;
+      protected IEntityPathResolver _entityPathResolver;
 
       protected override void Context()
       {
          _view = A.Fake<IEditParametersInContainerView>();
          _formulaMapper = A.Fake<IFormulaToFormulaBuilderDTOMapper>();
          _parameterMapper = A.Fake<IParameterToParameterDTOMapper>();
-         _inteactionTasks = A.Fake<IInteractionTasksForParameter>();
+         _interactionTasks = A.Fake<IInteractionTasksForParameter>();
          _distributeParameterPresenter = A.Fake<IEditDistributedParameterPresenter>();
          _parameterPresenter = A.Fake<IEditParameterPresenter>();
          _parameter = new Parameter().WithId("P").WithName("P");
@@ -56,8 +59,10 @@ namespace MoBi.Presentation
          _editTask = A.Fake<IEditTaskFor<IParameter>>();
          _selectReferencePresenterFactory = A.Fake<ISelectReferencePresenterFactory>();
          _favoriteTask = A.Fake<IFavoriteTask>();
-         sut = new EditParametersInContainerPresenter(_view, _formulaMapper, _parameterMapper, _inteactionTasks,
-            _distributeParameterPresenter, _parameterPresenter, _quantityTask, _interactionTaskContext, _clipboardManager, _editTask, _selectReferencePresenterFactory, _favoriteTask);
+         _typeResolver = A.Fake<IObjectTypeResolver>();
+         _entityPathResolver = A.Fake<IEntityPathResolver>();
+         sut = new EditParametersInContainerPresenter(_view, _formulaMapper, _parameterMapper, _interactionTasks,
+            _distributeParameterPresenter, _parameterPresenter, _quantityTask, _interactionTaskContext, _clipboardManager, _editTask, _selectReferencePresenterFactory, _favoriteTask, _typeResolver, _entityPathResolver);
          sut.InitializeWith(A.Fake<ICommandCollector>());
       }
    }
@@ -121,7 +126,7 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_tell_quantuity_task_to_set_vlaue()
+      public void should_tell_quantity_task_to_set_value()
       {
          A.CallTo(() => _quantityTask.SetQuantityDisplayValue(_parameter, _newDisplayValue, _buildingBlock)).MustHaveHappened();
       }
@@ -144,7 +149,7 @@ namespace MoBi.Presentation
          _parameter.Value = _value;
 
          _parameter.IsFixedValue = true;
-         _parameterDTO = new ParameterDTO(_parameter) {Value = _setValue};
+         _parameterDTO = new ParameterDTO(_parameter) { Value = _setValue };
          sut.BuildingBlock = _buildingBlock;
       }
 
@@ -189,13 +194,13 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_tell_quantuity_task_to_set_vlaue()
+      public void should_tell_quantity_task_to_set_value()
       {
          A.CallTo(() => _quantityTask.SetQuantityDisplayValue(_parameter, _newDisplayValue, _simulation)).MustHaveHappened();
       }
    }
 
-   public class When_told_to_set_parameter_display_unit_in_a_buildingblock : concern_for_EditParameterListPresenter
+   public class When_told_to_set_parameter_display_unit_in_a_building_block : concern_for_EditParameterListPresenter
    {
       private ParameterDTO _parameterDTO;
       private IBuildingBlock _buildingBlock;
@@ -216,7 +221,7 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_tell_quantuity_task_to_set_vlaue()
+      public void should_tell_quantity_task_to_set_value()
       {
          A.CallTo(() => _quantityTask.SetQuantityDisplayUnit(_parameter, _displayUnit, _buildingBlock)).MustHaveHappened();
       }
@@ -266,7 +271,7 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_edit_the_selected_paramter()
+      public void should_edit_the_selected_parameter()
       {
          A.CallTo(() => _parameterPresenter.Edit(_parameter)).MustHaveHappened();
       }
@@ -285,16 +290,18 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         var testContainer = new Container();
-         testContainer.Add(_parameter);
-         testContainer.Add(_advancedParameter);
+         var testContainer = new Container
+         {
+            _parameter,
+            _advancedParameter
+         };
 
          A.CallTo(() => _parameterMapper.MapFrom(_parameter)).Returns(new ParameterDTO(_parameter));
          A.CallTo(() => _parameterMapper.MapFrom(_advancedParameter)).Returns(new ParameterDTO(_advancedParameter));
 
          sut.Edit(testContainer);
-         A.CallTo(() => _view.BindTo(A<IEnumerable<ParameterDTO>>._))
-            .Invokes(x => _boundParameterDTOs = x.GetArgument<IEnumerable<ParameterDTO>>(0).ToList());
+         A.CallTo(() => _view.BindTo(A<IReadOnlyList<ParameterDTO>>._))
+            .Invokes(x => _boundParameterDTOs = x.GetArgument<IReadOnlyList<ParameterDTO>>(0).ToList());
       }
 
       protected override void Because()
@@ -370,9 +377,88 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_tell_quantuity_task_to_set_vlaue()
+      public void should_tell_quantity_task_to_set_value()
       {
          A.CallTo(() => _favoriteTask.SetParameterFavorite(_parameter, true)).MustHaveHappened();
+      }
+   }
+
+   public class When_container_does_not_have_a_name : concern_for_EditParameterListPresenter
+   {
+      protected IContainer _container;
+      private readonly string _containerType = "Container";
+
+      protected override void Context()
+      {
+         base.Context();
+         _container = new Container();
+         sut = new EditParametersInContainerPresenter(_view, _formulaMapper, _parameterMapper, _interactionTasks,
+            _distributeParameterPresenter, _parameterPresenter, _quantityTask, _interactionTaskContext, _clipboardManager, _editTask, _selectReferencePresenterFactory, _favoriteTask, _typeResolver, _entityPathResolver);
+         A.CallTo(() => _typeResolver.TypeFor(_container)).Returns(_containerType);
+      }
+
+      protected override void Because()
+      {
+         sut.Edit(_container);
+      }
+
+      [Observation]
+      public void label_should_contain_name()
+      {
+         A.CallTo(_view).Where(x => x.Method.Name.Equals("set_ParentName") && x.Arguments.Get<string>(0).Equals($"New {_containerType}")).MustHaveHappened();
+      }
+   }
+
+   public class When_container_does_have_a_name : concern_for_EditParameterListPresenter
+   {
+      protected IContainer _container;
+      private readonly string _containerName = "Container Name";
+
+      protected override void Context()
+      {
+         base.Context();
+         _container = new Container();
+         //_view = new EditParametersInContainerView(A.Fake<IToolTipCreator>(), A.Fake<ValueOriginBinder<ParameterDTO>>());
+         sut = new EditParametersInContainerPresenter(_view, _formulaMapper, _parameterMapper, _interactionTasks,
+            _distributeParameterPresenter, _parameterPresenter, _quantityTask, _interactionTaskContext, _clipboardManager, _editTask, _selectReferencePresenterFactory, _favoriteTask, _typeResolver, _entityPathResolver);
+
+         _container.Name = _containerName;
+      }
+
+      protected override void Because()
+      {
+         sut.Edit(_container);
+      }
+
+      [Observation]
+      public void label_should_contain_name()
+      {
+         A.CallTo(_view).Where(x => x.Method.Name.Equals("set_ParentName") && x.Arguments.Get<string>(0).Equals(_containerName)).MustHaveHappened();
+      }
+   }
+
+   public class When_copying_parameter_path : concern_for_EditParameterListPresenter
+   {
+      private string _expectedPath;
+      private ParameterDTO _parameterDTO;
+
+      protected override void Context()
+      {
+         base.Context();
+         _parameterDTO = new ParameterDTO(_parameter);
+         _expectedPath = "|Organism|Container|Organ|ADC";
+         A.CallTo(() => _entityPathResolver.FullPathFor(_parameter)).Returns(_expectedPath);
+      }
+
+      protected override void Because()
+      {
+         sut.CopyPathForParameter(_parameterDTO);
+      }
+
+      [Observation]
+      public void should_copy_resolved_path_to_clipboard()
+      {
+         A.CallTo(() => _view.CopyToClipBoard(_expectedPath)).MustHaveHappened();
       }
    }
 }

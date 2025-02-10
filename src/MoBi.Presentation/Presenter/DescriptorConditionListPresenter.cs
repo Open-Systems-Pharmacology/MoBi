@@ -12,12 +12,10 @@ using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Descriptors;
-using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -34,6 +32,8 @@ namespace MoBi.Presentation.Presenter
       void NewMatchAllCondition();
       void NewNotMatchTagCondition();
       void NewInContainerCondition();
+      void NewInParentCondition();
+      void NewInChildrenCondition();
       void NewNotInContainerCondition();
       void ChangeOperator(CriteriaOperator criteriaOperator);
    }
@@ -50,7 +50,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IViewItemContextMenuFactory _viewItemContextMenuFactory;
       private readonly ITagTask _tagTask;
       private readonly IDescriptorCriteriaToDescriptorCriteriaDTOMapper _descriptorCriteriaMapper;
-      private readonly IDialogCreator _dialogCreator;
+      private readonly IObjectBaseNamingTask _namingTask;
       private readonly ITagVisitor _tagVisitor;
       private DescriptorCriteria _descriptorCriteria;
       private DescriptorCriteriaDTO _descriptorCriteriaDTO;
@@ -66,14 +66,14 @@ namespace MoBi.Presentation.Presenter
          IDescriptorConditionListView view, 
          IViewItemContextMenuFactory viewItemContextMenuFactory,
          ITagTask tagTask,
-         IDescriptorCriteriaToDescriptorCriteriaDTOMapper descriptorCriteriaMapper, 
-         IDialogCreator dialogCreator,
+         IDescriptorCriteriaToDescriptorCriteriaDTOMapper descriptorCriteriaMapper,
+         IObjectBaseNamingTask namingTask,
          ITagVisitor tagVisitor)
          : base(view)
       {
          _viewItemContextMenuFactory = viewItemContextMenuFactory;
          _tagTask = tagTask;
-         _dialogCreator = dialogCreator;
+         _namingTask = namingTask;
          _tagVisitor = tagVisitor;
          _descriptorCriteriaMapper = descriptorCriteriaMapper;
          _defaultRootItem = new ContainerDescriptorRootItem();
@@ -146,6 +146,10 @@ namespace MoBi.Presentation.Presenter
          {
             case TagType.MatchAll:
                return AppConstants.MatchAll;
+            case TagType.InParent:
+               return AppConstants.InParent;
+            case TagType.InChildren:
+               return AppConstants.InChildren;
             case TagType.Match:
                return getNewTagName<MatchTagCondition>(AppConstants.Dialog.NewMatchTag);
             case TagType.NotMatch:
@@ -162,7 +166,7 @@ namespace MoBi.Presentation.Presenter
       private string getNewTagName<TTagCondition>(string caption) where TTagCondition : ITagCondition
       {
          var forbiddenTags = _descriptorCriteria?.OfType<TTagCondition>().Select(x => x.Tag) ?? Enumerable.Empty<string>();
-         return _dialogCreator.AskForInput(caption, AppConstants.Captions.Tag, string.Empty, forbiddenTags, getUsedTags());
+         return _namingTask.NewName(caption, AppConstants.Captions.Tag, string.Empty, forbiddenTags, getUsedTags());
       }
 
       private IEnumerable<string> getUsedTags() => _tagVisitor.AllTags();
@@ -176,6 +180,10 @@ namespace MoBi.Presentation.Presenter
       public void NewInContainerCondition() => addCondition(TagType.InContainer);
 
       public void NewNotInContainerCondition() => addCondition(TagType.NotInContainer);
+
+      public void NewInParentCondition() => addCondition(TagType.InParent);
+
+      public void NewInChildrenCondition() => addCondition(TagType.InChildren);
 
       public void ChangeOperator(CriteriaOperator newOperator)
       {

@@ -1,4 +1,3 @@
-using System;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Utility.Container;
 using MoBi.Presentation.UICommand;

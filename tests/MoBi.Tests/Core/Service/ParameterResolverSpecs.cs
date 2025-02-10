@@ -8,9 +8,9 @@ namespace MoBi.Core.Service
 {
    public abstract class concern_for_ParameterResolver : ContextSpecification<ParameterResolver>
    {
-      protected IMoleculeBuildingBlock _moleculeBuildingBlock;
-      protected ISpatialStructure _spatialStructure;
-      protected IObjectPath _containerPath;
+      protected MoleculeBuildingBlock _moleculeBuildingBlock;
+      protected SpatialStructure _spatialStructure;
+      protected ObjectPath _containerPath;
 
       protected override void Context()
       {

@@ -1,15 +1,20 @@
-using OSPSuite.Utility.Container;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.Presenter
 {
    public interface IEditUnitPresenter : IPresenter<IEditUnitView>, IEditPresenter<Unit>
    {
       void SetPropertyValueFromView<T>(string propertyName, T newValue, T oldValue);
+   }
+
+   public interface ICreationPresenter<T> : IPresenter
+   {
+      T GetNew();
    }
 
    public interface ICreateUnitPresenter : IEditUnitPresenter, ICreationPresenter<Unit>
@@ -49,12 +54,9 @@ namespace MoBi.Presentation.Presenter
 
       public void SetPropertyValueFromView<T>(string propertyName, T newValue, T oldValue)
       {
-         //Nothing To Do in creation because no command nessassary.
+         //Nothing To Do in creation because no command necessary.
       }
 
-      public override object Subject
-      {
-         get { return _subject; }
-      }
+      public override object Subject => _subject;
    }
 }

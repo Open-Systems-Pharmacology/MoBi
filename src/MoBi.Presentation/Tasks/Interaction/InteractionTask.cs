@@ -1,8 +1,7 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Services;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Repositories;
 using MoBi.Core.Services;
@@ -10,17 +9,18 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
    public interface IInteractionTask
    {
       IReadOnlyCollection<T> LoadItems<T>(string filename) where T : class, IObjectBase;
-      void Save<T>(T entityToSerialize) where T : IObjectBase;
-      void Save<T>(T entityToSerialize, string fileName) where T : IObjectBase;
+      void Save<T>(IReadOnlyList<T> entitiesToSerialize) where T : IObjectBase;
+      void Save<T>(T entityToSerialize, string fileName);
       string IconFor<T>(T entity) where T : IObjectBase;
       bool CorrectName<T>(T objectBase, IEnumerable<string> forbiddenNames) where T : IObjectBase;
-      IMoBiCommand Rename<T>(T objectBase, IEnumerable<string> forbiddenNames, IBuildingBlock buildingBlock) where T : IObjectBase;
       T Clone<T>(T objectToClone) where T : class, IObjectBase;
       bool AdjustFormula<T>(T objectBase, IBuildingBlock buildingBlockWithFormulaCache, IMoBiMacroCommand macroCommand) where T : IObjectBase;
       string TypeFor<T>(T objectRequestingType) where T : class;
@@ -28,6 +28,8 @@ namespace MoBi.Presentation.Tasks.Interaction
       string AskForFileToOpen(string title, string filter, string directoryKey);
       string AskForFileToSave(string title, string filter, string directoryKey, string defaultName);
       string AskForFolder(string title, string directoryKey);
+      T LoadTransfer<T>(string filePath);
+      string PromptForNewName<T>(T objectBase, IEnumerable<string> forbiddenNames) where T : IObjectBase;
    }
 
    public class InteractionTask : IInteractionTask
@@ -36,21 +38,19 @@ namespace MoBi.Presentation.Tasks.Interaction
       private readonly IDialogCreator _dialogCreator;
       private readonly IIconRepository _iconRepository;
       private readonly INameCorrector _nameCorrector;
-      private readonly IObjectBaseTask _objectBaseTask;
       private readonly ICloneManagerForBuildingBlock _cloneManagerForBuildingBlock;
       private readonly IAdjustFormulasVisitor _adjustFormulasVisitor;
       private readonly IObjectTypeResolver _objectTypeResolver;
       private readonly IForbiddenNamesRetriever _forbiddenNamesRetriever;
 
       public InteractionTask(ISerializationTask serializationTask, IDialogCreator dialogCreator, IIconRepository iconRepository,
-         INameCorrector nameCorrector, IObjectBaseTask objectBaseTask, ICloneManagerForBuildingBlock cloneManagerForBuildingBlock,
+         INameCorrector nameCorrector, ICloneManagerForBuildingBlock cloneManagerForBuildingBlock,
          IAdjustFormulasVisitor adjustFormulasVisitor, IObjectTypeResolver objectTypeResolver, IForbiddenNamesRetriever forbiddenNamesRetriever)
       {
          _serializationTask = serializationTask;
          _dialogCreator = dialogCreator;
          _iconRepository = iconRepository;
          _nameCorrector = nameCorrector;
-         _objectBaseTask = objectBaseTask;
          _cloneManagerForBuildingBlock = cloneManagerForBuildingBlock;
          _adjustFormulasVisitor = adjustFormulasVisitor;
          _objectTypeResolver = objectTypeResolver;
@@ -63,31 +63,30 @@ namespace MoBi.Presentation.Tasks.Interaction
          return loadedItems.Select(Clone).ToList();
       }
 
-      public virtual void Save<T>(T entityToSerialize) where T : IObjectBase
+      public virtual void Save<T>(IReadOnlyList<T> entitiesToSerialize) where T : IObjectBase
       {
-         var fileName = _dialogCreator.AskForFileToSave(AppConstants.Captions.Save, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.PROJECT, entityToSerialize.Name);
-         if (fileName.IsNullOrEmpty()) return;
+         if (entitiesToSerialize.Count == 1)
+         {
+            var entityToSerialize = entitiesToSerialize.First();
+            var fileName = _dialogCreator.AskForFileToSave(AppConstants.Captions.Save, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.PROJECT, entityToSerialize.Name);
+            if (fileName.IsNullOrEmpty()) return;
 
-         _serializationTask.SaveModelPart(entityToSerialize, fileName);
+            _serializationTask.SaveModelPart(entityToSerialize, fileName);
+         }
+         else
+         {
+            saveMultiple(entitiesToSerialize);
+         }
       }
 
-      public void Save<T>(T entityToSerialize, string fileName) where T : IObjectBase
-      {
-         _serializationTask.SaveModelPart(entityToSerialize, fileName);
-      }
-
-      public IMoBiCommand Rename<T>(T objectBase, IEnumerable<string> forbiddenNames, IBuildingBlock buildingBlock) where T : IObjectBase
-      {
-         return _objectBaseTask.Rename(objectBase, forbiddenNames, buildingBlock);
-      }
+      public void Save<T>(T entityToSerialize, string fileName) => _serializationTask.SaveModelPart(entityToSerialize, fileName);
 
       public virtual T Clone<T>(T objectToClone) where T : class, IObjectBase
       {
          var formulaCache = new FormulaCache();
          var clone = _cloneManagerForBuildingBlock.Clone(objectToClone, formulaCache);
 
-         var cloneBuildingBlock = clone as IBuildingBlock;
-         if (cloneBuildingBlock != null)
+         if (clone is IBuildingBlock cloneBuildingBlock)
             updateFormulaCacheOfClone(objectToClone.DowncastTo<IBuildingBlock>(), cloneBuildingBlock, formulaCache);
 
          return clone;
@@ -109,47 +108,42 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public bool AdjustFormula<T>(T objectBase, IBuildingBlock buildingBlockWithFormulaCache, IMoBiMacroCommand macroCommand) where T : IObjectBase
       {
-         var formulaCommands = _adjustFormulasVisitor.AdjustFormulasIn(objectBase, buildingBlockWithFormulaCache);
-         if (!_adjustFormulasVisitor.Canceled)
+         var (formulaCommands, canceled) = _adjustFormulasVisitor.AdjustFormulasIn(objectBase, buildingBlockWithFormulaCache);
+         if (canceled)
+            return false;
+
+         macroCommand.AddRange(formulaCommands);
+         return true;
+      }
+
+      public string TypeFor<T>(T objectRequestingType) where T : class => _objectTypeResolver.TypeFor(objectRequestingType);
+
+      public IEnumerable<string> ForbiddenNamesFor<T>(T objectBase) where T : IObjectBase => _forbiddenNamesRetriever.For(objectBase);
+
+      public string AskForFileToOpen(string title, string filter, string directoryKey) => _dialogCreator.AskForFileToOpen(title, filter, directoryKey);
+
+      public string AskForFolder(string title, string directoryKey) => _dialogCreator.AskForFolder(title, directoryKey);
+
+      public T LoadTransfer<T>(string filePath) => _serializationTask.Load<T>(filePath);
+
+      public string AskForFileToSave(string title, string filter, string directoryKey, string defaultName) => _dialogCreator.AskForFileToSave(title, filter, directoryKey, defaultName);
+
+      public string IconFor<T>(T entity) where T : IObjectBase => _iconRepository.IconNameFor(entity);
+
+      public bool CorrectName<T>(T objectBase, IEnumerable<string> forbiddenNames) where T : IObjectBase => _nameCorrector.CorrectName(forbiddenNames, objectBase);
+
+      public string PromptForNewName<T>(T objectBase, IEnumerable<string> forbiddenNames) where T : IObjectBase => _nameCorrector.PromptForCorrectName(forbiddenNames.ToList(), objectBase);
+
+      private void saveMultiple<T>(IReadOnlyList<T> entitiesToSerialize)
+      {
+         var folderNameToSave = _dialogCreator.AskForFolder(AppConstants.Captions.SelectOutputFolder, Constants.DirectoryKey.PROJECT);
+         if (string.IsNullOrEmpty(folderNameToSave))
+            return;
+         foreach (var entity in entitiesToSerialize)
          {
-            macroCommand.AddRange(formulaCommands);
+            var fileName = Path.Combine(folderNameToSave, $"{entity.ToString()}{Constants.Filter.PKML_EXTENSION}");
+            Save(entity, fileName);
          }
-         return !_adjustFormulasVisitor.Canceled;
-      }
-
-      public string TypeFor<T>(T objectRequestingType) where T : class
-      {
-         return _objectTypeResolver.TypeFor(objectRequestingType);
-      }
-
-      public IEnumerable<string> ForbiddenNamesFor<T>(T objectBase) where T : IObjectBase
-      {
-         return _forbiddenNamesRetriever.For(objectBase);
-      }
-
-      public string AskForFileToOpen(string title, string filter, string directoryKey)
-      {
-         return _dialogCreator.AskForFileToOpen(title, filter, directoryKey);
-      }
-
-      public string AskForFolder(string title, string directoryKey)
-      {
-         return _dialogCreator.AskForFolder(title, directoryKey);
-      }
-
-      public string AskForFileToSave(string title, string filter, string directoryKey, string defaultName)
-      {
-         return _dialogCreator.AskForFileToSave(title, filter, directoryKey, defaultName);
-      }
-
-      public string IconFor<T>(T entity) where T : IObjectBase
-      {
-         return _iconRepository.IconFor(entity);
-      }
-
-      public bool CorrectName<T>(T objectBase, IEnumerable<string> forbiddenNames) where T : IObjectBase
-      {
-         return _nameCorrector.CorrectName(forbiddenNames, objectBase);
       }
    }
 }

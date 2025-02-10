@@ -60,14 +60,14 @@ namespace MoBi.Presentation
 
    public class When_the_edit_table_formula_with_x_argument_presenter_is_selecting_a_table_object_path_for_the_edited_table_formula : concern_for_EditTableFormulaWithXArgumentFormulaPresenter
    {
-      private IFormulaUsablePath _selectedPath;
+      private FormulaUsablePath _selectedPath;
       private IMoBiCommand _command;
 
       protected override void Context()
       {
          base.Context();
          _command = A.Fake<IMoBiCommand>();
-         _selectedPath = A.Fake<IFormulaUsablePath>();
+         _selectedPath = A.Fake<FormulaUsablePath>();
          sut.Edit(_tableFormulaWithXArgument, _parameter);
          A.CallTo(() => _selectFormulaUsablePathPresenter.GetSelection()).Returns(_selectedPath);
          A.CallTo(() => _formulaTask.ChangeTableObject(_tableFormulaWithXArgument, _selectedPath, _buildingBlock)).Returns(_command);
@@ -89,18 +89,24 @@ namespace MoBi.Presentation
       {
          A.CallTo(() => _commandCollector.AddCommand(_command)).MustHaveHappened();
       }
+
+      [Observation]
+      public void the_time_reference_should_not_be_added()
+      {
+         A.CallTo(() => _referencePresenter.DisableTimeSelection()).MustHaveHappened();
+      }
    }
 
    public class When_the_edit_table_formula_with_x_argument_presenter_is_selecting_a_x_argument_object_path_for_the_edited_table_formula : concern_for_EditTableFormulaWithXArgumentFormulaPresenter
    {
-      private IFormulaUsablePath _selectedPath;
+      private FormulaUsablePath _selectedPath;
       private IMoBiCommand _command;
 
       protected override void Context()
       {
          base.Context();
          _command = A.Fake<IMoBiCommand>();
-         _selectedPath = A.Fake<IFormulaUsablePath>();
+         _selectedPath = A.Fake<FormulaUsablePath>();
          sut.Edit(_tableFormulaWithXArgument, _parameter);
          A.CallTo(() => _selectFormulaUsablePathPresenter.GetSelection()).Returns(_selectedPath);
          A.CallTo(() => _formulaTask.ChangeXArgumentObject(_tableFormulaWithXArgument, _selectedPath, _buildingBlock)).Returns(_command);

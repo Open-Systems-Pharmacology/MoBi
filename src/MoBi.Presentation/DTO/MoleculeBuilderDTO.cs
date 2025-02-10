@@ -1,10 +1,15 @@
 using System.Collections.Generic;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.DTO
 {
    public class MoleculeBuilderDTO : ObjectBaseDTO
    {
+      public MoleculeBuilderDTO(MoleculeBuilder moleculeBuilder) : base(moleculeBuilder)
+      {
+      }
+
       public IEnumerable<UsedCalculationMethodDTO> UsedCalculationMethods { set; get; }
       public IEnumerable<TransporterMoleculeContainerDTO> TransporterMolecules { get; set; }
       public FormulaBuilderDTO DefaultStartFormula { get; set; }

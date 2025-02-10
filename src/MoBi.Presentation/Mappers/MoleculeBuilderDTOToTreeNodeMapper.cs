@@ -24,7 +24,7 @@ namespace MoBi.Presentation.Mappers
 
       public IMoleculeTreeNode MapFrom(MoleculeBuilderDTO moleculeBuilderDTO)
       {
-         var node = new MoleculeTreeNode(moleculeBuilderDTO) {Text = moleculeBuilderDTO.Name, Icon = ApplicationIcons.IconByName(moleculeBuilderDTO.Icon)};
+         var node = new MoleculeTreeNode(moleculeBuilderDTO) {Text = moleculeBuilderDTO.Name, Icon = moleculeBuilderDTO.Icon };
          var children = moleculeBuilderDTO.TransporterMolecules.MapAllUsing(_activeTransportBuilderContainerToMoleculeTreeNodeMapper).ToList();
          children = children.Union(moleculeBuilderDTO.InteractionContainerCollection.MapAllUsing(_interactionContainerMapper)).ToList();
          children.Each(node.AddChild);
@@ -47,7 +47,7 @@ namespace MoBi.Presentation.Mappers
 
       public IMoleculeTreeNode MapFrom(TransporterMoleculeContainerDTO input)
       {
-         var node = new MoleculeTreeNode(input) {Text = input.Name, Icon = ApplicationIcons.IconByName(input.Icon)};
+         var node = new MoleculeTreeNode(input) {Text = input.Name, Icon = input.Icon };
          var children = input.Realizations.MapAllUsing(_activeTransportRealizationsBuilderToMoleculeTreeNodeMapper);
          children.Each(node.AddChild);
          return node;
@@ -62,7 +62,7 @@ namespace MoBi.Presentation.Mappers
    {
       public IMoleculeTreeNode MapFrom(TransportBuilderDTO input)
       {
-         return new MoleculeTreeNode(input) {Text = input.Name, Icon = ApplicationIcons.IconByName(input.Icon)};
+         return new MoleculeTreeNode(input) {Text = input.Name, Icon = input.Icon };
       }
    }
 
@@ -76,7 +76,7 @@ namespace MoBi.Presentation.Mappers
       {
          return new MoleculeTreeNode(interactionContainerDTO)
          {
-            Text = interactionContainerDTO.Name, Icon = ApplicationIcons.IconByName(interactionContainerDTO.Icon)
+            Text = interactionContainerDTO.Name, Icon = interactionContainerDTO.Icon
          };
       }
    }

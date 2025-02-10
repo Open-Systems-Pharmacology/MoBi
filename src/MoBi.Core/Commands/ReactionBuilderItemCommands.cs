@@ -14,23 +14,23 @@ namespace MoBi.Core.Commands
 {
    public class RemovedReactionModifierEvent
    {
-      public IReactionBuilder Reaction { get; set; }
+      public ReactionBuilder Reaction { get; set; }
       public string ModifierName { get; set; }
 
-      public RemovedReactionModifierEvent(IReactionBuilder reaction, string modifierName)
+      public RemovedReactionModifierEvent(ReactionBuilder reaction, string modifierName)
       {
          Reaction = reaction;
          ModifierName = modifierName;
       }
    }
 
-   public abstract class RemoveItemFromReactionCommand<T> : RemoveItemCommand<T, IReactionBuilder, IMoBiReactionBuildingBlock>
+   public abstract class RemoveItemFromReactionCommand<T> : RemoveItemCommand<T, ReactionBuilder, MoBiReactionBuildingBlock>
    {
-      protected IReactionBuilder _reaction;
-      private readonly Func<IReactionBuilder, Action<T>> _removeMethod;
+      protected ReactionBuilder _reaction;
+      private readonly Func<ReactionBuilder, Action<T>> _removeMethod;
       private readonly string _moleculeName;
 
-      protected RemoveItemFromReactionCommand(IReactionBuilder reactionBuilder, T itemToRemove, IMoBiReactionBuildingBlock reactionBuildingBlock, Func<IReactionBuilder, Action<T>> removeMethod) : base(reactionBuilder, itemToRemove, reactionBuildingBlock)
+      protected RemoveItemFromReactionCommand(ReactionBuilder reactionBuilder, T itemToRemove, MoBiReactionBuildingBlock reactionBuildingBlock, Func<ReactionBuilder, Action<T>> removeMethod) : base(reactionBuilder, itemToRemove, reactionBuildingBlock)
       {
          _removeMethod = removeMethod;
          _reaction = reactionBuilder;
@@ -69,19 +69,19 @@ namespace MoBi.Core.Commands
       public override void RestoreExecutionData(IMoBiContext context)
       {
          base.RestoreExecutionData(context);
-         _reaction = context.Get<IReactionBuilder>(_parentId);
+         _reaction = context.Get<ReactionBuilder>(_parentId);
       }
 
-      private IFormulaUsablePath getPathToRemoveInReactionFormula(string moleculeName, IMoBiContext context)
+      private FormulaUsablePath getPathToRemoveInReactionFormula(string moleculeName, IMoBiContext context)
       {
          var pathToLookFor = context.ObjectPathFactory.CreateFormulaUsablePathFrom(ObjectPath.PARENT_CONTAINER, moleculeName);
          return _reaction.Formula.ObjectPaths.FirstOrDefault(path => path.PathAsString.Equals(pathToLookFor.PathAsString));
       }
    }
 
-   public abstract class RemovePartnerFromReactionCommand : RemoveItemFromReactionCommand<IReactionPartnerBuilder>
+   public abstract class RemovePartnerFromReactionCommand : RemoveItemFromReactionCommand<ReactionPartnerBuilder>
    {
-      protected RemovePartnerFromReactionCommand(IReactionBuilder reactionBuilder, IReactionPartnerBuilder itemToRemove, IMoBiReactionBuildingBlock reactionBuildingBlock, Func<IReactionBuilder, Action<IReactionPartnerBuilder>> removeMethod) : base(reactionBuilder, itemToRemove, reactionBuildingBlock, removeMethod)
+      protected RemovePartnerFromReactionCommand(ReactionBuilder reactionBuilder, ReactionPartnerBuilder itemToRemove, MoBiReactionBuildingBlock reactionBuildingBlock, Func<ReactionBuilder, Action<ReactionPartnerBuilder>> removeMethod) : base(reactionBuilder, itemToRemove, reactionBuildingBlock, removeMethod)
       {
       }
 
@@ -91,7 +91,7 @@ namespace MoBi.Core.Commands
          context.PublishEvent(new RemovedReactionPartnerEvent(_itemToRemove, _reaction));
       }
 
-      protected override string MoleculeNameFrom(IReactionPartnerBuilder reactionPartnerBuilder)
+      protected override string MoleculeNameFrom(ReactionPartnerBuilder reactionPartnerBuilder)
       {
          return reactionPartnerBuilder.MoleculeName;
       }
@@ -99,7 +99,7 @@ namespace MoBi.Core.Commands
 
    public class RemoveReactionPartnerFromEductCollection : RemovePartnerFromReactionCommand
    {
-      public RemoveReactionPartnerFromEductCollection(IReactionBuilder reactionBuilder, IReactionPartnerBuilder reactionPartnerBuilder, IMoBiReactionBuildingBlock reactionBuildingBlock)
+      public RemoveReactionPartnerFromEductCollection(ReactionBuilder reactionBuilder, ReactionPartnerBuilder reactionPartnerBuilder, MoBiReactionBuildingBlock reactionBuildingBlock)
          : base(reactionBuilder, reactionPartnerBuilder, reactionBuildingBlock, x => x.RemoveEduct)
       {
          ObjectType =ObjectTypes.Educt;
@@ -113,7 +113,7 @@ namespace MoBi.Core.Commands
 
    public class RemoveReactionPartnerFromProductCollection : RemovePartnerFromReactionCommand
    {
-      public RemoveReactionPartnerFromProductCollection(IReactionBuilder reactionBuilder, IReactionPartnerBuilder reactionPartnerBuilder, IMoBiReactionBuildingBlock reactionBuildingBlock)
+      public RemoveReactionPartnerFromProductCollection(ReactionBuilder reactionBuilder, ReactionPartnerBuilder reactionPartnerBuilder, MoBiReactionBuildingBlock reactionBuildingBlock)
          : base(reactionBuilder, reactionPartnerBuilder, reactionBuildingBlock, x => x.RemoveProduct)
       {
          ObjectType =ObjectTypes.Product;
@@ -127,7 +127,7 @@ namespace MoBi.Core.Commands
 
    public class RemoveItemFromModifierCollectionCommand : RemoveItemFromReactionCommand<string>
    {
-      public RemoveItemFromModifierCollectionCommand(IReactionBuilder reactionBuilder, string modififer, IMoBiReactionBuildingBlock reactionBuildingBlock)
+      public RemoveItemFromModifierCollectionCommand(ReactionBuilder reactionBuilder, string modififer, MoBiReactionBuildingBlock reactionBuildingBlock)
          : base(reactionBuilder, modififer, reactionBuildingBlock, x => x.RemoveModifier)
       {
          ObjectType =ObjectTypes.Modifier;

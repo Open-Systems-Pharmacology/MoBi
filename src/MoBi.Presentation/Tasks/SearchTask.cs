@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Repositories;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks
@@ -17,12 +18,17 @@ namespace MoBi.Presentation.Tasks
    public class SearchTask : ISearchTask
    {
       private readonly ISearchVisitor _searchVisitor;
-      private readonly IMoBiContext _context;
+      private readonly IMoBiProjectRetriever _projectRetriever;
+      private readonly IBuildingBlockRepository _buildingBlockRepository;
+      private readonly ISimulationRepository _simulationRepository;
 
-      public SearchTask(ISearchVisitor searchVisitor, IMoBiContext context)
+      public SearchTask(ISearchVisitor searchVisitor, IMoBiProjectRetriever projectRetriever, IBuildingBlockRepository buildingBlockRepository, ISimulationRepository simulationRepository)
       {
+         
          _searchVisitor = searchVisitor;
-         _context = context;
+         _projectRetriever = projectRetriever;
+         _buildingBlockRepository = buildingBlockRepository;
+         _simulationRepository = simulationRepository;
       }
 
       public IEnumerable<SearchResult> StartSearch(SearchOptions options, IObjectBase localSearchTarget)
@@ -35,62 +41,60 @@ namespace MoBi.Presentation.Tasks
          _searchVisitor.WholeWord = options.WholeWord;
          _searchVisitor.CaseSensitive = options.CaseSensitive;
 
-         var project = _context.CurrentProject;
-
          switch (options.Scope)
          {
             case SearchScope.Project:
-               return _searchVisitor.SearchIn(project, project);
+               return _searchVisitor.SearchIn(_projectRetriever.Current, _buildingBlockRepository.All());
 
             case SearchScope.AllOfSameType:
                if (localSearchTarget == null)
                   return Enumerable.Empty<SearchResult>();
 
-               return searchInAllOfSameType(localSearchTarget.GetType(), project);
+               return searchInAllOfSameType(localSearchTarget.GetType(), _buildingBlockRepository.All());
             case SearchScope.Local:
                if (localSearchTarget == null)
                   return Enumerable.Empty<SearchResult>();
 
-               return _searchVisitor.SearchIn(localSearchTarget, project);
+               return _searchVisitor.SearchIn(localSearchTarget, _buildingBlockRepository.All());
             default:
                throw new ArgumentOutOfRangeException(nameof(options.Scope));
          }
 
       }
 
-      private IEnumerable<SearchResult> searchInAllOfSameType(Type buildingBlockType, IMoBiProject project)
+      private IEnumerable<SearchResult> searchInAllOfSameType(Type buildingBlockType, IReadOnlyList<IBuildingBlock> buildingBlocksToSearch)
       {
          var result = new List<SearchResult>();
          var buildingBlocks = getBuildingBlocksOfType(buildingBlockType);
-         buildingBlocks.Each(buildingBlock => result.AddRange(_searchVisitor.SearchIn(buildingBlock, project)));
+         buildingBlocks.Each(buildingBlock => result.AddRange(_searchVisitor.SearchIn(buildingBlock, buildingBlocksToSearch)));
          return result;
       }
 
       private IEnumerable<IObjectBase> getBuildingBlocksOfType(Type buildingBlockType)
       {
          if (buildingBlockType.IsAnImplementationOf<IModelCoreSimulation>())
-            return _context.CurrentProject.Simulations;
+            return _simulationRepository.All();
 
-         if (buildingBlockType.IsAnImplementationOf<IMoleculeBuildingBlock>())
-            return _context.CurrentProject.MoleculeBlockCollection;
+         if (buildingBlockType.IsAnImplementationOf<MoleculeBuildingBlock>())
+            return _buildingBlockRepository.MoleculeBlockCollection;
 
-         if (buildingBlockType.IsAnImplementationOf<IReactionBuildingBlock>())
-            return _context.CurrentProject.ReactionBlockCollection;
+         if (buildingBlockType.IsAnImplementationOf<ReactionBuildingBlock>())
+            return _buildingBlockRepository.ReactionBlockCollection;
 
-         if (buildingBlockType.IsAnImplementationOf<ISpatialStructure>())
-            return _context.CurrentProject.SpatialStructureCollection;
+         if (buildingBlockType.IsAnImplementationOf<SpatialStructure>())
+            return _buildingBlockRepository.SpatialStructureCollection;
 
-         if (buildingBlockType.IsAnImplementationOf<IObserverBuildingBlock>())
-            return _context.CurrentProject.ObserverBlockCollection;
+         if (buildingBlockType.IsAnImplementationOf<ObserverBuildingBlock>())
+            return _buildingBlockRepository.ObserverBlockCollection;
 
-         if (buildingBlockType.IsAnImplementationOf<IEventGroupBuildingBlock>())
-            return _context.CurrentProject.EventBlockCollection;
+         if (buildingBlockType.IsAnImplementationOf<EventGroupBuildingBlock>())
+            return _buildingBlockRepository.EventBlockCollection;
 
-         if (buildingBlockType.IsAnImplementationOf<IMoleculeStartValuesBuildingBlock>())
-            return _context.CurrentProject.MoleculeStartValueBlockCollection;
+         if (buildingBlockType.IsAnImplementationOf<InitialConditionsBuildingBlock>())
+            return _buildingBlockRepository.InitialConditionBlockCollection;
 
-         if (buildingBlockType.IsAnImplementationOf<IParameterStartValuesBuildingBlock>())
-            return _context.CurrentProject.ParametersStartValueBlockCollection;
+         if (buildingBlockType.IsAnImplementationOf<ParameterValuesBuildingBlock>())
+            return _buildingBlockRepository.ParametersValueBlockCollection;
 
          return null;
       }

@@ -1,8 +1,10 @@
+using System;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Events;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -14,7 +16,7 @@ namespace MoBi.Core
 {
    public abstract class concern_for_AdjustFormulaVisitor : ContextSpecification<AdjustFormulasVisitor>
    {
-      private IMoBiContext _context;
+      protected IMoBiContext _context;
       protected IMoBiHistoryManager _historyManager;
       protected INameCorrector _nameCorrector;
       protected IWithIdRepository _objectBaseRepository;
@@ -25,7 +27,6 @@ namespace MoBi.Core
          _historyManager = A.Fake<IMoBiHistoryManager>();
          _objectBaseRepository = A.Fake<IWithIdRepository>();
          A.CallTo(() => _context.ObjectRepository).Returns(_objectBaseRepository);
-         ;
          A.CallTo(() => _context.HistoryManager).Returns(_historyManager);
          _nameCorrector = A.Fake<INameCorrector>();
          sut = new AdjustFormulasVisitor(_context, _nameCorrector);
@@ -130,16 +131,16 @@ namespace MoBi.Core
          base.Context();
          _equalFormula1 = new TableFormulaWithOffset().WithName("Equal");
          _equalFormula2 = new TableFormulaWithOffset().WithName("Equal");
-         var offsetObjectPath = new FormulaUsablePath(new[] {"X"}).WithAlias("Offset");
+         var offsetObjectPath = new FormulaUsablePath("X").WithAlias("Offset");
          _equalFormula1.AddOffsetObjectPath(offsetObjectPath);
          _equalFormula2.AddOffsetObjectPath(offsetObjectPath);
-         var tableObjectPath = new FormulaUsablePath(new[] {"Y"}).WithAlias("Table");
+         var tableObjectPath = new FormulaUsablePath("Y").WithAlias("Table");
          _equalFormula1.AddTableObjectPath(tableObjectPath);
          _equalFormula2.AddTableObjectPath(tableObjectPath);
 
          _unequalFormula = new TableFormulaWithOffset().WithName("Equal");
-         _unequalFormula.AddOffsetObjectPath(new FormulaUsablePath(new[] {"A"}).WithAlias("Offset"));
-         _unequalFormula.AddTableObjectPath(new FormulaUsablePath(new[] {"B"}).WithAlias("Table"));
+         _unequalFormula.AddOffsetObjectPath(new FormulaUsablePath("A").WithAlias("Offset"));
+         _unequalFormula.AddTableObjectPath(new FormulaUsablePath("B").WithAlias("Table"));
       }
 
       protected override void Because()
@@ -163,17 +164,25 @@ namespace MoBi.Core
       }
    }
 
-   public class When_checkuing_equality_for_black_box_formulas : concern_for_AdjustFormulaVisitor
+   public class When_checking_equality_for_black_box_formulas : concern_for_AdjustFormulaVisitor
    {
       private bool _result1;
       private bool _result2;
       private bool _result3;
+      private bool _result4;
 
       protected override void Because()
       {
-         _result1 = sut.AreEqualBalckBoxFormula(null, A.Fake<BlackBoxFormula>());
-         _result2 = sut.AreEqualBalckBoxFormula(A.Fake<BlackBoxFormula>(), null);
-         _result3 = sut.AreEqualBalckBoxFormula(A.Fake<BlackBoxFormula>(), A.Fake<BlackBoxFormula>());
+         _result1 = sut.AreEqualBlackBoxFormula(null, A.Fake<BlackBoxFormula>());
+         _result2 = sut.AreEqualBlackBoxFormula(A.Fake<BlackBoxFormula>(), null);
+         _result3 = sut.AreEqualBlackBoxFormula(A.Fake<BlackBoxFormula>(), A.Fake<BlackBoxFormula>());
+         _result4 = sut.AreEqualBlackBoxFormula(A.Fake<BlackBoxFormula>().WithName("aname"), A.Fake<BlackBoxFormula>().WithName("bname"));
+      }
+
+      [Observation]
+      public void should_return_false_when_the_names_are_different()
+      {
+         _result4.ShouldBeFalse();
       }
 
       [Observation]
@@ -190,9 +199,10 @@ namespace MoBi.Core
       }
    }
 
-   public class When_adjusting_Formulas_at_a_totaly_new_object : concern_for_AdjustFormulaVisitor
+
+   public class When_adjusting_Formulas_at_a_totally_new_object : concern_for_AdjustFormulaVisitor
    {
-      private IUsingFormula _totalyNewObject;
+      private IUsingFormula _totallyNewObject;
       private IBuildingBlock _buildingBlockToAddTo;
       private IFormulaCache _formulaCache;
       private ExplicitFormula _newFormula;
@@ -203,16 +213,16 @@ namespace MoBi.Core
          _buildingBlockToAddTo = A.Fake<IBuildingBlock>();
          _formulaCache = new FormulaCache();
          A.CallTo(() => _buildingBlockToAddTo.FormulaCache).Returns(_formulaCache);
-         _totalyNewObject = new Parameter().WithName("New");
+         _totallyNewObject = new Parameter().WithName("New");
          _newFormula = A.Fake<ExplicitFormula>().WithName("New Formula").WithDimension(A.Fake<IDimension>()).WithFormulaString("1+1").WithId("1");
-         _newFormula.ObjectPaths = new IFormulaUsablePath[0];
-         _totalyNewObject.Formula = _newFormula;
+         _newFormula.ObjectPaths = Array.Empty<FormulaUsablePath>();
+         _totallyNewObject.Formula = _newFormula;
          A.CallTo(() => _objectBaseRepository.ContainsObjectWithId(A<string>._)).Returns(false);
       }
 
       protected override void Because()
       {
-         sut.AdjustFormulasIn(_totalyNewObject, _buildingBlockToAddTo);
+         sut.AdjustFormulasIn(_totallyNewObject, _buildingBlockToAddTo);
       }
 
       [Observation]
@@ -222,9 +232,9 @@ namespace MoBi.Core
       }
    }
 
-   public class When_adjusting_Formulas_at_a_totaly_new_moleculeBuilder : concern_for_AdjustFormulaVisitor
+   public class When_adjusting_Formulas_at_a_totally_new_moleculeBuilder : concern_for_AdjustFormulaVisitor
    {
-      private IMoleculeBuilder _totalyNewObject;
+      private MoleculeBuilder _totallyNewObject;
       private IBuildingBlock _buildingBlockToAddTo;
       private IFormulaCache _formulaCache;
       private ExplicitFormula _newFormula;
@@ -235,15 +245,15 @@ namespace MoBi.Core
          _buildingBlockToAddTo = A.Fake<IBuildingBlock>();
          _formulaCache = new FormulaCache();
          A.CallTo(() => _buildingBlockToAddTo.FormulaCache).Returns(_formulaCache);
-         _totalyNewObject = new MoleculeBuilder().WithName("New");
+         _totallyNewObject = new MoleculeBuilder().WithName("New");
          _newFormula = A.Fake<ExplicitFormula>().WithName("New Formula").WithDimension(A.Fake<IDimension>()).WithFormulaString("1+1").WithId("1");
-         _newFormula.ObjectPaths = new IFormulaUsablePath[0];
-         _totalyNewObject.DefaultStartFormula = _newFormula;
+         _newFormula.ObjectPaths = Array.Empty<FormulaUsablePath>();
+         _totallyNewObject.DefaultStartFormula = _newFormula;
       }
 
       protected override void Because()
       {
-         sut.AdjustFormulasIn(_totalyNewObject, _buildingBlockToAddTo);
+         sut.AdjustFormulasIn(_totallyNewObject, _buildingBlockToAddTo);
       }
 
       [Observation]
@@ -253,9 +263,9 @@ namespace MoBi.Core
       }
    }
 
-   public class When_adjusting_Formulas_at_a_object_with_allready_existing_Formula : concern_for_AdjustFormulaVisitor
+   public class When_adjusting_Formulas_at_a_object_with_already_existing_Formula : concern_for_AdjustFormulaVisitor
    {
-      private IUsingFormula _totalyNewObject;
+      private IUsingFormula _totallyNewObject;
       private IBuildingBlock _buildingBlockToAddTo;
       private IFormulaCache _formulaCache;
       private ExplicitFormula _newFormula;
@@ -269,19 +279,19 @@ namespace MoBi.Core
          _formulaCache = new FormulaCache();
          A.CallTo(() => _buildingBlockToAddTo.FormulaCache).Returns(_formulaCache);
 
-         _totalyNewObject = new Parameter().WithName("New");
+         _totallyNewObject = new Parameter().WithName("New");
          _theDimension = A.Fake<IDimension>();
          _oldFormula = A.Fake<ExplicitFormula>().WithName("New Formula").WithDimension(_theDimension).WithFormulaString("1+1").WithId("1");
          _newFormula = A.Fake<ExplicitFormula>().WithName("New Formula").WithDimension(_theDimension).WithFormulaString("1+1").WithId("1");
-         _newFormula.ObjectPaths = new IFormulaUsablePath[0];
-         _oldFormula.ObjectPaths = new IFormulaUsablePath[0];
+         _newFormula.ObjectPaths = Array.Empty<FormulaUsablePath>();
+         _oldFormula.ObjectPaths = Array.Empty<FormulaUsablePath>();
          _formulaCache.Add(_oldFormula);
-         _totalyNewObject.Formula = _newFormula;
+         _totallyNewObject.Formula = _newFormula;
       }
 
       protected override void Because()
       {
-         sut.AdjustFormulasIn(_totalyNewObject, _buildingBlockToAddTo);
+         sut.AdjustFormulasIn(_totallyNewObject, _buildingBlockToAddTo);
       }
 
       [Observation]
@@ -293,7 +303,7 @@ namespace MoBi.Core
 
    public class When_adjusting_Formulas_at_a_object_with_allready_existing_Formula_and_new_rhs_Formula : concern_for_AdjustFormulaVisitor
    {
-      private IParameter _totalyNewObject;
+      private IParameter _totallyNewObject;
       private IBuildingBlock _buildingBlockToAddTo;
       private IFormulaCache _formulaCache;
       private ExplicitFormula _newFormula;
@@ -308,23 +318,23 @@ namespace MoBi.Core
          _formulaCache = new FormulaCache();
          A.CallTo(() => _buildingBlockToAddTo.FormulaCache).Returns(_formulaCache);
 
-         _totalyNewObject = new Parameter().WithName("New");
+         _totallyNewObject = new Parameter().WithName("New");
          _theDimension = A.Fake<IDimension>();
          _oldFormula = A.Fake<ExplicitFormula>().WithName("New Formula").WithDimension(_theDimension).WithFormulaString("1+1").WithId("1");
          _newFormula = A.Fake<ExplicitFormula>().WithName("New Formula").WithDimension(_theDimension).WithFormulaString("1+1").WithId("1");
-         _newFormula.ObjectPaths = new IFormulaUsablePath[0];
-         _oldFormula.ObjectPaths = new IFormulaUsablePath[0];
+         _newFormula.ObjectPaths = Array.Empty<FormulaUsablePath>();
+         _oldFormula.ObjectPaths = Array.Empty<FormulaUsablePath>();
          _formulaCache.Add(_oldFormula);
          _newRHSFormula = A.Fake<ExplicitFormula>().WithName("New Formula").WithDimension(_theDimension).WithFormulaString("1+5").WithId("RHS");
-         _totalyNewObject.Formula = _newFormula;
+         _totallyNewObject.Formula = _newFormula;
          A.CallTo(() => _nameCorrector.CorrectName(_formulaCache, _newRHSFormula)).Returns(true);
          A.CallTo(() => _objectBaseRepository.ContainsObjectWithId(_newRHSFormula.Id)).Returns(false);
-         _totalyNewObject.RHSFormula = _newRHSFormula;
+         _totallyNewObject.RHSFormula = _newRHSFormula;
       }
 
       protected override void Because()
       {
-         sut.AdjustFormulasIn(_totalyNewObject, _buildingBlockToAddTo);
+         sut.AdjustFormulasIn(_totallyNewObject, _buildingBlockToAddTo);
       }
 
       [Observation]
@@ -340,9 +350,9 @@ namespace MoBi.Core
       }
    }
 
-   public class When_adjusting_Formulas_at_a_object_with_a_Formula_with_a_allready_used_name_and_id : concern_for_AdjustFormulaVisitor
+   public class When_adjusting_Formulas_at_a_object_with_a_Formula_with_a_already_used_name_and_id : concern_for_AdjustFormulaVisitor
    {
-      private IUsingFormula _totalyNewObject;
+      private IUsingFormula _totallyNewObject;
       private IBuildingBlock _buildingBlockToAddTo;
       private IFormulaCache _formulaCache;
       private ExplicitFormula _newFormula;
@@ -355,21 +365,21 @@ namespace MoBi.Core
          _buildingBlockToAddTo = A.Fake<IBuildingBlock>();
          _formulaCache = new FormulaCache();
          A.CallTo(() => _buildingBlockToAddTo.FormulaCache).Returns(_formulaCache);
-         _totalyNewObject = new Parameter().WithName("New");
+         _totallyNewObject = new Parameter().WithName("New");
          _theDimension = A.Fake<IDimension>();
          _oldFormula = A.Fake<ExplicitFormula>().WithName("New Formula").WithDimension(_theDimension).WithFormulaString("1+1").WithId("1");
          _newFormula = A.Fake<ExplicitFormula>().WithName("New Formula").WithDimension(_theDimension).WithFormulaString("1+5").WithId("1");
-         _newFormula.ObjectPaths = new IFormulaUsablePath[0];
-         _oldFormula.ObjectPaths = new IFormulaUsablePath[0];
+         _newFormula.ObjectPaths = Array.Empty<FormulaUsablePath>();
+         _oldFormula.ObjectPaths = Array.Empty<FormulaUsablePath>();
          _formulaCache.Add(_oldFormula);
-         _totalyNewObject.Formula = _newFormula;
+         _totallyNewObject.Formula = _newFormula;
          A.CallTo(() => _nameCorrector.CorrectName(_formulaCache, _newFormula)).Returns(true);
          A.CallTo(() => _objectBaseRepository.ContainsObjectWithId(_newFormula.Id)).Returns(true);
       }
 
       protected override void Because()
       {
-         sut.AdjustFormulasIn(_totalyNewObject, _buildingBlockToAddTo);
+         sut.AdjustFormulasIn(_totallyNewObject, _buildingBlockToAddTo);
       }
 
       [Observation]
@@ -385,15 +395,22 @@ namespace MoBi.Core
       }
 
       [Observation]
-      public void should_have_changed_the_new_formuals_id()
+      public void should_have_changed_the_new_formulas_id()
       {
          _newFormula.Id.ShouldNotBeEqualTo(_oldFormula.Id);
       }
+
+      [Observation]
+      public void the_bulk_update_events_should_be_published()
+      {
+         A.CallTo(() => _context.PublishEvent(A<BulkUpdateStartedEvent>._)).MustHaveHappened();
+         A.CallTo(() => _context.PublishEvent(A<BulkUpdateFinishedEvent>._)).MustHaveHappened();
+      }
    }
 
-   public class When_adjusting_Formulas_at_a_object_with_allready_existing_Formula_with_differnt_name : concern_for_AdjustFormulaVisitor
+   public class When_adjusting_Formulas_at_a_object_with_already_existing_Formula_with_different_name : concern_for_AdjustFormulaVisitor
    {
-      private IParameter _totalyNewObject;
+      private IParameter _totallyNewObject;
       private IBuildingBlock _buildingBlockToAddTo;
       private IFormulaCache _formulaCache;
       private ExplicitFormula _newFormula;
@@ -407,19 +424,19 @@ namespace MoBi.Core
          _formulaCache = new FormulaCache();
          A.CallTo(() => _buildingBlockToAddTo.FormulaCache).Returns(_formulaCache);
 
-         _totalyNewObject = new Parameter().WithName("New");
+         _totallyNewObject = new Parameter().WithName("New");
          _theDimension = A.Fake<IDimension>();
          _oldFormula = A.Fake<ExplicitFormula>().WithName("New Formula").WithDimension(_theDimension).WithFormulaString("1+1").WithId("1");
          _newFormula = A.Fake<ExplicitFormula>().WithName("New Formula_2").WithDimension(_theDimension).WithFormulaString("1+1").WithId("1");
-         _newFormula.ObjectPaths = new IFormulaUsablePath[0];
-         _oldFormula.ObjectPaths = new IFormulaUsablePath[0];
+         _newFormula.ObjectPaths = Array.Empty<FormulaUsablePath>();
+         _oldFormula.ObjectPaths = Array.Empty<FormulaUsablePath>();
          _formulaCache.Add(_oldFormula);
-         _totalyNewObject.Formula = _newFormula;
+         _totallyNewObject.Formula = _newFormula;
       }
 
       protected override void Because()
       {
-         sut.AdjustFormulasIn(_totalyNewObject, _buildingBlockToAddTo);
+         sut.AdjustFormulasIn(_totallyNewObject, _buildingBlockToAddTo);
       }
 
       [Observation]
@@ -431,7 +448,7 @@ namespace MoBi.Core
       [Observation]
       public void should_set_the_formula_for_the_new_object_to_the_old_formula()
       {
-         _totalyNewObject.Formula.ShouldBeEqualTo(_oldFormula);
+         _totallyNewObject.Formula.ShouldBeEqualTo(_oldFormula);
       }
    }
 }

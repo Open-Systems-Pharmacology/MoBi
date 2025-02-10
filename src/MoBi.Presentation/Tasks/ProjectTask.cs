@@ -1,13 +1,12 @@
-using System;
 using System.IO;
+using System.Linq;
 using MoBi.Assets;
-using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Services;
+using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Serialization.Exchange;
@@ -39,24 +38,23 @@ namespace MoBi.Presentation.Tasks
       private readonly IMRUProvider _mruProvider;
       private readonly ISerializationTask _serializationTask;
       private readonly IHeavyWorkManager _heavyWorkManager;
-      private readonly IMoBiSpatialStructureFactory _spatialStructureFactory;
-      private readonly ISimulationSettingsFactory _simulationSettingsFactory;
       private readonly ISimulationLoader _simulationLoader;
       private readonly ISbmlTask _sbmlTask;
-      private readonly IReactionBuildingBlockFactory _reactionBuildingBlockFactory;
 
-      public ProjectTask(IMoBiContext context, ISerializationTask serializationTask, IDialogCreator dialogCreator,
-         IMRUProvider mruProvider, IMoBiSpatialStructureFactory spatialStructureFactory,
-         IHeavyWorkManager heavyWorkManager, ISimulationSettingsFactory simulationSettingsFactory,
-         ISimulationLoader simulationLoader, ISbmlTask sbmlTask, IReactionBuildingBlockFactory reactionBuildingBlockFactory)
+      public ProjectTask(
+         IMoBiContext context,
+         ISerializationTask serializationTask,
+         IDialogCreator dialogCreator,
+         IMRUProvider mruProvider,
+         IHeavyWorkManager heavyWorkManager,
+         ISimulationLoader simulationLoader,
+         ISbmlTask sbmlTask
+      )
       {
          _context = context;
-         _simulationSettingsFactory = simulationSettingsFactory;
          _simulationLoader = simulationLoader;
          _sbmlTask = sbmlTask;
-         _reactionBuildingBlockFactory = reactionBuildingBlockFactory;
          _heavyWorkManager = heavyWorkManager;
-         _spatialStructureFactory = spatialStructureFactory;
          _mruProvider = mruProvider;
          _serializationTask = serializationTask;
          _dialogCreator = dialogCreator;
@@ -88,7 +86,9 @@ namespace MoBi.Presentation.Tasks
       public void StartWithSimulation(string fileName)
       {
          _serializationTask.NewProject();
-         loadSimulationFromFileInProject(fileName);
+         var simulationTransfer = loadSimulationFromFileInProject(fileName);
+         if (simulationTransfer != null)
+            loadProjectDefaultsFromSimulationSettings(simulationTransfer);
       }
 
       public void StartWithJournal(string journalFilePath)
@@ -97,23 +97,30 @@ namespace MoBi.Presentation.Tasks
          _serializationTask.LoadJournal(journalFilePath, showJournal: true);
       }
 
-      private void loadSimulationFromFileInProject(string fileName)
+      private SimulationTransfer loadSimulationFromFileInProject(string fileName)
       {
          var project = _context.CurrentProject;
-         if (project == null) return;
-
-         if (string.IsNullOrEmpty(fileName))
-            return;
+         if (project == null || string.IsNullOrEmpty(fileName))
+            return null;
 
          SimulationTransfer simulationTransfer = null;
-
          _heavyWorkManager.Start(() => simulationTransfer = LoadSimulationTransferDataFromFile(fileName));
+
          if (simulationTransfer == null)
-            return;
+            return simulationTransfer;
 
          _context.AddToHistory(addSimulationTransferToProject(simulationTransfer));
          loadJournalIfNotLoadedAlready(project, simulationTransfer.JournalPath);
          notifyProjectLoaded();
+         return simulationTransfer;
+      }
+
+      private void loadProjectDefaultsFromSimulationSettings(SimulationTransfer simulationTransfer)
+      {
+         var simulationSettingsTask = _context.Resolve<IInteractionTasksForSimulationSettings>();
+         var simulationSettings = simulationTransfer.Simulation.Settings;
+         simulationSettingsTask.UpdateDefaultSimulationSettingsInProject(simulationSettings.OutputSchema, simulationSettings.Solver);
+         simulationSettingsTask.UpdateDefaultOutputSelectionsInProject(simulationSettings.OutputSelections.ToList());
       }
 
       private void notifyProjectLoaded()
@@ -140,7 +147,7 @@ namespace MoBi.Presentation.Tasks
          return _serializationTask.Load<SimulationTransfer>(fileName);
       }
 
-      private void loadJournalIfNotLoadedAlready(IMoBiProject project, string journalPath)
+      private void loadJournalIfNotLoadedAlready(MoBiProject project, string journalPath)
       {
          if (!string.IsNullOrEmpty(project.JournalPath))
             return;
@@ -156,24 +163,26 @@ namespace MoBi.Presentation.Tasks
 
       public void OpenSBMLModel()
       {
-         bool readyForOpen = CloseProject();
-         if (!readyForOpen) return;
+         var readyForOpen = CloseProject();
+         if (!readyForOpen)
+            return;
 
-         string fileName = _dialogCreator.AskForFileToOpen(AppConstants.Dialog.LoadSBMLProject, AppConstants.Filter.SBML_MODEL_FILE_FILTER, Constants.DirectoryKey.MODEL_PART);
-         if (fileName.IsNullOrEmpty()) return;
+         var fileName = _dialogCreator.AskForFileToOpen(AppConstants.Dialog.LoadSBMLProject, AppConstants.Filter.SBML_MODEL_FILE_FILTER, Constants.DirectoryKey.MODEL_PART);
+         if (fileName.IsNullOrEmpty())
+            return;
 
-         _context.NewProject();
-         _context.AddToHistory(_sbmlTask.ImportModelFromSbml(fileName, _context.CurrentProject));
+         var project = _serializationTask.NewProject();
+         _context.AddToHistory(_sbmlTask.ImportModelFromSbml(fileName, project));
          notifyProjectLoaded();
       }
 
       public bool Open()
       {
-         bool readyForOpen = CloseProject();
+         var readyForOpen = CloseProject();
          if (!readyForOpen)
             return false;
 
-         string fileName = _dialogCreator.AskForFileToOpen(AppConstants.Dialog.LoadProject, AppConstants.Filter.MOBI_PROJECT_FILE_FILTER, Constants.DirectoryKey.PROJECT);
+         var fileName = _dialogCreator.AskForFileToOpen(AppConstants.Dialog.LoadProject, AppConstants.Filter.MOBI_PROJECT_FILE_FILTER, Constants.DirectoryKey.PROJECT);
 
          if (fileName.IsNullOrEmpty())
             return false;
@@ -196,7 +205,7 @@ namespace MoBi.Presentation.Tasks
 
       public bool SaveAs()
       {
-         bool defaultNameIsUndefined = string.Equals(Constants.PROJECT_UNDEFINED, _context.CurrentProject.Name);
+         var defaultNameIsUndefined = string.Equals(Constants.PROJECT_UNDEFINED, _context.CurrentProject.Name);
          var defaultFileName = defaultNameIsUndefined ? string.Empty : _context.CurrentProject.Name;
 
          var newFilePath = _dialogCreator.AskForFileToSave(AppConstants.Dialog.AskForSaveProject,
@@ -219,12 +228,14 @@ namespace MoBi.Presentation.Tasks
 
       public void New(ReactionDimensionMode reactionDimensionMode)
       {
-         if (!CloseProject()) return;
-         _serializationTask.NewProject();
-         _context.CurrentProject.ReactionDimensionMode = reactionDimensionMode;
-         generateDefaultsInCurrentProject();
-         _context.PublishEvent(new ProjectCreatedEvent(_context.CurrentProject));
-         _context.PublishEvent(new ProjectLoadedEvent(_context.CurrentProject));
+         if (!CloseProject())
+            return;
+
+         var project = _serializationTask.NewProject();
+         project.ReactionDimensionMode = reactionDimensionMode;
+
+         _context.PublishEvent(new ProjectCreatedEvent(project));
+         _context.PublishEvent(new ProjectLoadedEvent(project));
       }
 
       public bool CloseProject()
@@ -277,31 +288,8 @@ namespace MoBi.Presentation.Tasks
          _mruProvider.Add(fileName);
 
          notifyProjectLoaded();
+
          return true;
-      }
-
-      private void generateDefaultsInCurrentProject()
-      {
-         addDefault<IMoleculeBuildingBlock>(AppConstants.DefaultNames.MoleculeBuildingBlock);
-         addDefault(AppConstants.DefaultNames.ReactionBuildingBlock, () => _reactionBuildingBlockFactory.Create());
-         addDefault(AppConstants.DefaultNames.SpatialStructure, () => _spatialStructureFactory.CreateDefault(AppConstants.DefaultNames.SpatialStructure));
-         addDefault<IPassiveTransportBuildingBlock>(AppConstants.DefaultNames.PassiveTransportBuildingBlock);
-         addDefault<IEventGroupBuildingBlock>(AppConstants.DefaultNames.EventBuildingBlock);
-         addDefault<IObserverBuildingBlock>(AppConstants.DefaultNames.ObserverBuildingBlock);
-         addDefault(AppConstants.DefaultNames.SimulationSettings, _simulationSettingsFactory.CreateDefault);
-      }
-
-      private void addDefault<T>(string defaultName) where T : class, IBuildingBlock
-      {
-         addDefault(defaultName, _context.Create<T>);
-      }
-
-      private void addDefault<T>(string defaultName, Func<T> buildingBlockCreator) where T : IBuildingBlock
-      {
-         var project = _context.CurrentProject;
-         var buildingBlock = buildingBlockCreator().WithName(defaultName);
-         project.AddBuildingBlock(buildingBlock);
-         _context.Register(buildingBlock);
       }
    }
 }

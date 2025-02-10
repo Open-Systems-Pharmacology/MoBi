@@ -1,9 +1,7 @@
-﻿using System.Linq;
-using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using MoBi.Core.Commands;
+﻿using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Exceptions;
+using MoBi.Core.Extensions;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
@@ -12,8 +10,8 @@ namespace MoBi.Core.Services
 {
    public interface IOutputSchemaTask
    {
-      ICommand AddOuputIntervalTo(ISimulationSettings simulationSettings, IMoBiSimulation simulation);
-      ICommand RemoveOuputInterval(OutputInterval outputInterval, ISimulationSettings simulationSettings, IMoBiSimulation simulation);
+      ICommand AddOutputIntervalTo(SimulationSettings simulationSettings);
+      ICommand RemoveOutputInterval(OutputInterval outputInterval, SimulationSettings simulationSettings);
    }
 
    public class OutputSchemaTask : IOutputSchemaTask
@@ -29,38 +27,17 @@ namespace MoBi.Core.Services
          _context = context;
       }
 
-      public ICommand AddOuputIntervalTo(ISimulationSettings simulationSettings, IMoBiSimulation simulation)
+      public ICommand AddOutputIntervalTo(SimulationSettings simulationSettings)
       {
          var schema = simulationSettings.OutputSchema;
          var interval = _outputIntervalFactory.CreateDefault();
          interval.Name = _containerTask.CreateUniqueName(schema, interval.Name);
-         return getAddCommand(schema, interval, simulationSettings, simulation).Run(_context);
-
+         return new AddOutputIntervalCommand(schema, interval, simulationSettings).RunCommand(_context);
       }
 
-      public ICommand RemoveOuputInterval(OutputInterval outputInterval, ISimulationSettings simulationSettings, IMoBiSimulation simulation)
+      public ICommand RemoveOutputInterval(OutputInterval outputInterval, SimulationSettings simulationSettings)
       {
-         var schema = simulationSettings.OutputSchema;
-         if (schema.Intervals.Count() > 1)
-            return getRemoveCommand(schema, outputInterval,simulationSettings, simulation).Run(_context);
-         else
-            throw new MoBiException(AppConstants.Exceptions.CanNotRemoveLastItem);
-      }
-
-      private IMoBiCommand getAddCommand(OutputSchema schema, OutputInterval interval, ISimulationSettings simulationSettings, IMoBiSimulation simulation)
-      {
-         if (simulation == null)
-            return new AddOutputIntervalCommand(schema, interval, simulationSettings);
-
-         return new AddOutputIntervalInSimulationCommand(schema, interval, simulation);
-      }
-
-      private IMoBiCommand getRemoveCommand(OutputSchema schema, OutputInterval interval, ISimulationSettings simulationSettings, IMoBiSimulation simulation)
-      {
-         if (simulation == null)
-            return new RemoveOutputIntervalCommand(schema, interval, simulationSettings);
-
-         return new RemoveOutputIntervalFromSimulationCommand(schema, interval, simulation);
+         return new RemoveOutputIntervalCommand(simulationSettings.OutputSchema, outputInterval, simulationSettings).RunCommand(_context);
       }
    }
 }

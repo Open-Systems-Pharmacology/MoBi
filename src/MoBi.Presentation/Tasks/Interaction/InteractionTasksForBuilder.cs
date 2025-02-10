@@ -41,7 +41,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       public void AddToParent(TBuilder builder, IBuildingBlock buildingBlockWithFormulaCache, IMoBiMacroCommand macroCommand,
          Func<TBuilder, IMoBiCommand> getAddCommand)
       {
-         AddToProject(builder, buildingBlockWithFormulaCache.DowncastTo<TBuildingBlock>(), buildingBlockWithFormulaCache);
+         AddTo(builder, buildingBlockWithFormulaCache.DowncastTo<TBuildingBlock>(), buildingBlockWithFormulaCache);
       }
 
       public IMoBiCommand GetRemoveCommand(TBuilder builder, IBuildingBlock buildingBlock)

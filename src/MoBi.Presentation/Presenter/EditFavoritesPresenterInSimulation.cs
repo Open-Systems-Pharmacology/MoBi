@@ -22,7 +22,7 @@ namespace MoBi.Presentation.Presenter
          IEntityPathResolver entityPathResolver,
          IEditParameterListPresenter editParameterListPresenter,
          IFavoriteTask favoriteTask)
-         : base(view,favoriteRepository, entityPathResolver, editParameterListPresenter, favoriteTask)
+         : base(view, favoriteRepository, entityPathResolver, editParameterListPresenter, favoriteTask)
       {
          ShouldHandleRemovedEvent = x => false; //Can not remove in Simulation
       }
@@ -48,6 +48,12 @@ namespace MoBi.Presentation.Presenter
       public IEnumerable<IParameter> Favorites()
       {
          return _editParameterListPresenter.EditedParameters;
+      }
+
+      public override void Edit(IMoBiSimulation projectItem)
+      {
+         base.Edit(projectItem);
+         _editParameterListPresenter.SetVisibility(PathElementId.Simulation, isVisible: false);
       }
    }
 }

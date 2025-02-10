@@ -61,7 +61,7 @@ namespace MoBi.Presentation.Presenter.Main
 
       private void updateProjectInfo(IProject project, bool enabled)
       {
-         var dimensionModeCaption = project.DowncastTo<IMoBiProject>().ReactionDimensionMode == ReactionDimensionMode.AmountBased ? AppConstants.Captions.AmountBasedModel : AppConstants.Captions.ConcentrationBasedModel;
+         var dimensionModeCaption = project.DowncastTo<MoBiProject>().ReactionDimensionMode == ReactionDimensionMode.AmountBased ? AppConstants.Captions.AmountBasedModel : AppConstants.Captions.ConcentrationBasedModel;
          updateProjectInfo(project.Name, project.FilePath, dimensionModeCaption, enabled);
       }
 

@@ -4,7 +4,10 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
+using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
+using MoBi.Core.Services;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Assets;
 using OSPSuite.Core.Commands;
@@ -12,7 +15,6 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Import.Core;
 using OSPSuite.Infrastructure.Import.Services;
@@ -42,25 +44,27 @@ namespace MoBi.Presentation.Tasks
    public class ObservedDataTask : OSPSuite.Core.Domain.Services.ObservedDataTask, IObservedDataTask
    {
       private readonly IDataImporter _dataImporter;
-      private readonly IDimensionFactory _dimensionFactory;
       private readonly IMoBiContext _context;
       private readonly IInteractionTask _interactionTask;
-      private readonly IDialogCreator _mobiDialogCreator;
+      private readonly IBuildingBlockRepository _buildingBlockRepository;
+      private readonly IObjectBaseNamingTask _namingTask;
 
       public ObservedDataTask(
          IDataImporter dataImporter,
-         IDimensionFactory dimensionFactory,
          IMoBiContext context,
          IDialogCreator dialogCreator,
          IInteractionTask interactionTask,
          IDataRepositoryExportTask dataRepositoryTask,
          IContainerTask containerTask,
-         IObjectTypeResolver objectTypeResolver) : base(dialogCreator, context, dataRepositoryTask, containerTask, objectTypeResolver)
+         IObjectTypeResolver objectTypeResolver,
+         IBuildingBlockRepository buildingBlockRepository,
+         IObjectBaseNamingTask namingTask,
+         IConfirmationManager confirmationManager) : base(dialogCreator, context, dataRepositoryTask, containerTask, objectTypeResolver, confirmationManager)
       {
          _dataImporter = dataImporter;
-         _mobiDialogCreator = dialogCreator;
          _interactionTask = interactionTask;
-         _dimensionFactory = dimensionFactory;
+         _buildingBlockRepository = buildingBlockRepository;
+         _namingTask = namingTask;
          _context = context;
       }
 
@@ -69,8 +73,8 @@ namespace MoBi.Presentation.Tasks
          var (metaDataCategories, settings) = initializeSettings();
 
          var (dataRepositories, configuration) = _dataImporter.ImportDataSets(
-            metaDataCategories,  
-            _dataImporter.ColumnInfosForObservedData(), 
+            metaDataCategories,
+            _dataImporter.ColumnInfosForObservedData(),
             settings,
             _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, DirectoryKey.OBSERVED_DATA)
          );
@@ -91,12 +95,12 @@ namespace MoBi.Presentation.Tasks
       {
          var baseGrid = repository.BaseGrid;
          var baseGridName = baseGrid.Name.Replace(ObjectPath.PATH_DELIMITER, "\\");
-         baseGrid.QuantityInfo = new QuantityInfo(new[] {repository.Name, baseGridName}, QuantityType.Time);
+         baseGrid.QuantityInfo = new QuantityInfo(new[] { repository.Name, baseGridName }, QuantityType.Time);
 
          foreach (var col in repository.AllButBaseGrid())
          {
             var colName = col.Name.Replace(ObjectPath.PATH_DELIMITER, "\\");
-            var quantityInfo = new QuantityInfo(new[] {repository.Name, colName}, QuantityType.Undefined);
+            var quantityInfo = new QuantityInfo(new[] { repository.Name, colName }, QuantityType.Undefined);
             col.QuantityInfo = quantityInfo;
          }
       }
@@ -120,7 +124,7 @@ namespace MoBi.Presentation.Tasks
          if (viewResult == ViewResult.No)
             return;
 
-         _context.AddToHistory(deleteAllResultsFromSimulationCommand(simulation).Run(_context));
+         _context.AddToHistory(deleteAllResultsFromSimulationCommand(simulation).RunCommand(_context));
       }
 
       public void DeleteAllResultsFromAllSimulation()
@@ -138,7 +142,7 @@ namespace MoBi.Presentation.Tasks
          };
 
          simulations.Each(s => macroCommand.AddCommand(deleteAllResultsFromSimulationCommand(s)));
-         _context.AddToHistory(macroCommand.Run(_context));
+         _context.AddToHistory(macroCommand.RunCommand(_context));
       }
 
       private static MoBiMacroCommand deleteAllResultsFromSimulationCommand(IMoBiSimulation simulation)
@@ -185,16 +189,12 @@ namespace MoBi.Presentation.Tasks
 
       public override void Rename(DataRepository dataRepository)
       {
-         var newName = _mobiDialogCreator.AskForInput(AppConstants.Dialog.AskForNewName(dataRepository.Name),
-            AppConstants.Captions.NewName,
-            dataRepository.Name,
-            _context.CurrentProject.AllObservedData.Select(x => x.Name),
-            iconName: ApplicationIcons.Rename.IconName);
+         var newName = _namingTask.RenameFor(dataRepository, _context.CurrentProject.AllObservedData.Select(x => x.Name).ToList());
 
          if (string.IsNullOrEmpty(newName))
             return;
 
-         _context.AddToHistory(new RenameObservedDataCommand(dataRepository, newName).Run(_context));
+         _context.AddToHistory(new RenameObservedDataCommand(dataRepository, newName).RunCommand(_context));
       }
 
       public override void UpdateMolWeight(DataRepository observedData)
@@ -227,7 +227,7 @@ namespace MoBi.Presentation.Tasks
 
          resultsToRemove.Each(result => { macroCommand.Add(removeResultFromSimulationCommand(result)); });
 
-         _context.AddToHistory(macroCommand.Run(_context));
+         _context.AddToHistory(macroCommand.RunCommand(_context));
       }
 
       public void AddAndReplaceObservedDataFromConfigurationToProject(ImporterConfiguration configuration,
@@ -250,42 +250,53 @@ namespace MoBi.Presentation.Tasks
 
          foreach (var dataSet in reloadDataSets.OverwrittenDataSets)
          {
-            //TODO this here should be tested
-            var existingDataSet = findDataRepositoryInList(observedDataFromSameFile, dataSet);
+            replaceData(dataSet, findDataRepositoryInList(observedDataFromSameFile, dataSet));
+         }
+      }
 
-            foreach (var column in dataSet.Columns)
+      private void replaceData(DataRepository dataSet, DataRepository existingDataSet)
+      {
+         if(existingDataSet == null)
+            return;
+
+         _context.ProjectChanged();
+
+         foreach (var column in dataSet.Columns)
+         {
+            var dataColumn = new DataColumn(column.Id, column.Name, column.Dimension, column.BaseGrid)
             {
-               var datacolumn = new DataColumn(column.Id, column.Name, column.Dimension, column.BaseGrid)
-               {
-                  QuantityInfo = column.QuantityInfo,
-                  DataInfo = column.DataInfo,
-                  IsInternal = column.IsInternal,
-                  Values = column.Values
-               };
+               QuantityInfo = column.QuantityInfo,
+               DataInfo = column.DataInfo,
+               IsInternal = column.IsInternal,
+               Values = column.Values
+            };
 
-               if (column.IsBaseGrid())
-               {
-                  existingDataSet.BaseGrid.Values = datacolumn.Values;
-               }
+            if (column.IsBaseGrid())
+            {
+               existingDataSet.BaseGrid.Values = dataColumn.Values;
+            }
+            else
+            {
+               var existingColumn = existingDataSet.FirstOrDefault(x => x.Name == column.Name);
+               if (existingColumn == null)
+                  existingDataSet.Add(column);
                else
-               {
-                  var existingColumn = existingDataSet.FirstOrDefault(x => x.Name == column.Name);
-                  if (existingColumn == null)
-                     existingDataSet.Add(column);
-                  else
-                     existingColumn.Values = column.Values;
-               }
+                  existingColumn.Values = column.Values;
             }
          }
       }
 
       private DataRepository findDataRepositoryInList(IEnumerable<DataRepository> dataRepositoryList, DataRepository targetDataRepository)
       {
-         return (from dataRepo in dataRepositoryList
-            let result = targetDataRepository.ExtendedProperties.KeyValues.All(keyValuePair =>
-               dataRepo.ExtendedProperties[keyValuePair.Key].ValueAsObject.ToString() == keyValuePair.Value.ValueAsObject.ToString())
-            where result
-            select dataRepo).FirstOrDefault();
+         return dataRepositoryList.FirstOrDefault(dataRepo => targetDataRepository.ExtendedProperties.KeyValues.All(keyValuePair => propertyMatches(dataRepo, keyValuePair)));
+      }
+
+      private static bool propertyMatches(DataRepository dataRepo, KeyValuePair<string, IExtendedProperty> keyValuePair)
+      {
+         if (!dataRepo.ExtendedProperties.Contains(keyValuePair.Key))
+            return false;
+
+         return dataRepo.ExtendedProperties[keyValuePair.Key].ValueAsObject.ToString() == keyValuePair.Value.ValueAsObject.ToString();
       }
 
       private IEnumerable<DataRepository> getObservedDataFromImporter(ImporterConfiguration configuration)
@@ -295,7 +306,7 @@ namespace MoBi.Presentation.Tasks
          var importedObservedData = _dataImporter.ImportFromConfiguration(
             configuration,
             metaDataCategories,
-            _dataImporter.ColumnInfosForObservedData(), 
+            _dataImporter.ColumnInfosForObservedData(),
             dataImporterSettings,
             _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, DirectoryKey.OBSERVED_DATA)
          );
@@ -337,7 +348,7 @@ namespace MoBi.Presentation.Tasks
 
       private IEnumerable<IContainer> allMolecules()
       {
-         return _context.CurrentProject.MoleculeBlockCollection.SelectMany(buildingBlock => { return buildingBlock.Select(builder => builder); }).DistinctBy(builder => builder.Name);
+         return _buildingBlockRepository.MoleculeBlockCollection.SelectMany(buildingBlock => { return buildingBlock.Select(builder => builder); }).DistinctBy(builder => builder.Name);
       }
 
       private static void addUndefinedValueTo(MetaDataCategory metaDataCategory)
@@ -410,7 +421,7 @@ namespace MoBi.Presentation.Tasks
 
       private IEnumerable<IContainer> allTopContainers()
       {
-         return _context.CurrentProject.SpatialStructureCollection.SelectMany(spatialStructure => spatialStructure.TopContainers);
+         return _buildingBlockRepository.SpatialStructureCollection.SelectMany(spatialStructure => spatialStructure.TopContainers);
       }
 
       private IEnumerable<IContainer> allSubContainers(IContainer container)

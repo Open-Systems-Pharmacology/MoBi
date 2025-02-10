@@ -1,32 +1,34 @@
-﻿using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.Utility.Extensions;
+﻿using System.Linq;
+using DevExpress.LookAndFeel;
 using DevExpress.XtraEditors.Controls;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using MoBi.UI.Extensions;
-using OSPSuite.Presentation.Views;
 using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.Presentation.Extensions;
+using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
-using OSPSuite.UI.Services;
+using OSPSuite.Utility.Extensions;
 using ToolTips = MoBi.Assets.ToolTips;
 
 namespace MoBi.UI.Views
 {
    public partial class EditContainerView : BaseUserControl, IEditContainerView
    {
-      private readonly IImageListRetriever _imageListRetriever;
       protected IEditContainerPresenter _presenter;
       protected ScreenBinder<ContainerDTO> _screenBinder;
       protected bool _readOnly;
+      private readonly UserLookAndFeel _lookAndFeel;
 
-      public EditContainerView(IImageListRetriever imageListRetriever)
+      public EditContainerView(UserLookAndFeel lookAndFeel)
       {
-         _imageListRetriever = imageListRetriever;
+         _lookAndFeel = lookAndFeel;
          InitializeComponent();
       }
 
@@ -34,19 +36,24 @@ namespace MoBi.UI.Views
       {
          base.InitializeBinding();
          _screenBinder = new ScreenBinder<ContainerDTO>();
-         _screenBinder.Bind(dto => dto.Mode).To(cbContainerMode)
-            .WithValues(dto => _presenter.AllContainerModes())
+         _screenBinder.Bind(dto => dto.Mode)
+            .To(cbContainerMode)
+            .WithValues(dto => _presenter.AllContainerModes)
             .AndDisplays(mode => _presenter.ContainerModeDisplayFor(mode))
-            .OnValueUpdating += (o, e) => OnEvent((() => _presenter.SetContainerMode(e.NewValue)));
+            .OnValueUpdating += (o, e) => executeContainerModeChange(o, e.NewValue);
 
          _screenBinder.Bind(dto => dto.ContainerType)
             .To(cbContainerType)
-            .WithValues(dto => _presenter.AllContainerTypes())
+            .WithValues(dto => _presenter.AllContainerTypes)
             .OnValueUpdating += onValueUpdating;
 
          _screenBinder.Bind(dto => dto.Name)
             .To(btName)
             .OnValueUpdating += onNameSet;
+
+         _screenBinder.Bind(dto => dto.ParentPath)
+            .To(btParentPath)
+            .OnValueUpdating += onParentPathSet;
 
          _screenBinder.Bind(dto => dto.Description)
             .To(htmlEditor)
@@ -56,6 +63,19 @@ namespace MoBi.UI.Views
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
 
          btName.ButtonClick += (o, e) => OnEvent(_presenter.RenameSubject);
+         btParentPath.ButtonClick += (o, e) => OnEvent(_presenter.UpdateParentPath);
+      }
+
+      private void executeContainerModeChange(ContainerDTO container, ContainerMode newMode)
+      {
+         OnEvent(() =>
+         {
+            var result = _presenter.ConfirmAndSetContainerMode(newMode);
+            cbContainerMode.SelectedIndex = _presenter.AllContainerModes.Select((mode, index) => new { mode, index })
+               .Where(x => x.mode == result)
+               .Select(x => x.index)
+               .FirstOrDefault();
+         });
       }
 
       public void Activate()
@@ -70,18 +90,25 @@ namespace MoBi.UI.Views
          btName.ToolTip = ToolTips.Container.ContainerName;
          tabProperties.InitWith(AppConstants.Captions.Properties, ApplicationIcons.Properties);
          tabParameters.InitWith(AppConstants.Captions.Parameters, ApplicationIcons.Parameter);
+         layoutItemParentPath.Text = AppConstants.Captions.ParentPath.FormatForLabel();
+         layoutControl.InitializeDisabledColors(_lookAndFeel);
       }
 
       private void onNameSet(ContainerDTO container, PropertyValueSetEventArgs<string> e)
       {
-         OnEvent(() => _presenter.SetInitialName(e.NewValue));
+         OnEvent(() => _presenter.SetName(e.NewValue));
+      }
+
+      private void onParentPathSet(ContainerDTO container, PropertyValueSetEventArgs<string> e)
+      {
+         OnEvent(() => _presenter.SetParentPath(e.NewValue));
       }
 
       private void onValueUpdating<T>(ContainerDTO container, PropertyValueSetEventArgs<T> e)
       {
          OnEvent(() => _presenter.SetPropertyValueFromView(e.PropertyName, e.NewValue, e.OldValue));
       }
-   
+
       public void AttachPresenter(IEditContainerPresenter presenter)
       {
          _presenter = presenter;
@@ -91,6 +118,13 @@ namespace MoBi.UI.Views
       {
          _screenBinder.BindToSource(dto);
          initNameControl(dto);
+         initParentPathControl(dto);
+      }
+
+      private void initParentPathControl(ContainerDTO dto)
+      {
+         editParentPathButton.Visible = dto.ParentPathEditable && !_readOnly;
+         btParentPath.Enabled = dto.ParentPathEditable;
       }
 
       private void initNameControl(ContainerDTO dto)
@@ -98,10 +132,13 @@ namespace MoBi.UI.Views
          var isInit = dto.Name.IsNullOrEmpty();
          editNameButton.Enabled = !isInit;
          editNameButton.Visible = !isInit && !_readOnly;
-         btName.Properties.ReadOnly = !isInit;
+         btName.ReadOnly = !isInit;
+         btName.Enabled = !isInit;
       }
 
       private EditorButton editNameButton => btName.Properties.Buttons[0];
+
+      private EditorButton editParentPathButton => btParentPath.Properties.Buttons[0];
 
       public void AddParameterView(IView view)
       {

@@ -2,6 +2,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
+using MoBi.Core.Domain.Repository;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -18,8 +19,9 @@ namespace MoBi.Presentation.Presenter
          IObjectBaseToDummyMoleculeDTOMapper objectBaseToMoleculeDummyMapper,
          IParameterToDummyParameterDTOMapper dummyParameterDTOMapper,
          IObjectBaseDTOToReferenceNodeMapper referenceMapper,
-         IObjectPathCreatorAtMoleculeParameter objectBaseCreator)
-         : base(view, objectBaseDTOMapper, context, userSettings, objectBaseToMoleculeDummyMapper, dummyParameterDTOMapper, referenceMapper, objectBaseCreator)
+         IObjectPathCreatorAtMoleculeParameter objectBaseCreator, 
+         IBuildingBlockRepository buildingBlockRepository)
+         : base(view, objectBaseDTOMapper, context, userSettings, objectBaseToMoleculeDummyMapper, dummyParameterDTOMapper, referenceMapper, objectBaseCreator, buildingBlockRepository)
       {
       }
 

@@ -1,28 +1,51 @@
-using OSPSuite.Utility.Format;
+using System;
 using MoBi.Presentation.DTO;
+using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Utility.Format;
 
 namespace MoBi.Presentation.Formatters
 {
    public static class FormatterExtensions
    {
-      public static IFormatter<double?> MoleculeStartValueFormatter(this MoleculeStartValueDTO moleculeStartValueDTO)
+      public static IFormatter<double?> InitialConditionFormatter(this InitialConditionDTO initialConditionDTO)
       {
-         return new StartValueFormatter(moleculeStartValueDTO);
+         return new ValueAllowingNaNFormatter(initialConditionDTO);
       }
 
-      public static IFormatter<double?> ParameterStartValueFormatter(this ParameterStartValueDTO parameterStartValueDTO)
+      public static IFormatter<double?> ParameterValueFormatter(this ParameterValueDTO parameterValueDTO)
       {
-         return new StartValueFormatter(parameterStartValueDTO);
+         return new ValueAllowingNaNFormatter(parameterValueDTO);
       }
 
-      public static IFormatter<double> ValuePointXFormatter(this DTOValuePoint dtoValuePoint)
+      public static IFormatter<double?> OriginalQuantityValueFormatter(this OriginalQuantityValueDTO originalQuantityValueDTO, Func<OriginalQuantityValueDTO, Unit> displayUnitRetriever)
       {
-         return new ValuePointFormatter(dtoValuePoint.X);
+         return new NullableWithRetrievableDisplayUnitFormatter(() => displayUnitRetriever(originalQuantityValueDTO));
       }
 
-      public static IFormatter<double> ValuePointYFormatter(this DTOValuePoint dtoValuePoint)
+      public static IFormatter<double?> IndividualParameterFormatter(this IndividualParameterDTO individualParameterDTO)
       {
-         return new ValuePointFormatter(dtoValuePoint.Y);
+         return new ValueAllowingNaNFormatter(individualParameterDTO);
+      }
+
+      public static IFormatter<double?> ExpressionParameterFormatter(this ExpressionParameterDTO expressionParameterDTO)
+      {
+         return new ValueAllowingNaNFormatter(expressionParameterDTO);
+      }
+
+      public static IFormatter<double?> PathAndValueEntityFormatter<T>(this PathAndValueEntityDTO<T> pathAndValueEntityDTO) where T : PathAndValueEntity
+      {
+         return new ValueAllowingNaNFormatter(pathAndValueEntityDTO);
+      }
+ 
+      public static IFormatter<double> ValuePointXFormatter(this DTOValuePoint valuePointDTO)
+      {
+         return new ValuePointFormatter(valuePointDTO.X);
+      }
+
+      public static IFormatter<double> ValuePointYFormatter(this DTOValuePoint valuePointDTO)
+      {
+         return new ValuePointFormatter(valuePointDTO.Y);
       }
    }
 }

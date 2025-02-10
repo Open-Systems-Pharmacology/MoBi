@@ -2,13 +2,13 @@
 using System.Drawing;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
-using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
 using MoBi.Core.Events;
+using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -27,7 +27,7 @@ using IEntityContainer = OSPSuite.Core.Domain.IContainer;
 
 namespace MoBi.Presentation.Presenter
 {
-   public interface IEditApplicationBuilderPresenter : IEditPresenterWithParameters<IApplicationBuilder>, IPresenter<IEditApplicationBuilderView>,
+   public interface IEditApplicationBuilderPresenter : IEditPresenterWithParameters<ApplicationBuilder>, IPresenter<IEditApplicationBuilderView>,
       ICanEditPropertiesPresenter, IPresenterWithFormulaCache, IPresenterWithContextMenu<IViewItem>,
       IListener<AddedEvent>, IListener<RemovedEvent>
    {
@@ -40,51 +40,54 @@ namespace MoBi.Presentation.Presenter
       void SetRelativeContainerPath(ApplicationMoleculeBuilderDTO applicationMoleculeBuilderDTO, string newRelativeContainerPath);
    }
 
-   internal class EditApplicationBuilderPresenter : AbstractEntityEditPresenter<IEditApplicationBuilderView, IEditApplicationBuilderPresenter, IApplicationBuilder>, IEditApplicationBuilderPresenter
+   internal class EditApplicationBuilderPresenter : AbstractEntityEditPresenter<IEditApplicationBuilderView, IEditApplicationBuilderPresenter, ApplicationBuilder>, IEditApplicationBuilderPresenter
    {
-      private IApplicationBuilder _applicationBuilder;
-      private readonly IEditTaskFor<IApplicationBuilder> _editTasks;
-      private readonly IApplicationBuilderToApplicationBuilderDTOMapper _applicationBuilderToDTOApllicationBuilderMapper;
+      private ApplicationBuilder _applicationBuilder;
+      private readonly IEditTaskFor<ApplicationBuilder> _editTasks;
+      private readonly IApplicationBuilderToApplicationBuilderDTOMapper _applicationBuilderMapper;
       private readonly IFormulaToFormulaBuilderDTOMapper _formulaToDTOFormulaMapper;
-      private readonly IInteractionTasksForChildren<IApplicationBuilder, IApplicationMoleculeBuilder> _interactionTasksForApplicationMoleculeBuilder;
+      private readonly IInteractionTasksForChildren<ApplicationBuilder, ApplicationMoleculeBuilder> _interactionTasksForApplicationMoleculeBuilder;
       private readonly IViewItemContextMenuFactory _viewItemContextMenuFactory;
       private readonly IEditParametersInContainerPresenter _editParametersInContainerPresenter;
       private readonly IMoBiContext _context;
-      private readonly IDescriptorConditionListPresenter<IApplicationBuilder> _descriptorConditionListPresenter;
+      private readonly IDescriptorConditionListPresenter<ApplicationBuilder> _descriptorConditionListPresenter;
       private readonly IApplicationController _applicationController;
+      private readonly IBuildingBlockRepository _buildingBlockRepository;
       private readonly string _formulaPropertyName;
 
-      public EditApplicationBuilderPresenter(IEditApplicationBuilderView view, IEditTaskFor<IApplicationBuilder> editTasks, 
+      public EditApplicationBuilderPresenter(IEditApplicationBuilderView view, IEditTaskFor<ApplicationBuilder> editTasks, 
          IFormulaToFormulaBuilderDTOMapper formulaToDTOFormulaMapper,
-         IApplicationBuilderToApplicationBuilderDTOMapper applicationBuilderToDTOApllicationBuilderMapper, 
-         IInteractionTasksForChildren<IApplicationBuilder, IApplicationMoleculeBuilder> interactionTasksForApplicationMoleculeBuilder,
+         IApplicationBuilderToApplicationBuilderDTOMapper applicationBuilderMapper, 
+         IInteractionTasksForChildren<ApplicationBuilder, ApplicationMoleculeBuilder> interactionTasksForApplicationMoleculeBuilder,
          IViewItemContextMenuFactory viewItemContextMenuFactory, 
          IEditParametersInContainerPresenter editParametersInContainerPresenter, IMoBiContext context,
-         IDescriptorConditionListPresenter<IApplicationBuilder> descriptorConditionListPresenter, IApplicationController applicationController)
+         IDescriptorConditionListPresenter<ApplicationBuilder> descriptorConditionListPresenter, IApplicationController applicationController,
+         IBuildingBlockRepository buildingBlockRepository)
          : base(view)
       {
          _descriptorConditionListPresenter = descriptorConditionListPresenter;
          _applicationController = applicationController;
+         _buildingBlockRepository = buildingBlockRepository;
          _context = context;
          _editParametersInContainerPresenter = editParametersInContainerPresenter;
          _view.SetParametersView(_editParametersInContainerPresenter.BaseView);
          _viewItemContextMenuFactory = viewItemContextMenuFactory;
          _interactionTasksForApplicationMoleculeBuilder = interactionTasksForApplicationMoleculeBuilder;
-         _applicationBuilderToDTOApllicationBuilderMapper = applicationBuilderToDTOApllicationBuilderMapper;
+         _applicationBuilderMapper = applicationBuilderMapper;
          _formulaToDTOFormulaMapper = formulaToDTOFormulaMapper;
          _editTasks = editTasks;
          _view.AddDescriptorConditionListView(_descriptorConditionListPresenter.View);
-         _formulaPropertyName = MoBiReflectionHelper.PropertyName<IApplicationMoleculeBuilder>(x => x.Formula);
+         _formulaPropertyName = MoBiReflectionHelper.PropertyName<ApplicationMoleculeBuilder>(x => x.Formula);
 
          AddSubPresenters(_editParametersInContainerPresenter, _descriptorConditionListPresenter);
       }
 
-      public override void Edit(IApplicationBuilder applicationBuilder, IEnumerable<IObjectBase> existingObjectsInParent)
+      public override void Edit(ApplicationBuilder applicationBuilder, IReadOnlyList<IObjectBase> existingObjectsInParent)
       {
          _applicationBuilder = applicationBuilder;
          _editParametersInContainerPresenter.BuildingBlock = BuildingBlock;
          _view.EnableDescriptors = (applicationBuilder.ParentContainer == null);
-         var dto = _applicationBuilderToDTOApllicationBuilderMapper.MapFrom(applicationBuilder);
+         var dto = _applicationBuilderMapper.MapFrom(applicationBuilder);
          dto.AddUsedNames(_editTasks.GetForbiddenNamesWithoutSelf(applicationBuilder, existingObjectsInParent));
          dto.GetMoleculeNames(GetMoleculeNames);
          _view.BindTo(dto);
@@ -92,10 +95,7 @@ namespace MoBi.Presentation.Presenter
          _descriptorConditionListPresenter.Edit(_applicationBuilder,  x=> x.SourceCriteria, BuildingBlock);
       }
 
-      public override object Subject
-      {
-         get { return _applicationBuilder; }
-      }
+      public override object Subject => _applicationBuilder;
 
       public void SelectParameter(IParameter parameter)
       {
@@ -105,7 +105,7 @@ namespace MoBi.Presentation.Presenter
 
       public void SetPropertyValueFromView<T>(string propertyName, T newValue, T oldValue)
       {
-         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, _applicationBuilder, BuildingBlock).Run(_context));
+         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, _applicationBuilder, BuildingBlock).RunCommand(_context));
       }
 
       public void RenameSubject()
@@ -115,10 +115,7 @@ namespace MoBi.Presentation.Presenter
 
       public IBuildingBlock BuildingBlock { get; set; }
 
-      public IFormulaCache FormulaCache
-      {
-         get { return BuildingBlock.FormulaCache; }
-      }
+      public IFormulaCache FormulaCache => BuildingBlock.FormulaCache;
 
       public IEnumerable<FormulaBuilderDTO> GetFormulas()
       {
@@ -132,7 +129,7 @@ namespace MoBi.Presentation.Presenter
 
       public void RemoveApplicationMolecule(ApplicationMoleculeBuilderDTO dtoApplicationMoleculeBuilder)
       {
-         var applicationMoleculeBuilder = _context.Get<IApplicationMoleculeBuilder>(dtoApplicationMoleculeBuilder.Id);
+         var applicationMoleculeBuilder = _context.Get<ApplicationMoleculeBuilder>(dtoApplicationMoleculeBuilder.Id);
          AddCommand(_interactionTasksForApplicationMoleculeBuilder.Remove(applicationMoleculeBuilder, _applicationBuilder, BuildingBlock));
       }
 
@@ -143,7 +140,7 @@ namespace MoBi.Presentation.Presenter
          using (var presenter = _applicationController.Start<ISelectFormulaUsablePathPresenter>())
          {
             var selectionPresenter = _applicationController.Start<ISelectReferencePresenterAtApplicationBuilder>();
-            presenter.Init(ob => ob.IsAnImplementationOf<IEntityContainer>(), _applicationBuilder, _applicationBuilder.RootContainer, AppConstants.Captions.RelativeContainerPath, selectionPresenter);
+            presenter.Init(ob => ob.IsAnImplementationOf<IEntityContainer>(), _applicationBuilder, _applicationBuilder.RootContainer.ToList(), AppConstants.Captions.RelativeContainerPath, selectionPresenter);
             var path = presenter.GetSelection();
             if (path == null)
                return;
@@ -153,16 +150,16 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      private void updateRelativeContainerPath(IApplicationMoleculeBuilder applicationMoleculeBuilder, IObjectPath path)
+      private void updateRelativeContainerPath(ApplicationMoleculeBuilder applicationMoleculeBuilder, ObjectPath path)
       {
-         AddCommand(new EditRelativeContainerPathPropertyAtApplicationMoleculeBuilderCommand(applicationMoleculeBuilder, path, BuildingBlock).Run(_context));
+         AddCommand(new EditRelativeContainerPathPropertyAtApplicationMoleculeBuilderCommand(applicationMoleculeBuilder, path, BuildingBlock).RunCommand(_context));
       }
 
       public void UpdateFormula(ApplicationMoleculeBuilderDTO applicationMoleculeBuilderDTO, FormulaBuilderDTO newFormulaDTO)
       {
-         var applicationMoleculeBuilder = _context.Get<IApplicationMoleculeBuilder>(applicationMoleculeBuilderDTO.Id);
+         var applicationMoleculeBuilder = _context.Get<ApplicationMoleculeBuilder>(applicationMoleculeBuilderDTO.Id);
          var newFormula = FormulaCache.FindById(newFormulaDTO.Id);
-         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(_formulaPropertyName, newFormula, applicationMoleculeBuilder.Formula, applicationMoleculeBuilder, BuildingBlock).Run(_context));
+         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(_formulaPropertyName, newFormula, applicationMoleculeBuilder.Formula, applicationMoleculeBuilder, BuildingBlock).RunCommand(_context));
       }
 
       public void SetRelativeContainerPath(ApplicationMoleculeBuilderDTO applicationMoleculeBuilderDTO, string newRelativeContainerPath)
@@ -174,18 +171,18 @@ namespace MoBi.Presentation.Presenter
       public void SetPropertyValueFor<T>(ApplicationMoleculeBuilderDTO dto, string propertyName, T newValue, T oldValue)
       {
          var applicationMoleculeBuilder = applicationMoleculeBuilderFrom(dto);
-         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, applicationMoleculeBuilder, BuildingBlock).Run(_context));
+         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, applicationMoleculeBuilder, BuildingBlock).RunCommand(_context));
       }
 
-      private IApplicationMoleculeBuilder applicationMoleculeBuilderFrom(ApplicationMoleculeBuilderDTO dto)
+      private ApplicationMoleculeBuilder applicationMoleculeBuilderFrom(ApplicationMoleculeBuilderDTO dto)
       {
-         return _context.Get<IApplicationMoleculeBuilder>(dto.Id);
+         return _context.Get<ApplicationMoleculeBuilder>(dto.Id);
       }
 
       public IEnumerable<string> GetMoleculeNames()
       {
          IEnumerable<string> names = new HashSet<string>();
-         return _context.CurrentProject.MoleculeBlockCollection
+         return _buildingBlockRepository.MoleculeBlockCollection
             .Aggregate(names, (current, moleculeBlock) => current.Union(moleculeBlock.AllNames()))
             .OrderBy(x => x);
       }
@@ -209,7 +206,7 @@ namespace MoBi.Presentation.Presenter
       public void Handle(AddedEvent eventToHandle)
       {
          if (_applicationBuilder == null) return;
-         if (eventToHandle.AddedObject.IsAnImplementationOf<IApplicationMoleculeBuilder>())
+         if (eventToHandle.AddedObject.IsAnImplementationOf<ApplicationMoleculeBuilder>())
          {
             Edit(_applicationBuilder);
          }
@@ -218,7 +215,7 @@ namespace MoBi.Presentation.Presenter
       public void Handle(RemovedEvent eventToHandle)
       {
          if (_applicationBuilder == null) return;
-         if (eventToHandle.RemovedObjects.Any(removedObject => removedObject.IsAnImplementationOf<IApplicationMoleculeBuilder>()))
+         if (eventToHandle.RemovedObjects.Any(removedObject => removedObject.IsAnImplementationOf<ApplicationMoleculeBuilder>()))
          {
             Edit(_applicationBuilder);
          }

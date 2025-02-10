@@ -8,8 +8,10 @@ using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Events;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Events;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -23,13 +25,15 @@ namespace MoBi.Presentation.Presenter
       void Edit(IMoBiSimulation simulation);
    }
 
-   internal class EditOutputSchemaPresenter : AbstractSubPresenter<IEditOutputSchemaView, IEditOutputSchemaPresenter>, IEditOutputSchemaPresenter
+   internal class EditOutputSchemaPresenter : AbstractSubPresenter<IEditOutputSchemaView, IEditOutputSchemaPresenter>, 
+      IEditOutputSchemaPresenter,
+      IListener<OutputSchemaChangedEvent>
    {
       private readonly IOutputIntervalToOutputIntervalDTOMapper _intervalMapper;
       private readonly IQuantityTask _quantityTask;
       private readonly IOutputSchemaTask _outputSchemaTask;
       private ICache<OutputIntervalDTO, OutputInterval> _allIntervals;
-      private ISimulationSettings _simulationSettings;
+      private SimulationSettings _simulationSettings;
       private IMoBiSimulation _simulation;
 
       public EditOutputSchemaPresenter(IEditOutputSchemaView view, IOutputIntervalToOutputIntervalDTOMapper intervalMapper,
@@ -52,10 +56,10 @@ namespace MoBi.Presentation.Presenter
       public void Edit(IMoBiSimulation simulation)
       {
          _simulation = simulation;
-         Edit(_simulation.SimulationSettings);
+         Edit(_simulation.Settings);
       }
 
-      public void Edit(ISimulationSettings simulationSettings)
+      public void Edit(SimulationSettings simulationSettings)
       {
          _simulationSettings = simulationSettings;
          bindToView();
@@ -63,13 +67,13 @@ namespace MoBi.Presentation.Presenter
 
       public void AddOutputInterval()
       {
-         AddCommand(_outputSchemaTask.AddOuputIntervalTo(_simulationSettings, _simulation));
+         AddCommand(_outputSchemaTask.AddOutputIntervalTo(_simulationSettings));
          bindToView();
       }
 
       public void RemoveOutputInterval(OutputIntervalDTO outputIntervalDTO)
       {
-         AddCommand(_outputSchemaTask.RemoveOuputInterval(getIntervalFromDto(outputIntervalDTO), _simulationSettings, _simulation));
+         AddCommand(_outputSchemaTask.RemoveOutputInterval(getIntervalFromDto(outputIntervalDTO), _simulationSettings));
          bindToView();
       }
 
@@ -85,7 +89,7 @@ namespace MoBi.Presentation.Presenter
       {
          var parameter = parameterDTO.Parameter;
          AddCommand(_simulation != null
-            ? _quantityTask.SetQuantityDisplayValue(parameter, valuevalueInDisplayUnit, _simulation)
+            ? _quantityTask.SetQuantityDisplayValue(parameter, valuevalueInDisplayUnit, _simulation.Settings)
             : _quantityTask.SetQuantityDisplayValue(parameter, valuevalueInDisplayUnit, _simulationSettings));
       }
 
@@ -99,6 +103,12 @@ namespace MoBi.Presentation.Presenter
       public bool ShowGroupCaption
       {
          set => View.ShowGroupCaption = value;
+      }
+
+      public void Handle(OutputSchemaChangedEvent eventToHandle)
+      {
+         if (eventToHandle.OutputSchema.Equals(_simulationSettings.OutputSchema))
+            bindToView();
       }
    }
 }

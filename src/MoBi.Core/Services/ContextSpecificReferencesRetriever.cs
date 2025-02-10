@@ -9,14 +9,14 @@ namespace MoBi.Core.Services
 {
    public interface IContextSpecificReferencesRetriever
    {
-      IEnumerable<IObjectBase> RetrieveFor(IEventAssignmentBuilder eventAssignment);
+      IEnumerable<IObjectBase> RetrieveFor(EventAssignmentBuilder eventAssignment);
       IEntity RetrieveLocalReferencePoint(IParameter parameter);
       IEnumerable<IObjectBase> RetrieveFor(IParameter parameter, IBuildingBlock buildingBlock);
    }
 
    public class ContextSpecificReferencesRetriever : IContextSpecificReferencesRetriever
    {
-      public IEnumerable<IObjectBase> RetrieveFor(IEventAssignmentBuilder eventAssignment)
+      public IEnumerable<IObjectBase> RetrieveFor(EventAssignmentBuilder eventAssignment)
       {
          return new IObjectBase[] {eventAssignment.RootContainer};
       }
@@ -43,11 +43,11 @@ namespace MoBi.Core.Services
 
        
          if (parameter.IsAtReaction())
-            return entities.Union(getOther(parameter,(IBuildingBlock<IReactionBuilder>) buildingBlock));
+            return entities.Union(getOther(parameter,(IBuildingBlock<ReactionBuilder>) buildingBlock));
          return entities;
       }
 
-      private IEnumerable<IObjectBase> getOther<T>(IParameter parameter,IBuildingBlock<T> buildingBlock) where T: class, IObjectBase
+      private IEnumerable<IObjectBase> getOther<T>(IParameter parameter,IBuildingBlock<T> buildingBlock) where T: class, IBuilder
       {
          var other = buildingBlock.Cast<IContainer>().ToList();
          other.Remove(parameter.ParentContainer);

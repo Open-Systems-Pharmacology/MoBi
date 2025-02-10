@@ -16,31 +16,31 @@ namespace MoBi.Presentation
    {
       protected IEditTransportBuilderView _view;
       protected ITransportBuilderToTransportBuilderDTOMapper _transportBuilderMapper;
-      protected IEditTaskFor<ITransportBuilder> _editTask;
+      protected IEditTaskFor<TransportBuilder> _editTask;
       protected IViewItemContextMenuFactory _contextMenuFactory;
       protected IFormulaToFormulaBuilderDTOMapper _formulaBuilderDTOMapper;
       protected IEditParametersInContainerPresenter _editParametersInContainerPresenter;
-      protected IEditFormulaPresenter _editFormulaPresenter;
+      protected IEditFormulaInContainerPresenter _editFormulaPresenter;
       protected ISelectReferenceAtTransportPresenter _selectReferenceAtTransportPresenter;
       protected IMoBiContext _context;
       protected IMoleculeDependentBuilderPresenter _moleculeListPresenter;
-      protected IDescriptorConditionListPresenter<ITransportBuilder> _sourceCriteriaPresenter;
-      protected IDescriptorConditionListPresenter<ITransportBuilder> _targetCriteriaPresenter;
+      protected IDescriptorConditionListPresenter<TransportBuilder> _sourceCriteriaPresenter;
+      protected IDescriptorConditionListPresenter<TransportBuilder> _targetCriteriaPresenter;
 
       protected override void Context()
       {
          _view = A.Fake<IEditTransportBuilderView>();
          _transportBuilderMapper = A.Fake<ITransportBuilderToTransportBuilderDTOMapper>();
-         _editTask = A.Fake<IEditTaskFor<ITransportBuilder>>();
+         _editTask = A.Fake<IEditTaskFor<TransportBuilder>>();
          _contextMenuFactory = A.Fake<IViewItemContextMenuFactory>();
          _formulaBuilderDTOMapper = A.Fake<IFormulaToFormulaBuilderDTOMapper>();
          _editParametersInContainerPresenter = A.Fake<IEditParametersInContainerPresenter>();
-         _editFormulaPresenter = A.Fake<IEditFormulaPresenter>();
+         _editFormulaPresenter = A.Fake<IEditFormulaInContainerPresenter>();
          _selectReferenceAtTransportPresenter = A.Fake<ISelectReferenceAtTransportPresenter>();
          _context = A.Fake<IMoBiContext>();
          _moleculeListPresenter = A.Fake<IMoleculeDependentBuilderPresenter>();
-         _sourceCriteriaPresenter = A.Fake<IDescriptorConditionListPresenter<ITransportBuilder>>();
-         _targetCriteriaPresenter = A.Fake<IDescriptorConditionListPresenter<ITransportBuilder>>();
+         _sourceCriteriaPresenter = A.Fake<IDescriptorConditionListPresenter<TransportBuilder>>();
+         _targetCriteriaPresenter = A.Fake<IDescriptorConditionListPresenter<TransportBuilder>>();
 
          sut = new EditTransportBuilderPresenter(_view,_transportBuilderMapper,_editTask,_contextMenuFactory,
             _formulaBuilderDTOMapper,_editParametersInContainerPresenter,_editFormulaPresenter,_selectReferenceAtTransportPresenter,

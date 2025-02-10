@@ -42,6 +42,9 @@ namespace MoBi.UI.Views
          _screenBinder.Bind(x => x.ShowPKSimObserverMessages)
             .To(chkValiadatePkSimStandardObserver);
 
+         _screenBinder.Bind(x => x.ShowUnresolvedEndosomesWarningsForInitialConditions)
+            .To(chkShowUnresolvedInitialConditions);
+
          _screenBinder.Bind(x => x.CheckRules)
             .To(chkValidateRules);
 
@@ -58,6 +61,7 @@ namespace MoBi.UI.Views
          chkValidateDimensions.Text = AppConstants.Captions.ValidateDimensions;
          chkShowPKSimWarnings.Text = AppConstants.Captions.ShowPKSimParameterWarnings;
          chkShowUnableToCalculateWarnings.Text = AppConstants.Captions.ShowUnableCalculateWarnings;
+         chkShowUnresolvedInitialConditions.Text = AppConstants.Captions.ShowUnresolvedEndosomeWarningsForInitialConditions;
          chkValidateRules.Text = AppConstants.Captions.ValidateRules;
          chkPerformCircularReferenceCheck.Text = AppConstants.Captions.PerformCircularReferenceCheck;
       }

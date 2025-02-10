@@ -8,12 +8,13 @@ using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Nodes;
+using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
-   public class RootContextMenuForSimulation : RootContextMenuFor<IMoBiProject, IMoBiSimulation>
+   public class RootContextMenuForSimulation : RootContextMenuFor<MoBiProject, IMoBiSimulation>
    {
-      public RootContextMenuForSimulation(IObjectTypeResolver objectTypeResolver, IMoBiContext context) : base(objectTypeResolver, context)
+      public RootContextMenuForSimulation(IObjectTypeResolver objectTypeResolver, IMoBiContext context, IContainer container) : base(objectTypeResolver, context, container)
       {
       }
 
@@ -31,13 +32,13 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       private IMenuBarItem deleteAllSimulationResults()
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.DeleteAllResults)
-            .WithCommand<DeleteAllResultsInAllSimulationsUICommand>();
+            .WithCommand<DeleteAllResultsInAllSimulationsUICommand>(_container);
       }
 
       private IMenuBarItem createAddExistingSimulationMenuBarItem()
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddExisting(ObjectTypes.Simulation))
-            .WithCommand<LoadProjectUICommand>()
+            .WithCommand<LoadProjectUICommand>(_container)
             .WithIcon(ApplicationIcons.SimulationLoad);
       }
 
@@ -45,7 +46,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddNew(ObjectTypes.Simulation))
             .WithIcon(ApplicationIcons.Simulation)
-            .WithCommand<NewSimulationCommand>();
+            .WithCommand<NewSimulationCommand>(_container);
       }
    }
 }

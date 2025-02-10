@@ -2,13 +2,11 @@
 using System.Drawing;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Core.Services;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
+using MoBi.Core.Extensions;
+using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
@@ -17,9 +15,12 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -36,10 +37,13 @@ namespace MoBi.Presentation.Presenter
       void Remove(FormulaBuilderDTO formulaDTO);
       void Rename(FormulaBuilderDTO formulaDTO);
       void Clone(FormulaBuilderDTO formulaDTO);
+      void Copy(FormulaBuilderDTO formulaDTO);
+      void Paste(FormulaBuilderDTO formulaDTO);
       void Select(IFormula formula);
+      bool FormulasExistOnClipBoard();
    }
 
-   internal class FormulaCachePresenter : AbstractEditPresenter<IFormulaCacheView, IFormulaCachePresenter, IBuildingBlock>, IFormulaCachePresenter
+   public class FormulaCachePresenter : AbstractEditPresenter<IFormulaCacheView, IFormulaCachePresenter, IBuildingBlock>, IFormulaCachePresenter
    {
       private IFormulaCache _cache;
       private readonly IFormulaToFormulaBuilderDTOMapper _formulaBuilderToDTOFormulaBuilderMapper;
@@ -51,21 +55,25 @@ namespace MoBi.Presentation.Presenter
       private readonly IDialogCreator _dialogCreator;
       private readonly ICloneManagerForBuildingBlock _cloneManager;
       private readonly IFormulaUsageChecker _formulaUsageChecker;
+      private readonly IObjectBaseNamingTask _namingTask;
       private IEnumerable<FormulaBuilderDTO> _dtoFormulaBuilders;
       private bool _disableEventsForHeavyWork;
+      private readonly IClipboardManager _clipboardManager;
 
       public FormulaCachePresenter(IFormulaCacheView view, IFormulaToFormulaBuilderDTOMapper formulaBuilderToDTOFormulaBuilderMapper,
          IFormulaPresenterCache formulaPresenterCache, IMoBiContext context, IViewItemContextMenuFactory viewItemContextMenuFactory,
-         IDialogCreator dialogCreator, ICloneManagerForBuildingBlock cloneManager, IFormulaUsageChecker formulaUsageChecker)
+         IDialogCreator dialogCreator, ICloneManagerForBuildingBlock cloneManager, IFormulaUsageChecker formulaUsageChecker, IObjectBaseNamingTask namingTask, IClipboardManager clipboardManager)
          : base(view)
       {
          _formulaBuilderToDTOFormulaBuilderMapper = formulaBuilderToDTOFormulaBuilderMapper;
          _cloneManager = cloneManager;
          _formulaUsageChecker = formulaUsageChecker;
+         _namingTask = namingTask;
          _context = context;
          _viewItemContextMenuFactory = viewItemContextMenuFactory;
          _dialogCreator = dialogCreator;
          _formulaPresenterCache = formulaPresenterCache;
+         _clipboardManager = clipboardManager;
       }
 
       public override void Edit(IBuildingBlock objectToEdit)
@@ -86,21 +94,20 @@ namespace MoBi.Presentation.Presenter
 
       private void addToParent(IFormula formula)
       {
-         AddCommand(new AddFormulaToFormulaCacheCommand(_buildingBlock, formula).Run(_context));
+         AddCommand(new AddFormulaToFormulaCacheCommand(_buildingBlock, formula).RunCommand(_context));
          Edit(_buildingBlock);
          Select(formula);
       }
 
       public void Select(FormulaBuilderDTO formulaDTO)
       {
-         if (formulaDTO == null) return;
+         if (formulaDTO == null) 
+            return;
+
          Select(getFormulaForDTO(formulaDTO));
       }
 
-      private IFormula getFormulaForDTO(FormulaBuilderDTO dtoFormulaBuilder)
-      {
-         return _cache.FindById(dtoFormulaBuilder.Id);
-      }
+      private IFormula getFormulaForDTO(FormulaBuilderDTO dtoFormulaBuilder) => _cache.FindById(dtoFormulaBuilder.Id);
 
       public void Remove(FormulaBuilderDTO formulaDTO)
       {
@@ -113,9 +120,10 @@ namespace MoBi.Presentation.Presenter
          }
 
          var result = _dialogCreator.MessageBoxYesNo(AppConstants.Captions.ReallyDeleteFormula(formula.Name));
-         if (result == ViewResult.No) return;
+         if (result == ViewResult.No) 
+            return;
 
-         AddCommand(new RemoveFormulaFromFormulaCacheCommand(_buildingBlock, formula).Run(_context));
+         AddCommand(new RemoveFormulaFromFormulaCacheCommand(_buildingBlock, formula).RunCommand(_context));
          //Ensure that if an invalid formula is removed, the invalid message is removed as well
          _context.PublishEvent(new FormulaValidEvent(formula, _buildingBlock));
          Edit(_buildingBlock);
@@ -124,27 +132,67 @@ namespace MoBi.Presentation.Presenter
       public void Rename(FormulaBuilderDTO formulaDTO)
       {
          var formula = getFormulaForDTO(formulaDTO);
-         if (formula == null) return;
 
-         var newName = _dialogCreator.AskForInput(AppConstants.Captions.NewName, AppConstants.Captions.EnterNewFormulaName, formula.Name, _buildingBlock.FormulaCache.Select(x => x.Name));
-         if (string.IsNullOrEmpty(newName)) return;
+         if (formula == null)
+            return;
 
-         AddCommand(new RenameObjectBaseCommand(formula, newName, _buildingBlock).Run(_context));
+         var newName = getNewNameForFormula(formula);
+
+         if (string.IsNullOrEmpty(newName))
+            return;
+
+         AddCommand(new RenameObjectBaseCommand(formula, newName, _buildingBlock).RunCommand(_context));
          Edit(_buildingBlock);
       }
+
+      private string getNewNameForFormula(IFormula formula) => _namingTask.RenameFor(formula, _buildingBlock.FormulaCache.Select(x => x.Name).ToList());
 
       public void Clone(FormulaBuilderDTO formulaDTO)
       {
          var formula = getFormulaForDTO(formulaDTO);
-         if (formula == null) return;
+         if (formula == null) 
+            return;
 
-         var newName = _dialogCreator.AskForInput(AppConstants.Captions.NewName, AppConstants.Captions.CloneFormulaTitle, formula.Name, _buildingBlock.FormulaCache.Select(x => x.Name));
-         if (string.IsNullOrEmpty(newName)) return;
+         var newName = _namingTask.NewName(AppConstants.Captions.NewName, AppConstants.Captions.CloneFormulaTitle, formula.Name, _buildingBlock.FormulaCache.Select(x => x.Name));
+         if (string.IsNullOrEmpty(newName))
+            return;
 
          var cloneFormula = _cloneManager.Clone(formula, new FormulaCache());
          cloneFormula.Name = newName;
          addToParent(cloneFormula);
       }
+
+      public void Copy(FormulaBuilderDTO formulaDTO) => _clipboardManager.CopyToClipBoard(getFormulaForDTO(formulaDTO));
+
+      public void Paste(FormulaBuilderDTO formulaDTO)
+      {
+         if (_clipboardManager.ClipBoardContainsType<IFormula>())
+            _clipboardManager.PasteFromClipBoard<IFormula>(addFormulaAndSelect);
+      }
+
+      private void addFormulaAndSelect(IFormula formula)
+      {
+         if (formulaNameConflicts(formula) && !renameConflictingFormula(formula))
+            return;
+
+         addToParent(formula);
+         _view.Select(dtoFor(formula));
+      }
+
+      private bool formulaNameConflicts(IFormula formula) => _cache.FindByName(formula.Name) != null;
+
+      private bool renameConflictingFormula(IFormula formula)
+      {
+         var newName = getNewNameForFormula(formula);
+         if (string.IsNullOrEmpty(newName))
+            return false;
+
+         // We can rename this formula without a command because it is not in the cache yet
+         formula.Name = newName;
+         return true;
+      }
+
+      public bool FormulasExistOnClipBoard() => _clipboardManager.ClipBoardContainsType<IFormula>();
 
       public override void ReleaseFrom(IEventPublisher eventPublisher)
       {
@@ -164,20 +212,21 @@ namespace MoBi.Presentation.Presenter
 
       private bool formulaIsBeingEdited(IFormula formula)
       {
-         if (_editPresenter == null) return false;
+         if (_editPresenter == null)
+            return false;
          return Equals(_editPresenter.Subject, formula);
       }
 
-      public void ShowContextMenu(IViewItem objectRequestingPopup, Point popupLocation)
-      {
-         var contextMenu = _viewItemContextMenuFactory.CreateFor(objectRequestingPopup, this);
-         contextMenu.Show(_view, popupLocation);
-      }
+      public void ShowContextMenu(IViewItem objectRequestingPopup, Point popupLocation) => 
+         _viewItemContextMenuFactory.CreateFor(objectRequestingPopup, this).Show(_view, popupLocation);
 
       public void Handle(EntitySelectedEvent eventToHandle)
       {
          var formula = eventToHandle.ObjectBase as IFormula;
-         if (formula == null) return;
+         
+         if (formula == null) 
+            return;
+         
          if (_cache.Contains(formula))
          {
             Select(formula);
@@ -190,9 +239,11 @@ namespace MoBi.Presentation.Presenter
          if (_disableEventsForHeavyWork)
             return;
 
-         if (_cache == null) return;
+         if (_cache == null) 
+            return;
          var formula = eventToHandle.AddedObject as IFormula;
-         if (formula == null) return;
+         if (formula == null) 
+            return;
 
          if (!Equals(eventToHandle.Parent, _buildingBlock))
             return;
@@ -224,15 +275,9 @@ namespace MoBi.Presentation.Presenter
          Edit(_buildingBlock);
       }
 
-      private FormulaBuilderDTO dtoFor(IFormula formula)
-      {
-         return _dtoFormulaBuilders.FindById(formula.Id);
-      }
+      private FormulaBuilderDTO dtoFor(IFormula formula) => _dtoFormulaBuilders.FindById(formula.Id);
 
-      public void Handle(BulkUpdateStartedEvent eventToHandle)
-      {
-         _disableEventsForHeavyWork = true;
-      }
+      public void Handle(BulkUpdateStartedEvent eventToHandle) => _disableEventsForHeavyWork = true;
 
       public void Handle(BulkUpdateFinishedEvent eventToHandle)
       {

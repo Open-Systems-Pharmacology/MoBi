@@ -5,7 +5,7 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
-   public abstract class InteractionTasksForEventGroupChildren<TChild> : InteractionTasksForChildren<IEventGroupBuilder, TChild> where TChild : class, IEntity
+   public abstract class InteractionTasksForEventGroupChildren<TChild> : InteractionTasksForChildren<EventGroupBuilder, TChild> where TChild : class, IEntity
    {
       protected InteractionTasksForEventGroupChildren(IInteractionTaskContext interactionTaskContext, IEditTaskFor<TChild> editTask)
          : base(interactionTaskContext, editTask)
@@ -20,17 +20,17 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
       }
 
-      public override IMoBiCommand GetRemoveCommand(IContainer containerToRemove, IEventGroupBuilder eventGroupBuilder, IBuildingBlock buildingBlock)
+      public override IMoBiCommand GetRemoveCommand(IContainer containerToRemove, EventGroupBuilder eventGroupBuilder, IBuildingBlock buildingBlock)
       {
          return new RemoveContainerFromEventGroupCommand(eventGroupBuilder, containerToRemove, buildingBlock);
       }
 
-      public override IMoBiCommand GetAddCommand(IContainer containerToAdd, IEventGroupBuilder eventGroupBuilder, IBuildingBlock buildingBlock)
+      public override IMoBiCommand GetAddCommand(IContainer containerToAdd, EventGroupBuilder eventGroupBuilder, IBuildingBlock buildingBlock)
       {
          return new AddContainerToEventGroupCommand(eventGroupBuilder, containerToAdd, buildingBlock);
       }
 
-      public override IContainer CreateNewEntity(IEventGroupBuilder eventGroupBuilder)
+      public override IContainer CreateNewEntity(EventGroupBuilder eventGroupBuilder)
       {
          var newEntity = base.CreateNewEntity(eventGroupBuilder);
          newEntity.ContainerType = ContainerType.Other;
@@ -38,37 +38,37 @@ namespace MoBi.Presentation.Tasks.Interaction
       }
    }
 
-   public class InteractionTasksForEventGroupBuilderAsEventGroupChild : InteractionTasksForEventGroupChildren<IEventGroupBuilder>
+   public class InteractionTasksForEventGroupBuilderAsEventGroupChild : InteractionTasksForEventGroupChildren<EventGroupBuilder>
    {
-      public InteractionTasksForEventGroupBuilderAsEventGroupChild(IInteractionTaskContext interactionTaskContext, IEditTaskFor<IEventGroupBuilder> editTask)
+      public InteractionTasksForEventGroupBuilderAsEventGroupChild(IInteractionTaskContext interactionTaskContext, IEditTaskFor<EventGroupBuilder> editTask)
          : base(interactionTaskContext, editTask)
       {
       }
 
-      public override IMoBiCommand GetRemoveCommand(IEventGroupBuilder eventGroupBuilderToRemove, IEventGroupBuilder parent, IBuildingBlock buildingBlock)
+      public override IMoBiCommand GetRemoveCommand(EventGroupBuilder eventGroupBuilderToRemove, EventGroupBuilder parent, IBuildingBlock buildingBlock)
       {
          return new RemoveEventGroupBuilderCommand(parent, eventGroupBuilderToRemove, buildingBlock);
       }
 
-      public override IMoBiCommand GetAddCommand(IEventGroupBuilder eventGroupBuilderToAdd, IEventGroupBuilder parent, IBuildingBlock buildingBlock)
+      public override IMoBiCommand GetAddCommand(EventGroupBuilder eventGroupBuilderToAdd, EventGroupBuilder parent, IBuildingBlock buildingBlock)
       {
          return new AddEventGroupBuilderCommand(parent, eventGroupBuilderToAdd, buildingBlock);
       }
    }
 
-   public class InteractionTasksForApplicationBuilderAsEventGroupChild : InteractionTasksForEventGroupChildren<IApplicationBuilder>
+   public class InteractionTasksForApplicationBuilderAsEventGroupChild : InteractionTasksForEventGroupChildren<ApplicationBuilder>
    {
-      public InteractionTasksForApplicationBuilderAsEventGroupChild(IInteractionTaskContext interactionTaskContext, IEditTaskFor<IApplicationBuilder> editTask)
+      public InteractionTasksForApplicationBuilderAsEventGroupChild(IInteractionTaskContext interactionTaskContext, IEditTaskFor<ApplicationBuilder> editTask)
          : base(interactionTaskContext, editTask)
       {
       }
 
-      public override IMoBiCommand GetRemoveCommand(IApplicationBuilder applicationBuilderToRemove, IEventGroupBuilder parent, IBuildingBlock buildingBlock)
+      public override IMoBiCommand GetRemoveCommand(ApplicationBuilder applicationBuilderToRemove, EventGroupBuilder parent, IBuildingBlock buildingBlock)
       {
          return new RemoveEventGroupBuilderCommand(parent, applicationBuilderToRemove, buildingBlock);
       }
 
-      public override IMoBiCommand GetAddCommand(IApplicationBuilder applicationBuilderToAdd, IEventGroupBuilder parent, IBuildingBlock buildingBlock)
+      public override IMoBiCommand GetAddCommand(ApplicationBuilder applicationBuilderToAdd, EventGroupBuilder parent, IBuildingBlock buildingBlock)
       {
          return new AddEventGroupBuilderCommand(parent, applicationBuilderToAdd, buildingBlock);
       }
@@ -76,19 +76,19 @@ namespace MoBi.Presentation.Tasks.Interaction
 
   
 
-   public class InteractionTasksForEventBuilder : InteractionTasksForEventGroupChildren<IEventBuilder>
+   public class InteractionTasksForEventBuilder : InteractionTasksForEventGroupChildren<EventBuilder>
    {
-      public InteractionTasksForEventBuilder(IInteractionTaskContext interactionTaskContext, IEditTaskFor<IEventBuilder> editTask)
+      public InteractionTasksForEventBuilder(IInteractionTaskContext interactionTaskContext, IEditTaskFor<EventBuilder> editTask)
          : base(interactionTaskContext, editTask)
       {
       }
 
-      public override IMoBiCommand GetRemoveCommand(IEventBuilder eventToRemove, IEventGroupBuilder parent, IBuildingBlock buildingBlock)
+      public override IMoBiCommand GetRemoveCommand(EventBuilder eventToRemove, EventGroupBuilder parent, IBuildingBlock buildingBlock)
       {
          return new RemoveEventFromEventGroupCommand(parent, eventToRemove, buildingBlock);
       }
 
-      public override IMoBiCommand GetAddCommand(IEventBuilder eventToAdd, IEventGroupBuilder parent, IBuildingBlock buildingBlock)
+      public override IMoBiCommand GetAddCommand(EventBuilder eventToAdd, EventGroupBuilder parent, IBuildingBlock buildingBlock)
       {
          return new AddEventToEventGroupCommand(parent, eventToAdd, buildingBlock);
       }

@@ -17,13 +17,13 @@ using ToolTips = MoBi.Assets.ToolTips;
 
 namespace MoBi.UI.Views
 {
-   public partial class EditFormulaView : BaseUserControl, IEditFormulaView
+   public abstract partial class EditFormulaView<TPresenter> : BaseUserControl where TPresenter : IEditFormulaPresenter
    {
-      private IEditFormulaPresenter _presenter;
-      private readonly ScreenBinder<FormulaInfoDTO> _screenBinder;
+      protected TPresenter _presenter;
+      protected readonly ScreenBinder<FormulaInfoDTO> _screenBinder;
       public bool Init { get; set; }
 
-      public EditFormulaView()
+      protected EditFormulaView()
       {
          InitializeComponent();
          _screenBinder = new ScreenBinder<FormulaInfoDTO> {BindingMode = BindingMode.TwoWay};
@@ -32,10 +32,7 @@ namespace MoBi.UI.Views
 
       public override void InitializeBinding()
       {
-         _screenBinder.Bind(x => x.Name)
-            .To(cbExplicitFormulaName)
-            .WithValues(dto => _presenter.DisplayFormulaNames())
-            .Changed += () => OnEvent(() => _presenter.NamedFormulaSelectionChanged());
+         InitializeNameBinding();
 
          _screenBinder.Bind(x => x.Type)
             .To(cbFormulaType)
@@ -43,18 +40,15 @@ namespace MoBi.UI.Views
             .AndDisplays(type => _presenter.DisplayFor(type))
             .Changed += formulaTypeSelectionChanged;
 
-
-         btnAddFormula.Click += (o, e) => this.DoWithinExceptionHandler(() => _presenter.AddNewFormula());
-
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
       }
 
-      public void AttachPresenter(IEditFormulaPresenter presenter)
+      public void AttachPresenter(TPresenter presenter)
       {
          _presenter = presenter;
       }
 
-      public void SetEditFormualInstanceView(IView subView)
+      public void SetEditFormulaInstanceView(IView subView)
       {
          splitFormula.Panel1.Clear();
          splitFormula.Panel1.FillWith(subView);
@@ -76,14 +70,7 @@ namespace MoBi.UI.Views
          set => splitFormula.PanelVisibility = value ? SplitPanelVisibility.Both : SplitPanelVisibility.Panel1;
       }
 
-      public bool IsNamedFormulaView
-      {
-         set
-         {
-            layoutItemExplicitFormulaName.Visibility = LayoutVisibilityConvertor.FromBoolean(value);
-            layoutItemAddFormula.Visibility = layoutItemExplicitFormulaName.Visibility;
-         }
-      }
+      protected abstract void InitializeNameBinding();
 
       public void SetReferenceView(ISelectReferenceView view)
       {
@@ -92,9 +79,11 @@ namespace MoBi.UI.Views
          ((XtraUserControl) view).Visible = true;
       }
 
+      protected abstract BaseControl FormulaNameControl { get; }
+
       private void formulaTypeSelectionChanged()
       {
-         this.DoWithinExceptionHandler(() => _presenter.FormulaSelectionChanged(cbExplicitFormulaName.Text));
+         this.DoWithinExceptionHandler(() => _presenter.AddNewFormula(FormulaNameControl.Text));
       }
 
       public override void InitializeResources()
@@ -102,8 +91,9 @@ namespace MoBi.UI.Views
          base.InitializeResources();
          cbFormulaType.ToolTip = ToolTips.Formula.FormulaType;
          cbFormulaType.AllowHtmlTextInToolTip = DefaultBoolean.True;
-         cbExplicitFormulaName.ToolTip = ToolTips.Formula.FormulaName;
-         layoutItemExplicitFormulaName.Text = AppConstants.Captions.FormulaName.FormatForLabel();
+         FormulaNameControl.ToolTip = ToolTips.Formula.FormulaName;
+         layoutItemFormulaSelect.Text = AppConstants.Captions.FormulaName.FormatForLabel();
+         layoutItemFormulaName.Text = AppConstants.Captions.FormulaName.FormatForLabel();
          layoutItemFormulaType.Text = AppConstants.Captions.FormulaType.FormatForLabel();
          btnAddFormula.InitWithImage(ApplicationIcons.Add, AppConstants.Captions.AddFormula, ImageLocation.MiddleLeft, ToolTips.Formula.FormulaName);
          layoutItemCloneFormula.Visibility = LayoutVisibility.Never;
@@ -113,8 +103,8 @@ namespace MoBi.UI.Views
             layoutItemAddFormula.AdjustButtonSize();
          });
 
-         cbExplicitFormulaName.Properties.AutoHeight = false;
-         cbExplicitFormulaName.Height = btnAddFormula.Height;
+         cbFormulaName.Properties.AutoHeight = false;
+         cbFormulaName.Height = btnAddFormula.Height;
       }
 
       public override bool HasError => base.HasError || _screenBinder.HasError;

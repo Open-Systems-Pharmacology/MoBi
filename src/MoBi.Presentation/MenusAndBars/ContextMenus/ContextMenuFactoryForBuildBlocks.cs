@@ -1,6 +1,4 @@
-﻿using OSPSuite.Utility.Container;
-using OSPSuite.Utility.Extensions;
-using MoBi.Core.Domain.Model;
+﻿using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Nodes;
 using OSPSuite.Core.Domain;
@@ -11,6 +9,8 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Nodes;
+using OSPSuite.Utility.Container;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
@@ -41,7 +41,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       public IContextMenu CreateFor(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter)
       {
-         return IoC.Resolve<IRootContextMenuFor<IMoBiProject, TObjectBase>>().InitializeWith(_rootNodeType, presenter.DowncastTo<IExplorerPresenter>());
+         return IoC.Resolve<IRootContextMenuFor<MoBiProject, TObjectBase>>().InitializeWith(_rootNodeType, presenter.DowncastTo<IExplorerPresenter>());
       }
 
       public bool IsSatisfiedBy(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter)
@@ -64,9 +64,23 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       }
    }
 
-   public class RootContextMenuFactoryForMoleculeBuildingBlock : RootNodeContextMenuFactoryFor<IMoleculeBuildingBlock>
+   public class RootContextMenuFactoryForIndividualBuildingBlock : RootNodeContextMenuFactoryFor<IndividualBuildingBlock>
    {
-      public RootContextMenuFactoryForMoleculeBuildingBlock() : base(MoBiRootNodeTypes.MoleculeFolder)
+      public RootContextMenuFactoryForIndividualBuildingBlock() : base(MoBiRootNodeTypes.IndividualsFolder)
+      {
+      }
+   }
+
+   public class RootContextMenuFactoryForExtensionModule : RootNodeContextMenuFactoryFor<Module>
+   {
+      public RootContextMenuFactoryForExtensionModule() : base(MoBiRootNodeTypes.ModulesFolder)
+      {
+      }
+   }
+
+   public class RootContextMenuFactoryForExpressionProfileBuildingBlock : RootNodeContextMenuFactoryFor<ExpressionProfileBuildingBlock>
+   {
+      public RootContextMenuFactoryForExpressionProfileBuildingBlock() : base(MoBiRootNodeTypes.ExpressionProfilesFolder)
       {
       }
    }
@@ -92,84 +106,19 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       }
    }
 
-
-   public class RootContextMenuFactoryForMoBiReactionBuildingBlock : RootNodeContextMenuFactoryFor<IMoBiReactionBuildingBlock>
-   {
-      public RootContextMenuFactoryForMoBiReactionBuildingBlock()
-         : base(MoBiRootNodeTypes.ReactionFolder)
-      {
-      }
-   }
-
-   public class RootContextMenuFactoryForPassiveTransportBuildingBlock : RootNodeContextMenuFactoryFor<IPassiveTransportBuildingBlock>
-   {
-      public RootContextMenuFactoryForPassiveTransportBuildingBlock()
-         : base(MoBiRootNodeTypes.PassiveTransportFolder)
-      {
-      }
-   }
-
-   public class RootContextMenuFactoryForMoBiSpatialStructure : RootNodeContextMenuFactoryFor<IMoBiSpatialStructure>
-   {
-      public RootContextMenuFactoryForMoBiSpatialStructure()
-         : base(MoBiRootNodeTypes.SpatialStructureFolder)
-      {
-      }
-   }
-
-   public class RootContextMenuFactoryForObserverBuildingBlock : RootNodeContextMenuFactoryFor<IObserverBuildingBlock>
-   {
-      public RootContextMenuFactoryForObserverBuildingBlock()
-         : base(MoBiRootNodeTypes.ObserverFolder)
-      {
-      }
-   }
-
-   public class RootContextMenuFactoryForSimulationSettingsBuildingBlock : RootNodeContextMenuFactoryFor<ISimulationSettings>
-   {
-      public RootContextMenuFactoryForSimulationSettingsBuildingBlock()
-         : base(MoBiRootNodeTypes.SimulationSettingsFolder)
-      {
-      }
-   }
-
-   public class RootContextMenuFactoryForEventGroupBuildingBlock : RootNodeContextMenuFactoryFor<IEventGroupBuildingBlock>
-   {
-      public RootContextMenuFactoryForEventGroupBuildingBlock()
-         : base(MoBiRootNodeTypes.EventFolder)
-      {
-      }
-   }
-
-   public class RootContextMenuFactoryForMoBiMoleculeStartValuesBuildingBlock : RootNodeContextMenuFactoryFor<IMoleculeStartValuesBuildingBlock>
-   {
-      public RootContextMenuFactoryForMoBiMoleculeStartValuesBuildingBlock()
-         : base(MoBiRootNodeTypes.MoleculeStartValuesFolder)
-      {
-      }
-   }
-
-   public class RootContextMenuFactoryForMoBiParameterStartValuesBuildingBlock : RootNodeContextMenuFactoryFor<IParameterStartValuesBuildingBlock>
-   {
-      public RootContextMenuFactoryForMoBiParameterStartValuesBuildingBlock()
-         : base(MoBiRootNodeTypes.ParameterStartValuesFolder)
-      {
-      }
-   }
-
-   public class RootContextMenuFactoryForReactionBuilder : RootContextMenuFactoryFor<IMoBiReactionBuildingBlock, IReactionBuilder>
+   public class RootContextMenuFactoryForReactionBuilder : RootContextMenuFactoryFor<MoBiReactionBuildingBlock, ReactionBuilder>
    {
    }
 
-   public class RootContextMenuFactoryForTransportBuilder : RootContextMenuFactoryFor<IPassiveTransportBuildingBlock, ITransportBuilder>
+   public class RootContextMenuFactoryForTransportBuilder : RootContextMenuFactoryFor<PassiveTransportBuildingBlock, TransportBuilder>
    {
    }
 
-   public class RootContextMenuFactoryForAmountObserverBuilder : RootContextMenuFactoryFor<IObserverBuildingBlock, IAmountObserverBuilder>
+   public class RootContextMenuFactoryForAmountObserverBuilder : RootContextMenuFactoryFor<ObserverBuildingBlock, AmountObserverBuilder>
    {
    }
 
-   public class RootContextMenuFactoryForContainerObserverBuilder : RootContextMenuFactoryFor<IObserverBuildingBlock, IContainerObserverBuilder>
+   public class RootContextMenuFactoryForContainerObserverBuilder : RootContextMenuFactoryFor<ObserverBuildingBlock, ContainerObserverBuilder>
    {
    }
 }

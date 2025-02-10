@@ -19,6 +19,7 @@ using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
+using IContainer = OSPSuite.Core.Domain.IContainer;
 
 namespace MoBi.Presentation.Presenter.BaseDiagram
 {
@@ -80,20 +81,17 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
          _diagramTask = diagramTask;
          _userSettings = userSettings;
          LayoutConfiguration = userSettings.ForceLayoutConfigutation;
-         _diagramPopupMenu = new DiagramPopupMenuBase(this, runOptions);
+         _diagramPopupMenu = new DiagramPopupMenuBase(this, context, runOptions);
          _containerPopupMenu = _diagramPopupMenu;
          _neighborhoodPopupMenu = _diagramPopupMenu;
       }
 
-      protected override IDiagramOptions GetDiagramOptions()
-      {
-         return _userSettings.DiagramOptions;
-      }
+      protected override IDiagramOptions GetDiagramOptions() => _userSettings.DiagramOptions;
 
       public PointF CurrentInsertLocation
       {
-         get { return DiagramManager.CurrentInsertLocation; }
-         set { DiagramManager.CurrentInsertLocation = value; }
+         get => DiagramManager.CurrentInsertLocation;
+         set => DiagramManager.CurrentInsertLocation = value;
       }
 
       /// <summary>
@@ -101,13 +99,16 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
       /// </summary>
       public void Handle(EntitySelectedEvent eventToHandle)
       {
-         if (DiagramManager == null) return;
-         if (!DiagramManager.MustHandleExisting(eventToHandle.ObjectBase.Id)) return;
+         if (DiagramManager == null)
+            return;
 
-         IBaseNode baseNode = DiagramModel.GetNode(eventToHandle.ObjectBase.Id);
+         if (!DiagramManager.MustHandleExisting(eventToHandle?.ObjectBase?.Id))
+            return;
+
+         var baseNode = DiagramModel.GetNode(eventToHandle.ObjectBase.Id);
          if (baseNode == null) return;
 
-         IContainerBase parentContainer = baseNode.GetParent();
+         var parentContainer = baseNode.GetParent();
 
          // Show node and parents
          baseNode.Hidden = false;
@@ -116,8 +117,7 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
          _view.ExpandParents(baseNode);
 
          // Expand parent
-         var parentContainerNode = parentContainer as IContainerNode;
-         if (parentContainerNode != null)
+         if (parentContainer is IContainerNode parentContainerNode)
             Focus(parentContainerNode);
 
          _view.ClearSelection();
@@ -194,10 +194,17 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
          }
       }
 
-      protected IDiagramModel LoadDiagramTemplate(string diagramTemplateXmlFilePath)
+      protected void ApplyLayoutFromTemplate(string templateFile)
       {
-         return _diagramTask.LoadDiagramTemplate(diagramTemplateXmlFilePath);
+         foreach (var topContainerNode in DiagramModel.GetDirectChildren<IContainerNode>())
+         {
+            var topContainer = _context.Get<IContainer>(topContainerNode.Id);
+            if (topContainer != null && topContainer.ContainerType == ContainerType.Organism)
+               ApplyLayoutTemplate(topContainerNode, templateFile, false);
+         }
       }
+
+      protected IDiagramModel LoadDiagramTemplate(string diagramTemplateXmlFilePath) => _diagramTask.LoadDiagramTemplate(diagramTemplateXmlFilePath);
 
       public void ApplyLayoutTemplateToSelection()
       {
@@ -225,6 +232,7 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
                break;
             }
          }
+
          _view.Refresh();
       }
 
@@ -245,31 +253,19 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
          });
       }
 
-      private static bool isGoLink(GoObject goLink)
-      {
-         return goLink is GoLink;
-      }
+      private static bool isGoLink(GoObject goLink) => goLink is GoLink;
 
-      private static bool isBaseLink(GoObject baseLink)
-      {
-         return baseLink is IBaseLink;
-      }
+      private static bool isBaseLink(GoObject baseLink) => baseLink is IBaseLink;
 
-      private void unlinkBaseNodes(IBaseLink baseLink, GoLink goLink)
-      {
-         Unlink(baseLink.GetFromNode(), baseLink.GetToNode(), goLink.FromPort.UserObject, goLink.ToPort.UserObject);
-      }
+      private void unlinkBaseNodes(IBaseLink baseLink, GoLink goLink) => Unlink(baseLink.GetFromNode(), baseLink.GetToNode(), goLink.FromPort.UserObject, goLink.ToPort.UserObject);
 
       private void unlinkNeighborhoodNode(GoObject itemToDelete)
       {
-         var neighborhoodNode = (INeighborhoodNode) itemToDelete;
+         var neighborhoodNode = (INeighborhoodNode)itemToDelete;
          Unlink(neighborhoodNode.FirstNeighbor, neighborhoodNode.SecondNeighbor, null, null);
       }
 
-      public void Undo()
-      {
-         DiagramModel.Undo();
-      }
+      public void Undo() => DiagramModel.Undo();
 
       public void Handle(AddedEvent eventToHandle)
       {
@@ -280,9 +276,10 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
          if (DiagramManager.InsertLocationHasChanged())
          {
             // move node to "free" location
-            var freeNodes = new List<IHasLayoutInfo> {addedNode};
+            var freeNodes = new List<IHasLayoutInfo> { addedNode };
             Layout(addedNode.GetParent(), AppConstants.Diagram.Base.LayoutDepthChildren, freeNodes);
          }
+
          DiagramManager.UpdateInsertLocation();
       }
    }

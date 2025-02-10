@@ -4,6 +4,7 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Events;
+using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
@@ -12,9 +13,9 @@ using MoBi.Presentation.Settings;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
@@ -56,6 +57,8 @@ namespace MoBi.Presentation.Presenter
       ///    Enables the Container criteria support for specific use cases
       /// </summary>
       void EnableContainerCriteriaSupport();
+
+      void CopyPathForParameter(ParameterDTO parameter);
    }
 
    public class EditParametersInContainerPresenter : AbstractParameterBasePresenter<IEditParametersInContainerView, IEditParametersInContainerPresenter>, IEditParametersInContainerPresenter
@@ -72,6 +75,10 @@ namespace MoBi.Presentation.Presenter
       private readonly IEditDistributedParameterPresenter _editDistributedParameterPresenter;
       private readonly IEditParameterPresenter _editParameterPresenter;
       private bool _ignoreAddEvents;
+      private readonly IObjectTypeResolver _typeResolver;
+
+      private readonly IEntityPathResolver _entityPathResolver;
+
       public bool ChangeLocalisationAllowed { set; private get; }
 
       public EditParametersInContainerPresenter(IEditParametersInContainerView view,
@@ -85,7 +92,9 @@ namespace MoBi.Presentation.Presenter
          IClipboardManager clipboardManager,
          IEditTaskFor<IParameter> editTask,
          ISelectReferencePresenterFactory selectReferencePresenterFactory,
-         IFavoriteTask favoriteTask)
+         IFavoriteTask favoriteTask,
+         IObjectTypeResolver typeResolver,
+         IEntityPathResolver entityPathResolver)
          : base(view, quantityTask, interactionTaskContext, formulaMapper, parameterTask, favoriteTask)
       {
          _clipboardManager = clipboardManager;
@@ -100,6 +109,8 @@ namespace MoBi.Presentation.Presenter
          AddSubPresenters(_editDistributedParameterPresenter, _editParameterPresenter);
          _getParametersFunc = x => x.GetChildrenSortedByName<IParameter>();
          ChangeLocalisationAllowed = true;
+         _typeResolver = typeResolver;
+         _entityPathResolver = entityPathResolver;
       }
 
       public void Edit(IContainer container)
@@ -109,7 +120,7 @@ namespace MoBi.Presentation.Presenter
          RhsReference = getNewReferencePresenterFor(container);
          ShowBuildMode = container.CanSetBuildModeForParameters();
          ParameterBuildModes = container.AvailableBuildModeForParameters();
-         _view.ParentName = container.Name;
+         _view.ParentName = getContainerName(container);
          createParameterCache(_getParametersFunc(container));
          showParameters();
       }
@@ -127,10 +138,9 @@ namespace MoBi.Presentation.Presenter
          refreshViewAndSelect(parameterDTO);
       }
 
-      public void EnableContainerCriteriaSupport()
-      {
-         _editParameterPresenter.EnableContainerCriteriaSupport();
-      }
+      public void EnableContainerCriteriaSupport() => _editParameterPresenter.EnableContainerCriteriaSupport();
+
+      public void CopyPathForParameter(ParameterDTO parameter) => _view.CopyToClipBoard(_entityPathResolver.FullPathFor(parameter.Parameter));
 
       private void createParameterCache(IEnumerable<IParameter> parametersToEdit)
       {
@@ -142,10 +152,7 @@ namespace MoBi.Presentation.Presenter
          _allParametersDTO.AddRange(_parameters.MapAllUsing(_parameterToDTOParameterMapper).Cast<ParameterDTO>());
       }
 
-      private void releaseParameters()
-      {
-         _allParametersDTO.Each(dto => dto.Release());
-      }
+      private void releaseParameters() => _allParametersDTO.Each(dto => dto.Release());
 
       public EditParameterMode EditMode
       {
@@ -161,16 +168,16 @@ namespace MoBi.Presentation.Presenter
          return referencePresenter;
       }
 
+      private string getContainerName(IContainer container) =>
+         string.IsNullOrEmpty(container.Name) ? AppConstants.Captions.NewWindow(_typeResolver.TypeFor(container)) : container.Name;
+
       public void Select(IParameter parameter)
       {
          setupEditPresenter(parameter);
          _view.Select(dtoFor(parameter));
       }
 
-      private ParameterDTO dtoFor(IParameter parameter)
-      {
-         return _allParametersDTO.FirstOrDefault(x => Equals(x.Parameter, parameter));
-      }
+      private ParameterDTO dtoFor(IParameter parameter) => _allParametersDTO.FirstOrDefault(x => Equals(x.Parameter, parameter));
 
       private void showParameters()
       {
@@ -179,15 +186,9 @@ namespace MoBi.Presentation.Presenter
          setupEditPresenter(parametersToShowDTO.FirstOrDefault()?.Parameter);
       }
 
-      private bool shouldShowParameter(ParameterDTO parameterDTO)
-      {
-         return ShowAdvancedParameters || ParameterFrom(parameterDTO).Visible;
-      }
+      private bool shouldShowParameter(ParameterDTO parameterDTO) => ShowAdvancedParameters || ParameterFrom(parameterDTO).Visible;
 
-      private void refreshList()
-      {
-         _view.RefreshList();
-      }
+      private void refreshList() => _view.RefreshList();
 
       public bool ShowBuildMode
       {
@@ -229,22 +230,15 @@ namespace MoBi.Presentation.Presenter
          setupEditPresenter(parameter);
       }
 
-      public void SetIsPersistable(ParameterDTO parameterDTO, bool isPersistable)
-      {
+      public void SetIsPersistable(ParameterDTO parameterDTO, bool isPersistable) =>
          //no need for a command here
          parameterDTO.Persistable = isPersistable;
-      }
 
-      public void CopyToClipBoard(ParameterDTO parameterDTO)
-      {
-         _clipboardManager.CopyToClipBoard(ParameterFrom(parameterDTO));
-      }
+      public void CopyToClipBoard(ParameterDTO parameterDTO) => _clipboardManager.CopyToClipBoard(ParameterFrom(parameterDTO));
 
-      public void CutToClipBoard(ParameterDTO parameterDTO)
-      {
+      public void CutToClipBoard(ParameterDTO parameterDTO) =>
          _clipboardManager.CutToClipBoard(ParameterFrom(parameterDTO),
             para => AddCommand(_parameterTask.Remove(para, _container, buildingBlock: _buildingBlock, silent: true)));
-      }
 
       public void PasteFromClipBoard()
       {
@@ -252,7 +246,7 @@ namespace MoBi.Presentation.Presenter
          try
          {
             _clipboardManager.PasteFromClipBoard<IParameter>(
-               para => AddCommand(_parameterTask.AddToProject(para, _container, BuildingBlock)));
+               para => AddCommand(_parameterTask.AddTo(para, _container, BuildingBlock)));
          }
          finally
          {
@@ -262,10 +256,7 @@ namespace MoBi.Presentation.Presenter
          Edit(_container);
       }
 
-      public void LoadParameter()
-      {
-         AddCommand(_parameterTask.AddExisting(_container, BuildingBlock));
-      }
+      public void LoadParameter() => AddCommand(_parameterTask.AddExisting(_container, BuildingBlock));
 
       private void refreshViewAndSelect(ParameterDTO parameterDTO)
       {
@@ -298,20 +289,14 @@ namespace MoBi.Presentation.Presenter
       public void SetBuildModeFor(ParameterDTO parameterDTO, ParameterBuildMode newMode)
       {
          var parameter = ParameterFrom(parameterDTO);
-         AddCommand(_parameterTask.SetBuildModeForParameter(parameter, newMode, BuildingBlock).Run(_interactionTaskContext.Context));
+         AddCommand(_parameterTask.SetBuildModeForParameter(parameter, newMode, BuildingBlock).RunCommand(_interactionTaskContext.Context));
          _interactionTaskContext.DialogCreator.MessageBoxInfo(AppConstants.Validation.ChangeBuildModeWarning);
          Select(parameterDTO);
       }
 
-      public void AddParameter()
-      {
-         AddCommand(_parameterTask.AddNew(_container, BuildingBlock));
-      }
+      public void AddParameter() => AddCommand(_parameterTask.AddNew(_container, BuildingBlock));
 
-      public void RemoveParameter(ParameterDTO parameterDTO)
-      {
-         AddCommand(_parameterTask.Remove(ParameterFrom(parameterDTO), _container, BuildingBlock));
-      }
+      public void RemoveParameter(ParameterDTO parameterDTO) => AddCommand(_parameterTask.Remove(ParameterFrom(parameterDTO), _container, BuildingBlock));
 
       private bool shouldHandleRemove(RemovedEvent eventToHandle)
       {
@@ -372,7 +357,7 @@ namespace MoBi.Presentation.Presenter
 
          if (parameter.IsAnImplementationOf<IDistributedParameter>())
          {
-            _editDistributedParameterPresenter.Edit((IDistributedParameter) parameter);
+            _editDistributedParameterPresenter.Edit((IDistributedParameter)parameter);
             _view.SetEditParameterView(_editDistributedParameterPresenter.View);
          }
          else
@@ -402,9 +387,6 @@ namespace MoBi.Presentation.Presenter
          refreshList();
       }
 
-      private bool canHandle(ParameterChangedEvent eventToHandle)
-      {
-         return _parameters.Any(parameter => eventToHandle.Parameters.Contains(parameter));
-      }
+      private bool canHandle(ParameterChangedEvent eventToHandle) => _parameters.Any(parameter => eventToHandle.Parameters.Contains(parameter));
    }
 }

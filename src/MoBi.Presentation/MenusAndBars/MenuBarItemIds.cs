@@ -16,11 +16,17 @@ namespace MoBi.Presentation.MenusAndBars
       public static MenuBarItemId CloseProject = createMenuBarItemId("CloseProject");
       public static MenuBarItemId About = createMenuBarItemId("About");
       public static MenuBarItemId HistoryView = createMenuBarItemId("HistoryView");
-      public static MenuBarItemId BuildingBlockExplorerView = createMenuBarItemId("BuildingBlockExplorerView");
+      public static MenuBarItemId ModuleExplorerView = createMenuBarItemId("ModuleExplorerView");
       public static MenuBarItemId Options = createMenuBarItemId("Options");
       public static MenuBarItemId GarbageCollection = createMenuBarItemId("GarbageCollection");
       public static MenuBarItemId Exit = createMenuBarItemId("Exit");
       public static MenuBarItemId NewSimulation = createMenuBarItemId("NewSimulation");
+      public static MenuBarItemId NewIndividual = createMenuBarItemId("NewIndividual");
+      public static MenuBarItemId NewMetabolizingEnzyme = createMenuBarItemId("NewMetabolizingEnzyme");
+      public static MenuBarItemId NewExpressionProfile = createMenuBarItemId("NewExpressionProfile");
+      public static MenuBarItemId NewModule = createMenuBarItemId("NewModule");
+      public static MenuBarItemId NewTransportProtein = createMenuBarItemId("NewTransportProtein");
+      public static MenuBarItemId NewSpecificBindingPartner = createMenuBarItemId("NewSpecificBindingPartner");
       public static MenuBarItemId Run = createMenuBarItemId("Run");
       public static MenuBarItemId Stop = createMenuBarItemId("Stop");
       public static MenuBarItemId OpenSimulation = createMenuBarItemId("OpenSimulation");
@@ -28,19 +34,16 @@ namespace MoBi.Presentation.MenusAndBars
       public static MenuBarItemId AddObservedData = createMenuBarItemId("AddObservedData");
       public static MenuBarItemId LoadObservedData = createMenuBarItemId("LoadObservedData");
       public static MenuBarItemId SaveGroup = createMenuBarItemId("SaveGroup");
-      public static MenuBarItemId NewMoleculesBB = createMenuBarItemId("NewMoleculesBB");
-      public static MenuBarItemId NewReactionBB = createMenuBarItemId("NewReactionBB");
-      public static MenuBarItemId NewSpatialStructure = createMenuBarItemId("NewSpatialStructure");
-      public static MenuBarItemId NewPassiveTransportBB = createMenuBarItemId("NewPassiveTransportBB");
-      public static MenuBarItemId NewEventBB = createMenuBarItemId("NewEventBB");
-      public static MenuBarItemId NewObserverBB = createMenuBarItemId("NewObserverBB");
-      public static MenuBarItemId NewSimulationSettingsBB = createMenuBarItemId("NewSimulationSettingsBB");
+      public static MenuBarItemId EditProjectSimulationSettings = createMenuBarItemId("EditProjectSimulationSettings");
+      public static MenuBarItemId SaveProjectSimulationSettings = createMenuBarItemId("SaveProjectSimulationSettings");
+      public static MenuBarItemId LoadProjectSimulationSettings = createMenuBarItemId("LoadProjectSimulationSettings");
       public static MenuBarItemId ExportHistoryToExcel = createMenuBarItemId("ExportHistoryToExcel");
       public static MenuBarItemId SimulationExplorerView = createMenuBarItemId("SimulationExplorerView");
       public static MenuBarItemId NewMolecule = createMenuBarItemId("NewMolecule");
       public static MenuBarItemId LoadMolecule = createMenuBarItemId("LoadMolecule");
       public static MenuBarItemId LoadMoleculeFromTemplate = createMenuBarItemId("LoadMoleculeFromTemplate");
       public static MenuBarItemId AddPKSimMolecule = createMenuBarItemId("AddPKSimMolecule");
+      public static MenuBarItemId LoadExpressionProfile = createMenuBarItemId("LoadExpressionProfile");
       public static MenuBarItemId NewReaction = createMenuBarItemId("NewReaction");
       public static MenuBarItemId LoadReaction = createMenuBarItemId("LoadReaction");
       public static MenuBarItemId LoadReactionFromTemplate = createMenuBarItemId("LoadReactionFromTemplate");
@@ -66,9 +69,9 @@ namespace MoBi.Presentation.MenusAndBars
       public static MenuBarItemId ZoomIn = createMenuBarItemId("ZoomIn");
       public static MenuBarItemId ZoomOut = createMenuBarItemId("ZoomOut");
       public static MenuBarItemId FitToPage = createMenuBarItemId("FitToPage");
-      public static MenuBarItemId MoleculeStartValuesExtend = createMenuBarItemId("MoleculeStartValuesExtend");
-      public static MenuBarItemId ParameterStartValuesExtend = createMenuBarItemId("ParameterStartValuesExtend");
-      public static MenuBarItemId Merge = createMenuBarItemId("Merge");
+      public static MenuBarItemId InitialConditionsExtend = createMenuBarItemId("InitialConditionsExtend");
+      public static MenuBarItemId ParameterValuesExtend = createMenuBarItemId("ParameterValuesExtend");
+      public static MenuBarItemId AddProteinExpression = createMenuBarItemId("AddProteinExpression");
       public static MenuBarItemId Help = createMenuBarItemId("Help");
       public static MenuBarItemId SearchView = createMenuBarItemId("SearchView");
       public static MenuBarItemId HistoryReportGroup = createMenuBarItemId("HistoryReportGroup");
@@ -80,8 +83,8 @@ namespace MoBi.Presentation.MenusAndBars
       public static MenuBarItemId ManageUserDisplayUnits = createMenuBarItemId("ManageUserDisplayUnits");
       public static MenuBarItemId UpdateAllToDisplayUnits = createMenuBarItemId("UpdateAllToDisplayUnits");
       public static MenuBarItemId CalculateScaleFactors = createMenuBarItemId("CalculateScaleFactors");
-      public static MenuBarItemId NewParameterStartValue = createMenuBarItemId("NewParameterStartValue");
-      public static MenuBarItemId NewMoleculeStartValue = createMenuBarItemId("NewMoleculeStartValue");
+      public static MenuBarItemId NewParameterValue = createMenuBarItemId("NewParameterValue");
+      public static MenuBarItemId NewInitialConditions = createMenuBarItemId("NewInitialConditions");
       public static MenuBarItemId CreateJournalPage = createMenuBarItemId("CreateJournalPage");
       public static MenuBarItemId JournalEditorView = createMenuBarItemId("JournalEditorView");
       public static MenuBarItemId JournalView = createMenuBarItemId("JournalView");
@@ -112,6 +115,7 @@ namespace MoBi.Presentation.MenusAndBars
       public static MenuBarItemId SensitivityAnalysisPKParameterAnalysis = createMenuBarItemId("SensitivityAnalysisPKParameterAnalysis");
       public static MenuBarItemId SensitivityAnalysisFeedbackView = createMenuBarItemId("SensitivityAnalysisFeedbackView");
       public static MenuBarItemId ClearHistory = createMenuBarItemId("ClearHistory");
+      public static MenuBarItemId NewNeighborhood = createMenuBarItemId("NewNeighborhood");
 
       private static MenuBarItemId createMenuBarItemId(string name)
       {

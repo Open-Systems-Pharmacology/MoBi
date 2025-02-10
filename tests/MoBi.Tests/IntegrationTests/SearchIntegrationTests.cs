@@ -1,8 +1,13 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using MoBi.Core;
+using MoBi.Core.Domain.Model;
+using MoBi.Core.Serialization.Converter;
 using MoBi.Core.Services;
 using MoBi.Presentation.Tasks;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Container;
 
 namespace MoBi.IntegrationTests
@@ -84,5 +89,4 @@ namespace MoBi.IntegrationTests
          searchResults.Count().ShouldBeGreaterThan(0);
       }
    }
-
 }

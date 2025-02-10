@@ -6,6 +6,7 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
+using MoBi.Helpers;
 using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Assets;
@@ -17,6 +18,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Descriptors;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core
@@ -29,9 +31,9 @@ namespace MoBi.Core
       protected IObjectTypeResolver _objectTypeResolver;
       protected IAliasCreator _aliasCreator;
       protected IMoBiContext _context;
-      protected IMoBiProject _project;
-      protected IParameterStartValuePathTask _psvTask;
-      protected IMoleculeStartValuePathTask _msvTask;
+      protected MoBiProject _project;
+      protected IParameterValuePathTask _psvTask;
+      protected IInitialConditionPathTask _msvTask;
       protected ICloneManager _cloneManager;
 
       protected override void Context()
@@ -39,12 +41,12 @@ namespace MoBi.Core
          _objectTypeResolver = A.Fake<IObjectTypeResolver>();
          _aliasCreator = A.Fake<IAliasCreator>();
          _changedObject = A.Fake<IObjectBase>();
-         _psvTask = A.Fake<IParameterStartValuePathTask>();
-         _msvTask = A.Fake<IMoleculeStartValuePathTask>();
+         _psvTask = A.Fake<IParameterValuePathTask>();
+         _msvTask = A.Fake<IInitialConditionPathTask>();
          _changedObject.Name = "OLD";
          _changedName = _changedObject.Name;
          _newName = "new";
-         _project = new MoBiProject();
+         _project = DomainHelperForSpecs.NewProject();
          _context = A.Fake<IMoBiContext>();
          _cloneManager = A.Fake<ICloneManager>();
          A.CallTo(() => _context.CurrentProject).Returns(_project);
@@ -56,7 +58,7 @@ namespace MoBi.Core
    {
       private IContainer _objectBase;
       private IEnumerable<IStringChange> _changes;
-      private ISpatialStructure _spatialStructure;
+      private SpatialStructure _spatialStructure;
 
       protected override void Context()
       {
@@ -84,9 +86,9 @@ namespace MoBi.Core
    internal class When_visiting_an_Formula_with_changed_Name : concern_for_CheckNameVisitor
    {
       private IFormula _formula;
-      private IFormulaUsablePath _path;
+      private FormulaUsablePath _path;
       private IEnumerable<IStringChange> _changes;
-      private IMoleculeBuildingBlock _moleculeBuildingBlock;
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
 
       protected override void Context()
       {
@@ -113,7 +115,7 @@ namespace MoBi.Core
          var change = _changes.First() as StringChange<IFormula>;
          change.ShouldNotBeNull();
          change.EntityToEdit.ShouldBeEqualTo(_formula);
-         change.ChangeCommand.IsAnImplementationOf<EditObjectBasePropertyInBuildingBlockCommand>().ShouldBeTrue();
+         change.ChangeCommand.IsAnImplementationOf<RenameObjectBaseCommand>().ShouldBeTrue();
       }
 
       [Observation]
@@ -135,32 +137,36 @@ namespace MoBi.Core
       }
    }
 
-   internal class When_visiting_an_MoleculesStartValueBuildingBlock_with_changed_Name : concern_for_CheckNameVisitor
+   internal class When_visiting_an_initial_conditions_building_block_with_changed_Name : concern_for_CheckNameVisitor
    {
-      private IMoleculeStartValuesBuildingBlock _moleculeStartValuesBuildingBlock;
-      private IMoleculeStartValue _moleculeStartValue;
-      private IObjectPath _path;
+      private InitialConditionsBuildingBlock _initialConditionsBuildingBlock;
+      private InitialCondition _initialCondition;
+      private ObjectPath _path;
       private IEnumerable<IStringChange> _changes;
-      private IMoleculeStartValue _moleculeStartValue2;
+      private InitialCondition _initialCondition2;
+      private Module _module;
 
       protected override void Context()
       {
          base.Context();
-         _moleculeStartValuesBuildingBlock = new MoleculeStartValuesBuildingBlock {Name = _changedName};
-         _moleculeStartValue = new MoleculeStartValue();
+         _module = new Module();
+         _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock {Name = _changedName};
+         _initialCondition = new InitialCondition();
          _path = new ObjectPath(new[] {"A", "B", _changedName});
-         _moleculeStartValue.Path = _path;
-         _moleculeStartValuesBuildingBlock.Add(_moleculeStartValue);
-         _project.AddBuildingBlock(_moleculeStartValuesBuildingBlock);
-         _moleculeStartValue2 = new MoleculeStartValue();
+         _initialCondition.Path = _path;
+         _initialConditionsBuildingBlock.Add(_initialCondition);
+
+         _module.Add(_initialConditionsBuildingBlock);
+
+         _initialCondition2 = new InitialCondition();
          _path = new ObjectPath(new[] {"A", _changedName, "B"});
-         _moleculeStartValue2.Path = _path;
-         _moleculeStartValuesBuildingBlock.Add(_moleculeStartValue2);
+         _initialCondition2.Path = _path;
+         _initialConditionsBuildingBlock.Add(_initialCondition2);
       }
 
       protected override void Because()
       {
-         _changes = sut.GetPossibleChangesFrom(_changedObject, _newName, _project, _changedName);
+         _changes = sut.GetPossibleChangesFrom(_changedObject, _newName, _initialConditionsBuildingBlock, _changedName);
       }
 
       [Observation]
@@ -174,51 +180,55 @@ namespace MoBi.Core
       {
          var change = _changes.First() as StringChange<IBuildingBlock>;
          change.ShouldNotBeNull();
-         change.EntityToEdit.ShouldBeEqualTo(_moleculeStartValuesBuildingBlock);
-         change.ChangeCommand.IsAnImplementationOf<EditObjectBasePropertyInBuildingBlockCommand>().ShouldBeTrue();
-         change.ChangeCommand.ObjectType.ShouldBeEqualTo(ObjectTypes.MoleculeStartValuesBuildingBlock);
+         change.EntityToEdit.ShouldBeEqualTo(_initialConditionsBuildingBlock);
+         change.ChangeCommand.IsAnImplementationOf<RenameObjectBaseCommand>().ShouldBeTrue();
+         change.ChangeCommand.ObjectType.ShouldBeEqualTo(ObjectTypes.InitialConditionsBuildingBlock);
       }
 
       [Observation]
       public void should_execute_EditName_for_MSV()
       {
-         A.CallTo(() => _msvTask.UpdateStartValueNameCommand(_moleculeStartValuesBuildingBlock, _moleculeStartValue, _newName)).MustHaveHappened();
+         A.CallTo(() => _msvTask.UpdateNameCommand(_initialConditionsBuildingBlock, _initialCondition, _newName)).MustHaveHappened();
       }
 
       [Observation]
       public void should_execute_EditContainerPath_for_MSV2()
       {
-         A.CallTo(() => _msvTask.UpdateStartValueContainerPathCommand(_moleculeStartValuesBuildingBlock, _moleculeStartValue2, A<int>._, _newName)).MustHaveHappened();
+         A.CallTo(() => _msvTask.UpdateContainerPathCommand(_initialConditionsBuildingBlock, _initialCondition2, A<int>._, _newName)).MustHaveHappened();
       }
    }
 
-   internal class When_visiting_an_ParameterStartValueBuildingBlock_with_changed_Name : concern_for_CheckNameVisitor
+   internal class When_visiting_an_Parameter_ValueBuildingBlock_with_changed_Name : concern_for_CheckNameVisitor
    {
-      private IParameterStartValuesBuildingBlock _parameterStartValuesBuildingBlock;
-      private IParameterStartValue _parameterStartValue;
-      private IObjectPath _path;
+      private ParameterValuesBuildingBlock _parameterValuesBuildingBlock;
+      private ParameterValue _parameterValue;
+      private ObjectPath _path;
       private IEnumerable<IStringChange> _changes;
-      private IParameterStartValue _parameterStartValue2;
+      private ParameterValue _parameterValue2;
+      private Module _module;
 
       protected override void Context()
       {
          base.Context();
-         _parameterStartValuesBuildingBlock = new ParameterStartValuesBuildingBlock();
-         _parameterStartValuesBuildingBlock.Name = _changedName;
-         _parameterStartValue = new ParameterStartValue();
+         _module = new Module();
+         _parameterValuesBuildingBlock = new ParameterValuesBuildingBlock
+         {
+            Name = _changedName
+         };
+         _parameterValue = new ParameterValue();
          _path = new ObjectPath(new[] {"A", "B", _changedName});
-         _parameterStartValue.Path = _path;
-         _parameterStartValuesBuildingBlock.Add(_parameterStartValue);
-         _parameterStartValue2 = new ParameterStartValue();
+         _parameterValue.Path = _path;
+         _parameterValuesBuildingBlock.Add(_parameterValue);
+         _parameterValue2 = new ParameterValue();
          _path = new ObjectPath(new[] {"A", _changedName, "B"});
-         _parameterStartValue2.Path = _path;
-         _parameterStartValuesBuildingBlock.Add(_parameterStartValue2);
-         _project.AddBuildingBlock(_parameterStartValuesBuildingBlock);
+         _parameterValue2.Path = _path;
+         _parameterValuesBuildingBlock.Add(_parameterValue2);
+         _module.Add(_parameterValuesBuildingBlock);
       }
 
       protected override void Because()
       {
-         _changes = sut.GetPossibleChangesFrom(_changedObject, _newName, _project, _changedName);
+         _changes = sut.GetPossibleChangesFrom(_changedObject, _newName, _parameterValuesBuildingBlock, _changedName);
       }
 
       [Observation]
@@ -228,24 +238,24 @@ namespace MoBi.Core
       }
 
       [Observation]
-      public void should_add_String_change_for_ParameterStartValuesBuildingBlock_to_changes()
+      public void should_add_String_change_for_ParameterValuesBuildingBlock_to_changes()
       {
          var change = _changes.First() as StringChange<IBuildingBlock>;
-         change.EntityToEdit.ShouldBeEqualTo(_parameterStartValuesBuildingBlock);
-         change.ChangeCommand.IsAnImplementationOf<EditObjectBasePropertyInBuildingBlockCommand>().ShouldBeTrue();
-         change.ChangeCommand.ObjectType.ShouldBeEqualTo(ObjectTypes.ParameterStartValuesBuildingBlock);
+         change.EntityToEdit.ShouldBeEqualTo(_parameterValuesBuildingBlock);
+         change.ChangeCommand.IsAnImplementationOf<RenameObjectBaseCommand>().ShouldBeTrue();
+         change.ChangeCommand.ObjectType.ShouldBeEqualTo(ObjectTypes.ParameterValuesBuildingBlock);
       }
 
       [Observation]
       public void should_execute_EditName_for_PSV()
       {
-         A.CallTo(() => _psvTask.UpdateStartValueNameCommand(_parameterStartValuesBuildingBlock, _parameterStartValue, _newName)).MustHaveHappened();
+         A.CallTo(() => _psvTask.UpdateNameCommand(_parameterValuesBuildingBlock, _parameterValue, _newName)).MustHaveHappened();
       }
 
       [Observation]
       public void should_execute_EditContainerpath_for_PSV2()
       {
-         A.CallTo(() => _psvTask.UpdateStartValueContainerPathCommand(_parameterStartValuesBuildingBlock, _parameterStartValue2, A<int>._, _newName)).MustHaveHappened();
+         A.CallTo(() => _psvTask.UpdateContainerPathCommand(_parameterValuesBuildingBlock, _parameterValue2, A<int>._, _newName)).MustHaveHappened();
       }
    }
 
@@ -257,8 +267,8 @@ namespace MoBi.Core
       private string _oldAlias;
       private string _newAlias;
       private IEnumerable<IStringChange> _changes;
-      private IMoleculeBuildingBlock _moleculeBuildingBlock;
-      
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
+
       protected override void Context()
       {
          base.Context();
@@ -306,9 +316,9 @@ namespace MoBi.Core
 
    internal class When_visiting_an_observer_builder : concern_for_CheckNameVisitor
    {
-      private IObserverBuilder _observer;
+      private ObserverBuilder _observer;
       private IEnumerable<IStringChange> _changes;
-      private IObserverBuildingBlock _observerBuildingBlock;
+      private ObserverBuildingBlock _observerBuildingBlock;
 
       protected override void Context()
       {
@@ -329,26 +339,26 @@ namespace MoBi.Core
       {
          _changes.Count().ShouldBeEqualTo(1);
          var change = _changes.First();
-         change.ChangeCommand.ShouldBeAnInstanceOf<EditTagCommand<IObserverBuilder>>();
+         change.ChangeCommand.ShouldBeAnInstanceOf<EditTagCommand<ObserverBuilder>>();
       }
    }
 
    internal class When_checking_for_dependent_changes_in_a_transport_builder : concern_for_CheckNameVisitor
    {
       private IEnumerable<IStringChange> _resultChanges;
-      private IPassiveTransportBuildingBlock _test;
+      private PassiveTransportBuildingBlock _test;
       private readonly string _oldName = "OldName";
 
       protected override void Context()
       {
          base.Context();
-         var transportbuilder = new TransportBuilder().WithName("Trans");
-         transportbuilder.AddMoleculeNameToExclude(_oldName);
-         var transportbuilder2 = new TransportBuilder().WithName("Trans2");
-         transportbuilder2.AddMoleculeName(_oldName);
+         var transportBuilder = new TransportBuilder().WithName("Trans");
+         transportBuilder.AddMoleculeNameToExclude(_oldName);
+         var transportBuilder2 = new TransportBuilder().WithName("Trans2");
+         transportBuilder2.AddMoleculeName(_oldName);
          _test = new PassiveTransportBuildingBlock().WithName("Test");
-         _test.Add(transportbuilder);
-         _test.Add(transportbuilder2);
+         _test.Add(transportBuilder);
+         _test.Add(transportBuilder2);
       }
 
       protected override void Because()
@@ -368,7 +378,7 @@ namespace MoBi.Core
    internal class When_checking_for_dependent_changes_in_simulation_settings_with_output_selection_using_the_modified_path : concern_for_CheckNameVisitor
    {
       private IReadOnlyList<IStringChange> _resultChanges;
-      private ISimulationSettings _simulationSettings;
+      private SimulationSettings _simulationSettings;
       private readonly string _oldName = "OldName";
 
       protected override void Context()
@@ -391,10 +401,54 @@ namespace MoBi.Core
       }
    }
 
+   internal class When_checking_for_dependent_changes_in_a_container_referenced_in_neighborhood_name_and_neighbors : concern_for_CheckNameVisitor
+   {
+      private IEnumerable<IStringChange> _resultChanges;
+      private SpatialStructure _spatialStructure;
+      private NeighborhoodBuilder _neighborhood;
+      private Container _container;
+
+      protected override void Context()
+      {
+         base.Context();
+         _spatialStructure = new SpatialStructure
+         {
+            NeighborhoodsContainer = new Container()
+         };
+
+         _container = new Container().WithName("Muscle");
+         _neighborhood = new NeighborhoodBuilder().WithName("Arterial_blood_to_Muscle_cell");
+         _neighborhood.FirstNeighborPath = new ObjectPath("Organism", "Muscle", "BloodCells");
+         _neighborhood.SecondNeighborPath = new ObjectPath("Organism", "ArterialBlood", "BloodCells");
+         _spatialStructure.AddTopContainer(_container);
+         _spatialStructure.AddNeighborhood(_neighborhood);
+      }
+
+      protected override void Because()
+      {
+         _resultChanges = sut.GetPossibleChangesFrom(_container, "Tumor", _spatialStructure, _container.Name);
+      }
+
+      [Observation]
+      public void should_return_the_change_for_the_neighborhood_name_and_neighbors()
+      {
+         _resultChanges.Count().ShouldBeEqualTo(2);
+      }
+
+      [Observation]
+      public void the_command_should_be_the_one_expected()
+      {
+         //Executing so that we can check the results
+         _resultChanges.Each(c => c.ChangeCommand.Execute(_context));
+         _neighborhood.Name.ShouldBeEqualTo("Arterial_blood_to_Tumor_cell");
+         _neighborhood.FirstNeighborPath.ToPathString().ShouldBeEqualTo("Organism|Tumor|BloodCells");
+      }
+   }
+
    internal class When_checking_for_dependent_changes_in_simulation_settings_with_output_selection_not_using_the_modified_path : concern_for_CheckNameVisitor
    {
       private IReadOnlyList<IStringChange> _resultChanges;
-      private ISimulationSettings _simulationSettings;
+      private SimulationSettings _simulationSettings;
       private readonly string _oldName = "OldName";
 
       protected override void Context()
@@ -419,7 +473,7 @@ namespace MoBi.Core
    internal class When_checking_for_dependent_changes_in_simulation_settings_with_chart_template_using_the_modified_path : concern_for_CheckNameVisitor
    {
       private IReadOnlyList<IStringChange> _resultChanges;
-      private ISimulationSettings _simulationSettings;
+      private SimulationSettings _simulationSettings;
       private readonly string _oldName = "OldName";
       private CurveChartTemplate _curveChartTemplate;
       private CurveTemplate _curveTemplate;
@@ -462,7 +516,7 @@ namespace MoBi.Core
    internal class When_checking_for_dependent_changes_in_simulation_settings_with_chart_template_not_using_the_modified_path : concern_for_CheckNameVisitor
    {
       private IReadOnlyList<IStringChange> _resultChanges;
-      private ISimulationSettings _simulationSettings;
+      private SimulationSettings _simulationSettings;
       private readonly string _oldName = "OldName";
       private CurveChartTemplate _curveChartTemplate;
 
@@ -495,22 +549,30 @@ namespace MoBi.Core
    {
       private IReadOnlyList<IStringChange> _resultChanges;
       private readonly string _oldName = "OldName";
-      private IApplicationBuilder _applicationBuilder;
+      private ApplicationBuilder _applicationBuilder;
+      private EventGroupBuildingBlock _buildingBlock;
 
       protected override void Context()
       {
          base.Context();
-         _applicationBuilder = new ApplicationBuilder();
-         _applicationBuilder.SourceCriteria = Create.Criteria(x => x.With(_oldName));
-         var appTransport = new TransportBuilder();
-         appTransport.SourceCriteria = Create.Criteria(x => x.With(_oldName));
-         appTransport.TargetCriteria = Create.Criteria(x => x.With(_oldName));
+         _buildingBlock = new EventGroupBuildingBlock();
+         _applicationBuilder = new ApplicationBuilder
+         {
+            SourceCriteria = Create.Criteria(x => x.With(_oldName))
+         };
+         var appTransport = new TransportBuilder
+         {
+            SourceCriteria = Create.Criteria(x => x.With(_oldName)),
+            TargetCriteria = Create.Criteria(x => x.With(_oldName))
+         };
          _applicationBuilder.AddTransport(appTransport);
+
+         _buildingBlock.Add(_applicationBuilder);
       }
 
       protected override void Because()
       {
-         _resultChanges = sut.GetPossibleChangesFrom(A.Fake<IObjectBase>(), "NewName", _applicationBuilder, _oldName);
+         _resultChanges = sut.GetPossibleChangesFrom(_applicationBuilder, "NewName", _buildingBlock, _oldName);
       }
 
       [Observation]

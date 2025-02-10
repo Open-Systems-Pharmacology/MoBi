@@ -4,12 +4,14 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
+using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
+using MoBi.Core.Services;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
 
@@ -29,13 +31,15 @@ namespace MoBi.Presentation.Presenter
    {
       private readonly IMoBiContext _context;
       private IMoleculeDependentBuilder _moleculeDependentBuilder;
-      private readonly IDialogCreator _dialogCreator;
+      private readonly IObjectBaseNamingTask _namingTask;
+      private readonly IBuildingBlockRepository _buildingBlockRepository;
       public IBuildingBlock BuildingBlock { get; set; }
 
-      public MoleculeDependentBuilderPresenter(IMoleculeDependentBuilderView view, IMoBiContext context, IDialogCreator dialogCreator) : base(view)
+      public MoleculeDependentBuilderPresenter(IMoleculeDependentBuilderView view, IMoBiContext context, IObjectBaseNamingTask namingTask, IBuildingBlockRepository buildingBlockRepository) : base(view)
       {
          _context = context;
-         _dialogCreator = dialogCreator;
+         _namingTask = namingTask;
+         _buildingBlockRepository = buildingBlockRepository;
       }
 
       public override void Edit(IMoleculeDependentBuilder objectToEdit)
@@ -65,7 +69,7 @@ namespace MoBi.Presentation.Presenter
       private void removeMolecule(IEnumerable<string> availableMolecules, string molecule, Func<RemoveMoleculeNameCommand> removeItemCommand)
       {
          if (!availableMolecules.ContainsItem(molecule)) return;
-         AddCommand(removeItemCommand().Run(_context));
+         AddCommand(removeItemCommand().RunCommand(_context));
       }
 
       public void AddToIncludeList()
@@ -80,7 +84,7 @@ namespace MoBi.Presentation.Presenter
 
       private string newMoleculeName()
       {
-         return _dialogCreator.AskForInput(AppConstants.Dialog.GetReactionMoleculeName,
+         return _namingTask.NewName(AppConstants.Dialog.GetReactionMoleculeName,
             AppConstants.Captions.AddReactionMolecule,
             string.Empty, Enumerable.Empty<string>(), getMoleculeNames());
       }
@@ -90,12 +94,12 @@ namespace MoBi.Presentation.Presenter
          var moleculeName = newMoleculeName();
          if (string.IsNullOrEmpty(moleculeName)) return;
          if (availableMolecules.ContainsItem(moleculeName)) return;
-         AddCommand(addItemCommand(moleculeName).Run(_context));
+         AddCommand(addItemCommand(moleculeName).RunCommand(_context));
       }
 
       public void SetForAll(bool forAll)
       {
-         AddCommand(new SetForAllCommand(_moleculeDependentBuilder, forAll, BuildingBlock).Run(_context));
+         AddCommand(new SetForAllCommand(_moleculeDependentBuilder, forAll, BuildingBlock).RunCommand(_context));
       }
 
       public override void AddCommand(ICommand command)
@@ -106,7 +110,7 @@ namespace MoBi.Presentation.Presenter
 
       private IEnumerable<string> getMoleculeNames()
       {
-         var moleculeBB = _context.CurrentProject.MoleculeBlockCollection;
+         var moleculeBB = _buildingBlockRepository.MoleculeBlockCollection;
          var moleculeNames = new HashSet<string>();
          moleculeBB.SelectMany(x => x).Each(molecule => moleculeNames.Add(molecule.Name));
          return moleculeNames.OrderBy(x => x);

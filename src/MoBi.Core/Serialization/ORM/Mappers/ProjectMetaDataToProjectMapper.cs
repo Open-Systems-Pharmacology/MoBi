@@ -1,10 +1,14 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using MoBi.Assets;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Serialization.ORM.MetaData;
 using MoBi.Core.Serialization.Services;
 using MoBi.Core.Serialization.Xml.Services;
+using MoBi.Core.Services;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -18,7 +22,7 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Serialization.ORM.Mappers
 {
-   public interface IProjectMetaDataToProjectMapper : IMapper<ProjectMetaData, IMoBiProject>
+   public interface IProjectMetaDataToProjectMapper : IMapper<ProjectMetaData, MoBiProject>
    {
    }
 
@@ -27,19 +31,23 @@ namespace MoBi.Core.Serialization.ORM.Mappers
       private readonly IXmlSerializationService _serializationService;
       private readonly ISerializationContextFactory _serializationContextFactory;
       private readonly IDeserializedReferenceResolver _deserializedReferenceResolver;
-      private IMoBiProject _project;
+      private readonly IModuleFactory _moduleFactory;
+
+      private MoBiProject _project;
 
       public ProjectMetaDataToProjectMapper(
-         IXmlSerializationService serializationService, 
-         ISerializationContextFactory serializationContextFactory, 
-         IDeserializedReferenceResolver deserializedReferenceResolver)
+         IXmlSerializationService serializationService,
+         ISerializationContextFactory serializationContextFactory,
+         IDeserializedReferenceResolver deserializedReferenceResolver,
+         IModuleFactory moduleFactory)
       {
          _serializationService = serializationService;
          _serializationContextFactory = serializationContextFactory;
          _deserializedReferenceResolver = deserializedReferenceResolver;
+         _moduleFactory = moduleFactory;
       }
 
-      public IMoBiProject MapFrom(ProjectMetaData projectMetaData)
+      public MoBiProject MapFrom(ProjectMetaData projectMetaData)
       {
          try
          {
@@ -47,7 +55,7 @@ namespace MoBi.Core.Serialization.ORM.Mappers
             // then all other entities and finish with the project charts
             using (var serializationContext = _serializationContextFactory.Create())
             {
-               _project = deserializeContent<IMoBiProject>(projectMetaData.Content, serializationContext);
+               _project = deserializeContent<MoBiProject>(projectMetaData.Content, serializationContext);
                _project.Name = projectMetaData.Name;
                _project.Description = projectMetaData.Description;
 
@@ -59,12 +67,16 @@ namespace MoBi.Core.Serialization.ORM.Mappers
                {
                   addSimulationToProject(simulationMetaData, serializationContext);
                }
-
+               
                //then load the rest of the entities
+               var nonProjectBuildingBlocks = new List<IBuildingBlock>();
                foreach (var entityMetaData in projectMetaData.Children)
                {
-                  addEntityToProject(entityMetaData, serializationContext);
+                  addEntityToProject(entityMetaData, serializationContext, nonProjectBuildingBlocks);
                }
+
+               // convert and add the entities that are not direct children of project
+               addNonProjectBuildingBlocks(nonProjectBuildingBlocks);
 
                _deserializedReferenceResolver.ResolveFormulaAndTemplateReferences(_project, _project);
                return _project;
@@ -74,6 +86,43 @@ namespace MoBi.Core.Serialization.ORM.Mappers
          {
             _project = null;
          }
+      }
+
+      private void addNonProjectBuildingBlocks(List<IBuildingBlock> moduleBuildingBlocks)
+      {
+         var simulationSettingsBlocks = moduleBuildingBlocks.OfType<SimulationSettings>().ToList();
+         simulationSettingsBlocks.Each(x => moduleBuildingBlocks.Remove(x));
+         
+         if(hasUniqueBuildingBlocks(moduleBuildingBlocks))
+            addModuleBuildingBlocks(moduleBuildingBlocks);
+         else
+            addBuildingBlocksToModule(moduleBuildingBlocks);
+         
+         addSimulationSettingsBuildingBlocks(simulationSettingsBlocks);
+      }
+      private void addBuildingBlocksToModule(List<IBuildingBlock> moduleBuildingBlocks) =>
+         moduleBuildingBlocks.Each(addBuildingBlockAsModule);
+      
+
+      private void addSimulationSettingsBuildingBlocks(List<SimulationSettings> simulationSettingsBlocks)
+      {
+         if (simulationSettingsBlocks.Any() && _project.SimulationSettings == null)
+            _project.SimulationSettings = simulationSettingsBlocks.First();
+      }
+
+      private void addModuleBuildingBlocks(List<IBuildingBlock> moduleBuildingBlocks)
+      {
+         if (!moduleBuildingBlocks.Any())
+            return;
+         var module = _moduleFactory.CreateModuleWithName(AppConstants.DefaultNames.DefaultSingleModuleName);
+         moduleBuildingBlocks.Each(module.Add);
+         _project.AddModule(module);
+      }
+
+      private void addBuildingBlockAsModule(IBuildingBlock buildingBlock)
+      {
+         var module = _moduleFactory.CreateDedicatedModuleFor(buildingBlock);
+         _project.AddModule(module);
       }
 
       private void addObservedDataToSerializationContext(SerializationContext serializationContext)
@@ -101,7 +150,7 @@ namespace MoBi.Core.Serialization.ORM.Mappers
          return _serializationService.Deserialize<T>(content.Data, _project, serializationContext);
       }
 
-      private void addEntityToProject(EntityMetaData entity, SerializationContext serializationContext)
+      private void addEntityToProject(EntityMetaData entity, SerializationContext serializationContext, List<IBuildingBlock> moduleBuildingBlocks)
       {
          if (entity.IsAnImplementationOf<SimulationMetaData>())
             return;
@@ -110,17 +159,49 @@ namespace MoBi.Core.Serialization.ORM.Mappers
          if (deserializedEntity.IsAnImplementationOf<CurveChart>())
             addChartToProject(deserializedEntity);
 
-         else if (deserializedEntity.IsAnImplementationOf<ParameterIdentification>())
-            _project.AddParameterIdentification(deserializedEntity as ParameterIdentification);
+         else if (deserializedEntity is ParameterIdentification parameterIdentification)
+            _project.AddParameterIdentification(parameterIdentification);
 
-         else if (deserializedEntity.IsAnImplementationOf<SensitivityAnalysis>())
-            _project.AddSensitivityAnalysis(deserializedEntity as SensitivityAnalysis);
+         else if (deserializedEntity is SensitivityAnalysis sensitivityAnalysis)
+            _project.AddSensitivityAnalysis(sensitivityAnalysis);
 
-         else if (deserializedEntity.IsAnImplementationOf<IWithId>())
-            _project.AddBuildingBlock(deserializedEntity as IBuildingBlock);
+         else if (deserializedEntity is Module module)
+            _project.AddModule(module);
+
+         else if (deserializedEntity is IndividualBuildingBlock individualBuildingBlock)
+            _project.AddIndividualBuildingBlock(individualBuildingBlock);
+
+         else if (deserializedEntity is ExpressionProfileBuildingBlock expressionProfile)
+            _project.AddExpressionProfileBuildingBlock(expressionProfile);
+
+         else if (deserializedEntity is MoleculeBuildingBlock moleculeBuildingBlock)
+            moduleBuildingBlocks.Add(moleculeBuildingBlock);
+
+         else if (deserializedEntity is PassiveTransportBuildingBlock passiveTransport)
+            moduleBuildingBlocks.Add(passiveTransport);
+
+         else if (deserializedEntity is EventGroupBuildingBlock eventGroupBuildingBlock)
+            moduleBuildingBlocks.Add(eventGroupBuildingBlock);
+
+         else if (deserializedEntity is InitialConditionsBuildingBlock initialConditionsBuildingBlock)
+            moduleBuildingBlocks.Add(initialConditionsBuildingBlock);
+
+         else if (deserializedEntity is ParameterValuesBuildingBlock parameterValuesBuildingBlock)
+            moduleBuildingBlocks.Add(parameterValuesBuildingBlock);
+
+         else if (deserializedEntity is MoBiReactionBuildingBlock moBiReactionBuildingBlock)
+            moduleBuildingBlocks.Add(moBiReactionBuildingBlock);
+
+         else if (deserializedEntity is MoBiSpatialStructure moBiSpatialStructure)
+            moduleBuildingBlocks.Add(moBiSpatialStructure);
+
+         else if (deserializedEntity is ObserverBuildingBlock observerBuildingBlock)
+            moduleBuildingBlocks.Add(observerBuildingBlock);
+
+         else if (deserializedEntity is SimulationSettings simulationSettings)
+            moduleBuildingBlocks.Add(simulationSettings);
 
          else
-
             throw new MoBiException($"Don't know what to do with {deserializedEntity.GetType()}");
       }
 
@@ -142,6 +223,28 @@ namespace MoBi.Core.Serialization.ORM.Mappers
             dataRepository.SetPersistable(true);
             moBiSimulation.HistoricResults.Add(dataRepository);
          }
+      }
+
+      private bool hasUniqueBuildingBlocks(List<IBuildingBlock> moduleBuildingBlocks)
+      {
+         var uniqueTypes = new HashSet<Type>
+         {
+            typeof(MoleculeBuildingBlock),
+            typeof(PassiveTransportBuildingBlock),
+            typeof(EventGroupBuildingBlock),
+            typeof(InitialConditionsBuildingBlock),
+            typeof(ParameterValuesBuildingBlock),
+            typeof(MoBiReactionBuildingBlock),
+            typeof(MoBiSpatialStructure),
+            typeof(ObserverBuildingBlock)
+         };
+
+         return moduleBuildingBlocks
+            .Select(block => block.GetType())
+            .Where(type => uniqueTypes.Contains(type))
+            .GroupBy(type => type)
+            .All(group => group.Count() == 1);
+
       }
    }
 }

@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
+using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Services;
+using MoBi.Helpers;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
@@ -18,9 +19,10 @@ namespace MoBi.Core
    {
       protected INameCorrector _nameCorrector;
       protected ICloneManagerForSimulation _cloneManager;
-      protected IMoBiProject _project;
+      protected MoBiProject _project;
       protected IMoBiSimulation _simulation;
       protected IMoBiContext _context;
+      protected SimulationConfiguration _simulationConfiguration;
 
       protected override void Context()
       {
@@ -29,42 +31,31 @@ namespace MoBi.Core
          _context = A.Fake<IMoBiContext>();
          sut = new SimulationLoader(_cloneManager, _nameCorrector, _context);
 
-         _project = new MoBiProject();
-         _simulation = A.Fake<IMoBiSimulation>().WithId("SimId");
+         _project = DomainHelperForSpecs.NewProject();
+         _simulation = new MoBiSimulation().WithId("SimId");
+         _simulationConfiguration = new SimulationConfiguration();
+         var originalBuildingBlock = new ObserverBuildingBlock().WithId("SP1");
+         var module = new Module
+         {
+            originalBuildingBlock
+         }.WithName("moduleName");
+         _simulationConfiguration.AddModuleConfiguration(new ModuleConfiguration(module));
+         _simulationConfiguration.Individual = new IndividualBuildingBlock().WithId("ind1");
+         _simulation.Configuration = _simulationConfiguration;
          A.CallTo(() => _context.CurrentProject).Returns(_project);
          A.CallTo(() => _context.Project).Returns(_project);
       }
    }
 
-   public class When_adding_a_simulation_to_a_project : concern_for_SimulationLoader
+   public class When_adding_a_simulation_to_project_where_the_simulation_name_is_unique_but_module_names_collide : concern_for_SimulationLoader
    {
-      private ParameterStartValuesBuildingBlockInfo _psvInfo;
-      private IMoBiBuildConfiguration _buildConfiguration;
-      private ParameterStartValuesBuildingBlock _cloneBuildingBlock;
-      private MoleculesInfo _moleculesInfo;
-      private MoleculeBuildingBlock _templateMoleculeBuildingBlock;
-      private MoBiSpatialStructure _templateSpatialStructure;
-      private SpatialStructureInfo _spatialStructureInfo;
-
       protected override void Context()
       {
          base.Context();
-         _buildConfiguration = A.Fake<IMoBiBuildConfiguration>();
-         _psvInfo = new ParameterStartValuesBuildingBlockInfo {UntypedBuildingBlock = new ParameterStartValuesBuildingBlock().WithId("psvbb1")};
+         _project.AddModule(new Module().WithName("moduleName"));
+         _simulation.Name = "Sim1";
 
-         _templateMoleculeBuildingBlock = new MoleculeBuildingBlock {Id = "templateMoleculeBuildingBlock"};
-         _templateSpatialStructure = new MoBiSpatialStructure() {Id = "templateSpatialStructure"};
-         _moleculesInfo = new MoleculesInfo {UntypedBuildingBlock = _templateMoleculeBuildingBlock};
-         _spatialStructureInfo = new SpatialStructureInfo {UntypedBuildingBlock = _templateSpatialStructure};
-
-         _buildConfiguration.ParameterStartValuesInfo = _psvInfo;
-         _buildConfiguration.SpatialStructureInfo = _spatialStructureInfo;
-         _buildConfiguration.MoleculesInfo = _moleculesInfo;
-         A.CallTo(() => _buildConfiguration.AllBuildingBlockInfos()).Returns(new IBuildingBlockInfo[] {_psvInfo, _moleculesInfo, _spatialStructureInfo});
-         _cloneBuildingBlock = new ParameterStartValuesBuildingBlock().WithId("psvbb2");
-         A.CallTo(() => _cloneManager.CloneBuildingBlock(_psvInfo.BuildingBlock)).Returns(_cloneBuildingBlock);
-         A.CallTo(() => _simulation.MoBiBuildConfiguration).Returns(_buildConfiguration);
-         A.CallTo(_nameCorrector).WithReturnType<bool>().Returns(true);
+         A.CallTo(() => _cloneManager.CloneSimulationConfiguration(A<SimulationConfiguration>._)).Returns(_simulationConfiguration);
       }
 
       protected override void Because()
@@ -73,38 +64,74 @@ namespace MoBi.Core
       }
 
       [Observation]
-      public void the_simulation_configuration_psv_and_msv_building_blocks_should_target_the_newly_created_template_building_blocks()
+      public void the_added_module_should_have_been_renamed()
       {
-         _simulation.MoBiBuildConfiguration.ParameterStartValuesInfo.BuildingBlock.MoleculeBuildingBlockId.ShouldBeEqualTo(_templateMoleculeBuildingBlock.Id);
-         _simulation.MoBiBuildConfiguration.ParameterStartValuesInfo.BuildingBlock.SpatialStructureId.ShouldBeEqualTo(_templateSpatialStructure.Id);
-
-         _simulation.MoBiBuildConfiguration.MoleculeStartValuesInfo.BuildingBlock.MoleculeBuildingBlockId.ShouldBeEqualTo(_templateMoleculeBuildingBlock.Id);
-         _simulation.MoBiBuildConfiguration.MoleculeStartValuesInfo.BuildingBlock.SpatialStructureId.ShouldBeEqualTo(_templateSpatialStructure.Id);
+         A.CallTo(() => _nameCorrector.AutoCorrectName(A<IEnumerable<string>>._, _simulation.Modules.First())).MustHaveHappened();
       }
    }
 
-   public class When_adding_a_simulation_to_project_that_does_not_contain_any_simulation_or_building_block : concern_for_SimulationLoader
+   public class When_adding_a_simulation_to_project_that_contains_a_simulation_with_the_same_name : concern_for_SimulationLoader
    {
-      private ObserverBuildingBlockInfo _bbInfo;
-      private ObserverBuildingBlock _cloneBuildingBlock;
-      private IMoBiBuildConfiguration _buildConfiguration;
+      private ObserverBuildingBlock _clonedBuildingBlock;
+
+      private Module _clonedModule;
+      private IndividualBuildingBlock _clonedIndividual;
+      private SimulationConfiguration _clonedSimulationConfiguration;
+      private MoBiMacroCommand _commands;
 
       protected override void Context()
       {
          base.Context();
-         _buildConfiguration = A.Fake<IMoBiBuildConfiguration>();
-         _bbInfo = new ObserverBuildingBlockInfo {UntypedBuildingBlock = new ObserverBuildingBlock().WithId("SP1")};
-         _buildConfiguration.ObserversInfo = _bbInfo;
-         A.CallTo(() => _buildConfiguration.AllBuildingBlockInfos()).Returns(new[] {_bbInfo});
-         _cloneBuildingBlock = new ObserverBuildingBlock().WithId("SP2");
-         A.CallTo(() => _cloneManager.CloneBuildingBlock(_bbInfo.BuildingBlock)).Returns(_cloneBuildingBlock);
-         A.CallTo(() => _simulation.MoBiBuildConfiguration).Returns(_buildConfiguration);
-         A.CallTo(_nameCorrector).WithReturnType<bool>().Returns(true);
+         _project.AddModule(new Module().WithName("moduleName"));
+         _project.AddModule(new Module().WithName("newModuleName"));
+
+         _clonedBuildingBlock = new ObserverBuildingBlock().WithId("SP2");
+         _clonedModule = new Module
+         {
+            _clonedBuildingBlock
+         };
+
+         _clonedIndividual = new IndividualBuildingBlock().WithId("ind2");
+         _clonedSimulationConfiguration = new SimulationConfiguration();
+         _clonedSimulationConfiguration.AddModuleConfiguration(new ModuleConfiguration(_clonedModule));
+         _clonedSimulationConfiguration.Individual = _clonedIndividual;
+         _simulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(new Module().WithName("Sim1 1")));
+         _simulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(new Module().WithName("Sim1 2")));
+         _simulation.Name = "Sim1";
+         _simulation.Model = new Model { Neighborhoods = new Container() };
+         _simulation.Model.Root = new Container();
+
+         A.CallTo(() => _cloneManager.CloneSimulationConfiguration(_simulationConfiguration)).Returns(_clonedSimulationConfiguration);
+
+         A.CallTo(_nameCorrector).WithReturnType<bool>()
+            .Invokes(() => { _simulation.Name = "new SimName"; }).Returns(true);
+
+         A.CallTo(() => _nameCorrector.CorrectName(A<IEnumerable<IObjectBase>>.Ignored, _simulation))
+            .Returns(true);
       }
 
       protected override void Because()
       {
-         sut.AddSimulationToProject(_simulation);
+         _commands = sut.AddSimulationToProject(_simulation) as MoBiMacroCommand;
+      }
+
+      [Observation]
+      public void the_model_and_root_container_are_renamed()
+      {
+         _simulation.Model.Name.ShouldBeEqualTo(_simulation.Name);
+         _simulation.Model.Root.Name.ShouldBeEqualTo(_simulation.Name);
+      }
+
+      [Observation]
+      public void module_add_commands_are_added_silently()
+      {
+         _commands.All().OfType<AddModuleCommand>().All(command => command.Silent).ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_add_clone_of_individual_to_the_project()
+      {
+         _project.IndividualsCollection.Single().ShouldBeEqualTo(_clonedIndividual);
       }
 
       [Observation]
@@ -120,13 +147,20 @@ namespace MoBi.Core
       }
 
       [Observation]
-      public void should_add_the_building_block_to_the_project_as_well()
+      public void should_add_clone_of_module_to_the_project_as_well()
       {
-         _project.AllBuildingBlocks().ShouldContain(_bbInfo.TemplateBuildingBlock);
+         _project.Modules.ShouldContain(_clonedModule);
+      }
+
+      [Observation]
+      public void the_modules_in_the_simulation_named_after_simulation_have_been_changed()
+      {
+         _simulation.Modules[1].Name.ShouldBeEqualTo($"new SimName 1");
+         _simulation.Modules[2].Name.ShouldBeEqualTo($"new SimName 2");
       }
    }
 
-   public class When_adding_a_simulation_to_project_that_does_already_exists_by_name_and_ther_user_cancels_the_rename : concern_for_SimulationLoader
+   public class When_adding_a_simulation_to_project_that_does_already_exists_by_name_and_the_user_cancels_the_rename : concern_for_SimulationLoader
    {
       protected override void Context()
       {
@@ -159,7 +193,7 @@ namespace MoBi.Core
          _newDataRepository = new DataRepository("New");
          _simulationTransfer = new SimulationTransfer();
          _simulationTransfer.Simulation = _simulation;
-         _simulationTransfer.AllObservedData = new List<DataRepository> {_dataRepository, _newDataRepository};
+         _simulationTransfer.AllObservedData = new List<DataRepository> { _dataRepository, _newDataRepository };
          _project.AddObservedData(_dataRepository);
       }
 

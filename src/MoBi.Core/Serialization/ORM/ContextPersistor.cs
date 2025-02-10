@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
+using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Serialization.Converter;
@@ -22,7 +23,7 @@ namespace MoBi.Core.Serialization.ORM
    {
       void Load(IMoBiContext context, string projectFullPath);
       void Save(IMoBiContext context);
-      void NewProject(IMoBiContext context);
+      MoBiProject NewProject(IMoBiContext context);
       void CloseProject(IMoBiContext context);
       void LoadJournal(IMoBiContext context, string journalPath, string projectFullPath = null, bool showJournal = false);
    }
@@ -37,9 +38,18 @@ namespace MoBi.Core.Serialization.ORM
       private readonly IEventPublisher _eventPublisher;
       private readonly IJournalTask _journalTask;
       private readonly IJournalLoader _journalLoader;
+      private readonly ISimulationSettingsFactory _simulationSettingsFactory;
 
-      public ContextPersistor(IProjectConverterLogger projectConverterLogger, ISessionManager sessionManager, IProjectPersistor projectPersistor,
-         IHistoryManagerPersistor historyManagerPersistor, IProjectFileCompressor projectFileCompressor, IEventPublisher eventPublisher, IJournalTask journalTask, IJournalLoader journalLoader)
+      public ContextPersistor(
+         IProjectConverterLogger projectConverterLogger, 
+         ISessionManager sessionManager, 
+         IProjectPersistor projectPersistor,
+         IHistoryManagerPersistor historyManagerPersistor, 
+         IProjectFileCompressor projectFileCompressor, 
+         IEventPublisher eventPublisher, 
+         IJournalTask journalTask, 
+         IJournalLoader journalLoader,
+         ISimulationSettingsFactory simulationSettingsFactory)
       {
          _projectConverterLogger = projectConverterLogger;
          _sessionManager = sessionManager;
@@ -49,6 +59,7 @@ namespace MoBi.Core.Serialization.ORM
          _eventPublisher = eventPublisher;
          _journalTask = journalTask;
          _journalLoader = journalLoader;
+         _simulationSettingsFactory = simulationSettingsFactory;
       }
 
       public void Load(IMoBiContext context, string projectFullPath)
@@ -75,7 +86,7 @@ namespace MoBi.Core.Serialization.ORM
          }
          catch (Exception)
          {
-            // Exeption occurs while opening the project! 
+            // Exception occurs while opening the project! 
             // close the file and rethrow the exception
             _sessionManager.CloseFactory();
             context.Clear();
@@ -84,7 +95,7 @@ namespace MoBi.Core.Serialization.ORM
 
          var notificationMessages = _projectConverterLogger.AllMessages();
          if (notificationMessages.Any())
-            _eventPublisher.PublishEvent(new ShowNotificationsEvent(new ReadOnlyCollection<NotificationMessage>(notificationMessages.ToList())));
+            _eventPublisher.PublishEvent(new ShowProjectConversionNotificationsEvent(new ReadOnlyCollection<NotificationMessage>(notificationMessages.ToList())));
       }
 
       public void Save(IMoBiContext context)
@@ -120,10 +131,13 @@ namespace MoBi.Core.Serialization.ORM
          throw new OSPSuiteException(AppConstants.Exceptions.FileIsReadOnly(projectFilePath));
       }
 
-      public void NewProject(IMoBiContext context)
+      public MoBiProject NewProject(IMoBiContext context)
       {
          _sessionManager.CloseFactory();
          context.NewProject();
+         var project = context.CurrentProject;
+         project.SimulationSettings = _simulationSettingsFactory.CreateDefault();
+         return project;
       }
 
       public void CloseProject(IMoBiContext context)

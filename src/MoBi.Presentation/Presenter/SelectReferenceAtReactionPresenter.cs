@@ -1,17 +1,17 @@
 using System.Collections.Generic;
-using MoBi.Core;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using MoBi.Core.Domain.Repository;
 
 namespace MoBi.Presentation.Presenter
 {
    public interface ISelectReferenceAtReactionPresenter : ISelectReferencePresenter
    {
-      void Init(IEntity refObjectBase, IEnumerable<IObjectBase> entities, IReactionBuilder reactionBuilder);
+      void Init(IEntity refObjectBase, IReadOnlyList<IObjectBase> entities, ReactionBuilder reactionBuilder);
    }
    internal class SelectReferenceAtReactionPresenter : SelectReferencePresenterBase, ISelectReferenceAtReactionPresenter
    {
@@ -22,15 +22,17 @@ namespace MoBi.Presentation.Presenter
          IMoBiContext context,
          IUserSettings userSettings,
          IObjectBaseToDummyMoleculeDTOMapper objectBaseToMoleculeDummyMapper,
-         IParameterToDummyParameterDTOMapper dummyParameterDTOMapper, IObjectBaseDTOToReferenceNodeMapper referenceMapper, IObjectPathCreatorAtReaction objectPathCreator)
-         : base(
-            view, objectBaseDTOMapper, context, userSettings,
-            objectBaseToMoleculeDummyMapper, dummyParameterDTOMapper, referenceMapper, objectPathCreator, Localisations.PhysicalContainerOnly)
+         IParameterToDummyParameterDTOMapper dummyParameterDTOMapper, 
+         IObjectBaseDTOToReferenceNodeMapper referenceMapper, 
+         IObjectPathCreatorAtReaction objectPathCreator, 
+         IBuildingBlockRepository buildingBlockRepository)
+         : base(view, objectBaseDTOMapper, context, userSettings,
+            objectBaseToMoleculeDummyMapper, dummyParameterDTOMapper, referenceMapper, objectPathCreator, Localisations.PhysicalContainerOnly, buildingBlockRepository)
       {
          _objectPathCreatorAtReaction = objectPathCreator;
       }
 
-      public void Init(IEntity refObjectBase, IEnumerable<IObjectBase> entities, IReactionBuilder reactionBuilder)
+      public void Init(IEntity refObjectBase, IReadOnlyList<IObjectBase> entities, ReactionBuilder reactionBuilder)
       {
          _objectPathCreatorAtReaction.Reaction = reactionBuilder;
          base.Init(refObjectBase, entities, reactionBuilder);

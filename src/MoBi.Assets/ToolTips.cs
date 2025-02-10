@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Assets
 {
@@ -9,7 +10,8 @@ namespace MoBi.Assets
       public static readonly string ZoomOut = "Reduces the view of the Flow Chart";
       public static readonly string FitToPage = "Zoom to fit all elements in the current Flow Chart window ";
       public static readonly string SetToDefault = "Sets Values to Defaults defined in Molecules and Spatial Structure";
-      public static readonly string Extend = "Adds new start values from Molecules and Spatial Structure";
+      public static readonly string Extend = "Adds new values from Molecules and Spatial Structure";
+      public static readonly string AddProteinExpression = "Adds new expression for a Protein and Organ";
       public static readonly string AddMoleculeNameToList = "Add molecule name to selectable list";
       public static readonly string AddToProject = "Save as a new building block in project.";
       public static readonly string ResetParameterToolTip = "Reset parameter to default";
@@ -22,6 +24,11 @@ namespace MoBi.Assets
          public static readonly string AddPKSimMolecule = "Add a PK-Sim Molecule";
       }
 
+      public static class BuildingBlockExpressionProfile
+      {
+         public static readonly string LoadExpressionProfile = $"Load Expression Profile from Expression Profile Building Block file (*{Constants.Filter.PKML_FILE_FILTER})";
+      }
+
       public static class BuildingBlockReaction
       {
          public static readonly string NewReaction = "Create a new Reaction";
@@ -32,6 +39,7 @@ namespace MoBi.Assets
       public static class BuildingBlockSpatialStructure
       {
          public static readonly string NewTopContainer = "Create a new Top Container";
+         public static readonly string NewNeighborhood = "Create a new neighborhood";
          public static readonly string LoadTopContainer = $"Load Top Container from Spatial Structures Building Block file (*{Constants.Filter.PKML_FILE_FILTER})";
       }
 
@@ -59,20 +67,18 @@ namespace MoBi.Assets
          public static readonly string LoadEventGroup = $"Load Event Group from Event Groups Building Block file (*{Constants.Filter.PKML_FILE_FILTER})";
       }
 
-      public static class ModellingRibbon
+      public static class ModelingRibbon
       {
-         public static readonly string CreateMoleculesBB = "Create a new Molecules Building Block";
-         public static readonly string CreateReactionsBB = "Create a new Reactions Building Block";
-         public static readonly string CreateSpatStructuresBB = "Create a new Spatial Structures Building Block";
-         public static readonly string CreatePassiveTansportsBB = "Create a new Passive Transports Building Block";
-         public static readonly string CreateEventGroupsBB = "Create a new Event Groups Building Block";
-         public static readonly string CreateObserversBB = "Create a new Observers Building Block";
-         public static readonly string CreateSimulationSettingsBB = "Create a new Simulation Settings Building Block";
+         public static readonly string CreateIndividual = "Create a new Individual";
+         public static readonly string CreateModule = "Create a new Module";
+         public static readonly string CreateExpressionProfile = "Create a new Expression Profile";
       }
 
-      public static class EditRibbon
+      public static class SimulationSettingsRibbon
       {
-         public static readonly string UndoDescription = "Undo the last action";
+         public static readonly string EditDefaultSimulationSettings = "Edit the project default simulation settings";
+         public static readonly string SaveProjectSimulationSettings = "Save project settings to PKML...";
+         public static readonly string LoadProjectSimulationSettings = "Load project settings from PKML...";
       }
 
       public static class FileRibbon
@@ -117,7 +123,7 @@ namespace MoBi.Assets
 
       public static class ViewRibbon
       {
-         public static readonly string ViewBBs = "Show or hide the building blocks explorer";
+         public static readonly string ViewModules = "Show or hide the module explorer";
          public static readonly string ViewSims = "Show or hide the simulations explorer";
          public static readonly string ViewsHistoryManager = "Show or hide the history";
          public static readonly string ViewSearch = "Show or hide the search window";
@@ -131,11 +137,6 @@ namespace MoBi.Assets
          public static readonly string Options = "Change general settings and diagram options";
       }
 
-      public class WorkFlowRibbon
-      {
-         public static readonly string Merge = $"Merge an existing Simulation (*{Constants.Filter.PKML_FILE_FILTER}) into Project";
-      }
-
       public static readonly string Description = "Free text for background information on the here defined object";
       public static string TransporterName = "Name used in Simulation";
       public static string MultipleParameterChangesView = "More then on value found for a parameter changed in simulation. Select one to commit to builder in building block";
@@ -143,7 +144,10 @@ namespace MoBi.Assets
       public static class ParameterView
       {
          public static readonly string ParameterName = "Define a name for the Parameter";
-         public static readonly string ParameterType = "Specify the parameters area of validity \n \n Local: should only be used locally, i.e., within the corresponding reaction or for a molecule where a local parameter is defined \n \n Global:can also be used in other formulas  \n \n Property: are identical to Global parameters except that they will not be listed and set in the parameter start values";
+
+         public static readonly string ParameterType =
+            "Specify the parameters area of validity \n \n Local: should only be used locally, i.e., within the corresponding reaction or for a molecule where a local parameter is defined \n \n Global:can also be used in other formulas  \n \n Property: are identical to Global parameters except that they will not be listed and set in the parameter values";
+
          public static readonly string ParameterDimension = "";
          public static readonly string IsStateVariable = "Parameter (P) is defined and calculated by solving a differential equation as: \n \n P: “dP/dt = Right Hand Side”; \n \n The selected formula defines the Right Hand Side. The Value defined above will be used as initial condition";
          public static readonly string Persistable = "Parameter values plotable";
@@ -189,13 +193,9 @@ namespace MoBi.Assets
          public static readonly string ConstantValue = "Set a numeric value";
          public static readonly string X = "Point in time";
          public static readonly string Y = "Formula value at t=X";
-         public static readonly string RestartSolver = "Select to mark solver restart at t=X. Increases numerical accuracy  but may reduce solver speed";
-         public static readonly string AddPoint = "Add a new point to the list";
-         public static readonly string DeletePoint = "Delete the point from the list";
          public static readonly string ReferenceAlias = "Sort by Alias \n \n Alias is the identifier of the reference for use in the formula";
          public static readonly string ReferencePath = "Sort by Path \n \n The Path describes where the referenced object is located";
          public static readonly string ReferenceDimension = "Sort by Dimension \n \n Dimension defines the class of unit of measurement of the referenced object";
-         public static readonly string UseDerivedValues = "If checked, the first derivative of the entered table values is used";
       }
 
       public static class ReferenceSelector
@@ -229,11 +229,16 @@ namespace MoBi.Assets
          public static readonly string DeleteMolecule = "Delete molecule from list of molecules ";
       }
 
+      public static class Neighborhood
+      {
+         public static string Between(NeighborhoodBuilder neighborhood) => $"Neighborhood between '{neighborhood.FirstNeighborPath}' and '{neighborhood.SecondNeighborPath}'";
+      }
+
       public static class Applications
       {
          public static readonly string ApplicationName = "Define a name for the Application";
-         public static readonly string ApplicatedMolecule = "Select the molecule which is to be applicatedwhich the application will affect";
-         public static readonly string ApplicationMoleculeBuilderr = "Define the source amount of the application";
+         public static readonly string AppliedMolecule = "Select the molecule which is to be applied which the application will affect";
+         public static readonly string ApplicationMoleculeBuilder = "Define the source amount of the application";
          public static readonly string ApplicationMoleculeBuilderPath = "Path to container there application source is created";
          public static readonly string ApplicationMoleculeBuilderFormula = "Formula of application source amount";
       }

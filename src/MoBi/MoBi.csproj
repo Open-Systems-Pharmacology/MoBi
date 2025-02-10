@@ -3,11 +3,11 @@
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
     <OutputType>WinExe</OutputType>
-    <Version>11.3.0</Version>
-    <PackageVersion>11.3.0</PackageVersion>
-    <AssemblyVersion>11.3.0</AssemblyVersion>
-    <FileVersion>11.3.0</FileVersion>
-    <InformationalVersion>11.3.0</InformationalVersion>
+    <Version>12.0.0</Version>
+    <PackageVersion>12.0.0</PackageVersion>
+    <AssemblyVersion>12.0.0</AssemblyVersion>
+    <FileVersion>12.0.0</FileVersion>
+    <InformationalVersion>12.0.0</InformationalVersion>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <Authors>Open-Systems-Pharmacology</Authors>
@@ -15,6 +15,7 @@
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <NoWarn>1591, 3246</NoWarn>
     <ApplicationIcon>MoBi.ico</ApplicationIcon>
+	<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -40,9 +41,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="$(PkgOSPSuite_SimModelSolver_CVODES)\OSPSuite.SimModelSolver_CVODES\bin\native\x64\Release\OSPSuite.SimModelSolver_CVODES.dll" Link="OSPSuite.SimModelSolver_CVODES.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="$(PkgSystem_Data_SQLite_Core)\build\net46\x64\SQLite.Interop.dll" Link="SQLite.Interop.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="$(PkgOSPSuite_Presentation)\OSPSuite.Presentation\**">
@@ -71,14 +69,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Core" Version="11.3.272" />
+    <PackageReference Include="OSPSuite.Core" Version="12.0.364" />
     <PackageReference Include="OSPSuite.DevExpress" Version="21.2.3" />
-    <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.54" GeneratePathProperty="true" />
-    <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.53" GeneratePathProperty="true" />
-    <PackageReference Include="OSPSuite.SimModelSolver_CVODES" Version="4.1.0.8" GeneratePathProperty="true" />
-    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.112" GeneratePathProperty="true" />
-    <PackageReference Include="OSPSuite.Presentation" Version="11.3.272" GeneratePathProperty="true" />
-    <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.0.4" GeneratePathProperty="true" />
+    <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.68" GeneratePathProperty="true" />
+    <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.68" GeneratePathProperty="true" />
+    <PackageReference Include="OSPSuite.SimModelSolver_CVODES" Version="4.1.0.10" GeneratePathProperty="true" />
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.118" GeneratePathProperty="true" />
+    <PackageReference Include="OSPSuite.Presentation" Version="12.0.364" GeneratePathProperty="true" />
+    <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.0.5" GeneratePathProperty="true" />
 
   </ItemGroup>
 
@@ -91,4 +89,19 @@
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
+
+	<!-- Content comes from Stub.system.data.sqlite.core. Basically, implements the same task as if you added this binary as content and copy to output folder -->
+	<PropertyGroup>
+		<ContentSQLiteInteropFiles>true</ContentSQLiteInteropFiles>
+		<CopySQLiteInteropFiles>false</CopySQLiteInteropFiles>
+		<CleanSQLiteInteropFiles>false</CleanSQLiteInteropFiles>
+		<CollectSQLiteInteropFiles>false</CollectSQLiteInteropFiles>
+	</PropertyGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<ItemGroup>
+			<WindowsFiles Include="$(TargetDir)x64/SQLite.Interop.dll" />
+		</ItemGroup>
+		<Copy SourceFiles="@(WindowsFiles);" DestinationFolder="$(TargetFolder)" DestinationFiles="@(WindowsFiles-&gt;Replace('x64/SQLite.Interop.dll', 'SQLite.Interop.dll'))" />
+	</Target>
 </Project>

@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
-using OSPSuite.Core.Commands.Core;
+using MoBi.Core.Extensions;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.UI.Diagram.Elements;
@@ -12,11 +12,11 @@ namespace MoBi.UI.UICommands
    {
       private readonly ReactionLinkType _linkType;
       private readonly IMoBiContext _context;
-      private readonly IMoBiReactionBuildingBlock _reactionBuildingBlock;
-      private readonly IReactionBuilder _reactionBuilder;
+      private readonly MoBiReactionBuildingBlock _reactionBuildingBlock;
+      private readonly ReactionBuilder _reactionBuilder;
       private readonly string _moleculeName;
 
-      public AddNamedPartnerUICommand(IMoBiContext context, IMoBiReactionBuildingBlock reactionBuildingBlock, IReactionBuilder reactionBuilder, string moleculeName, ReactionLinkType linkType)
+      public AddNamedPartnerUICommand(IMoBiContext context, MoBiReactionBuildingBlock reactionBuildingBlock, ReactionBuilder reactionBuilder, string moleculeName, ReactionLinkType linkType)
       {
          _context = context;
          _reactionBuildingBlock = reactionBuildingBlock;
@@ -47,7 +47,7 @@ namespace MoBi.UI.UICommands
                break;
          }
          if (command == null) return;
-         _context.AddToHistory(command.Run(_context));
+         _context.AddToHistory(command.RunCommand(_context));
       }
    }
 
@@ -55,11 +55,11 @@ namespace MoBi.UI.UICommands
    {
       private readonly ReactionLinkType _linkType;
       private readonly IMoBiContext _context;
-      private readonly IMoBiReactionBuildingBlock _reactionBuildingBlock;
-      private readonly IReactionBuilder _reactionBuilder;
+      private readonly MoBiReactionBuildingBlock _reactionBuildingBlock;
+      private readonly ReactionBuilder _reactionBuilder;
       private readonly string _moleculeName;
 
-      public RemoveNamedPartnerUICommand(IMoBiContext context, IMoBiReactionBuildingBlock reactionBuildingBlock, IReactionBuilder reactionBuilder, string moleculeName, ReactionLinkType linkType)
+      public RemoveNamedPartnerUICommand(IMoBiContext context, MoBiReactionBuildingBlock reactionBuildingBlock, ReactionBuilder reactionBuilder, string moleculeName, ReactionLinkType linkType)
       {
          _context = context;
          _reactionBuildingBlock = reactionBuildingBlock;
@@ -70,7 +70,7 @@ namespace MoBi.UI.UICommands
 
       public void Execute()
       {
-         IReactionPartnerBuilder reactionPartnerBuilder;
+         ReactionPartnerBuilder reactionPartnerBuilder;
          IMoBiCommand command = null;
          switch (_linkType)
          {
@@ -89,7 +89,7 @@ namespace MoBi.UI.UICommands
          }
 
          if (command == null) return;
-         _context.AddToHistory(command.Run(_context));
+         _context.AddToHistory(command.RunCommand(_context));
       }
    }
 }
