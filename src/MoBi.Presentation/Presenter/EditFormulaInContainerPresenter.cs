@@ -62,8 +62,6 @@ namespace MoBi.Presentation.Presenter
          Initialize(formulaOwner, buildingBlock, formulaDecoder);
       }
 
-
-
       public void Init(IParameter parameter, IBuildingBlock buildingBlock)
       {
          if (IsRHS)

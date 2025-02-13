@@ -124,6 +124,9 @@ namespace MoBi.Presentation.Presenter
          var path = new ObjectPath(newPath.ToPathArray());
          var formulaUsablePath = _formula.FormulaUsablePathBy(dto.Alias);
 
+         if (_circularReferenceChecker.HasCircularReference(path, _formulaOwner))
+            throw new OSPSuiteException(AppConstants.Exceptions.CircularReferenceException(path, _formula));
+
          AddCommand(_moBiFormulaTask.ChangePathInFormula(_formula, path, formulaUsablePath, BuildingBlock));
       }
 

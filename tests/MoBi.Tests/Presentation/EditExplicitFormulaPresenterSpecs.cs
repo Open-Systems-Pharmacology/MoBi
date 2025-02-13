@@ -22,7 +22,6 @@ namespace MoBi.Presentation
       protected IExplicitFormulaToExplicitFormulaDTOMapper _explicitFormulaMapper;
       protected IActiveSubjectRetriever _activeSubjectRetriever;
       protected IMoBiContext _context;
-      protected ICircularReferenceChecker _formulaChecker;
       protected IDialogCreator _dialogCreator;
       protected IInteractionTasksForChildren<IFormula, FormulaUsablePath> _interactionTask;
       protected IReactionDimensionRetriever _reactionDimensionRetriever;
@@ -38,7 +37,6 @@ namespace MoBi.Presentation
          _explicitFormulaMapper = A.Fake<IExplicitFormulaToExplicitFormulaDTOMapper>();
          _activeSubjectRetriever = A.Fake<IActiveSubjectRetriever>();
          _context = A.Fake<IMoBiContext>();
-         _formulaChecker = A.Fake<ICircularReferenceChecker>();
          _dialogCreator = A.Fake<IDialogCreator>();
          _interactionTask = A.Fake<IInteractionTasksForChildren<IFormula, FormulaUsablePath>>();
          _reactionDimensionRetriever = A.Fake<IReactionDimensionRetriever>();
@@ -147,7 +145,7 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_show_the_forula_caption_depepding_on_the_project_reaction_dimension_mode()
+      public void should_show_the_formula_caption_depending_on_the_project_reaction_dimension_mode()
       {
          A.CallTo(() => _view.SetFormulaCaption("THE_RHS_CAPTION")).MustHaveHappened();
       }
@@ -173,7 +171,7 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_show_the_forula_caption_depepding_on_the_project_reaction_dimension_mode()
+      public void should_show_the_formula_caption_depending_on_the_project_reaction_dimension_mode()
       {
          A.CallTo(() => _view.SetFormulaCaption("THE_RHS_CAPTION")).MustHaveHappened();
       }
