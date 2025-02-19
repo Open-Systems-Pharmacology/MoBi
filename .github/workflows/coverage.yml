@@ -1,10 +1,8 @@
 name: Code Coverage
 
 on:
-    push:
-    pull_request:
-      branches:
-      - 1805-build-on-github-actions  
+    schedule:
+      - cron: '0 1 * * 5'
 
 jobs:
   cover:
