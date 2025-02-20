@@ -68,11 +68,19 @@ jobs:
           echo "APP_VERSION=${{ env.MAJOR }}.${{ env.MINOR }}.${{ env.RUN }}" | Out-File -FilePath $env:GITHUB_ENV -Append
 
       - name: Build
-        run: msbuild MoBi.sln /p:Version=${{env.APP_VERSION}}
+        run: |
+          rake "update_go_license[ApplicationStartup.cs, ${{ secrets.GO_DIAGRAM_KEY }}]"
+          msbuild MoBi.sln /p:Version=${{env.APP_VERSION}}
 
       - name : Test
         run: dotnet test .\tests\**\bin\Debug\net472\MoBi*Tests.dll -v normal --no-build  --logger:"html;LogFileName=../testLog_Windows.html"
 
+      - name: Create Setup
+        run: |
+          rake "create_setup[${{env.APP_VERSION}}, Debug]"
+          7z a setup.zip %APPVEYOR_BUILD_FOLDER%\setup\deploy\*.msi
+          rake "create_portable_setup[${{env.APP_VERSION}}, Debug, mobi-portable-setup.zip]"
+          
       # - name: Push test log as artifact
       #   uses: actions/upload-artifact@v4
       #   with:
