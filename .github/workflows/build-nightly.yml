@@ -27,9 +27,9 @@ jobs:
         id: get-latest-commit-timespan
         shell: bash
         run: |
-          commit = `git log origin/develop -1 --format="%at"`
+          commit = $(git log origin/develop -1 --format="%at")
           echo $commit
-          now = `date +%s`
+          now = $(date +%s)
           echo $now
           timespan = $[commit - now]
           echo "Timespan: ${timespan}"
