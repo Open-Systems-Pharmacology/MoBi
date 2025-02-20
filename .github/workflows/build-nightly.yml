@@ -78,7 +78,6 @@ jobs:
       - name: Create Setup
         run: |
           rake "create_setup[${{env.APP_VERSION}}, Debug]"
-          7z a setup.zip setup\deploy\*.msi
           rake "create_portable_setup[${{env.APP_VERSION}}, Debug, mobi-portable-setup.zip]"
           
       - name: Push test log as artifact
@@ -90,5 +89,11 @@ jobs:
       - name: Push nightly installer as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: MoBi Installer
+          name: MoBi Installer ${{env.APP_VERSION}}
+          path: setup\deploy\*.msi
+
+      - name: Push nightly portable as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MoBi Portable ${{env.APP_VERSION}}
           path: .\setup\*.zip
