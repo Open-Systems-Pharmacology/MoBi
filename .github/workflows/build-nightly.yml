@@ -18,16 +18,19 @@ jobs:
     outputs:
       LATEST_COMMIT_TIMESPAN: ${{ steps.get-latest-commit-timespan.outputs.LATEST_COMMIT_TIMESPAN}}
     steps:
-    - name: Get New Build Number
-      id: get-latest-commit-timespan
-      shell: bash
-      run: |
-        commit = `git log develop -1 --format="%at"`
-        now = `date +%s`
-        timespan = $[commit - now]
-        echo "Timespan: ${timespan}"
-        echo "LATEST_COMMIT_TIMESPAN=${timespan}" >> $GITHUB_ENV
-        echo "LATEST_COMMIT_TIMESPAN=${timespan}" >> $GITHUB_OUTPUT
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get the previous commit timespan
+        id: get-latest-commit-timespan
+        shell: bash
+        run: |
+          commit = `git log develop -1 --format="%at"`
+          now = `date +%s`
+          timespan = $[commit - now]
+          echo "Timespan: ${timespan}"
+          echo "LATEST_COMMIT_TIMESPAN=${timespan}" >> $GITHUB_ENV
+          echo "LATEST_COMMIT_TIMESPAN=${timespan}" >> $GITHUB_OUTPUT
 
   build:
     needs: get-latest-commit-timespan
