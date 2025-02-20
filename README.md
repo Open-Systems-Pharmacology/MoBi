@@ -20,7 +20,7 @@ may define a new scenario, situation, or individual. Refine a Reaction(s) networ
 where it should be considered.
 
 ## Code Status
-[![Build status](https://img.shields.io/github/actions/workflow/status/Open-Systems-Pharmacology/MoBi/build-and-publish.yml?logo=nuget&label=Build%20status)](https://github.com/Open-Systems-Pharmacology/MoBi/actions/workflows/build-and-publish.yml)
+[![Build status](https://img.shields.io/github/actions/workflow/status/Open-Systems-Pharmacology/MoBi/build-and-test.yml?logo=nuget&label=Build%20status)](https://github.com/Open-Systems-Pharmacology/MoBi/actions/workflows/build-and-test.yml)
 [![Coverage status](https://codecov.io/gh/Open-Systems-Pharmacology/MoBi/branch/develop/graph/badge.svg)](https://codecov.io/gh/Open-Systems-Pharmacology/MoBi)
 
 ## Code of conduct
@@ -30,6 +30,6 @@ Everyone interacting in the Open Systems Pharmacology community (codebases, issu
 We encourage contribution to the Open Systems Pharmacology community. Before getting started please read the [contribution guidelines](https://github.com/Open-Systems-Pharmacology/Suite/blob/master/CONTRIBUTING.md). If you are contributing code, please be familiar with the [coding standard](https://github.com/Open-Systems-Pharmacology/Suite/blob/master/CODING_STANDARDS.md).
 
 ## License
-MoBi® is released under the [GPLv2 License](LICENSE).
+MoBi® is released under the [GPLv2 License](https://github.com/Open-Systems-Pharmacology/Suite/blob/master/LICENSE).
 
 All trademarks within this document belong to their legitimate owners.
