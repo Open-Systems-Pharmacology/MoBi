@@ -28,7 +28,6 @@ namespace MoBi.IntegrationTests
 
    public class When_Loading_a_Project_with_Unique_Building_Block_Types : concern_for_LoadProjectIntegrationTest
    {
-      private IMoBiContext _context;
       private ObjectTypeResolver _objectTypeResolver;
 
       public override void GlobalContext()
@@ -77,7 +76,6 @@ namespace MoBi.IntegrationTests
 
    public class When_Loading_a_Project_with_Duplicated_Building_Block_Types : concern_for_LoadProjectIntegrationTest
    {
-      private IMoBiContext _context;
       private ObjectTypeResolver _objectTypeResolver;
 
       public override void GlobalContext()
