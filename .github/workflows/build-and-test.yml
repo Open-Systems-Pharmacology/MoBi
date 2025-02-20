@@ -37,12 +37,8 @@ jobs:
           nuget sources add -name databinding-devexpress -source https://ci.appveyor.com/nuget/ospsuite-databinding-devexpress 
           dotnet restore
 
-      - name: define env variables
-        run: |
-          echo "APP_VERSION=${{ env.MAJOR }}.${{ env.MINOR }}.9${{ env.RUN }}" | Out-File -FilePath $env:GITHUB_ENV -Append
-
       - name: Build
-        run: msbuild MoBi.sln /p:Version=${{env.APP_VERSION}}
+        run: msbuild MoBi.sln /p:Version=12.1.9999
 
       - name: Test
         run: dotnet test .\tests\**\bin\Debug\net472\MoBi*Tests.dll -v normal --no-build  --logger:"html;LogFileName=../testLog_Windows.html"

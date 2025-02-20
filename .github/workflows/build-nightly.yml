@@ -78,7 +78,7 @@ jobs:
       - name: Create Setup
         run: |
           rake "create_setup[${{env.APP_VERSION}}, Debug]"
-          7z a setup.zip %APPVEYOR_BUILD_FOLDER%\setup\deploy\*.msi
+          7z a setup.zip setup\deploy\*.msi
           rake "create_portable_setup[${{env.APP_VERSION}}, Debug, mobi-portable-setup.zip]"
           
       # - name: Push test log as artifact
