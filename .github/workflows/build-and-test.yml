@@ -1,10 +1,12 @@
 name: Build and Test
 
 on:
-  push:
-  pull_request:
-    branches:
-    - develop
+  # temporarily
+  workflow_dispatch
+  # push:
+  # pull_request:
+  #   branches:
+  #   - develop
 
 env:
   MAJOR: 12

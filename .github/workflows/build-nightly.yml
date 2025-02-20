@@ -36,9 +36,11 @@ jobs:
           echo "LATEST_COMMIT_TIMESPAN=${timespan}" >> $GITHUB_ENV
           echo "LATEST_COMMIT_TIMESPAN=${timespan}" >> $GITHUB_OUTPUT
 
-  build:
+  build-nightly:
     needs: get-latest-commit-timespan
-    if: needs.get-latest-commit-timespan.outputs.LATEST_COMMIT_TIMESPAN < 86400
+
+    # if: needs.get-latest-commit-timespan.outputs.LATEST_COMMIT_TIMESPAN < 86400
+
     runs-on: windows-latest
     steps:
       - name: Checkout code
