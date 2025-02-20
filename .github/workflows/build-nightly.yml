@@ -20,12 +20,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
       - name: Get the previous commit timespan
         id: get-latest-commit-timespan
         shell: bash
         run: |
-          commit = `git log origin/develop -1 --format="%at"`
+          commit = `git log develop -1 --format="%at"`
           now = `date +%s`
           timespan = $[commit - now]
           echo "Timespan: ${timespan}"
