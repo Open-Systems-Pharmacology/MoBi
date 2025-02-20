@@ -2,10 +2,10 @@
 name: Build Nightly 12.1
 
 on:
-    push:
-    pull_request:
-      branches:
-      - 1805-build-on-github-actions
+  workflow_dispatch:
+  schedule:
+    - cron: '0 2 * * *'
+    
 
 env:
   MAJOR: 12
@@ -38,10 +38,7 @@ jobs:
 
   build-nightly:
     needs: get-latest-commit-timespan
-
-    # temporarily
-    # if: needs.get-latest-commit-timespan.outputs.LATEST_COMMIT_TIMESPAN < 86400
-
+    if: needs.get-latest-commit-timespan.outputs.LATEST_COMMIT_TIMESPAN < 86400
     runs-on: windows-latest
     steps:
       - name: Checkout code
