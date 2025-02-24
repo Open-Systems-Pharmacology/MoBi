@@ -15,6 +15,7 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Import.Core;
 using OSPSuite.Infrastructure.Import.Services;
@@ -48,7 +49,7 @@ namespace MoBi.Presentation.Tasks
       private readonly IInteractionTask _interactionTask;
       private readonly IBuildingBlockRepository _buildingBlockRepository;
       private readonly IObjectBaseNamingTask _namingTask;
-
+      private readonly IParameterIdentificationTask _parameterIdentificationTask;
       public ObservedDataTask(
          IDataImporter dataImporter,
          IMoBiContext context,
@@ -59,13 +60,15 @@ namespace MoBi.Presentation.Tasks
          IObjectTypeResolver objectTypeResolver,
          IBuildingBlockRepository buildingBlockRepository,
          IObjectBaseNamingTask namingTask,
-         IConfirmationManager confirmationManager) : base(dialogCreator, context, dataRepositoryTask, containerTask, objectTypeResolver, confirmationManager)
+         IConfirmationManager confirmationManager,
+         IParameterIdentificationTask parameterIdentificationTask) : base(dialogCreator, context, dataRepositoryTask, containerTask, objectTypeResolver, confirmationManager)
       {
          _dataImporter = dataImporter;
          _interactionTask = interactionTask;
          _buildingBlockRepository = buildingBlockRepository;
          _namingTask = namingTask;
          _context = context;
+         _parameterIdentificationTask = parameterIdentificationTask;
       }
 
       public void AddObservedDataToProject()
@@ -252,6 +255,9 @@ namespace MoBi.Presentation.Tasks
          {
             replaceData(dataSet, findDataRepositoryInList(observedDataFromSameFile, dataSet));
          }
+         _parameterIdentificationTask.UpdateParameterIdentificationsUsing(observedDataFromSameFile);
+
+
       }
 
       private void replaceData(DataRepository dataSet, DataRepository existingDataSet)
