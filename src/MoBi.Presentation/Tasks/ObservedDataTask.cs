@@ -50,6 +50,7 @@ namespace MoBi.Presentation.Tasks
       private readonly IBuildingBlockRepository _buildingBlockRepository;
       private readonly IObjectBaseNamingTask _namingTask;
       private readonly IParameterIdentificationTask _parameterIdentificationTask;
+
       public ObservedDataTask(
          IDataImporter dataImporter,
          IMoBiContext context,
@@ -255,14 +256,13 @@ namespace MoBi.Presentation.Tasks
          {
             replaceData(dataSet, findDataRepositoryInList(observedDataFromSameFile, dataSet));
          }
+
          _parameterIdentificationTask.UpdateParameterIdentificationsUsing(observedDataFromSameFile);
-
-
       }
 
       private void replaceData(DataRepository dataSet, DataRepository existingDataSet)
       {
-         if(existingDataSet == null)
+         if (existingDataSet == null)
             return;
 
          _context.ProjectChanged();
