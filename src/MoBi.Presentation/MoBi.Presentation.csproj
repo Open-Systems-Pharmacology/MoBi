@@ -9,6 +9,7 @@
     <OutputPath>bin\$(Configuration)</OutputPath>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
+    <Version Condition="'$(Version)' == ''">12.1.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,12 +21,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Northwoods.GoWin" Version="5.2.0" />
-    <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.0.5" />
-    <PackageReference Include="OSPSuite.Utility" Version="4.1.0.6" />
-    <PackageReference Include="OSPSuite.Presentation" Version="12.1.16" />
-    <PackageReference Include="OSPSuite.Presentation.Serialization" Version="12.1.16" />
-    <PackageReference Include="OSPSuite.Core" Version="12.1.16" />  
+    <PackageReference Include="Northwoods.GoWin" Version="6.3.1" />
+    <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.1.1" />
+    <PackageReference Include="OSPSuite.Utility" Version="4.1.1.1" />
+    <PackageReference Include="OSPSuite.Presentation" Version="12.1.59" />
+    <PackageReference Include="OSPSuite.Presentation.Serialization" Version="12.1.59" />
+    <PackageReference Include="OSPSuite.Core" Version="12.1.59" />  
    </ItemGroup>
   <ItemGroup>
     <None Include="..\..\LICENSE">
@@ -37,6 +38,10 @@
   <ItemGroup>
     <ProjectReference Include="..\MoBi.Assets\MoBi.Assets.csproj" />
     <ProjectReference Include="..\MoBi.Core\MoBi.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Windows.Forms" />
   </ItemGroup>
 
 </Project>
