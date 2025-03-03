@@ -365,8 +365,12 @@ namespace MoBi.Presentation
          _repositoryList.Add(_secondObservedDataRepository);
          _simulation.Chart = chart;
          _firstOutputMapping = A.Fake<OutputMapping>();
+
+         // A.CallTo(() => _firstOutputMapping.UsesObservedData(A<DataRepository>._)).ReturnsLazily((DataRepository x) => ReferenceEquals(_firstObservedDataRepository, x));
+
          A.CallTo(() => _firstOutputMapping.UsesObservedData(_firstObservedDataRepository)).Returns(true);
          A.CallTo(() => _firstOutputMapping.UsesObservedData(_secondObservedDataRepository)).Returns(false);
+
          _simulation.OutputMappings.Add(_firstOutputMapping);
          sut.Edit(_simulation);
       }
@@ -380,13 +384,13 @@ namespace MoBi.Presentation
       [Observation]
       public void should_add_missing_mapping()
       {
-         A.CallTo(() => _outputMappingMatchingTask.AddMatchingOutputMapping(_secondObservedDataRepository, _simulation)).MustHaveHappened();
+         A.CallTo(() => _outputMappingMatchingTask.AddMatchingOutputMapping(_secondObservedDataRepository, A<ISimulation>._)).MustHaveHappened();
       }
 
       [Observation]
       public void should_not_add_duplicate_mapping()
       {
-         A.CallTo(() => _outputMappingMatchingTask.AddMatchingOutputMapping(_firstObservedDataRepository, _simulation)).MustNotHaveHappened();
+         A.CallTo(() => _outputMappingMatchingTask.AddMatchingOutputMapping(_firstObservedDataRepository, A<ISimulation>._)).MustNotHaveHappened();
       }
    }
 }

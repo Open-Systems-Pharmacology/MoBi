@@ -142,8 +142,8 @@ namespace MoBi.Presentation
       {
          base.Context();
          _removedObject = new ReactionBuilder();
-         _parent = A.Fake<MoBiReactionBuildingBlock>();
-         sut.Edit(A.Fake<MoBiReactionBuildingBlock>());
+         _parent = new MoBiReactionBuildingBlock();
+         sut.Edit(new MoBiReactionBuildingBlock());
       }
 
       protected override void Because()
