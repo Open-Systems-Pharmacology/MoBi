@@ -2,6 +2,7 @@
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Tasks;
 using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.UICommand
