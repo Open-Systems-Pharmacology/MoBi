@@ -31,9 +31,11 @@ namespace MoBi.Presentation.Presenter
          if (Equals(_container, container))
             return;
 
+         if(_container == null)
+            _editContainerPresenter.ShowParameters();
+
          _container = container;
          _editContainerPresenter.Edit(container);
-         _editContainerPresenter.ShowParameters();
       }
 
       public object Subject => _container;

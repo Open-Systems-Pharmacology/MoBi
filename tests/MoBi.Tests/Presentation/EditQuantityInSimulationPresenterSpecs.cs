@@ -147,14 +147,16 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_reediting_a_quantity_that_is_a_container : concern_for_EditQuantityInSimulationPresenter
+   public class When_reusing_the_presenter_for_new_quantity_that_is_a_container : concern_for_EditQuantityInSimulationPresenter
    {
       private MoleculeAmount _moleculeAmount;
+      private MoleculeAmount _anotherMoleculeAmount;
 
       protected override void Context()
       {
          base.Context();
          _moleculeAmount = new MoleculeAmount();
+         _anotherMoleculeAmount = new MoleculeAmount();
          sut.Edit(_moleculeAmount);
       }
 
@@ -162,7 +164,7 @@ namespace MoBi.Presentation
       public void the_parameters_tab_should_be_shown()
       {
          A.CallTo(() => _view.ShowParameters()).MustHaveHappened(1, Times.Exactly);
-         sut.Edit(_moleculeAmount);
+         sut.Edit(_anotherMoleculeAmount);
          A.CallTo(() => _view.ShowParameters()).MustHaveHappened(1, Times.Exactly);
       }
    }

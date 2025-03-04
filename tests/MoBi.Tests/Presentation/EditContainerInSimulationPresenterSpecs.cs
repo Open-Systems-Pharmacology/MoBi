@@ -61,14 +61,16 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_reediting_a_container_in_a_simulation : concern_for_EditContainerInSimulationPresenter
+   public class When_reusing_the_edit_container_presenter_for_a_new_container : concern_for_EditContainerInSimulationPresenter
    {
       private IContainer _container;
+      private IContainer _secondContainer;
 
       protected override void Context()
       {
          base.Context();
-         _container = A.Fake<IContainer>();
+         _container = new Container();
+         _secondContainer = new Container();
          sut.Edit(_container);
       }
 
@@ -76,7 +78,7 @@ namespace MoBi.Presentation
       public void should_not_reinitialize_the_parameters_view()
       {
          A.CallTo(() => _editContainerPresenter.ShowParameters()).MustHaveHappened(1, Times.Exactly);
-         sut.Edit(_container);
+         sut.Edit(_secondContainer);
          A.CallTo(() => _editContainerPresenter.ShowParameters()).MustHaveHappened(1, Times.Exactly);
       }
    }

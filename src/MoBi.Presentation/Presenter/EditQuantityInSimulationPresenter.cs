@@ -66,7 +66,7 @@ namespace MoBi.Presentation.Presenter
       {
          _view.ReadOnly = true;
 
-         var selectionChanged = _quantity != objectToEdit;
+         var initialSelection = _quantity == null;
 
          _quantity = objectToEdit;
          _quantityToEdit = objectToEdit.QuantityToEdit();
@@ -77,7 +77,7 @@ namespace MoBi.Presentation.Presenter
          {
             _view.SetParametersView(_parameterPresenter.BaseView);
             _parameterPresenter.Edit(objectToEdit.DowncastTo<IContainer>());
-            if (selectionChanged)
+            if (initialSelection)
                _view.ShowParameters();
          }
          else
