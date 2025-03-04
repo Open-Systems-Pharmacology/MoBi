@@ -27,19 +27,16 @@ namespace MoBi.Presentation.Presenter
 
       public void Edit(object objectToEdit)
       {
-         Edit(objectToEdit.DowncastTo<IContainer>());
-      }
+         var container = objectToEdit.DowncastTo<IContainer>();
+         if (Equals(_container, container))
+            return;
 
-      public void Edit(IContainer container)
-      {
          _container = container;
          _editContainerPresenter.Edit(container);
+         _editContainerPresenter.ShowParameters();
       }
 
-      public object Subject
-      {
-         get { return _container; }
-      }
+      public object Subject => _container;
 
       public void SelectParameter(IParameter childParameter)
       {

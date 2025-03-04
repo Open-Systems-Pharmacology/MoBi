@@ -1,7 +1,4 @@
 using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
@@ -10,10 +7,13 @@ using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Views;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -65,6 +65,9 @@ namespace MoBi.Presentation.Presenter
       public override void Edit(IQuantity objectToEdit)
       {
          _view.ReadOnly = true;
+
+         var selectionChanged = _quantity != objectToEdit;
+
          _quantity = objectToEdit;
          _quantityToEdit = objectToEdit.QuantityToEdit();
          rebind();
@@ -74,6 +77,8 @@ namespace MoBi.Presentation.Presenter
          {
             _view.SetParametersView(_parameterPresenter.BaseView);
             _parameterPresenter.Edit(objectToEdit.DowncastTo<IContainer>());
+            if (selectionChanged)
+               _view.ShowParameters();
          }
          else
             _view.HideParametersView();

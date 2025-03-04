@@ -34,6 +34,7 @@ namespace MoBi.Presentation.Presenter
       IReadOnlyList<ContainerMode> AllContainerModes { get; }
       ContainerMode ConfirmAndSetContainerMode(ContainerMode newContainerMode);
       IReadOnlyList<ContainerType> AllContainerTypes { get; }
+      void ShowParameters();
    }
 
    public class EditContainerPresenter : AbstractContainerEditPresenterWithParameters<IEditContainerView, IEditContainerPresenter, IContainer>, IEditContainerPresenter
@@ -164,6 +165,8 @@ namespace MoBi.Presentation.Presenter
          ContainerType.Other,
          ContainerType.Organism,
       };
+
+      public void ShowParameters() => _view.ShowParameters();
 
       public override IBuildingBlock BuildingBlock
       {

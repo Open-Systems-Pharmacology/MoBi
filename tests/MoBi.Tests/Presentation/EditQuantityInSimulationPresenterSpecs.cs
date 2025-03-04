@@ -1,7 +1,6 @@
 ﻿using OSPSuite.Core.Commands.Core;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using MoBi.Presentation.Mappers;
@@ -14,7 +13,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 
 namespace MoBi.Presentation
 {
-   public abstract class concern_for_EditQuantityInSimulationPresenter : ContextSpecification<IEditQuantityInSimulationPresenter>
+   public abstract class concern_for_EditQuantityInSimulationPresenter : ContextSpecification<EditQuantityInSimulationPresenter>
    {
       protected IEditQuantityInSimulationView _view;
       private IQuantityToQuantityDTOMapper _mapper;
@@ -124,6 +123,69 @@ namespace MoBi.Presentation
       public void should_update_the_value_of_the_start_value_parameter()
       {
          A.CallTo(() => _quantityTask.SetQuantityDisplayUnit(_startValueParameter, _displayUnit, sut.Simulation)).MustHaveHappened();
+      }
+   }
+
+   public class When_editing_a_quantity_that_is_a_container : concern_for_EditQuantityInSimulationPresenter
+   {
+      private MoleculeAmount _moleculeAmount;
+
+      protected override void Context()
+      {
+         base.Context();
+         _moleculeAmount = new MoleculeAmount();
+      }
+      protected override void Because()
+      {
+         sut.Edit(_moleculeAmount);
+      }
+
+      [Observation]
+      public void the_parameters_tab_should_be_shown()
+      {
+         A.CallTo(() => _view.ShowParameters()).MustHaveHappened();
+      }
+   }
+
+   public class When_reediting_a_quantity_that_is_a_container : concern_for_EditQuantityInSimulationPresenter
+   {
+      private MoleculeAmount _moleculeAmount;
+
+      protected override void Context()
+      {
+         base.Context();
+         _moleculeAmount = new MoleculeAmount();
+         sut.Edit(_moleculeAmount);
+      }
+
+      [Observation]
+      public void the_parameters_tab_should_be_shown()
+      {
+         A.CallTo(() => _view.ShowParameters()).MustHaveHappened(1, Times.Exactly);
+         sut.Edit(_moleculeAmount);
+         A.CallTo(() => _view.ShowParameters()).MustHaveHappened(1, Times.Exactly);
+      }
+   }
+
+   public class When_editing_a_quantity_that_is_not_a_container : concern_for_EditQuantityInSimulationPresenter
+   {
+      private Observer _observer;
+
+      protected override void Context()
+      {
+         base.Context();
+         _observer = new Observer();
+      }
+      protected override void Because()
+      {
+         sut.Edit(_observer);
+      }
+
+      [Observation]
+      public void the_parameters_tab_should_be_hidden()
+      {
+         A.CallTo(() => _view.ShowParameters()).MustNotHaveHappened();
+         A.CallTo(() => _view.HideParametersView()).MustHaveHappened();
       }
    }
 }	
