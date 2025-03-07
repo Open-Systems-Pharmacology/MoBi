@@ -12,6 +12,10 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
 using OSPSuite.Presentation.Presenters.Main;
 using OSPSuite.Presentation.Views;
+using MoBi.Core.Events;
+using System.Collections.Generic;
+using System.Linq;
+using System.Collections.Concurrent;
 
 namespace MoBi.Presentation.Presenter.Main
 {
@@ -23,7 +27,10 @@ namespace MoBi.Presentation.Presenter.Main
       IListener<ProjectClosedEvent>,
       IListener<ProjectSavedEvent>,
       IListener<ReportCreationStartedEvent>,
-      IListener<ReportCreationFinishedEvent>
+      IListener<ReportCreationFinishedEvent>,
+      IListener<SimulationsRunCanceledEvent>,
+      IListener<SimulationRunFinishedEvent>,
+      IListener<SimulationRunStartedEvent>
    {
    }
 
@@ -33,7 +40,10 @@ namespace MoBi.Presentation.Presenter.Main
       private readonly IMoBiConfiguration _moBiConfiguration;
       public event EventHandler StatusChanged = delegate { };
       private int _numberOfReportsBeingCreated;
+      private readonly ConcurrentDictionary<string, bool> _simulations = new ConcurrentDictionary<string, bool>(); 
 
+      private int activeSimulations => _simulations.Count(x => x.Value == true);
+      
       public StatusBarPresenter(IStatusBarView view, IMoBiConfiguration moBiConfiguration)
       {
          _view = view;
@@ -103,12 +113,13 @@ namespace MoBi.Presentation.Presenter.Main
 
       public void Handle(ProgressInitEvent eventToHandle)
       {
+
          update(StatusBarElements.ProgressBar)
             .WithValue(0)
             .And.Visible(true);
 
          update(StatusBarElements.ProgressStatus)
-            .WithCaption(eventToHandle.Message)
+            .WithCaption($"{eventToHandle.Message} (1/{_simulations.Count})")
             .And.Visible(true);
       }
 
@@ -118,12 +129,34 @@ namespace MoBi.Presentation.Presenter.Main
             .WithValue(eventToHandle.ProgressPercent);
 
          update(StatusBarElements.ProgressStatus)
-            .WithCaption(eventToHandle.Message);
+            .WithCaption($"{eventToHandle.Message} ({_simulations.Count +1 - activeSimulations}/{_simulations.Count})");
       }
 
       public void Handle(ProgressDoneEvent eventToHandle)
       {
+         var message = eventToHandle is ProgressDoneWithMessageEvent ?
+            $"{(eventToHandle as ProgressDoneWithMessageEvent).Message} ({_simulations.Count + 1 - activeSimulations}/{_simulations.Count})": 
+            string.Empty;
+
+         if (activeSimulations == 0)
+         {
+            resetCountersAndHideBar();
+            return;
+         }
+
+         update(StatusBarElements.ProgressStatus)
+            .WithCaption($"{message}");
+      }
+
+      private void resetCountersAndHideBar()
+      {
+         _simulations.Clear();
          hideProgressBar();
+      }
+
+      public void Handle(SimulationsRunCanceledEvent eventToHandle)
+      {
+         resetCountersAndHideBar();
       }
 
       private void hideProgressBar()
@@ -171,6 +204,20 @@ namespace MoBi.Presentation.Presenter.Main
       {
          _numberOfReportsBeingCreated--;
          updateReportInfo();
+      }
+
+      public void Handle(SimulationRunFinishedEvent eventToHandle)
+      {
+         _simulations[eventToHandle.Simulation.Id] = false;
+         if (activeSimulations == 0)
+         {
+            resetCountersAndHideBar();
+         }
+      }
+
+      public void Handle(SimulationRunStartedEvent eventToHandle)
+      {
+         _simulations[eventToHandle.Simulation.Id] = true;
       }
    }
 }

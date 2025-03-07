@@ -4,6 +4,7 @@ using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.UICommands;
+using System.Threading.Tasks;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
@@ -36,6 +37,11 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          _parent = (EventGroupBuilder) eventBuilder.ParentContainer;
          Subject = eventBuilder;
          return this;
+      }
+
+      public Task ExecuteAsync()
+      {
+         throw new System.NotImplementedException();
       }
 
       public EventBuilder Subject { get; set; }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Extensions;
@@ -9,6 +10,7 @@ using MoBi.Core.Events;
 using MoBi.Core.Extensions;
 using MoBi.Core.Services;
 using MoBi.Presentation.Presenter;
+using OSPSuite.Assets;
 using OSPSuite.Core.Commands;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
@@ -28,12 +30,12 @@ namespace MoBi.Presentation.Tasks
       private readonly IMoBiApplicationController _applicationController;
       private ISimModelManager _simModelManager;
       private readonly IOutputSelectionsRetriever _outputSelectionsRetriever;
-      private IMoBiSimulation _simulation;
       private readonly ISimulationPersistableUpdater _simulationPersistableUpdater;
       private readonly IDisplayUnitUpdater _displayUnitUpdater;
       private readonly ISimModelManagerFactory _simModelManagerFactory;
       private readonly IKeyPathMapper _keyPathMapper;
       private readonly IEntityValidationTask _entityValidationTask;
+      private readonly Dictionary<IMoBiSimulation, string> _originalSimulationNames = new Dictionary<IMoBiSimulation, string>();
 
       public SimulationRunner(IMoBiContext context,
          IMoBiApplicationController applicationController,
@@ -52,9 +54,20 @@ namespace MoBi.Presentation.Tasks
          _simModelManagerFactory = simModelManagerFactory;
          _keyPathMapper = keyPathMapper;
          _entityValidationTask = entityValidationTask;
+
       }
 
-      public void RunSimulation(IMoBiSimulation simulation, bool defineSettings = false)
+      public async void RunSimulation(IMoBiSimulation simulation, bool defineSettings = false)
+      {
+         _ = runSimulationInternalAsync(simulation, defineSettings);
+      }
+
+      public async Task RunSimulationAsync(IMoBiSimulation simulation, bool defineSettings = false)
+      {
+         await runSimulationInternalAsync(simulation, defineSettings);
+      }
+
+      private async Task runSimulationInternalAsync(IMoBiSimulation simulation, bool defineSettings)
       {
          addPersitableParametersToOutputSelection(simulation);
          if (!_entityValidationTask.Validate(simulation))
@@ -69,8 +82,9 @@ namespace MoBi.Presentation.Tasks
             updateOutputSelectionInSimulation(simulation, outputSelections);
          }
 
-         startSimulationRun(simulation);
-      }
+         await startSimulationRunAsync(simulation);
+      } 
+
 
       private void addPersitableParametersToOutputSelection(IMoBiSimulation simulation)
       {
@@ -100,12 +114,16 @@ namespace MoBi.Presentation.Tasks
       public void StopSimulation()
       {
          _simModelManager?.StopSimulation();
+         _context.PublishEvent(new SimulationsRunCanceledEvent());
       }
 
-      private void startSimulationRun(IMoBiSimulation simulation)
+      private async Task startSimulationRunAsync(IMoBiSimulation simulation)
       {
-         _simulation = simulation;
-         _context.PublishEvent(new SimulationRunStartedEvent());
+         if (simulation.IsRunning)
+            return;
+
+         _context.PublishEvent(new SimulationRunStartedEvent(simulation));
+         setSimulationRunning(simulation, true);
          _context.PublishEvent(new ProgressInitEvent(100, AppConstants.SimulationRun));
          _simModelManager = _simModelManagerFactory.Create();
 
@@ -113,8 +131,10 @@ namespace MoBi.Presentation.Tasks
          {
             addEvents();
             updatePersistableFor(simulation);
-            var simulationRunResults = _simModelManager.RunSimulation(_simulation);
-            _simulation.HasChanged = true;
+
+            var simulationRunResults = await _simModelManager.RunSimulationAsync(simulation);
+
+            simulation.HasChanged = true;
             showWarningsIfAny(simulationRunResults);
 
             if (simulationRunResults.Success)
@@ -122,7 +142,7 @@ namespace MoBi.Presentation.Tasks
                var results = simulationRunResults.Results;
                results.Name = getNewRepositoryName();
                _displayUnitUpdater.UpdateDisplayUnitsIn(results);
-               copyResultsToSimulation(simulationRunResults, _simulation);
+               copyResultsToSimulation(simulationRunResults, simulation);
             }
 
             addCommand(getSimulationResultLabel(simulationRunResults));
@@ -130,9 +150,28 @@ namespace MoBi.Presentation.Tasks
          finally
          {
             removeEvents();
-            _context.PublishEvent(new SimulationRunFinishedEvent(_simulation));
-            _simulation = null;
+            _context.PublishEvent(new SimulationRunFinishedEvent(simulation));
+            setSimulationRunning(simulation, false);
          }
+      }
+
+      private void setSimulationRunning(IMoBiSimulation simulation, bool isRunning)
+      {
+         if (isRunning)
+         {
+            if (!_originalSimulationNames.ContainsKey(simulation))
+               _originalSimulationNames[simulation] = simulation.Name;
+
+            if (!simulation.Name.EndsWith(" (Running)"))
+               simulation.Name += " (Running)";
+         }
+         else if (_originalSimulationNames.TryGetValue(simulation, out var originalName))
+         {
+            simulation.Name = originalName;
+            _originalSimulationNames.Remove(simulation);
+         }
+
+         simulation.IsRunning = isRunning;
       }
 
       private string getNewRepositoryName()
@@ -212,7 +251,7 @@ namespace MoBi.Presentation.Tasks
 
       private void onSimulationFinished(object sender, EventArgs eventArgs)
       {
-         _context.PublishEvent(new ProgressDoneEvent());
+         _context.PublishEvent(new ProgressDoneWithMessageEvent(AppConstants.SimulationRun));
       }
 
       private void onSimulationProgress(object sender, SimulationProgressEventArgs args)

@@ -3,6 +3,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.UICommands;
+using System.Threading.Tasks;
 
 namespace MoBi.Presentation.UICommand
 {
@@ -56,6 +57,11 @@ namespace MoBi.Presentation.UICommand
       protected override void PerformExecute()
       {
          _simulationRunner.RunSimulation(Subject);
+      }
+
+      protected override async Task PerformExecuteAsync()
+      {
+         await _simulationRunner.RunSimulationAsync(Subject);
       }
    }
 }

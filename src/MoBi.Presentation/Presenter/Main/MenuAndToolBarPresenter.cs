@@ -280,7 +280,6 @@ namespace MoBi.Presentation.Presenter.Main
 
       public void Handle(SimulationRunStartedEvent eventToHandle)
       {
-         DisableAll();
          _menuBarItemRepository[MenuBarItemIds.Stop].Enabled = true;
       }
 

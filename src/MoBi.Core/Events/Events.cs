@@ -20,8 +20,21 @@ namespace MoBi.Core.Events
       }
    }
 
+   public class SimulationsRunCanceledEvent
+   {
+   }
+
    public class SimulationRunStartedEvent
    {
+      public SimulationRunStartedEvent()
+      {
+      }
+      public SimulationRunStartedEvent(IMoBiSimulation simulation)
+      {
+         Simulation = simulation;
+      }
+
+      public IMoBiSimulation Simulation { get; }
    }
 
    public class SimulationAddedEvent

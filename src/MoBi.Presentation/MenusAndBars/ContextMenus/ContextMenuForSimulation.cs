@@ -121,8 +121,9 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          return
             CreateMenuButton.WithCaption(AppConstants.MenuNames.Run)
+               .WithEnabled(!simulation.IsRunning)
                .WithIcon(ApplicationIcons.Run)
-               .WithCommandFor<RunSimulationCommand, IMoBiSimulation>(simulation, _container);
+               .WithCommandForAsync<RunSimulationCommand, IMoBiSimulation>(simulation, _container);
       }
 
       private IMenuBarItem createExportODEForMatlabItem(IMoBiSimulation simulation)
