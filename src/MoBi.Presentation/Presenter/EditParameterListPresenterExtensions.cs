@@ -24,6 +24,12 @@ namespace MoBi.Presentation.Presenter
          view.SetVisibility(PathElementId.Molecule, isVisible: false);
       }
 
+      public static void ConfigureForSimulation(this IEditParameterListPresenter presenter)
+      {
+         var view = presenter.View;
+         view.SetVisibility(PathElementId.Simulation, isVisible: false);
+      }
+
       public static void ConfigureForMolecule(this IEditParameterListPresenter presenter)
       {
          var view = presenter.View;

@@ -11,7 +11,14 @@ namespace MoBi.Core.Serialization.Services
       {
          return observedDataFor(classifiableWrapper, project) ??
                 simulationFor(classifiableWrapper, project) ??
-                parameterAnalysableFor(classifiableWrapper, project);
+                parameterAnalysableFor(classifiableWrapper, project) ??
+                moduleFor(classifiableWrapper, project);
+      }
+
+      private IWithId moduleFor(IClassifiableWrapper classifiableWrapper, IProject project)
+      {
+         var mobiProject = project.DowncastTo<MoBiProject>();
+         return mobiProject.Modules.FindById(classifiableWrapper.Id);
       }
 
       private IWithId parameterAnalysableFor(IClassifiableWrapper classifiableWrapper, IProject project)

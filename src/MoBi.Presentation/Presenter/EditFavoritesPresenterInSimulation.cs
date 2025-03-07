@@ -27,6 +27,7 @@ namespace MoBi.Presentation.Presenter
          : base(view, favoriteRepository, entityPathResolver, editParameterListPresenter, favoriteTask)
       {
          ShouldHandleRemovedEvent = x => false; //Can not remove in Simulation
+         UpdateSpecialColumnsVisibility = _editParameterListPresenter.ConfigureForSimulation;
       }
 
       protected override void CacheParameters(IMoBiSimulation projectItem)
@@ -54,12 +55,6 @@ namespace MoBi.Presentation.Presenter
       public IEnumerable<IParameter> Favorites()
       {
          return _editParameterListPresenter.EditedParameters;
-      }
-
-      public override void Edit(IMoBiSimulation projectItem)
-      {
-         base.Edit(projectItem);
-         _editParameterListPresenter.SetVisibility(PathElementId.Simulation, isVisible: false);
       }
    }
 }

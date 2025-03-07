@@ -304,8 +304,8 @@ namespace MoBi.Presentation
             _advancedParameter
          };
 
-         A.CallTo(() => _parameterMapper.MapFrom(_parameter)).Returns(new ParameterDTO(_parameter));
-         A.CallTo(() => _parameterMapper.MapFrom(_advancedParameter)).Returns(new ParameterDTO(_advancedParameter));
+         A.CallTo(() => _parameterMapper.MapFrom(_parameter, A<TrackableSimulation>._)).Returns(new ParameterDTO(_parameter));
+         A.CallTo(() => _parameterMapper.MapFrom(_advancedParameter, A<TrackableSimulation>._)).Returns(new ParameterDTO(_advancedParameter));
 
          sut.Edit(testContainer);
          A.CallTo(() => _view.BindTo(A<IReadOnlyList<ParameterDTO>>._))
@@ -338,8 +338,8 @@ namespace MoBi.Presentation
       {
          base.Context();
          var testContainer = new Container();
-         A.CallTo(() => _parameterMapper.MapFrom(_parameter)).Returns(new ParameterDTO(_parameter));
-         A.CallTo(() => _parameterMapper.MapFrom(_advancedParameter)).Returns(new ParameterDTO(_advancedParameter));
+         A.CallTo(() => _parameterMapper.MapFrom(_parameter, A<TrackableSimulation>._)).Returns(new ParameterDTO(_parameter));
+         A.CallTo(() => _parameterMapper.MapFrom(_advancedParameter, A<TrackableSimulation>._)).Returns(new ParameterDTO(_advancedParameter));
 
          testContainer.Add(_parameter);
          testContainer.Add(_advancedParameter);
@@ -361,8 +361,8 @@ namespace MoBi.Presentation
       [Observation]
       public void should_map_all_parameters()
       {
-         A.CallTo(() => _parameterMapper.MapFrom(_parameter)).MustHaveHappened();
-         A.CallTo(() => _parameterMapper.MapFrom(_advancedParameter)).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapFrom(_parameter, A<TrackableSimulation>._)).MustHaveHappened();
+         A.CallTo(() => _parameterMapper.MapFrom(_advancedParameter, A<TrackableSimulation>._)).MustHaveHappened();
       }
    }
 
@@ -521,7 +521,7 @@ namespace MoBi.Presentation
          sut.Edit(_editedContainer);
          sut.SelectedIndividual = _individualBuildingBlock;
 
-         A.CallTo(() => _parameterMapper.MapFrom(A<IParameter>._)).ReturnsLazily(x => new ParameterDTO(x.GetArgument<IParameter>(0)));
+         A.CallTo(() => _parameterMapper.MapFrom(A<IParameter>._, A<TrackableSimulation>._)).ReturnsLazily(x => new ParameterDTO(x.GetArgument<IParameter>(0)));
          A.CallTo(() => _individualParameterToParameterDTOMapper.MapFrom(A<IndividualBuildingBlock>._, A<IndividualParameter>._)).ReturnsLazily(x => new ParameterDTO(new Parameter().WithName(x.GetArgument<IndividualParameter>(1).Name)) { IsIndividualPreview = true });
          A.CallTo(() => _view.BindTo(A<IReadOnlyList<ParameterDTO>>._)).Invokes(x => _editableDTOList = x.GetArgument<IReadOnlyList<ParameterDTO>>(0));
       }

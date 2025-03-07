@@ -4,6 +4,7 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Helper;
+using NPOI.SS.Formula.Functions;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -182,12 +183,13 @@ namespace MoBi.Presentation.DTO
    public class ModuleViewItem : ObjectBaseDTO
    {
       public object TargetAsObject;
-      public Module Module { get; private set; }
+      private readonly ClassifiableModule _classifiableModule;
+      public Module Module => _classifiableModule.Subject;
 
-      public ModuleViewItem(Module module)
+      public ModuleViewItem(ClassifiableModule classifiableModule)
       {
-         Module = module;
-         WithTarget(module);
+         _classifiableModule = classifiableModule;
+         WithTarget(Module);
       }
 
       public ModuleViewItem WithTarget(object targetObject)
