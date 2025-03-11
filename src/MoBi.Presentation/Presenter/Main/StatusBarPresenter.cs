@@ -119,7 +119,7 @@ namespace MoBi.Presentation.Presenter.Main
             .And.Visible(true);
 
          update(StatusBarElements.ProgressStatus)
-            .WithCaption($"{eventToHandle.Message} (1/{_simulations.Count})")
+            .WithCaption($"{_simulations.Count} {eventToHandle.Message}")
             .And.Visible(true);
       }
 
@@ -129,13 +129,13 @@ namespace MoBi.Presentation.Presenter.Main
             .WithValue(eventToHandle.ProgressPercent);
 
          update(StatusBarElements.ProgressStatus)
-            .WithCaption($"{eventToHandle.Message} ({_simulations.Count +1 - activeSimulations}/{_simulations.Count})");
+            .WithCaption($"{activeSimulations} {eventToHandle.Message}");
       }
 
       public void Handle(ProgressDoneEvent eventToHandle)
       {
          var message = eventToHandle is ProgressDoneWithMessageEvent ?
-            $"{(eventToHandle as ProgressDoneWithMessageEvent).Message} ({_simulations.Count + 1 - activeSimulations}/{_simulations.Count})": 
+            $"{activeSimulations} {(eventToHandle as ProgressDoneWithMessageEvent).Message}": 
             string.Empty;
 
          if (activeSimulations == 0)
