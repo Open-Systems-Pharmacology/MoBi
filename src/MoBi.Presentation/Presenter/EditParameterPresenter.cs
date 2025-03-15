@@ -3,6 +3,7 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Events;
 using MoBi.Core.Extensions;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
@@ -27,7 +28,8 @@ namespace MoBi.Presentation.Presenter
 {
    public interface IEditParameterPresenter : IEditPresenter<IParameter>,
       IPresenterWithFormulaCache,
-      ICreatePresenter<IParameter>
+      ICreatePresenter<IParameter>,
+      IListener<ParameterChangedEvent>
    {
       void SetUseRHSFormula(bool useRHS);
       IReadOnlyList<IDimension> AllDimensions();
@@ -40,6 +42,7 @@ namespace MoBi.Presentation.Presenter
       void SetIsAdvancedParameter(bool isAdvancedParameter);
       void SetPersistable(bool isPersitable);
       void SetIsVariablePopulation(bool isVariableInPopulation);
+      void SetIsVariable(bool isVariable);
       IEnumerable<IGroup> AllGroups();
       void SetGroup(IGroup group);
       string DisplayFor(IGroup group);
@@ -279,6 +282,11 @@ namespace MoBi.Presentation.Presenter
          _parameter.Persistable = isPersitable;
       }
 
+      public void SetIsVariable(bool isVariable)
+      {
+         addCommandToRun(new EditParameterCanBeVariedCommand(_parameter, isVariable, BuildingBlock));
+      }
+
       public void SetIsVariablePopulation(bool isVariableInPopulation)
       {
          addCommandToRun(new EditParameterCanBeVariedInPopulationCommand(_parameter, isVariableInPopulation, BuildingBlock));
@@ -328,6 +336,12 @@ namespace MoBi.Presentation.Presenter
             //Do not include rhs formula presenter into error check if we do not use the rhs
             return !_view.HasError && _editValueFormulaPresenter.CanClose;
          }
+      }
+
+      public void Handle(ParameterChangedEvent eventToHandle)
+      {
+         if(eventToHandle.Parameters.Contains(_parameter))
+            _view.Show(_parameterDTO);
       }
    }
 }
