@@ -69,6 +69,7 @@ namespace MoBi.Presentation.Presenter
          _objectPathFactory = objectPathFactory;
          _view.AddParameterView(editParametersInContainerPresenter.BaseView);
          _view.AddTagsView(_tagsPresenter.BaseView);
+         _editParametersInContainerPresenter.ChangeLocalisationAllowed = true;
          AddSubPresenters(_tagsPresenter);
       }
 

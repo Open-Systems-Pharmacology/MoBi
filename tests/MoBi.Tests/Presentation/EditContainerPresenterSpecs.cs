@@ -76,6 +76,12 @@ namespace MoBi.Presentation
       {
          A.CallTo(() => _parametersInContainerPresenter.Select(_parameter)).MustHaveHappened();
       }
+
+      [Observation]
+      public void the_parameter_presenter_should_be_set_to_allow_changes_to_localisation()
+      {
+         _parametersInContainerPresenter.ChangeLocalisationAllowed.ShouldBeEqualTo(true);
+      }
    }
 
    public class When_the_parent_path_of_a_container_is_being_set : concern_for_EditContainerPresenter
