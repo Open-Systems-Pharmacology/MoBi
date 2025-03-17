@@ -58,10 +58,5 @@ namespace MoBi.Presentation.UICommand
       {
          _simulationRunner.RunSimulation(Subject);
       }
-
-      protected override async Task PerformExecuteAsync()
-      {
-         await _simulationRunner.RunSimulationAsync(Subject);
-      }
    }
 }

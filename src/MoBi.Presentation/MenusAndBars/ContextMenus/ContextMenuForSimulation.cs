@@ -123,7 +123,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             CreateMenuButton.WithCaption(AppConstants.MenuNames.Run)
                .WithEnabled(!simulation.IsRunning)
                .WithIcon(ApplicationIcons.Run)
-               .WithCommandForAsync<RunSimulationCommand, IMoBiSimulation>(simulation, _container);
+               .WithCommandFor<RunSimulationCommand, IMoBiSimulation>(simulation, _container);
       }
 
       private IMenuBarItem createExportODEForMatlabItem(IMoBiSimulation simulation)

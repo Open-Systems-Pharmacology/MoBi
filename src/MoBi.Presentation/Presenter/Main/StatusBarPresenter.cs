@@ -113,7 +113,6 @@ namespace MoBi.Presentation.Presenter.Main
 
       public void Handle(ProgressInitEvent eventToHandle)
       {
-
          update(StatusBarElements.ProgressBar)
             .WithValue(0)
             .And.Visible(true);
