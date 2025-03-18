@@ -340,8 +340,13 @@ namespace MoBi.Presentation.Presenter
 
       public void Handle(ParameterChangedEvent eventToHandle)
       {
-         if(eventToHandle.Parameters.Contains(_parameter))
+         if(canHandle(eventToHandle))
             _view.Show(_parameterDTO);
+      }
+
+      private bool canHandle(ParameterChangedEvent eventToHandle)
+      {
+         return eventToHandle.Parameters.Contains(_parameter);
       }
    }
 }

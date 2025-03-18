@@ -46,7 +46,7 @@ namespace MoBi.Presentation.Presenter
       bool ShowBuildMode { set; }
       bool BlackBoxAllowed { set; }
       void Edit(IContainer container);
-      bool ChangeLocalisationAllowed { set; }
+      bool ChangeLocalisationAllowed { set; get; }
       EditParameterMode EditMode { set; }
       IEnumerable<ParameterBuildMode> ParameterBuildModes { get; set; }
       void SetBuildModeFor(ParameterDTO parameterDTO, ParameterBuildMode newMode);
@@ -79,7 +79,7 @@ namespace MoBi.Presentation.Presenter
 
       private readonly IEntityPathResolver _entityPathResolver;
 
-      public bool ChangeLocalisationAllowed { set; private get; }
+      public bool ChangeLocalisationAllowed { set; get; }
 
       public EditParametersInContainerPresenter(IEditParametersInContainerView view,
          IFormulaToFormulaBuilderDTOMapper formulaMapper,

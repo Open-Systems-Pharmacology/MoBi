@@ -1,18 +1,17 @@
-﻿using OSPSuite.BDDHelper;
-using FakeItEasy;
+﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
-using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
+using OSPSuite.BDDHelper;
 using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation
 {
-   public abstract class concern_for_EditTransporterMoleculeContainerPresenterSpecs : ContextSpecification<IEditTransporterMoleculeContainerPresenter
-      >
+   public abstract class concern_for_EditTransporterMoleculeContainerPresenter : ContextSpecification<IEditTransporterMoleculeContainerPresenter
+   >
    {
       protected IEditActiveTransportBuilderContainerView _view;
       protected IEditTasksForTransporterMoleculeContainer _interactionTasks;
@@ -31,7 +30,7 @@ namespace MoBi.Presentation
       }
    }
 
-   internal class When_renaming_the_transporter_alias : concern_for_EditTransporterMoleculeContainerPresenterSpecs
+   internal class When_renaming_the_transporter_alias : concern_for_EditTransporterMoleculeContainerPresenter
    {
       private IBuildingBlock _buildingBlock;
       private TransporterMoleculeContainer _activeTransportBuilderContainer;
@@ -62,7 +61,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_refresh_view()
       {
-         A.CallTo(() => _view.Show(A < TransporterMoleculeContainerDTO>._)).MustHaveHappened();
+         A.CallTo(() => _view.Show(A<TransporterMoleculeContainerDTO>._)).MustHaveHappened();
       }
    }
 }
