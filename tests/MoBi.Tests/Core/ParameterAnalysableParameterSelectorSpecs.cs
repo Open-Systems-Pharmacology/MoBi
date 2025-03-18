@@ -56,5 +56,14 @@ namespace MoBi.Core
          _parameter.Name = "Hello Parameter";
          sut.CanUseParameter(_parameter).ShouldBeTrue();
       }
+
+      [Observation]
+      public void should_return_false_if_distributed_sub_parameter()
+      {
+         _parameter.CanBeVaried = true;
+         _parameter.Name = "Hello Parameter";
+         new DistributedParameter { _parameter };
+         sut.CanUseParameter(_parameter).ShouldBeFalse();
+      }
    }
 }	
