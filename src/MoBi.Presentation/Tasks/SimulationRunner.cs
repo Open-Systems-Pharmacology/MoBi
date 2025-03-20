@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using MoBi.Assets;
 using MoBi.Core.Commands;
@@ -36,6 +37,7 @@ namespace MoBi.Presentation.Tasks
       private readonly IKeyPathMapper _keyPathMapper;
       private readonly IEntityValidationTask _entityValidationTask;
       private readonly Dictionary<IMoBiSimulation, string> _originalSimulationNames = new Dictionary<IMoBiSimulation, string>();
+      private CancellationTokenSource _simulationCancellationTokenSource;
 
       public SimulationRunner(IMoBiContext context,
          IMoBiApplicationController applicationController,
@@ -113,7 +115,9 @@ namespace MoBi.Presentation.Tasks
 
       public void StopSimulation()
       {
-         _simModelManager?.StopSimulation();
+         _simulationCancellationTokenSource?.Cancel();
+         _simulationCancellationTokenSource?.Dispose();
+         _simulationCancellationTokenSource = null;
          _context.PublishEvent(new SimulationsRunCanceledEvent());
       }
 
@@ -126,13 +130,14 @@ namespace MoBi.Presentation.Tasks
          setSimulationRunning(simulation, true);
          _context.PublishEvent(new ProgressInitEvent(100, AppConstants.SimulationRun));
          _simModelManager = _simModelManagerFactory.Create();
+         _simulationCancellationTokenSource = new CancellationTokenSource();
 
          try
          {
             addEvents();
             updatePersistableFor(simulation);
 
-            var simulationRunResults = await _simModelManager.RunSimulationAsync(simulation);
+            var simulationRunResults = await _simModelManager.RunSimulationAsync(simulation, _simulationCancellationTokenSource);
 
             simulation.HasChanged = true;
             showWarningsIfAny(simulationRunResults);
