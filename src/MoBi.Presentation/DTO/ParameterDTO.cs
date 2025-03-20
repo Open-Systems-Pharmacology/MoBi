@@ -23,6 +23,7 @@ namespace MoBi.Presentation.DTO
       public bool IsAdvancedParameter { get; set; }
       public IGroup Group { get; set; }
       public bool CanBeVariedInPopulation { get; set; }
+      public bool CanBeVaried => Parameter.CanBeVaried;
       public bool IsFavorite { get; set; }
       public string DisplayName { get; set; }
       public FormulaType FormulaType { get; set; }

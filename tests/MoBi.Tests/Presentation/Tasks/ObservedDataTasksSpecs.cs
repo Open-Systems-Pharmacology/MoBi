@@ -13,12 +13,14 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Import;
 using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Import.Core;
 using OSPSuite.Infrastructure.Import.Services;
+using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Extensions;
 using ImporterConfiguration = OSPSuite.Core.Import.ImporterConfiguration;
 
@@ -39,7 +41,7 @@ namespace MoBi.Presentation.Tasks
       private IBuildingBlockRepository _buildingBlockRepository;
       protected IObjectBaseNamingTask _namingTask;
       private IConfirmationManager _confirmationManager;
-
+      protected IParameterIdentificationTask _parameterIdentificationTask;
       protected override void Context()
       {
          _dataImporter = A.Fake<IDataImporter>();
@@ -54,7 +56,8 @@ namespace MoBi.Presentation.Tasks
          _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
          _namingTask = A.Fake<IObjectBaseNamingTask>();
          _confirmationManager = A.Fake<IConfirmationManager>();
-         sut = new ObservedDataTask(_dataImporter, _context, _dialogCreator, _interactionTask, _dataRepositoryTask, _containerTask, _objectTypeResolver, _buildingBlockRepository, _namingTask, _confirmationManager);
+         _parameterIdentificationTask = A.Fake<IParameterIdentificationTask>();
+         sut = new ObservedDataTask(_dataImporter, _context, _dialogCreator, _interactionTask, _dataRepositoryTask, _containerTask, _objectTypeResolver, _buildingBlockRepository, _namingTask, _confirmationManager, _parameterIdentificationTask);
 
          _project = DomainHelperForSpecs.NewProject();
          A.CallTo(() => _context.Project).Returns(_project);
@@ -93,6 +96,21 @@ namespace MoBi.Presentation.Tasks
       {
          _moBiSimulation.HistoricResults.Contains(_historicResult).ShouldBeFalse();
          _moBiSimulation.ResultsDataRepository.ShouldBeNull();
+      }
+   }
+
+   public class When_adding_and_replacing_observed_data_from_configuration_to_project : concern_for_ObservedDataTask
+   {
+      protected override void Because()
+      {
+         sut.AddAndReplaceObservedDataFromConfigurationToProject(A.Fake<ImporterConfiguration>(), A.Fake<IReadOnlyList<DataRepository>>());
+      }
+
+      [Observation]
+      public void should_call_update_parameter_identification_Using()
+      {
+         A.CallTo(() => _parameterIdentificationTask.UpdateParameterIdentificationsUsing(A<IReadOnlyList<DataRepository>>._))
+            .MustHaveHappened();
       }
    }
 

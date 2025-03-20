@@ -72,6 +72,10 @@ namespace MoBi.UI.Views
             .To(chkCanBeVariedInPopulation)
             .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetIsVariablePopulation(e.NewValue));
 
+         _screenBinder.Bind(dto => dto.CanBeVaried)
+            .To(chkCanBeVaried)
+            .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetIsVariable(e.NewValue));
+
          _screenBinder.Bind(dto => dto.IsFavorite)
             .To(chkIsFavorite)
             .OnValueUpdating += (o, e) => OnEvent(() => _presenter.SetIsFavorite(e.NewValue));
@@ -100,6 +104,7 @@ namespace MoBi.UI.Views
          chkPersistable.Text = AppConstants.Captions.Persistable;
          chkPersistable.ToolTip = ToolTips.ParameterView.Persistable;
          chkCanBeVariedInPopulation.Text = AppConstants.Captions.CanBeVariedInPopulation;
+         chkCanBeVaried.Text = AppConstants.Captions.CanBeVaried;
          tabProperties.InitWith(AppConstants.Captions.Properties, ApplicationIcons.Properties);
          tabTags.InitWith(AppConstants.Captions.Tags, ApplicationIcons.Tag);
          tabCriteria.InitWith(AppConstants.Captions.ContainerCriteria, ApplicationIcons.Formula);

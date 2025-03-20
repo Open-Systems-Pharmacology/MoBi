@@ -1,15 +1,14 @@
-﻿using OSPSuite.BDDHelper;
+﻿using FakeItEasy;
+using MoBi.Core.Domain.Model;
+using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
-using FakeItEasy;
-using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public abstract class concern_for_EditParameterCanBeVariedInPopulationCommandSpecs : ContextSpecification<EditParameterCanBeVariedInPopulationCommand>
+   public abstract class concern_for_EditParameterCanBeVariedInPopulationCommand : ContextSpecification<EditParameterCanBeVariedInPopulationCommand>
    {
       protected IParameter _parameter;
       protected bool _newValue;
@@ -25,7 +24,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   internal class When_restoring_execution_data : concern_for_EditParameterCanBeVariedInPopulationCommandSpecs
+   internal class When_restoring_execution_data : concern_for_EditParameterCanBeVariedInPopulationCommand
    {
       private IMoBiContext _context;
 
@@ -47,7 +46,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   internal class When_asking_for_inverse_command_of_a_EditParameterCanBeVariedInPopulationCommand : concern_for_EditParameterCanBeVariedInPopulationCommandSpecs
+   internal class When_asking_for_inverse_command_of_a_EditParameterCanBeVariedInPopulationCommand : concern_for_EditParameterCanBeVariedInPopulationCommand
    {
       private ICommand<IMoBiContext> _result;
       private IMoBiContext _context;
@@ -55,7 +54,7 @@ namespace MoBi.Core.Commands
       protected override void Context()
       {
          base.Context();
-         _context= A.Fake<IMoBiContext>();
+         _context = A.Fake<IMoBiContext>();
          A.CallTo(() => _context.Get<IParameter>(_parameter.Id)).Returns(_parameter);
       }
 
@@ -65,7 +64,7 @@ namespace MoBi.Core.Commands
       }
 
       [Observation]
-      public void should_return_an_EditParameterIsVaraiableInPopulationCommand()
+      public void should_return_an_EditParameterIsVariableInPopulationCommand()
       {
          _result.ShouldBeAnInstanceOf<EditParameterCanBeVariedInPopulationCommand>();
       }
@@ -77,7 +76,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   internal class When_executing_an_EditParameterIsVaraiableInPopulationCommand : concern_for_EditParameterCanBeVariedInPopulationCommandSpecs
+   internal class When_executing_an_EditParameterIsVaraiableInPopulationCommand : concern_for_EditParameterCanBeVariedInPopulationCommand
    {
       protected override void Because()
       {

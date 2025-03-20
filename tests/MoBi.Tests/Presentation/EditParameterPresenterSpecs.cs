@@ -1,6 +1,7 @@
 ﻿using System;
 using FakeItEasy;
 using MoBi.Core.Commands;
+using MoBi.Core.Events;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -100,6 +101,26 @@ namespace MoBi.Presentation
       public void should_add_an_EditParameterCanBeVariedInPopulationCommand_to_context()
       {
          A.CallTo(() => _commandCollector.AddCommand(A<EditParameterCanBeVariedInPopulationCommand>._)).MustHaveHappened();
+      }
+   }
+
+   internal class When_set_is_variable_is_called : concern_for_EditParameterPresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.Edit(_parameter);
+      }
+
+      protected override void Because()
+      {
+         sut.SetIsVariable(true);
+      }
+
+      [Observation]
+      public void should_add_an_EditParameterCanBeVariedInPopulationCommand_to_context()
+      {
+         A.CallTo(() => _commandCollector.AddCommand(A<EditParameterCanBeVariedCommand>._)).MustHaveHappened();
       }
    }
 
@@ -247,6 +268,46 @@ namespace MoBi.Presentation
          var criteria = _creator(_parameter);
          _parameter.ContainerCriteria.ShouldNotBeNull();
          _parameter.ContainerCriteria.ShouldBeEqualTo(criteria);
+      }
+   }
+
+   public class When_handling_the_parameter_changed_event_and_presenter_is_editing_the_changed_parameter : concern_for_EditParameterPresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.Edit(_parameter);
+      }
+
+      protected override void Because()
+      {
+         sut.Handle(new ParameterChangedEvent(_parameter));
+      }
+
+      [Observation]
+      public void the_view_should_be_refreshed()
+      {
+         A.CallTo(() => _view.Show(_parameterDTO)).MustHaveHappened(2, Times.Exactly);
+      }
+   }
+
+   public class When_handling_the_parameter_changed_event_and_presenter_is_not_editing_the_changed_parameter : concern_for_EditParameterPresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.Edit(_parameter);
+      }
+
+      protected override void Because()
+      {
+         sut.Handle(new ParameterChangedEvent(new Parameter()));
+      }
+
+      [Observation]
+      public void the_view_should_not_be_refreshed()
+      {
+         A.CallTo(() => _view.Show(_parameterDTO)).MustHaveHappened(1, Times.Exactly);
       }
    }
 }

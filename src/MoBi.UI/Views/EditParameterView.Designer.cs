@@ -69,10 +69,12 @@ namespace MoBi.UI.Views
          this.tabTags = new DevExpress.XtraTab.XtraTabPage();
          this.tabCriteria = new DevExpress.XtraTab.XtraTabPage();
          this.layoutControl = new DevExpress.XtraLayout.LayoutControl();
-         this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
          this.panelContainerCriteria = new DevExpress.XtraEditors.PanelControl();
-         this.layoutItemContainerCriteria = new DevExpress.XtraLayout.LayoutControlItem();
+         this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutGroupContainerCriteria = new DevExpress.XtraLayout.LayoutControlGroup();
+         this.layoutItemContainerCriteria = new DevExpress.XtraLayout.LayoutControlItem();
+         this.chkCanBeVaried = new OSPSuite.UI.Controls.UxCheckEdit();
+         this.canBeVariedLayoutControlItem = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.tabControl)).BeginInit();
          this.tabControl.SuspendLayout();
@@ -113,10 +115,12 @@ namespace MoBi.UI.Views
          this.tabCriteria.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
          this.layoutControl.SuspendLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.panelContainerCriteria)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemContainerCriteria)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupContainerCriteria)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemContainerCriteria)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.chkCanBeVaried.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.canBeVariedLayoutControlItem)).BeginInit();
          this.SuspendLayout();
          // 
          // tabControl
@@ -142,6 +146,7 @@ namespace MoBi.UI.Views
          // layoutControlProperties
          // 
          this.layoutControlProperties.AllowCustomization = false;
+         this.layoutControlProperties.Controls.Add(this.chkCanBeVaried);
          this.layoutControlProperties.Controls.Add(this.panelOrigiView);
          this.layoutControlProperties.Controls.Add(this.chkIsFavorite);
          this.layoutControlProperties.Controls.Add(this.cbGroup);
@@ -176,7 +181,7 @@ namespace MoBi.UI.Views
          this.chkIsFavorite.Location = new System.Drawing.Point(24, 164);
          this.chkIsFavorite.Name = "chkIsFavorite";
          this.chkIsFavorite.Properties.Caption = "chkIsFavorite";
-         this.chkIsFavorite.Size = new System.Drawing.Size(174, 20);
+         this.chkIsFavorite.Size = new System.Drawing.Size(133, 20);
          this.chkIsFavorite.StyleController = this.layoutControlProperties;
          this.chkIsFavorite.TabIndex = 27;
          // 
@@ -193,20 +198,20 @@ namespace MoBi.UI.Views
          // chkCanBeVariedInPopulation
          // 
          this.chkCanBeVariedInPopulation.AllowClicksOutsideControlArea = false;
-         this.chkCanBeVariedInPopulation.Location = new System.Drawing.Point(558, 164);
+         this.chkCanBeVariedInPopulation.Location = new System.Drawing.Point(572, 164);
          this.chkCanBeVariedInPopulation.Name = "chkCanBeVariedInPopulation";
          this.chkCanBeVariedInPopulation.Properties.Caption = "chkCanBeVariedInPopulation";
-         this.chkCanBeVariedInPopulation.Size = new System.Drawing.Size(174, 20);
+         this.chkCanBeVariedInPopulation.Size = new System.Drawing.Size(160, 20);
          this.chkCanBeVariedInPopulation.StyleController = this.layoutControlProperties;
          this.chkCanBeVariedInPopulation.TabIndex = 25;
          // 
          // chkPersistable
          // 
          this.chkPersistable.AllowClicksOutsideControlArea = false;
-         this.chkPersistable.Location = new System.Drawing.Point(202, 164);
+         this.chkPersistable.Location = new System.Drawing.Point(161, 164);
          this.chkPersistable.Name = "chkPersistable";
          this.chkPersistable.Properties.Caption = "chkPersistable";
-         this.chkPersistable.Size = new System.Drawing.Size(174, 20);
+         this.chkPersistable.Size = new System.Drawing.Size(126, 20);
          this.chkPersistable.StyleController = this.layoutControlProperties;
          this.chkPersistable.TabIndex = 24;
          // 
@@ -252,10 +257,10 @@ namespace MoBi.UI.Views
          // chkAdvancedParameter
          // 
          this.chkAdvancedParameter.AllowClicksOutsideControlArea = false;
-         this.chkAdvancedParameter.Location = new System.Drawing.Point(380, 164);
+         this.chkAdvancedParameter.Location = new System.Drawing.Point(291, 164);
          this.chkAdvancedParameter.Name = "chkAdvancedParameter";
          this.chkAdvancedParameter.Properties.Caption = "chkAdvancedParameter";
-         this.chkAdvancedParameter.Size = new System.Drawing.Size(174, 20);
+         this.chkAdvancedParameter.Size = new System.Drawing.Size(140, 20);
          this.chkAdvancedParameter.StyleController = this.layoutControlProperties;
          this.chkAdvancedParameter.TabIndex = 23;
          // 
@@ -399,7 +404,8 @@ namespace MoBi.UI.Views
             this.layoutControlItemPersistable,
             this.layoutControlItemAdvancedParameter,
             this.layoutControlItemCanBeVariedInPopulation,
-            this.layoutItemValueOrigin});
+            this.layoutItemValueOrigin,
+            this.canBeVariedLayoutControlItem});
          this.layoutGroupProperties.Location = new System.Drawing.Point(0, 24);
          this.layoutGroupProperties.Name = "layoutGroupProperties";
          this.layoutGroupProperties.Size = new System.Drawing.Size(736, 164);
@@ -437,7 +443,7 @@ namespace MoBi.UI.Views
          this.layoutItemIsFavorite.CustomizationFormText = "layoutItemIsFavorite";
          this.layoutItemIsFavorite.Location = new System.Drawing.Point(0, 95);
          this.layoutItemIsFavorite.Name = "layoutItemIsFavorite";
-         this.layoutItemIsFavorite.Size = new System.Drawing.Size(178, 24);
+         this.layoutItemIsFavorite.Size = new System.Drawing.Size(137, 24);
          this.layoutItemIsFavorite.TextSize = new System.Drawing.Size(0, 0);
          this.layoutItemIsFavorite.TextVisible = false;
          // 
@@ -445,9 +451,9 @@ namespace MoBi.UI.Views
          // 
          this.layoutControlItemPersistable.Control = this.chkPersistable;
          this.layoutControlItemPersistable.CustomizationFormText = "layoutControlItemPersistable";
-         this.layoutControlItemPersistable.Location = new System.Drawing.Point(178, 95);
+         this.layoutControlItemPersistable.Location = new System.Drawing.Point(137, 95);
          this.layoutControlItemPersistable.Name = "layoutControlItemPersistable";
-         this.layoutControlItemPersistable.Size = new System.Drawing.Size(178, 24);
+         this.layoutControlItemPersistable.Size = new System.Drawing.Size(130, 24);
          this.layoutControlItemPersistable.TextSize = new System.Drawing.Size(0, 0);
          this.layoutControlItemPersistable.TextVisible = false;
          // 
@@ -455,9 +461,9 @@ namespace MoBi.UI.Views
          // 
          this.layoutControlItemAdvancedParameter.Control = this.chkAdvancedParameter;
          this.layoutControlItemAdvancedParameter.CustomizationFormText = "layoutControlItemAdvancedParameter";
-         this.layoutControlItemAdvancedParameter.Location = new System.Drawing.Point(356, 95);
+         this.layoutControlItemAdvancedParameter.Location = new System.Drawing.Point(267, 95);
          this.layoutControlItemAdvancedParameter.Name = "layoutControlItemAdvancedParameter";
-         this.layoutControlItemAdvancedParameter.Size = new System.Drawing.Size(178, 24);
+         this.layoutControlItemAdvancedParameter.Size = new System.Drawing.Size(144, 24);
          this.layoutControlItemAdvancedParameter.TextSize = new System.Drawing.Size(0, 0);
          this.layoutControlItemAdvancedParameter.TextVisible = false;
          // 
@@ -465,9 +471,9 @@ namespace MoBi.UI.Views
          // 
          this.layoutControlItemCanBeVariedInPopulation.Control = this.chkCanBeVariedInPopulation;
          this.layoutControlItemCanBeVariedInPopulation.CustomizationFormText = "layoutControlItemCanBeVariedInPopulation";
-         this.layoutControlItemCanBeVariedInPopulation.Location = new System.Drawing.Point(534, 95);
+         this.layoutControlItemCanBeVariedInPopulation.Location = new System.Drawing.Point(548, 95);
          this.layoutControlItemCanBeVariedInPopulation.Name = "layoutControlItemCanBeVariedInPopulation";
-         this.layoutControlItemCanBeVariedInPopulation.Size = new System.Drawing.Size(178, 24);
+         this.layoutControlItemCanBeVariedInPopulation.Size = new System.Drawing.Size(164, 24);
          this.layoutControlItemCanBeVariedInPopulation.TextSize = new System.Drawing.Size(0, 0);
          this.layoutControlItemCanBeVariedInPopulation.TextVisible = false;
          // 
@@ -504,6 +510,13 @@ namespace MoBi.UI.Views
          this.layoutControl.TabIndex = 0;
          this.layoutControl.Text = "layoutControl";
          // 
+         // panelContainerCriteria
+         // 
+         this.panelContainerCriteria.Location = new System.Drawing.Point(170, 45);
+         this.panelContainerCriteria.Name = "panelContainerCriteria";
+         this.panelContainerCriteria.Size = new System.Drawing.Size(562, 346);
+         this.panelContainerCriteria.TabIndex = 4;
+         // 
          // Root
          // 
          this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
@@ -514,12 +527,13 @@ namespace MoBi.UI.Views
          this.Root.Size = new System.Drawing.Size(756, 415);
          this.Root.TextVisible = false;
          // 
-         // panelContainerCriteria
+         // layoutGroupContainerCriteria
          // 
-         this.panelContainerCriteria.Location = new System.Drawing.Point(170, 45);
-         this.panelContainerCriteria.Name = "panelContainerCriteria";
-         this.panelContainerCriteria.Size = new System.Drawing.Size(562, 346);
-         this.panelContainerCriteria.TabIndex = 4;
+         this.layoutGroupContainerCriteria.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.layoutItemContainerCriteria});
+         this.layoutGroupContainerCriteria.Location = new System.Drawing.Point(0, 0);
+         this.layoutGroupContainerCriteria.Name = "layoutGroupContainerCriteria";
+         this.layoutGroupContainerCriteria.Size = new System.Drawing.Size(736, 395);
          // 
          // layoutItemContainerCriteria
          // 
@@ -529,13 +543,25 @@ namespace MoBi.UI.Views
          this.layoutItemContainerCriteria.Size = new System.Drawing.Size(712, 350);
          this.layoutItemContainerCriteria.TextSize = new System.Drawing.Size(134, 13);
          // 
-         // layoutGroupContainerCriteria
+         // chkCanBeVariedsss
          // 
-         this.layoutGroupContainerCriteria.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutItemContainerCriteria});
-         this.layoutGroupContainerCriteria.Location = new System.Drawing.Point(0, 0);
-         this.layoutGroupContainerCriteria.Name = "layoutGroupContainerCriteria";
-         this.layoutGroupContainerCriteria.Size = new System.Drawing.Size(736, 395);
+         this.chkCanBeVaried.AllowClicksOutsideControlArea = false;
+         this.chkCanBeVaried.Location = new System.Drawing.Point(435, 164);
+         this.chkCanBeVaried.Name = "chkCanBeVaried";
+         this.chkCanBeVaried.Properties.AllowFocused = false;
+         this.chkCanBeVaried.Properties.Caption = "uxCheckEdit1";
+         this.chkCanBeVaried.Size = new System.Drawing.Size(133, 20);
+         this.chkCanBeVaried.StyleController = this.layoutControlProperties;
+         this.chkCanBeVaried.TabIndex = 30;
+         // 
+         // chkCanBeVaried
+         // 
+         this.canBeVariedLayoutControlItem.Control = this.chkCanBeVaried;
+         this.canBeVariedLayoutControlItem.Location = new System.Drawing.Point(411, 95);
+         this.canBeVariedLayoutControlItem.Name = "canBeVariedLayoutControlItem";
+         this.canBeVariedLayoutControlItem.Size = new System.Drawing.Size(137, 24);
+         this.canBeVariedLayoutControlItem.TextSize = new System.Drawing.Size(0, 0);
+         this.canBeVariedLayoutControlItem.TextVisible = false;
          // 
          // EditParameterView
          // 
@@ -584,10 +610,12 @@ namespace MoBi.UI.Views
          this.tabCriteria.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
          this.layoutControl.ResumeLayout(false);
-         ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.panelContainerCriteria)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutItemContainerCriteria)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupContainerCriteria)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemContainerCriteria)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.chkCanBeVaried.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.canBeVariedLayoutControlItem)).EndInit();
          this.ResumeLayout(false);
 
       }
@@ -635,5 +663,7 @@ namespace MoBi.UI.Views
       private DevExpress.XtraLayout.LayoutControlGroup Root;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemContainerCriteria;
       private DevExpress.XtraLayout.LayoutControlGroup layoutGroupContainerCriteria;
+      private UxCheckEdit chkCanBeVaried;
+      private DevExpress.XtraLayout.LayoutControlItem canBeVariedLayoutControlItem;
    }
 }

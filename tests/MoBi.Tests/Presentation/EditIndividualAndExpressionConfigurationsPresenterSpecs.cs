@@ -161,10 +161,9 @@ namespace MoBi.Presentation
          sut.Edit(_simulationConfiguration);
 
          _treeNode = new BuildingBlockNode(_expressionProfile);
-         A.CallTo(() => _treeNodeFactory.CreateFor(_expressionProfile)).Returns(_treeNode);
-
          _treeNode2 = new BuildingBlockNode(_expressionProfile2);
-         A.CallTo(() => _treeNodeFactory.CreateFor(_expressionProfile2)).Returns(_treeNode2);
+
+         A.CallTo(() => _treeNodeFactory.CreateFor(A<IBuildingBlock>._)).ReturnsLazily((IBuildingBlock buildingBlock) => ReferenceEquals(buildingBlock, _expressionProfile) ? _treeNode : _treeNode2);
       }
 
       protected override void Because()

@@ -1558,6 +1558,7 @@ namespace MoBi.Assets
          public static readonly string Tree = "Tree";
          public static readonly string MessageOrigin = "Origin";
          public static readonly string CanBeVariedInPopulation = "Can be varied in population";
+         public static readonly string CanBeVaried = "Can be varied";
          public static readonly string ImportObservedData = "Import Observed Data";
          public static readonly string AddUnitMap = "Add Unit";
          public static readonly string DisplayUnit = "Display Unit";
