@@ -137,7 +137,7 @@ namespace MoBi.Presentation.Tasks
             addEvents();
             updatePersistableFor(simulation);
 
-            var simulationRunResults = await _simModelManager.RunSimulationAsync(simulation, _simulationCancellationTokenSource);
+            var simulationRunResults = await _simModelManager.RunSimulationAsync(simulation, _simulationCancellationTokenSource.Token);
 
             simulation.HasChanged = true;
             showWarningsIfAny(simulationRunResults);
