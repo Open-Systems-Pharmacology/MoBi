@@ -63,6 +63,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          _allMenuItems.AddRange(new[]
          {
             createRunItem(simulation).AsGroupStarter(),
+            createStopItem(simulation),
             createParameterIdentificationItem(simulation),
             createSensitivityAnalysisItem(simulation),
 
@@ -124,6 +125,15 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
                .WithEnabled(!simulation.IsRunning)
                .WithIcon(ApplicationIcons.Run)
                .WithCommandFor<RunSimulationCommand, IMoBiSimulation>(simulation, _container);
+      }
+
+      private IMenuBarItem createStopItem(IMoBiSimulation simulation)
+      {
+         return
+            CreateMenuButton.WithCaption(AppConstants.MenuNames.Stop)
+               .WithEnabled(simulation.IsRunning)
+               .WithIcon(ApplicationIcons.Stop)
+               .WithCommandFor<StopSimulationCommand, IMoBiSimulation>(simulation, _container);
       }
 
       private IMenuBarItem createExportODEForMatlabItem(IMoBiSimulation simulation)

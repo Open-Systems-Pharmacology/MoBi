@@ -1158,7 +1158,7 @@ namespace MoBi.Assets
          public static readonly string ExportToExcel = "Export to Excel®...";
          public static readonly string ImportFromExcel = "Import from Excel®...";
          public static readonly string ShowChanges = "Show Changes";
-
+         public static readonly string StopAllRunningSimulations = "Stop all running simulations";
          public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
 
          public static string AddExistingAs(string objectTypeName, string targetTypeName) => $"Load {objectTypeName} as {targetTypeName}...";

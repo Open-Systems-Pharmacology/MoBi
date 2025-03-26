@@ -45,6 +45,7 @@ namespace MoBi.Presentation
       private IApplicationController _applicationController;
       protected IDragEvent _dragEvent;
       private IEnumerable<ITreeNode> _treeNodes;
+      private IDialogCreator _dialogCreator;
 
       protected override void Context()
       {
@@ -58,6 +59,7 @@ namespace MoBi.Presentation
          _chartPresenterContext = A.Fake<ChartPresenterContext>();
          _outputMappingMatchingTask = A.Fake<IOutputMappingMatchingTask>();
          _dragEvent = A.Fake<IDragEvent>();
+         _dialogCreator = A.Fake<IDialogCreator>();
 
          _chartDisplayView = A.Fake<IChartDisplayView>();
          _curveBinderFactory = A.Fake<ICurveBinderFactory>();
@@ -79,7 +81,7 @@ namespace MoBi.Presentation
             observedDataNode
          };
 
-         _chartDisplayPresenter = new ChartDisplayPresenter(_chartDisplayView, _curveBinderFactory, _contextMenuFactoryForProjectItem, _axisBinderFactory, _dataModeMapper, _chartExportTask, _applicationSettings, _applicationController);
+         _chartDisplayPresenter = new ChartDisplayPresenter(_chartDisplayView, _curveBinderFactory, _contextMenuFactoryForProjectItem, _axisBinderFactory, _dataModeMapper, _chartExportTask, _applicationSettings, _applicationController, _dialogCreator);
 
 
          A.CallTo(() => _chartPresenterContext.DisplayPresenter).Returns(_chartDisplayPresenter);

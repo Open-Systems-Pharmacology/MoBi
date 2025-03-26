@@ -7,6 +7,10 @@ namespace MoBi.Core.Services
    {
       void RunSimulation(IMoBiSimulation simulation, bool defineSettings = false);
       Task RunSimulationAsync(IMoBiSimulation simulation, bool defineSettings = false);
-      void StopSimulation();
+      /// <summary>
+      /// Stops one simulation or all simulations if simulation is null
+      /// </summary>
+      /// <param name="simulation"></param>
+      void StopSimulation(IMoBiSimulation simulation = null);
    }
 }
