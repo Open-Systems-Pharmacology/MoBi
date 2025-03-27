@@ -195,6 +195,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
             .WithCommandFor<RemoveSimulationUICommand, IMoBiSimulation>(simulation, _container)
+            .WithEnabled(!simulation.IsRunning)
             .WithIcon(ApplicationIcons.Delete);
       }
 
@@ -207,6 +208,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       private IMenuBarItem createRenameItem(IMoBiSimulation simulation)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Rename)
+            .WithEnabled(!simulation.IsRunning)
             .WithCommandFor<RenameSimulationUICommand, IMoBiSimulation>(simulation, _container).WithIcon(ApplicationIcons.Rename);
       }
 

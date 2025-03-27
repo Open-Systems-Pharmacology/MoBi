@@ -61,15 +61,15 @@ namespace MoBi.Presentation.Tasks
 
       public async void RunSimulation(IMoBiSimulation simulation, bool defineSettings = false)
       {
-         _ = runSimulationInternalAsync(simulation, defineSettings);
+         _ = runSimulationAsync(simulation, defineSettings);
       }
 
       public async Task RunSimulationAsync(IMoBiSimulation simulation, bool defineSettings = false)
       {
-         await runSimulationInternalAsync(simulation, defineSettings);
+         await runSimulationAsync(simulation, defineSettings);
       }
 
-      private async Task runSimulationInternalAsync(IMoBiSimulation simulation, bool defineSettings)
+      private async Task runSimulationAsync(IMoBiSimulation simulation, bool defineSettings)
       {
          addPersitableParametersToOutputSelection(simulation);
          if (!_entityValidationTask.Validate(simulation))

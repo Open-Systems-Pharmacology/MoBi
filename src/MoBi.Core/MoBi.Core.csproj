@@ -29,13 +29,13 @@
     <PackageReference Include="FluentNHibernate" Version="3.4.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="OSPSuite.Utility" Version="4.1.1.1" />
-    <PackageReference Include="OSPSuite.Core" Version="12.1.67" />
-    <PackageReference Include="OSPSuite.Assets" Version="12.1.67" />
-    <PackageReference Include="OSPSuite.Assets.Images" Version="12.1.67" />
-    <PackageReference Include="OSPSuite.Infrastructure.Export" Version="12.1.67" />
-    <PackageReference Include="OSPSuite.Infrastructure.Reporting" Version="12.1.67" />
-    <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="12.1.67" />
-    <PackageReference Include="OSPSuite.Infrastructure.Import" Version="12.1.67" />
+    <PackageReference Include="OSPSuite.Core" Version="12.1.68" />
+    <PackageReference Include="OSPSuite.Assets" Version="12.1.68" />
+    <PackageReference Include="OSPSuite.Assets.Images" Version="12.1.68" />
+    <PackageReference Include="OSPSuite.Infrastructure.Export" Version="12.1.68" />
+    <PackageReference Include="OSPSuite.Infrastructure.Reporting" Version="12.1.68" />
+    <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="12.1.68" />
+    <PackageReference Include="OSPSuite.Infrastructure.Import" Version="12.1.68" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
   </ItemGroup>
 
