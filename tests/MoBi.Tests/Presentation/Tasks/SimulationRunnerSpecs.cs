@@ -255,7 +255,8 @@ namespace MoBi.Presentation.Tasks
 
          _newResults = new DataRepository("NEW");
          _simulationResults = new SimulationRunResults(warnings: Enumerable.Empty<SolverWarning>(), results: _newResults);
-         A.CallTo(() => _simModelManager.RunSimulation(_simulation, null)).Returns(_simulationResults);
+         A.CallTo(() => _simModelManager.RunSimulationAsync(_simulation, A<CancellationToken>._, null))
+            .Returns(Task.FromResult(_simulationResults));
          var baseGrid = new BaseGrid("Time", DomainHelperForSpecs.TimeDimension);
          _concentrationColumn = new DataColumn("Drug", DomainHelperForSpecs.ConcentrationDimension, baseGrid);
          _fractionColumn = new DataColumn("Fraction", DomainHelperForSpecs.FractionDimension, baseGrid);
@@ -285,7 +286,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_run_the_simulation()
       {
-         A.CallTo(() => _simModelManager.RunSimulation(_simulation, null)).MustHaveHappened();
+         A.CallTo(() => _simModelManager.RunSimulationAsync(_simulation, A<CancellationToken>._, null)).MustHaveHappened();
       }
 
       [Observation]
