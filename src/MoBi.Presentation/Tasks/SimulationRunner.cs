@@ -127,7 +127,7 @@ namespace MoBi.Presentation.Tasks
          }
          else
          {
-            foreach (var cts in _cancellationTokenSources.Values)
+            foreach (var cts in _cancellationTokenSources.Values.ToList())
             {
                cts.Cancel();
                cts.Dispose();

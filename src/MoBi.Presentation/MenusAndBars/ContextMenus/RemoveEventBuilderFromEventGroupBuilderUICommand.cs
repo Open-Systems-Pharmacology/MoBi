@@ -39,11 +39,6 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return this;
       }
 
-      public Task ExecuteAsync()
-      {
-         throw new System.NotImplementedException();
-      }
-
       public EventBuilder Subject { get; set; }
    }
 

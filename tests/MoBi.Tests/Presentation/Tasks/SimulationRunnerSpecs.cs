@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
@@ -17,6 +20,7 @@ using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using OSPSuite.SimModel;
 using OSPSuite.Utility.Extensions;
+using static OSPSuite.Core.Domain.Constants;
 using ISimulationPersistableUpdater = MoBi.Core.Services.ISimulationPersistableUpdater;
 
 namespace MoBi.Presentation.Tasks
@@ -313,6 +317,167 @@ namespace MoBi.Presentation.Tasks
       {
          _concentrationColumn.DataInfo.MolWeight.ShouldBeEqualTo(_moleculeWeight.Value);
          _fractionColumn.DataInfo.MolWeight.ShouldBeNull();
+      }
+   }
+   public class When_stopping_a_specific_simulation : concern_for_SimulationRunner
+   {
+      private IMoBiSimulation _simulation;
+      private ISimModelManager _simModelManager;
+      private CancellationToken capturedToken;
+      private bool wasCancelled = false;
+
+      protected override void Context()
+      {
+         base.Context();
+
+         _simulation = A.Fake<IMoBiSimulation>();
+
+         _simModelManager = A.Fake<ISimModelManager>();
+
+         A.CallTo(() => _simModelManagerFactory.Create()).Returns(_simModelManager);
+
+         // Simulate a long-running task that can be cancelled
+         A.CallTo(() => _simModelManager.RunSimulationAsync(_simulation, A<CancellationToken>._,null))
+            .Invokes(call =>
+            {
+               capturedToken = call.GetArgument<CancellationToken>(1);
+            })
+            .ReturnsLazily(async () =>
+            {
+               try
+               {
+                  await Task.Delay(2000, capturedToken);
+               }
+               catch (OperationCanceledException)
+               {
+                  wasCancelled = true;
+                  throw;
+               }
+
+               return new SimulationRunResults(warnings: Enumerable.Empty<SolverWarning>(), results: new DataRepository("NEW"));
+            });
+
+         A.CallTo(() => _eventValidationTask.Validate(_simulation)).Returns(true);
+      }
+
+      protected override void Because()
+      {
+         var runTask = sut.RunSimulationAsync(_simulation);
+
+         Task.Delay(100).Wait();
+
+         sut.StopSimulation(_simulation);
+
+         try
+         {
+            runTask.Wait();
+         }
+         catch (AggregateException ex) when (ex.InnerException is TaskCanceledException)
+         {
+            // This is expected since we cancelled the task, no action needed
+            //only for the test not to fail
+         }
+      }
+
+      [Observation]
+      public void should_have_cancelled_the_simulation()
+      {
+         wasCancelled.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_publish_simulation_canceled_event()
+      {
+         A.CallTo(() => _context.PublishEvent(A<SimulationsRunCanceledEvent>._)).MustHaveHappened();
+      }
+   }
+
+   public class When_stopping_all_simulations : concern_for_SimulationRunner
+   {
+      private IMoBiSimulation _simulation1;
+      private IMoBiSimulation _simulation2;
+      private ISimModelManager _simModelManager;
+      private CancellationToken token1;
+      private CancellationToken token2;
+      private bool wasCancelled1 = false;
+      private bool wasCancelled2 = false;
+
+      //This test might fail when debugging if more time is taken than the await Task.Delay(10000, tokenx);
+      //So if debug is needed, maybe set it longer before debugging.
+
+      protected override void Context()
+      {
+         base.Context();
+
+         _simulation1 = A.Fake<IMoBiSimulation>();
+         _simulation2 = A.Fake<IMoBiSimulation>();
+         _simModelManager = A.Fake<ISimModelManager>();
+
+         A.CallTo(() => _simModelManagerFactory.Create()).Returns(_simModelManager);
+
+         A.CallTo(() => _simModelManager.RunSimulationAsync(_simulation1, A<CancellationToken>._, null))
+            .Invokes(call => token1 = call.GetArgument<CancellationToken>(1))
+            .ReturnsLazily(async () =>
+            {
+               try
+               {
+                  await Task.Delay(10000, token1);
+               }
+               catch (OperationCanceledException)
+               {
+                  wasCancelled1 = true;
+                  throw;
+               }
+
+               return new SimulationRunResults(warnings: Enumerable.Empty<SolverWarning>(), results: new DataRepository("R1"));
+            });
+
+         A.CallTo(() => _simModelManager.RunSimulationAsync(_simulation2, A<CancellationToken>._, null))
+            .Invokes(call => token2 = call.GetArgument<CancellationToken>(1))
+            .ReturnsLazily(async () =>
+            {
+               try
+               {
+                  await Task.Delay(10000, token2);
+               }
+               catch (OperationCanceledException)
+               {
+                  wasCancelled2 = true;
+                  throw;
+               }
+
+               return new SimulationRunResults(warnings: Enumerable.Empty<SolverWarning>(), results: new DataRepository("R2"));
+            });
+
+         A.CallTo(() => _eventValidationTask.Validate(A<IMoBiSimulation>._)).Returns(true);
+      }
+
+      protected override void Because()
+      {
+         var task1 = sut.RunSimulationAsync(_simulation1);
+         var task2 = sut.RunSimulationAsync(_simulation2);
+
+         // Give time for both to register their tokens
+         Task.Delay(100).Wait();
+
+         // Stop all simulations
+         sut.StopSimulation(); 
+
+         try { task1.Wait(); } catch (AggregateException ex) when (ex.InnerException is TaskCanceledException) { }
+         try { task2.Wait(); } catch (AggregateException ex) when (ex.InnerException is TaskCanceledException) { }
+      }
+
+      [Observation]
+      public void should_have_cancelled_all_simulations()
+      {
+         wasCancelled1.ShouldBeTrue();
+         wasCancelled2.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_publish_simulation_canceled_event_once()
+      {
+         A.CallTo(() => _context.PublishEvent(A<SimulationsRunCanceledEvent>._)).MustHaveHappened();
       }
    }
 }
