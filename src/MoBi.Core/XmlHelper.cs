@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
+using OSPSuite.Core.Serialization;
 
 namespace MoBi.Core
 {
@@ -84,9 +85,8 @@ namespace MoBi.Core
       public static XElement ElementFromBytes(byte[] serializationByte)
       {
          using (var stream = new MemoryStream(serializationByte))
-         using (var reader = new StreamReader(stream, Encoding.UTF8, false))
          {
-            return XElement.Load(reader);
+            return XElementSerializer.PermissiveLoad(stream);
          }
       }
    }

@@ -2,6 +2,7 @@ using System.Xml.Linq;
 using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Serialization;
 
 namespace MoBi.Core.Serialization.Xml.Services
 {
@@ -29,7 +30,7 @@ namespace MoBi.Core.Serialization.Xml.Services
 
       public void Load()
       {
-         var xml = XElement.Load(_configuration.CalculationMethodRepositoryFile);
+         var xml = XElementSerializer.PermissiveLoad(_configuration.CalculationMethodRepositoryFile);
          int version = _xmlSerializationService.VersionFrom(xml);
          _xmlSerializationService.Deserialize<ICoreCalculationMethodRepository>(xml, _context.CurrentProject, version).All().Each(_calculationMethodRepository.AddCalculationMethod);
       }
@@ -37,7 +38,7 @@ namespace MoBi.Core.Serialization.Xml.Services
       public void Save()
       {
          var xml = _xmlSerializationService.SerializeModelPart(_calculationMethodRepository);
-         xml.Save(_configuration.CalculationMethodRepositoryFile);
+         xml.PermissiveSave(_configuration.CalculationMethodRepositoryFile);
       }
    }
 }
