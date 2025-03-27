@@ -19,10 +19,11 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.DTO;
+using ObjectBaseDTO = MoBi.Presentation.DTO.ObjectBaseDTO;
 
 namespace MoBi.Presentation
 {
-   public abstract class concern_for_EditParameterListPresenter : ContextSpecification<IEditParametersInContainerPresenter>
+   public abstract class concern_for_EditParametersInContainerPresenter : ContextSpecification<EditParametersInContainerPresenter>
    {
       protected IEditParametersInContainerView _view;
       protected IFormulaToFormulaBuilderDTOMapper _formulaMapper;
@@ -40,6 +41,9 @@ namespace MoBi.Presentation
       protected IFavoriteTask _favoriteTask;
       protected IObjectTypeResolver _typeResolver;
       protected IEntityPathResolver _entityPathResolver;
+      protected IObjectBaseToObjectBaseDTOMapper _objectBaseDTOMapper;
+      protected IObjectPathFactory _objectPathFactory;
+      protected IIndividualParameterToParameterDTOMapper _individualParameterToParameterDTOMapper;
 
       protected override void Context()
       {
@@ -61,13 +65,18 @@ namespace MoBi.Presentation
          _favoriteTask = A.Fake<IFavoriteTask>();
          _typeResolver = A.Fake<IObjectTypeResolver>();
          _entityPathResolver = A.Fake<IEntityPathResolver>();
+         _objectBaseDTOMapper = A.Fake<IObjectBaseToObjectBaseDTOMapper>();
+         _objectPathFactory = new ObjectPathFactory(new AliasCreator());
+         _individualParameterToParameterDTOMapper = A.Fake<IIndividualParameterToParameterDTOMapper>();
+
          sut = new EditParametersInContainerPresenter(_view, _formulaMapper, _parameterMapper, _interactionTasks,
-            _distributeParameterPresenter, _parameterPresenter, _quantityTask, _interactionTaskContext, _clipboardManager, _editTask, _selectReferencePresenterFactory, _favoriteTask, _typeResolver, _entityPathResolver);
+            _distributeParameterPresenter, _parameterPresenter, _quantityTask, _interactionTaskContext, _clipboardManager, _editTask,
+            _selectReferencePresenterFactory, _favoriteTask, _typeResolver, _entityPathResolver, _objectBaseDTOMapper, _objectPathFactory, _individualParameterToParameterDTOMapper);
          sut.InitializeWith(A.Fake<ICommandCollector>());
       }
    }
 
-   class When_trying_to_copy_nothing : concern_for_EditParameterListPresenter
+   class When_trying_to_copy_nothing : concern_for_EditParametersInContainerPresenter
    {
       protected override void Because()
       {
@@ -80,7 +89,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_pasting_from_clipboard : concern_for_EditParameterListPresenter
+   public class When_pasting_from_clipboard : concern_for_EditParametersInContainerPresenter
    {
       private IContainer _container;
 
@@ -104,7 +113,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_told_to_set_parameter_value_in_a_building_block : concern_for_EditParameterListPresenter
+   public class When_told_to_set_parameter_value_in_a_building_block : concern_for_EditParametersInContainerPresenter
    {
       private ParameterDTO _parameterDTO;
       private double _newDisplayValue;
@@ -132,7 +141,7 @@ namespace MoBi.Presentation
       }
    }
 
-   internal class When_told_to_reset_a_parameter_value : concern_for_EditParameterListPresenter
+   internal class When_told_to_reset_a_parameter_value : concern_for_EditParametersInContainerPresenter
    {
       private IParameterDTO _parameterDTO;
       private readonly double _setValue = 2.0;
@@ -171,7 +180,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_told_to_set_parameter_value_in_a_simulation : concern_for_EditParameterListPresenter
+   public class When_told_to_set_parameter_value_in_a_simulation : concern_for_EditParametersInContainerPresenter
    {
       private ParameterDTO _parameterDTO;
       private double _newDisplayValue;
@@ -200,7 +209,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_told_to_set_parameter_display_unit_in_a_building_block : concern_for_EditParameterListPresenter
+   public class When_told_to_set_parameter_display_unit_in_a_building_block : concern_for_EditParametersInContainerPresenter
    {
       private ParameterDTO _parameterDTO;
       private IBuildingBlock _buildingBlock;
@@ -227,7 +236,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_told_to_set_parameter_display_unit_in_a_simulation : concern_for_EditParameterListPresenter
+   public class When_told_to_set_parameter_display_unit_in_a_simulation : concern_for_EditParametersInContainerPresenter
    {
       private ParameterDTO _parameterDTO;
       private Unit _displayUnit;
@@ -256,7 +265,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_told_to_select_a_parameter : concern_for_EditParameterListPresenter
+   public class When_told_to_select_a_parameter : concern_for_EditParametersInContainerPresenter
    {
       protected override void Context()
       {
@@ -283,7 +292,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_changing_Show_Advanced_Parameter_Property_to_false : concern_for_EditParameterListPresenter
+   public class When_changing_Show_Advanced_Parameter_Property_to_false : concern_for_EditParametersInContainerPresenter
    {
       private List<ParameterDTO> _boundParameterDTOs;
 
@@ -322,7 +331,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_changing_Show_Advanced_Parameter_Property_to_true : concern_for_EditParameterListPresenter
+   public class When_changing_Show_Advanced_Parameter_Property_to_true : concern_for_EditParametersInContainerPresenter
    {
       private bool _newValue;
 
@@ -358,7 +367,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_told_to_set_parameter_to_favorite : concern_for_EditParameterListPresenter
+   public class When_told_to_set_parameter_to_favorite : concern_for_EditParametersInContainerPresenter
    {
       private ParameterDTO _parameterDTO;
       private IBuildingBlock _buildingBlock;
@@ -383,7 +392,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_container_does_not_have_a_name : concern_for_EditParameterListPresenter
+   public class When_container_does_not_have_a_name : concern_for_EditParametersInContainerPresenter
    {
       protected IContainer _container;
       private readonly string _containerType = "Container";
@@ -392,8 +401,6 @@ namespace MoBi.Presentation
       {
          base.Context();
          _container = new Container();
-         sut = new EditParametersInContainerPresenter(_view, _formulaMapper, _parameterMapper, _interactionTasks,
-            _distributeParameterPresenter, _parameterPresenter, _quantityTask, _interactionTaskContext, _clipboardManager, _editTask, _selectReferencePresenterFactory, _favoriteTask, _typeResolver, _entityPathResolver);
          A.CallTo(() => _typeResolver.TypeFor(_container)).Returns(_containerType);
       }
 
@@ -409,7 +416,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_container_does_have_a_name : concern_for_EditParameterListPresenter
+   public class When_container_does_have_a_name : concern_for_EditParametersInContainerPresenter
    {
       protected IContainer _container;
       private readonly string _containerName = "Container Name";
@@ -418,10 +425,6 @@ namespace MoBi.Presentation
       {
          base.Context();
          _container = new Container();
-         //_view = new EditParametersInContainerView(A.Fake<IToolTipCreator>(), A.Fake<ValueOriginBinder<ParameterDTO>>());
-         sut = new EditParametersInContainerPresenter(_view, _formulaMapper, _parameterMapper, _interactionTasks,
-            _distributeParameterPresenter, _parameterPresenter, _quantityTask, _interactionTaskContext, _clipboardManager, _editTask, _selectReferencePresenterFactory, _favoriteTask, _typeResolver, _entityPathResolver);
-
          _container.Name = _containerName;
       }
 
@@ -437,7 +440,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_copying_parameter_path : concern_for_EditParameterListPresenter
+   public class When_copying_parameter_path : concern_for_EditParametersInContainerPresenter
    {
       private string _expectedPath;
       private ParameterDTO _parameterDTO;
@@ -459,6 +462,66 @@ namespace MoBi.Presentation
       public void should_copy_resolved_path_to_clipboard()
       {
          A.CallTo(() => _view.CopyToClipBoard(_expectedPath)).MustHaveHappened();
+      }
+   }
+
+   public class When_updating_the_preview_with_a_selected_individual : concern_for_EditParametersInContainerPresenter
+   {
+      private ObjectBaseDTO _individualDTO;
+      private IContainer _editedContainer;
+      private IndividualBuildingBlock _individualBuildingBlock;
+      private IndividualParameter _individualParameter;
+      private IndividualParameter _excludedIndividualParameter;
+      private IReadOnlyList<ParameterDTO> _editableDTOList;
+
+      protected override void Context()
+      {
+         base.Context();
+         _editedContainer = new Container().WithName("last");
+         new Container { _editedContainer }.WithName("root");
+         _individualBuildingBlock = new IndividualBuildingBlock { Name = "John Doe" };
+         _individualDTO = new ObjectBaseDTO(_individualBuildingBlock);
+         _individualParameter = new IndividualParameter { ContainerPath = new ObjectPath("root", "last") }.WithName("individualParameterName");
+         _excludedIndividualParameter = new IndividualParameter { ContainerPath = new ObjectPath("root", "somewhere") }.WithName("anothername");
+         _individualBuildingBlock.Add(_individualParameter);
+         _individualBuildingBlock.Add(_excludedIndividualParameter);
+         _editedContainer.Add(new Parameter { Visible = true }.WithName("parameterName"));
+         sut.Edit(_editedContainer);
+         sut.SelectedIndividual = _individualDTO;
+
+         A.CallTo(() => _parameterMapper.MapFrom(A<IParameter>._)).ReturnsLazily(x => new ParameterDTO(x.GetArgument<IParameter>(0)));
+         A.CallTo(() => _individualParameterToParameterDTOMapper.MapFrom(A<IndividualBuildingBlock>._, A<IndividualParameter>._)).ReturnsLazily(x => new ParameterDTO(new Parameter().WithName(x.GetArgument<IndividualParameter>(1).Name)) { IsIndividualPreview = true });
+         A.CallTo(() => _view.BindTo(A<IReadOnlyList<ParameterDTO>>._)).Invokes(x => _editableDTOList = x.GetArgument<IReadOnlyList<ParameterDTO>>(0));
+      }
+
+      protected override void Because()
+      {
+         sut.UpdatePreview();
+      }
+
+      [Observation]
+      public void the_list_of_previewed_objects_should_include_an_individual_parameter_and_a_structure_parameter()
+      {
+         _editableDTOList.Count(x => x.IsIndividualPreview).ShouldBeEqualTo(1);
+         _editableDTOList.Count(x => !x.IsIndividualPreview).ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void the_view_should_be_updated()
+      {
+         A.CallTo(() => _view.BindTo(A<IReadOnlyList<ParameterDTO>>._)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_individual_parameter_from_the_container_should_be_mapped_for_preview()
+      {
+         A.CallTo(() => _individualParameterToParameterDTOMapper.MapFrom(_individualBuildingBlock, _individualParameter)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_individual_parameter_from_another_container_should_not_be_mapped_for_preview()
+      {
+         A.CallTo(() => _individualParameterToParameterDTOMapper.MapFrom(_individualBuildingBlock, _excludedIndividualParameter)).MustNotHaveHappened();
       }
    }
 }

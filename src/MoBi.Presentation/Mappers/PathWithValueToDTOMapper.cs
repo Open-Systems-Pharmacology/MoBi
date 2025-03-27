@@ -5,7 +5,7 @@ namespace MoBi.Presentation.Mappers
 {
    public abstract class PathWithValueToDTOMapper<TInput, TDTO> : ObjectBaseToObjectBaseDTOMapperBase where TDTO : PathAndValueEntityDTO<TInput> where TInput : PathAndValueEntity
    {
-      protected readonly IFormulaToValueFormulaDTOMapper _formulaMapper;
+      private readonly IFormulaToValueFormulaDTOMapper _formulaMapper;
 
       protected PathWithValueToDTOMapper(IFormulaToValueFormulaDTOMapper formulaMapper)
       {

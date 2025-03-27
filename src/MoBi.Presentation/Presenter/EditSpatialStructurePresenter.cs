@@ -55,6 +55,7 @@ namespace MoBi.Presentation.Presenter
          _view.SetHierarchicalStructureView(_hierarchicalSpatialStructurePresenter.BaseView);
          _view.SetSpaceDiagramView(spatialStructureDiagramPresenter.View);
          AddSubPresenters(_editContainerPresenter, hierarchicalSpatialStructurePresenter, spatialStructureDiagramPresenter, _neighborhoodBuilderPresenter);
+         _editContainerPresenter.EnableIndividualPreview();
       }
 
       public override void Edit(MoBiSpatialStructure spatialStructure)

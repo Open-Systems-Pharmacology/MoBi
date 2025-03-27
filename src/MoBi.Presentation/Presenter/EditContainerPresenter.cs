@@ -35,6 +35,7 @@ namespace MoBi.Presentation.Presenter
       ContainerMode ConfirmAndSetContainerMode(ContainerMode newContainerMode);
       IReadOnlyList<ContainerType> AllContainerTypes { get; }
       void ShowParameters();
+      void EnableIndividualPreview();
    }
 
    public class EditContainerPresenter : AbstractContainerEditPresenterWithParameters<IEditContainerView, IEditContainerPresenter, IContainer>, IEditContainerPresenter
@@ -67,7 +68,6 @@ namespace MoBi.Presentation.Presenter
          _applicationController = applicationController;
          _editTasks = editTasks;
          _objectPathFactory = objectPathFactory;
-         _view.AddParameterView(editParametersInContainerPresenter.BaseView);
          _view.AddTagsView(_tagsPresenter.BaseView);
          _editParametersInContainerPresenter.ChangeLocalisationAllowed = true;
          AddSubPresenters(_tagsPresenter);
@@ -168,6 +168,8 @@ namespace MoBi.Presentation.Presenter
       };
 
       public void ShowParameters() => _view.ShowParameters();
+
+      public void EnableIndividualPreview() => _editParametersInContainerPresenter.ShowIndividualSelection();
 
       public override IBuildingBlock BuildingBlock
       {

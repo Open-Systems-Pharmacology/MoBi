@@ -1,0 +1,4 @@
+﻿namespace MoBi.Presentation.Mapper
+{
+
+}

@@ -5,7 +5,6 @@ using MoBi.Assets;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Events;
 using MoBi.Core.Extensions;
-using MoBi.Core.Helper;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -18,10 +17,12 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
+using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
+using ObjectBaseDTO = MoBi.Presentation.DTO.ObjectBaseDTO;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -59,26 +60,35 @@ namespace MoBi.Presentation.Presenter
       void EnableContainerCriteriaSupport();
 
       void CopyPathForParameter(ParameterDTO parameter);
+
+      IReadOnlyList<ObjectBaseDTO> AllIndividuals { get; }
+      ObjectBaseDTO SelectedIndividual { get; set; }
+      void ShowIndividualSelection();
+      void UpdatePreview();
+      bool IsIndividualPreview(ParameterDTO dto);
    }
 
    public class EditParametersInContainerPresenter : AbstractParameterBasePresenter<IEditParametersInContainerView, IEditParametersInContainerPresenter>, IEditParametersInContainerPresenter
    {
       private readonly IClipboardManager _clipboardManager;
       private readonly IParameterToParameterDTOMapper _parameterToDTOParameterMapper;
+      private readonly IIndividualParameterToParameterDTOMapper _individualParameterToDTOParameterMapper;
       private readonly ICache<string, IParameter> _parameters = new Cache<string, IParameter>(x => x.Id, x => null);
       private readonly List<ParameterDTO> _allParametersDTO = new List<ParameterDTO>();
 
       private IContainer _container;
       private readonly IEditTaskFor<IParameter> _editTask;
       private readonly ISelectReferencePresenterFactory _selectReferencePresenterFactory;
-      private readonly Func<IContainer, IEnumerable<IParameter>> _getParametersFunc;
       private readonly IEditDistributedParameterPresenter _editDistributedParameterPresenter;
       private readonly IEditParameterPresenter _editParameterPresenter;
       private bool _ignoreAddEvents;
       private readonly IObjectTypeResolver _typeResolver;
 
       private readonly IEntityPathResolver _entityPathResolver;
-
+      private readonly IObjectBaseToObjectBaseDTOMapper _objectBaseDTOMapper;
+      private readonly IObjectPathFactory _objectPathFactory;
+      private readonly ObjectBaseDTO _noIndividualSelectedDTO;
+      
       public bool ChangeLocalisationAllowed { set; get; }
 
       public EditParametersInContainerPresenter(IEditParametersInContainerView view,
@@ -94,7 +104,10 @@ namespace MoBi.Presentation.Presenter
          ISelectReferencePresenterFactory selectReferencePresenterFactory,
          IFavoriteTask favoriteTask,
          IObjectTypeResolver typeResolver,
-         IEntityPathResolver entityPathResolver)
+         IEntityPathResolver entityPathResolver,
+         IObjectBaseToObjectBaseDTOMapper objectBaseDTOMapper,
+         IObjectPathFactory objectPathFactory,
+         IIndividualParameterToParameterDTOMapper individualParameterToDTOParameterMapper)
          : base(view, quantityTask, interactionTaskContext, formulaMapper, parameterTask, favoriteTask)
       {
          _clipboardManager = clipboardManager;
@@ -105,13 +118,22 @@ namespace MoBi.Presentation.Presenter
          EditMode = EditParameterMode.All;
          _parameterToDTOParameterMapper = parameterToDTOParameterMapper;
          _editParameterPresenter = editParameterPresenter;
-         _editDistributedParameterPresenter = editDistributedParameterPresenter;
          AddSubPresenters(_editDistributedParameterPresenter, _editParameterPresenter);
-         _getParametersFunc = x => x.GetChildrenSortedByName<IParameter>();
          ChangeLocalisationAllowed = true;
          _typeResolver = typeResolver;
          _entityPathResolver = entityPathResolver;
+         _objectBaseDTOMapper = objectBaseDTOMapper;
+         _objectPathFactory = objectPathFactory;
+         _individualParameterToDTOParameterMapper = individualParameterToDTOParameterMapper;
+         _noIndividualSelectedDTO = new ObjectBaseDTO().WithName(AppConstants.Captions.None);
+         SelectedIndividual = _noIndividualSelectedDTO;
+         _view.ShowIndividualSelection(false);
       }
+
+      public IReadOnlyList<ObjectBaseDTO> AllIndividuals =>
+         new List<ObjectBaseDTO> { _noIndividualSelectedDTO }.Concat(_interactionTaskContext.Context.CurrentProject.IndividualsCollection.MapAllUsing(_objectBaseDTOMapper)).ToList();
+
+      public ObjectBaseDTO SelectedIndividual { get; set; }
 
       public void Edit(IContainer container)
       {
@@ -121,8 +143,20 @@ namespace MoBi.Presentation.Presenter
          ShowBuildMode = container.CanSetBuildModeForParameters();
          ParameterBuildModes = container.AvailableBuildModeForParameters();
          _view.ParentName = getContainerName(container);
-         createParameterCache(_getParametersFunc(container));
-         showParameters();
+         UpdatePreview();
+      }
+
+      private IReadOnlyList<IndividualParameter> individualParametersFor(IContainer container, ObjectBaseDTO objectBaseDTO)
+      {
+         if (SelectedIndividual == _noIndividualSelectedDTO)
+            return Array.Empty<IndividualParameter>();
+
+         if (!(objectBaseDTO.ObjectBase is IndividualBuildingBlock buildingBlock))
+            return Array.Empty<IndividualParameter>();
+
+         var targetContainerPath = _objectPathFactory.CreateAbsoluteObjectPath(container);
+
+         return buildingBlock.Where(x => x.ContainerPath.Equals(targetContainerPath)).ToList();
       }
 
       public override void ReleaseFrom(IEventPublisher eventPublisher)
@@ -137,19 +171,26 @@ namespace MoBi.Presentation.Presenter
          AddCommand(_parameterTask.SetDimensionForParameter(parameter, newDimension, BuildingBlock));
          refreshViewAndSelect(parameterDTO);
       }
-
+      
       public void EnableContainerCriteriaSupport() => _editParameterPresenter.EnableContainerCriteriaSupport();
 
       public void CopyPathForParameter(ParameterDTO parameter) => _view.CopyToClipBoard(_entityPathResolver.FullPathFor(parameter.Parameter));
 
-      private void createParameterCache(IEnumerable<IParameter> parametersToEdit)
+      private void createParameterCache(IReadOnlyList<IParameter> parametersToEdit, IReadOnlyList<IndividualParameter> individualParameters, IndividualBuildingBlock selectedIndividual)
       {
          _parameters.Clear();
          _parameters.AddRange(parametersToEdit);
 
          releaseParameters();
          _allParametersDTO.Clear();
-         _allParametersDTO.AddRange(_parameters.MapAllUsing(_parameterToDTOParameterMapper).Cast<ParameterDTO>());
+         _allParametersDTO.AddRange(_parameters.MapAllUsing(_parameterToDTOParameterMapper));
+         
+         _allParametersDTO.AddRange(parametersForIndividualParameters(individualParameters, selectedIndividual));
+      }
+
+      private IReadOnlyList<ParameterDTO> parametersForIndividualParameters(IReadOnlyList<IndividualParameter> individualParameters, IndividualBuildingBlock selectedIndividual)
+      {
+         return individualParameters.Select(individualParameter => _individualParameterToDTOParameterMapper.MapFrom(selectedIndividual, individualParameter)).ToList();
       }
 
       private void releaseParameters() => _allParametersDTO.Each(dto => dto.Release());
@@ -183,10 +224,11 @@ namespace MoBi.Presentation.Presenter
       {
          var parametersToShowDTO = _allParametersDTO.Where(shouldShowParameter).ToList();
          _view.BindTo(parametersToShowDTO);
-         setupEditPresenter(parametersToShowDTO.FirstOrDefault()?.Parameter);
+         setupEditPresenter(parametersToShowDTO.FirstOrDefault(x => !x.IsIndividualPreview)?.Parameter);
       }
 
-      private bool shouldShowParameter(ParameterDTO parameterDTO) => ShowAdvancedParameters || ParameterFrom(parameterDTO).Visible;
+      private bool shouldShowParameter(ParameterDTO parameterDTO) => 
+         parameterDTO.IsIndividualPreview || ShowAdvancedParameters || ParameterFrom(parameterDTO).Visible;
 
       private void refreshList() => _view.RefreshList();
 
@@ -220,12 +262,18 @@ namespace MoBi.Presentation.Presenter
 
       public void Rename(ParameterDTO parameterDTO)
       {
+         if (parameterDTO.IsIndividualPreview)
+            return;
+
          var parameter = ParameterFrom(parameterDTO);
          _editTask.Rename(parameter, BuildingBlock);
       }
 
       public void Select(ParameterDTO selectedParameter)
       {
+         if (selectedParameter.IsIndividualPreview)
+            return;
+
          var parameter = ParameterFrom(selectedParameter);
          setupEditPresenter(parameter);
       }
@@ -362,7 +410,7 @@ namespace MoBi.Presentation.Presenter
          }
          else
          {
-            SetEditPresenterProperties(_editParameterPresenter);
+            setEditPresenterProperties(_editParameterPresenter);
             _editParameterPresenter.Edit(parameter);
             _editParameterPresenter.CanSetBuildMode = _view.ShowBuildMode;
             _editParameterPresenter.ParameterBuildModes = ParameterBuildModes;
@@ -370,11 +418,13 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      protected virtual void SetEditPresenterProperties(IEditParameterPresenter editParameterPresenter)
+      private void setEditPresenterProperties(IEditParameterPresenter editParameterPresenter)
       {
-         editParameterPresenter.LocalEntitiesToReference = _getParametersFunc(_container).ToEnumerable<IParameter, IObjectBase>();
+         editParameterPresenter.LocalEntitiesToReference = getParametersFrom(_container);
          editParameterPresenter.BuildingBlock = BuildingBlock;
       }
+
+      private IReadOnlyList<IParameter> getParametersFrom(IContainer container) => container.GetChildrenSortedByName<IParameter>().ToList();
 
       public bool BlackBoxAllowed
       {
@@ -388,5 +438,21 @@ namespace MoBi.Presentation.Presenter
       }
 
       private bool canHandle(ParameterChangedEvent eventToHandle) => _parameters.Any(parameter => eventToHandle.Parameters.Contains(parameter));
+
+      public void ShowIndividualSelection()
+      {
+         _view.ShowIndividualSelection(true);
+      }
+
+      public void UpdatePreview()
+      {
+         createParameterCache(getParametersFrom(_container), individualParametersFor(_container, SelectedIndividual), SelectedIndividual.ObjectBase as IndividualBuildingBlock);
+         showParameters();
+      }
+
+      public bool IsIndividualPreview(ParameterDTO dto)
+      {
+         return dto.IsIndividualPreview;
+      }
    }
 }
