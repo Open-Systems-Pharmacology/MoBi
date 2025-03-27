@@ -1,10 +1,9 @@
-using OSPSuite.Presentation.MenuAndBars;
 using MoBi.Core.Services;
-using MoBi.Presentation.Presenter;
+using OSPSuite.Presentation.MenuAndBars;
 
 namespace MoBi.Presentation.UICommand
 {
-    public class StopAllSimulationsCommand : IUICommand
+   public class StopAllSimulationsCommand : IUICommand
    {
       private readonly ISimulationRunner _simulationRunnerTask;
 
@@ -13,7 +12,7 @@ namespace MoBi.Presentation.UICommand
          _simulationRunnerTask = simulationRunnerTask;
       }
 
-       public void Execute()
+      public void Execute()
       {
          _simulationRunnerTask.StopSimulation();
       }
