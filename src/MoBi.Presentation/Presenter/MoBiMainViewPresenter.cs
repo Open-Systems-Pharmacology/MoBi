@@ -72,8 +72,6 @@ namespace MoBi.Presentation.Presenter
       {
          _view.Initialize();
          updateWindowTitle();
-
-         Thread.Sleep(10000);
          _allMainViewItemPresenters.All().Each(x => x.Initialize());
          _skinManager.ActivateSkin(_userSettings, _userSettings.ActiveSkin);
       }
