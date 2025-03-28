@@ -31,7 +31,8 @@ namespace MoBi.Presentation.Mappers
       
       public ParameterDTO MapFrom(IndividualBuildingBlock individualBuildingBlock, IndividualParameter individualParameter)
       {
-         var parameterDTO = _parameterToParameterDTOMapper.MapFrom(parameterForIndividualParameter(individualBuildingBlock, individualParameter));
+         var parameter = parameterForIndividualParameter(individualBuildingBlock, individualParameter);
+         var parameterDTO = _parameterToParameterDTOMapper.MapFrom(parameter);
          parameterDTO.IsIndividualPreview = true;
          return parameterDTO;
       }
@@ -40,13 +41,16 @@ namespace MoBi.Presentation.Mappers
       {
          var parameter = _parameterValueToParameterMapper.MapFrom(individualParameter);
          if (parameter is IDistributedParameter distributedParameter)
-            selectedIndividual.Where(x => isSubParameter(x, individualParameter)).Each(subParameter => distributedParameter.Add(parameterForIndividualParameter(selectedIndividual, subParameter)));
+         {
+            var subParameters = selectedIndividual.Where(x => isSubParameter(x, individualParameter));
+            subParameters.Each(subParameter => distributedParameter.Add(parameterForIndividualParameter(selectedIndividual, subParameter)));
+         }
          else
          {
             if (individualParameter.Value.HasValue)
                parameter.Formula = _formulaFactory.ConstantFormula(individualParameter.Value.Value, individualParameter.Dimension);
             else if (individualParameter.Formula != null)
-               parameter.Formula = _cloneManager.Clone(individualParameter.Formula);
+               parameter.Formula = _cloneManager.Clone(individualParameter.Formula, new FormulaCache());
          }
          return parameter;
       }

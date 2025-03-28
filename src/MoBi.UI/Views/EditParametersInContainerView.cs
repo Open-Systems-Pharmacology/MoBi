@@ -229,7 +229,7 @@ namespace MoBi.UI.Views
       {
          var dto = _gridViewBinder.ElementAt(e.RowHandle);
 
-         if (dto != null && _presenter.IsIndividualPreview(dto)) 
+         if (dto != null && dto.IsIndividualPreview) 
             gridView.AdjustAppearance(e, isEnabled:false);
       }
 
@@ -240,7 +240,7 @@ namespace MoBi.UI.Views
          if (dto == null || column == null)
             return;
 
-         e.Cancel = _presenter.IsIndividualPreview(dto);
+         e.Cancel = dto.IsIndividualPreview;
       }
 
       private void onIsFavoriteSet(ParameterDTO parameterDTO, bool newValue) => _presenter.SetIsFavorite(parameterDTO, newValue);
