@@ -17,7 +17,7 @@ namespace MoBi.Presentation.DTO
    public class ParameterDTO : ObjectBaseDTO, IMoBiParameterDTO
    {
       public bool HasRHS { get; set; }
-      public FormulaBuilderDTO RHSFormula{ get; set; }
+      public FormulaBuilderDTO RHSFormula { get; set; }
       public FormulaBuilderDTO Formula { get; set; }
       public IParameter Parameter { get; }
       public bool IsAdvancedParameter { get; set; }
@@ -170,7 +170,7 @@ namespace MoBi.Presentation.DTO
 
          Parameter.PropertyChanged -= HandlePropertyChanged;
       }
-      
+
       public bool IsIndividualPreview { get; set; }
    }
 }
