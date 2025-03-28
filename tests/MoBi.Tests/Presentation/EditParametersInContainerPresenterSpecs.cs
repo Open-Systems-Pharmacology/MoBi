@@ -41,7 +41,6 @@ namespace MoBi.Presentation
       protected IFavoriteTask _favoriteTask;
       protected IObjectTypeResolver _typeResolver;
       protected IEntityPathResolver _entityPathResolver;
-      protected IObjectBaseToObjectBaseDTOMapper _objectBaseDTOMapper;
       protected IObjectPathFactory _objectPathFactory;
       protected IIndividualParameterToParameterDTOMapper _individualParameterToParameterDTOMapper;
 
@@ -65,13 +64,12 @@ namespace MoBi.Presentation
          _favoriteTask = A.Fake<IFavoriteTask>();
          _typeResolver = A.Fake<IObjectTypeResolver>();
          _entityPathResolver = A.Fake<IEntityPathResolver>();
-         _objectBaseDTOMapper = A.Fake<IObjectBaseToObjectBaseDTOMapper>();
          _objectPathFactory = new ObjectPathFactory(new AliasCreator());
          _individualParameterToParameterDTOMapper = A.Fake<IIndividualParameterToParameterDTOMapper>();
 
          sut = new EditParametersInContainerPresenter(_view, _formulaMapper, _parameterMapper, _interactionTasks,
             _distributeParameterPresenter, _parameterPresenter, _quantityTask, _interactionTaskContext, _clipboardManager, _editTask,
-            _selectReferencePresenterFactory, _favoriteTask, _typeResolver, _entityPathResolver, _objectBaseDTOMapper, _objectPathFactory, _individualParameterToParameterDTOMapper);
+            _selectReferencePresenterFactory, _favoriteTask, _typeResolver, _entityPathResolver, _objectPathFactory, _individualParameterToParameterDTOMapper);
          sut.InitializeWith(A.Fake<ICommandCollector>());
       }
    }
@@ -467,7 +465,6 @@ namespace MoBi.Presentation
 
    public class When_updating_the_preview_with_a_selected_individual : concern_for_EditParametersInContainerPresenter
    {
-      private ObjectBaseDTO _individualDTO;
       private IContainer _editedContainer;
       private IndividualBuildingBlock _individualBuildingBlock;
       private IndividualParameter _individualParameter;
@@ -480,14 +477,13 @@ namespace MoBi.Presentation
          _editedContainer = new Container().WithName("last");
          new Container { _editedContainer }.WithName("root");
          _individualBuildingBlock = new IndividualBuildingBlock { Name = "John Doe" };
-         _individualDTO = new ObjectBaseDTO(_individualBuildingBlock);
          _individualParameter = new IndividualParameter { ContainerPath = new ObjectPath("root", "last") }.WithName("individualParameterName");
          _excludedIndividualParameter = new IndividualParameter { ContainerPath = new ObjectPath("root", "somewhere") }.WithName("anothername");
          _individualBuildingBlock.Add(_individualParameter);
          _individualBuildingBlock.Add(_excludedIndividualParameter);
          _editedContainer.Add(new Parameter { Visible = true }.WithName("parameterName"));
          sut.Edit(_editedContainer);
-         sut.SelectedIndividual = _individualDTO;
+         sut.SelectedIndividual = _individualBuildingBlock;
 
          A.CallTo(() => _parameterMapper.MapFrom(A<IParameter>._)).ReturnsLazily(x => new ParameterDTO(x.GetArgument<IParameter>(0)));
          A.CallTo(() => _individualParameterToParameterDTOMapper.MapFrom(A<IndividualBuildingBlock>._, A<IndividualParameter>._)).ReturnsLazily(x => new ParameterDTO(new Parameter().WithName(x.GetArgument<IndividualParameter>(1).Name)) { IsIndividualPreview = true });

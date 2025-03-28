@@ -88,7 +88,7 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void the_formula_factory_creates_a_formula_from_the_value()
       {
-         A.CallTo(() => _cloneManagerForBuildingBlock.Clone(_individualParameter.Formula)).MustHaveHappened();
+         A.CallTo(() => _cloneManagerForBuildingBlock.Clone(_individualParameter.Formula, A<IFormulaCache>._)).MustHaveHappened();
       }
    }
 

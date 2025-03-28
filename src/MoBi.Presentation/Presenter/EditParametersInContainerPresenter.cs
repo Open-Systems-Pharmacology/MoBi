@@ -17,12 +17,10 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
-using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
-using ObjectBaseDTO = MoBi.Presentation.DTO.ObjectBaseDTO;
 
 namespace MoBi.Presentation.Presenter
 {
