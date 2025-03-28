@@ -222,7 +222,10 @@ namespace MoBi.UI.Views
          btnAddParameter.Click += (o, e) => OnEvent(_presenter.AddParameter);
          btnLoadParameter.Click += (o, e) => OnEvent(_presenter.LoadParameter);
 
-         _screenBinder.Bind(x => x.SelectedIndividual).To(cbSelectIndividual).WithValues(x => x.AllIndividuals).OnValueUpdated += (o, e) => OnEvent(_presenter.UpdatePreview);
+         _screenBinder.Bind(x => x.SelectedIndividual)
+            .To(cbSelectIndividual)
+            .WithValues(x => x.AllIndividuals)
+            .OnValueUpdated += (o, e) => OnEvent(_presenter.UpdatePreview);
       }
 
       private void onRowStyle(RowStyleEventArgs e)
