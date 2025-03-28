@@ -15,6 +15,7 @@ using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
+using IParameterToParameterDTOMapper = MoBi.Presentation.Mappers.IParameterToParameterDTOMapper;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -61,7 +62,7 @@ namespace MoBi.Presentation.Presenter
          releaseParameters();
 
          EditedParameters = parameters;
-         _parameterDTOs.AddRange(EditedParameters.MapAllUsing(_parameterDTOMapper).Cast<ParameterDTO>());
+         _parameterDTOs.AddRange(EditedParameters.MapAllUsing(_parameterDTOMapper));
 
          _view.BindTo(_parameterDTOs);
 

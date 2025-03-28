@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
@@ -20,7 +19,7 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation
 {
-   public abstract class concern_for_EditContainerPresenter : ContextSpecification<IEditContainerPresenter>
+   public abstract class concern_for_EditContainerPresenter : ContextSpecification<EditContainerPresenter>
    {
       protected IEditContainerView _view;
       private IContainerToContainerDTOMapper _containerMapper;
@@ -329,6 +328,20 @@ namespace MoBi.Presentation
          var macroCommand = (_commandCollector.All().FirstOrDefault() as MoBiMacroCommand);
          macroCommand.All().Any(x => x.IsAnImplementationOf<SetContainerModeCommand>()).ShouldBeTrue();
          macroCommand.All().Any(x => x.IsAnImplementationOf<RemoveContainerFromSpatialStructureCommand>()).ShouldBeTrue();
+      }
+   }
+
+   public class When_enabling_individual_preview : concern_for_EditContainerPresenter
+   {
+      protected override void Because()
+      {
+         sut.EnableIndividualPreview();
+      }
+
+      [Observation]
+      public void the_sub_presenter_should_be_called_to_enable_preview()
+      {
+         A.CallTo(() => _parametersInContainerPresenter.ShowIndividualSelection()).MustHaveHappened();
       }
    }
 }

@@ -15,5 +15,6 @@ namespace MoBi.Presentation.Views
       void RefreshList();
       void Select(ParameterDTO parameterToSelect);
       void CopyToClipBoard(string text);
+      void ShowIndividualSelection(bool show);
    }
 }

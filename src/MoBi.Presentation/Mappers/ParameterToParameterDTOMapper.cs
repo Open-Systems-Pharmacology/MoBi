@@ -3,11 +3,11 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Repositories;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Presentation.DTO;
+using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface IParameterToParameterDTOMapper : OSPSuite.Presentation.Mappers.IParameterToParameterDTOMapper
+   public interface IParameterToParameterDTOMapper : IMapper<IParameter, ParameterDTO>
    {
    }
 
@@ -32,7 +32,7 @@ namespace MoBi.Presentation.Mappers
          _pathToPathElementsMapper = pathToPathElementsMapper;
       }
 
-      public IParameterDTO MapFrom(IParameter parameter)
+      public ParameterDTO MapFrom(IParameter parameter)
       {
          var dto = new ParameterDTO(parameter);
          MapProperties(parameter, dto);

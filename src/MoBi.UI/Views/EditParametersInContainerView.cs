@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using DevExpress.Utils;
@@ -7,6 +9,7 @@ using DevExpress.Utils.Menu;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
+using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraGrid.Views.Grid.ViewInfo;
@@ -57,6 +60,7 @@ namespace MoBi.UI.Views
       private readonly RepositoryItemButtonEdit _removeButtonRepository = new UxRepositoryItemButtonEdit(ButtonPredefines.Delete);
       private RepositoryItemButtonEdit _nameButtonRepository;
       private readonly UxRepositoryItemCheckEdit _checkBoxRepository;
+      private readonly ScreenBinder<IEditParametersInContainerPresenter> _screenBinder;
 
       public EditParametersInContainerView(IToolTipCreator toolTipCreator, ValueOriginBinder<ParameterDTO> valueOriginBinder)
       {
@@ -80,6 +84,7 @@ namespace MoBi.UI.Views
          toolTipController.GetActiveObjectInfo += onToolTipControllerGetActiveObjectInfo;
          gridView.PopupMenuShowing += OnPopupMenuShowing;
          _checkBoxRepository = new UxRepositoryItemCheckEdit(gridView);
+         _screenBinder = new ScreenBinder<IEditParametersInContainerPresenter>();
       }
 
       private void OnPopupMenuShowing(object sender, PopupMenuShowingEventArgs e)
@@ -106,14 +111,25 @@ namespace MoBi.UI.Views
       public override void InitializeResources()
       {
          base.InitializeResources();
-         btAddParameter.InitWithImage(ApplicationIcons.Add, AppConstants.Captions.AddParameter);
-         btLoadParameter.InitWithImage(ApplicationIcons.PKMLLoad, AppConstants.Captions.LoadParameter);
+         btnAddParameter.InitWithImage(ApplicationIcons.Add, AppConstants.Captions.AddParameter);
+         btnLoadParameter.InitWithImage(ApplicationIcons.PKMLLoad, AppConstants.Captions.LoadParameter);
          layoutControlItemAddParameter.AdjustLargeButtonSize();
          layoutControlItemLoadParameter.AdjustLargeButtonSize();
          chkShowAdvancedParameter.Text = AppConstants.Captions.ShowAdvancedParameters;
          chkGroupBy.Text = AppConstants.Captions.GroupParameters;
          _removeButtonRepository.Buttons[0].ToolTip = ToolTips.ParameterList.DeleteParameter;
          gridView.MultiSelect = true;
+
+         // This aligns the text in controls with different heights
+         // Label height is less than check edit so the text becomes mis-aligned.
+         layoutControlItemShowAdvanceParameters.ContentVertAlignment = VertAlignment.Top;
+         layoutControlItemGroupBy.ContentVertAlignment = VertAlignment.Top;
+
+         layoutControlItemSelectIndividual.Text = AppConstants.Captions.Individual;
+         cbSelectIndividual.MaximumSize = new Size(300, 0);
+         chkGroupBy.MaximumSize = new Size(150, 0);
+         lblParentName.MaximumSize = new Size(150, 0);
+         chkShowAdvancedParameter.MaximumSize = new Size(200, 0);
       }
 
       private void createResetButtonItem()
@@ -193,6 +209,9 @@ namespace MoBi.UI.Views
             .WithRepository(dto => _removeButtonRepository)
             .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_BUTTON_WIDTH);
 
+         gridView.ShowingEditor += (o, e) => OnEvent(onShowingEditor, e);
+         gridView.RowStyle += (o, e) => OnEvent(onRowStyle, e);
+
          _removeButtonRepository.ButtonClick += (o, e) => OnEvent(_presenter.RemoveParameter, _gridViewBinder.FocusedElement);
 
 
@@ -200,8 +219,31 @@ namespace MoBi.UI.Views
 
          chkShowAdvancedParameter.CheckedChanged += (o, e) => OnEvent(showAdvancedParameterChanged);
          chkGroupBy.CheckStateChanged += (o, e) => OnEvent(groupByChanged);
-         btAddParameter.Click += (o, e) => OnEvent(_presenter.AddParameter);
-         btLoadParameter.Click += (o, e) => OnEvent(_presenter.LoadParameter);
+         btnAddParameter.Click += (o, e) => OnEvent(_presenter.AddParameter);
+         btnLoadParameter.Click += (o, e) => OnEvent(_presenter.LoadParameter);
+
+         _screenBinder.Bind(x => x.SelectedIndividual)
+            .To(cbSelectIndividual)
+            .WithValues(x => x.AllIndividuals)
+            .OnValueUpdated += (o, e) => OnEvent(_presenter.UpdatePreview);
+      }
+
+      private void onRowStyle(RowStyleEventArgs e)
+      {
+         var dto = _gridViewBinder.ElementAt(e.RowHandle);
+
+         if (dto != null && dto.IsIndividualPreview) 
+            gridView.AdjustAppearance(e, isEnabled:false);
+      }
+
+      private void onShowingEditor(CancelEventArgs e)
+      {
+         var dto = _gridViewBinder.FocusedElement;
+         var column = gridView.FocusedColumn;
+         if (dto == null || column == null)
+            return;
+
+         e.Cancel = dto.IsIndividualPreview;
       }
 
       private void onIsFavoriteSet(ParameterDTO parameterDTO, bool newValue) => _presenter.SetIsFavorite(parameterDTO, newValue);
@@ -323,10 +365,10 @@ namespace MoBi.UI.Views
                   _colButtons.Visible = true;
                   _colDimension.ReadOnly = false;
                   _colPersistable.Visible = false;
-                  btAddParameter.Visible = true;
-                  btAddParameter.Enabled = true;
-                  btLoadParameter.Visible = true;
-                  btLoadParameter.Enabled = true;
+                  btnAddParameter.Visible = true;
+                  btnAddParameter.Enabled = true;
+                  btnLoadParameter.Visible = true;
+                  btnLoadParameter.Enabled = true;
                   _nameButtonRepository.Buttons[0].Visible = true;
                   break;
                case EditParameterMode.ValuesOnly:
@@ -336,8 +378,8 @@ namespace MoBi.UI.Views
                   _colRHSFormula.Visible = false;
                   _colButtons.Visible = false;
                   _colDimension.ReadOnly = true;
-                  btAddParameter.Enabled = false;
-                  btLoadParameter.Enabled = false;
+                  btnAddParameter.Enabled = false;
+                  btnLoadParameter.Enabled = false;
                   layoutControlItemAddParameter.Visibility = LayoutVisibility.Never;
                   layoutControlItemLoadParameter.Visibility = LayoutVisibility.Never;
                   splitContainerControl.PanelVisibility = SplitPanelVisibility.Panel1;
@@ -350,8 +392,8 @@ namespace MoBi.UI.Views
                   _colFormula.Visible = true;
                   _colRHSFormula.Visible = true;
                   _colDimension.ReadOnly = true;
-                  btAddParameter.Enabled = false;
-                  btLoadParameter.Enabled = false;
+                  btnAddParameter.Enabled = false;
+                  btnLoadParameter.Enabled = false;
                   layoutControlItemAddParameter.Visibility = LayoutVisibility.Never;
                   layoutControlItemLoadParameter.Visibility = LayoutVisibility.Never;
                   _nameButtonRepository.Buttons[0].Visible = false;
@@ -388,11 +430,20 @@ namespace MoBi.UI.Views
       }
 
       public void CopyToClipBoard(string text) => Clipboard.SetText(text);
+      
+      public void ShowIndividualSelection(bool show)
+      {
+         layoutControlItemSelectIndividual.Visibility = LayoutVisibilityConvertor.FromBoolean(show);
+
+         if (show)
+            _screenBinder.BindToSource(_presenter);
+      }
 
       private void gridViewRowChanged(FocusedRowChangedEventArgs e)
       {
          var selectedItem = _gridViewBinder.ElementAt(e.FocusedRowHandle);
-         if (selectedItem == null) return;
+         if (selectedItem == null) 
+            return;
          _presenter.Select(selectedItem);
       }
 
@@ -428,5 +479,12 @@ namespace MoBi.UI.Views
       private void showAdvancedParameterChanged() => _presenter.ShowAdvancedParameters = chkShowAdvancedParameter.Checked;
 
       private void groupByChanged() => _presenter.GroupParameters = chkGroupBy.Checked;
+
+      private void disposeBinders()
+      {
+         _screenBinder.Dispose();
+         _valueOriginBinder.Dispose();
+         _gridViewBinder.Dispose();
+      }
    }
 }

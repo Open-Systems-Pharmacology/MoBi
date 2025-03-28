@@ -31,10 +31,10 @@ namespace MoBi.Presentation.Presenter.BasePresenter
          _editTask = editTask;
          AddSubPresenters(_editParametersInContainerPresenter);
          view.AddParameterView(editParametersInContainerPresenter.BaseView);
-         InitParameterListPresenter();
+         initParameterListPresenter();
       }
 
-      protected virtual void InitParameterListPresenter()
+      private void initParameterListPresenter()
       {
          _editParametersInContainerPresenter.BlackBoxAllowed = true;
          _editParametersInContainerPresenter.ChangeLocalisationAllowed = false;

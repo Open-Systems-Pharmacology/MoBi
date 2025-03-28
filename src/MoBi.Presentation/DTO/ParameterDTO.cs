@@ -14,12 +14,12 @@ using OSPSuite.Utility.Validation;
 
 namespace MoBi.Presentation.DTO
 {
-   public class ParameterDTO : ObjectBaseDTO,  IMoBiParameterDTO
+   public class ParameterDTO : ObjectBaseDTO, IMoBiParameterDTO
    {
       public bool HasRHS { get; set; }
       public FormulaBuilderDTO RHSFormula { get; set; }
       public FormulaBuilderDTO Formula { get; set; }
-      public IParameter Parameter { get; private set; }
+      public IParameter Parameter { get; }
       public bool IsAdvancedParameter { get; set; }
       public IGroup Group { get; set; }
       public bool CanBeVariedInPopulation { get; set; }
@@ -66,7 +66,7 @@ namespace MoBi.Presentation.DTO
 
       public string GroupName => Group.FullName;
 
-      public ParameterDTO(IParameter parameter): base(parameter) 
+      public ParameterDTO(IParameter parameter) : base(parameter)
       {
          Parameter = parameter;
          Rules.Add(valueForConstantParameterShouldBeDefined());
@@ -92,13 +92,13 @@ namespace MoBi.Presentation.DTO
          return !double.IsNaN(value);
       }
 
-      public virtual bool Persistable
+      public bool Persistable
       {
          get => Parameter.Persistable;
          set => Parameter.Persistable = value;
       }
 
-      public virtual ParameterBuildMode BuildMode
+      public ParameterBuildMode BuildMode
       {
          get => Parameter.BuildMode;
          set
@@ -107,7 +107,7 @@ namespace MoBi.Presentation.DTO
          }
       }
 
-      public virtual IDimension Dimension
+      public IDimension Dimension
       {
          get => Parameter.Dimension;
          set
@@ -116,7 +116,7 @@ namespace MoBi.Presentation.DTO
          }
       }
 
-      public virtual Unit DisplayUnit
+      public Unit DisplayUnit
       {
          get => Parameter.DisplayUnit;
          set
@@ -130,11 +130,11 @@ namespace MoBi.Presentation.DTO
          Parameter.UpdateValueOriginFrom(ValueOrigin);
       }
 
-      public virtual ValueOrigin ValueOrigin
+      public ValueOrigin ValueOrigin
       {
-         get=> Parameter.ValueOrigin;
+         get => Parameter.ValueOrigin;
          set => UpdateValueOriginFrom(value);
-      } 
+      }
 
       public bool IsDiscrete => false;
       public ICache<double, string> ListOfValues { get; }
@@ -170,5 +170,7 @@ namespace MoBi.Presentation.DTO
 
          Parameter.PropertyChanged -= HandlePropertyChanged;
       }
+
+      public bool IsIndividualPreview { get; set; }
    }
 }
