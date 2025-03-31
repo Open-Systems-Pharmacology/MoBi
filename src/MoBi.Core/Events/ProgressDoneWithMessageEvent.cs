@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MoBi.Core.Events
 {
-   public class ProgressDoneWithMessageEvent : ProgressDoneEvent
+   public class ProgressDoneWithMessageEvent
    {
       public string Message { get; }
 

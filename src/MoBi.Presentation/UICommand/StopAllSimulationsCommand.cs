@@ -14,7 +14,7 @@ namespace MoBi.Presentation.UICommand
 
       public void Execute()
       {
-         _simulationRunnerTask.StopSimulation();
+         _simulationRunnerTask.StopAllSimulations();
       }
    }
 }

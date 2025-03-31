@@ -3,7 +3,6 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.UICommands;
-using System.Threading.Tasks;
 
 namespace MoBi.Presentation.UICommand
 {

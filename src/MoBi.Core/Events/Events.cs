@@ -26,9 +26,6 @@ namespace MoBi.Core.Events
 
    public class SimulationRunStartedEvent
    {
-      public SimulationRunStartedEvent()
-      {
-      }
       public SimulationRunStartedEvent(IMoBiSimulation simulation)
       {
          Simulation = simulation;

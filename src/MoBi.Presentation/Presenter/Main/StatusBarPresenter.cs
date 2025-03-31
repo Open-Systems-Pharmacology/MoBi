@@ -30,7 +30,8 @@ namespace MoBi.Presentation.Presenter.Main
       IListener<ReportCreationFinishedEvent>,
       IListener<SimulationsRunCanceledEvent>,
       IListener<SimulationRunFinishedEvent>,
-      IListener<SimulationRunStartedEvent>
+      IListener<SimulationRunStartedEvent>,
+      IListener<ProgressDoneWithMessageEvent>
    {
    }
 
@@ -42,7 +43,7 @@ namespace MoBi.Presentation.Presenter.Main
       private int _numberOfReportsBeingCreated;
       private readonly ConcurrentDictionary<string, bool> _simulations = new ConcurrentDictionary<string, bool>(); 
 
-      private int activeSimulations => _simulations.Count(x => x.Value == true);
+      private int activeSimulations => _simulations.Count(x => x.Value);
       
       public StatusBarPresenter(IStatusBarView view, IMoBiConfiguration moBiConfiguration)
       {
@@ -131,11 +132,9 @@ namespace MoBi.Presentation.Presenter.Main
             .WithCaption($"{activeSimulations} {eventToHandle.Message}");
       }
 
-      public void Handle(ProgressDoneEvent eventToHandle)
+      public void Handle(ProgressDoneWithMessageEvent eventToHandle)
       {
-         var message = eventToHandle is ProgressDoneWithMessageEvent ?
-            $"{activeSimulations} {(eventToHandle as ProgressDoneWithMessageEvent).Message}": 
-            string.Empty;
+         var message = $"{activeSimulations} {eventToHandle.Message}";
 
          if (activeSimulations == 0)
          {
@@ -145,6 +144,17 @@ namespace MoBi.Presentation.Presenter.Main
 
          update(StatusBarElements.ProgressStatus)
             .WithCaption($"{message}");
+      }
+
+      public void Handle(ProgressDoneEvent eventToHandle)
+      {
+         if (activeSimulations == 0)
+         {
+            resetCountersAndHideBar();
+            return;
+         }
+
+         update(StatusBarElements.ProgressStatus);
       }
 
       private void resetCountersAndHideBar()

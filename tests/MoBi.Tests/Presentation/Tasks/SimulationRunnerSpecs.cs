@@ -462,7 +462,7 @@ namespace MoBi.Presentation.Tasks
          Task.Delay(100).Wait();
 
          // Stop all simulations
-         sut.StopSimulation(); 
+         sut.StopAllSimulations(); 
 
          try { task1.Wait(); } catch (AggregateException ex) when (ex.InnerException is TaskCanceledException) { }
          try { task2.Wait(); } catch (AggregateException ex) when (ex.InnerException is TaskCanceledException) { }
