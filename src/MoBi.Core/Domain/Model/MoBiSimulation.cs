@@ -66,8 +66,6 @@ namespace MoBi.Core.Domain.Model
       void RemoveOriginalQuantityValue(OriginalQuantityValue quantityValue);
       OriginalQuantityValue OriginalQuantityValueFor(OriginalQuantityValue quantityValue);
       void ClearOriginalQuantities();
-
-      bool IsRunning { get; set; }
    }
 
    public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation

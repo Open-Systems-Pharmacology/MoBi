@@ -2,6 +2,7 @@
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.UICommand;
@@ -23,12 +24,14 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       private readonly IContainer _container;
       private readonly IInteractionTasksForSimulation _interactionTask;
       private List<IMenuBarItem> _allMenuItems;
+      private ISimulationRunner _simulationRunner;
 
       public ContextMenuForSimulation(IMoBiContext context, IContainer container, IInteractionTasksForSimulation interactionTask)
       {
          _context = context;
          _container = container;
          _interactionTask = interactionTask;
+         _simulationRunner = _container.Resolve<ISimulationRunner>();
       }
 
       public override IEnumerable<IMenuBarItem> AllMenuItems()
@@ -39,7 +42,6 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       public IContextMenu InitializeWith(ObjectBaseDTO dto, IPresenter presenter)
       {
          var simulation = dto.DowncastTo<SimulationViewItem>().Simulation;
-
          //a simulation might not be registered yet which is required to execute some of the action
          _context.Register(simulation);
          _allMenuItems = new List<IMenuBarItem>
@@ -122,7 +124,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          return
             CreateMenuButton.WithCaption(AppConstants.MenuNames.Run)
-               .WithEnabled(!simulation.IsRunning)
+               .WithEnabled(!_simulationRunner.IsSimulationRunning(simulation))
                .WithIcon(ApplicationIcons.Run)
                .WithCommandFor<RunSimulationCommand, IMoBiSimulation>(simulation, _container);
       }
@@ -131,7 +133,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          return
             CreateMenuButton.WithCaption(AppConstants.MenuNames.Stop)
-               .WithEnabled(simulation.IsRunning)
+               .WithEnabled(_simulationRunner.IsSimulationRunning(simulation))
                .WithIcon(ApplicationIcons.Stop)
                .WithCommandFor<StopSimulationCommand, IMoBiSimulation>(simulation, _container);
       }
@@ -195,7 +197,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
             .WithCommandFor<RemoveSimulationUICommand, IMoBiSimulation>(simulation, _container)
-            .WithEnabled(!simulation.IsRunning)
+            .WithEnabled(!_simulationRunner.IsSimulationRunning(simulation))
             .WithIcon(ApplicationIcons.Delete);
       }
 
@@ -208,7 +210,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       private IMenuBarItem createRenameItem(IMoBiSimulation simulation)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Rename)
-            .WithEnabled(!simulation.IsRunning)
+            .WithEnabled(!_simulationRunner.IsSimulationRunning(simulation))
             .WithCommandFor<RenameSimulationUICommand, IMoBiSimulation>(simulation, _container).WithIcon(ApplicationIcons.Rename);
       }
 

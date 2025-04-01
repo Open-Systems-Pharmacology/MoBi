@@ -17,6 +17,7 @@ using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.SimModel;
 using OSPSuite.Utility.Extensions;
@@ -25,7 +26,7 @@ using ISimulationPersistableUpdater = MoBi.Core.Services.ISimulationPersistableU
 
 namespace MoBi.Presentation.Tasks
 {
-   public abstract class concern_for_SimulationRunner : ContextSpecification<ISimulationRunner>
+   public abstract class concern_for_SimulationRunner : ContextSpecificationAsync<ISimulationRunner>
    {
       protected IMoBiContext _context;
       protected IOutputSelectionsRetriever _outputSelectionsRetriever;
@@ -36,7 +37,7 @@ namespace MoBi.Presentation.Tasks
       protected IKeyPathMapper _keyPathMapper;
       protected IEntityValidationTask _eventValidationTask;
 
-      protected override void Context()
+      protected override async Task Context()
       {
          _context = A.Fake<IMoBiContext>();
          _outputSelectionsRetriever = A.Fake<IOutputSelectionsRetriever>();
@@ -64,7 +65,7 @@ namespace MoBi.Presentation.Tasks
       private IMoBiSimulation _simulation;
       private OutputSelections _settings;
 
-      protected override void Context()
+      protected override async Task Context()
       {
          base.Context();
          _settings = A.Fake<OutputSelections>();
@@ -79,9 +80,9 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _eventValidationTask.Validate(_simulation)).Returns(false);
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         sut.RunSimulation(_simulation);
+         await sut.SecureAwait(x => x.RunSimulationAsync(_simulation));
       }
 
       [Observation]
@@ -96,7 +97,7 @@ namespace MoBi.Presentation.Tasks
       private IMoBiSimulation _simulation;
       private OutputSelections _settings;
 
-      protected override void Context()
+      protected override async Task Context()
       {
          base.Context();
          _settings = A.Fake<OutputSelections>();
@@ -106,9 +107,9 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _eventValidationTask.Validate(_simulation)).Returns(true);
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         sut.RunSimulation(_simulation);
+         await sut.SecureAwait(x => x.RunSimulationAsync(_simulation));
       }
 
       [Observation]
@@ -123,7 +124,7 @@ namespace MoBi.Presentation.Tasks
       private IMoBiSimulation _simulation;
       private OutputSelections _outputSelections;
 
-      protected override void Context()
+      protected override async Task Context()
       {
          base.Context();
          _outputSelections = A.Fake<OutputSelections>();
@@ -134,9 +135,9 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _eventValidationTask.Validate(_simulation)).Returns(true);
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         sut.RunSimulation(_simulation, defineSettings: true);
+         await sut.SecureAwait(x => x.RunSimulationAsync(_simulation, defineSettings: true));
       }
 
       [Observation]
@@ -158,7 +159,7 @@ namespace MoBi.Presentation.Tasks
       private OutputSelections _outputSelections;
       private OutputSelections _newOutputSelection;
 
-      protected override void Context()
+      protected override async Task Context()
       {
          base.Context();
          _outputSelections = new OutputSelections();
@@ -173,9 +174,9 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _eventValidationTask.Validate(_simulation)).Returns(true);
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         sut.RunSimulation(_simulation, defineSettings: true);
+         await sut.SecureAwait(x => x.RunSimulationAsync(_simulation, defineSettings: true));
       }
 
       [Observation]
@@ -221,9 +222,9 @@ namespace MoBi.Presentation.Tasks
       private DataColumn _fractionColumn;
       private Parameter _moleculeWeight;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _simulation = new MoBiSimulation
          {
             Model = new Model
@@ -266,9 +267,9 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _eventValidationTask.Validate(_simulation)).Returns(true);
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         sut.RunSimulation(_simulation);
+         await sut.SecureAwait(x=> x.RunSimulationAsync(_simulation));
       }
 
       [Observation]
@@ -327,9 +328,9 @@ namespace MoBi.Presentation.Tasks
       private CancellationToken capturedToken;
       private bool wasCancelled = false;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
 
          _simulation = A.Fake<IMoBiSimulation>();
 
@@ -361,7 +362,7 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _eventValidationTask.Validate(_simulation)).Returns(true);
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
          var runTask = sut.RunSimulationAsync(_simulation);
 
@@ -406,9 +407,9 @@ namespace MoBi.Presentation.Tasks
       //This test might fail when debugging if more time is taken than the await Task.Delay(10000, tokenx);
       //So if debug is needed, maybe set it longer before debugging.
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
 
          _simulation1 = A.Fake<IMoBiSimulation>();
          _simulation2 = A.Fake<IMoBiSimulation>();
@@ -453,7 +454,7 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _eventValidationTask.Validate(A<IMoBiSimulation>._)).Returns(true);
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
          var task1 = sut.RunSimulationAsync(_simulation1);
          var task2 = sut.RunSimulationAsync(_simulation2);

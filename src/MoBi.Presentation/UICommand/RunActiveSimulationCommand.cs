@@ -3,6 +3,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.UICommands;
+using OSPSuite.Core.Extensions;
 
 namespace MoBi.Presentation.UICommand
 {
@@ -19,12 +20,11 @@ namespace MoBi.Presentation.UICommand
          _defineSetting = defineSetting;
       }
 
-      public void Execute()
+      public async void Execute()
       {
          var activeSimulation = _activeSubjectRetriever.Active<IMoBiSimulation>();
          if (activeSimulation == null) return;
-
-         _simulationRunner.RunSimulation(activeSimulation, _defineSetting);
+         await _simulationRunner.SecureAwait(x => x.RunSimulationAsync(activeSimulation, _defineSetting));
       }
    }
 
@@ -48,14 +48,14 @@ namespace MoBi.Presentation.UICommand
    {
       private readonly ISimulationRunner _simulationRunner;
 
-      public RunSimulationCommand(ISimulationRunner simulationRunner, IActiveSubjectRetriever activeSubjectRetriever)
+      public RunSimulationCommand(ISimulationRunner simulationRunner)
       {
          _simulationRunner = simulationRunner;
       }
 
-      protected override void PerformExecute()
+      protected override async void PerformExecute()
       {
-         _simulationRunner.RunSimulation(Subject);
+         await _simulationRunner.SecureAwait(x => x.RunSimulationAsync(Subject));
       }
    }
 }

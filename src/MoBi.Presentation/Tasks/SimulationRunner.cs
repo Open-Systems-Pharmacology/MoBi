@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -37,7 +38,8 @@ namespace MoBi.Presentation.Tasks
       private readonly IKeyPathMapper _keyPathMapper;
       private readonly IEntityValidationTask _entityValidationTask;
       private readonly Dictionary<IMoBiSimulation, string> _originalSimulationNames = new Dictionary<IMoBiSimulation, string>();
-      private readonly Dictionary<IMoBiSimulation, CancellationTokenSource> _cancellationTokenSources = new Dictionary<IMoBiSimulation, CancellationTokenSource>();
+      private readonly ConcurrentDictionary<IMoBiSimulation, CancellationTokenSource> _cancellationTokenSources = new ConcurrentDictionary<IMoBiSimulation, CancellationTokenSource>();
+
 
       public SimulationRunner(IMoBiContext context,
          IMoBiApplicationController applicationController,
@@ -59,9 +61,10 @@ namespace MoBi.Presentation.Tasks
 
       }
 
-      public void RunSimulation(IMoBiSimulation simulation, bool defineSettings = false)
+      public bool IsSimulationRunning(IMoBiSimulation simulation)
       {
-         _ = runSimulationAsync(simulation, defineSettings);
+         return _cancellationTokenSources.TryGetValue(simulation, out var cts) &&
+                !cts.IsCancellationRequested;
       }
 
       public Task RunSimulationAsync(IMoBiSimulation simulation, bool defineSettings = false)
@@ -115,34 +118,33 @@ namespace MoBi.Presentation.Tasks
 
       public void StopSimulation(IMoBiSimulation simulation)
       {
-         if (_cancellationTokenSources.TryGetValue(simulation, out var cts))
+         if (_cancellationTokenSources.TryRemove(simulation, out var cts))
          {
             cts.Cancel();
             cts.Dispose();
-            _cancellationTokenSources.Remove(simulation);
             _context.PublishEvent(new SimulationRunCanceledEvent());
          }
       }
 
       public void StopAllSimulations()
       {
-         foreach (var cts in _cancellationTokenSources.Values.ToList())
+         foreach (var simulation in _cancellationTokenSources.Keys.ToList())
          {
-            cts.Cancel();
-            cts.Dispose();
+            if (_cancellationTokenSources.TryRemove(simulation, out var cts))
+            {
+               cts.Cancel();
+               cts.Dispose();
+            }
          }
 
-         _cancellationTokenSources.Clear();
          _context.PublishEvent(new SimulationRunCanceledEvent());
       }
 
       private async Task startSimulationRunAsync(IMoBiSimulation simulation)
       {
-         if (simulation.IsRunning)
-            return;
-
          var cts = new CancellationTokenSource();
-         _cancellationTokenSources[simulation] = cts;
+         if (!_cancellationTokenSources.TryAdd(simulation, cts)) //this will prevent from running one that is already running
+            return;
          _context.PublishEvent(new SimulationRunStartedEvent(simulation));
          setSimulationRunning(simulation, true);
          _context.PublishEvent(new ProgressInitEvent(100, AppConstants.SimulationRun));
@@ -173,7 +175,10 @@ namespace MoBi.Presentation.Tasks
             if (_cancellationTokenSources.ContainsKey(simulation))
             {
                _cancellationTokenSources[simulation].Dispose();
-               _cancellationTokenSources.Remove(simulation);
+               if (_cancellationTokenSources.TryRemove(simulation, out var ctsToDispose))
+               {
+                  ctsToDispose.Dispose();
+               }
             }
             removeEvents();
             _context.PublishEvent(new SimulationRunFinishedEvent(simulation));
@@ -183,7 +188,7 @@ namespace MoBi.Presentation.Tasks
 
       private void setSimulationRunning(IMoBiSimulation simulation, bool isRunning)
       {
-         if (isRunning)
+         if (IsSimulationRunning(simulation))
          {
             if (!_originalSimulationNames.ContainsKey(simulation))
                _originalSimulationNames[simulation] = simulation.Name;
@@ -193,8 +198,6 @@ namespace MoBi.Presentation.Tasks
             simulation.Name = originalName;
             _originalSimulationNames.Remove(simulation);
          }
-
-         simulation.IsRunning = isRunning;
       }
 
       private string getNewRepositoryName()
