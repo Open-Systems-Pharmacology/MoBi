@@ -37,7 +37,6 @@ namespace MoBi.Presentation.Tasks
       private readonly ISimModelManagerFactory _simModelManagerFactory;
       private readonly IKeyPathMapper _keyPathMapper;
       private readonly IEntityValidationTask _entityValidationTask;
-      private readonly Dictionary<IMoBiSimulation, string> _originalSimulationNames = new Dictionary<IMoBiSimulation, string>();
       private readonly ConcurrentDictionary<IMoBiSimulation, CancellationTokenSource> _cancellationTokenSources = new ConcurrentDictionary<IMoBiSimulation, CancellationTokenSource>();
 
 
@@ -145,8 +144,8 @@ namespace MoBi.Presentation.Tasks
          var cts = new CancellationTokenSource();
          if (!_cancellationTokenSources.TryAdd(simulation, cts)) //this will prevent from running one that is already running
             return;
+
          _context.PublishEvent(new SimulationRunStartedEvent(simulation));
-         setSimulationRunning(simulation, true);
          _context.PublishEvent(new ProgressInitEvent(100, AppConstants.SimulationRun));
          _simModelManager = _simModelManagerFactory.Create();
 
@@ -182,21 +181,6 @@ namespace MoBi.Presentation.Tasks
             }
             removeEvents();
             _context.PublishEvent(new SimulationRunFinishedEvent(simulation));
-            setSimulationRunning(simulation, false);
-         }
-      }
-
-      private void setSimulationRunning(IMoBiSimulation simulation, bool isRunning)
-      {
-         if (IsSimulationRunning(simulation))
-         {
-            if (!_originalSimulationNames.ContainsKey(simulation))
-               _originalSimulationNames[simulation] = simulation.Name;
-         }
-         else if (_originalSimulationNames.TryGetValue(simulation, out var originalName))
-         {
-            simulation.Name = originalName;
-            _originalSimulationNames.Remove(simulation);
          }
       }
 
