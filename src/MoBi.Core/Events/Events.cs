@@ -20,7 +20,7 @@ namespace MoBi.Core.Events
       }
    }
 
-   public class SimulationsRunCanceledEvent
+   public class SimulationRunCanceledEvent
    {
    }
 

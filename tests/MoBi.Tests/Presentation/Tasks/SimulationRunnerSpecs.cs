@@ -389,7 +389,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_publish_simulation_canceled_event()
       {
-         A.CallTo(() => _context.PublishEvent(A<SimulationsRunCanceledEvent>._)).MustHaveHappened();
+         A.CallTo(() => _context.PublishEvent(A<SimulationRunCanceledEvent>._)).MustHaveHappened();
       }
    }
 
@@ -478,7 +478,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_publish_simulation_canceled_event_once()
       {
-         A.CallTo(() => _context.PublishEvent(A<SimulationsRunCanceledEvent>._)).MustHaveHappened();
+         A.CallTo(() => _context.PublishEvent(A<SimulationRunCanceledEvent>._)).MustHaveHappened();
       }
    }
 }

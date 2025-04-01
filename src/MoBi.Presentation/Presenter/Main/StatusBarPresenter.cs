@@ -28,7 +28,7 @@ namespace MoBi.Presentation.Presenter.Main
       IListener<ProjectSavedEvent>,
       IListener<ReportCreationStartedEvent>,
       IListener<ReportCreationFinishedEvent>,
-      IListener<SimulationsRunCanceledEvent>,
+      IListener<SimulationRunCanceledEvent>,
       IListener<SimulationRunFinishedEvent>,
       IListener<SimulationRunStartedEvent>,
       IListener<ProgressDoneWithMessageEvent>
@@ -163,7 +163,7 @@ namespace MoBi.Presentation.Presenter.Main
          hideProgressBar();
       }
 
-      public void Handle(SimulationsRunCanceledEvent eventToHandle)
+      public void Handle(SimulationRunCanceledEvent eventToHandle)
       {
          resetCountersAndHideBar();
       }

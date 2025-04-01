@@ -120,7 +120,7 @@ namespace MoBi.Presentation.Tasks
             cts.Cancel();
             cts.Dispose();
             _cancellationTokenSources.Remove(simulation);
-            _context.PublishEvent(new SimulationsRunCanceledEvent());
+            _context.PublishEvent(new SimulationRunCanceledEvent());
          }
       }
 
@@ -133,7 +133,7 @@ namespace MoBi.Presentation.Tasks
          }
 
          _cancellationTokenSources.Clear();
-         _context.PublishEvent(new SimulationsRunCanceledEvent());
+         _context.PublishEvent(new SimulationRunCanceledEvent());
       }
 
       private async Task startSimulationRunAsync(IMoBiSimulation simulation)
