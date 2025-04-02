@@ -1,4 +1,5 @@
-﻿using OSPSuite.DataBinding;
+﻿using System.Windows.Forms;
+using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.UI.Extensions;
 using OSPSuite.Utility.Extensions;
@@ -27,6 +28,7 @@ namespace MoBi.UI.Views
       {
          InitializeComponent();
          _screenBinder = new ScreenBinder<ParameterDTO>();
+         this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
       }
 
       public override void InitializeBinding()
