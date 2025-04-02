@@ -1,5 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using MoBi.Assets;
+using MoBi.Core.Commands;
+using MoBi.Core.Domain.Services;
 using MoBi.Core.Helper;
 using MoBi.Core.Mappers;
 using MoBi.Presentation.DTO;
@@ -16,7 +19,7 @@ namespace MoBi.Presentation.Presenter
 {
    public interface IEditIndividualParameterPresenter : IPresenter<IEditIndividualParameterView>
    {
-      void CreateConstantFormula();
+      void ConvertToFormula();
       void Edit(IndividualParameter objectToEdit, IndividualBuildingBlock selectedIndividual);
       void UpdateValue(double? newValue);
       void UpdateUnit(Unit unit);
@@ -29,7 +32,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IEditValueOriginPresenter _editValueOriginPresenter;
       private readonly IEditFormulaInPathAndValuesPresenter _editFormulaInPathAndValuesPresenter;
       private readonly IInteractionTasksForIndividualBuildingBlock _interactionTasksForIndividualBuildingBlock;
-      private readonly IFormulaFactory _formulaFactory;
+      private readonly IMoBiFormulaTask _formulaTask;
       private IndividualBuildingBlock _buildingBlock;
       private IndividualParameter _individualParameter;
       private readonly IPathAndValueEntityToDistributedParameterMapper _pathAndValueEntityToDistributedParameterMapper;
@@ -39,31 +42,40 @@ namespace MoBi.Presentation.Presenter
          IEditValueOriginPresenter editValueOriginPresenter,
          IEditFormulaInPathAndValuesPresenter editFormulaInPathAndValuesPresenter,
          IInteractionTasksForIndividualBuildingBlock interactionTasksForIndividualBuildingBlock,
-         IFormulaFactory formulaFactory,
+         IMoBiFormulaTask formulaTask,
          IPathAndValueEntityToDistributedParameterMapper pathAndValueEntityToDistributedParameterMapper) : base(view)
       {
          _individualParameterToIndividualParameterDTOMapper = individualParameterToIndividualParameterDTOMapper;
          _editValueOriginPresenter = editValueOriginPresenter;
          _editFormulaInPathAndValuesPresenter = editFormulaInPathAndValuesPresenter;
          _interactionTasksForIndividualBuildingBlock = interactionTasksForIndividualBuildingBlock;
-         _formulaFactory = formulaFactory;
+         _formulaTask = formulaTask;
          _pathAndValueEntityToDistributedParameterMapper = pathAndValueEntityToDistributedParameterMapper;
          AddSubPresenters(_editValueOriginPresenter, _editFormulaInPathAndValuesPresenter);
          view.AddValueOriginView(_editValueOriginPresenter.BaseView);
          view.AddFormulaView(_editFormulaInPathAndValuesPresenter.BaseView);
-
+         _editFormulaInPathAndValuesPresenter.SetDefaultFormulaType<ExplicitFormula>();
+         _editFormulaInPathAndValuesPresenter.RemoveFormulaType<ConstantFormula>();
          _editValueOriginPresenter.ShowCaption = false;
       }
 
-      public void CreateConstantFormula()
+      public void ConvertToFormula()
       {
-         if (!_individualParameterDTO.Value.HasValue)
+         if (_individualParameter.Formula != null)
             return;
 
-         var baseUnitValue = _individualParameterDTO.ConvertToBaseUnit(_individualParameterDTO.Value);
-         var constantFormula = _formulaFactory.ConstantFormula(baseUnitValue, _individualParameterDTO.Dimension);
+         var (command, explicitFormula) = _formulaTask.CreateNewFormulaInBuildingBlock(typeof(ExplicitFormula), _individualParameterDTO.Dimension, _buildingBlock.FormulaCache.Select(x => x.Name), _buildingBlock);
 
-         AddCommand(_interactionTasksForIndividualBuildingBlock.SetFormula(_buildingBlock, _individualParameter, constantFormula));
+         var macroCommand = new MoBiMacroCommand
+         {
+            ObjectType = new ObjectTypeResolver().TypeFor<IndividualParameter>(),
+            Description = AppConstants.Commands.SetValueAndFormula,
+            CommandType = AppConstants.Commands.AddCommand
+         };
+
+         macroCommand.Add(command);
+         macroCommand.Add(_interactionTasksForIndividualBuildingBlock.SetFormula(_buildingBlock, _individualParameter, explicitFormula));
+         AddCommand(macroCommand);
 
          Edit(_individualParameter, _buildingBlock);
       }

@@ -36,8 +36,8 @@ namespace MoBi.UI.Views
          layoutItemValueOrigin.AdjustControlHeight(layoutControlItemDimension.Control.Height);
          layoutItemValueOrigin.Text = Captions.ValueOrigin.FormatForLabel();
          layoutItemValueOrigin.TextVisible = true;
-         btnCreateFormula.InitWithImage(ApplicationIcons.Add, AppConstants.Captions.CreateFormula);
-         layoutControlItemCreateFormula.AdjustButtonSize(uxLayoutControl);
+         layoutControlItemCreateFormula.AdjustLargeButtonSize(uxLayoutControl);
+         btnCreateFormula.InitWithImage(ApplicationIcons.Add, AppConstants.Captions.ConvertToFormula);
          lblWarning.AllowHtmlString = true;
          layoutControlGroupWarning.Text = AppConstants.Captions.Warning;
       }
@@ -64,7 +64,7 @@ namespace MoBi.UI.Views
 
          textEditDimension.Properties.ReadOnly = true;
 
-         btnCreateFormula.Click += (o, e) => OnEvent(() => _presenter.CreateConstantFormula());
+         btnCreateFormula.Click += (o, e) => OnEvent(() => _presenter.ConvertToFormula());
       }
 
       public void AttachPresenter(IEditIndividualParameterPresenter presenter) => _presenter = presenter;

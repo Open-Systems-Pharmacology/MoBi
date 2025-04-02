@@ -17,7 +17,6 @@ namespace MoBi.Presentation
 {
    internal class concern_for_EditIndividualParameterPresenter : ContextSpecification<EditIndividualParameterPresenter>
    {
-      protected IFormulaFactory _formulaFactory;
       protected IEditIndividualParameterView _view;
       protected IIndividualParameterToIndividualParameterDTOMapper _individualParameterToIndividualParameterDTOMapper;
       protected IEditValueOriginPresenter _editValueOriginPresenter;
@@ -29,7 +28,6 @@ namespace MoBi.Presentation
 
       protected override void Context()
       {
-         _formulaFactory = A.Fake<IFormulaFactory>();
          _view = A.Fake<IEditIndividualParameterView>();
          _individualParameterToIndividualParameterDTOMapper = A.Fake<IIndividualParameterToIndividualParameterDTOMapper>();
          _editValueOriginPresenter = A.Fake<IEditValueOriginPresenter>();
@@ -41,7 +39,7 @@ namespace MoBi.Presentation
          _buildingBlock = new IndividualBuildingBlock { _individualParameter };
 
          A.CallTo(() => _individualParameterToIndividualParameterDTOMapper.MapFrom(A<IndividualParameter>._)).ReturnsLazily(x => new IndividualParameterDTO(x.Arguments.Get<IndividualParameter>(0)));
-         sut = new EditIndividualParameterPresenter(_view, _individualParameterToIndividualParameterDTOMapper, _editValueOriginPresenter, _editFormulaInPathAndValuesPresenter, _interactionTasksForIndividualBuildingBlock, _formulaFactory, _pathAndValueEntityToDistributedParameterMapper);
+         sut = new EditIndividualParameterPresenter(_view, _individualParameterToIndividualParameterDTOMapper, _editValueOriginPresenter, _editFormulaInPathAndValuesPresenter, _interactionTasksForIndividualBuildingBlock, _pathAndValueEntityToDistributedParameterMapper);
          sut.InitializeWith(A.Fake<ICommandCollector>());
       }
    }
@@ -161,21 +159,8 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.CreateConstantFormula();
+         sut.ConvertToFormula();
       }
-
-      [Observation]
-      public void the_formula_factory_should_use_the_individual_parameter_value_and_dimension()
-      {
-         A.CallTo(() => _formulaFactory.ConstantFormula(_individualParameter.Value.Value, _individualParameter.Dimension)).MustHaveHappened();
-      }
-
-      [Observation]
-      public void the_interaction_task_sets_the_formula()
-      {
-         A.CallTo(() => _interactionTasksForIndividualBuildingBlock.SetFormula(_buildingBlock, _individualParameter, A<IFormula>._)).MustHaveHappened();
-      }
-
       [Observation]
       public void the_view_should_reveal_the_formula_editor()
       {
