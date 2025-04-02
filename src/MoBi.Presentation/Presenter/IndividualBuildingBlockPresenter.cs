@@ -1,4 +1,6 @@
-﻿using MoBi.Presentation.DTO;
+﻿using System.Linq;
+using MoBi.Core.Events;
+using MoBi.Presentation.DTO;
 using MoBi.Presentation.Extensions;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Tasks.Interaction;
@@ -6,6 +8,7 @@ using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Events;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -18,7 +21,8 @@ namespace MoBi.Presentation.Presenter
 
    public class IndividualBuildingBlockPresenter : 
       PathAndValueBuildingBlockPresenter<IIndividualBuildingBlockView, IIndividualBuildingBlockPresenter, IndividualBuildingBlock, IndividualParameter, IndividualParameterDTO>, 
-      IIndividualBuildingBlockPresenter
+      IIndividualBuildingBlockPresenter,
+      IListener<EntitySelectedEvent>
    {
       private readonly IIndividualBuildingBlockToIndividualBuildingBlockDTOMapper _individualToDTOMapper;
       private IndividualBuildingBlockDTO _individualBuildingBlockDTO;
@@ -44,6 +48,20 @@ namespace MoBi.Presentation.Presenter
       public bool HasAtLeastOneValue(int pathElementIndex)
       {
          return _individualBuildingBlockDTO.Parameters.HasAtLeastOneValue(pathElementIndex);
+      }
+
+      public void Handle(EntitySelectedEvent eventToHandle)
+      {
+         if (eventToHandle.ObjectBase is IndividualParameter individualParameter)
+         {
+            if (_buildingBlock.Contains(individualParameter))
+               _view.Select(dtoFor(individualParameter));
+         }
+      }
+
+      private IndividualParameterDTO dtoFor(IndividualParameter individualParameter)
+      {
+         return _individualBuildingBlockDTO.Parameters.FirstOrDefault(x => Equals(x.PathWithValueObject, individualParameter));
       }
    }
 }

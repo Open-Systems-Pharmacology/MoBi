@@ -1,8 +1,12 @@
-﻿using FakeItEasy;
+﻿using System.Collections.Generic;
+using FakeItEasy;
+using MoBi.Core.Domain.Services;
+using MoBi.Core.Events;
 using MoBi.Core.Mappers;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
+using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
@@ -11,6 +15,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Events;
 using static System.Double;
 
 namespace MoBi.Presentation
@@ -25,6 +30,9 @@ namespace MoBi.Presentation
       protected IndividualParameter _individualParameter;
       protected IndividualBuildingBlock _buildingBlock;
       protected IPathAndValueEntityToDistributedParameterMapper _pathAndValueEntityToDistributedParameterMapper;
+      protected IMoBiFormulaTask _formulaTask;
+      protected IEditTaskFor<IndividualBuildingBlock> _editTask;
+      protected IEventPublisher _eventPublisher;
 
       protected override void Context()
       {
@@ -34,12 +42,15 @@ namespace MoBi.Presentation
          _editFormulaInPathAndValuesPresenter = A.Fake<IEditFormulaInPathAndValuesPresenter>();
          _interactionTasksForIndividualBuildingBlock = A.Fake<IInteractionTasksForIndividualBuildingBlock>();
          _pathAndValueEntityToDistributedParameterMapper = A.Fake<IPathAndValueEntityToDistributedParameterMapper>();
+         _editTask = A.Fake<IEditTaskFor<IndividualBuildingBlock>>();
+         _formulaTask = A.Fake<IMoBiFormulaTask>();
+         _eventPublisher = A.Fake<IEventPublisher>();
 
          _individualParameter = new IndividualParameter();
          _buildingBlock = new IndividualBuildingBlock { _individualParameter };
-
+         
          A.CallTo(() => _individualParameterToIndividualParameterDTOMapper.MapFrom(A<IndividualParameter>._)).ReturnsLazily(x => new IndividualParameterDTO(x.Arguments.Get<IndividualParameter>(0)));
-         sut = new EditIndividualParameterPresenter(_view, _individualParameterToIndividualParameterDTOMapper, _editValueOriginPresenter, _editFormulaInPathAndValuesPresenter, _interactionTasksForIndividualBuildingBlock, _pathAndValueEntityToDistributedParameterMapper);
+         sut = new EditIndividualParameterPresenter(_view, _individualParameterToIndividualParameterDTOMapper, _editValueOriginPresenter, _editFormulaInPathAndValuesPresenter, _interactionTasksForIndividualBuildingBlock, _formulaTask, _pathAndValueEntityToDistributedParameterMapper, _editTask, _eventPublisher);
          sut.InitializeWith(A.Fake<ICommandCollector>());
       }
    }
@@ -161,10 +172,43 @@ namespace MoBi.Presentation
       {
          sut.ConvertToFormula();
       }
+
       [Observation]
       public void the_view_should_reveal_the_formula_editor()
       {
          A.CallTo(() => _view.ShowFormulaEdit()).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_formula_task_is_used_to_create_the_formula()
+      {
+         A.CallTo(() => _formulaTask.CreateNewFormulaInBuildingBlock(typeof(ExplicitFormula), _individualParameter.Dimension, A<IEnumerable<string>>._, _buildingBlock, null)).MustHaveHappened();
+      }
+   }
+
+   internal class When_navigating_to_the_individual_parameter : concern_for_EditIndividualParameterPresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.Edit(_individualParameter, _buildingBlock);
+      }
+
+      protected override void Because()
+      {
+         sut.NavigateToParameter();
+      }
+
+      [Observation]
+      public void the_edit_task_opens_the_editor()
+      {
+         A.CallTo(() => _editTask.Edit(_buildingBlock)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_event_publisher_publishes_selection_event()
+      {
+         A.CallTo(() => _eventPublisher.PublishEvent(A<EntitySelectedEvent>.That.Matches(x => x.ObjectBase.Equals(_individualParameter)))).MustHaveHappened();
       }
    }
 }

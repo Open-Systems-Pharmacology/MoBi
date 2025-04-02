@@ -1663,6 +1663,7 @@ namespace MoBi.Assets
          public static readonly string AddAndEditPathsDescription = "You can add paths by selecting the entity from the left and using the 'Add' button, or by manually entering and editing paths in the text area below.";
          public static readonly string None = "None";
          public static readonly string ConvertToFormula = "Convert to Formula";
+         public static readonly string FindParameter = "Find Parameter";
          public static string SelectTheBuildingBlockWhereEntitiesWillBeAddedOrUpdated(string typeBeingAdded) => $"Select the building block where {typeBeingAdded} will be added or updated";
          public static readonly string SelectBuildingBlock = "Select Building Block";
          public static readonly string MakeDefault = "Make defaults";

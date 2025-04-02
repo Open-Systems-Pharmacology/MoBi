@@ -205,6 +205,17 @@ namespace MoBi.UI.Views
          initColumnVisibility();
       }
 
+      public void Select(IndividualParameterDTO individualParameterDTO)
+      {
+         gridView.FocusedRowHandle = rowHandleFor(individualParameterDTO);
+         gridView.SelectRow(gridView.FocusedRowHandle);
+      }
+
+      private int rowHandleFor(IndividualParameterDTO individualParameterDTO)
+      {
+         return _gridViewBinder.RowHandleFor(individualParameterDTO);
+      }
+
       public void RefreshForUpdatedEntity()
       {
          gridView.CloseEditor();

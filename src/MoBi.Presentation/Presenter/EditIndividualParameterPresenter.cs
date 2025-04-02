@@ -3,17 +3,19 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Services;
+using MoBi.Core.Events;
 using MoBi.Core.Helper;
 using MoBi.Core.Mappers;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
+using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Events;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -23,6 +25,7 @@ namespace MoBi.Presentation.Presenter
       void Edit(IndividualParameter objectToEdit, IndividualBuildingBlock selectedIndividual);
       void UpdateValue(double? newValue);
       void UpdateUnit(Unit unit);
+      void NavigateToParameter();
    }
 
    public class EditIndividualParameterPresenter : AbstractCommandCollectorPresenter<IEditIndividualParameterView, IEditIndividualParameterPresenter>, IEditIndividualParameterPresenter
@@ -36,6 +39,8 @@ namespace MoBi.Presentation.Presenter
       private IndividualBuildingBlock _buildingBlock;
       private IndividualParameter _individualParameter;
       private readonly IPathAndValueEntityToDistributedParameterMapper _pathAndValueEntityToDistributedParameterMapper;
+      private readonly IEditTaskFor<IndividualBuildingBlock> _editTask;
+      private readonly IEventPublisher _eventPublisher;
 
       public EditIndividualParameterPresenter(IEditIndividualParameterView view,
          IIndividualParameterToIndividualParameterDTOMapper individualParameterToIndividualParameterDTOMapper,
@@ -43,7 +48,9 @@ namespace MoBi.Presentation.Presenter
          IEditFormulaInPathAndValuesPresenter editFormulaInPathAndValuesPresenter,
          IInteractionTasksForIndividualBuildingBlock interactionTasksForIndividualBuildingBlock,
          IMoBiFormulaTask formulaTask,
-         IPathAndValueEntityToDistributedParameterMapper pathAndValueEntityToDistributedParameterMapper) : base(view)
+         IPathAndValueEntityToDistributedParameterMapper pathAndValueEntityToDistributedParameterMapper,
+         IEditTaskFor<IndividualBuildingBlock> editTask,
+         IEventPublisher eventPublisher) : base(view)
       {
          _individualParameterToIndividualParameterDTOMapper = individualParameterToIndividualParameterDTOMapper;
          _editValueOriginPresenter = editValueOriginPresenter;
@@ -51,6 +58,8 @@ namespace MoBi.Presentation.Presenter
          _interactionTasksForIndividualBuildingBlock = interactionTasksForIndividualBuildingBlock;
          _formulaTask = formulaTask;
          _pathAndValueEntityToDistributedParameterMapper = pathAndValueEntityToDistributedParameterMapper;
+         _editTask = editTask;
+         _eventPublisher = eventPublisher;
          AddSubPresenters(_editValueOriginPresenter, _editFormulaInPathAndValuesPresenter);
          view.AddValueOriginView(_editValueOriginPresenter.BaseView);
          view.AddFormulaView(_editFormulaInPathAndValuesPresenter.BaseView);
@@ -123,6 +132,12 @@ namespace MoBi.Presentation.Presenter
       public void UpdateUnit(Unit unit)
       {
          AddCommand(_interactionTasksForIndividualBuildingBlock.SetUnit(_buildingBlock, _individualParameter, unit));
+      }
+
+      public void NavigateToParameter()
+      {
+         _editTask.Edit(_buildingBlock);
+         _eventPublisher.PublishEvent(new EntitySelectedEvent(_individualParameter, this));
       }
 
       private void updateFormulaView()
