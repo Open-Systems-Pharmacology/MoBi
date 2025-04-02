@@ -277,7 +277,5 @@ namespace MoBi.Core.Domain.Model
       }
 
       public bool ComesFromPKSim => Creation.Origin == Origins.PKSim;
-
-      public bool IsRunning { get; set; }
    }
 }
