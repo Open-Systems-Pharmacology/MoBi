@@ -5,8 +5,10 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Events;
+using MoBi.Core.Helper;
 using MoBi.Core.Mappers;
 using MoBi.Core.Services;
+using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.BDDHelper;
@@ -31,7 +33,8 @@ namespace MoBi.Presentation.Tasks
       protected IFormula _formula;
       protected IPKSimStarter _pkSimStarter;
       private IContainerTask _containerTask;
-      private IParameterFactory _parameterFactory;
+      private ICloneManagerForBuildingBlock _cloneManager;
+      private IPathAndValueEntityToDistributedParameterMapper _pathAndValueEntityToDistributedParameterMapper;
 
       protected override void Context()
       {
@@ -40,9 +43,10 @@ namespace MoBi.Presentation.Tasks
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
          _pkSimStarter = A.Fake<IPKSimStarter>();
          _containerTask = new ContainerTask(A.Fake<IObjectBaseFactory>(), A.Fake<IEntityPathResolver>(), A.Fake<IObjectPathFactory>());
-         _parameterFactory = A.Fake<IParameterFactory>();
+         _cloneManager = A.Fake<ICloneManagerForBuildingBlock>();
+         _pathAndValueEntityToDistributedParameterMapper = A.Fake<IPathAndValueEntityToDistributedParameterMapper>();
 
-         sut = new InteractionTasksForExpressionProfileBuildingBlock(_interactionTaskContext, _editTask, _formulaTask, _pkSimStarter, _containerTask, _parameterFactory, A.Fake<IExportDataTableToExcelTask>(), A.Fake<IExpressionProfileBuildingBlockToDataTableMapper>());
+         sut = new InteractionTasksForExpressionProfileBuildingBlock(_interactionTaskContext, _editTask, _formulaTask, _pkSimStarter, _containerTask, _pathAndValueEntityToDistributedParameterMapper, A.Fake<IExportDataTableToExcelTask>(), _cloneManager, A.Fake<IExpressionProfileBuildingBlockToDataTableMapper>());
 
          _formula = new ExplicitFormula("y=mx+b");
          _expressionParameter = GetExpressionParameter();
@@ -239,6 +243,36 @@ namespace MoBi.Presentation.Tasks
          public void the_unit_should_be_changed()
          {
             _expressionParameter.DisplayUnit.ShouldBeEqualTo(_unit2);
+         }
+      }
+
+      public class When_setting_a_formula_on_a_parameter : concern_for_InteractionTasksForExpressionProfileBuildingBlock
+      {
+         private IEditFormulaInPathAndValuesPresenter _editFormulaPresenter;
+         private ExpressionParameter _clonedParameter;
+         private ExpressionProfileBuildingBlock _clonedBuildingBlock;
+
+         protected override void Context()
+         {
+            base.Context();
+            _editFormulaPresenter = A.Fake<IEditFormulaInPathAndValuesPresenter>();
+            _clonedBuildingBlock = new ExpressionProfileBuildingBlock();
+            _clonedParameter = GetExpressionParameter();
+            _clonedBuildingBlock.Add(_clonedParameter);
+            A.CallTo(() => _interactionTaskContext.Context.Resolve<IEditFormulaInPathAndValuesPresenter>()).Returns(_editFormulaPresenter);
+            A.CallTo(() => _cloneManager.Clone(_buildingBlock)).Returns(_clonedBuildingBlock);
+
+         }
+
+         protected override void Because()
+         {
+            sut.EditFormulaAtBuildingBlock(_buildingBlock, _expressionParameter);
+         }
+
+         [Observation]
+         public void the_formula_editor_should_edit_a_clone_of_the_building_block()
+         {
+            A.CallTo(() => _editFormulaPresenter.Init(_clonedParameter, _clonedBuildingBlock, A<UsingFormulaDecoder>._)).MustHaveHappened();
          }
       }
    }

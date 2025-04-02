@@ -78,13 +78,15 @@ namespace MoBi.Presentation.Presenter
       private readonly ISelectReferencePresenterFactory _selectReferencePresenterFactory;
       private readonly IEditDistributedParameterPresenter _editDistributedParameterPresenter;
       private readonly IEditParameterPresenter _editParameterPresenter;
+      private readonly IEditIndividualParameterPresenter _editIndividualParameterPresenter;
       private bool _ignoreAddEvents;
       private readonly IObjectTypeResolver _typeResolver;
 
       private readonly IEntityPathResolver _entityPathResolver;
       private readonly IObjectPathFactory _objectPathFactory;
       private readonly IndividualBuildingBlock _noIndividualSelected;
-      
+      private readonly Cache<ParameterDTO, IndividualParameter> _individualParameterCache = new Cache<ParameterDTO, IndividualParameter>();
+
       public bool ChangeLocalisationAllowed { set; get; }
 
       public EditParametersInContainerPresenter(IEditParametersInContainerView view,
@@ -102,7 +104,8 @@ namespace MoBi.Presentation.Presenter
          IObjectTypeResolver typeResolver,
          IEntityPathResolver entityPathResolver,
          IObjectPathFactory objectPathFactory,
-         IIndividualParameterToParameterDTOMapper individualParameterToDTOParameterMapper)
+         IIndividualParameterToParameterDTOMapper individualParameterToDTOParameterMapper,
+         IEditIndividualParameterPresenter editIndividualParameterPresenter)
          : base(view, quantityTask, interactionTaskContext, formulaMapper, parameterTask, favoriteTask)
       {
          _clipboardManager = clipboardManager;
@@ -110,10 +113,11 @@ namespace MoBi.Presentation.Presenter
          _selectReferencePresenterFactory = selectReferencePresenterFactory;
          _editDistributedParameterPresenter = editDistributedParameterPresenter;
          _editParameterPresenter = editParameterPresenter;
+         _editIndividualParameterPresenter = editIndividualParameterPresenter;
          EditMode = EditParameterMode.All;
          _parameterToDTOParameterMapper = parameterToDTOParameterMapper;
          _editParameterPresenter = editParameterPresenter;
-         AddSubPresenters(_editDistributedParameterPresenter, _editParameterPresenter);
+         AddSubPresenters(_editDistributedParameterPresenter, _editParameterPresenter, _editIndividualParameterPresenter);
          ChangeLocalisationAllowed = true;
          _typeResolver = typeResolver;
          _entityPathResolver = entityPathResolver;
@@ -162,7 +166,7 @@ namespace MoBi.Presentation.Presenter
          AddCommand(_parameterTask.SetDimensionForParameter(parameter, newDimension, BuildingBlock));
          refreshViewAndSelect(parameterDTO);
       }
-      
+
       public void EnableContainerCriteriaSupport() => _editParameterPresenter.EnableContainerCriteriaSupport();
 
       public void CopyPathForParameter(ParameterDTO parameter) => _view.CopyToClipBoard(_entityPathResolver.FullPathFor(parameter.Parameter));
@@ -175,13 +179,16 @@ namespace MoBi.Presentation.Presenter
          releaseParameters();
          _allParametersDTO.Clear();
          _allParametersDTO.AddRange(_parameters.MapAllUsing(_parameterToDTOParameterMapper));
-         
+
          _allParametersDTO.AddRange(parametersForIndividualParameters(individualParameters, selectedIndividual));
       }
 
       private IReadOnlyList<ParameterDTO> parametersForIndividualParameters(IReadOnlyList<IndividualParameter> individualParameters, IndividualBuildingBlock selectedIndividual)
       {
-         return individualParameters.Select(individualParameter => _individualParameterToDTOParameterMapper.MapFrom(selectedIndividual, individualParameter)).ToList();
+         _individualParameterCache.Clear();
+         individualParameters.Each(individualParameter => { _individualParameterCache[_individualParameterToDTOParameterMapper.MapFrom(selectedIndividual, individualParameter)] = individualParameter; });
+
+         return _individualParameterCache.Keys.ToList();
       }
 
       private void releaseParameters() => _allParametersDTO.Each(dto => dto.Release());
@@ -218,7 +225,7 @@ namespace MoBi.Presentation.Presenter
          setupEditPresenter(parametersToShowDTO.FirstOrDefault(x => !x.IsIndividualPreview)?.Parameter);
       }
 
-      private bool shouldShowParameter(ParameterDTO parameterDTO) => 
+      private bool shouldShowParameter(ParameterDTO parameterDTO) =>
          parameterDTO.IsIndividualPreview || ShowAdvancedParameters || ParameterFrom(parameterDTO).Visible;
 
       private void refreshList() => _view.RefreshList();
@@ -263,10 +270,14 @@ namespace MoBi.Presentation.Presenter
       public void Select(ParameterDTO selectedParameter)
       {
          if (selectedParameter.IsIndividualPreview)
-            return;
+            setupEditPresenter(individualParameterFrom(selectedParameter));
+         else
+            setupEditPresenter(ParameterFrom(selectedParameter));
+      }
 
-         var parameter = ParameterFrom(selectedParameter);
-         setupEditPresenter(parameter);
+      private IndividualParameter individualParameterFrom(ParameterDTO selectedParameter)
+      {
+         return _individualParameterCache.Contains(selectedParameter) ? _individualParameterCache[selectedParameter] : null;
       }
 
       public void SetIsPersistable(ParameterDTO parameterDTO, bool isPersistable) =>
@@ -383,6 +394,19 @@ namespace MoBi.Presentation.Presenter
          return _parameters.Contains(quantity.DowncastTo<IParameter>());
       }
 
+      private void setupEditPresenter(IndividualParameter parameter)
+      {
+         if (parameter == null)
+         {
+            _view.SetEditParameterView(null);
+         }
+         else
+         {
+            _editIndividualParameterPresenter.Edit(parameter, SelectedIndividual);
+            _view.SetEditParameterView(_editIndividualParameterPresenter.BaseView);
+         }
+      }
+
       private void setupEditPresenter(IParameter parameter)
       {
          if (_view.EditMode == EditParameterMode.ValuesOnly)
@@ -424,7 +448,7 @@ namespace MoBi.Presentation.Presenter
 
       public void Handle(ParameterChangedEvent eventToHandle)
       {
-         if (!canHandle(eventToHandle)) 
+         if (!canHandle(eventToHandle))
             return;
          refreshList();
       }

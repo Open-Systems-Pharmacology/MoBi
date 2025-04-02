@@ -108,7 +108,7 @@ namespace MoBi.Presentation.Presenter
 
       protected void EditFormula(TParameterDTO parameterDTO, TParameter builder)
       {
-         AddCommand(_interactionTask.EditFormulaAtBuildingBlock(_buildingBlock, builder, null));
+         AddCommand(_interactionTask.EditFormulaAtBuildingBlock(_buildingBlock, builder));
          RefreshDTO(parameterDTO, builder.Formula, builder);
       }
 

@@ -8,6 +8,7 @@ using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -27,10 +28,8 @@ namespace MoBi.Presentation
       private ICircularReferenceChecker _circularReferenceChecker;
       protected IInteractionTaskContext _interactionTaskContext;
       private ISelectReferenceAtParameterValuePresenter _selectReferenceAtParameterValuePresenter;
-      protected ICloneManagerForBuildingBlock _cloneManager;
       protected ParameterValue _entity;
       protected ParameterValuesBuildingBlock _buildingBlock;
-      protected ParameterValuesBuildingBlock _clonedBuildingBlock;
       protected ParameterValue _pathAndValueEntity;
 
       protected override void Context()
@@ -44,18 +43,10 @@ namespace MoBi.Presentation
          _circularReferenceChecker = A.Fake<ICircularReferenceChecker>();
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
          _selectReferenceAtParameterValuePresenter = A.Fake<ISelectReferenceAtParameterValuePresenter>();
-         _cloneManager = A.Fake<ICloneManagerForBuildingBlock>();
          _entity = new ParameterValue { Path = new ObjectPath("Organism", "Liver", "volume") }.WithFormula(new ExplicitFormula().WithName("explicit"));
          _buildingBlock = new ParameterValuesBuildingBlock { _entity };
          _pathAndValueEntity = new ParameterValue { Path = new ObjectPath("Organism", "Liver", "volume") }.WithFormula(new ExplicitFormula().WithName("explicit"));
          var dummyWithTheSameName = new ParameterValue { Path = new ObjectPath("Organism", "Lung", "volume") }.WithFormula(new ExplicitFormula().WithName("explicit"));
-
-         _clonedBuildingBlock = new ParameterValuesBuildingBlock
-         {
-            dummyWithTheSameName,
-            _pathAndValueEntity
-         };
-         A.CallTo(() => _cloneManager.Clone(_buildingBlock)).Returns(_clonedBuildingBlock);
 
          sut = new EditFormulaInPathAndValuesPresenter(_editFormulaInPathAndValues,
             _formulaPresenterCache,
@@ -64,33 +55,14 @@ namespace MoBi.Presentation
             _formulaTypeCaptionRepository,
             _moBiFormulaTask,
             _circularReferenceChecker,
-            _selectReferenceAtParameterValuePresenter, _cloneManager);
-      }
-   }
-
-   public class When_initializing_the_presenter : concern_for_EditFormulaInPathAndValuesPresenter
-   {
-      protected override void Because()
-      {
-         sut.Init(_entity, _buildingBlock, new UsingFormulaDecoder());
-      }
-
-      [Observation]
-      public void the_clone_manager_should_clone_the_building_block()
-      {
-         A.CallTo(() => _cloneManager.Clone(_buildingBlock)).MustHaveHappened();
-      }
-
-      [Observation]
-      public void the_presenter_and_view_are_using_a_clone()
-      {
-         A.CallTo(() => _formulaToFormulaInfoDTOMapper.MapFrom(_pathAndValueEntity.Formula)).MustHaveHappened();
+            _selectReferenceAtParameterValuePresenter);
+         
+         sut.InitializeWith(A.Fake<ICommandCollector>());
       }
    }
 
    public class  When_updating_formula : concern_for_EditFormulaInPathAndValuesPresenter
    {
-      private ParameterValue _formulaOwner;
       private IFormula _expectedOldFormula;
       private UsingFormulaDecoder _formulaDecoder;
 
@@ -98,8 +70,7 @@ namespace MoBi.Presentation
       {
          base.Context();
          _formulaDecoder = new UsingFormulaDecoder();
-         _formulaOwner = _clonedBuildingBlock.FindByPath(_entity.Path);
-         _expectedOldFormula = _formulaOwner.Formula;
+         _expectedOldFormula = _entity.Formula;
          sut.Init(_entity, _buildingBlock, _formulaDecoder);
       }
 
@@ -111,7 +82,7 @@ namespace MoBi.Presentation
       [Observation]
       public void the_update_formula_should_be_called_with_expected_formula()
       {
-         A.CallTo(() => _moBiFormulaTask.UpdateFormula(_formulaOwner, _expectedOldFormula, A<IFormula>.Ignored, _formulaDecoder, A<IBuildingBlock>.Ignored)).MustHaveHappened();
+         A.CallTo(() => _moBiFormulaTask.UpdateFormula(_entity, _expectedOldFormula, A<IFormula>.Ignored, _formulaDecoder, A<IBuildingBlock>.Ignored)).MustHaveHappened();
       }
    }
 

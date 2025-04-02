@@ -1215,6 +1215,10 @@ namespace MoBi.Assets
 
          public static readonly string CheckDimensionOfAddedParameters = $"The <i>Dimension</i> property of the added parameters will not be automatically set.{Environment.NewLine}Please set the <i>Dimension</i> of all added parameters.";
          public static readonly string ThisItNotATemplateBuildingBlock = "This is not the template building block!";
+
+         public static string EditsHereChangeTheIndividualBuildingblock(string buildingBlockName) => $"<b><p>This parameter does not belong to the spatial structure, it is a preview from the individual building block '{buildingBlockName}' </p>" +
+                                                                                           $"<p>&nbsp;</p>" +
+                                                                                           $"<p>Editing this parameter will change the individual building block</p></b>";
       }
 
       public class Exceptions
@@ -1658,6 +1662,7 @@ namespace MoBi.Assets
          public static readonly string CreateProcessRateParameters = "Create a process rate parameter for each process in the simulation";
          public static readonly string AddAndEditPathsDescription = "You can add paths by selecting the entity from the left and using the 'Add' button, or by manually entering and editing paths in the text area below.";
          public static readonly string None = "None";
+         public static readonly string CreateFormula = "Create Formula";
          public static string SelectTheBuildingBlockWhereEntitiesWillBeAddedOrUpdated(string typeBeingAdded) => $"Select the building block where {typeBeingAdded} will be added or updated";
          public static readonly string SelectBuildingBlock = "Select Building Block";
          public static readonly string MakeDefault = "Make defaults";

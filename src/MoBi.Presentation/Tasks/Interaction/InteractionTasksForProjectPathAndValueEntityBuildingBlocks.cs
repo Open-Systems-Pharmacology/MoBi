@@ -7,6 +7,7 @@ using MoBi.Core.Mappers;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 
@@ -25,9 +26,17 @@ namespace MoBi.Presentation.Tasks.Interaction
       protected InteractionTasksForProjectPathAndValueEntityBuildingBlocks(IInteractionTaskContext interactionTaskContext,
          IEditTasksForBuildingBlock<TBuildingBlock> editTask,
          IMoBiFormulaTask moBiFormulaTask,
-         IParameterFactory parameterFactory,
          IExportDataTableToExcelTask exportDataTableToExcelTask,
-         IMapper<TBuildingBlock, List<DataTable>> dataTableMapper) : base(interactionTaskContext, editTask, moBiFormulaTask, exportDataTableToExcelTask, dataTableMapper, new PathAndValueEntityToDistributedParameterMapper(parameterFactory))
+         ICloneManagerForBuildingBlock cloneManager,
+         IPathAndValueEntityToDistributedParameterMapper pathAndValueEntityToDistributedParameterMapper,
+         IMapper<TBuildingBlock, List<DataTable>> dataTableMapper) : 
+         base(interactionTaskContext, 
+            editTask, 
+            moBiFormulaTask, 
+            exportDataTableToExcelTask, 
+            dataTableMapper,
+            pathAndValueEntityToDistributedParameterMapper, 
+            cloneManager)
       {
       }
 
@@ -43,19 +52,10 @@ namespace MoBi.Presentation.Tasks.Interaction
          return AddToProject(clone);
       }
 
-      public IMoBiCommand AddToProject(TBuildingBlock buildingBlockToAdd)
-      {
-         return AddTo(buildingBlockToAdd, Context.CurrentProject, null);
-      }
+      public IMoBiCommand AddToProject(TBuildingBlock buildingBlockToAdd) => AddTo(buildingBlockToAdd, Context.CurrentProject, null);
 
-      public IMoBiCommand AddToProject(IBuildingBlock buildingBlock)
-      {
-         return AddToProject(buildingBlock as TBuildingBlock);
-      }
+      public IMoBiCommand AddToProject(IBuildingBlock buildingBlock) => AddToProject(buildingBlock as TBuildingBlock);
 
-      protected override IReadOnlyCollection<IObjectBase> GetNamedObjectsInParent(TBuildingBlock buildingBlockToClone)
-      {
-         return Context.CurrentProject.All<TBuildingBlock>();
-      }
+      protected override IReadOnlyCollection<IObjectBase> GetNamedObjectsInParent(TBuildingBlock buildingBlockToClone) => Context.CurrentProject.All<TBuildingBlock>();
    }
 }

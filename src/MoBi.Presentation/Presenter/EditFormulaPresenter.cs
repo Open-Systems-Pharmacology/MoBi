@@ -71,20 +71,20 @@ namespace MoBi.Presentation.Presenter
    public abstract class EditFormulaPresenter<TView, TPresenter> : AbstractCommandCollectorPresenter<TView, TPresenter>, IListener<ObjectPropertyChangedEvent>
       where TView : IView<TPresenter>, IFormulaEditView where TPresenter : IPresenter
    {
-      protected IFormulaPresenterCache _formulaPresenterCache;
+      private readonly IFormulaPresenterCache _formulaPresenterCache;
       protected IFormula _formula;
-      protected IEditTypedFormulaPresenter _formulaPresenter;
-      protected IEntity _formulaOwner;
-      protected IMoBiContext _context;
+      private IEditTypedFormulaPresenter _formulaPresenter;
+      private IEntity _formulaOwner;
+      protected readonly IMoBiContext _context;
       protected IBuildingBlock _buildingBlock;
-      protected IFormulaToFormulaInfoDTOMapper _formulaDTOMapper;
+      private readonly IFormulaToFormulaInfoDTOMapper _formulaDTOMapper;
       protected FormulaInfoDTO _formulaDTO;
-      protected ISelectReferencePresenter _referencePresenter;
-      protected HashSet<Type> _allFormulaType;
-      protected FormulaTypeCaptionRepository _formulaTypeCaptionRepository;
+      private ISelectReferencePresenter _referencePresenter;
+      private readonly HashSet<Type> _allFormulaType;
+      private readonly FormulaTypeCaptionRepository _formulaTypeCaptionRepository;
       protected readonly IMoBiFormulaTask _formulaTask;
-      protected readonly ICircularReferenceChecker _circularReferenceChecker;
-      protected Type _defaultFormulaType;
+      private readonly ICircularReferenceChecker _circularReferenceChecker;
+      private Type _defaultFormulaType;
       private IFormula _constantFormula;
       private bool _isRHS;
       private FormulaDecoder _formulaDecoder;

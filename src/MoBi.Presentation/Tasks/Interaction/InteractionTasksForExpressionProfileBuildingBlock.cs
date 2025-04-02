@@ -34,10 +34,17 @@ namespace MoBi.Presentation.Tasks.Interaction
          IMoBiFormulaTask formulaTask,
          IPKSimStarter pkSimStarter,
          IContainerTask containerTask,
-         IParameterFactory parameterFactory,
+         IPathAndValueEntityToDistributedParameterMapper pathAndValueEntityToDistributedParameterMapper,
          IExportDataTableToExcelTask exportDataTableToExcelTask,
+         ICloneManagerForBuildingBlock cloneManager,
          IExpressionProfileBuildingBlockToDataTableMapper mapper) :
-         base(interactionTaskContext, editTask, formulaTask, parameterFactory, exportDataTableToExcelTask, mapper)
+         base(interactionTaskContext, 
+            editTask, 
+            formulaTask,  
+            exportDataTableToExcelTask, 
+            cloneManager, 
+            pathAndValueEntityToDistributedParameterMapper, 
+            mapper)
       {
          _editTaskForExpressionProfileBuildingBlock = editTask;
          _pkSimStarter = pkSimStarter;
