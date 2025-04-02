@@ -123,10 +123,10 @@ namespace MoBi.Presentation.Repositories
             .WithCommand<CalculateScaleFactorCommand>(_container)
             .WithIcon(ApplicationIcons.ScaleFactor);
 
-         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.Stop)
+         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.StopAllRunningSimulations)
             .WithId(MenuBarItemIds.Stop)
             .WithDescription(ToolTips.SimulationRibbon.StopSimulation)
-            .WithCommand<StopSimulationCommand>(_container)
+            .WithCommand<StopAllSimulationsCommand>(_container)
             .WithIcon(ApplicationIcons.Stop);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.HistoryView)

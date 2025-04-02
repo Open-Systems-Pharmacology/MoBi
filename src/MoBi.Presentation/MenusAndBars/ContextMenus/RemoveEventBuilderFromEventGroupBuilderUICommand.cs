@@ -1,5 +1,4 @@
 ﻿using MoBi.Core.Domain.Model;
-using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
@@ -13,7 +12,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
    public class RemoveRootEventBuilderFromEventGroupBuilderUICommand : IRemoveRootEventBuilderFromEventGroupBuilderUICommand
    {
-      private readonly IInteractionTasksForChildren<EventGroupBuilder,EventBuilder> _interactionTasks;
+      private readonly IInteractionTasksForChildren<EventGroupBuilder, EventBuilder> _interactionTasks;
       private readonly IMoBiContext _context;
       private readonly IActiveSubjectRetriever _activeSubjectRetriever;
       private EventGroupBuilder _parent;
@@ -33,7 +32,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       public IObjectUICommand<EventBuilder> For(EventBuilder eventBuilder)
       {
-         _parent = (EventGroupBuilder) eventBuilder.ParentContainer;
+         _parent = (EventGroupBuilder)eventBuilder.ParentContainer;
          Subject = eventBuilder;
          return this;
       }

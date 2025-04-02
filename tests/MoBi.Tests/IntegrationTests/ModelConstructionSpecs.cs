@@ -71,13 +71,12 @@ namespace MoBi.IntegrationTests
          _simulation = DomainFactoryForSpecs.CreateSimulationFor(_simulationConfiguration);
          _entityValidationTask = IoC.Resolve<IEntityValidationTask>();
          A.CallTo(() => _entityValidationTask.Validate(_simulation)).Returns(true);
-
       }
 
       protected override void Because()
       {
          var simulationRunner = IoC.Resolve<ISimulationRunner>();
-         simulationRunner.RunSimulation(_simulation);
+         simulationRunner.RunSimulationAsync(_simulation).Wait();
       }
 
       [Observation]

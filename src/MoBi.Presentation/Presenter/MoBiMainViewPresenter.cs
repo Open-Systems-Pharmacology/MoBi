@@ -20,8 +20,6 @@ using IProjectTask = MoBi.Presentation.Tasks.IProjectTask;
 namespace MoBi.Presentation.Presenter
 {
    public interface IMoBiMainViewPresenter : IMainViewPresenter,
-      IListener<SimulationRunStartedEvent>,
-      IListener<SimulationRunFinishedEvent>,
       IListener<ReportCreationStartedEvent>,
       IListener<ReportCreationFinishedEvent>,
       IListener<ProjectLoadedEvent>,
@@ -134,16 +132,6 @@ namespace MoBi.Presentation.Presenter
       public void RestoreLayout()
       {
          _userSettings.RestoreLayout();
-      }
-
-      public void Handle(SimulationRunStartedEvent eventToHandle)
-      {
-         View.AllowChildActivation = false;
-      }
-
-      public void Handle(SimulationRunFinishedEvent eventToHandle)
-      {
-         View.AllowChildActivation = true;
       }
 
       private void updateWindowTitle(string projectName = null)

@@ -1,10 +1,13 @@
 ﻿using MoBi.Core.Domain.Model;
+using System.Threading.Tasks;
 
 namespace MoBi.Core.Services
 {
    public interface ISimulationRunner
    {
-      void RunSimulation(IMoBiSimulation simulation, bool defineSettings = false);
-      void StopSimulation();
+      Task RunSimulationAsync(IMoBiSimulation simulation, bool defineSettings = false);
+      void StopSimulation(IMoBiSimulation simulation);
+      void StopAllSimulations();
+      bool IsSimulationRunning(IMoBiSimulation simulation);
    }
 }

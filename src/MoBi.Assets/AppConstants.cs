@@ -28,7 +28,7 @@ namespace MoBi.Assets
       public static readonly string DefaultSkin = "Office 2013 Light Gray";
       public static readonly string NewFormulaDescription = "Create New Formula";
       public static readonly string NewFormulaName = "New Formula";
-      public static readonly string SimulationRun = "Run Simulation";
+      public static readonly string SimulationRun = "Simulation(s) Running";
       public static readonly string ParameterType = "Type";
       public static readonly string NaN = "<NaN>";
       public static readonly string Project = "Project";
@@ -1158,7 +1158,7 @@ namespace MoBi.Assets
          public static readonly string ExportToExcel = "Export to Excel®...";
          public static readonly string ImportFromExcel = "Import from Excel®...";
          public static readonly string ShowChanges = "Show Changes";
-
+         public static readonly string StopAllRunningSimulations = "Stop all running simulations";
          public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
 
          public static string AddExistingAs(string objectTypeName, string targetTypeName) => $"Load {objectTypeName} as {targetTypeName}...";
