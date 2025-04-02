@@ -28,7 +28,6 @@ namespace MoBi.UI.Views
       {
          InitializeComponent();
          _screenBinder = new ScreenBinder<ParameterDTO>();
-         this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
       }
 
       public override void InitializeBinding()
