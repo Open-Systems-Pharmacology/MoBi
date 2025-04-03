@@ -14,6 +14,7 @@ using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Events;
 
@@ -36,7 +37,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IEditFormulaInPathAndValuesPresenter _editFormulaInPathAndValuesPresenter;
       private readonly IInteractionTasksForIndividualBuildingBlock _interactionTasksForIndividualBuildingBlock;
       private readonly IMoBiFormulaTask _formulaTask;
-      private IndividualBuildingBlock _buildingBlock;
+      private IndividualBuildingBlock _individualBuildingBlock;
       private IndividualParameter _individualParameter;
       private readonly IPathAndValueEntityToDistributedParameterMapper _pathAndValueEntityToDistributedParameterMapper;
       private readonly IEditTaskFor<IndividualBuildingBlock> _editTask;
@@ -73,7 +74,7 @@ namespace MoBi.Presentation.Presenter
          if (_individualParameter.Formula != null)
             return;
 
-         var (command, explicitFormula) = _formulaTask.CreateNewFormulaInBuildingBlock(typeof(ExplicitFormula), _individualParameterDTO.Dimension, _buildingBlock.FormulaCache.Select(x => x.Name), _buildingBlock);
+         var (command, explicitFormula) = _formulaTask.CreateNewFormulaInBuildingBlock(typeof(ExplicitFormula), _individualParameterDTO.Dimension, _individualBuildingBlock.FormulaCache.Select(x => x.Name), _individualBuildingBlock);
 
          var macroCommand = new MoBiMacroCommand
          {
@@ -83,15 +84,15 @@ namespace MoBi.Presentation.Presenter
          };
 
          macroCommand.Add(command);
-         macroCommand.Add(_interactionTasksForIndividualBuildingBlock.SetFormula(_buildingBlock, _individualParameter, explicitFormula));
+         macroCommand.Add(_interactionTasksForIndividualBuildingBlock.SetFormula(_individualBuildingBlock, _individualParameter, explicitFormula));
          AddCommand(macroCommand);
 
-         Edit(_individualParameter, _buildingBlock);
+         Edit(_individualParameter, _individualBuildingBlock);
       }
 
       public void Edit(IndividualParameter individualParameter, IndividualBuildingBlock buildingBlock)
       {
-         _buildingBlock = buildingBlock;
+         _individualBuildingBlock = buildingBlock;
          _individualParameter = individualParameter;
          _individualParameterDTO = _individualParameterToIndividualParameterDTOMapper.MapFrom(individualParameter);
          createDistributionValue();
@@ -104,7 +105,7 @@ namespace MoBi.Presentation.Presenter
       private void createDistributionValue()
       {
          if (_individualParameter.DistributionType.HasValue)
-            _individualParameterDTO.DistributionValue = _pathAndValueEntityToDistributedParameterMapper.MapFrom(_individualParameter, _individualParameter.DistributionType.Value, subParametersFrom(_buildingBlock, _individualParameter)).Value;
+            _individualParameterDTO.DistributionValue = _pathAndValueEntityToDistributedParameterMapper.MapFrom(_individualParameter, _individualParameter.DistributionType.Value, subParametersFrom(_individualBuildingBlock, _individualParameter)).Value;
       }
 
       private IReadOnlyList<IndividualParameter> subParametersFrom(IndividualBuildingBlock buildingBlock, IndividualParameter individualParameter)
@@ -114,29 +115,29 @@ namespace MoBi.Presentation.Presenter
 
       public void UpdateValue(double? newValue)
       {
-         if (!newValue.HasValue || isStringEquivalent(_individualParameterDTO.Value, newValue)) 
+         if (!newValue.HasValue || areEquivalent(_individualParameterDTO.Value, newValue)) 
             return;
          
-         AddCommand(_interactionTasksForIndividualBuildingBlock.SetValue(_buildingBlock, newValue, _individualParameter));
-         Edit(_individualParameter, _buildingBlock);
+         AddCommand(_interactionTasksForIndividualBuildingBlock.SetValue(_individualBuildingBlock, newValue, _individualParameter));
+         Edit(_individualParameter, _individualBuildingBlock);
       }
 
-      private bool isStringEquivalent(double? value, double? newValue)
+      private bool areEquivalent(double? value, double? newValue)
       {
          if(value.HasValue && newValue.HasValue)
-            return value.ToString() == newValue.ToString();
+            return value.Value.EqualsByTolerance(newValue.Value, 1e-15);
 
          return false;
       }
 
       public void UpdateUnit(Unit unit)
       {
-         AddCommand(_interactionTasksForIndividualBuildingBlock.SetUnit(_buildingBlock, _individualParameter, unit));
+         AddCommand(_interactionTasksForIndividualBuildingBlock.SetUnit(_individualBuildingBlock, _individualParameter, unit));
       }
 
       public void NavigateToParameter()
       {
-         _editTask.Edit(_buildingBlock);
+         _editTask.Edit(_individualBuildingBlock);
          _eventPublisher.PublishEvent(new EntitySelectedEvent(_individualParameter, this));
       }
 
@@ -145,7 +146,7 @@ namespace MoBi.Presentation.Presenter
          if (_individualParameter.Formula != null)
          {
             _view.ShowFormulaEdit();
-            _editFormulaInPathAndValuesPresenter.Init(_individualParameter, _individualParameter.BuildingBlock as IndividualBuildingBlock, new UsingFormulaDecoder());
+            _editFormulaInPathAndValuesPresenter.Init(_individualParameter, _individualBuildingBlock, new UsingFormulaDecoder());
          }
          else
             _view.HideFormulaEdit();

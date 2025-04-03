@@ -179,6 +179,9 @@ namespace MoBi.Presentation.Tasks.Interaction
             modalPresenter.Text = AppConstants.Captions.EditFormula;
             var usingFormulaDecoder = new UsingFormulaDecoder();
 
+            // The modal presenter allows the user to dismiss any changes made so here we will edit a clone of the builder
+            // that allows us to either replace the formula with the new one, or discard depending on whether the dialog is canceled
+            // or not.
             var clonedBuildingBlock = _cloneManagerForBuildingBlock.Clone(buildingBlock);
             var clonedBuilder = clonedBuildingBlock.ByPath(builder.Path);
             editFormulaPresenter.InitializeWith(new MoBiMacroCommand());

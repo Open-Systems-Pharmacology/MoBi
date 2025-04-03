@@ -85,7 +85,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IEntityPathResolver _entityPathResolver;
       private readonly IObjectPathFactory _objectPathFactory;
       private readonly IndividualBuildingBlock _noIndividualSelected;
-      private readonly Cache<ParameterDTO, IndividualParameter> _individualParameterCache = new Cache<ParameterDTO, IndividualParameter>();
+      private readonly Cache<ParameterDTO, IndividualParameter> _individualParameterCache = new Cache<ParameterDTO, IndividualParameter>(onMissingKey: dto => null);
 
       public bool ChangeLocalisationAllowed { set; get; }
 
@@ -180,15 +180,18 @@ namespace MoBi.Presentation.Presenter
          _allParametersDTO.Clear();
          _allParametersDTO.AddRange(_parameters.MapAllUsing(_parameterToDTOParameterMapper));
 
-         _allParametersDTO.AddRange(parametersForIndividualParameters(individualParameters, selectedIndividual));
+         initializeIndividualParameterCache(individualParameters, selectedIndividual);
+         _allParametersDTO.AddRange(_individualParameterCache.Keys);
       }
 
-      private IReadOnlyList<ParameterDTO> parametersForIndividualParameters(IReadOnlyList<IndividualParameter> individualParameters, IndividualBuildingBlock selectedIndividual)
+      private void initializeIndividualParameterCache(IReadOnlyList<IndividualParameter> individualParameters, IndividualBuildingBlock selectedIndividual)
       {
          _individualParameterCache.Clear();
-         individualParameters.Each(individualParameter => { _individualParameterCache[_individualParameterToDTOParameterMapper.MapFrom(selectedIndividual, individualParameter)] = individualParameter; });
-
-         return _individualParameterCache.Keys.ToList();
+         individualParameters.Each(individualParameter =>
+         {
+            var parameterDTO = _individualParameterToDTOParameterMapper.MapFrom(selectedIndividual, individualParameter);
+            _individualParameterCache[parameterDTO] = individualParameter;
+         });
       }
 
       private void releaseParameters() => _allParametersDTO.Each(dto => dto.Release());
@@ -270,14 +273,9 @@ namespace MoBi.Presentation.Presenter
       public void Select(ParameterDTO selectedParameter)
       {
          if (selectedParameter.IsIndividualPreview)
-            setupEditPresenter(individualParameterFrom(selectedParameter));
+            setupEditPresenter(_individualParameterCache[selectedParameter]);
          else
             setupEditPresenter(ParameterFrom(selectedParameter));
-      }
-
-      private IndividualParameter individualParameterFrom(ParameterDTO selectedParameter)
-      {
-         return _individualParameterCache.Contains(selectedParameter) ? _individualParameterCache[selectedParameter] : null;
       }
 
       public void SetIsPersistable(ParameterDTO parameterDTO, bool isPersistable) =>
