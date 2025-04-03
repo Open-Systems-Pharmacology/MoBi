@@ -19,7 +19,6 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.DTO;
-using ObjectBaseDTO = MoBi.Presentation.DTO.ObjectBaseDTO;
 
 namespace MoBi.Presentation
 {
@@ -43,6 +42,7 @@ namespace MoBi.Presentation
       protected IEntityPathResolver _entityPathResolver;
       protected IObjectPathFactory _objectPathFactory;
       protected IIndividualParameterToParameterDTOMapper _individualParameterToParameterDTOMapper;
+      protected IEditIndividualParameterPresenter _editIndividualParameterPresenter;
 
       protected override void Context()
       {
@@ -66,10 +66,11 @@ namespace MoBi.Presentation
          _entityPathResolver = A.Fake<IEntityPathResolver>();
          _objectPathFactory = new ObjectPathFactory(new AliasCreator());
          _individualParameterToParameterDTOMapper = A.Fake<IIndividualParameterToParameterDTOMapper>();
+         _editIndividualParameterPresenter = A.Fake<IEditIndividualParameterPresenter>();
 
          sut = new EditParametersInContainerPresenter(_view, _formulaMapper, _parameterMapper, _interactionTasks,
             _distributeParameterPresenter, _parameterPresenter, _quantityTask, _interactionTaskContext, _clipboardManager, _editTask,
-            _selectReferencePresenterFactory, _favoriteTask, _typeResolver, _entityPathResolver, _objectPathFactory, _individualParameterToParameterDTOMapper);
+            _selectReferencePresenterFactory, _favoriteTask, _typeResolver, _entityPathResolver, _objectPathFactory, _individualParameterToParameterDTOMapper, _editIndividualParameterPresenter);
          sut.InitializeWith(A.Fake<ICommandCollector>());
       }
    }
@@ -460,6 +461,41 @@ namespace MoBi.Presentation
       public void should_copy_resolved_path_to_clipboard()
       {
          A.CallTo(() => _view.CopyToClipBoard(_expectedPath)).MustHaveHappened();
+      }
+   }
+
+   public class When_selecting_an_individual_parameter_to_view : concern_for_EditParametersInContainerPresenter
+   {
+      private IndividualParameter _individualParameter;
+      private ParameterDTO _dto;
+
+      protected override void Context()
+      {
+         base.Context();
+         _individualParameter = new IndividualParameter();
+         sut.SelectedIndividual = new IndividualBuildingBlock { _individualParameter };
+         _dto = new ParameterDTO(new Parameter().WithName(_individualParameter.Name)) { IsIndividualPreview = true };
+         A.CallTo(() => _individualParameterToParameterDTOMapper.MapFrom(sut.SelectedIndividual, _individualParameter)).Returns(_dto);
+         
+         sut.Edit(new Container());
+         sut.UpdatePreview();
+      }
+
+      protected override void Because()
+      {
+         sut.Select(_dto);
+      }
+
+      [Observation]
+      public void the_editor_is_updated()
+      {
+         A.CallTo(() => _editIndividualParameterPresenter.Edit(_individualParameter, sut.SelectedIndividual)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_view_is_updated()
+      {
+         A.CallTo(() => _view.SetEditParameterView(_editIndividualParameterPresenter.BaseView)).MustHaveHappened();
       }
    }
 

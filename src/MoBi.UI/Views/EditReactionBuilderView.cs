@@ -22,7 +22,6 @@ namespace MoBi.UI.Views
    {
       private IEditReactionBuilderPresenter _presenter;
       private ScreenBinder<ReactionBuilderDTO> _screenBinder;
-      private CheckEditElementBinder<ReactionBuilderDTO> _checkEditElementBinder;
 
       public EditReactionBuilderView(IImageListRetriever imageListRetriever)
       {

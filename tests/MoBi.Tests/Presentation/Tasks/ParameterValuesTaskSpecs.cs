@@ -51,7 +51,7 @@ namespace MoBi.Presentation.Tasks
 
          sut = new ParameterValuesTask(_context, _editTasks, _cloneManagerForBuildingBlock,
             new ImportedQuantityToParameterValueMapper(_parameterValuesCreator), A.Fake<IParameterValueBuildingBlockExtendManager>(),
-            A.Fake<IMoBiFormulaTask>(), A.Fake<IMoBiSpatialStructureFactory>(), new ParameterValuePathTask(A.Fake<IFormulaTask>(), _context.Context),
+            A.Fake<IMoBiFormulaTask>(), new ParameterValuePathTask(A.Fake<IFormulaTask>(), _context.Context),
             _parameterValuesCreator, _objectTypeResolver, A.Fake<IExportDataTableToExcelTask>(), A.Fake<IParameterValuesToParameterValuesDataTableMapper>(), _mapper);
       }
    }

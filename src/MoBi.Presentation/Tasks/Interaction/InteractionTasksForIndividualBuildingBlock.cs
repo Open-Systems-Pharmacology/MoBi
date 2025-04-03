@@ -3,8 +3,8 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Mappers;
 using MoBi.Presentation.Tasks.Edit;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.Tasks.Interaction
@@ -21,10 +21,17 @@ namespace MoBi.Presentation.Tasks.Interaction
       public InteractionTasksForIndividualBuildingBlock(IInteractionTaskContext interactionTaskContext,
          IEditTasksForIndividualBuildingBlock editTask,
          IMoBiFormulaTask moBiFormulaTask,
-         IParameterFactory parameterFactory,
          IExportDataTableToExcelTask exportDataTableToExcelTask,
+         ICloneManagerForBuildingBlock cloneManager,
+         IPathAndValueEntityToDistributedParameterMapper pathAndValueEntityToDistributedParameterMapper,
          IIndividualParametersToIndividualParametersDataTableMapper dataTableMapper) :
-         base(interactionTaskContext, editTask, moBiFormulaTask, parameterFactory, exportDataTableToExcelTask, dataTableMapper)
+         base(interactionTaskContext, 
+            editTask, 
+            moBiFormulaTask, 
+            exportDataTableToExcelTask, 
+            cloneManager,
+            pathAndValueEntityToDistributedParameterMapper,
+            dataTableMapper)
       {
       }
 

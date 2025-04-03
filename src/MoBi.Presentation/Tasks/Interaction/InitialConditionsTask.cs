@@ -2,7 +2,6 @@
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
-using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Events;
@@ -45,7 +44,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       bool CorrectName(TBuildingBlock buildingBlock, Module module);
    }
 
-   public class InitialConditionsTask<TBuildingBlock> : InteractionTasksForExtendablePathAndValueEntity<TBuildingBlock, InitialCondition>, IInitialConditionsTask<TBuildingBlock> 
+   public class InitialConditionsTask<TBuildingBlock> : InteractionTasksForExtendablePathAndValueEntity<TBuildingBlock, InitialCondition>, IInitialConditionsTask<TBuildingBlock>
       where TBuildingBlock : class, ILookupBuildingBlock<InitialCondition>, new()
    {
       private readonly IReactionDimensionRetriever _dimensionRetriever;
@@ -57,7 +56,6 @@ namespace MoBi.Presentation.Tasks.Interaction
          IInitialConditionsBuildingBlockExtendManager extendManager,
          ICloneManagerForBuildingBlock cloneManagerForBuildingBlock,
          IMoBiFormulaTask moBiFormulaTask,
-         IMoBiSpatialStructureFactory spatialStructureFactory,
          IImportedQuantityToInitialConditionMapper dtoMapper,
          IInitialConditionPathTask initialConditionPathTask,
          IReactionDimensionRetriever dimensionRetriever,
@@ -72,7 +70,6 @@ namespace MoBi.Presentation.Tasks.Interaction
             extendManager,
             cloneManagerForBuildingBlock,
             moBiFormulaTask,
-            spatialStructureFactory,
             dtoMapper,
             initialConditionPathTask,
             objectTypeResolver,

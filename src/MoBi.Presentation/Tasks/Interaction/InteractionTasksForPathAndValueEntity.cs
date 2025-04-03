@@ -13,6 +13,7 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
@@ -27,9 +28,8 @@ namespace MoBi.Presentation.Tasks.Interaction
       /// </summary>
       /// <param name="buildingBlock">The building block that has the formula added and contains the builder</param>
       /// <param name="builder">the builder being updated with a new formula</param>
-      /// <param name="referenceParameter"></param>
       /// <returns>The command used to modify the building block and builders</returns>
-      ICommand<IMoBiContext> EditFormulaAtBuildingBlock(TBuildingBlock buildingBlock, TBuilder builder, IParameter referenceParameter);
+      ICommand<IMoBiContext> EditFormulaAtBuildingBlock(TBuildingBlock buildingBlock, TBuilder builder);
 
       /// <summary>
       ///    Sets the display unit of a builder
@@ -84,19 +84,22 @@ namespace MoBi.Presentation.Tasks.Interaction
       private readonly IExportDataTableToExcelTask _exportDataTableToExcelTask;
       private readonly IMapper<TBuildingBlock, List<DataTable>> _dataTableMapper;
       private readonly IPathAndValueEntityToDistributedParameterMapper _pathAndValueEntityToDistributedParameterMapper;
+      protected readonly ICloneManagerForBuildingBlock _cloneManagerForBuildingBlock;
 
       protected InteractionTasksForPathAndValueEntity(IInteractionTaskContext interactionTaskContext,
          IEditTasksForBuildingBlock<TBuildingBlock> editTask,
          IMoBiFormulaTask moBiFormulaTask,
          IExportDataTableToExcelTask exportDataTableToExcelTask,
          IMapper<TBuildingBlock, List<DataTable>> dataTableMapper,
-         IPathAndValueEntityToDistributedParameterMapper pathAndValueEntityToDistributedParameterMapper)
+         IPathAndValueEntityToDistributedParameterMapper pathAndValueEntityToDistributedParameterMapper,
+         ICloneManagerForBuildingBlock cloneManagerForBuildingBlock)
          : base(interactionTaskContext, editTask)
       {
          _moBiFormulaTask = moBiFormulaTask;
          _exportDataTableToExcelTask = exportDataTableToExcelTask;
          _dataTableMapper = dataTableMapper;
          _pathAndValueEntityToDistributedParameterMapper = pathAndValueEntityToDistributedParameterMapper;
+         _cloneManagerForBuildingBlock = cloneManagerForBuildingBlock;
       }
 
       public ICommand SetValueOrigin(TBuildingBlock buildingBlock, ValueOrigin valueOrigin, TBuilder pathAndValueEntity)
@@ -160,7 +163,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       protected abstract IReadOnlyCollection<IObjectBase> GetNamedObjectsInParent(TBuildingBlock buildingBlockToClone);
 
-      protected IMoBiCommand EditFormulaAndSetOnBuilder(TBuildingBlock buildingBlock, TBuilder builder, IParameter referenceParameter)
+      private IMoBiCommand editFormulaAndSetOnBuilder(TBuildingBlock buildingBlock, TBuilder builder)
       {
          var macroCommand = new MoBiMacroCommand
          {
@@ -175,12 +178,19 @@ namespace MoBi.Presentation.Tasks.Interaction
             modalPresenter.Encapsulate(editFormulaPresenter);
             modalPresenter.Text = AppConstants.Captions.EditFormula;
             var usingFormulaDecoder = new UsingFormulaDecoder();
-            editFormulaPresenter.Init(builder, buildingBlock, usingFormulaDecoder);
+
+            // The modal presenter allows the user to dismiss any changes made so here we will edit a clone of the builder
+            // that allows us to either replace the formula with the new one, or discard depending on whether the dialog is canceled
+            // or not.
+            var clonedBuildingBlock = _cloneManagerForBuildingBlock.Clone(buildingBlock);
+            var clonedBuilder = clonedBuildingBlock.ByPath(builder.Path);
+            editFormulaPresenter.InitializeWith(new MoBiMacroCommand());
+            editFormulaPresenter.Init(clonedBuilder, clonedBuildingBlock, usingFormulaDecoder);
 
             if (!modalPresenter.Show())
                return new MoBiEmptyCommand();
 
-            var newFormula = editFormulaPresenter.Formula;
+            var newFormula = clonedBuilder.Formula;
             if (newFormula is ConstantFormula constantFormula)
             {
                macroCommand.Add(setValue(builder, constantFormula.Value, constantFormula.Dimension.BaseUnit, buildingBlock));
@@ -198,15 +208,15 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public IMoBiCommand SetFormula(TBuildingBlock buildingBlock, TBuilder builder, IFormula formula)
       {
-         return SetFormula(buildingBlock, builder, formula, shouldClearValue: builder.Value.HasValue);
+         return setFormula(buildingBlock, builder, formula, shouldClearValue: builder.Value.HasValue || builder.DistributionType.HasValue);
       }
 
-      protected IMoBiCommand setFormula(TBuildingBlock buildingBlock, TBuilder builder, IFormula formula)
+      private IMoBiCommand setFormula(TBuildingBlock buildingBlock, TBuilder builder, IFormula formula)
       {
          return ChangeValueFormulaCommand(buildingBlock, builder, formula);
       }
 
-      protected IMoBiCommand SetFormula(TBuildingBlock buildingBlock, TBuilder builder, IFormula formula, bool shouldClearValue)
+      private IMoBiCommand setFormula(TBuildingBlock buildingBlock, TBuilder builder, IFormula formula, bool shouldClearValue)
       {
          var macroCommand = new MoBiMacroCommand
          {
@@ -228,7 +238,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return SetValueWithUnit(builder, unit.UnitValueToBaseUnitValue(newDisplayValue.GetValueOrDefault(double.NaN)), unit, buildingBlock);
       }
 
-      protected IMoBiCommand setValue(TBuilder builder, double? newDisplayValue, Unit unit, TBuildingBlock buildingBlock)
+      private IMoBiCommand setValue(TBuilder builder, double? newDisplayValue, Unit unit, TBuildingBlock buildingBlock)
       {
          return SetDisplayValueWithUnit(builder, newDisplayValue, unit, buildingBlock);
       }
@@ -253,7 +263,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return setValue(builder, builder.ConvertToDisplayUnit(ValueFromBuilder(builder)), newUnit, buildingBlock);
       }
 
-      public virtual ICommand<IMoBiContext> EditFormulaAtBuildingBlock(TBuildingBlock buildingBlock, TBuilder builder, IParameter referenceParameter)
+      public virtual ICommand<IMoBiContext> EditFormulaAtBuildingBlock(TBuildingBlock buildingBlock, TBuilder builder)
       {
          var macroCommand = new MoBiMacroCommand
          {
@@ -262,24 +272,17 @@ namespace MoBi.Presentation.Tasks.Interaction
             Description = AppConstants.Commands.SetValueAndFormula
          };
 
-         macroCommand.Add(EditFormulaAndSetOnBuilder(buildingBlock, builder, referenceParameter));
+         macroCommand.Add(editFormulaAndSetOnBuilder(buildingBlock, builder));
 
          return macroCommand;
       }
 
-      protected virtual double? ValueFromBuilder(TBuilder builder)
-      {
-         return builder.Value;
-      }
+      protected virtual double? ValueFromBuilder(TBuilder builder) => builder.Value;
 
-      public IMoBiCommand ChangeValueFormulaCommand(TBuildingBlock buildingBlock, TBuilder builder, IFormula formula)
-      {
-         return new ChangeValueFormulaCommand<TBuilder>(buildingBlock, builder, formula, builder.Formula).RunCommand(Context);
-      }
+      public IMoBiCommand ChangeValueFormulaCommand(TBuildingBlock buildingBlock, TBuilder builder, IFormula formula) => 
+         new ChangeValueFormulaCommand<TBuilder>(buildingBlock, builder, formula, builder.Formula).RunCommand(Context);
 
-      protected IMoBiCommand SetValueWithUnit(TBuilder builder, double? unitValueToBaseUnitValue, Unit unit, TBuildingBlock buildingBlock)
-      {
-         return new PathAndValueEntityValueOrUnitChangedCommand<TBuilder, TBuildingBlock>(builder, unitValueToBaseUnitValue, unit, buildingBlock).RunCommand(Context);
-      }
+      protected IMoBiCommand SetValueWithUnit(TBuilder builder, double? unitValueToBaseUnitValue, Unit unit, TBuildingBlock buildingBlock) => 
+         new PathAndValueEntityValueOrUnitChangedCommand<TBuilder, TBuildingBlock>(builder, unitValueToBaseUnitValue, unit, buildingBlock).RunCommand(Context);
    }
 }

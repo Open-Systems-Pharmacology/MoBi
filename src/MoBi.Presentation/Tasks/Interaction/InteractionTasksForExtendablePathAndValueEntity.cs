@@ -31,33 +31,34 @@ namespace MoBi.Presentation.Tasks.Interaction
    public abstract class InteractionTasksForExtendablePathAndValueEntity<TBuildingBlock, TPathAndValueEntity> : InteractionTasksForPathAndValueEntity<Module, TBuildingBlock, TPathAndValueEntity>, IInteractionTasksForExtendablePathAndValueEntity<TBuildingBlock, TPathAndValueEntity>
       where TBuildingBlock : class, ILookupBuildingBlock<TPathAndValueEntity>, IBuildingBlock, new() where TPathAndValueEntity : PathAndValueEntity
    {
-      protected IExtendPathAndValuesManager<TPathAndValueEntity> _extendManager;
-      protected readonly ICloneManagerForBuildingBlock _cloneManagerForBuildingBlock;
+      private readonly IExtendPathAndValuesManager<TPathAndValueEntity> _extendManager;
 
-      protected readonly ISpatialStructureFactory _spatialStructureFactory;
       private readonly IMapper<ImportedQuantityDTO, TPathAndValueEntity> _dtoToQuantityToParameterValueMapper;
       protected readonly IPathAndValueEntityPathTask<ILookupBuildingBlock<TPathAndValueEntity>, TPathAndValueEntity> _entityPathTask;
 
       private readonly TBuildingBlock _newBuildingBlock;
       private readonly IObjectTypeResolver _objectTypeResolver;
 
-      protected InteractionTasksForExtendablePathAndValueEntity(IInteractionTaskContext interactionTaskContext, 
+      protected InteractionTasksForExtendablePathAndValueEntity(IInteractionTaskContext interactionTaskContext,
          IEditTasksForBuildingBlock<TBuildingBlock> editTask,
-         IExtendPathAndValuesManager<TPathAndValueEntity> extendManager, 
+         IExtendPathAndValuesManager<TPathAndValueEntity> extendManager,
          ICloneManagerForBuildingBlock cloneManagerForBuildingBlock,
-         IMoBiFormulaTask moBiFormulaTask, 
-         ISpatialStructureFactory spatialStructureFactory, 
+         IMoBiFormulaTask moBiFormulaTask,
          IMapper<ImportedQuantityDTO, TPathAndValueEntity> dtoToQuantityToParameterValueMapper,
          IPathAndValueEntityPathTask<ILookupBuildingBlock<TPathAndValueEntity>, TPathAndValueEntity> entityPathTask,
-         IObjectTypeResolver objectTypeResolver, 
-         IExportDataTableToExcelTask exportDataTableToExcelTask, 
-         IMapper<IEnumerable<TPathAndValueEntity>, List<DataTable>> dataTableMapper, 
+         IObjectTypeResolver objectTypeResolver,
+         IExportDataTableToExcelTask exportDataTableToExcelTask,
+         IMapper<IEnumerable<TPathAndValueEntity>, List<DataTable>> dataTableMapper,
          IPathAndValueEntityToDistributedParameterMapper pathAndValueEntityToDistributedParameterMapper)
-         : base(interactionTaskContext, editTask, moBiFormulaTask, exportDataTableToExcelTask, dataTableMapper, pathAndValueEntityToDistributedParameterMapper)
+         : base(interactionTaskContext, 
+            editTask, 
+            moBiFormulaTask, 
+            exportDataTableToExcelTask, 
+            dataTableMapper, 
+            pathAndValueEntityToDistributedParameterMapper, 
+            cloneManagerForBuildingBlock)
       {
          _extendManager = extendManager;
-         _cloneManagerForBuildingBlock = cloneManagerForBuildingBlock;
-         _spatialStructureFactory = spatialStructureFactory;
          _dtoToQuantityToParameterValueMapper = dtoToQuantityToParameterValueMapper;
          _entityPathTask = entityPathTask;
          _objectTypeResolver = objectTypeResolver;
