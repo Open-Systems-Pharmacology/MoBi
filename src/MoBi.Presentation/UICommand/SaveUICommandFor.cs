@@ -17,6 +17,5 @@ namespace MoBi.Presentation.UICommand
       {
          _editTasks.Save(Subject);
       }
-
    }
 }
