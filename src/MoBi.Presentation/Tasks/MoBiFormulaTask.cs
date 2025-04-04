@@ -148,6 +148,7 @@ namespace MoBi.Presentation.Tasks
          }
          else if (formulaUsablePath is TimePath)
          {
+            // Changing the dimension of a TimePath changes this into a different kind of FormulaUsablePath
             var newFormulaUsablePath = _context.ObjectPathFactory.CreateFormulaUsablePathFrom(formulaUsablePath).WithAlias(alias).WithDimension(newDimension);
             command = swapFormulaUsablePaths(formula, formulaUsablePath, newFormulaUsablePath, buildingBlock);
          }
@@ -157,7 +158,7 @@ namespace MoBi.Presentation.Tasks
          return command.RunCommand(_context);
       }
 
-      public IMoBiCommand RemoveFormulaUsablePath(IFormula formula, FormulaUsablePath path, IBuildingBlock buildingBlock) => getRemoveFormulaUsablePathCommand(formula, path, buildingBlock).RunCommand(_context);
+      public IMoBiCommand RemoveFormulaUsablePath(IFormula formula, FormulaUsablePath path, IBuildingBlock buildingBlock) => new RemoveFormulaUsablePathCommand(formula, path, buildingBlock).RunCommand(_context);
 
       public (bool valid, string validationMessage) Validate(string formulaString, FormulaWithFormulaString formula, IBuildingBlock buildingBlock)
       {
@@ -181,6 +182,7 @@ namespace MoBi.Presentation.Tasks
          }
          else if (formulaUsablePath is TimePath)
          {
+            // Changing the Path of a TimePath changes this into a different kind of FormulaUsablePath
             var newFormulaUsablePath = _context.ObjectPathFactory.CreateFormulaUsablePathFrom(newPath).WithAlias(formulaUsablePath.Alias).WithDimension(formulaUsablePath.Dimension);
             command = swapFormulaUsablePaths(formula, formulaUsablePath, newFormulaUsablePath, buildingBlock);
          }
@@ -199,18 +201,14 @@ namespace MoBi.Presentation.Tasks
             CommandType = AppConstants.Commands.EditCommand
          };
 
-         macroCommand.Add(getRemoveFormulaUsablePathCommand(formula, oldPath, buildingBlock));
-         macroCommand.Add(getAddFormulaUsablePathCommand(formula, newPath, buildingBlock));
+         macroCommand.Add(new RemoveFormulaUsablePathCommand(formula, oldPath, buildingBlock));
+         macroCommand.Add(new AddFormulaUsablePathCommand(formula, newPath, buildingBlock));
          return macroCommand;
       }
 
       private bool isTimePathAndDimension(ObjectPath newPath, IDimension dimension) => dimension.Equals(timeDimension) && newPath.PathAsString.Equals(Constants.TIME);
 
-      public IMoBiCommand AddFormulaUsablePath(IFormula formula, FormulaUsablePath path, IBuildingBlock buildingBlock) => getAddFormulaUsablePathCommand(formula, path, buildingBlock).RunCommand(_context);
-
-      private static AddFormulaUsablePathCommand getAddFormulaUsablePathCommand(IFormula formula, FormulaUsablePath path, IBuildingBlock buildingBlock) => new AddFormulaUsablePathCommand(formula, path, buildingBlock);
-
-      private static RemoveFormulaUsablePathCommand getRemoveFormulaUsablePathCommand(IFormula formula, FormulaUsablePath path, IBuildingBlock buildingBlock) => new RemoveFormulaUsablePathCommand(formula, path, buildingBlock);
+      public IMoBiCommand AddFormulaUsablePath(IFormula formula, FormulaUsablePath path, IBuildingBlock buildingBlock) => new AddFormulaUsablePathCommand(formula, path, buildingBlock).RunCommand(_context);
 
       public IMoBiCommand ChangeVariableName(SumFormula formula, string newVariableName, IBuildingBlock buildingBlock) => new ChangeVariableNameCommand(formula, newVariableName, buildingBlock).RunCommand(_context);
 
