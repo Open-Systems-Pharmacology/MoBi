@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Commands;
@@ -10,7 +9,6 @@ using MoBi.Core.Helper;
 using MoBi.Core.Services;
 using MoBi.Helpers;
 using MoBi.Presentation.Presenter;
-using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
@@ -19,7 +17,6 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks
@@ -56,9 +53,121 @@ namespace MoBi.Presentation.Tasks
          _usingFormulaObject.Formula = MvExplicitFormula();
       }
 
-      protected static ExplicitFormula MvExplicitFormula() => new ExplicitFormula("M/V") {Name = "MOverV"};
+      protected static ExplicitFormula MvExplicitFormula() => new ExplicitFormula("M/V") { Name = "MOverV" };
 
-      protected static ExplicitFormula MvExplicitFormula2() => new ExplicitFormula("M/V/V") {Name = "MOverV"};
+      protected static ExplicitFormula MvExplicitFormula2() => new ExplicitFormula("M/V/V") { Name = "MOverV" };
+   }
+
+   public abstract class When_manipulating_time_path : concern_for_MoBiFormulaTask
+   {
+      protected IFormula _formula;
+      protected IDimension _timeDimension;
+
+      protected override void Context()
+      {
+         base.Context();
+         _timeDimension = A.Fake<IDimension>();
+         A.CallTo(() => _context.DimensionFactory.Dimension("Time")).Returns(_timeDimension);
+         _formula = new ExplicitFormula("t");
+         _formula.AddObjectPath(OriginalFormulaUsablePath.WithAlias(OriginalAlias).WithDimension(OriginalFormulaDimension));
+      }
+
+      protected abstract string OriginalAlias { get; }
+
+      protected abstract IDimension OriginalFormulaDimension { get; }
+
+      protected abstract FormulaUsablePath OriginalFormulaUsablePath { get; }
+   }
+
+   public class When_the_formula_task_is_changing_dimension_to_time_and_path_is_time : When_manipulating_time_path
+   {
+      protected override string OriginalAlias => "Time";
+      protected override IDimension OriginalFormulaDimension => A.Fake<IDimension>();
+      protected override FormulaUsablePath OriginalFormulaUsablePath => new FormulaUsablePath("Time");
+      private IDimension _newDimension;
+      protected override void Context()
+      {
+         base.Context();
+         _newDimension = _timeDimension;
+      }
+
+      protected override void Because()
+      {
+         sut.SetFormulaPathDimension(_formula, _newDimension, _formula.FormulaUsablePathBy(OriginalAlias), _buildingBlock);
+      }
+
+      [Observation]
+      public void the_formula_usable_path_should_be_time_path()
+      {
+         (_formula.FormulaUsablePathBy(OriginalAlias) is TimePath).ShouldBeTrue();
+      }
+   }
+
+   public class When_the_formula_task_is_changing_path_to_time_and_dimension_is_time : When_manipulating_time_path
+   {
+      protected override string OriginalAlias => "Time";
+      protected override IDimension OriginalFormulaDimension => _timeDimension;
+      protected override FormulaUsablePath OriginalFormulaUsablePath => new FormulaUsablePath("something");
+
+      protected override void Because()
+      {
+         sut.ChangePathInFormula(_formula, new FormulaUsablePath("Time"), _formula.FormulaUsablePathBy(OriginalAlias), _buildingBlock);
+      }
+
+      [Observation]
+      public void the_formula_usable_path_should_be_time_path()
+      {
+         (_formula.FormulaUsablePathBy(OriginalAlias) is TimePath).ShouldBeTrue();
+      }
+   }
+
+   public class When_the_formula_task_is_changing_dimension_on_a_time_path : When_manipulating_time_path
+   {
+      protected override string OriginalAlias => "Time";
+      protected override IDimension OriginalFormulaDimension => _timeDimension;
+      protected override FormulaUsablePath OriginalFormulaUsablePath => new TimePath();
+      private IDimension _newDimension;
+      protected override void Context()
+      {
+         base.Context();
+         _newDimension = A.Fake<IDimension>();
+      }
+
+      protected override void Because()
+      {
+         sut.SetFormulaPathDimension(_formula, _newDimension, _formula.FormulaUsablePathBy(OriginalAlias), _buildingBlock);
+      }
+
+      [Observation]
+      public void the_formula_usable_path_should_not_be_time_path()
+      {
+         (_formula.FormulaUsablePathBy(OriginalAlias) is TimePath).ShouldBeFalse();
+      }
+   }
+
+   public class When_the_formula_task_is_changing_path_on_a_time_path : When_manipulating_time_path
+   {
+      protected override string OriginalAlias => "Time";
+      protected override IDimension OriginalFormulaDimension => _timeDimension;
+      protected override FormulaUsablePath OriginalFormulaUsablePath => new TimePath();
+      private ObjectPath _newPath;
+
+      protected override void Context()
+      {
+         base.Context();
+         _newPath = new ObjectPath();
+      }
+
+      protected override void Because()
+      {
+         sut.ChangePathInFormula(_formula, _newPath, _formula.FormulaUsablePathBy(OriginalAlias), _buildingBlock);
+      }
+
+      [Observation]
+      public void the_formula_usable_path_should_not_be_time_path()
+      {
+         (_formula.FormulaUsablePathBy(OriginalAlias) is TimePath).ShouldBeFalse();
+      }
    }
 
    public class When_the_formula_task_is_editing_a_new_formula : concern_for_MoBiFormulaTask
@@ -332,7 +441,7 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         _formula = new ExplicitFormula {Id = "id"};
+         _formula = new ExplicitFormula { Id = "id" };
          _formulaUsablePath = new FormulaUsablePath("A", "B").WithAlias("OLD");
          _formula.AddObjectPath(_formulaUsablePath);
          A.CallTo(() => _context.Get<IFormula>(_formula.Id)).Returns(_formula);
@@ -418,7 +527,7 @@ namespace MoBi.Presentation.Tasks
          _parameter1 = new Parameter().WithName("P1");
          _parameter2 = new Parameter().WithName("P1");
 
-         A.CallTo(() => _parametersInBuildingBlockRetriever.AllFrom(_buildingBlock, A<Func<IParameter, bool>>._)).Returns(new[] {_parameter1, _parameter2});
+         A.CallTo(() => _parametersInBuildingBlockRetriever.AllFrom(_buildingBlock, A<Func<IParameter, bool>>._)).Returns(new[] { _parameter1, _parameter2 });
          _updateCommand1 = A.Fake<IMoBiCommand>();
          A.CallTo(() => _quantityTask.UpdateDefaultStateAndValueOriginFor(_parameter1, _buildingBlock)).Returns(_updateCommand1);
 
@@ -461,7 +570,7 @@ namespace MoBi.Presentation.Tasks
          _parameter.DisplayUnit = _parameter.Dimension.DefaultUnit;
          _parameter.IsDefault = false;
 
-         A.CallTo(() => _parametersInBuildingBlockRetriever.AllFrom(_buildingBlock, A<Func<IParameter, bool>>._)).Returns(new[] {_parameter});
+         A.CallTo(() => _parametersInBuildingBlockRetriever.AllFrom(_buildingBlock, A<Func<IParameter, bool>>._)).Returns(new[] { _parameter });
          _updateCommand = new MoBiEmptyCommand();
          A.CallTo(() => _quantityTask.UpdateDefaultStateAndValueOriginFor(_parameter, _buildingBlock)).Returns(_updateCommand);
       }

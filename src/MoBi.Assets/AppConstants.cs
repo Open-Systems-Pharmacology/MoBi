@@ -268,6 +268,7 @@ namespace MoBi.Assets
          public static readonly string RemoveTrackedQuantityChanges = "Remove tracked quantity changes";
          public static readonly string RestoreTrackedQuantityChanges = "Restore tracked quantity changes";
          public static readonly string AddedMultipleBuildingBlocksFromFile = "Added multiple building blocks from file";
+         public static readonly string ChangeFormulaUsablePath = "Change formula usable path";
          public static string AddNewParameterValues(string buildingBlockName) => $"Add new Parameter Values to {buildingBlockName}";
 
          public static string ConvertDistributedPathAndValueEntityToConstantValue(string type, string path) => $"Convert distributed {type} '{path}' to constant value";
