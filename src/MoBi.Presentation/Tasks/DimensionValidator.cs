@@ -129,9 +129,9 @@ namespace MoBi.Presentation.Tasks
          checkExplicitFormula(parameter, displayPath, rhsDimBaseRep, rhsFormula as ExplicitFormula);
       }
 
-      private void addWarning(IObjectBase entityToValidate, string warning) => addNotification(NotificationType.Warning, entityToValidate, warning);
+      private void addWarning(IEntity entityToValidate, string warning) => addNotification(NotificationType.Warning, entityToValidate, warning);
 
-      private void addNotification(NotificationType notificationType, IObjectBase entityToValidate, string notification)
+      private void addNotification(NotificationType notificationType, IEntity entityToValidate, string notification)
       {
          var builder = _simulationBuilder.BuilderFor(entityToValidate);
          if (!shouldShowNotification(entityToValidate, notification))
