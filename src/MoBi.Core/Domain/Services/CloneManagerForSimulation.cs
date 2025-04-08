@@ -30,7 +30,8 @@ namespace MoBi.Core.Domain.Services
       {
          var model = _cloneManagerForModel.CloneModel(simulationToClone.Model);
 
-         var simulation = _simulationFactory.CreateFrom(CloneSimulationConfiguration(simulationToClone.Configuration), model);
+         //TODO
+         var simulation = _simulationFactory.CreateFrom(CloneSimulationConfiguration(simulationToClone.Configuration), model, null);
          simulation.UpdatePropertiesFrom(simulationToClone, _cloneManagerForModel);
          return simulation;
       }
