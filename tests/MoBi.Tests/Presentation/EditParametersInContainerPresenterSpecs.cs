@@ -448,8 +448,8 @@ namespace MoBi.Presentation
       {
          base.Context();
          _parameterDTO = new ParameterDTO(_parameter);
-         _expectedPath = "|Organism|Container|Organ|ADC";
-         A.CallTo(() => _entityPathResolver.FullPathFor(_parameter)).Returns(_expectedPath);
+         _expectedPath = "Organism|Container|Organ|ADC";
+         A.CallTo(() => _entityPathResolver.PathFor(_parameter)).Returns(_expectedPath);
       }
 
       protected override void Because()

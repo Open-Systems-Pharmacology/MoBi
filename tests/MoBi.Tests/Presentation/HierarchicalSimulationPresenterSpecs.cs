@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using FakeItEasy;
 using OSPSuite.BDDHelper;
 using MoBi.Core.Domain.Model;
@@ -16,13 +15,12 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using ITreeNodeFactory = MoBi.Presentation.Nodes.ITreeNodeFactory;
-using OSPSuite.SimModel;
 
 namespace MoBi.Presentation
 {
    internal abstract class concern_for_HierarchicalSimulationPresenter : ContextSpecification<HierarchicalSimulationPresenter>
    {
-      private IHierarchicalStructureView _view;
+      protected IHierarchicalStructureView _view;
       protected IMoBiContext _context;
       private IObjectBaseToObjectBaseDTOMapper _dtoMapper;
       private ISimulationSettingsToObjectBaseDTOMapper _simulationSettingsMapper;
@@ -30,7 +28,7 @@ namespace MoBi.Presentation
       private ITreeNodeFactory _treeNodeFactory;
       private IViewItemContextMenuFactory _contextMenuFactory;
       protected INeighborhoodToNeighborDTOMapper _neighborhoodDTOMapper;
-      private IEntityPathResolver _entityPathResolver;
+      protected IEntityPathResolver _entityPathResolver;
 
       protected override void Context()
       {
@@ -155,6 +153,31 @@ namespace MoBi.Presentation
       public void should_raise_entity_selected_event()
       {
          A.CallTo(() => _context.PublishEvent(A<EntitySelectedEvent>.That.Matches(x => x.ObjectBase.Equals(_dto.ObjectBase)))).MustHaveHappened();
+      }
+   }
+
+   internal class When_copying_entity_path_to_clipboard : concern_for_HierarchicalSimulationPresenter
+   {
+      private IEntity _entity;
+      private string _expectedPath;
+
+      protected override void Context()
+      {
+         base.Context();
+         _entity = new Parameter();
+         _expectedPath = "ExpectedPath";
+         A.CallTo(() => _entityPathResolver.PathFor(_entity)).Returns(_expectedPath);
+      }
+
+      protected override void Because()
+      {
+         sut.CopyCurrentPathToClipBoard(_entity);
+      }
+
+      [Observation]
+      public void the_view_copies_the_expected_path_to_the_clipboard()
+      {
+         A.CallTo(() => _view.CopyToClipBoard(_expectedPath)).MustHaveHappened();
       }
    }
 
