@@ -35,6 +35,7 @@
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutControlItem9 = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
+         this.lblDescription = new DevExpress.XtraEditors.LabelControl();
          this.cbDefaultMergeBehavior = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.tbInitialConditionsName = new DevExpress.XtraEditors.TextEdit();
          this.tbParameterValuesName = new DevExpress.XtraEditors.TextEdit();
@@ -61,10 +62,9 @@
          this.moleculesItem = new DevExpress.XtraLayout.LayoutControlItem();
          this.parameterValuesNameItem = new DevExpress.XtraLayout.LayoutControlItem();
          this.initialConditionsNameItem = new DevExpress.XtraLayout.LayoutControlItem();
-         this.mergeBehaviorItem = new DevExpress.XtraLayout.LayoutControlItem();
-         this.lblDescription = new DevExpress.XtraEditors.LabelControl();
-         this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
          this.mergeBehaviorGroup = new DevExpress.XtraLayout.LayoutControlGroup();
+         this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
+         this.mergeBehaviorItem = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.checkEdit1.Properties)).BeginInit();
@@ -99,9 +99,9 @@
          ((System.ComponentModel.ISupportInitialize)(this.moleculesItem)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.parameterValuesNameItem)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.initialConditionsNameItem)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.mergeBehaviorItem)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.mergeBehaviorGroup)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.mergeBehaviorItem)).BeginInit();
          this.SuspendLayout();
          // 
          // tablePanel
@@ -163,11 +163,20 @@
          this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
          this.layoutControl.Location = new System.Drawing.Point(0, 0);
          this.layoutControl.Name = "layoutControl";
-         this.layoutControl.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(1244, 200, 650, 1069);
+         this.layoutControl.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(1808, 289, 650, 1069);
          this.layoutControl.Root = this.Root;
          this.layoutControl.Size = new System.Drawing.Size(580, 401);
          this.layoutControl.TabIndex = 39;
          this.layoutControl.Text = "uxLayoutControl1";
+         // 
+         // lblDescription
+         // 
+         this.lblDescription.Location = new System.Drawing.Point(24, 93);
+         this.lblDescription.Name = "lblDescription";
+         this.lblDescription.Size = new System.Drawing.Size(63, 13);
+         this.lblDescription.StyleController = this.layoutControl;
+         this.lblDescription.TabIndex = 17;
+         this.lblDescription.Text = "lblDescription";
          // 
          // cbDefaultMergeBehavior
          // 
@@ -198,7 +207,7 @@
          // 
          // cbMolecules
          // 
-         this.cbMolecules.Location = new System.Drawing.Point(24, 203);
+         this.cbMolecules.Location = new System.Drawing.Point(24, 179);
          this.cbMolecules.Name = "cbMolecules";
          this.cbMolecules.Properties.Caption = "cbMolecules";
          this.cbMolecules.Size = new System.Drawing.Size(532, 20);
@@ -252,7 +261,7 @@
          // 
          // cbReactions
          // 
-         this.cbReactions.Location = new System.Drawing.Point(24, 179);
+         this.cbReactions.Location = new System.Drawing.Point(24, 203);
          this.cbReactions.Name = "cbReactions";
          this.cbReactions.Properties.Caption = "cbReactions";
          this.cbReactions.Size = new System.Drawing.Size(532, 20);
@@ -315,9 +324,9 @@
             this.eventGroupItem,
             this.initialConditionsItem,
             this.parameterValuesItem,
-            this.moleculesItem,
             this.parameterValuesNameItem,
-            this.initialConditionsNameItem});
+            this.initialConditionsNameItem,
+            this.moleculesItem});
          this.createBuildingBlocksGroup.Location = new System.Drawing.Point(0, 110);
          this.createBuildingBlocksGroup.Name = "createBuildingBlocksGroup";
          this.createBuildingBlocksGroup.Size = new System.Drawing.Size(560, 237);
@@ -343,7 +352,7 @@
          // reactionsItem
          // 
          this.reactionsItem.Control = this.cbReactions;
-         this.reactionsItem.Location = new System.Drawing.Point(0, 24);
+         this.reactionsItem.Location = new System.Drawing.Point(0, 48);
          this.reactionsItem.Name = "reactionsItem";
          this.reactionsItem.Size = new System.Drawing.Size(536, 24);
          this.reactionsItem.TextSize = new System.Drawing.Size(0, 0);
@@ -388,7 +397,7 @@
          // moleculesItem
          // 
          this.moleculesItem.Control = this.cbMolecules;
-         this.moleculesItem.Location = new System.Drawing.Point(0, 48);
+         this.moleculesItem.Location = new System.Drawing.Point(0, 24);
          this.moleculesItem.Name = "moleculesItem";
          this.moleculesItem.Size = new System.Drawing.Size(536, 24);
          this.moleculesItem.TextSize = new System.Drawing.Size(0, 0);
@@ -410,22 +419,14 @@
          this.initialConditionsNameItem.Size = new System.Drawing.Size(368, 24);
          this.initialConditionsNameItem.TextSize = new System.Drawing.Size(130, 13);
          // 
-         // defaultMergeBehaviorItem
+         // mergeBehaviorGroup
          // 
-         this.mergeBehaviorItem.Control = this.cbDefaultMergeBehavior;
-         this.mergeBehaviorItem.Location = new System.Drawing.Point(0, 0);
-         this.mergeBehaviorItem.Name = "mergeBehaviorItem";
-         this.mergeBehaviorItem.Size = new System.Drawing.Size(536, 24);
-         this.mergeBehaviorItem.TextSize = new System.Drawing.Size(130, 13);
-         // 
-         // lblDescription
-         // 
-         this.lblDescription.Location = new System.Drawing.Point(24, 93);
-         this.lblDescription.Name = "lblDescription";
-         this.lblDescription.Size = new System.Drawing.Size(63, 13);
-         this.lblDescription.StyleController = this.layoutControl;
-         this.lblDescription.TabIndex = 17;
-         this.lblDescription.Text = "lblDescription";
+         this.mergeBehaviorGroup.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.layoutControlItem1,
+            this.mergeBehaviorItem});
+         this.mergeBehaviorGroup.Location = new System.Drawing.Point(0, 24);
+         this.mergeBehaviorGroup.Name = "mergeBehaviorGroup";
+         this.mergeBehaviorGroup.Size = new System.Drawing.Size(560, 86);
          // 
          // layoutControlItem1
          // 
@@ -436,14 +437,13 @@
          this.layoutControlItem1.TextSize = new System.Drawing.Size(0, 0);
          this.layoutControlItem1.TextVisible = false;
          // 
-         // defaultMergeBehaviorGroup
+         // mergeBehaviorItem
          // 
-         this.mergeBehaviorGroup.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlItem1,
-            this.mergeBehaviorItem});
-         this.mergeBehaviorGroup.Location = new System.Drawing.Point(0, 24);
-         this.mergeBehaviorGroup.Name = "mergeBehaviorGroup";
-         this.mergeBehaviorGroup.Size = new System.Drawing.Size(560, 86);
+         this.mergeBehaviorItem.Control = this.cbDefaultMergeBehavior;
+         this.mergeBehaviorItem.Location = new System.Drawing.Point(0, 0);
+         this.mergeBehaviorItem.Name = "mergeBehaviorItem";
+         this.mergeBehaviorItem.Size = new System.Drawing.Size(536, 24);
+         this.mergeBehaviorItem.TextSize = new System.Drawing.Size(130, 13);
          // 
          // BaseModuleContentView
          // 
@@ -488,9 +488,9 @@
          ((System.ComponentModel.ISupportInitialize)(this.moleculesItem)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.parameterValuesNameItem)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.initialConditionsNameItem)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.mergeBehaviorItem)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.mergeBehaviorGroup)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.mergeBehaviorItem)).EndInit();
          this.ResumeLayout(false);
          this.PerformLayout();
 
