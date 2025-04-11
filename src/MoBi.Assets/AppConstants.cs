@@ -1216,7 +1216,7 @@ namespace MoBi.Assets
 
          public static readonly string CheckDimensionOfAddedParameters = $"The <i>Dimension</i> property of the added parameters will not be automatically set.{Environment.NewLine}Please set the <i>Dimension</i> of all added parameters.";
          public static readonly string ThisItNotATemplateBuildingBlock = "This is not the template building block!";
-         public static string PleaseEditTheParameterInTheIndividualBuildingblock(string buildingBlockName) => $"<b>Please edit the parameter in the Individual Building Block '{buildingBlockName}.'</p></b>";
+         public static string PleaseEditTheParameterInTheIndividualBuildingblock(string buildingBlockName) => $"<b>Please edit the parameter in the Individual Building Block '{buildingBlockName}.'</b>";
       }
 
       public class Exceptions
