@@ -114,7 +114,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithIcon(ApplicationIcons.PKMLSave));
 
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.Captions.CopyPath)
-            .WithActionCommand(() => Clipboard.SetText(_entityPathResolver.FullPathFor(container)))
+            .WithActionCommand(() => Clipboard.SetText(_entityPathResolver.PathFor(container)))
             .WithIcon(ApplicationIcons.Copy));
       }
    }

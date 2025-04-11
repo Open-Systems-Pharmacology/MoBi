@@ -169,7 +169,7 @@ namespace MoBi.Presentation.Presenter
 
       public void EnableContainerCriteriaSupport() => _editParameterPresenter.EnableContainerCriteriaSupport();
 
-      public void CopyPathForParameter(ParameterDTO parameter) => _view.CopyToClipBoard(_entityPathResolver.FullPathFor(parameter.Parameter));
+      public void CopyPathForParameter(ParameterDTO parameter) => _view.CopyToClipBoard(_entityPathResolver.PathFor(parameter.Parameter));
 
       private void createParameterCache(IReadOnlyList<IParameter> parametersToEdit, IReadOnlyList<IndividualParameter> individualParameters, IndividualBuildingBlock selectedIndividual)
       {
