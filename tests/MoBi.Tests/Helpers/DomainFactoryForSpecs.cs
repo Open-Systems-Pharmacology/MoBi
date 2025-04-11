@@ -47,9 +47,9 @@ namespace MoBi.Helpers
             .WithName(buildingBlockName)
             .WithMode(ContainerMode.Physical)
             .WithContainerType(ContainerType.Organism);
-         
+
          topContainer.AddChildren(parameterFactory.CreateVolumeParameter());
-         
+
          var moleculeProperties = objectBaseFactory.Create<IContainer>()
             .WithName(Constants.MOLECULE_PROPERTIES)
             .WithMode(ContainerMode.Logical)
@@ -90,7 +90,7 @@ namespace MoBi.Helpers
       {
          var createResult = CreateModelFor(buildConfiguration, simulationName);
          var simulationFactory = IoC.Resolve<ISimulationFactory>();
-         return simulationFactory.CreateFrom(buildConfiguration, createResult.Model).WithName(simulationName);
+         return simulationFactory.CreateFrom(buildConfiguration, createResult.Model, createResult.SimulationBuilder.EntitySources).WithName(simulationName);
       }
 
       public static CreationResult CreateModelFor(SimulationConfiguration buildConfiguration, string simulationName)

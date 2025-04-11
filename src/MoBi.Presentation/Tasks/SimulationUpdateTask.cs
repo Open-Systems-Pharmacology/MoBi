@@ -110,11 +110,11 @@ namespace MoBi.Presentation.Tasks
       {
          _context.PublishEvent(new ClearNotificationsEvent(MessageOrigin.Simulation));
          //create model using referencing templates
-         var model = _simulationFactory.CreateModelAndValidate(simulationConfigurationReferencingTemplates, simulationToUpdate.Model.Name, message);
+         var results = _simulationFactory.CreateModelAndValidate(simulationConfigurationReferencingTemplates, simulationToUpdate.Model.Name, message);
 
          var simulationBuildConfiguration = createSimulationConfigurationToUseInSimulation(simulationConfigurationReferencingTemplates);
 
-         var updateSimulationCommand = new UpdateSimulationCommand(simulationToUpdate, model, simulationBuildConfiguration);
+         var updateSimulationCommand = new UpdateSimulationCommand(simulationToUpdate, results.Model, simulationBuildConfiguration);
 
          updateSimulationCommand.RunCommand(_context);
 

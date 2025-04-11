@@ -1,4 +1,5 @@
-﻿using MoBi.Core.Domain.Model;
+﻿using System.Linq;
+using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
@@ -29,8 +30,8 @@ namespace MoBi.Core.Domain.Services
       public IMoBiSimulation CloneSimulation(IMoBiSimulation simulationToClone)
       {
          var model = _cloneManagerForModel.CloneModel(simulationToClone.Model);
-
-         var simulation = _simulationFactory.CreateFrom(CloneSimulationConfiguration(simulationToClone.Configuration), model);
+         var entitySources = simulationToClone.EntitySources.Clone();
+         var simulation = _simulationFactory.CreateFrom(CloneSimulationConfiguration(simulationToClone.Configuration), model, entitySources);
          simulation.UpdatePropertiesFrom(simulationToClone, _cloneManagerForModel);
          return simulation;
       }

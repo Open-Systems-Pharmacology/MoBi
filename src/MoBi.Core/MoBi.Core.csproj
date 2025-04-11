@@ -15,6 +15,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Services\ProjectConversion\**" />
+    <EmbeddedResource Remove="Services\ProjectConversion\**" />
+    <None Remove="Services\ProjectConversion\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Include="..\..\SolutionInfo.cs" Link="Properties\SolutionInfo.cs" />
   </ItemGroup>
 
@@ -22,20 +28,19 @@
     <Folder Include="Properties\" />
     <Folder Include="Serialization\Converter\v12\" />
     <Folder Include="Serialization\Converter\v11\" />
-    <Folder Include="Services\ProjectConversion\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="FluentNHibernate" Version="3.4.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="OSPSuite.Utility" Version="4.1.1.1" />
-    <PackageReference Include="OSPSuite.Core" Version="12.1.73" />
-    <PackageReference Include="OSPSuite.Assets" Version="12.1.73" />
-    <PackageReference Include="OSPSuite.Assets.Images" Version="12.1.73" />
-    <PackageReference Include="OSPSuite.Infrastructure.Export" Version="12.1.73" />
-    <PackageReference Include="OSPSuite.Infrastructure.Reporting" Version="12.1.73" />
-    <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="12.1.73" />
-    <PackageReference Include="OSPSuite.Infrastructure.Import" Version="12.1.73" />
+    <PackageReference Include="OSPSuite.Core" Version="12.1.79" />
+    <PackageReference Include="OSPSuite.Assets" Version="12.1.79" />
+    <PackageReference Include="OSPSuite.Assets.Images" Version="12.1.79" />
+    <PackageReference Include="OSPSuite.Infrastructure.Export" Version="12.1.79" />
+    <PackageReference Include="OSPSuite.Infrastructure.Reporting" Version="12.1.79" />
+    <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="12.1.79" />
+    <PackageReference Include="OSPSuite.Infrastructure.Import" Version="12.1.79" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
   </ItemGroup>
 
