@@ -13,6 +13,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Views;
@@ -66,6 +67,8 @@ namespace MoBi.Presentation.Presenter
       string DisplayFor(Type formulaType);
 
       void AddNewFormula(string formulaName = null);
+
+      bool CanCreateFormulaType(Type formulaType);
    }
 
    public abstract class EditFormulaPresenter<TView, TPresenter> : AbstractCommandCollectorPresenter<TView, TPresenter>, IListener<ObjectPropertyChangedEvent>
@@ -109,7 +112,7 @@ namespace MoBi.Presentation.Presenter
 
       public void RemoveFormulaType<TFormulaType>() => _allFormulaType.Remove(typeof(TFormulaType));
 
-      public string DisplayFor(Type formulaType) => _formulaTypeCaptionRepository[formulaType];
+      public string DisplayFor(Type formulaType) => _formulaTypeCaptionRepository[formulaType] ?? formulaType.Name.SplitToUpperCase();
 
       protected void Initialize<TObjectWithFormula>(TObjectWithFormula formulaOwner, IBuildingBlock buildingBlock, FormulaDecoder<TObjectWithFormula> formulaDecoder) where TObjectWithFormula : IEntity, IWithDimension
       {
@@ -127,6 +130,8 @@ namespace MoBi.Presentation.Presenter
          _formulaPresenterCache.Each(p => p.StatusChanged -= formulaPresenterChanged);
          _formulaPresenterCache.ReleaseFrom(eventPublisher);
       }
+
+      public bool CanCreateFormulaType(Type formulaType) => _allFormulaType.Contains(formulaType);
 
       protected void UpdateFormula()
       {
