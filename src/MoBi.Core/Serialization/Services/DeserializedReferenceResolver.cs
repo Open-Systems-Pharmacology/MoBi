@@ -1,5 +1,4 @@
 ﻿using MoBi.Core.Domain.Model;
-using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
@@ -16,13 +15,11 @@ namespace MoBi.Core.Serialization.Services
 
    public class DeserializedReferenceResolver : IDeserializedReferenceResolver
    {
-      private readonly IBuildingBlockReferenceUpdater _buildingBlockReferenceUpdater;
       private readonly IReferencesResolver _referencesResolver;
       private readonly ISimulationParameterOriginIdUpdater _simulationParameterOriginIdUpdater;
 
-      public DeserializedReferenceResolver(IBuildingBlockReferenceUpdater buildingBlockReferenceUpdater, IReferencesResolver referencesResolver, ISimulationParameterOriginIdUpdater simulationParameterOriginIdUpdater)
+      public DeserializedReferenceResolver(IReferencesResolver referencesResolver, ISimulationParameterOriginIdUpdater simulationParameterOriginIdUpdater)
       {
-         _buildingBlockReferenceUpdater = buildingBlockReferenceUpdater;
          _referencesResolver = referencesResolver;
          _simulationParameterOriginIdUpdater = simulationParameterOriginIdUpdater;
       }
@@ -32,7 +29,6 @@ namespace MoBi.Core.Serialization.Services
          switch (deserializedObject)
          {
             case MoBiProject proj:
-               _buildingBlockReferenceUpdater.UpdateTemplatesReferencesIn(proj);
                proj.All<SpatialStructure>().Each(resolveReferences);
                proj.Simulations.Each(resolveReferences);
                break;
@@ -63,7 +59,6 @@ namespace MoBi.Core.Serialization.Services
       private void resolveReferences(IMoBiSimulation simulation)
       {
          if (simulation == null) return;
-         //no need to update building block references at that stage. It will be done when the project itself is being deserialized
          resolveReferences(simulation.Model);
          resolveReferences(simulation.Configuration);
          _simulationParameterOriginIdUpdater.UpdateSimulationId(simulation);

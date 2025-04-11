@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
@@ -18,7 +19,7 @@ namespace MoBi.Core.Domain.Services
       ///    Creates and returns a new <see cref="IMoBiSimulation" /> using the <paramref name="simulationConfiguration" />
       ///    <paramref name="model" /> and <paramref name="entitySources" />
       /// </summary>
-      IMoBiSimulation CreateFrom(SimulationConfiguration simulationConfiguration, IModel model, EntitySources entitySources);
+      IMoBiSimulation CreateFrom(SimulationConfiguration simulationConfiguration, IModel model, IEnumerable<EntitySource> entitySources);
 
       /// <summary>
       ///    Creates and returns a new <see cref="IMoBiSimulation" />
@@ -66,7 +67,7 @@ namespace MoBi.Core.Domain.Services
          _cloneManager = cloneManager;
       }
 
-      public IMoBiSimulation CreateFrom(SimulationConfiguration simulationConfiguration, IModel model, EntitySources entitySources)
+      public IMoBiSimulation CreateFrom(SimulationConfiguration simulationConfiguration, IModel model, IEnumerable<EntitySource> entitySources)
       {
          var moBiSimulation = new MoBiSimulation
          {
@@ -78,7 +79,7 @@ namespace MoBi.Core.Domain.Services
             Id = _idGenerator.NewId(),
          };
 
-         moBiSimulation.AddObjectSources(entitySources);
+         moBiSimulation.AddEntitySources(entitySources);
 
          _simulationParameterOriginIdUpdater.UpdateSimulationId(moBiSimulation);
 

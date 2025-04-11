@@ -14,7 +14,6 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
-using System.Runtime.Remoting.Contexts;
 
 namespace MoBi.Core.Service
 {
@@ -95,7 +94,7 @@ namespace MoBi.Core.Service
       protected override void Context()
       {
          base.Context();
-         _moBiSimulation = new MoBiSimulation { Model = new Model { Root = new Container() }.WithName("OLD_MODEL") };
+         _moBiSimulation = new MoBiSimulation {Model = new Model {Root = new Container()}.WithName("OLD_MODEL")};
          _simulationConfiguration = new SimulationConfiguration();
          _moBiSimulation.Configuration = _simulationConfiguration;
       }
@@ -128,12 +127,13 @@ namespace MoBi.Core.Service
       {
          base.Context();
          _moBiProject = new MoBiProject();
-         _simulationToConfigure = new MoBiSimulation { Model = new Model { Root = new Container() }.WithName("OLD_MODEL") };
-         _simulationToConfigure.AddOriginalQuantityValue(new OriginalQuantityValue { Path = "a path" });
+         _simulationToConfigure = new MoBiSimulation {Model = new Model {Root = new Container()}.WithName("OLD_MODEL")};
+         _simulationToConfigure.AddOriginalQuantityValue(new OriginalQuantityValue {Path = "a path"});
          _simulationToConfigure.Configuration = new SimulationConfiguration();
          _model = new Model().WithName("NEW MODEL");
+         var creationResults = new CreationResult(_model, new SimulationBuilder(_simulationToConfigure.Configuration));
          _model.Root = new Container();
-         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._, A<string>._)).Returns(_model);
+         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._, A<string>._)).Returns(creationResults);
          A.CallTo(() => _context.CurrentProject).Returns(_moBiProject);
       }
 
@@ -181,12 +181,13 @@ namespace MoBi.Core.Service
       protected override void Context()
       {
          base.Context();
-         _simulationToConfigure = new MoBiSimulation { Model = new Model { Root = new Container() }.WithName("OLD_MODEL") };
+         _simulationToConfigure = new MoBiSimulation {Model = new Model {Root = new Container()}.WithName("OLD_MODEL")};
          _simulationToConfigure.AddOriginalQuantityValue(new OriginalQuantityValue {Path = "a path"});
          _simulationToConfigure.Configuration = new SimulationConfiguration();
          _model = new Model().WithName("NEW MODEL");
          _model.Root = new Container();
-         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._, A<string>._)).Returns(_model);
+         var creationResults = new CreationResult(_model, new SimulationBuilder(_simulationToConfigure.Configuration));
+         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._, A<string>._)).Returns(creationResults);
       }
 
       protected override void Because()
