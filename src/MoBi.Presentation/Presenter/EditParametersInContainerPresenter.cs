@@ -182,6 +182,7 @@ namespace MoBi.Presentation.Presenter
 
          initializeIndividualParameterCache(individualParameters, selectedIndividual);
          _allParametersDTO.AddRange(_individualParameterCache.Keys);
+         _allParametersDTO.Sort((a,b) => string.Compare(a.Name, b.Name, StringComparison.InvariantCultureIgnoreCase));
       }
 
       private void initializeIndividualParameterCache(IReadOnlyList<IndividualParameter> individualParameters, IndividualBuildingBlock selectedIndividual)

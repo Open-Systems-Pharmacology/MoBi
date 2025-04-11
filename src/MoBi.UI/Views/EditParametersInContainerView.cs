@@ -9,7 +9,6 @@ using DevExpress.Utils.Menu;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
-using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraGrid.Views.Grid.ViewInfo;
@@ -125,11 +124,12 @@ namespace MoBi.UI.Views
          layoutControlItemShowAdvanceParameters.ContentVertAlignment = VertAlignment.Top;
          layoutControlItemGroupBy.ContentVertAlignment = VertAlignment.Top;
 
-         layoutControlItemSelectIndividual.Text = AppConstants.Captions.Individual;
+         layoutControlItemSelectIndividual.Text = AppConstants.Captions.SelectIndividual.FormatForLabel();
          cbSelectIndividual.MaximumSize = new Size(300, 0);
          chkGroupBy.MaximumSize = new Size(150, 0);
          lblParentName.MaximumSize = new Size(150, 0);
          chkShowAdvancedParameter.MaximumSize = new Size(200, 0);
+         cbSelectIndividual.ToolTip = ToolTips.BuildingBlockSpatialStructure.PreviewSpatialStructureWithIndividualSelection;
       }
 
       private void createResetButtonItem()
@@ -427,6 +427,8 @@ namespace MoBi.UI.Views
       {
          var rowHandle = _gridViewBinder.RowHandleFor(parameterToSelect);
          gridView.FocusedRowHandle = rowHandle;
+         gridView.GetSelectedRows().Each(gridView.UnselectRow);
+         gridView.SelectRow(rowHandle);
       }
 
       public void CopyToClipBoard(string text) => Clipboard.SetText(text);

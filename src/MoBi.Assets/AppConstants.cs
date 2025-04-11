@@ -1216,10 +1216,7 @@ namespace MoBi.Assets
 
          public static readonly string CheckDimensionOfAddedParameters = $"The <i>Dimension</i> property of the added parameters will not be automatically set.{Environment.NewLine}Please set the <i>Dimension</i> of all added parameters.";
          public static readonly string ThisItNotATemplateBuildingBlock = "This is not the template building block!";
-
-         public static string EditsHereChangeTheIndividualBuildingblock(string buildingBlockName) => $"<b><p>This parameter does not belong to the spatial structure, it is a preview from the individual building block '{buildingBlockName}' </p>" +
-                                                                                           $"<p>&nbsp;</p>" +
-                                                                                           $"<p>Editing this parameter will change the individual building block</p></b>";
+         public static string PleaseEditTheParameterInTheIndividualBuildingblock(string buildingBlockName) => $"<b>Please edit the parameter in the Individual Building Block '{buildingBlockName}.'</b>";
       }
 
       public class Exceptions
@@ -1665,6 +1662,7 @@ namespace MoBi.Assets
          public static readonly string None = "None";
          public static readonly string ConvertToFormula = "Convert to Formula";
          public static readonly string FindParameter = "Find Parameter";
+         public static readonly string SelectIndividual = "Select Individual";
          public static string SelectTheBuildingBlockWhereEntitiesWillBeAddedOrUpdated(string typeBeingAdded) => $"Select the building block where {typeBeingAdded} will be added or updated";
          public static readonly string SelectBuildingBlock = "Select Building Block";
          public static readonly string MakeDefault = "Make defaults";
