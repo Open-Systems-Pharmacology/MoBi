@@ -5,11 +5,11 @@ namespace MoBi.Core.Domain
 {
    public class EntitySourceReference
    {
-      public IEntity Source { get; }
+      public IObjectBase Source { get; }
       public IBuildingBlock BuildingBlock { get; }
       public Module Module { get; }
 
-      public EntitySourceReference(IEntity source, IBuildingBlock buildingBlock, Module module)
+      public EntitySourceReference(IObjectBase source, IBuildingBlock buildingBlock, Module module)
       {
          Source = source;
          BuildingBlock = buildingBlock;
