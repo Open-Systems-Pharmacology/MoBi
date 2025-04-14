@@ -6,6 +6,7 @@ using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Helper;
+using MoBi.Core.Services;
 using MoBi.Presentation.Presenter.ModelDiagram;
 using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Views;
@@ -49,6 +50,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IEditSolverSettingsPresenter _solverSettingsPresenter;
       private readonly IEditOutputSchemaPresenter _editOutputSchemaPresenter;
       private readonly ISimulationChangesPresenter _simulationChangesPresenter;
+      private readonly IEntitySourceMapper _entitySourceMapper;
       private readonly IEditInSimulationPresenterFactory _showPresenterFactory;
       private readonly ICache<Type, IEditInSimulationPresenter> _cacheShowPresenter;
       private bool _diagramLoaded;
@@ -69,10 +71,11 @@ namespace MoBi.Presentation.Presenter
          IUserDefinedParametersPresenter userDefinedParametersPresenter, ISimulationOutputMappingPresenter simulationOutputMappingPresenter,
          ISimulationPredictedVsObservedChartPresenter simulationPredictedVsObservedChartPresenter,
          ISimulationResidualVsTimeChartPresenter simulationResidualVsTimeChartPresenter, IMoBiContext context,
-         IOutputMappingMatchingTask outputMappingMatchingTask, ISimulationChangesPresenter changesPresenter)
+         IOutputMappingMatchingTask outputMappingMatchingTask, ISimulationChangesPresenter changesPresenter, IEntitySourceMapper entitySourceMapper)
          : base(view)
       {
          _simulationChangesPresenter = changesPresenter;
+         _entitySourceMapper = entitySourceMapper;
          _editOutputSchemaPresenter = editOutputSchemaPresenter;
          _showPresenterFactory = showPresenterFactory;
          _heavyWorkManager = heavyWorkManager;
@@ -135,6 +138,9 @@ namespace MoBi.Presentation.Presenter
          UpdateCaption();
          _view.Display();
          loadChart();
+
+         //This is just a debug to see how long it takes
+         var entitySourceReferences = _entitySourceMapper.MapFrom(simulation.EntitySources);
       }
 
       private void addObservedDataRepositories(IList<DataRepository> data, IEnumerable<Curve> curves)
