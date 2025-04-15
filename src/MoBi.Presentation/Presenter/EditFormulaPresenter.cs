@@ -112,7 +112,7 @@ namespace MoBi.Presentation.Presenter
 
       public void RemoveFormulaType<TFormulaType>() => _allFormulaType.Remove(typeof(TFormulaType));
 
-      public string DisplayFor(Type formulaType) => _formulaTypeCaptionRepository[formulaType] ?? formulaType.Name.SplitToUpperCase();
+      public string DisplayFor(Type formulaType) => _formulaTypeCaptionRepository[formulaType];
 
       protected void Initialize<TObjectWithFormula>(TObjectWithFormula formulaOwner, IBuildingBlock buildingBlock, FormulaDecoder<TObjectWithFormula> formulaDecoder) where TObjectWithFormula : IEntity, IWithDimension
       {

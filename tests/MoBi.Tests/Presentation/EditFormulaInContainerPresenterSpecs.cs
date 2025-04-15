@@ -120,12 +120,6 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void display_name_for_not_supported_formula_type()
-      {
-         sut.DisplayFor(typeof(DistributedTableFormula)).ShouldBeEqualTo(nameof(DistributedTableFormula).SplitToUpperCase());
-      }
-
-      [Observation]
       public void presenter_cannot_create_new_distributed_formula()
       {
          sut.CanCreateFormulaType(typeof(DistributedTableFormula)).ShouldBeFalse();

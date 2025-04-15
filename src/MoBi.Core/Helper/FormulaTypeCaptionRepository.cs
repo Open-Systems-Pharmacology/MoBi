@@ -16,6 +16,7 @@ namespace MoBi.Core.Helper
          this[typeof(TableFormulaWithOffset)] = AppConstants.Captions.TableFormulaWithOffset;
          this[typeof(TableFormulaWithXArgument)] = AppConstants.Captions.TableFormulaWithXArgument;
          this[typeof(SumFormula)] = AppConstants.Captions.SumFormula;
+         this[typeof(DistributedTableFormula)] = AppConstants.Captions.DistributedTableFormula;
       }
    }
 }
