@@ -44,7 +44,7 @@ namespace MoBi.Presentation
          concentrationParameter.BuildMode = ParameterBuildMode.Local;
          sut = new ObjectPathCreatorAtTransport(_objectPathFactory, aliasCreator, _context);
          _transportBuilder = new TransportBuilder().WithName("Trans");
-         sut.Transport = _transportBuilder;
+         sut.ProcessBuilder = _transportBuilder;
       }
    }
 
@@ -93,6 +93,70 @@ namespace MoBi.Presentation
       public void should_return_correct_path()
       {
          _result.Path.ToString().ShouldBeEqualTo($"SOURCE|MOLECULE|{_name}");
+      }
+   }
+
+   class When_creating_an_absolute_path_to_a_global_parameter_at_a_transport : concern_for_ObjectPathCreatorAtTransportSpecs
+   {
+      private ReferenceDTO _referenceDTO;
+      private Parameter _concentrationParameter;
+      private TransportBuilder _transport;
+
+      protected override void Context()
+      {
+         base.Context();
+         _concentrationParameter =
+            new Parameter().WithName("Concentration")
+               .WithId("CondId");
+
+         _concentrationParameter.BuildMode = ParameterBuildMode.Global;
+         _transport = new TransportBuilder().WithName("Transport");
+         _transport.AddParameter(_concentrationParameter);
+         sut.ProcessBuilder = _transport;
+      }
+
+      protected override void Because()
+      {
+         _referenceDTO = sut.CreatePathsFromEntity(_concentrationParameter, true, null, _transport);
+      }
+
+      [Observation]
+      public void the_path_should_be_the_transport_and_parameter_name()
+      {
+         _referenceDTO.BuildMode.ShouldBeEqualTo(ParameterBuildMode.Local);
+         _referenceDTO.Path.ShouldOnlyContainInOrder("Transport", "Concentration");
+      }
+   }
+
+   class When_creating_a_relative_path_to_a_local_parameter_at_a_transport : concern_for_ObjectPathCreatorAtTransportSpecs
+   {
+      private ReferenceDTO _referenceDTO;
+      private Parameter _concentrationParameter;
+      private TransportBuilder _transport;
+
+      protected override void Context()
+      {
+         base.Context();
+         _concentrationParameter =
+            new Parameter().WithName("Concentration")
+               .WithId("CondId");
+
+         _concentrationParameter.BuildMode = ParameterBuildMode.Local;
+         _transport = new TransportBuilder();
+         _transport.AddParameter(_concentrationParameter);
+         sut.ProcessBuilder = _transport;
+      }
+
+      protected override void Because()
+      {
+         _referenceDTO = sut.CreatePathsFromEntity(_concentrationParameter, true, null, _transport);
+      }
+
+      [Observation]
+      public void the_path_should_be_only_the_parameter_name()
+      {
+         _referenceDTO.BuildMode.ShouldBeEqualTo(ParameterBuildMode.Local);
+         _referenceDTO.Path.ShouldOnlyContainInOrder("Concentration");
       }
    }
 }

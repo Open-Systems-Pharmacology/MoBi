@@ -34,7 +34,7 @@ namespace MoBi.Presentation.Presenter
 
       public void Init(IEntity refObjectBase, IReadOnlyList<IObjectBase> entities, ReactionBuilder reactionBuilder)
       {
-         _objectPathCreatorAtReaction.Reaction = reactionBuilder;
+         _objectPathCreatorAtReaction.ProcessBuilder = reactionBuilder;
          base.Init(refObjectBase, entities, reactionBuilder);
       }
 

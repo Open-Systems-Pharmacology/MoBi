@@ -56,25 +56,27 @@ namespace MoBi.Presentation.Presenter
       public virtual ReferenceDTO CreatePathsFromEntity(IObjectBase objectBase, bool shouldCreateAbsolutePaths, IEntity refObject, IUsingFormula editedObject)
       {
          var dto = new ReferenceDTO();
-         if (!objectBase.IsAnImplementationOf<IFormulaUsable>()) return null;
-         var formulaUseable = objectBase.DowncastTo<IFormulaUsable>();
+         if (!objectBase.IsAnImplementationOf<IFormulaUsable>()) 
+            return null;
+
+         var formulaUsable = objectBase.DowncastTo<IFormulaUsable>();
          if (isGlobal(objectBase))
          {
             // This a global parameters that we always use as absolute paths
-            dto.Path = CreateAlwaysAbsolutePaths(objectBase, formulaUseable);
+            dto.Path = CreateAlwaysAbsolutePaths(objectBase, formulaUsable);
          }
          else
          {
             // local reaction and molecule properties are always referenced local. 
-            if (formulaUseable.IsAtReaction() || formulaUseable.IsAtMolecule())
+            if (formulaUsable.IsAtReaction() || formulaUsable.IsAtMolecule())
             {
                shouldCreateAbsolutePaths = false;
             }
             dto.Path = shouldCreateAbsolutePaths
-               ? CreateAbsolutePath(formulaUseable)
-               : CreateRelativePath(formulaUseable, refObject, editedObject);
+               ? CreateAbsolutePath(formulaUsable)
+               : CreateRelativePath(formulaUsable, refObject, editedObject);
          }
-         var parameter = formulaUseable as IParameter;
+         var parameter = formulaUsable as IParameter;
          if (parameter == null)
             return dto;
 

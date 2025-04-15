@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using OSPSuite.Utility.Extensions;
-using MoBi.Core;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.DTO;
@@ -44,7 +43,7 @@ namespace MoBi.Presentation.Presenter
       public void Init(IEntity refObjectBase, IReadOnlyList<IObjectBase> entities, TransportBuilder transportBuilder)
       {
          //Necessary to create correct paths
-         _objectPathCreatorAtTransport.Transport = transportBuilder; 
+         _objectPathCreatorAtTransport.ProcessBuilder = transportBuilder; 
          base.Init(refObjectBase, entities, transportBuilder);
       }
 
