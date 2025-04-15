@@ -26,7 +26,7 @@ namespace MoBi.UI.Views
       protected EditFormulaView()
       {
          InitializeComponent();
-         _screenBinder = new ScreenBinder<FormulaInfoDTO> {BindingMode = BindingMode.TwoWay};
+         _screenBinder = new ScreenBinder<FormulaInfoDTO> { BindingMode = BindingMode.TwoWay };
          splitFormula.CollapsePanel = SplitCollapsePanel.Panel2;
       }
 
@@ -62,8 +62,19 @@ namespace MoBi.UI.Views
       public void BindTo(FormulaInfoDTO dtoFormulaInfo)
       {
          _screenBinder.BindToSource(dtoFormulaInfo);
-         layoutItemFormulaType.Visibility = LayoutVisibilityConvertor.FromBoolean((cbFormulaType.Properties.Items.Count > 1));
+         updateFormulaTypeDisplay(dtoFormulaInfo);
       }
+
+      private void updateFormulaTypeDisplay(FormulaInfoDTO dtoFormulaInfo)
+      {
+         var selectableFormulaType = canSelectFormulaType(dtoFormulaInfo);
+         layoutItemFormulaTypeComboBox.Visibility = LayoutVisibilityConvertor.FromBoolean(selectableFormulaType);
+         layoutItemFormulaTypeTextEdit.Visibility = LayoutVisibilityConvertor.FromBoolean(!selectableFormulaType);
+         tbFormulaType.Text = _presenter.DisplayFor(dtoFormulaInfo.Type);
+      }
+
+      private bool canSelectFormulaType(FormulaInfoDTO dtoFormulaInfo) => 
+         cbFormulaType.Properties.Items.Count > 1 && _presenter.CanCreateFormulaType(dtoFormulaInfo.Type);
 
       public bool IsComplexFormulaView
       {
@@ -75,8 +86,8 @@ namespace MoBi.UI.Views
       public void SetReferenceView(ISelectReferenceView view)
       {
          splitFormula.Panel2.FillWith(view);
-         ((XtraUserControl) view).Visible = false;
-         ((XtraUserControl) view).Visible = true;
+         ((XtraUserControl)view).Visible = false;
+         ((XtraUserControl)view).Visible = true;
       }
 
       protected abstract BaseControl FormulaNameControl { get; }
@@ -94,7 +105,8 @@ namespace MoBi.UI.Views
          FormulaNameControl.ToolTip = ToolTips.Formula.FormulaName;
          layoutItemFormulaSelect.Text = AppConstants.Captions.FormulaName.FormatForLabel();
          layoutItemFormulaName.Text = AppConstants.Captions.FormulaName.FormatForLabel();
-         layoutItemFormulaType.Text = AppConstants.Captions.FormulaType.FormatForLabel();
+         layoutItemFormulaTypeComboBox.Text = AppConstants.Captions.FormulaType.FormatForLabel();
+         layoutItemFormulaTypeTextEdit.Text = AppConstants.Captions.FormulaType.FormatForLabel();
          btnAddFormula.InitWithImage(ApplicationIcons.Add, AppConstants.Captions.AddFormula, ImageLocation.MiddleLeft, ToolTips.Formula.FormulaName);
          layoutItemCloneFormula.Visibility = LayoutVisibility.Never;
          layoutControl.DoInBatch(() =>
@@ -105,6 +117,7 @@ namespace MoBi.UI.Views
 
          cbFormulaName.Properties.AutoHeight = false;
          cbFormulaName.Height = btnAddFormula.Height;
+         tbFormulaType.ReadOnly = true;
       }
 
       public override bool HasError => base.HasError || _screenBinder.HasError;

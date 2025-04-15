@@ -30,7 +30,7 @@ namespace MoBi.UI.Views
          layoutItemAddFormula.Visibility = LayoutVisibility.Never;
          layoutItemCloneFormula.Visibility = LayoutVisibility.Never;
          cbFormulaName.Properties.Buttons.Clear();
-         tbFormulaName.Enabled = false;
+         tbFormulaName.ReadOnly = true;
       }
 
       protected override void InitializeNameBinding() =>

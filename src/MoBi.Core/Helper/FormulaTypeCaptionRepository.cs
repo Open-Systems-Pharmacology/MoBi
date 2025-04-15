@@ -1,21 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
 using MoBi.Assets;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Utility.Collections;
 
 namespace MoBi.Core.Helper
 {
-   public class FormulaTypeCaptionRepository : Dictionary<Type, string>
+   public class FormulaTypeCaptionRepository : Cache<Type, string>
    {
-      public FormulaTypeCaptionRepository()
+      public FormulaTypeCaptionRepository() : base(onMissingKey:key => null)
       {
-         Add(typeof(ConstantFormula), AppConstants.Captions.ConstantFormula);
-         Add(typeof(ExplicitFormula), AppConstants.Captions.ExplicitFormula);
-         Add(typeof(TableFormula), AppConstants.Captions.TableFormula);
-         Add(typeof(BlackBoxFormula), AppConstants.Captions.BlackBoxFormula);
-         Add(typeof(TableFormulaWithOffset), AppConstants.Captions.TableFormulaWithOffset);
-         Add(typeof(TableFormulaWithXArgument), AppConstants.Captions.TableFormulaWithXArgument);
-         Add(typeof(SumFormula), AppConstants.Captions.SumFormula);
+         this[typeof(ConstantFormula)] = AppConstants.Captions.ConstantFormula;
+         this[typeof(ExplicitFormula)] = AppConstants.Captions.ExplicitFormula;
+         this[typeof(TableFormula)] = AppConstants.Captions.TableFormula;
+         this[typeof(BlackBoxFormula)] = AppConstants.Captions.BlackBoxFormula;
+         this[typeof(TableFormulaWithOffset)] = AppConstants.Captions.TableFormulaWithOffset;
+         this[typeof(TableFormulaWithXArgument)] = AppConstants.Captions.TableFormulaWithXArgument;
+         this[typeof(SumFormula)] = AppConstants.Captions.SumFormula;
+         this[typeof(DistributedTableFormula)] = AppConstants.Captions.DistributedTableFormula;
       }
    }
 }
