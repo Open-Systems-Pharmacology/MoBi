@@ -3,7 +3,6 @@ using System.Linq;
 using FakeItEasy;
 using FakeItEasy.Core;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Repository;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -15,6 +14,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Presentation.Nodes;
+using IBuildingBlockRepository = MoBi.Core.Domain.Repository.IBuildingBlockRepository;
 
 namespace MoBi.Presentation
 {
@@ -61,7 +61,7 @@ namespace MoBi.Presentation
          _parameterDTO1 = new ObjectBaseDTO(new Parameter().WithId("1"));
          _parameterDTO2 = new ObjectBaseDTO(new Parameter().WithId("2"));
          A.CallTo(() => _context.Get<IObjectBase>(A<string>._)).ReturnsLazily(objectBaseForId);
-         A.CallTo(() => _view.AllSelectedDTOs).Returns(new[] { _parameterDTO1, _parameterDTO2 });
+         A.CallTo(() => _view.AllSelectedDTOs).Returns(new[] {_parameterDTO1, _parameterDTO2});
       }
 
       private IObjectBase objectBaseForId(IFakeObjectCall x)
@@ -108,7 +108,7 @@ namespace MoBi.Presentation
          _dtoMoleculeParameter.Id = _moleculeParameterId;
          _dtoMoleculeParameter.ModelParentName = _modelParentName;
          A.CallTo(() => _context.Get<IEntity>(A<string>._)).ReturnsLazily(objectBaseForId);
-         A.CallTo(() => _view.AllSelectedDTOs).Returns(new[] { _parameter1, _parameter2, _dtoMoleculeParameter });
+         A.CallTo(() => _view.AllSelectedDTOs).Returns(new[] {_parameter1, _parameter2, _dtoMoleculeParameter});
          int callCount = 0;
          A.CallTo(() => _objectPathFactory.CreateAbsoluteObjectPath(A<IEntity>.Ignored))
             .ReturnsLazily(() =>
@@ -187,7 +187,7 @@ namespace MoBi.Presentation
          _dtoLocalMoleculeParameter.Parent = new Container().WithName(_parentContainer).WithId("Mol1");
 
          A.CallTo(() => _context.Get<IEntity>(A<string>._)).ReturnsLazily(objectBaseForId);
-         A.CallTo(() => _view.AllSelectedDTOs).Returns(new[] { _dtoLocalMoleculeParameter, _dtoGlobalMoleculeParameter });
+         A.CallTo(() => _view.AllSelectedDTOs).Returns(new[] {_dtoLocalMoleculeParameter, _dtoGlobalMoleculeParameter});
          int callCount = 0;
          A.CallTo(() => _objectPathFactory.CreateAbsoluteObjectPath(A<IEntity>.Ignored))
             .ReturnsLazily(() =>
@@ -256,7 +256,7 @@ namespace MoBi.Presentation
          _reactionDTO1 = new ObjectBaseDTO(new Reaction().WithId("1"));
          _parameterDTO2 = new ObjectBaseDTO(new Parameter().WithId("2"));
          A.CallTo(() => _context.Get<IObjectBase>(A<string>._)).ReturnsLazily(objectBaseForId);
-         A.CallTo(() => _view.AllSelectedDTOs).Returns(new[] { _reactionDTO1, _parameterDTO2 });
+         A.CallTo(() => _view.AllSelectedDTOs).Returns(new[] {_reactionDTO1, _parameterDTO2});
       }
 
       private IObjectBase objectBaseForId(IFakeObjectCall x)

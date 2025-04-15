@@ -19,7 +19,7 @@ namespace MoBi.Core.Domain.Services
       ///    Creates and returns a new <see cref="IMoBiSimulation" /> using the <paramref name="simulationConfiguration" />
       ///    <paramref name="model" /> and <paramref name="entitySources" />
       /// </summary>
-      IMoBiSimulation CreateFrom(SimulationConfiguration simulationConfiguration, IModel model, IEnumerable<EntitySource> entitySources);
+      IMoBiSimulation CreateFrom(SimulationConfiguration simulationConfiguration, IModel model, IEnumerable<SimulationEntitySource> entitySources);
 
       /// <summary>
       ///    Creates and returns a new <see cref="IMoBiSimulation" />
@@ -67,7 +67,7 @@ namespace MoBi.Core.Domain.Services
          _cloneManager = cloneManager;
       }
 
-      public IMoBiSimulation CreateFrom(SimulationConfiguration simulationConfiguration, IModel model, IEnumerable<EntitySource> entitySources)
+      public IMoBiSimulation CreateFrom(SimulationConfiguration simulationConfiguration, IModel model, IEnumerable<SimulationEntitySource> entitySources)
       {
          var moBiSimulation = new MoBiSimulation
          {

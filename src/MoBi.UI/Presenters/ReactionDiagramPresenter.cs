@@ -27,6 +27,7 @@ using OSPSuite.Presentation.Services;
 using OSPSuite.UI.Diagram.Elements;
 using OSPSuite.Utility.Extensions;
 using ToolTips = MoBi.Assets.ToolTips;
+using IBuildingBlockRepository = MoBi.Core.Domain.Repository.IBuildingBlockRepository;
 
 namespace MoBi.UI.Presenters
 {

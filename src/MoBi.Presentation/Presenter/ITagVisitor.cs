@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using MoBi.Core.Domain.Repository;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Visitor;
-using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Visitor;
+using IBuildingBlockRepository = MoBi.Core.Domain.Repository.IBuildingBlockRepository;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -14,14 +13,14 @@ namespace MoBi.Presentation.Presenter
       IEnumerable<string> AllTagsFrom(SpatialStructure spatialStructure);
 
       /// <summary>
-      /// Returns all tags defined in the current project
+      ///    Returns all tags defined in the current project
       /// </summary>
       /// <returns></returns>
       IEnumerable<string> AllTags();
    }
 
    public class TagVisitor : ITagVisitor,
-      IVisitor<IContainer>, 
+      IVisitor<IContainer>,
       IVisitor<IParameter>,
       IVisitor<IDistributedParameter>
    {

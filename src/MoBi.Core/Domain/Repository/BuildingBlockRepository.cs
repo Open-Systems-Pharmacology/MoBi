@@ -5,11 +5,10 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Utility.Collections;
 
 namespace MoBi.Core.Domain.Repository
 {
-   public interface IBuildingBlockRepository
+   public interface IBuildingBlockRepository : OSPSuite.Core.Domain.Builder.IBuildingBlockRepository
    {
       IReadOnlyList<MoleculeBuildingBlock> MoleculeBlockCollection { get; }
       IReadOnlyList<MoBiReactionBuildingBlock> ReactionBlockCollection { get; }
@@ -23,7 +22,6 @@ namespace MoBi.Core.Domain.Repository
       IReadOnlyList<ParameterValuesBuildingBlock> ParametersValueBlockCollection { get; }
       IndividualBuildingBlock IndividualByName(string buildingBlockName);
       ExpressionProfileBuildingBlock ExpressionProfileByName(string buildingBlockName);
-      IReadOnlyList<IBuildingBlock> All();
    }
 
    public class BuildingBlockRepository : IBuildingBlockRepository
@@ -42,6 +40,11 @@ namespace MoBi.Core.Domain.Repository
             .Concat(moduleBuildingBlocks()).ToList();
       }
 
+      public IReadOnlyList<T> All<T>() where T : IBuildingBlock
+      {
+         return All().OfType<T>().ToList();
+      }
+
       private IEnumerable<IBuildingBlock> moduleBuildingBlocks()
       {
          return _projectRetriever.Current.Modules.SelectMany(x => x.BuildingBlocks);
@@ -49,7 +52,7 @@ namespace MoBi.Core.Domain.Repository
 
       private IReadOnlyList<T> get<T>(Func<Module, T> getter)
       {
-         return _projectRetriever.Current.Modules.Select(getter).Where(x => x!= null).ToList();
+         return _projectRetriever.Current.Modules.Select(getter).Where(x => x != null).ToList();
       }
 
       private IReadOnlyList<T> getMany<T>(Func<Module, IEnumerable<T>> getter)

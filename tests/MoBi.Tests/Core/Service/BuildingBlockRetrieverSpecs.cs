@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Utility.Extensions;
 using FakeItEasy;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Model.Diagram;
-using MoBi.Core.Domain.Repository;
 using MoBi.Core.Repositories;
 using MoBi.Core.Services;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Utility.Extensions;
+using IBuildingBlockRepository = MoBi.Core.Domain.Repository.IBuildingBlockRepository;
 
 namespace MoBi.Core.Service
 {
@@ -69,19 +68,19 @@ namespace MoBi.Core.Service
          base.Context();
          _returnedBuildingBlocks = new List<IBuildingBlock>();
          _childReactionBuilder = new ReactionBuilder().WithName("Test").WithId("FindME");
-         _reactionBuildingBlock = new MoBiReactionBuildingBlock() { _childReactionBuilder };
+         _reactionBuildingBlock = new MoBiReactionBuildingBlock() {_childReactionBuilder};
          _allBuildingBlocks.Add(_reactionBuildingBlock);
          _moleculeBuilder = new MoleculeBuilder();
-         _moleculeBuildingBlock = new MoleculeBuildingBlock() { _moleculeBuilder };
+         _moleculeBuildingBlock = new MoleculeBuildingBlock() {_moleculeBuilder};
          _allBuildingBlocks.Add(_moleculeBuildingBlock);
          _observerBuilder = new ObserverBuilder();
-         _observerBuildingBlock = new ObserverBuildingBlock() { _observerBuilder };
+         _observerBuildingBlock = new ObserverBuildingBlock() {_observerBuilder};
          _allBuildingBlocks.Add(_observerBuildingBlock);
          _passiveTransportBuilder = new TransportBuilder();
-         _passiveTransportBuildingBlock = new PassiveTransportBuildingBlock() { _passiveTransportBuilder };
+         _passiveTransportBuildingBlock = new PassiveTransportBuildingBlock() {_passiveTransportBuilder};
          _allBuildingBlocks.Add(_passiveTransportBuildingBlock);
          _applicationBuilder = new ApplicationBuilder();
-         _eventGroupBuildingBlock = new EventGroupBuildingBlock() { _applicationBuilder };
+         _eventGroupBuildingBlock = new EventGroupBuildingBlock() {_applicationBuilder};
          _allBuildingBlocks.Add(_eventGroupBuildingBlock);
          _parameter = new Parameter().WithName("Para");
          var container = new Container().WithName("Cont");
@@ -96,11 +95,11 @@ namespace MoBi.Core.Service
          _allBuildingBlocks.Add(_spatialStructure);
          _formula = new ExplicitFormula();
          _moleculeBuildingBlock.AddFormula(_formula);
-         _parameterValue = new ParameterValue { Path = new ObjectPath { "test" }, Value = 1, Dimension = A.Fake<IDimension>() };
-         _parameterValuesBuildingBlock = new ParameterValuesBuildingBlock { _parameterValue };
+         _parameterValue = new ParameterValue {Path = new ObjectPath {"test"}, Value = 1, Dimension = A.Fake<IDimension>()};
+         _parameterValuesBuildingBlock = new ParameterValuesBuildingBlock {_parameterValue};
          _allBuildingBlocks.Add(_parameterValuesBuildingBlock);
-         _initialCondition = new InitialCondition { ContainerPath = new ObjectPath { "test" }, Name = "drug" };
-         _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock() { _initialCondition };
+         _initialCondition = new InitialCondition {ContainerPath = new ObjectPath {"test"}, Name = "drug"};
+         _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock() {_initialCondition};
          _allBuildingBlocks.Add(_initialConditionsBuildingBlock);
       }
 
@@ -153,20 +152,20 @@ namespace MoBi.Core.Service
          _childReactionBuilder = new ReactionBuilder().WithName("Test").WithId("FindME");
          _reactionParameter = new Parameter().WithName("Para").WithId("ReactionPara");
          _childReactionBuilder.AddParameter(_reactionParameter);
-         _reactionBuildingBlock = new MoBiReactionBuildingBlock() { _childReactionBuilder };
+         _reactionBuildingBlock = new MoBiReactionBuildingBlock() {_childReactionBuilder};
          _allBuildingBlocks.Add(_reactionBuildingBlock);
          _moleculeBuilder = new MoleculeBuilder();
          _moleculeParameter = new Parameter().WithName("para");
          _moleculeBuilder.AddParameter(_moleculeParameter);
-         _moleculeBuildingBlock = new MoleculeBuildingBlock() { _moleculeBuilder };
+         _moleculeBuildingBlock = new MoleculeBuildingBlock() {_moleculeBuilder};
          _allBuildingBlocks.Add(_moleculeBuildingBlock);
          _passiveTranportBuilder = new TransportBuilder();
          _passiveTransportParameter = new Parameter().WithName("PTParameter");
          _passiveTranportBuilder.AddParameter(_passiveTransportParameter);
-         _passiveTranportBuildingBlock = new PassiveTransportBuildingBlock() { _passiveTranportBuilder };
+         _passiveTranportBuildingBlock = new PassiveTransportBuildingBlock() {_passiveTranportBuilder};
          _allBuildingBlocks.Add(_passiveTranportBuildingBlock);
          _applicationBuilder = new ApplicationBuilder();
-         _eventGroupBuildingBlock = new EventGroupBuildingBlock() { _applicationBuilder };
+         _eventGroupBuildingBlock = new EventGroupBuildingBlock() {_applicationBuilder};
          _applicationBuilderParameter = new ApplicationBuilder().WithName("AppParameter");
          _applicationBuilder.Add(_applicationBuilderParameter);
          _allBuildingBlocks.Add(_eventGroupBuildingBlock);

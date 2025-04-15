@@ -23,6 +23,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Container;
+using IBuildingBlockRepository = MoBi.Core.Domain.Repository.IBuildingBlockRepository;
 
 namespace MoBi.IntegrationTests
 {

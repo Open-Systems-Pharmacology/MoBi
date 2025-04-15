@@ -14,6 +14,7 @@ using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
+using IBuildingBlockRepository = MoBi.Core.Domain.Repository.IBuildingBlockRepository;
 
 namespace MoBi.Presentation.Presenter
 {
