@@ -48,9 +48,9 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void the_simulation_should_be_cached()
+      public void the_simulation_column_should_be_hidden()
       {
-         A.CallTo(() => _editParameterListPresenter.SetVisibility(PathElementId.Simulation, false)).MustHaveHappened();
+         A.CallTo(() => _editParameterListPresenter.View.SetVisibility(PathElementId.Simulation, false)).MustHaveHappened();
       }
    }
 
