@@ -3,6 +3,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Repositories;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Presentation.DTO;
 using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Mappers
@@ -11,7 +12,7 @@ namespace MoBi.Presentation.Mappers
    {
    }
 
-   public class ParameterToParameterDTOMapper : ObjectBaseToObjectBaseDTOMapperBase, IParameterToParameterDTOMapper
+   public class ParameterToParameterDTOMapper : ObjectBaseToObjectBaseDTOMapperBase, IParameterToParameterDTOMapper, OSPSuite.Presentation.Mappers.IParameterToParameterDTOMapper
    {
       private readonly IFormulaToFormulaBuilderDTOMapper _formulaToDTOFormulaBuilderMapper;
       private readonly IGroupRepository _groupRepository;
@@ -51,5 +52,7 @@ namespace MoBi.Presentation.Mappers
 
          return dto;
       }
+
+      IParameterDTO IMapper<IParameter, IParameterDTO>.MapFrom(IParameter parameter) => MapFrom(parameter);
    }
 }
