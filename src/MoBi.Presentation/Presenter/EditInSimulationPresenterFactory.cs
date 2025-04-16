@@ -17,10 +17,7 @@ namespace MoBi.Presentation.Presenter
          ReferenceCache = referenceCache;
       }
 
-      public SimulationEntitySourceReference SourceFor(IParameter parameter)
-      {
-         return ReferenceCache[parameter];
-      }
+      public SimulationEntitySourceReference SourceFor(IParameter parameter) => ReferenceCache[parameter];
    }
 
    public interface IEditInSimulationPresenter : IEditPresenter
