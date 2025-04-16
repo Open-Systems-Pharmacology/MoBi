@@ -8,13 +8,14 @@ using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Presentation.DTO;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Validation;
 
 namespace MoBi.Presentation.DTO
 {
-   public class ParameterDTO : ObjectBaseDTO, IMoBiParameterDTO
+   public class ParameterDTO : ObjectBaseDTO, IParameterDTO
    {
       public bool HasRHS { get; set; }
       public FormulaBuilderDTO RHSFormula { get; set; }
@@ -172,5 +173,11 @@ namespace MoBi.Presentation.DTO
       }
 
       public bool IsIndividualPreview { get; set; }
+
+      public SimulationEntitySourceReference SourceReference { get; set; }
+
+      public string ModuleName => SourceReference?.Module?.Name ?? string.Empty;
+      public string BuildingBlockName => SourceReference?.BuildingBlock.Name ?? string.Empty;
+      public string SourceName => SourceReference?.Source.Name ?? string.Empty;
    }
 }

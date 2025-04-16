@@ -38,7 +38,7 @@ namespace MoBi.UI.Views
             .WithCaption(OSPSuite.UI.UIConstants.EMPTY_COLUMN);
 
          var colBuildingBlock = _gridViewBinder.Bind(x => x.BuildingBlock)
-            .WithCaption(AppConstants.Captions.ContainingBuildingBlock)
+            .WithCaption(AppConstants.Captions.BuildingBlock)
             .AsReadOnly();
 
          colBuildingBlock.XtraColumn.GroupIndex = 0;

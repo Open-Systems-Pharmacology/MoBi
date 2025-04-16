@@ -1,14 +1,31 @@
-﻿using OSPSuite.Utility.Extensions;
-using MoBi.Core.Domain.Model;
+﻿using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Extensions;
 using IoC = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.Presentation.Presenter
 {
+   public class TrackableSimulation
+   {
+      public IMoBiSimulation Simulation { get; }
+      public SimulationEntitySourceReferenceCache ReferenceCache { get; }
+
+      public TrackableSimulation(IMoBiSimulation simulation, SimulationEntitySourceReferenceCache referenceCache)
+      {
+         Simulation = simulation;
+         ReferenceCache = referenceCache;
+      }
+
+      public SimulationEntitySourceReference SourceFor(IParameter parameter)
+      {
+         return ReferenceCache[parameter];
+      }
+   }
+
    public interface IEditInSimulationPresenter : IEditPresenter
    {
-      IMoBiSimulation Simulation { get; set; }
+      TrackableSimulation TrackableSimulation { get; set; }
    }
 
    public interface IEditInSimulationPresenterFactory

@@ -1,8 +1,7 @@
-﻿using OSPSuite.Utility.Extensions;
-using MoBi.Core.Domain.Model;
-using MoBi.Presentation.Views;
+﻿using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -14,7 +13,17 @@ namespace MoBi.Presentation.Presenter
    {
       private readonly IEditContainerPresenter _editContainerPresenter;
       private IContainer _container;
-      public IMoBiSimulation Simulation { get; set; }
+      private TrackableSimulation _trackableSimulation;
+
+      public TrackableSimulation TrackableSimulation
+      {
+         get => _trackableSimulation;
+         set
+         {
+            _trackableSimulation = value;
+            _editContainerPresenter.EnableSimulationTracking(value);
+         }
+      }
 
       public EditContainerInSimulationPresenter(IEditContainerInSimulationView view, IEditContainerPresenter editContainerPresenter) : base(view)
       {
@@ -31,7 +40,7 @@ namespace MoBi.Presentation.Presenter
          if (Equals(_container, container))
             return;
 
-         if(_container == null)
+         if (_container == null)
             _editContainerPresenter.ShowParameters();
 
          _container = container;

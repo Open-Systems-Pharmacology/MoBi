@@ -1,11 +1,11 @@
-﻿using OSPSuite.Core.Commands.Core;
-using FakeItEasy;
-using OSPSuite.BDDHelper;
+﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using OSPSuite.BDDHelper;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
@@ -18,7 +18,7 @@ namespace MoBi.Presentation
       protected IEditQuantityInSimulationView _view;
       private IQuantityToQuantityDTOMapper _mapper;
       private IFormulaPresenterCache _presenterCache;
-      protected IEditParametersInContainerPresenter _parametrPresenters;
+      protected IEditParametersInContainerPresenter _parameterPresenters;
       private IReactionDimensionRetriever _reactionDimensionRetriever;
       protected IQuantityTask _quantityTask;
 
@@ -27,17 +27,19 @@ namespace MoBi.Presentation
          _view = A.Fake<IEditQuantityInSimulationView>();
          _mapper = A.Fake<IQuantityToQuantityDTOMapper>();
          _presenterCache = A.Fake<IFormulaPresenterCache>();
-         _parametrPresenters = A.Fake<IEditParametersInContainerPresenter>();
+         _parameterPresenters = A.Fake<IEditParametersInContainerPresenter>();
          _quantityTask = A.Fake<IQuantityTask>();
-         _reactionDimensionRetriever= A.Fake<IReactionDimensionRetriever>();
+         _reactionDimensionRetriever = A.Fake<IReactionDimensionRetriever>();
 
-         sut = new EditQuantityInSimulationPresenter(_view,_mapper,_presenterCache,_parametrPresenters,_quantityTask,_reactionDimensionRetriever);
-         sut.Simulation= A.Fake<IMoBiSimulation>();
+         sut = new EditQuantityInSimulationPresenter(_view, _mapper, _presenterCache, _parameterPresenters, _quantityTask, _reactionDimensionRetriever)
+         {
+            TrackableSimulation = new TrackableSimulation(A.Fake<IMoBiSimulation>(), new SimulationEntitySourceReferenceCache())
+         };
          sut.InitializeWith(A.Fake<ICommandCollector>());
       }
    }
 
-   class When_told_to_select_an_parameter : concern_for_EditQuantityInSimulationPresenter
+   public class When_told_to_select_an_parameter : concern_for_EditQuantityInSimulationPresenter
    {
       private IParameter _selectedParameter;
       private MoleculeAmount _parentMolecule;
@@ -57,9 +59,8 @@ namespace MoBi.Presentation
       [Observation]
       public void should_select_the_parameter_in_the_parameter_list()
       {
-         A.CallTo(() => _parametrPresenters.Select(_selectedParameter)).MustHaveHappened();
+         A.CallTo(() => _parameterPresenters.Select(_selectedParameter)).MustHaveHappened();
       }
-
 
       [Observation]
       public void should_ensure_that_parameter_tab_is_shown()
@@ -68,7 +69,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_changing_the_value_of_the_start_value_concentration_of_a_molecule_amount    : concern_for_EditQuantityInSimulationPresenter
+   public class When_changing_the_value_of_the_start_value_concentration_of_a_molecule_amount : concern_for_EditQuantityInSimulationPresenter
    {
       private MoleculeAmount _moleculeAmount;
       private Parameter _startValueParameter;
@@ -77,13 +78,14 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         _explicitFormula=new ExplicitFormula();
-         _moleculeAmount=new MoleculeAmount();
+         _explicitFormula = new ExplicitFormula();
+         _moleculeAmount = new MoleculeAmount();
          _startValueParameter = new Parameter().WithName(Constants.Parameters.START_VALUE).WithFormula(_explicitFormula);
          _startValueParameter.Dimension = Constants.Dimension.NO_DIMENSION;
          _moleculeAmount.Add(_startValueParameter);
          sut.Edit(_moleculeAmount);
       }
+
       protected override void Because()
       {
          sut.SetValue(15);
@@ -92,7 +94,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_update_the_value_of_the_start_value_parameter()
       {
-         A.CallTo(() => _quantityTask.SetQuantityDisplayValue(_startValueParameter, 15,sut.Simulation)).MustHaveHappened();
+         A.CallTo(() => _quantityTask.SetQuantityDisplayValue(_startValueParameter, 15, sut.Simulation)).MustHaveHappened();
       }
    }
 
@@ -111,9 +113,10 @@ namespace MoBi.Presentation
          _startValueParameter = new Parameter().WithName(Constants.Parameters.START_VALUE).WithFormula(_explicitFormula);
          _startValueParameter.Dimension = Constants.Dimension.NO_DIMENSION;
          _moleculeAmount.Add(_startValueParameter);
-         _displayUnit= A.Fake<Unit>();
+         _displayUnit = A.Fake<Unit>();
          sut.Edit(_moleculeAmount);
       }
+
       protected override void Because()
       {
          sut.SetDisplayUnit(_displayUnit);
@@ -135,6 +138,7 @@ namespace MoBi.Presentation
          base.Context();
          _moleculeAmount = new MoleculeAmount();
       }
+
       protected override void Because()
       {
          sut.Edit(_moleculeAmount);
@@ -178,6 +182,7 @@ namespace MoBi.Presentation
          base.Context();
          _observer = new Observer();
       }
+
       protected override void Because()
       {
          sut.Edit(_observer);
@@ -190,4 +195,4 @@ namespace MoBi.Presentation
          A.CallTo(() => _view.HideParametersView()).MustHaveHappened();
       }
    }
-}	
+}

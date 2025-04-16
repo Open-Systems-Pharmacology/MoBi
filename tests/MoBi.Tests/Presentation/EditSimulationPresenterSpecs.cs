@@ -336,7 +336,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_set_the_edited_simulation_as_simulation_in_the_parameter_container_presenter()
       {
-         _.Simulation.ShouldBeEqualTo(_simulation);
+         _.TrackableSimulation.Simulation.ShouldBeEqualTo(_simulation);
       }
 
       [Observation]
