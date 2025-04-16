@@ -61,5 +61,10 @@ namespace MoBi.Presentation.Mappers
          parameterDTO.SourceReference = trackableSimulation?.SourceFor(parameter);
          return parameterDTO;
       }
+
+      IParameterDTO IMapper<IParameter, IParameterDTO>.MapFrom(IParameter input)
+      {
+         return MapFrom(input);
+      }
    }
 }
