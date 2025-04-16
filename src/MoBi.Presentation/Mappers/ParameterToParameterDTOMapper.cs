@@ -4,6 +4,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Repositories;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Presentation.DTO;
 using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Mappers
@@ -13,7 +14,7 @@ namespace MoBi.Presentation.Mappers
       ParameterDTO MapFrom(IParameter parameter, TrackableSimulation trackableSimulation);
    }
 
-   public class ParameterToParameterDTOMapper : ObjectBaseToObjectBaseDTOMapperBase, IParameterToParameterDTOMapper
+   public class ParameterToParameterDTOMapper : ObjectBaseToObjectBaseDTOMapperBase, IParameterToParameterDTOMapper, OSPSuite.Presentation.Mappers.IParameterToParameterDTOMapper
    {
       private readonly IFormulaToFormulaBuilderDTOMapper _formulaToDTOFormulaBuilderMapper;
       private readonly IGroupRepository _groupRepository;
