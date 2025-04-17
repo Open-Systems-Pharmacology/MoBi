@@ -12,6 +12,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using IBuildingBlockRepository = MoBi.Core.Domain.Repository.IBuildingBlockRepository;
 
 namespace MoBi.Presentation
 {

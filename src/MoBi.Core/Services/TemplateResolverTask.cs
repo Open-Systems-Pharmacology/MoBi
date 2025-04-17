@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using MoBi.Core.Domain.Extensions;
-using MoBi.Core.Domain.Repository;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using IBuildingBlockRepository = MoBi.Core.Domain.Repository.IBuildingBlockRepository;
 
 namespace MoBi.Core.Services
 {

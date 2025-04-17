@@ -1,5 +1,4 @@
 ﻿using System.Xml.Linq;
-using OSPSuite.Utility.Container;
 using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Serialization.Xml;
 

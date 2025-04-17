@@ -17,6 +17,7 @@ using OSPSuite.UI.Services;
 using OSPSuite.Utility;
 using System.Collections.Generic;
 using System.Linq;
+using IBuildingBlockRepository = MoBi.Core.Domain.Repository.IBuildingBlockRepository;
 
 namespace MoBi.Presentation
 {

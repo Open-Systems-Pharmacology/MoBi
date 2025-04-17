@@ -14,6 +14,7 @@ using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Extensions;
 using ITreeNodeFactory = MoBi.Presentation.Nodes.ITreeNodeFactory;
+using IBuildingBlockRepository = MoBi.Core.Domain.Repository.IBuildingBlockRepository;
 
 namespace MoBi.Presentation.Presenter
 {

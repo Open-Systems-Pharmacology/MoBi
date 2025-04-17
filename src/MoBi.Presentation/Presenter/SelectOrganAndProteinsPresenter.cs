@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using MoBi.Core.Domain.Repository;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Presenters;
+using IBuildingBlockRepository = MoBi.Core.Domain.Repository.IBuildingBlockRepository;
 
 namespace MoBi.Presentation.Presenter
 {

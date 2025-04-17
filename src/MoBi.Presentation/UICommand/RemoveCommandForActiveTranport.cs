@@ -1,23 +1,20 @@
 ﻿using System.Linq;
-using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Repository;
 using OSPSuite.Core.Domain.Builder;
+using IBuildingBlockRepository = MoBi.Core.Domain.Repository.IBuildingBlockRepository;
 
 namespace MoBi.Presentation.UICommand
 {
-   internal interface IActiveTransporterMoelculeRetriever
+   internal interface IActiveTransporterMoleculeRetriever
    {
       TransporterMoleculeContainer GetTransporterMoleculeFrom(TransportBuilder transportBuilder);
    }
 
-   internal class ActiveTransporterMoelculeRetriever : IActiveTransporterMoelculeRetriever
+   internal class ActiveTransporterMoleculeRetriever : IActiveTransporterMoleculeRetriever
    {
-      private readonly IMoBiContext _context;
       private readonly IBuildingBlockRepository _buildingBlockRepository;
 
-      public ActiveTransporterMoelculeRetriever(IMoBiContext context, IBuildingBlockRepository buildingBlockRepository)
+      public ActiveTransporterMoleculeRetriever(IBuildingBlockRepository buildingBlockRepository)
       {
-         _context = context;
          _buildingBlockRepository = buildingBlockRepository;
       }
 
@@ -25,15 +22,16 @@ namespace MoBi.Presentation.UICommand
       {
          foreach (var moleculeBuildingBlock in _buildingBlockRepository.MoleculeBlockCollection)
          {
-            foreach (var moleculeBuider in moleculeBuildingBlock)
+            foreach (var moleculeBuilder in moleculeBuildingBlock)
             {
-               var transporteMolecule = moleculeBuider.TransporterMoleculeContainerCollection
+               var transporterMolecule = moleculeBuilder.TransporterMoleculeContainerCollection
                   .FirstOrDefault(x => x.ActiveTransportRealizations.Contains(transportBuilder));
 
-               if (transporteMolecule != null)
-                  return transporteMolecule;
+               if (transporterMolecule != null)
+                  return transporterMolecule;
             }
          }
+
          return null;
       }
    }

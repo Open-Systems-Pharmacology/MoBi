@@ -35,7 +35,7 @@ namespace MoBi.Presentation.Presenter
       private QuantityDTO _quantityDTO;
       private IQuantity _quantityToEdit;
       private IEditTypedFormulaPresenter _formulaPresenter;
-      public IMoBiSimulation Simulation { get; set; }
+      public TrackableSimulation TrackableSimulation { get; set; }
 
       public EditQuantityInSimulationPresenter(IEditQuantityInSimulationView view, IQuantityToQuantityDTOMapper quantityToQuantityDTOMapper,
          IFormulaPresenterCache formulaPresenterCache, IEditParametersInContainerPresenter parameterPresenter, IQuantityTask quantityTask, IReactionDimensionRetriever reactionDimensionRetriever)
@@ -114,6 +114,8 @@ namespace MoBi.Presentation.Presenter
       }
 
       public override object Subject => _quantity;
+
+      internal IMoBiSimulation Simulation => TrackableSimulation.Simulation;
 
       public void ResetValue()
       {

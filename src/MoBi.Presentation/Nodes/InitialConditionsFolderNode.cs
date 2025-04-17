@@ -9,7 +9,7 @@ namespace MoBi.Presentation.Nodes
 {
    public class InitialConditionsFolderNode : AbstractNode<ModuleViewItem>
    {
-      public InitialConditionsFolderNode(Module module) : base(new ModuleViewItem(module).WithTarget(module.InitialConditionsCollection))
+      public InitialConditionsFolderNode(ClassifiableModule classifiableModule) : base(new ModuleViewItem(classifiableModule).WithTarget(classifiableModule.Subject.InitialConditionsCollection))
       {
          Id = ShortGuid.NewGuid();
          Text = AppConstants.Captions.InitialConditions;

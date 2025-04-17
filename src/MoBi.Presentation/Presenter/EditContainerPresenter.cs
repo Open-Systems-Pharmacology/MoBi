@@ -36,6 +36,7 @@ namespace MoBi.Presentation.Presenter
       IReadOnlyList<ContainerType> AllContainerTypes { get; }
       void ShowParameters();
       void EnableIndividualPreview();
+      void EnableSimulationTracking(TrackableSimulation trackableSimulation);
    }
 
    public class EditContainerPresenter : AbstractContainerEditPresenterWithParameters<IEditContainerView, IEditContainerPresenter, IContainer>, IEditContainerPresenter
@@ -170,6 +171,8 @@ namespace MoBi.Presentation.Presenter
       public void ShowParameters() => _view.ShowParameters();
 
       public void EnableIndividualPreview() => _editParametersInContainerPresenter.ShowIndividualSelection();
+
+      public void EnableSimulationTracking(TrackableSimulation trackableSimulation) => _editParametersInContainerPresenter.EnableSimulationTracking(trackableSimulation);
 
       public override IBuildingBlock BuildingBlock
       {

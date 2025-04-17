@@ -9,6 +9,7 @@ using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Presentation.Presenters.Nodes;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
@@ -26,11 +27,12 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithCommand<NewModuleWithBuildingBlocksUICommand>(_container);
       }
 
-      public override IContextMenu InitializeWith(IPresenter presenter)
+      public override IContextMenu InitializeWith(RootNodeType rootNodeType, IExplorerPresenter presenter)
       {
+         var moduleFolderNode = presenter.NodeByType(rootNodeType);
          _allMenuItems.Add(addNewWithContent());
          _allMenuItems.Add(loadExisting());
-
+         _allMenuItems.Add(ClassificationCommonContextMenuItems.CreateClassificationUnderMenu(moduleFolderNode, presenter).AsGroupStarter());
          return this;
       }
 

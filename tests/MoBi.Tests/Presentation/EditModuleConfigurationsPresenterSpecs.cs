@@ -112,10 +112,13 @@ namespace MoBi.Presentation
          _view.EnableUp = true;
          _view.EnableDown = true;
          _moduleConfigurationNodes = new List<ITreeNode>();
-         A.CallTo(() => _view.AddModuleConfigurationNode(A<ITreeNode>._)).Invokes(x => _moduleConfigurationNodes.Add(x.GetArgument<ITreeNode>(0)));
-         sut.AddModuleConfiguration(new ModuleNode(_projectModule));
-         sut.AddModuleConfiguration(new ModuleNode(_projectModule2));
-         sut.AddModuleConfiguration(new ModuleNode(_projectModule3));
+         A.CallTo(() => _view.AddModuleConfigurationNode(A<ITreeNode>._)).Invokes(x =>
+         {
+            _moduleConfigurationNodes.Add(x.GetArgument<ITreeNode>(0));
+         });
+         sut.AddModuleConfiguration(new ObjectWithIdAndNameNode<Module>(_projectModule));
+         sut.AddModuleConfiguration(new ObjectWithIdAndNameNode<Module>(_projectModule2));
+         sut.AddModuleConfiguration(new ObjectWithIdAndNameNode<Module>(_projectModule3));
       }
    }
 

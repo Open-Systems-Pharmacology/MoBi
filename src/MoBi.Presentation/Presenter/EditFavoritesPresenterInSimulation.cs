@@ -16,6 +16,8 @@ namespace MoBi.Presentation.Presenter
 
    public class EditFavoritesInSimulationPresenter : EditFavoritesPresenter<IMoBiSimulation>, IEditFavoritesInSimulationPresenter
    {
+      private TrackableSimulation _trackableSimulation;
+
       public EditFavoritesInSimulationPresenter(
          IEditFavoritesView view,
          IFavoriteRepository favoriteRepository,
@@ -37,13 +39,17 @@ namespace MoBi.Presentation.Presenter
       protected override bool IsAddedToParent(IObjectBase parent)
       {
          var parentContainer = parent as IContainer;
-         return parentContainer != null && Simulation.Model.Root.GetAllContainersAndSelf<IContainer>().Contains(parentContainer);
+         return parentContainer != null && _trackableSimulation.Simulation.Model.Root.GetAllContainersAndSelf<IContainer>().Contains(parentContainer);
       }
 
-      public IMoBiSimulation Simulation
+      public TrackableSimulation TrackableSimulation
       {
-         get => _projectItem;
-         set => _projectItem = value;
+         get => _trackableSimulation;
+         set
+         {
+            _trackableSimulation = value;
+            _projectItem = value.Simulation;
+         }
       }
 
       public IEnumerable<IParameter> Favorites()

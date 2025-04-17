@@ -1439,7 +1439,7 @@ namespace MoBi.Assets
          public static readonly string Educts = "Educts";
          public static readonly string ApplicationMoleculeBuilder = "Application Molecule Builder";
          public static readonly string AdministeredMolecule = "Administered Molecule";
-         public static readonly string ContainingBuildingBlock = "Building Block";
+         public static readonly string BuildingBlock = "Building Block";
          public static readonly string DependentRename = "Dependent Renaming";
          public static readonly string Error = "Error";
          public static readonly string Errors = "Errors";

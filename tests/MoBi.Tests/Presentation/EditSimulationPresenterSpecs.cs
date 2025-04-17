@@ -37,6 +37,7 @@ namespace MoBi.Presentation
       protected IMoBiContext _context;
       protected IOutputMappingMatchingTask _outputMappingMatchingTask;
       private ISimulationChangesPresenter _simulationChangesPresenter;
+      private ISimulationEntitySourceReferenceFactory _entitySourceReferenceFactory;
 
       protected override void Context()
       {
@@ -56,11 +57,12 @@ namespace MoBi.Presentation
          _context = A.Fake<IMoBiContext>();
          _simulationChangesPresenter = A.Fake<ISimulationChangesPresenter>();
          _outputMappingMatchingTask = A.Fake<IOutputMappingMatchingTask>();
+         _entitySourceReferenceFactory= A.Fake<ISimulationEntitySourceReferenceFactory>();
 
          sut = new EditSimulationPresenter(_view, _chartPresenter, _hierarchicalSimulationPresenter, _diagramPresenter,
             _solverSettings, _outputSchemaPresenter, _presenterFactory, new HeavyWorkManagerForSpecs(),
             A.Fake<IChartFactory>(), _editFavoritePresenter, _chartTasks, _userDefinedParametersPresenter, _simulationOutputMappingPresenter,
-            _simulationPredictedVsObservedChartPresenter, _simulationResidualVsTimeChartPresenter, _context, _outputMappingMatchingTask, _simulationChangesPresenter);
+            _simulationPredictedVsObservedChartPresenter, _simulationResidualVsTimeChartPresenter, _context, _outputMappingMatchingTask, _simulationChangesPresenter,_entitySourceReferenceFactory);
       }
 
 
@@ -334,7 +336,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_set_the_edited_simulation_as_simulation_in_the_parameter_container_presenter()
       {
-         _.Simulation.ShouldBeEqualTo(_simulation);
+         _.TrackableSimulation.Simulation.ShouldBeEqualTo(_simulation);
       }
 
       [Observation]

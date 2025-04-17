@@ -18,7 +18,7 @@ namespace MoBi.UI.Services
       ///    Creates a tooltip for the <paramref name="parameterDTO" />. If given, the <paramref name="title" /> and
       ///    <paramref name="value" /> will be displayed first in the tooltip
       /// </summary>
-      SuperToolTip ToolTipFor(IMoBiParameterDTO parameterDTO, string title, string value);
+      SuperToolTip ToolTipFor(ParameterDTO parameterDTO, string title, string value);
 
       SuperToolTip ToolTipFor(UsedCalculationMethodDTO calculationMethod);
    }
@@ -38,28 +38,30 @@ namespace MoBi.UI.Services
          return toolTip;
       }
 
-      public SuperToolTip ToolTipFor(IMoBiParameterDTO parameterDTO, string title, string value)
+      public SuperToolTip ToolTipFor(ParameterDTO parameterDTO, string title, string value)
       {
          SuperToolTip toolTip;
 
-         if (string.IsNullOrEmpty(title))
+         if (string.IsNullOrEmpty(title) || string.Equals(value, parameterDTO.Name))
             toolTip = CreateToolTip(parameterDTO.Description, parameterDTO.Name);
          else
          {
             toolTip = CreateToolTip(value, title);
-            toolTip.Items.AddSeparator();
-            toolTip = addParameterNameToolTip(parameterDTO.Name, parameterDTO.Description, toolTip);
+            addParameterNameToolTip(parameterDTO.Name, parameterDTO.Description, toolTip);
          }
 
-         toolTip = addFormulaToolTip(parameterDTO.Formula, toolTip, AppConstants.Captions.Formula);
-         toolTip = addFormulaToolTip(parameterDTO.RHSFormula, toolTip, AppConstants.Captions.RHSFormula);
+         addParameterReferenceTooltip(parameterDTO, toolTip);
+
+         addFormulaToolTip(parameterDTO.Formula, toolTip, AppConstants.Captions.Formula);
+         addFormulaToolTip(parameterDTO.RHSFormula, toolTip, AppConstants.Captions.RHSFormula);
+
          return toolTip;
       }
 
-      private static SuperToolTip addFormulaToolTip(FormulaBuilderDTO formula, SuperToolTip toolTip, string title)
+      private static void addFormulaToolTip(FormulaBuilderDTO formula, SuperToolTip toolTip, string title)
       {
          if (formula == null || formula.FormulaType != ObjectTypes.ExplicitFormula)
-            return toolTip;
+            return;
 
          toolTip.Items.AddSeparator();
          toolTip.WithTitle(title);
@@ -75,8 +77,6 @@ namespace MoBi.UI.Services
          }
 
          toolTip.WithText(sb.ToString());
-
-         return toolTip;
       }
 
       public SuperToolTip ToolTipFor(UsedCalculationMethodDTO calculationMethod)
@@ -84,18 +84,31 @@ namespace MoBi.UI.Services
          return CreateToolTip(calculationMethod.Description, calculationMethod.CalculationMethodName);
       }
 
-      private SuperToolTip addToolTip(SuperToolTip toolTipToAdd, SuperToolTip toolTip)
+      // Creates a 3-line tooltip with the literal "Parameter" in bold, followed by the parameter-name, followed by the description.
+      private void addParameterNameToolTip(string parameterName, string description, SuperToolTip toolTip)
       {
-         toolTipToAdd.Items.Cast<BaseToolTipItem>().ToList().ForEach(x => toolTip.Items.Add(x));
-         return toolTip;
+         toolTip.Items.AddSeparator();
+         toolTip.WithTitle(ObjectTypes.Parameter);
+         var nameItem= toolTip.Items.Add(parameterName);
+         nameItem.LeftIndent = 6;
+         toolTip.WithText(description);
       }
 
-      // Creates a 3-line tooltip with the literal "Parameter" in bold, followed by the parameter-name, followed by the description.
-      private SuperToolTip addParameterNameToolTip(string name, string description, SuperToolTip toolTip)
+      private static void addParameterReferenceTooltip(ParameterDTO parameterDTO, SuperToolTip toolTip)
       {
-         var tt = CreateToolTip(name, ObjectTypes.Parameter);
-         tt.Items.Add(description);
-         return addToolTip(tt, toolTip);
+         if (parameterDTO.SourceReference == null)
+            return;
+
+         toolTip.Items.AddSeparator();
+         toolTip.WithTitle(AppConstants.Captions.Source);
+         var sb = new StringBuilder();
+         if(!string.IsNullOrEmpty(parameterDTO.ModuleName))
+            sb.AppendLine($"{AppConstants.Captions.Module}: {parameterDTO.ModuleName}");
+
+         sb.AppendLine($"{AppConstants.Captions.BuildingBlock}: {parameterDTO.BuildingBlockName}");
+         sb.AppendLine($"{AppConstants.Captions.Source}: {parameterDTO.SourceName}");
+
+         toolTip.WithText(sb.ToString());
       }
    }
 }

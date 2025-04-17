@@ -73,7 +73,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
    public class RootContextMenuFactoryForExtensionModule : RootNodeContextMenuFactoryFor<Module>
    {
-      public RootContextMenuFactoryForExtensionModule() : base(MoBiRootNodeTypes.ModulesFolder)
+      public RootContextMenuFactoryForExtensionModule() : base(RootNodeTypes.ModulesFolder)
       {
       }
    }
