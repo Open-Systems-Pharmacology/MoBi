@@ -468,9 +468,6 @@ namespace MoBi.Presentation.Presenter
          showParameters();
       }
 
-      public void EnableSimulationTracking(TrackableSimulation trackableSimulation)
-      {
-         _trackableSimulation = trackableSimulation;
-      }
+      public void EnableSimulationTracking(TrackableSimulation trackableSimulation) => _trackableSimulation = trackableSimulation;
    }
 }

@@ -40,25 +40,13 @@ namespace MoBi.Core.Domain.Repository
             .Concat(moduleBuildingBlocks()).ToList();
       }
 
-      public IReadOnlyList<T> All<T>() where T : IBuildingBlock
-      {
-         return All().OfType<T>().ToList();
-      }
+      public IReadOnlyList<T> All<T>() where T : IBuildingBlock => All().OfType<T>().ToList();
 
-      private IEnumerable<IBuildingBlock> moduleBuildingBlocks()
-      {
-         return _projectRetriever.Current.Modules.SelectMany(x => x.BuildingBlocks);
-      }
+      private IEnumerable<IBuildingBlock> moduleBuildingBlocks() => _projectRetriever.Current.Modules.SelectMany(x => x.BuildingBlocks);
 
-      private IReadOnlyList<T> get<T>(Func<Module, T> getter)
-      {
-         return _projectRetriever.Current.Modules.Select(getter).Where(x => x != null).ToList();
-      }
+      private IReadOnlyList<T> get<T>(Func<Module, T> getter) => _projectRetriever.Current.Modules.Select(getter).Where(x => x != null).ToList();
 
-      private IReadOnlyList<T> getMany<T>(Func<Module, IEnumerable<T>> getter)
-      {
-         return _projectRetriever.Current.Modules.SelectMany(getter).Where(x => x != null).ToList();
-      }
+      private IReadOnlyList<T> getMany<T>(Func<Module, IEnumerable<T>> getter) => _projectRetriever.Current.Modules.SelectMany(getter).Where(x => x != null).ToList();
 
       public IReadOnlyList<MoleculeBuildingBlock> MoleculeBlockCollection => get(x => x.Molecules);
 
@@ -80,14 +68,8 @@ namespace MoBi.Core.Domain.Repository
 
       public IReadOnlyList<ParameterValuesBuildingBlock> ParametersValueBlockCollection => getMany(x => x.ParameterValuesCollection);
 
-      public IndividualBuildingBlock IndividualByName(string buildingBlockName)
-      {
-         return IndividualsCollection.FindByName(buildingBlockName);
-      }
+      public IndividualBuildingBlock IndividualByName(string buildingBlockName) => IndividualsCollection.FindByName(buildingBlockName);
 
-      public ExpressionProfileBuildingBlock ExpressionProfileByName(string buildingBlockName)
-      {
-         return ExpressionProfileCollection.FindByName(buildingBlockName);
-      }
+      public ExpressionProfileBuildingBlock ExpressionProfileByName(string buildingBlockName) => ExpressionProfileCollection.FindByName(buildingBlockName);
    }
 }

@@ -62,9 +62,6 @@ namespace MoBi.Presentation.Mappers
          return parameterDTO;
       }
 
-      IParameterDTO IMapper<IParameter, IParameterDTO>.MapFrom(IParameter input)
-      {
-         return MapFrom(input);
-      }
+      IParameterDTO IMapper<IParameter, IParameterDTO>.MapFrom(IParameter input) => MapFrom(input);
    }
 }
