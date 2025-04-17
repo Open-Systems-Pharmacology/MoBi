@@ -63,6 +63,7 @@ namespace MoBi.Presentation.Presenter
       IndividualBuildingBlock SelectedIndividual { get; set; }
       void ShowIndividualSelection();
       void UpdatePreview();
+      void EnableSimulationTracking(TrackableSimulation trackableSimulation);
    }
 
    public class EditParametersInContainerPresenter : AbstractParameterBasePresenter<IEditParametersInContainerView, IEditParametersInContainerPresenter>, IEditParametersInContainerPresenter
@@ -86,6 +87,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IObjectPathFactory _objectPathFactory;
       private readonly IndividualBuildingBlock _noIndividualSelected;
       private readonly Cache<ParameterDTO, IndividualParameter> _individualParameterCache = new Cache<ParameterDTO, IndividualParameter>(onMissingKey: dto => null);
+      private TrackableSimulation _trackableSimulation;
 
       public bool ChangeLocalisationAllowed { set; get; }
 
@@ -126,7 +128,7 @@ namespace MoBi.Presentation.Presenter
          _noIndividualSelected = new IndividualBuildingBlock().WithName(AppConstants.Captions.None);
          SelectedIndividual = _noIndividualSelected;
          _view.ShowIndividualSelection(false);
-         AllIndividuals = new List<IndividualBuildingBlock> { _noIndividualSelected }.Concat(_interactionTaskContext.Context.CurrentProject.IndividualsCollection).ToList();
+         AllIndividuals = new List<IndividualBuildingBlock> {_noIndividualSelected}.Concat(_interactionTaskContext.Context.CurrentProject.IndividualsCollection).ToList();
       }
 
       public IReadOnlyList<IndividualBuildingBlock> AllIndividuals { get; }
@@ -157,7 +159,7 @@ namespace MoBi.Presentation.Presenter
       public override void ReleaseFrom(IEventPublisher eventPublisher)
       {
          base.ReleaseFrom(eventPublisher);
-         releaseParameters();
+         releaseParameterDTOs();
       }
 
       public void SetDimensionFor(ParameterDTO parameterDTO, IDimension newDimension)
@@ -171,31 +173,35 @@ namespace MoBi.Presentation.Presenter
 
       public void CopyPathForParameter(ParameterDTO parameter) => _view.CopyToClipBoard(_entityPathResolver.PathFor(parameter.Parameter));
 
-      private void createParameterCache(IReadOnlyList<IParameter> parametersToEdit, IReadOnlyList<IndividualParameter> individualParameters, IndividualBuildingBlock selectedIndividual)
+      private void createParameterCache()
       {
+         var parametersToEdit = getParametersFrom(_container);
+
          _parameters.Clear();
          _parameters.AddRange(parametersToEdit);
 
-         releaseParameters();
+         releaseParameterDTOs();
          _allParametersDTO.Clear();
-         _allParametersDTO.AddRange(_parameters.MapAllUsing(_parameterToDTOParameterMapper));
+         _allParametersDTO.AddRange(_parameters.Select(x => _parameterToDTOParameterMapper.MapFrom(x, _trackableSimulation)));
+         initializeIndividualParameterCache();
 
-         initializeIndividualParameterCache(individualParameters, selectedIndividual);
          _allParametersDTO.AddRange(_individualParameterCache.Keys);
-         _allParametersDTO.Sort((a,b) => string.Compare(a.Name, b.Name, StringComparison.InvariantCultureIgnoreCase));
+         _allParametersDTO.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.InvariantCultureIgnoreCase));
       }
 
-      private void initializeIndividualParameterCache(IReadOnlyList<IndividualParameter> individualParameters, IndividualBuildingBlock selectedIndividual)
+      private void initializeIndividualParameterCache()
       {
          _individualParameterCache.Clear();
+         var individualParameters = individualParametersFor(_container, SelectedIndividual);
+
          individualParameters.Each(individualParameter =>
          {
-            var parameterDTO = _individualParameterToDTOParameterMapper.MapFrom(selectedIndividual, individualParameter);
+            var parameterDTO = _individualParameterToDTOParameterMapper.MapFrom(SelectedIndividual, individualParameter);
             _individualParameterCache[parameterDTO] = individualParameter;
          });
       }
 
-      private void releaseParameters() => _allParametersDTO.Each(dto => dto.Release());
+      private void releaseParameterDTOs() => _allParametersDTO.Each(dto => dto.Release());
 
       public EditParameterMode EditMode
       {
@@ -419,7 +425,7 @@ namespace MoBi.Presentation.Presenter
 
          if (parameter.IsAnImplementationOf<IDistributedParameter>())
          {
-            _editDistributedParameterPresenter.Edit((IDistributedParameter)parameter);
+            _editDistributedParameterPresenter.Edit((IDistributedParameter) parameter);
             _view.SetEditParameterView(_editDistributedParameterPresenter.View);
          }
          else
@@ -458,8 +464,10 @@ namespace MoBi.Presentation.Presenter
 
       public void UpdatePreview()
       {
-         createParameterCache(getParametersFrom(_container), individualParametersFor(_container, SelectedIndividual), SelectedIndividual);
+         createParameterCache();
          showParameters();
       }
+
+      public void EnableSimulationTracking(TrackableSimulation trackableSimulation) => _trackableSimulation = trackableSimulation;
    }
 }

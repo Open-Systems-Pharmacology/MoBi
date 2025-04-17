@@ -1,10 +1,7 @@
-﻿using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Repository;
-using MoBi.Core.Services;
-using MoBi.Presentation.DTO;
-using OSPSuite.Core.Domain;
+﻿using MoBi.Presentation.DTO;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility;
+using IBuildingBlockRepository = MoBi.Core.Domain.Repository.IBuildingBlockRepository;
 
 namespace MoBi.Presentation.Mappers
 {

@@ -20,7 +20,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IReactionToReactionDTOMapper _reactionToReactionDTOMapper;
       private readonly IFormulaPresenterCache _formulaPresenterCache;
       private IEditTypedFormulaPresenter _formulaPresenter;
-      public IMoBiSimulation Simulation { get; set; }
+      public TrackableSimulation TrackableSimulation { get; set; }
 
       public EditReactionInSimulationPresenter(IEditReactionInSimulationView view, IEditParametersInContainerPresenter editParametersInContainerPresenter, IReactionToReactionDTOMapper reactionToReactionDTOMapper,
          IFormulaPresenterCache formulaPresenterCache)

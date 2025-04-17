@@ -2,11 +2,8 @@
 using System.Drawing;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Repository;
 using MoBi.Core.Events;
 using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
@@ -23,6 +20,9 @@ using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
+using IBuildingBlockRepository = MoBi.Core.Domain.Repository.IBuildingBlockRepository;
 using IEntityContainer = OSPSuite.Core.Domain.IContainer;
 
 namespace MoBi.Presentation.Presenter
@@ -55,11 +55,11 @@ namespace MoBi.Presentation.Presenter
       private readonly IBuildingBlockRepository _buildingBlockRepository;
       private readonly string _formulaPropertyName;
 
-      public EditApplicationBuilderPresenter(IEditApplicationBuilderView view, IEditTaskFor<ApplicationBuilder> editTasks, 
+      public EditApplicationBuilderPresenter(IEditApplicationBuilderView view, IEditTaskFor<ApplicationBuilder> editTasks,
          IFormulaToFormulaBuilderDTOMapper formulaToDTOFormulaMapper,
-         IApplicationBuilderToApplicationBuilderDTOMapper applicationBuilderMapper, 
+         IApplicationBuilderToApplicationBuilderDTOMapper applicationBuilderMapper,
          IInteractionTasksForChildren<ApplicationBuilder, ApplicationMoleculeBuilder> interactionTasksForApplicationMoleculeBuilder,
-         IViewItemContextMenuFactory viewItemContextMenuFactory, 
+         IViewItemContextMenuFactory viewItemContextMenuFactory,
          IEditParametersInContainerPresenter editParametersInContainerPresenter, IMoBiContext context,
          IDescriptorConditionListPresenter<ApplicationBuilder> descriptorConditionListPresenter, IApplicationController applicationController,
          IBuildingBlockRepository buildingBlockRepository)
@@ -92,7 +92,7 @@ namespace MoBi.Presentation.Presenter
          dto.GetMoleculeNames(GetMoleculeNames);
          _view.BindTo(dto);
          _editParametersInContainerPresenter.Edit(applicationBuilder);
-         _descriptorConditionListPresenter.Edit(_applicationBuilder,  x=> x.SourceCriteria, BuildingBlock);
+         _descriptorConditionListPresenter.Edit(_applicationBuilder, x => x.SourceCriteria, BuildingBlock);
       }
 
       public override object Subject => _applicationBuilder;
@@ -200,6 +200,7 @@ namespace MoBi.Presentation.Presenter
          {
             moleculeNames.Add(_applicationBuilder.MoleculeName);
          }
+
          return moleculeNames;
       }
 

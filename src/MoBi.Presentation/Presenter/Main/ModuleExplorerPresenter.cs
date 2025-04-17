@@ -47,18 +47,29 @@ namespace MoBi.Presentation.Presenter.Main
       private readonly IObservedDataInExplorerPresenter _observedDataInExplorerPresenter;
       private readonly IEditBuildingBlockStarter _editBuildingBlockStarter;
       private readonly IInteractionTasksForModule _interactionTaskForModule;
+      private readonly IModulesInExplorerPresenter _modulesInExplorerPresenter;
       private bool _editSinglesOnLoad = true;
 
-      public ModuleExplorerPresenter(IModuleExplorerView view, IRegionResolver regionResolver, ITreeNodeFactory treeNodeFactory,
-         IViewItemContextMenuFactory viewItemContextMenuFactory, IMoBiContext context, IClassificationPresenter classificationPresenter,
-         IToolTipPartCreator toolTipPartCreator, IObservedDataInExplorerPresenter observedDataInExplorerPresenter,
-         IMultipleTreeNodeContextMenuFactory multipleTreeNodeContextMenuFactory, IProjectRetriever projectRetriever,
-         IEditBuildingBlockStarter editBuildingBlockStarter, IInteractionTasksForModule interactionTaskForModule) :
+      public ModuleExplorerPresenter(IModuleExplorerView view, 
+         IRegionResolver regionResolver, 
+         ITreeNodeFactory treeNodeFactory,
+         IViewItemContextMenuFactory viewItemContextMenuFactory, 
+         IMoBiContext context, 
+         IClassificationPresenter classificationPresenter,
+         IToolTipPartCreator toolTipPartCreator, 
+         IObservedDataInExplorerPresenter observedDataInExplorerPresenter,
+         IMultipleTreeNodeContextMenuFactory multipleTreeNodeContextMenuFactory, 
+         IProjectRetriever projectRetriever,
+         IEditBuildingBlockStarter editBuildingBlockStarter, 
+         IInteractionTasksForModule interactionTaskForModule,
+         IModulesInExplorerPresenter modulesInExplorerPresenter) :
          base(view, regionResolver, treeNodeFactory, viewItemContextMenuFactory, context, RegionNames.ModuleExplorer,
             classificationPresenter, toolTipPartCreator, multipleTreeNodeContextMenuFactory, projectRetriever)
       {
          _observedDataInExplorerPresenter = observedDataInExplorerPresenter;
+         _modulesInExplorerPresenter = modulesInExplorerPresenter;
          _observedDataInExplorerPresenter.InitializeWith(this, classificationPresenter, RootNodeTypes.ObservedDataFolder);
+         _modulesInExplorerPresenter.InitializeWith(this, classificationPresenter, RootNodeTypes.ModulesFolder);
          _editBuildingBlockStarter = editBuildingBlockStarter;
          _interactionTaskForModule = interactionTaskForModule;
       }
@@ -71,8 +82,8 @@ namespace MoBi.Presentation.Presenter.Main
          if (treeNode.TagAsObject is ClassifiableObservedData observedData)
             return ContextMenuFor(new ObservedDataViewItem(observedData.Repository));
 
-         if (treeNode.TagAsObject is Module module)
-            return ContextMenuFor(new ModuleViewItem(module));
+         if (treeNode.TagAsObject is ClassifiableModule classifiableModule)
+            return ContextMenuFor(new ModuleViewItem(classifiableModule));
 
          return base.ContextMenuFor(treeNode);
       }
@@ -82,18 +93,41 @@ namespace MoBi.Presentation.Presenter.Main
          if (base.CanDrop(nodeToDrop, targetNode, keyFlags))
             return true;
 
-         var (targetModuleNode, buildingBlockSourceNode) = convertToExpectedTypes(nodeToDrop, targetNode);
+         if (draggingBuildingBlock(nodeToDrop))
+         {
+            var (targetModuleNode, buildingBlockSourceNode) = convertToDragDropBuildingBlockTypes(nodeToDrop, targetNode);
 
-         if (targetModuleNode == null || buildingBlockSourceNode == null)
+            if (targetModuleNode == null || buildingBlockSourceNode == null)
+               return false;
+
+            if (moduleAlreadyContainsNode(buildingBlockSourceNode, targetModuleNode))
+               return false;
+
+            if (!isPossibleToAddBuildingBlockToModule(targetModuleNode, buildingBlockSourceNode) || (isMove(keyFlags) && !canMove(buildingBlockSourceNode.Tag)))
+               return false;
+
+            return true;
+         }
+
+         if (draggingModule(nodeToDrop))
+         {
+            if(targetNode is ClassificationNode classificationNode && nodeTagIsModuleRootNode(classificationNode))
+               return true;
+
             return false;
+         }
 
-         if (moduleAlreadyContainsNode(buildingBlockSourceNode, targetModuleNode))
-            return false;
+         return false;
+      }
 
-         if (!isPossibleToAddBuildingBlockToModule(targetModuleNode, buildingBlockSourceNode) || (isMove(keyFlags) && !canMove(buildingBlockSourceNode.Tag)))
-            return false;
+      private bool draggingModule(ITreeNode nodeToDrop)
+      {
+         return nodeToDrop is ModuleNode;
+      }
 
-         return true;
+      private bool draggingBuildingBlock(ITreeNode nodeToDrop)
+      {
+         return nodeToDrop is ITreeNode<IBuildingBlock>;
       }
 
       public override bool CopyAllowed() => true;
@@ -109,9 +143,9 @@ namespace MoBi.Presentation.Presenter.Main
       }
 
       private static bool isPossibleToAddBuildingBlockToModule(ModuleNode targetModuleNode, ITreeNode<IBuildingBlock> buildingBlockSourceNode) =>
-         targetModuleNode.Tag.CanAdd(buildingBlockSourceNode.Tag);
+         targetModuleNode.Tag.Subject.CanAdd(buildingBlockSourceNode.Tag);
 
-      private static (ModuleNode moduleNode, ITreeNode<IBuildingBlock> buildingBlockSourceNode) convertToExpectedTypes(ITreeNode nodeToDrop, ITreeNode targetNode) =>
+      private static (ModuleNode moduleNode, ITreeNode<IBuildingBlock> buildingBlockSourceNode) convertToDragDropBuildingBlockTypes(ITreeNode nodeToDrop, ITreeNode targetNode) =>
          (targetNode as ModuleNode, nodeToDrop as ITreeNode<IBuildingBlock>);
 
       private static bool moduleAlreadyContainsNode(ITreeNode<IBuildingBlock> buildingBlockSourceNode, ModuleNode targetModuleNode) =>
@@ -125,7 +159,7 @@ namespace MoBi.Presentation.Presenter.Main
 
       private bool handleDropNodeForBuildingBlock(ITreeNode nodeToDrop, ITreeNode targetNode, DragDropKeyFlags keyState)
       {
-         var (targetModuleNode, buildingBlockSourceNode) = convertToExpectedTypes(nodeToDrop, targetNode);
+         var (targetModuleNode, buildingBlockSourceNode) = convertToDragDropBuildingBlockTypes(nodeToDrop, targetNode);
 
          if (buildingBlockSourceNode == null || targetModuleNode == null)
             return false;
@@ -134,7 +168,7 @@ namespace MoBi.Presentation.Presenter.Main
          if (movingBuildingBlock.Module == null)
             return false;
 
-         var targetModule = targetModuleNode.Tag;
+         var targetModule = targetModuleNode.Tag.Subject;
          switch (keyState)
          {
             case DragDropKeyFlags.None:
@@ -188,7 +222,7 @@ namespace MoBi.Presentation.Presenter.Main
          expandNodes(new List<ITreeNode>
          {
             addedNode,
-            _view.NodeByType(MoBiRootNodeTypes.ModulesFolder)
+            _view.NodeByType(RootNodeTypes.ModulesFolder)
          });
 
          if (_editSinglesOnLoad)
@@ -216,7 +250,15 @@ namespace MoBi.Presentation.Presenter.Main
          if (node.IsAnImplementationOf<BuildingBlockNode>())
             return true;
 
-         return _observedDataInExplorerPresenter.CanDrag(node);
+         return dragDropPresenterFor(node).CanDrag(node);
+      }
+
+      private IClassificationInExplorerPresenter dragDropPresenterFor(ITreeNode node)
+      {
+         if (node.IsAnImplementationOf<ModuleNode>())
+            return _modulesInExplorerPresenter;
+
+         return _observedDataInExplorerPresenter;
       }
 
       public int OrderingComparisonFor(ITreeNode<IWithName> node1, ITreeNode<IWithName> node2)
@@ -262,7 +304,7 @@ namespace MoBi.Presentation.Presenter.Main
 
       private int rootNodeTypeComparison(ITreeNode<IWithName> node1)
       {
-         if (node1.Tag.Equals(MoBiRootNodeTypes.ModulesFolder))
+         if (node1.Tag.Equals(RootNodeTypes.ModulesFolder))
             return 1;
 
          return -1;
@@ -283,7 +325,7 @@ namespace MoBi.Presentation.Presenter.Main
 
       private static bool nodeTagIsModuleRootNode(ITreeNode<IWithName> node)
       {
-         return Equals(node?.Tag, MoBiRootNodeTypes.ModulesFolder);
+         return Equals(node?.Tag, RootNodeTypes.ModulesFolder);
       }
 
       public override IEnumerable<ClassificationTemplate> AvailableClassificationCategories(ITreeNode<IClassification> parentClassificationNode) => _observedDataInExplorerPresenter.AvailableObservedDataCategoriesIn(parentClassificationNode);
@@ -318,17 +360,18 @@ namespace MoBi.Presentation.Presenter.Main
          {
             _view.DestroyNodes();
 
-            _view.AddNode(_treeNodeFactory.CreateFor(MoBiRootNodeTypes.ModulesFolder));
+            _view.AddNode(_treeNodeFactory.CreateFor(RootNodeTypes.ModulesFolder));
             _view.AddNode(_treeNodeFactory.CreateFor(MoBiRootNodeTypes.ExpressionProfilesFolder));
             _view.AddNode(_treeNodeFactory.CreateFor(MoBiRootNodeTypes.IndividualsFolder));
             _view.AddNode(_treeNodeFactory.CreateFor(RootNodeTypes.ObservedDataFolder));
 
-            project.Modules.Each(x => addModule(x));
+            // project.Modules.Each(x => addModule(x));
 
             project.ExpressionProfileCollection.Each(bb => addBuildingBlockToTree(bb, MoBiRootNodeTypes.ExpressionProfilesFolder));
             project.IndividualsCollection.Each(bb => addBuildingBlockToTree(bb, MoBiRootNodeTypes.IndividualsFolder));
 
-            _observedDataInExplorerPresenter.AddObservedDataToTree(project);
+            _observedDataInExplorerPresenter.AddAllClassificationsToTree(project);
+            _modulesInExplorerPresenter.AddModulesToTree(project);
          }
       }
 
@@ -359,7 +402,8 @@ namespace MoBi.Presentation.Presenter.Main
 
       private ITreeNode addModule(Module module)
       {
-         return _view.AddNode(_treeNodeFactory.CreateFor(module).Under(_view.NodeByType(MoBiRootNodeTypes.ModulesFolder)));
+         var classifiable = _projectRetriever.CurrentProject.GetOrCreateClassifiableFor<ClassifiableModule, Module>(module);
+         return _view.AddNode(_treeNodeFactory.CreateFor(classifiable).Under(_view.NodeByType(RootNodeTypes.ModulesFolder)));
       }
 
       public void Handle(AddedEvent eventToHandle)

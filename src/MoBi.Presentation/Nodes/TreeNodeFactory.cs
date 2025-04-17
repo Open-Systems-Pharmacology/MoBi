@@ -28,7 +28,7 @@ namespace MoBi.Presentation.Nodes
       ITreeNode CreateFor(MoleculeBuilder moleculeBuilder);
       ITreeNode CreateForFavorites();
       ITreeNode CreateForUserDefined();
-      ITreeNode CreateFor(Module module);
+      ITreeNode CreateFor(ClassifiableModule module);
       ITreeNode CreateFor(ModuleConfigurationDTO moduleConfiguration);
       ITreeNode ParameterValuesFolderNodeForModuleUnder(ModuleNode moduleNode);
       ITreeNode InitialConditionsFolderNodeForModuleUnder(ModuleNode moduleNode);
@@ -44,7 +44,7 @@ namespace MoBi.Presentation.Nodes
 
       public ITreeNode CreateFor(ObjectBaseDTO objectBase)
       {
-         return new ObjectWithIdAndNameNode<ObjectBaseDTO>(objectBase);
+         return new ObjectWithIdAndNameNode<ObjectBaseDTO>(objectBase).WithIcon(objectBase.Icon);
       }
 
       public ITreeNode CreateFor(DataRepository dataRepository)
@@ -71,11 +71,11 @@ namespace MoBi.Presentation.Nodes
          return simNode;
       }
 
-      public ITreeNode CreateFor(Module module)
+      public ITreeNode CreateFor(ClassifiableModule classifiableModule)
       {
-         var moduleNode = new ModuleNode(module);
-         addModuleBuildingBlocks(moduleNode, module);
-         addStartValueCollections(moduleNode, module);
+         var moduleNode = new ModuleNode(classifiableModule);
+         addModuleBuildingBlocks(moduleNode, classifiableModule.Subject);
+         addStartValueCollections(moduleNode, classifiableModule.Subject);
 
          return moduleNode;
       }

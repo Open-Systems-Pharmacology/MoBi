@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Repository;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain.Builder;
+using IBuildingBlockRepository = MoBi.Core.Domain.Repository.IBuildingBlockRepository;
 
 namespace MoBi.Presentation
 {
@@ -45,14 +45,14 @@ namespace MoBi.Presentation
          base.Context();
          _molecule = new MoleculeBuilder();
          _unselectedMolecule = new MoleculeBuilder();
-         _moleculeBuildingBlock = new MoleculeBuildingBlock { _molecule };
-         _unselectedMoleculeBuildingBlock = new MoleculeBuildingBlock { _unselectedMolecule };
+         _moleculeBuildingBlock = new MoleculeBuildingBlock {_molecule};
+         _unselectedMoleculeBuildingBlock = new MoleculeBuildingBlock {_unselectedMolecule};
 
-         _moleculeBuildingBlocks = new[] { _unselectedMoleculeBuildingBlock, _moleculeBuildingBlock };
+         _moleculeBuildingBlocks = new[] {_unselectedMoleculeBuildingBlock, _moleculeBuildingBlock};
          A.CallTo(() => _buildingBlockRepository.MoleculeBlockCollection).Returns(_moleculeBuildingBlocks);
          _moBiSpatialStructure = new MoBiSpatialStructure();
          _unselectedSpatialStructure = new MoBiSpatialStructure();
-         _moBiSpatialStructures = new[] { _unselectedSpatialStructure, _moBiSpatialStructure };
+         _moBiSpatialStructures = new[] {_unselectedSpatialStructure, _moBiSpatialStructure};
          A.CallTo(() => _buildingBlockRepository.SpatialStructureCollection).Returns(_moBiSpatialStructures);
          A.CallTo(() => _view.Canceled).Returns(false);
       }
@@ -75,8 +75,8 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _buildingBlockRepository.MoleculeBlockCollection).Returns(new[] { new MoleculeBuildingBlock() });
-         A.CallTo(() => _buildingBlockRepository.SpatialStructureCollection).Returns(new[] { new MoBiSpatialStructure() });
+         A.CallTo(() => _buildingBlockRepository.MoleculeBlockCollection).Returns(new[] {new MoleculeBuildingBlock()});
+         A.CallTo(() => _buildingBlockRepository.SpatialStructureCollection).Returns(new[] {new MoBiSpatialStructure()});
          A.CallTo(() => _view.Canceled).Returns(true);
       }
 
@@ -98,7 +98,7 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _buildingBlockRepository.MoleculeBlockCollection).Returns(new List<MoleculeBuildingBlock> { new MoleculeBuildingBlock() });
+         A.CallTo(() => _buildingBlockRepository.MoleculeBlockCollection).Returns(new List<MoleculeBuildingBlock> {new MoleculeBuildingBlock()});
          A.CallTo(() => _view.Canceled).Returns(false);
       }
 
@@ -128,8 +128,8 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         _molecule1 = new MoleculeBuilder { Name = "Molecule1"};
-         _molecule2 = new MoleculeBuilder { Name = "Molecule2"};
+         _molecule1 = new MoleculeBuilder {Name = "Molecule1"};
+         _molecule2 = new MoleculeBuilder {Name = "Molecule2"};
       }
 
       protected override void Because()

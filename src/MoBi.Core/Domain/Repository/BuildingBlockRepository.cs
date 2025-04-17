@@ -5,11 +5,10 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Utility.Collections;
 
 namespace MoBi.Core.Domain.Repository
 {
-   public interface IBuildingBlockRepository
+   public interface IBuildingBlockRepository : OSPSuite.Core.Domain.Builder.IBuildingBlockRepository
    {
       IReadOnlyList<MoleculeBuildingBlock> MoleculeBlockCollection { get; }
       IReadOnlyList<MoBiReactionBuildingBlock> ReactionBlockCollection { get; }
@@ -23,7 +22,6 @@ namespace MoBi.Core.Domain.Repository
       IReadOnlyList<ParameterValuesBuildingBlock> ParametersValueBlockCollection { get; }
       IndividualBuildingBlock IndividualByName(string buildingBlockName);
       ExpressionProfileBuildingBlock ExpressionProfileByName(string buildingBlockName);
-      IReadOnlyList<IBuildingBlock> All();
    }
 
    public class BuildingBlockRepository : IBuildingBlockRepository
@@ -42,20 +40,13 @@ namespace MoBi.Core.Domain.Repository
             .Concat(moduleBuildingBlocks()).ToList();
       }
 
-      private IEnumerable<IBuildingBlock> moduleBuildingBlocks()
-      {
-         return _projectRetriever.Current.Modules.SelectMany(x => x.BuildingBlocks);
-      }
+      public IReadOnlyList<T> All<T>() where T : IBuildingBlock => All().OfType<T>().ToList();
 
-      private IReadOnlyList<T> get<T>(Func<Module, T> getter)
-      {
-         return _projectRetriever.Current.Modules.Select(getter).Where(x => x!= null).ToList();
-      }
+      private IEnumerable<IBuildingBlock> moduleBuildingBlocks() => _projectRetriever.Current.Modules.SelectMany(x => x.BuildingBlocks);
 
-      private IReadOnlyList<T> getMany<T>(Func<Module, IEnumerable<T>> getter)
-      {
-         return _projectRetriever.Current.Modules.SelectMany(getter).Where(x => x != null).ToList();
-      }
+      private IReadOnlyList<T> get<T>(Func<Module, T> getter) => _projectRetriever.Current.Modules.Select(getter).Where(x => x != null).ToList();
+
+      private IReadOnlyList<T> getMany<T>(Func<Module, IEnumerable<T>> getter) => _projectRetriever.Current.Modules.SelectMany(getter).Where(x => x != null).ToList();
 
       public IReadOnlyList<MoleculeBuildingBlock> MoleculeBlockCollection => get(x => x.Molecules);
 
@@ -77,14 +68,8 @@ namespace MoBi.Core.Domain.Repository
 
       public IReadOnlyList<ParameterValuesBuildingBlock> ParametersValueBlockCollection => getMany(x => x.ParameterValuesCollection);
 
-      public IndividualBuildingBlock IndividualByName(string buildingBlockName)
-      {
-         return IndividualsCollection.FindByName(buildingBlockName);
-      }
+      public IndividualBuildingBlock IndividualByName(string buildingBlockName) => IndividualsCollection.FindByName(buildingBlockName);
 
-      public ExpressionProfileBuildingBlock ExpressionProfileByName(string buildingBlockName)
-      {
-         return ExpressionProfileCollection.FindByName(buildingBlockName);
-      }
+      public ExpressionProfileBuildingBlock ExpressionProfileByName(string buildingBlockName) => ExpressionProfileCollection.FindByName(buildingBlockName);
    }
 }
