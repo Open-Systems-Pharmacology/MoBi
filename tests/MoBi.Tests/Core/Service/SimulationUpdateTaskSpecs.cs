@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System.Collections.Generic;
+using FakeItEasy;
 using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
@@ -50,14 +51,12 @@ namespace MoBi.Core.Service
    public class When_updating_simulation_settings : concern_for_SimulationUpdateTask
    {
       private IMoBiSimulation _simulation;
-      private SimulationSettings _simulationSettings;
       private SimulationSettings _clonedSimulationSettings;
 
       protected override void Context()
       {
          base.Context();
          _simulation = new MoBiSimulation();
-         _simulationSettings = new SimulationSettings();
          _simulation.Configuration = new SimulationConfiguration
          {
             SimulationSettings = new SimulationSettings()
@@ -122,6 +121,7 @@ namespace MoBi.Core.Service
       private IMoBiSimulation _simulationToConfigure;
       private IModel _model;
       private MoBiProject _moBiProject;
+      private SimulationEntitySource _entitySource;
 
       protected override void Context()
       {
@@ -131,7 +131,10 @@ namespace MoBi.Core.Service
          _simulationToConfigure.AddOriginalQuantityValue(new OriginalQuantityValue {Path = "a path"});
          _simulationToConfigure.Configuration = new SimulationConfiguration();
          _model = new Model().WithName("NEW MODEL");
-         var creationResults = new CreationResult(_model, new SimulationBuilder(_simulationToConfigure.Configuration));
+         var simulationBuilder = A.Fake<SimulationBuilder>();
+         _entitySource =new SimulationEntitySource("SimPath", "BBName", "bbType", "moduleName", "sourcePath");
+         A.CallTo(() => simulationBuilder.EntitySources).Returns(new List<SimulationEntitySource> {_entitySource});
+         var creationResults = new CreationResult(_model, simulationBuilder);
          _model.Root = new Container();
          A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._, A<string>._)).Returns(creationResults);
          A.CallTo(() => _context.CurrentProject).Returns(_moBiProject);
@@ -171,6 +174,12 @@ namespace MoBi.Core.Service
       {
          _simulationToConfigure.Model.ShouldBeEqualTo(_model);
       }
+
+      [Observation]
+      public void should_update_the_entity_source_in_the_simulation()
+      {
+         _simulationToConfigure.EntitySources.ShouldContain(_entitySource);
+      }
    }
 
    public class When_configuration_a_simulation : concern_for_SimulationUpdateTask
@@ -186,7 +195,9 @@ namespace MoBi.Core.Service
          _simulationToConfigure.Configuration = new SimulationConfiguration();
          _model = new Model().WithName("NEW MODEL");
          _model.Root = new Container();
-         var creationResults = new CreationResult(_model, new SimulationBuilder(_simulationToConfigure.Configuration));
+
+         var simulationBuilder = new SimulationBuilder(_simulationToConfigure.Configuration);
+         var creationResults = new CreationResult(_model, simulationBuilder);
          A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._, A<string>._)).Returns(creationResults);
       }
 
