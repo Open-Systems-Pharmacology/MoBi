@@ -1,6 +1,6 @@
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Domain.Extensions
 {
@@ -30,6 +30,16 @@ namespace MoBi.Core.Domain.Extensions
          return parent.IsAnImplementationOf<Reaction>() ||
                 parent.IsAnImplementationOf<ReactionBuilder>() ||
                 parent.ContainerType == ContainerType.Reaction;
+      }
+
+      public static bool IsAtTransport(this IEntity entity)
+      {
+         var parent = entity.ParentContainer;
+         if (parent == null)
+            return false;
+
+         return parent.IsAnImplementationOf<Transport>() ||
+                parent.IsAnImplementationOf<TransportBuilder>();
       }
    }
 }

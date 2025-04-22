@@ -8,13 +8,11 @@ namespace MoBi.Presentation.Presenter
 {
    public interface IObjectPathCreatorAtReaction : IObjectPathCreator
    {
-      ReactionBuilder Reaction { set; }
+      ReactionBuilder ProcessBuilder { set; }
    }
 
-   class ObjectPathCreatorAtReaction : ObjectPathCreatorBase, IObjectPathCreatorAtReaction
+   public class ObjectPathCreatorAtReaction : ObjectPathCreatorAtProcessBuilder<ReactionBuilder>, IObjectPathCreatorAtReaction
    {
-      public ReactionBuilder Reaction { private get; set; }
-
       public ObjectPathCreatorAtReaction(IObjectPathFactory objectPathFactory, IAliasCreator aliasCreator, IMoBiContext context) : base(objectPathFactory, aliasCreator, context)
       {
       }
@@ -35,36 +33,17 @@ namespace MoBi.Presentation.Presenter
 
       public override ReferenceDTO CreatePathsFromEntity(IObjectBase objectBase, bool shouldCreateAbsolutePaths, IEntity refObject, IUsingFormula editedObject)
       {
-         var parameter = objectBase as IParameter;
-
-         if (parameter != null && parameter.IsAtReaction())
+         if (objectBase is IParameter parameter && parameter.IsAtReaction())
          {
-            // we need a specials treatment for parameters defined at a reaction
-            return new ReferenceDTO {Path = cratePathToReacionProperty(parameter)};
+            // we need a special treatment for parameters defined at a reaction
+            return new ReferenceDTO { Path = CreatePathToProcessProperty(parameter) };
          }
 
          return base.CreatePathsFromEntity(objectBase, shouldCreateAbsolutePaths, refObject, editedObject);
       }
 
-      private FormulaUsablePath cratePathToReacionProperty(IParameter parameter)
-      {
-         var parentReaction = GetReactionBuilderFor(parameter);
+      protected override T AdjustReferences<T>(IEntity parameterToUse, T path) => path.AndAddAtFront(ObjectPath.PARENT_CONTAINER);
 
-         // Always Absolute paths
-         if (parameter.BuildMode != ParameterBuildMode.Local)
-            return CreateFormulaUsablePathFrom(new[] {parentReaction.Name, parameter.Name}, parameter);
-
-         // Parameter is child of reaction
-         if (parentReaction == Reaction)
-            return CreateFormulaUsablePathFrom(new[] {parameter.Name}, parameter);
-
-         // go from reaction to other reaction and then to child parameter
-         return CreateFormulaUsablePathFrom(new[] {ObjectPath.PARENT_CONTAINER, parentReaction.Name, parameter.Name}, parameter);
-      }
-
-      protected override T AdjustReferences<T>(IEntity parameterToUse, T path)
-      {
-         return path.AndAddAtFront(ObjectPath.PARENT_CONTAINER);
-      }
+      protected override ReactionBuilder GetProcessBuilderFor(IParameter parameter) => GetReactionBuilderFor(parameter);
    }
 }
