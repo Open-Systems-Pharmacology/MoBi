@@ -1349,6 +1349,9 @@ namespace MoBi.Assets
          }
 
          public static string FileIsReadOnly(string fileFullPath) => $"The project cannot be saved:\nThe file '{fileFullPath}' is read-only.";
+
+         public static string CannotFindReactionForParameter(string parameterName) => $"Cannot find reaction for parameter {parameterName}";
+         public static string CannotFindTransportForParameter(string parameterName) => $"Cannot find transport for parameter {parameterName}";
       }
 
       public static class Captions

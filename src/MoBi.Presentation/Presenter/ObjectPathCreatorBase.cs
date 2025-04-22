@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using MoBi.Assets;
 using OSPSuite.Utility.Extensions;
@@ -259,8 +258,8 @@ namespace MoBi.Presentation.Presenter
          var parameter = formulaUsable as IParameter;
          if (parameter != null && parameter.IsAtReaction())
             return parameter.RootContainer as ReactionBuilder;
-         
-         throw new MoBiException($"cant find reaction for parameter{formulaUsable.Name}");
+
+         throw new MoBiException(AppConstants.Exceptions.CannotFindReactionForParameter(formulaUsable.Name));
       }
 
       protected static bool IsMoleculeReference(ObjectBaseDTO dtoObjectBase)

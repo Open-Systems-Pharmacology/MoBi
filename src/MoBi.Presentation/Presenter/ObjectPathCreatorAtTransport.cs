@@ -142,7 +142,7 @@ namespace MoBi.Presentation.Presenter
          if (parameter.IsAtTransport())
             return parameter.RootContainer as TransportBuilder;
 
-         throw new MoBiException($"cant find transport for parameter {parameter.Name}");
+         throw new MoBiException(AppConstants.Exceptions.CannotFindTransportForParameter(parameter.Name));
       }
    }
 }
