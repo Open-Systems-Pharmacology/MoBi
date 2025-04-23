@@ -112,18 +112,14 @@ namespace MoBi.Presentation.Tasks
          //create model using referencing templates
          var results = _simulationFactory.CreateModelAndValidate(simulationConfigurationReferencingTemplates, simulationToUpdate.Model.Name, message);
 
-         var simulationBuildConfiguration = createSimulationConfigurationToUseInSimulation(simulationConfigurationReferencingTemplates);
+         //create a clone then that will be saved in the simulation
+         var simulationBuildConfiguration = _cloneManager.Clone(simulationConfigurationReferencingTemplates);
 
-         var updateSimulationCommand = new UpdateSimulationCommand(simulationToUpdate, results.Model, simulationBuildConfiguration);
+         var updateSimulationCommand = new UpdateSimulationCommand(simulationToUpdate, results.Model, results.SimulationBuilder.EntitySources, simulationBuildConfiguration);
 
          updateSimulationCommand.RunCommand(_context);
 
          return updateSimulationCommand;
-      }
-
-      private SimulationConfiguration createSimulationConfigurationToUseInSimulation(SimulationConfiguration simulationConfiguration)
-      {
-         return _cloneManager.Clone(simulationConfiguration);
       }
    }
 }
