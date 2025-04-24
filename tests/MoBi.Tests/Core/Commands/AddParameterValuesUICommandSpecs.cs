@@ -15,7 +15,6 @@ namespace MoBi.Core.Commands
       protected IActiveSubjectRetriever _activeSubjectRetriever;
       protected IMoBiApplicationController _applicationController;
       protected IMoBiHistoryManager _moBiHistoryManager;
-      protected IParameterValuesPresenter _parameterValuesPresenter;
 
       protected override void Context()
       {
@@ -23,14 +22,12 @@ namespace MoBi.Core.Commands
          _activeSubjectRetriever = A.Fake<IActiveSubjectRetriever>();
          _applicationController = A.Fake<IMoBiApplicationController>();
          _moBiHistoryManager = A.Fake<IMoBiHistoryManager>();
-         _parameterValuesPresenter = A.Fake<IParameterValuesPresenter>();
 
          sut = new AddParameterValuesUICommand(
             _parameterValueTask,
             _activeSubjectRetriever,
             _applicationController,
-            _moBiHistoryManager,
-            _parameterValuesPresenter);
+            _moBiHistoryManager);
       }
    }
 
