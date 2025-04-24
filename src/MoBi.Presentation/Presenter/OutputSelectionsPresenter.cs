@@ -49,6 +49,7 @@ namespace MoBi.Presentation.Presenter
          defaultButtonsView.LoadProjectDefaultsClicked = loadSelectionFromDefaults;
          _view.AddDefaultButtonsView(defaultButtonsView);
          _quantitySelectionPresenter.Description = AppConstants.Captions.SimulationSettingsDescription.FormatForDescription();
+         _quantitySelectionPresenter.HideSimulationColumn = true;
          AddSubPresenters( _quantitySelectionPresenter);
       }
 
