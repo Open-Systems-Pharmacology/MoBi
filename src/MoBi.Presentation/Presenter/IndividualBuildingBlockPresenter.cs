@@ -50,16 +50,9 @@ namespace MoBi.Presentation.Presenter
          return _individualBuildingBlockDTO.Parameters.HasAtLeastOneValue(pathElementIndex);
       }
 
-      public void Handle(EntitySelectedEvent eventToHandle)
-      {
-         if (eventToHandle.ObjectBase is IndividualParameter individualParameter)
-         {
-            if (_buildingBlock.Contains(individualParameter))
-               _view.Select(dtoFor(individualParameter));
-         }
-      }
+      protected override void SelectEntity(IndividualParameterDTO dto) => _view.Select(dto);
 
-      private IndividualParameterDTO dtoFor(IndividualParameter individualParameter)
+      protected override IndividualParameterDTO DTOForBuilder(IndividualParameter individualParameter)
       {
          return _individualBuildingBlockDTO.Parameters.FirstOrDefault(x => Equals(x.PathWithValueObject, individualParameter));
       }

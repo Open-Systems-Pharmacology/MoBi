@@ -138,5 +138,15 @@ namespace MoBi.Presentation.Presenter
       {
          return buildingBlock.FindByPath(objectPath) != null;
       }
+
+      protected override void SelectEntity(ParameterValueDTO dto)
+      {
+         _view.Select(dto);
+      }
+
+      protected override ParameterValueDTO DTOForBuilder(ParameterValue builder)
+      {
+         return _startValueDTOs.FirstOrDefault(x => Equals(x.ParameterValue, builder));
+      }
    }
 }

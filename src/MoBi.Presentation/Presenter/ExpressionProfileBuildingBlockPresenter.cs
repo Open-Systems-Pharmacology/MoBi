@@ -1,4 +1,5 @@
-﻿using MoBi.Presentation.DTO;
+﻿using System.Linq;
+using MoBi.Presentation.DTO;
 using MoBi.Presentation.Extensions;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Tasks.Interaction;
@@ -44,6 +45,10 @@ namespace MoBi.Presentation.Presenter
          base.Edit(expressionProfileBuildingBlock);
          rebind();
       }
+
+      protected override void SelectEntity(ExpressionParameterDTO dto) => _view.Select(dto);
+
+      protected override ExpressionParameterDTO DTOForBuilder(ExpressionParameter expressionParameter) => _expressionProfileBuildingBlockDTO.ParameterDTOs.FirstOrDefault(x => Equals(x.PathWithValueObject, expressionParameter));
 
       public void LoadExpressionFromPKSimDatabaseQuery()
       {

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Views;
@@ -20,7 +19,17 @@ namespace MoBi.Presentation.Presenter
       private readonly IReactionToReactionDTOMapper _reactionToReactionDTOMapper;
       private readonly IFormulaPresenterCache _formulaPresenterCache;
       private IEditTypedFormulaPresenter _formulaPresenter;
-      public TrackableSimulation TrackableSimulation { get; set; }
+      private TrackableSimulation _trackableSimulation;
+
+      public TrackableSimulation TrackableSimulation
+      {
+         get => _trackableSimulation;
+         set
+         {
+            _trackableSimulation = value;
+            _editParametersInContainerPresenter.EnableSimulationTracking(value);
+         }
+      }
 
       public EditReactionInSimulationPresenter(IEditReactionInSimulationView view, IEditParametersInContainerPresenter editParametersInContainerPresenter, IReactionToReactionDTOMapper reactionToReactionDTOMapper,
          IFormulaPresenterCache formulaPresenterCache)

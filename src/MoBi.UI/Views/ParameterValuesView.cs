@@ -42,6 +42,12 @@ namespace MoBi.UI.Views
          _presenter = presenter;
       }
 
+      public void Select(ParameterValueDTO dto)
+      {
+         gridView.FocusedRowHandle = _gridViewBinder.RowHandleFor(dto);
+         gridView.SelectRow(gridView.FocusedRowHandle);
+      }
+
       public override void InitializeResources()
       {
          // Make changes that affect the height before calling the base method

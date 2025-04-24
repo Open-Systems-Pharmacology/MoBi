@@ -142,7 +142,6 @@ namespace MoBi.Presentation.Presenter
          _hierarchicalPresenter.Edit(simulation);
          _solverSettingsPresenter.Edit(_simulation);
          _editOutputSchemaPresenter.Edit(_simulation);
-         _favoritesPresenter.Edit(_simulation);
          _chartPresenter.UpdateTemplatesFor(_simulation);
          _view.SetEditView(_favoritesPresenter.BaseView);
          _simulationChangesPresenter.Edit(_simulation);
@@ -152,6 +151,8 @@ namespace MoBi.Presentation.Presenter
          loadChart();
 
          _trackableSimulation = new TrackableSimulation(_simulation, _entitySourceReferenceFactory.CreateFor(simulation));
+         _favoritesPresenter.TrackableSimulation = _trackableSimulation;
+         _favoritesPresenter.Edit(_simulation);
       }
 
       private void addObservedDataRepositories(IList<DataRepository> data, IEnumerable<Curve> curves)

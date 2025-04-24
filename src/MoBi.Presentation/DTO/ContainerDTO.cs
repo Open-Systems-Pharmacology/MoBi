@@ -17,5 +17,7 @@ namespace MoBi.Presentation.DTO
       public string ParentPath { get; set; }
 
       public bool ParentPathEditable { get; set; }
+      public SimulationEntitySourceReference SourceReference { get; set; }
+      public string SourceDisplayName => SourceReference?.BuildingBlock.DisplayName;
    }
 }

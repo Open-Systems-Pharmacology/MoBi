@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -42,5 +43,14 @@ namespace MoBi.Presentation.Presenter
       }
 
       protected override IReadOnlyList<InitialConditionDTO> ValueDTOsFor(ExpressionProfileBuildingBlock buildingBlock) => _buildingBlockMapper.MapFrom(buildingBlock).InitialConditionDTOs;
+      protected override void SelectEntity(InitialConditionDTO dto)
+      {
+         _view.Select(dto);
+      }
+
+      protected override InitialConditionDTO DTOForBuilder(InitialCondition builder)
+      {
+         return _startValueDTOs.FirstOrDefault(x => Equals(x.PathWithValueObject, builder));
+      }
    }
 }

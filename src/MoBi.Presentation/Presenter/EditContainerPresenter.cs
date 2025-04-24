@@ -10,6 +10,7 @@ using MoBi.Core.Helper;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
+using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Views;
 using OSPSuite.Assets;
@@ -37,6 +38,7 @@ namespace MoBi.Presentation.Presenter
       void ShowParameters();
       void EnableIndividualPreview();
       void EnableSimulationTracking(TrackableSimulation trackableSimulation);
+      void NavigateToSource();
    }
 
    public class EditContainerPresenter : AbstractContainerEditPresenterWithParameters<IEditContainerView, IEditContainerPresenter, IContainer>, IEditContainerPresenter
@@ -49,7 +51,9 @@ namespace MoBi.Presentation.Presenter
       private readonly IApplicationController _applicationController;
       private readonly IObjectPathFactory _objectPathFactory;
       private readonly IDialogCreator _dialogCreator;
+      private readonly ISourceReferenceNavigator _referenceNavigator;
       private bool _isNewEntity;
+      private TrackableSimulation _trackableSimulation;
 
       public EditContainerPresenter(
          IEditContainerView view,
@@ -60,10 +64,12 @@ namespace MoBi.Presentation.Presenter
          ITagsPresenter tagsPresenter,
          IApplicationController applicationController,
          IObjectPathFactory objectPathFactory,
-         IDialogCreator dialogCreator)
+         IDialogCreator dialogCreator,
+         ISourceReferenceNavigator referenceNavigator)
          : base(view, editParametersInContainerPresenter, context, editTasks)
       {
          _dialogCreator = dialogCreator;
+         _referenceNavigator = referenceNavigator;
          _containerMapper = containerMapper;
          _tagsPresenter = tagsPresenter;
          _applicationController = applicationController;
@@ -172,7 +178,13 @@ namespace MoBi.Presentation.Presenter
 
       public void EnableIndividualPreview() => _editParametersInContainerPresenter.ShowIndividualSelection();
 
-      public void EnableSimulationTracking(TrackableSimulation trackableSimulation) => _editParametersInContainerPresenter.EnableSimulationTracking(trackableSimulation);
+      public void EnableSimulationTracking(TrackableSimulation trackableSimulation)
+      {
+         _trackableSimulation = trackableSimulation;
+         _editParametersInContainerPresenter.EnableSimulationTracking(trackableSimulation);
+      }
+
+      public void NavigateToSource() => _referenceNavigator.GoTo(_containerDTO.SourceReference);
 
       public override IBuildingBlock BuildingBlock
       {
@@ -191,7 +203,7 @@ namespace MoBi.Presentation.Presenter
          //an unnamed container means it is being created now, since the name is mandatory over the creation.
          _isNewEntity = string.IsNullOrEmpty(_container.Name);
          base.Edit(container, existingObjectsInParent);
-         _containerDTO = _containerMapper.MapFrom(_container);
+         _containerDTO = _containerMapper.MapFrom(_container, _trackableSimulation);
          _containerDTO.AddUsedNames(_editTasks.GetForbiddenNamesWithoutSelf(container, existingObjectsInParent));
          _view.BindTo(_containerDTO);
          _tagsPresenter.Edit(container);

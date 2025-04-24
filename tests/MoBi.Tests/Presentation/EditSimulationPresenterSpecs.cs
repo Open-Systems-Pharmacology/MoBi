@@ -11,6 +11,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
@@ -88,6 +89,29 @@ namespace MoBi.Presentation
          curve.SetxData(baseGrid, dimensionFactory);
          curve.SetyData(ydata, dimensionFactory);
          return curve;
+      }
+   }
+
+   public class When_editing_a_simulation_in_the_simulation_presenter : concern_for_EditSimulationPresenter
+   {
+      private IMoBiSimulation _simulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = new MoBiSimulation();
+         _simulation.Configuration = new SimulationConfiguration {SimulationSettings = new SimulationSettings()};
+      }
+
+      protected override void Because()
+      {
+         sut.Edit(_simulation);
+      }
+
+      [Observation]
+      public void the_favorites_presenter_has_tracking_enabled()
+      {
+         _editFavoritePresenter.TrackableSimulation.Simulation.ShouldBeEqualTo(_simulation);
       }
    }
 

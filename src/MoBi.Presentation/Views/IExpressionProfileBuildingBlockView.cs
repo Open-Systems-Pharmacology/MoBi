@@ -7,5 +7,6 @@ namespace MoBi.Presentation.Views
    public interface IExpressionProfileBuildingBlockView : IView<IExpressionProfileBuildingBlockPresenter>, IPathAndValueEntitiesView
    {
       void BindTo(ExpressionProfileBuildingBlockDTO buildingBlockDTO);
+      void Select(ExpressionParameterDTO  expressionParameterDTO);
    }
 }

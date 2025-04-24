@@ -1,8 +1,10 @@
 ﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
+using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
+using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
 using OSPSuite.Core.Commands.Core;
@@ -16,11 +18,13 @@ namespace MoBi.Presentation
    public abstract class concern_for_EditQuantityInSimulationPresenter : ContextSpecification<EditQuantityInSimulationPresenter>
    {
       protected IEditQuantityInSimulationView _view;
-      private IQuantityToQuantityDTOMapper _mapper;
+      protected IQuantityToQuantityDTOMapper _mapper;
       private IFormulaPresenterCache _presenterCache;
       protected IEditParametersInContainerPresenter _parameterPresenters;
       private IReactionDimensionRetriever _reactionDimensionRetriever;
       protected IQuantityTask _quantityTask;
+      private IEditQuantityInfoInSimulationPresenter _editQuantityInfoPresenter;
+      protected ISourceReferenceNavigator _sourceReferenceNavigator;
 
       protected override void Context()
       {
@@ -30,8 +34,10 @@ namespace MoBi.Presentation
          _parameterPresenters = A.Fake<IEditParametersInContainerPresenter>();
          _quantityTask = A.Fake<IQuantityTask>();
          _reactionDimensionRetriever = A.Fake<IReactionDimensionRetriever>();
+         _editQuantityInfoPresenter = A.Fake<IEditQuantityInfoInSimulationPresenter>();
+         _sourceReferenceNavigator = A.Fake<ISourceReferenceNavigator>();
 
-         sut = new EditQuantityInSimulationPresenter(_view, _mapper, _presenterCache, _parameterPresenters, _quantityTask, _reactionDimensionRetriever)
+         sut = new EditQuantityInSimulationPresenter(_view, _mapper, _presenterCache, _parameterPresenters, _quantityTask, _reactionDimensionRetriever, _editQuantityInfoPresenter, _sourceReferenceNavigator)
          {
             TrackableSimulation = new TrackableSimulation(A.Fake<IMoBiSimulation>(), new SimulationEntitySourceReferenceCache())
          };
@@ -193,6 +199,34 @@ namespace MoBi.Presentation
       {
          A.CallTo(() => _view.ShowParameters()).MustNotHaveHappened();
          A.CallTo(() => _view.HideParametersView()).MustHaveHappened();
+      }
+   }
+
+   public class When_navigating_to_a_entity_source : concern_for_EditQuantityInSimulationPresenter
+   {
+      private IQuantity _quantity;
+      private QuantityDTO _quantityDTO;
+      private TrackableSimulation _trackableSimulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _trackableSimulation = new TrackableSimulation(null, new SimulationEntitySourceReferenceCache());
+         _quantity = new MoleculeAmount();
+         _quantityDTO = new QuantityDTO(_quantity) { SourceReference = new SimulationEntitySourceReference(null, null, null, _quantity) };
+         A.CallTo(() => _mapper.MapFrom(_quantity, _trackableSimulation)).Returns(_quantityDTO);
+         sut.Edit(_quantity);
+      }
+
+      protected override void Because()
+      {
+         sut.NavigateToSource();
+      }
+
+      [Observation]
+      public void the_navigation_task_is_used_to_navigate()
+      {
+         A.CallTo(() => _sourceReferenceNavigator.GoTo(_quantityDTO.SourceReference));
       }
    }
 }

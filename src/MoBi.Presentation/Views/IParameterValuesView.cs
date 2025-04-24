@@ -6,6 +6,6 @@ namespace MoBi.Presentation.Views
 {
    public interface IParameterValuesView : IView<IParameterValuesPresenter>, IPathAndValueEntitiesView<ParameterValueDTO>
    {
-      
+      void Select(ParameterValueDTO dto);
    }
 }

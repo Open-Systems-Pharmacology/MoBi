@@ -1,5 +1,4 @@
-﻿using System.Windows.Forms;
-using OSPSuite.DataBinding;
+﻿using OSPSuite.DataBinding;
 using OSPSuite.UI.Extensions;
 using DevExpress.XtraLayout.Utils;
 using MoBi.Assets;
@@ -12,55 +11,62 @@ using OSPSuite.Assets;
 using OSPSuite.UI.Controls;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
+using OSPSuite.DataBinding.DevExpress;
 
 namespace MoBi.UI.Views
 {
    public partial class EditQuantityInSimulationView : BaseUserControl, IEditQuantityInSimulationView
    {
       private IEditQuantityInSimulationPresenter _presenter;
-      private readonly EditBaseInfoView _baseEditView;
-      private bool _readOnly;
       private readonly ScreenBinder<QuantityDTO> _screenBinder;
 
       public EditQuantityInSimulationView()
       {
          InitializeComponent();
          _screenBinder = new ScreenBinder<QuantityDTO>();
-         _baseEditView = new EditBaseInfoView();
-         tabProperties.Controls.Add(_baseEditView);
-         _baseEditView.Dock = DockStyle.Fill;
+      }
+
+      public override void InitializeResources()
+      {
+         base.InitializeResources();
+         layoutControlItemFormula.Text = ObjectTypes.Default.FormatForLabel();
+         tabProperties.InitWith(AppConstants.Captions.Properties, ApplicationIcons.Properties);
+         tabValue.InitWith(AppConstants.Captions.InitialValue, ApplicationIcons.Formula);
+         btnResetToFormulaValue.InitWithImage(ApplicationIcons.Reset, text: AppConstants.Captions.Reset);
+         sourceTextEdit.ReadOnly = true;
+         btnGoToSource.InitWithImage(ApplicationIcons.Search, AppConstants.Captions.GoToSource);
+         layoutControlItemSource.Text = AppConstants.Captions.Source.FormatForLabel();
+         layoutControlItemGoToSource.AdjustControlSize(OSPSuite.UI.UIConstants.Size.BUTTON_WIDTH, layoutControlItemGoToSource.ControlMaxSize.Height);
+         layoutControlItemReset.AdjustControlSize(OSPSuite.UI.UIConstants.Size.BUTTON_WIDTH, layoutControlItemGoToSource.ControlMaxSize.Height);
       }
 
       public override void InitializeBinding()
       {
          base.InitializeBinding();
          _screenBinder.Bind(dto => dto.Value).To(valueEdit);
+
+         _screenBinder.Bind(dto => dto.SourceDisplayName).To(sourceTextEdit);
          valueEdit.ValueChanged += (o, valueInGuiUnit) => OnEvent(() => _presenter.SetValue(valueInGuiUnit));
          valueEdit.UnitChanged += (o, unit) => OnEvent(() => _presenter.SetDisplayUnit(unit));
          btnResetToFormulaValue.Click += (o, e) => OnEvent(() => _presenter.ResetValue());
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
+
+         btnGoToSource.Click += (o, e) => OnEvent(_presenter.NavigateToSource);
       }
 
       public void AttachPresenter(IEditQuantityInSimulationPresenter presenter)
       {
          _presenter = presenter;
-         _baseEditView.AttachPresenter(presenter);
       }
 
       public void BindTo(QuantityDTO quantityDTO)
       {
-         _baseEditView.BindToSource(quantityDTO);
          _screenBinder.BindToSource(quantityDTO);
-      }
 
-      public bool ReadOnly
-      {
-         get => _readOnly;
-         set
-         {
-            _readOnly = value;
-            _baseEditView.ReadOnly = _readOnly;
-         }
+         var visibility = LayoutVisibilityConvertor.FromBoolean(quantityDTO.SourceReference != null);
+         layoutControlItemSource.Visibility = visibility;
+         layoutControlItemGoToSource.Visibility = visibility;
+
       }
 
       public bool AllowValueChange
@@ -116,14 +122,9 @@ namespace MoBi.UI.Views
          tabParameters.Show();
       }
 
-      public override void InitializeResources()
+      public void SetQuantityInfoView(IView view)
       {
-         base.InitializeResources();
-         layoutControlItemFormula.Text = ObjectTypes.Default.FormatForLabel();
-         tabProperties.InitWith(AppConstants.Captions.Properties, ApplicationIcons.Properties);
-         tabValue.InitWith(AppConstants.Captions.InitialValue, ApplicationIcons.Formula);
-         btnResetToFormulaValue.InitWithImage(ApplicationIcons.Reset, text: AppConstants.Captions.Reset);
-         layoutControlItemReset.AdjustButtonSize(layoutControl);
+         tabProperties.FillWith(view);
       }
    }
 }

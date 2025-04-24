@@ -49,6 +49,7 @@ namespace MoBi.Presentation.Presenter
          {
             _trackableSimulation = value;
             _projectItem = value.Simulation;
+            _editParameterListPresenter.EnableSimulationTracking(value);
          }
       }
 
