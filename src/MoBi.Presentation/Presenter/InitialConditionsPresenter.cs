@@ -40,14 +40,8 @@ namespace MoBi.Presentation.Presenter
       }
 
       protected override IReadOnlyList<InitialConditionDTO> ValueDTOsFor(InitialConditionsBuildingBlock buildingBlock) => _buildingBlockMapper.MapFrom(buildingBlock).ParameterDTOs;
-      protected override void SelectEntity(InitialConditionDTO dto)
-      {
-         _view.Select(dto);
-      }
+      protected override void SelectEntity(InitialConditionDTO dto) => _view.Select(dto);
 
-      protected override InitialConditionDTO DTOForBuilder(InitialCondition builder)
-      {
-         return _startValueDTOs.FirstOrDefault(x => Equals(x.PathWithValueObject, builder));
-      }
+      protected override InitialConditionDTO DTOForBuilder(InitialCondition builder) => _startValueDTOs.FirstOrDefault(x => Equals(x.PathWithValueObject, builder));
    }
 }
