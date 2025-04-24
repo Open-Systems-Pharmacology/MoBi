@@ -14,6 +14,7 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Assets;
+using OSPSuite.Assets;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -124,7 +125,7 @@ namespace MoBi.Presentation.Tasks
 
       private MoBiSpatialStructure createTemporarySpatialStructure()
       {
-         var tmpSpatialStructure = (MoBiSpatialStructure)_spatialStructureFactory.Create();
+         var tmpSpatialStructure = _spatialStructureFactory.Create().DowncastTo<MoBiSpatialStructure>().WithName(DefaultNames.SpatialStructure);
          removeEventsContainer(tmpSpatialStructure);
          return tmpSpatialStructure;
       }
