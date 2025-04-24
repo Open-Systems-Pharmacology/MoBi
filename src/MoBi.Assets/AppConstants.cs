@@ -1666,6 +1666,7 @@ namespace MoBi.Assets
          public static readonly string ConvertToFormula = "Convert to Formula";
          public static readonly string FindParameter = "Find Parameter";
          public static readonly string SelectIndividual = "Select Individual";
+         public static readonly string ConvertToConstantValue = "Convert to constant value";
          public static string SelectTheBuildingBlockWhereEntitiesWillBeAddedOrUpdated(string typeBeingAdded) => $"Select the building block where {typeBeingAdded} will be added or updated";
          public static readonly string SelectBuildingBlock = "Select Building Block";
          public static readonly string MakeDefault = "Make defaults";
