@@ -98,11 +98,11 @@ namespace MoBi.Presentation.Presenter
 
       public void EnableSimulationTracking(TrackableSimulation simulation) => _trackableSimulation = simulation;
 
-      public bool HasBuildingBlocks(IReadOnlyList<ParameterDTO> parameterDTOs) => parameterDTOs.Any(parameterDTO => !string.IsNullOrEmpty(parameterDTO.BuildingBlockName));
+      public bool HasBuildingBlocks() => _parameterDTOs.Any(parameterDTO => !string.IsNullOrEmpty(parameterDTO.BuildingBlockName));
 
       public void NavigateToParameter(ParameterDTO parameterDTO) => _sourceReferenceNavigator.GoTo(parameterDTO.SourceReference);
 
-      public bool HasModules(IReadOnlyList<ParameterDTO> parameterDTOs) => parameterDTOs.Any(parameterDTO => !string.IsNullOrEmpty(parameterDTO.ModuleName));
+      public bool HasModules() => _parameterDTOs.Any(parameterDTO => !string.IsNullOrEmpty(parameterDTO.ModuleName));
 
       public override void ReleaseFrom(IEventPublisher eventPublisher)
       {

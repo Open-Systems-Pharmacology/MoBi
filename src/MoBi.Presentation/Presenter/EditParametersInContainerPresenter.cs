@@ -66,8 +66,8 @@ namespace MoBi.Presentation.Presenter
       void UpdatePreview();
       void EnableSimulationTracking(TrackableSimulation trackableSimulation);
       
-      bool HasModules(IReadOnlyList<ParameterDTO> parameterDTOs);
-      bool HasBuildingBlocks(IReadOnlyList<ParameterDTO> parameterDTOs);
+      bool HasModules();
+      bool HasBuildingBlocks();
       void NavigateToParameter(ParameterDTO parameterDTO);
    }
 
@@ -478,10 +478,10 @@ namespace MoBi.Presentation.Presenter
 
       public void EnableSimulationTracking(TrackableSimulation trackableSimulation) => _trackableSimulation = trackableSimulation;
 
-      public bool HasBuildingBlocks(IReadOnlyList<ParameterDTO> parameterDTOs) => parameterDTOs.Any(parameterDTO => !string.IsNullOrEmpty(parameterDTO.BuildingBlockName));
+      public bool HasBuildingBlocks() => _allParametersDTO.Any(parameterDTO => !string.IsNullOrEmpty(parameterDTO.BuildingBlockName));
 
       public void NavigateToParameter(ParameterDTO parameterDTO) => _sourceReferenceNavigator.GoTo(parameterDTO.SourceReference);
 
-      public bool HasModules(IReadOnlyList<ParameterDTO> parameterDTOs) => parameterDTOs.Any(parameterDTO => !string.IsNullOrEmpty(parameterDTO.ModuleName));
+      public bool HasModules() => _allParametersDTO.Any(parameterDTO => !string.IsNullOrEmpty(parameterDTO.ModuleName));
    }
 }

@@ -359,8 +359,8 @@ namespace MoBi.UI.Views
          //do not select all row if only one parameter is available in list
          gridView.OptionsSelection.EnableAppearanceFocusedRow = parameterDTOs.Count > 1;
 
-         _colModule.Visible = _presenter.HasModules(parameterDTOs);
-         _colBuildingBlock.Visible = _presenter.HasBuildingBlocks(parameterDTOs);
+         _colModule.Visible = _presenter.HasModules();
+         _colBuildingBlock.Visible = _presenter.HasBuildingBlocks();
          _colNavigate.Visible = _colBuildingBlock.Visible;
       }
 

@@ -113,8 +113,8 @@ namespace MoBi.UI.Views
          _gridViewBinder.BindToSource(parameters);
          _gridView.RefreshData();
 
-         _colModule.Visible = _presenter.HasModules(parameters);
-         _colBuildingBlock.Visible = _presenter.HasBuildingBlocks(parameters);
+         _colModule.Visible = _presenter.HasModules();
+         _colBuildingBlock.Visible = _presenter.HasBuildingBlocks();
          _colNavigate.Visible = _colBuildingBlock.Visible;
       }
 

@@ -15,8 +15,8 @@ namespace MoBi.Presentation.Presenter
       IEnumerable<IParameter> EditedParameters { get; }
       IReadOnlyList<IParameter> SelectedParameters { get; set; }
       void EnableSimulationTracking(TrackableSimulation simulation);
-      bool HasModules(IReadOnlyList<ParameterDTO> parameters);
-      bool HasBuildingBlocks(IReadOnlyList<ParameterDTO> parameters);
+      bool HasModules();
+      bool HasBuildingBlocks();
       void NavigateToParameter(ParameterDTO parameterDTO);
    }
 }

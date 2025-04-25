@@ -18,6 +18,7 @@ namespace MoBi.Presentation.Tasks
          _applicationController = applicationController;
          _context = context;
       }
+
       public void GoTo(SimulationEntitySourceReference sourceReference)
       {
          if (sourceReference != null)
