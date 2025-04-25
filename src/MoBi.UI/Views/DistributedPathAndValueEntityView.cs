@@ -1,6 +1,6 @@
-﻿using MoBi.Presentation.DTO;
+﻿using MoBi.Assets;
+using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
-using OSPSuite.Assets;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
@@ -27,8 +27,8 @@ namespace MoBi.UI.Views
       public override void InitializeResources()
       {
          base.InitializeResources();
-         convertToSimpleParameterButton.Text = Captions.Edit;
-         convertButtonLayoutItem.AdjustButtonSize();
+         convertToSimpleParameterButton.Text = AppConstants.Captions.ConvertToConstantValue;
+         convertButtonLayoutItem.AdjustLargeButtonSize();
       }
 
       public override void InitializeBinding()
