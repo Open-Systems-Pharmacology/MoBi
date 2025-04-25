@@ -150,7 +150,7 @@ namespace MoBi.Presentation.Presenter
          RhsReference = getNewReferencePresenterFor(container);
          ShowBuildMode = container.CanSetBuildModeForParameters();
          ParameterBuildModes = container.AvailableBuildModeForParameters();
-         _view.ParentName = getContainerName(container);
+         _view.ContainerPath = getContainerName(container);
          UpdatePreview();
       }
 
@@ -225,8 +225,11 @@ namespace MoBi.Presentation.Presenter
          return referencePresenter;
       }
 
-      private string getContainerName(IContainer container) =>
-         string.IsNullOrEmpty(container.Name) ? AppConstants.Captions.NewWindow(_typeResolver.TypeFor(container)) : container.Name;
+      private string getContainerName(IContainer container)
+      {
+         var path = _entityPathResolver.PathFor(container);
+         return string.IsNullOrEmpty(path) ? AppConstants.Captions.NewWindow(_typeResolver.TypeFor(container)) : path;
+      }
 
       public void Select(IParameter parameter)
       {

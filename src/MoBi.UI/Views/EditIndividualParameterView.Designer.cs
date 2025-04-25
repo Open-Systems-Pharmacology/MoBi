@@ -40,6 +40,7 @@
          this.layoutControlItemWarning = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutControlItemFindParameter = new DevExpress.XtraLayout.LayoutControlItem();
          this.emptySpaceItem1 = new DevExpress.XtraLayout.EmptySpaceItem();
+         this.emptySpaceItem2 = new DevExpress.XtraLayout.EmptySpaceItem();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.uxLayoutControl)).BeginInit();
          this.uxLayoutControl.SuspendLayout();
@@ -50,6 +51,7 @@
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemWarning)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemFindParameter)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem1)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem2)).BeginInit();
          this.SuspendLayout();
          // 
          // uxLayoutControl
@@ -99,7 +101,8 @@
          this.Root.GroupBordersVisible = false;
          this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItemName,
-            this.layoutControlGroupWarning});
+            this.layoutControlGroupWarning,
+            this.emptySpaceItem2});
          this.Root.Name = "Root";
          this.Root.Size = new System.Drawing.Size(546, 316);
          this.Root.TextVisible = false;
@@ -120,7 +123,7 @@
             this.emptySpaceItem1});
          this.layoutControlGroupWarning.Location = new System.Drawing.Point(0, 24);
          this.layoutControlGroupWarning.Name = "layoutControlGroupWarning";
-         this.layoutControlGroupWarning.Size = new System.Drawing.Size(526, 272);
+         this.layoutControlGroupWarning.Size = new System.Drawing.Size(526, 88);
          // 
          // layoutControlItemWarning
          // 
@@ -136,7 +139,7 @@
          this.layoutControlItemFindParameter.Control = this.btnFindParameter;
          this.layoutControlItemFindParameter.Location = new System.Drawing.Point(0, 17);
          this.layoutControlItemFindParameter.Name = "layoutControlItemFindParameter";
-         this.layoutControlItemFindParameter.Size = new System.Drawing.Size(250, 210);
+         this.layoutControlItemFindParameter.Size = new System.Drawing.Size(250, 26);
          this.layoutControlItemFindParameter.TextSize = new System.Drawing.Size(0, 0);
          this.layoutControlItemFindParameter.TextVisible = false;
          // 
@@ -145,8 +148,16 @@
          this.emptySpaceItem1.AllowHotTrack = false;
          this.emptySpaceItem1.Location = new System.Drawing.Point(250, 17);
          this.emptySpaceItem1.Name = "emptySpaceItem1";
-         this.emptySpaceItem1.Size = new System.Drawing.Size(252, 210);
+         this.emptySpaceItem1.Size = new System.Drawing.Size(252, 26);
          this.emptySpaceItem1.TextSize = new System.Drawing.Size(0, 0);
+         // 
+         // emptySpaceItem2
+         // 
+         this.emptySpaceItem2.AllowHotTrack = false;
+         this.emptySpaceItem2.Location = new System.Drawing.Point(0, 112);
+         this.emptySpaceItem2.Name = "emptySpaceItem2";
+         this.emptySpaceItem2.Size = new System.Drawing.Size(526, 184);
+         this.emptySpaceItem2.TextSize = new System.Drawing.Size(0, 0);
          // 
          // EditIndividualParameterView
          // 
@@ -158,6 +169,7 @@
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.uxLayoutControl)).EndInit();
          this.uxLayoutControl.ResumeLayout(false);
+         this.uxLayoutControl.PerformLayout();
          ((System.ComponentModel.ISupportInitialize)(this.textEditName.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemName)).EndInit();
@@ -165,6 +177,7 @@
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemWarning)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemFindParameter)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem1)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.emptySpaceItem2)).EndInit();
          this.ResumeLayout(false);
 
       }
@@ -181,5 +194,6 @@
       private DevExpress.XtraEditors.SimpleButton btnFindParameter;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemFindParameter;
       private DevExpress.XtraLayout.EmptySpaceItem emptySpaceItem1;
+      private DevExpress.XtraLayout.EmptySpaceItem emptySpaceItem2;
    }
 }

@@ -116,8 +116,8 @@ namespace MoBi.UI.Views
          base.InitializeResources();
          btnAddParameter.InitWithImage(ApplicationIcons.Add, AppConstants.Captions.AddParameter);
          btnLoadParameter.InitWithImage(ApplicationIcons.PKMLLoad, AppConstants.Captions.LoadParameter);
-         layoutControlItemAddParameter.AdjustLargeButtonSize();
-         layoutControlItemLoadParameter.AdjustLargeButtonSize();
+         layoutControlItemAddParameter.AdjustButtonSize();
+         layoutControlItemLoadParameter.AdjustButtonSize();
          chkShowAdvancedParameter.Text = AppConstants.Captions.ShowAdvancedParameters;
          chkGroupBy.Text = AppConstants.Captions.GroupParameters;
          _removeButtonRepository.Buttons[0].ToolTip = ToolTips.ParameterList.DeleteParameter;
@@ -129,12 +129,13 @@ namespace MoBi.UI.Views
          layoutControlItemShowAdvanceParameters.ContentVertAlignment = VertAlignment.Top;
          layoutControlItemGroupBy.ContentVertAlignment = VertAlignment.Top;
 
-         layoutControlItemSelectIndividual.Text = AppConstants.Captions.SelectIndividual.FormatForLabel();
-         cbSelectIndividual.MaximumSize = new Size(300, 0);
+         layoutControlItemSelectIndividual.Text = AppConstants.Captions.ShowParametersFromIndividual.FormatForLabel();
          chkGroupBy.MaximumSize = new Size(150, 0);
-         lblParentName.MaximumSize = new Size(150, 0);
          chkShowAdvancedParameter.MaximumSize = new Size(200, 0);
          cbSelectIndividual.ToolTip = ToolTips.BuildingBlockSpatialStructure.PreviewSpatialStructureWithIndividualSelection;
+
+         layoutControlItemContainerPath.Enabled = false;
+         layoutControlItemContainerPath.Text = AppConstants.Captions.ContainerPath.FormatForLabel();
       }
 
       private void createResetButtonItem()
@@ -388,9 +389,9 @@ namespace MoBi.UI.Views
                   _colButtons.Visible = true;
                   _colDimension.ReadOnly = false;
                   _colPersistable.Visible = false;
-                  btnAddParameter.Visible = true;
+                  layoutControlItemAddParameter.Visibility = LayoutVisibility.Always;
+                  layoutControlItemLoadParameter.Visibility = LayoutVisibility.Always;
                   btnAddParameter.Enabled = true;
-                  btnLoadParameter.Visible = true;
                   btnLoadParameter.Enabled = true;
                   _nameButtonRepository.Buttons[0].Visible = true;
                   break;
@@ -424,6 +425,7 @@ namespace MoBi.UI.Views
                default:
                   throw new ArgumentOutOfRangeException("EditMode");
             }
+            emptySpaceItem1.Visibility = LayoutVisibilityConvertor.FromBoolean(btnLoadParameter.Visible);
          }
       }
 
@@ -433,9 +435,9 @@ namespace MoBi.UI.Views
          get => _colBuildMode.Visible;
       }
 
-      public string ParentName
+      public string ContainerPath
       {
-         set => lblParentName.Text = value.FormatForLabel(checkCase: false);
+         set => tbContainerPath.Text = value;
       }
 
       public void SetEditParameterView(IView subView)
