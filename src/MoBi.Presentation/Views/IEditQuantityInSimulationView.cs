@@ -7,7 +7,6 @@ namespace MoBi.Presentation.Views
    public interface IEditQuantityInSimulationView : IView<IEditQuantityInSimulationPresenter>
    {
       void BindTo(QuantityDTO quantityDTO);
-      bool ReadOnly { get; set; }
       bool AllowValueChange { get; set; }
       string SetInitialValueLabel { set; }
       void SetFormulaView(IView view);
@@ -17,5 +16,6 @@ namespace MoBi.Presentation.Views
       void ClearWarning();
       void EnableResetButton(bool enable);
       void ShowParameters();
+      void SetQuantityInfoView(IView view);
    }
 }

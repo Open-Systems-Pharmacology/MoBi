@@ -22,7 +22,7 @@ namespace MoBi.Presentation
       }
    }
 
-   class When_creating_an_absolute_path_to_a_global_parameter_at_a_reaction : concern_for_ObjectPathCreatorAtReactionSpecs
+   public class When_creating_an_absolute_path_to_a_global_parameter_at_a_reaction : concern_for_ObjectPathCreatorAtReactionSpecs
    {
       private ReferenceDTO _referenceDTO;
       private Parameter _concentrationParameter;
@@ -54,7 +54,7 @@ namespace MoBi.Presentation
       }
    }
 
-   class When_creating_a_relative_path_to_a_local_parameter_at_a_reaction : concern_for_ObjectPathCreatorAtReactionSpecs
+   public class When_creating_a_relative_path_to_a_local_parameter_at_a_reaction : concern_for_ObjectPathCreatorAtReactionSpecs
    {
       private ReferenceDTO _referenceDTO;
       private Parameter _concentrationParameter;
@@ -86,7 +86,7 @@ namespace MoBi.Presentation
       }
    }
 
-   class When_creating_a_relative_path_to_a_local_moleculeProperty_at_a_reaction : concern_for_ObjectPathCreatorAtReactionSpecs
+   public class When_creating_a_relative_path_to_a_local_moleculeProperty_at_a_reaction : concern_for_ObjectPathCreatorAtReactionSpecs
    {
       private DummyParameterDTO _concentrationDTO;
       private IContainer _localCompartment;

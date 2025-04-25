@@ -6,6 +6,7 @@ using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
+using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
@@ -43,6 +44,7 @@ namespace MoBi.Presentation
       protected IObjectPathFactory _objectPathFactory;
       protected IIndividualParameterToParameterDTOMapper _individualParameterToParameterDTOMapper;
       protected IEditIndividualParameterPresenter _editIndividualParameterPresenter;
+      protected ISourceReferenceNavigator _sourceReferenceNavigator;
 
       protected override void Context()
       {
@@ -67,10 +69,11 @@ namespace MoBi.Presentation
          _objectPathFactory = new ObjectPathFactory(new AliasCreator());
          _individualParameterToParameterDTOMapper = A.Fake<IIndividualParameterToParameterDTOMapper>();
          _editIndividualParameterPresenter = A.Fake<IEditIndividualParameterPresenter>();
+         _sourceReferenceNavigator = A.Fake<ISourceReferenceNavigator>();
 
          sut = new EditParametersInContainerPresenter(_view, _formulaMapper, _parameterMapper, _interactionTasks,
             _distributeParameterPresenter, _parameterPresenter, _quantityTask, _interactionTaskContext, _clipboardManager, _editTask,
-            _selectReferencePresenterFactory, _favoriteTask, _typeResolver, _entityPathResolver, _objectPathFactory, _individualParameterToParameterDTOMapper, _editIndividualParameterPresenter);
+            _selectReferencePresenterFactory, _favoriteTask, _typeResolver, _entityPathResolver, _objectPathFactory, _individualParameterToParameterDTOMapper, _editIndividualParameterPresenter, _sourceReferenceNavigator);
          sut.InitializeWith(A.Fake<ICommandCollector>());
       }
    }
@@ -258,7 +261,7 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_tell_quantuity_task_to_set_vlaue()
+      public void should_tell_quantity_task_to_set_value()
       {
          A.CallTo(() => _quantityTask.SetQuantityDisplayUnit(_parameter, _displayUnit, _simulation)).MustHaveHappened();
       }
@@ -554,6 +557,29 @@ namespace MoBi.Presentation
       public void the_individual_parameter_from_another_container_should_not_be_mapped_for_preview()
       {
          A.CallTo(() => _individualParameterToParameterDTOMapper.MapFrom(_individualBuildingBlock, _excludedIndividualParameter)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_navigating_to_entity_source : concern_for_EditParametersInContainerPresenter
+   {
+      private ParameterDTO _parameterDTO;
+
+      protected override void Context()
+      {
+         base.Context();
+         var parameter = new Parameter();
+         _parameterDTO = new ParameterDTO(parameter) { SourceReference = new SimulationEntitySourceReference(null, null, null, parameter) };
+      }
+
+      protected override void Because()
+      {
+         sut.NavigateToParameter(_parameterDTO);
+      }
+
+      [Observation]
+      public void the_navigate_task_is_used_to_navigate()
+      {
+         A.CallTo(() => _sourceReferenceNavigator.GoTo(_parameterDTO.SourceReference)).MustHaveHappened();
       }
    }
 }

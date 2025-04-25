@@ -88,4 +88,18 @@ namespace MoBi.Presentation
          A.CallTo(() => _editParameterListPresenter.Edit(A<IEnumerable<IParameter>>._)).MustHaveHappened();
       }
    }
+
+   public class When_enabling_tracking : concern_for_EditFavoritesInSimulationPresenter
+   {
+      protected override void Because()
+      {
+         sut.TrackableSimulation = new TrackableSimulation(null, new SimulationEntitySourceReferenceCache());
+      }
+
+      [Observation]
+      public void the_parameter_presenter_must_also_enable_tracking()
+      {
+         A.CallTo(() => _editParameterListPresenter.EnableSimulationTracking(sut.TrackableSimulation)).MustHaveHappened();
+      }
+   }
 }
