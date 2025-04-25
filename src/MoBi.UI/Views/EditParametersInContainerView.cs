@@ -425,7 +425,6 @@ namespace MoBi.UI.Views
                default:
                   throw new ArgumentOutOfRangeException("EditMode");
             }
-            emptySpaceItem1.Visibility = LayoutVisibilityConvertor.FromBoolean(btnLoadParameter.Visible);
          }
       }
 
