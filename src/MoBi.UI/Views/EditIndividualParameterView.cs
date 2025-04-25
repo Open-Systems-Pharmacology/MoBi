@@ -1,4 +1,5 @@
-﻿using MoBi.Assets;
+﻿using DevExpress.XtraLayout.Utils;
+using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
@@ -29,6 +30,7 @@ namespace MoBi.UI.Views
          btnFindParameter.InitWithImage(ApplicationIcons.Search, AppConstants.Captions.FindParameter);
          lblWarning.AllowHtmlString = true;
          layoutControlGroupWarning.Text = AppConstants.Captions.Warning;
+         layoutControlItemWarning.Padding += new Padding(0, 0, 0, 5);
       }
 
       public override void InitializeBinding()

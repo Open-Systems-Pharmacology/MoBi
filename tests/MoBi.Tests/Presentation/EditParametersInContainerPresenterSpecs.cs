@@ -414,7 +414,7 @@ namespace MoBi.Presentation
       [Observation]
       public void label_should_contain_name()
       {
-         A.CallTo(_view).Where(x => x.Method.Name.Equals("set_ParentName") && x.Arguments.Get<string>(0).Equals($"New {_containerType}")).MustHaveHappened();
+         A.CallTo(_view).Where(x => x.Method.Name.Equals("set_ContainerPath") && x.Arguments.Get<string>(0).Equals($"New {_containerType}")).MustHaveHappened();
       }
    }
 
@@ -422,12 +422,14 @@ namespace MoBi.Presentation
    {
       protected IContainer _container;
       private readonly string _containerName = "Container Name";
+      private readonly string _containerPath = "Container|PATH";
 
       protected override void Context()
       {
          base.Context();
          _container = new Container();
          _container.Name = _containerName;
+         A.CallTo(() => _entityPathResolver.PathFor(_container)).Returns(_containerPath);
       }
 
       protected override void Because()
@@ -438,7 +440,7 @@ namespace MoBi.Presentation
       [Observation]
       public void label_should_contain_name()
       {
-         A.CallTo(_view).Where(x => x.Method.Name.Equals("set_ParentName") && x.Arguments.Get<string>(0).Equals(_containerName)).MustHaveHappened();
+         A.CallTo(_view).Where(x => x.Method.Name.Equals("set_ContainerPath") && x.Arguments.Get<string>(0).Equals(_containerPath)).MustHaveHappened();
       }
    }
 
