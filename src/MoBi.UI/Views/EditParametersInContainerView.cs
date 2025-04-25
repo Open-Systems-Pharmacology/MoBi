@@ -134,7 +134,7 @@ namespace MoBi.UI.Views
          chkShowAdvancedParameter.MaximumSize = new Size(200, 0);
          cbSelectIndividual.ToolTip = ToolTips.BuildingBlockSpatialStructure.PreviewSpatialStructureWithIndividualSelection;
 
-         layoutControlItemContainerPath.Enabled = false;
+         tbContainerPath.ReadOnly = true;
          layoutControlItemContainerPath.Text = AppConstants.Captions.ContainerPath.FormatForLabel();
       }
 
