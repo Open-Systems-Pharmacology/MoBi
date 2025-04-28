@@ -84,7 +84,7 @@ namespace MoBi.Core.Serialization.ORM
                LoadJournal(context, project.JournalPath, projectFullPath);
             }
          }
-         catch (Exception)
+         catch (Exception ex)
          {
             // Exception occurs while opening the project! 
             // close the file and rethrow the exception

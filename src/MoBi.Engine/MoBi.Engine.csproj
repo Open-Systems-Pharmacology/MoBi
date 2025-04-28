@@ -27,8 +27,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Core" Version="12.1.87" />
-    <PackageReference Include="OSPSuite.Assets" Version="12.1.87" />
+    <PackageReference Include="OSPSuite.Core" Version="12.1.0-KhOkf" />
+    <PackageReference Include="OSPSuite.Assets" Version="12.1.0-KhOkf" />
   </ItemGroup>
 
   <ItemGroup>

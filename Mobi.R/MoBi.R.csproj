@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OSPSuite.Core" Version="12.1.88" />
+    <PackageReference Include="OSPSuite.Infrastructure" Version="12.1.88" />
+    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="12.1.88" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\src\MoBi.Assets\MoBi.Assets.csproj" />
+    <ProjectReference Include="..\src\MoBi.Core\MoBi.Core.csproj" />
+    <ProjectReference Include="..\src\MoBi.Presentation\MoBi.Presentation.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Data\SampleProject.mbp3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\SampleProjectWith2Simulations.mbp3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
