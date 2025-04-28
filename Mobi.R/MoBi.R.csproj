@@ -5,9 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Core" Version="12.1.88" />
-    <PackageReference Include="OSPSuite.Infrastructure" Version="12.1.88" />
-    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="12.1.88" />
+    <PackageReference Include="OSPSuite.Core" Version="12.1.94" />
+    <PackageReference Include="OSPSuite.Infrastructure" Version="12.1.94" />
+    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="12.1.94" />
   </ItemGroup>
 
   <ItemGroup>
