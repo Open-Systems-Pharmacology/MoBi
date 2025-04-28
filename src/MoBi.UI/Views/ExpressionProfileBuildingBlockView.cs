@@ -205,6 +205,13 @@ namespace MoBi.UI.Views
          initColumnVisibility();
       }
 
+      public void Select(ExpressionParameterDTO expressionParameterDTO)
+      {
+         var row = _gridViewBinder.RowHandleFor(expressionParameterDTO);
+         gridView.FocusedRowHandle = row;
+         gridView.SelectRow(row);
+      }
+
       private void disposeBinders()
       {
          _screenBinder.Dispose();

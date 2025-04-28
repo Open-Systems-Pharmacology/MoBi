@@ -1,5 +1,6 @@
 ﻿using MoBi.Core.Repositories;
 using MoBi.Presentation.DTO;
+using MoBi.Presentation.Presenter;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility;
 
@@ -7,6 +8,7 @@ namespace MoBi.Presentation.Mappers
 {
    public interface IContainerToContainerDTOMapper : IMapper<IContainer, ContainerDTO>
    {
+      ContainerDTO MapFrom(IContainer container, TrackableSimulation trackableSimulation);
    }
 
    public class ContainerToContainerDTOMapper : ObjectBaseToObjectBaseDTOMapperBase, IContainerToContainerDTOMapper
@@ -23,11 +25,18 @@ namespace MoBi.Presentation.Mappers
       public virtual ContainerDTO MapFrom(IContainer container)
       {
          var dto = MapContainer(container, new ContainerDTO(container));
-         UpdateParentPath(container, dto);
+         updateParentPath(container, dto);
          return dto;
       }
 
-      protected void UpdateParentPath(IContainer container, ContainerDTO containerDTO)
+      public ContainerDTO MapFrom(IContainer container, TrackableSimulation trackableSimulation)
+      {
+         var dto = MapFrom(container);
+         dto.SourceReference = trackableSimulation?.SourceFor(container);
+         return dto;
+      }
+
+      private void updateParentPath(IContainer container, ContainerDTO containerDTO)
       {
          var parentContainer = container.ParentContainer;
          if (parentContainer != null)

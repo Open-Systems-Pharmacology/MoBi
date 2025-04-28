@@ -8,6 +8,7 @@ using MoBi.Helpers;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Interaction;
+using OSPSuite.Assets;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -343,6 +344,12 @@ namespace MoBi.Presentation.Tasks
       public void should_have_kept_the_reference_to_the_parent_container()
       {
          _entityToSave.ParentContainer.ShouldBeEqualTo(_parentContainer);
+      }
+
+      [Observation]
+      public void should_have_named_the_spatial_structure_that_was_created()
+      {
+         _tmpSpatialStructure.Name.ShouldBeEqualTo(DefaultNames.SpatialStructure);
       }
 
       [Observation]

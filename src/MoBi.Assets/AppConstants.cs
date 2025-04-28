@@ -1349,6 +1349,9 @@ namespace MoBi.Assets
          }
 
          public static string FileIsReadOnly(string fileFullPath) => $"The project cannot be saved:\nThe file '{fileFullPath}' is read-only.";
+
+         public static string CannotFindReactionForParameter(string parameterName) => $"Cannot find reaction for parameter {parameterName}";
+         public static string CannotFindTransportForParameter(string parameterName) => $"Cannot find transport for parameter {parameterName}";
       }
 
       public static class Captions
@@ -1662,7 +1665,9 @@ namespace MoBi.Assets
          public static readonly string None = "None";
          public static readonly string ConvertToFormula = "Convert to Formula";
          public static readonly string FindParameter = "Find Parameter";
-         public static readonly string SelectIndividual = "Select Individual";
+         public static readonly string ShowParametersFromIndividual = "Show parameters from Individual";
+         public static readonly string ConvertToConstantValue = "Convert to constant value";
+         public static readonly string GoToSource = "Go to Source";
          public static string SelectTheBuildingBlockWhereEntitiesWillBeAddedOrUpdated(string typeBeingAdded) => $"Select the building block where {typeBeingAdded} will be added or updated";
          public static readonly string SelectBuildingBlock = "Select Building Block";
          public static readonly string MakeDefault = "Make defaults";

@@ -6,6 +6,7 @@ using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
+using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
@@ -23,6 +24,7 @@ namespace MoBi.Presentation.Presenter
       void ResetValue();
       void SetValue(double valueInGuiUnit);
       void SetDisplayUnit(Unit displayUnit);
+      void NavigateToSource();
    }
 
    public class EditQuantityInSimulationPresenter : AbstractEditPresenter<IEditQuantityInSimulationView, IEditQuantityInSimulationPresenter, IQuantity>, IEditQuantityInSimulationPresenter
@@ -32,22 +34,43 @@ namespace MoBi.Presentation.Presenter
       private readonly IFormulaPresenterCache _formulaPresenterCache;
       private readonly IEditParametersInContainerPresenter _parameterPresenter;
       private readonly IQuantityTask _quantityTask;
+      private readonly IEditQuantityInfoInSimulationPresenter _editQuantityInfoPresenter;
       private QuantityDTO _quantityDTO;
       private IQuantity _quantityToEdit;
       private IEditTypedFormulaPresenter _formulaPresenter;
-      public TrackableSimulation TrackableSimulation { get; set; }
+      private TrackableSimulation _trackableSimulation;
+      private readonly ISourceReferenceNavigator _sourceReferenceNavigator;
 
-      public EditQuantityInSimulationPresenter(IEditQuantityInSimulationView view, IQuantityToQuantityDTOMapper quantityToQuantityDTOMapper,
-         IFormulaPresenterCache formulaPresenterCache, IEditParametersInContainerPresenter parameterPresenter, IQuantityTask quantityTask, IReactionDimensionRetriever reactionDimensionRetriever)
+      public TrackableSimulation TrackableSimulation
+      {
+         get => _trackableSimulation;
+         set
+         {
+            _trackableSimulation = value;
+            _parameterPresenter.EnableSimulationTracking(value);
+         }
+      }
+
+      public EditQuantityInSimulationPresenter(IEditQuantityInSimulationView view, 
+         IQuantityToQuantityDTOMapper quantityToQuantityDTOMapper,
+         IFormulaPresenterCache formulaPresenterCache, 
+         IEditParametersInContainerPresenter parameterPresenter, 
+         IQuantityTask quantityTask, 
+         IReactionDimensionRetriever reactionDimensionRetriever,
+         IEditQuantityInfoInSimulationPresenter editQuantityInfoPresenter, 
+         ISourceReferenceNavigator sourceReferenceNavigator)
          : base(view)
       {
          _quantityTask = quantityTask;
+         _editQuantityInfoPresenter = editQuantityInfoPresenter;
+         _sourceReferenceNavigator = sourceReferenceNavigator;
          _parameterPresenter = parameterPresenter;
          _parameterPresenter.EditMode = EditParameterMode.ValuesOnly;
          _quantityToQuantityDTOMapper = quantityToQuantityDTOMapper;
          _formulaPresenterCache = formulaPresenterCache;
          _view.SetInitialValueLabel = initialValueLabel(reactionDimensionRetriever.SelectedDimensionMode);
-         AddSubPresenters(_parameterPresenter);
+         _view.SetQuantityInfoView(_editQuantityInfoPresenter.BaseView);
+         AddSubPresenters(_parameterPresenter, _editQuantityInfoPresenter);
       }
 
       private string initialValueLabel(ReactionDimensionMode dimensionMode)
@@ -64,8 +87,6 @@ namespace MoBi.Presentation.Presenter
 
       public override void Edit(IQuantity objectToEdit)
       {
-         _view.ReadOnly = true;
-
          var initialSelection = _quantity == null;
 
          _quantity = objectToEdit;
@@ -88,7 +109,8 @@ namespace MoBi.Presentation.Presenter
 
       private void rebind()
       {
-         _quantityDTO = _quantityToQuantityDTOMapper.MapFrom(_quantity);
+         _quantityDTO = _quantityToQuantityDTOMapper.MapFrom(_quantity, _trackableSimulation);
+         _editQuantityInfoPresenter.Edit(_quantityDTO);
          _view.BindTo(_quantityDTO);
          checkValueOverride();
       }
@@ -135,6 +157,8 @@ namespace MoBi.Presentation.Presenter
       {
          AddCommand(_quantityTask.SetQuantityDisplayUnit(_quantityToEdit, displayUnit, Simulation));
       }
+
+      public void NavigateToSource() => _sourceReferenceNavigator.GoTo(_quantityDTO.SourceReference);
 
       public override void AddCommand(ICommand command)
       {

@@ -2,8 +2,10 @@
 using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
+using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
@@ -22,7 +24,7 @@ namespace MoBi.Presentation
    public abstract class concern_for_EditContainerPresenter : ContextSpecification<EditContainerPresenter>
    {
       protected IEditContainerView _view;
-      private IContainerToContainerDTOMapper _containerMapper;
+      protected IContainerToContainerDTOMapper _containerMapper;
       protected IEditTaskForContainer _editTasks;
       protected IEditParametersInContainerPresenter _parametersInContainerPresenter;
       protected IMoBiContext _context;
@@ -31,6 +33,7 @@ namespace MoBi.Presentation
       protected ICommandCollector _commandCollector;
       private IObjectPathFactory _objectPathFactory;
       protected IDialogCreator _dialogCreator;
+      protected ISourceReferenceNavigator _sourceReferenceNavigator;
 
       protected override void Context()
       {
@@ -43,7 +46,8 @@ namespace MoBi.Presentation
          _tagsPresenter = A.Fake<ITagsPresenter>();
          _applicationController = A.Fake<IApplicationController>();
          _objectPathFactory = A.Fake<IObjectPathFactory>();
-         sut = new EditContainerPresenter(_view, _containerMapper, _editTasks, _parametersInContainerPresenter, _context, _tagsPresenter, _applicationController, _objectPathFactory, _dialogCreator);
+         _sourceReferenceNavigator = A.Fake<ISourceReferenceNavigator>();
+         sut = new EditContainerPresenter(_view, _containerMapper, _editTasks, _parametersInContainerPresenter, _context, _tagsPresenter, _applicationController, _objectPathFactory, _dialogCreator, _sourceReferenceNavigator);
          _commandCollector = new MoBiMacroCommand();
          sut.InitializeWith(_commandCollector);
       }
@@ -342,6 +346,83 @@ namespace MoBi.Presentation
       public void the_sub_presenter_should_be_called_to_enable_preview()
       {
          A.CallTo(() => _parametersInContainerPresenter.ShowIndividualSelection()).MustHaveHappened();
+      }
+   }
+
+   public class When_navigating_to_a_source_of_container : concern_for_EditContainerPresenter
+   {
+      private TrackableSimulation _trackableSimulation;
+      private IContainer _container;
+      private SimulationEntitySourceReference _sourceRef;
+
+      protected override void Context()
+      {
+         base.Context();
+         _container = new Container();
+         _trackableSimulation = new TrackableSimulation(null, new SimulationEntitySourceReferenceCache());
+         _sourceRef = new SimulationEntitySourceReference(null, null, null, _container);
+         _trackableSimulation.ReferenceCache.Add(_container, _sourceRef);
+         sut.EnableSimulationTracking(_trackableSimulation);
+         A.CallTo(() => _containerMapper.MapFrom(_container, _trackableSimulation)).Returns(new ContainerDTO(_container) { SourceReference = _sourceRef });
+         sut.Edit(_container);
+      }
+
+      protected override void Because()
+      {
+         sut.NavigateToSource();
+      }
+
+      [Observation]
+      public void the_navigator_should_be_used()
+      {
+         A.CallTo(() => _sourceReferenceNavigator.GoTo(_sourceRef)).MustHaveHappened();
+      }
+   }
+
+   public class When_editing_a_container_within_tracking_enabled : concern_for_EditContainerPresenter
+   {
+      private TrackableSimulation _trackableSimulation;
+      private IContainer _container;
+
+      protected override void Context()
+      {
+         base.Context();
+         _container = new Container();
+         _trackableSimulation = new TrackableSimulation(null, new SimulationEntitySourceReferenceCache());
+         sut.EnableSimulationTracking(_trackableSimulation);
+      }
+
+      protected override void Because()
+      {
+         sut.Edit(_container);
+      }
+
+      [Observation]
+      public void the_mapper_must_include_tracking_in_dto()
+      {
+         A.CallTo(() => _containerMapper.MapFrom(_container, _trackableSimulation)).MustHaveHappened();
+      }
+   }
+
+   public class When_enabling_simulation_tracking : concern_for_EditContainerPresenter
+   {
+      private TrackableSimulation _trackableSimulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _trackableSimulation = new TrackableSimulation(null, new SimulationEntitySourceReferenceCache());
+      }
+
+      protected override void Because()
+      {
+         sut.EnableSimulationTracking(_trackableSimulation);
+      }
+
+      [Observation]
+      public void the_parameters_presenter_must_also_enable_tracking()
+      {
+         A.CallTo(() => _parametersInContainerPresenter.EnableSimulationTracking(_trackableSimulation)).MustHaveHappened();
       }
    }
 }

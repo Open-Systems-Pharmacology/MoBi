@@ -5,6 +5,7 @@ using MoBi.Core.Events;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
+using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
@@ -24,7 +25,9 @@ namespace MoBi.Presentation.Presenter
    {
       private readonly IViewItemContextMenuFactory _viewItemContextMenuFactory;
       private readonly IParameterToParameterDTOMapper _parameterDTOMapper;
+      private readonly ISourceReferenceNavigator _sourceReferenceNavigator;
       private readonly List<ParameterDTO> _parameterDTOs = new List<ParameterDTO>();
+      private TrackableSimulation _trackableSimulation;
       public IEnumerable<IParameter> EditedParameters { get; private set; }
 
       public EditParameterListPresenter(
@@ -35,11 +38,13 @@ namespace MoBi.Presentation.Presenter
          IInteractionTasksForParameter parameterTask,
          IFavoriteTask favoriteTask,
          IViewItemContextMenuFactory viewItemContextMenuFactory,
-         IParameterToParameterDTOMapper parameterDTOMapper) :
+         IParameterToParameterDTOMapper parameterDTOMapper,
+         ISourceReferenceNavigator sourceReferenceNavigator) :
          base(view, quantityTask, interactionTaskContext, formulaMapper, parameterTask, favoriteTask)
       {
          _viewItemContextMenuFactory = viewItemContextMenuFactory;
          _parameterDTOMapper = parameterDTOMapper;
+         _sourceReferenceNavigator = sourceReferenceNavigator;
       }
 
       public void ShowContextMenu(IViewItem viewItem, Point popupLocation)
@@ -62,7 +67,7 @@ namespace MoBi.Presentation.Presenter
          releaseParameters();
 
          EditedParameters = parameters;
-         _parameterDTOs.AddRange(EditedParameters.MapAllUsing(_parameterDTOMapper));
+         _parameterDTOs.AddRange(EditedParameters.Select(x => _parameterDTOMapper.MapFrom(x, _trackableSimulation)));
 
          _view.BindTo(_parameterDTOs);
 
@@ -90,6 +95,14 @@ namespace MoBi.Presentation.Presenter
             _view.SelectedParameters = _parameterDTOs.Where(x => value.Contains(x.Parameter)).ToList();
          }
       }
+
+      public void EnableSimulationTracking(TrackableSimulation simulation) => _trackableSimulation = simulation;
+
+      public bool HasBuildingBlocks() => _parameterDTOs.Any(parameterDTO => !string.IsNullOrEmpty(parameterDTO.BuildingBlockName));
+
+      public void NavigateToParameter(ParameterDTO parameterDTO) => _sourceReferenceNavigator.GoTo(parameterDTO.SourceReference);
+
+      public bool HasModules() => _parameterDTOs.Any(parameterDTO => !string.IsNullOrEmpty(parameterDTO.ModuleName));
 
       public override void ReleaseFrom(IEventPublisher eventPublisher)
       {

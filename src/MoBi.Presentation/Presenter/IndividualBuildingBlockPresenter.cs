@@ -45,23 +45,10 @@ namespace MoBi.Presentation.Presenter
          _view.BindTo(_individualBuildingBlockDTO);
       }
 
-      public bool HasAtLeastOneValue(int pathElementIndex)
-      {
-         return _individualBuildingBlockDTO.Parameters.HasAtLeastOneValue(pathElementIndex);
-      }
+      public bool HasAtLeastOneValue(int pathElementIndex) => _individualBuildingBlockDTO.Parameters.HasAtLeastOneValue(pathElementIndex);
 
-      public void Handle(EntitySelectedEvent eventToHandle)
-      {
-         if (eventToHandle.ObjectBase is IndividualParameter individualParameter)
-         {
-            if (_buildingBlock.Contains(individualParameter))
-               _view.Select(dtoFor(individualParameter));
-         }
-      }
+      protected override void SelectEntity(IndividualParameterDTO dto) => _view.Select(dto);
 
-      private IndividualParameterDTO dtoFor(IndividualParameter individualParameter)
-      {
-         return _individualBuildingBlockDTO.Parameters.FirstOrDefault(x => Equals(x.PathWithValueObject, individualParameter));
-      }
+      protected override IndividualParameterDTO DTOForBuilder(IndividualParameter individualParameter) => _individualBuildingBlockDTO.Parameters.FirstOrDefault(x => Equals(x.PathWithValueObject, individualParameter));
    }
 }

@@ -9,6 +9,7 @@ using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Settings;
+using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
@@ -64,6 +65,10 @@ namespace MoBi.Presentation.Presenter
       void ShowIndividualSelection();
       void UpdatePreview();
       void EnableSimulationTracking(TrackableSimulation trackableSimulation);
+      
+      bool HasModules();
+      bool HasBuildingBlocks();
+      void NavigateToParameter(ParameterDTO parameterDTO);
    }
 
    public class EditParametersInContainerPresenter : AbstractParameterBasePresenter<IEditParametersInContainerView, IEditParametersInContainerPresenter>, IEditParametersInContainerPresenter
@@ -73,6 +78,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IIndividualParameterToParameterDTOMapper _individualParameterToDTOParameterMapper;
       private readonly ICache<string, IParameter> _parameters = new Cache<string, IParameter>(x => x.Id, x => null);
       private readonly List<ParameterDTO> _allParametersDTO = new List<ParameterDTO>();
+      private readonly ISourceReferenceNavigator _sourceReferenceNavigator;
 
       private IContainer _container;
       private readonly IEditTaskFor<IParameter> _editTask;
@@ -107,7 +113,8 @@ namespace MoBi.Presentation.Presenter
          IEntityPathResolver entityPathResolver,
          IObjectPathFactory objectPathFactory,
          IIndividualParameterToParameterDTOMapper individualParameterToDTOParameterMapper,
-         IEditIndividualParameterPresenter editIndividualParameterPresenter)
+         IEditIndividualParameterPresenter editIndividualParameterPresenter,
+         ISourceReferenceNavigator sourceReferenceNavigator)
          : base(view, quantityTask, interactionTaskContext, formulaMapper, parameterTask, favoriteTask)
       {
          _clipboardManager = clipboardManager;
@@ -116,6 +123,7 @@ namespace MoBi.Presentation.Presenter
          _editDistributedParameterPresenter = editDistributedParameterPresenter;
          _editParameterPresenter = editParameterPresenter;
          _editIndividualParameterPresenter = editIndividualParameterPresenter;
+         _sourceReferenceNavigator = sourceReferenceNavigator;
          EditMode = EditParameterMode.All;
          _parameterToDTOParameterMapper = parameterToDTOParameterMapper;
          _editParameterPresenter = editParameterPresenter;
@@ -142,7 +150,7 @@ namespace MoBi.Presentation.Presenter
          RhsReference = getNewReferencePresenterFor(container);
          ShowBuildMode = container.CanSetBuildModeForParameters();
          ParameterBuildModes = container.AvailableBuildModeForParameters();
-         _view.ParentName = getContainerName(container);
+         _view.ContainerPath = getContainerPath(container);
          UpdatePreview();
       }
 
@@ -217,8 +225,11 @@ namespace MoBi.Presentation.Presenter
          return referencePresenter;
       }
 
-      private string getContainerName(IContainer container) =>
-         string.IsNullOrEmpty(container.Name) ? AppConstants.Captions.NewWindow(_typeResolver.TypeFor(container)) : container.Name;
+      private string getContainerPath(IContainer container)
+      {
+         var path = _entityPathResolver.PathFor(container);
+         return string.IsNullOrEmpty(path) ? AppConstants.Captions.NewWindow(_typeResolver.TypeFor(container)) : path;
+      }
 
       public void Select(IParameter parameter)
       {
@@ -469,5 +480,11 @@ namespace MoBi.Presentation.Presenter
       }
 
       public void EnableSimulationTracking(TrackableSimulation trackableSimulation) => _trackableSimulation = trackableSimulation;
+
+      public bool HasBuildingBlocks() => _allParametersDTO.Any(parameterDTO => !string.IsNullOrEmpty(parameterDTO.BuildingBlockName));
+
+      public void NavigateToParameter(ParameterDTO parameterDTO) => _sourceReferenceNavigator.GoTo(parameterDTO.SourceReference);
+
+      public bool HasModules() => _allParametersDTO.Any(parameterDTO => !string.IsNullOrEmpty(parameterDTO.ModuleName));
    }
 }

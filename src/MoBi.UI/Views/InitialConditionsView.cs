@@ -89,6 +89,12 @@ namespace MoBi.UI.Views
             _isPresentColumn.AsHidden().WithShowInColumnChooser(true);
       }
 
+      public void Select(InitialConditionDTO dto)
+      {
+         gridView.FocusedRowHandle = _gridViewBinder.RowHandleFor(dto);
+         gridView.SelectRow(gridView.FocusedRowHandle);
+      }
+
       public IBuildingBlockWithInitialConditionsPresenter InitialConditionPresenter => _presenter.DowncastTo<IBuildingBlockWithInitialConditionsPresenter>();
 
       public void AttachPresenter(IBuildingBlockWithInitialConditionsPresenter presenter) => _presenter = presenter;

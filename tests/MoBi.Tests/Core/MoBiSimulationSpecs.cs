@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
@@ -233,6 +234,7 @@ namespace MoBi.Core
       private Curve _curve;
       private readonly DataRepository _dataRepository = new DataRepository();
       private DataColumn _dataColumn;
+      private readonly List<SimulationEntitySource> _simulationEntitySources = new List<SimulationEntitySource>();
 
       protected override void Context()
       {
@@ -247,7 +249,7 @@ namespace MoBi.Core
          _curve.SetyData(_dataColumn, new MoBiDimensionFactory());
          _chart.AddCurve(_curve);
 
-         sut.Update(A.Fake<SimulationConfiguration>(), A.Fake<IModel>());
+         sut.Update(A.Fake<SimulationConfiguration>(), A.Fake<IModel>(), _simulationEntitySources);
          sut.Chart = _chart;
          sut.HasChanged = false;
          //make sure we do have curves initially

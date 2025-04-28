@@ -3,7 +3,6 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
-using MoBi.Core.Helper;
 using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Diagram;
@@ -27,52 +26,42 @@ namespace MoBi.Core.Commands
       private bool _wasChanged;
       private byte[] _simulationConfigurationSerialization;
       private byte[] _modelSerialization;
-      private readonly string _changedBuildingBlockName;
-      private readonly string _changedBuildingBlockType;
+      private byte[] _simulationEntitySourceSerialization;
       private readonly bool _oldUntraceableChangesState;
+      private IReadOnlyCollection<SimulationEntitySource> _newSimulationBuilderEntitySources;
 
-      public UpdateSimulationCommand(IMoBiSimulation simulationToUpdate, IModel newModel, SimulationConfiguration updatedSimulationConfiguration)
-         : this(simulationToUpdate, newModel, updatedSimulationConfiguration, wasChanged:true, newUntraceableChangesState:false, string.Empty, string.Empty)
+      public UpdateSimulationCommand(IMoBiSimulation simulationToUpdate, IModel newModel, IReadOnlyCollection<SimulationEntitySource> newSimulationBuilderEntitySources, SimulationConfiguration updatedSimulationConfiguration)
+         : this(simulationToUpdate, newModel, newSimulationBuilderEntitySources, updatedSimulationConfiguration, wasChanged: true, newUntraceableChangesState: false)
       {
       }
 
-      public UpdateSimulationCommand(IMoBiSimulation simulationToUpdate, IModel newModel, SimulationConfiguration updatedSimulationConfiguration, IBuildingBlock templateBuildingBlock)
-         : this(simulationToUpdate, newModel, updatedSimulationConfiguration, wasChanged: true, newUntraceableChangesState: false, templateBuildingBlock.Name, templateBuildingBlock.Name)
-      {
-         _changedBuildingBlockType = new ObjectTypeResolver().TypeFor(templateBuildingBlock);
-      }
-
-      private UpdateSimulationCommand(IMoBiSimulation simulationToUpdate, IModel newModel, SimulationConfiguration updatedSimulationConfiguration, bool wasChanged, bool newUntraceableChangesState,
-         string buildingBlockName, string changedBuildingBlockType)
+      private UpdateSimulationCommand(IMoBiSimulation simulationToUpdate, IModel newModel, IReadOnlyCollection<SimulationEntitySource> newSimulationBuilderEntitySources, SimulationConfiguration updatedSimulationConfiguration, bool wasChanged, bool newUntraceableChangesState)
       {
          _hasChanged = wasChanged;
          _newUntraceableChangesState = newUntraceableChangesState;
          _oldUntraceableChangesState = simulationToUpdate.HasUntraceableChanges;
          _simulationToUpdate = simulationToUpdate;
          _newModel = newModel;
+         _newSimulationBuilderEntitySources = newSimulationBuilderEntitySources;
          _updatedSimulationConfiguration = updatedSimulationConfiguration;
          _simulationId = _simulationToUpdate.Id;
-         _changedBuildingBlockName = buildingBlockName;
-         _changedBuildingBlockType = changedBuildingBlockType;
          ObjectType = ObjectTypes.Simulation;
          CommandType = AppConstants.Commands.UpdateCommand;
-
-         if (string.IsNullOrEmpty(_changedBuildingBlockName))
-            Description = AppConstants.Commands.ConfigureSimulationDescription(_simulationToUpdate.Name);
-         else
-            Description = AppConstants.Commands.UpdateCommandDescription(_simulationToUpdate.Name, _changedBuildingBlockName, _changedBuildingBlockType);
+         Description = AppConstants.Commands.ConfigureSimulationDescription(_simulationToUpdate.Name);
       }
 
       protected override void ExecuteWith(IMoBiContext context)
       {
          _modelSerialization = context.Serialize(_simulationToUpdate.Model);
          _simulationConfigurationSerialization = context.Serialize(_simulationToUpdate.Configuration);
+         _simulationEntitySourceSerialization = context.Serialize(_simulationToUpdate.EntitySources);
+
          context.UnregisterSimulation(_simulationToUpdate);
          context.PublishEvent(new SimulationUnloadEvent(_simulationToUpdate));
 
          var oldIdCache = getEntityIdCache(_simulationToUpdate);
 
-         _simulationToUpdate.Update(_updatedSimulationConfiguration, _newModel);
+         _simulationToUpdate.Update(_updatedSimulationConfiguration, _newModel, _newSimulationBuilderEntitySources);
 
          updateReferencesToSimulation(context);
 
@@ -127,11 +116,12 @@ namespace MoBi.Core.Commands
          _simulationToUpdate = context.Get<IMoBiSimulation>(_simulationId);
          _newModel = context.Deserialize<IModel>(_modelSerialization);
          _updatedSimulationConfiguration = context.Deserialize<SimulationConfiguration>(_simulationConfigurationSerialization);
+         _newSimulationBuilderEntitySources = context.Deserialize<SimulationEntitySources>(_simulationEntitySourceSerialization);
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return new UpdateSimulationCommand(_simulationToUpdate, _newModel, _updatedSimulationConfiguration, _wasChanged, _oldUntraceableChangesState, _changedBuildingBlockName, _changedBuildingBlockType)
+         return new UpdateSimulationCommand(_simulationToUpdate, _newModel, _newSimulationBuilderEntitySources, _updatedSimulationConfiguration, _wasChanged, _oldUntraceableChangesState)
             .AsInverseFor(this);
       }
 
@@ -140,6 +130,7 @@ namespace MoBi.Core.Commands
          _simulationToUpdate = null;
          _newModel = null;
          _updatedSimulationConfiguration = null;
+         _newSimulationBuilderEntitySources = null;
       }
    }
 }

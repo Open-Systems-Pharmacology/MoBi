@@ -21,7 +21,7 @@ namespace MoBi.Core.Domain.Model
       SimulationPredictedVsObservedChart PredictedVsObservedChart { get; set; }
       SimulationResidualVsTimeChart ResidualVsTimeChart { get; set; }
 
-      void Update(SimulationConfiguration simulationConfiguration, IModel model);
+      void Update(SimulationConfiguration simulationConfiguration, IModel model, IReadOnlyCollection<SimulationEntitySource> simulationEntitySources);
       SolverSettings Solver { get; }
       OutputSchema OutputSchema { get; }
 
@@ -51,8 +51,8 @@ namespace MoBi.Core.Domain.Model
       IReadOnlyCollection<OriginalQuantityValue> OriginalQuantityValues { get; }
 
       /// <summary>
-      /// During project conversion from V11 to V12, any changes that are present in the simulation
-      /// won't be traceable back to a specific building block. This flag is used to indicate that to a user
+      ///    During project conversion from V11 to V12, any changes that are present in the simulation
+      ///    won't be traceable back to a specific building block. This flag is used to indicate that to a user
       /// </summary>
       bool HasUntraceableChanges { get; set; }
 
@@ -81,8 +81,8 @@ namespace MoBi.Core.Domain.Model
       public OutputMappings OutputMappings { get; set; } = new OutputMappings();
 
       /// <summary>
-      /// During project conversion from V11 to V12, any changes that are present in the simulation
-      /// won't be traceable back to a specific building block. This flag is used to indicate that to a user
+      ///    During project conversion from V11 to V12, any changes that are present in the simulation
+      ///    won't be traceable back to a specific building block. This flag is used to indicate that to a user
       /// </summary>
       public bool HasUntraceableChanges { get; set; }
 
@@ -181,10 +181,11 @@ namespace MoBi.Core.Domain.Model
          Chart?.AcceptVisitor(visitor);
       }
 
-      public void Update(SimulationConfiguration simulationConfiguration, IModel model)
+      public void Update(SimulationConfiguration simulationConfiguration, IModel model, IReadOnlyCollection<SimulationEntitySource> simulationEntitySources)
       {
          Configuration = simulationConfiguration;
          Model = model;
+         simulationEntitySources.Each(EntitySources.Add);
       }
 
       public ICache<string, DataRepository> HistoricResults { get; }

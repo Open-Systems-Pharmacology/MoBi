@@ -161,6 +161,7 @@ namespace MoBi.Assets
          public static readonly string NewParameterName = "Define a new name for the Parameter";
          public static readonly string MoveUp = "Move Up";
          public static readonly string MoveDown = "Move Down";
+         public static readonly string GoToSource = "Go to source";
       }
 
       public static class FormulaList

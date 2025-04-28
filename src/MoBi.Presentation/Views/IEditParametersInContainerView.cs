@@ -10,7 +10,7 @@ namespace MoBi.Presentation.Views
       void BindTo(IReadOnlyList<ParameterDTO> parameterDTOs);
       EditParameterMode EditMode { get; set; }
       bool ShowBuildMode { get; set; }
-      string ParentName { set; }
+      string ContainerPath { set; }
       void SetEditParameterView(IView view);
       void RefreshList();
       void Select(ParameterDTO parameterToSelect);

@@ -8,6 +8,7 @@ using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using MoBi.UI.Views;
 using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Presenters;
@@ -91,6 +92,12 @@ namespace MoBi.Presentation
       protected override void Because()
       {
          _defaultButtonsView.LoadProjectDefaultsClicked();
+      }
+
+      [Observation]
+      public void the_simulation_column_is_hidden()
+      {
+         _quantitySelectionPresenter.HideSimulationColumn.ShouldBeTrue();
       }
 
       [Observation]
