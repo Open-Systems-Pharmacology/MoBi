@@ -44,10 +44,6 @@ namespace MoBi.R.Bootstrap
          container.AddRegister(x => x.FromType<RRegister>());
          container.AddRegister(x => x.FromType<OSPSuite.Core.CoreRegister>());
          container.AddRegister(x => x.FromType<InfrastructureRegister>());
-         //container.AddRegister(x => x.FromType<BatchRegister>());
-         //var coreSerializerRegister = new CoreSerializerRegister();
-         //container.AddRegister(x => x.FromInstance(coreSerializerRegister));
-         //coreSerializerRegister.PerformMappingForSerializerIn(container);
 
          var serializerRegister = new SerializerRegister();
          container.AddRegister(x => x.FromInstance(serializerRegister));
@@ -66,7 +62,6 @@ namespace MoBi.R.Bootstrap
          var applicationConfiguration = container.Resolve<IApplicationConfiguration>();
          var dimensionFactory = container.Resolve<IDimensionFactory>();
          var persistor = container.Resolve<IDimensionFactoryPersistor>();
-         //Thread.Sleep(TimeSpan.FromSeconds(15));
          persistor.Load(dimensionFactory, applicationConfiguration.DimensionFilePath);
          dimensionFactory.AddDimension(Constants.Dimension.NO_DIMENSION);
 
