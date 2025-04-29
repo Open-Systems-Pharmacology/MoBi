@@ -44,6 +44,8 @@ namespace MoBi.R.Bootstrap
          container.AddRegister(x => x.FromType<RRegister>());
          container.AddRegister(x => x.FromType<OSPSuite.Core.CoreRegister>());
          container.AddRegister(x => x.FromType<InfrastructureRegister>());
+         //container.AddRegister(x => x.FromType<OSPSuite.R.RRegister>());
+         
 
          var serializerRegister = new SerializerRegister();
          container.AddRegister(x => x.FromInstance(serializerRegister));
