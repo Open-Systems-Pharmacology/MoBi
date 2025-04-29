@@ -363,6 +363,8 @@ namespace MoBi.UI.Views
          _colModule.Visible = _presenter.HasModules();
          _colBuildingBlock.Visible = _presenter.HasBuildingBlocks();
          _colNavigate.Visible = _colBuildingBlock.Visible;
+         if (_colModule.XtraColumn.VisibleIndex < _colBuildingBlock.XtraColumn.VisibleIndex) 
+            (_colModule.XtraColumn.VisibleIndex, _colBuildingBlock.XtraColumn.VisibleIndex) = (_colBuildingBlock.XtraColumn.VisibleIndex, _colModule.XtraColumn.VisibleIndex);
       }
 
       private void updateGroupVisibility()
