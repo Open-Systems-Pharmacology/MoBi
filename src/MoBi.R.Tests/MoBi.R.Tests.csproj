@@ -34,10 +34,17 @@
 	</ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MoBi.Core\MoBi.Core.csproj" />
     <ProjectReference Include="..\Mobi.R\MoBi.R.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Data\SampleProject.mbp3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\SampleProjectWith2Simulations.mbp3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="OSPSuite.Dimensions.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

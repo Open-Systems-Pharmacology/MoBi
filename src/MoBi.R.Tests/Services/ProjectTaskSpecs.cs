@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
 using MoBi.Core.Domain.Model;
 using MoBi.R.Services;
 using NUnit.Framework;
 using OSPSuite.BDDHelper.Extensions;
+using static MoBi.R.Tests.HelperForSpecs;
 
 namespace MoBi.R.Tests.Services
 {
-   internal abstract class concern_for_ProjectTaskSpecs : ContextForIntegration<IProjectTask>
+   internal abstract class concern_for_ProjectTask : ContextForIntegration<IProjectTask>
    {
       public override void GlobalContext()
       {
@@ -18,7 +17,7 @@ namespace MoBi.R.Tests.Services
       }
    }
 
-   internal class when_reading_module_names_from_project : concern_for_ProjectTaskSpecs
+   internal class when_reading_module_names_from_project : concern_for_ProjectTask
    {
       private IReadOnlyList<string> _moduleNames;
       private MoBiProject _project;
@@ -27,7 +26,7 @@ namespace MoBi.R.Tests.Services
       {
          base.Context();
 
-         var projectFile = CommonHelper.TestFileFullPath("SampleProject.mbp3");
+         var projectFile = TestFileFullPath("SampleProject.mbp3");
          _project = sut.GetProject(projectFile);
       }
 
@@ -46,7 +45,7 @@ namespace MoBi.R.Tests.Services
       }
    }
 
-   internal class when_reading_building_blocks_names_from_module : concern_for_ProjectTaskSpecs
+   internal class when_reading_building_blocks_names_from_module : concern_for_ProjectTask
    {
       private IReadOnlyList<string> _buildingBlockNames;
       private MoBiProject _project;
@@ -55,7 +54,7 @@ namespace MoBi.R.Tests.Services
       {
          base.Context();
 
-         var projectFile = CommonHelper.TestFileFullPath("SampleProject.mbp3");
+         var projectFile = TestFileFullPath("SampleProject.mbp3");
          _project = sut.GetProject(projectFile);
       }
 
@@ -76,7 +75,7 @@ namespace MoBi.R.Tests.Services
       }
    }
 
-   internal class when_reading_simulation_names_from_project : concern_for_ProjectTaskSpecs
+   internal class when_reading_simulation_names_from_project : concern_for_ProjectTask
    {
       private IReadOnlyList<string> _simulationNames;
       private MoBiProject _project;
@@ -85,7 +84,7 @@ namespace MoBi.R.Tests.Services
       {
          base.Context();
 
-         var projectFile = CommonHelper.TestFileFullPath("SampleProjectWith2Simulations.mbp3");
+         var projectFile = TestFileFullPath("SampleProjectWith2Simulations.mbp3");
          _project = sut.GetProject(projectFile);
       }
 
@@ -101,15 +100,6 @@ namespace MoBi.R.Tests.Services
          _simulationNames.Count.ShouldBeEqualTo(2);
          _simulationNames.ShouldContain("Simulation1");
          _simulationNames.ShouldContain("Simulation2");
-      }
-   }
-
-   internal static class CommonHelper
-   {
-      public static string TestFileFullPath(string fileName)
-      {
-         var dataFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data");
-         return Path.Combine(dataFolder, fileName);
       }
    }
 }
