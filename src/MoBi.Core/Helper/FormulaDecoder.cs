@@ -1,4 +1,3 @@
-using System;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -29,9 +28,9 @@ namespace MoBi.Core.Helper
    /// <typeparam name="T">The type that has a property of type IFormula that should be accessed</typeparam>
    public abstract class FormulaDecoder<T> : FormulaDecoder
    {
-      public new Func<T, IFormula> GetFormula { get; protected set; }
+      public abstract IFormula GetFormula(T objectWithFormula);
+      public abstract void SetFormula(IFormula formula, T objectWithFormula);
 
-      public Action<IFormula, T> SetFormula { get; protected set; }
    }
 
    /// <summary>
@@ -41,11 +40,9 @@ namespace MoBi.Core.Helper
    {
       public override string PropertyName { get; } = MoBiReflectionHelper.PropertyName<IParameter>(x => x.RHSFormula);
 
-      public RHSFormulaDecoder()
-      {
-         GetFormula = parameter => parameter.RHSFormula;
-         SetFormula = (formula, parameter) => parameter.RHSFormula = formula;
-      }
+      public override IFormula GetFormula(IParameter parameter) => parameter.RHSFormula;
+
+      public override void SetFormula(IFormula formula, IParameter parameter) => parameter.RHSFormula = formula;
    }
 
    /// <summary>
@@ -55,11 +52,9 @@ namespace MoBi.Core.Helper
    {
       public override string PropertyName { get; } = MoBiReflectionHelper.PropertyName<MoleculeBuilder>(x => x.DefaultStartFormula);
 
-      public DefaultStartFormulaDecoder()
-      {
-         GetFormula = builder => builder.DefaultStartFormula;
-         SetFormula = (formula, builder) => builder.DefaultStartFormula = formula;
-      }
+      public override IFormula GetFormula(MoleculeBuilder moleculeBuilder) => moleculeBuilder.DefaultStartFormula;
+
+      public override void SetFormula(IFormula formula, MoleculeBuilder moleculeBuilder) => moleculeBuilder.DefaultStartFormula = formula;
    }
 
    /// <summary>
@@ -69,10 +64,8 @@ namespace MoBi.Core.Helper
    {
       public override string PropertyName { get; } = MoBiReflectionHelper.PropertyName<IUsingFormula>(x => x.Formula);
 
-      public UsingFormulaDecoder()
-      {
-         GetFormula = usingFormula => usingFormula.Formula;
-         SetFormula = (formula, usingFormula) => usingFormula.Formula = formula;
-      }
+      public override IFormula GetFormula(IUsingFormula usingFormula) => usingFormula.Formula;
+
+      public override void SetFormula(IFormula formula, IUsingFormula usingFormula) => usingFormula.Formula = formula;
    }
 }
