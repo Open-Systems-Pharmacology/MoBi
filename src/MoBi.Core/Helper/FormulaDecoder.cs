@@ -29,7 +29,7 @@ namespace MoBi.Core.Helper
    /// <typeparam name="T">The type that has a property of type IFormula that should be accessed</typeparam>
    public abstract class FormulaDecoder<T> : FormulaDecoder
    {
-      public Func<T, IFormula> GetFormula { get; protected set; }
+      public new Func<T, IFormula> GetFormula { get; protected set; }
 
       public Action<IFormula, T> SetFormula { get; protected set; }
    }
