@@ -8,7 +8,6 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.SimModel;
 
 namespace MoBi.Core.Service
 {
@@ -40,9 +39,17 @@ namespace MoBi.Core.Service
          _project.AddSimulation(_simulation1);
          _oldPath = new ObjectPath("container", "originalName");
          _newPath = new ObjectPath("container", "new Container");
-         _buildingBlock = new IndividualBuildingBlock();
+         _buildingBlock = new IndividualBuildingBlock().WithName("Individual1");
          _simulation1.Configuration = new SimulationConfiguration { Individual = _buildingBlock };
-         _simulation1.AddEntitySources(new List<SimulationEntitySource> { new SimulationEntitySource("", "", "", "", new ObjectPath("container", "originalName", "subContainer", "entity")) });
+         _simulation1.AddEntitySources(new List<SimulationEntitySource>
+         {
+            // this source matches building block name, type and object path
+            new SimulationEntitySource("path1", _buildingBlock.Name, _buildingBlock.GetType().Name, "", new ObjectPath("container", "originalName", "subContainer", "entity")),
+            // this source does not match the building block type
+            new SimulationEntitySource("path2", _buildingBlock.Name, new ParameterValuesBuildingBlock().GetType().Name, "", new ObjectPath("container", "originalName", "subContainer", "entity")),
+            // this source does not match the building block name
+            new SimulationEntitySource("path3", "this is a different building block", _buildingBlock.GetType().Name, "", new ObjectPath("container", "originalName", "subContainer", "entity"))
+         });
       }
 
       protected override void Because()
@@ -53,8 +60,12 @@ namespace MoBi.Core.Service
       [Observation]
       public void the_entity_source_is_updated_with_a_new_path()
       {
-         _simulation1.EntitySources.Count.ShouldBeEqualTo(1);
-         _simulation1.EntitySources.First().SourcePath.ShouldBeEqualTo(new ObjectPath("container", "new Container", "subContainer", "entity"));
+         var simulation1EntitySources = _simulation1.EntitySources.ToArray();
+
+         simulation1EntitySources.Length.ShouldBeEqualTo(3);
+         simulation1EntitySources[0].SourcePath.ShouldBeEqualTo(new ObjectPath("container", "new Container", "subContainer", "entity"));
+         simulation1EntitySources[1].SourcePath.ShouldBeEqualTo(new ObjectPath("container", "originalName", "subContainer", "entity"));
+         simulation1EntitySources[2].SourcePath.ShouldBeEqualTo(new ObjectPath("container", "originalName", "subContainer", "entity"));
       }
    }
 
@@ -72,9 +83,15 @@ namespace MoBi.Core.Service
          _project.AddSimulation(_simulation1);
          _oldPath = new ObjectPath("container", "originalName", "an entity");
          _newPath = new ObjectPath("container", "originalName", "renamed entity");
-         _buildingBlock = new IndividualBuildingBlock();
+         _buildingBlock = new IndividualBuildingBlock().WithName("Individual1");
          _simulation1.Configuration = new SimulationConfiguration { Individual = _buildingBlock };
-         _simulation1.AddEntitySources(new List<SimulationEntitySource>{new SimulationEntitySource("", "", "", "", _oldPath)});
+         _simulation1.AddEntitySources(new List<SimulationEntitySource>
+         {
+            // this source matches building block name, type and object path
+            new SimulationEntitySource("path1", _buildingBlock.Name, _buildingBlock.GetType().Name, "", _oldPath),
+            // this source does not match the building block name
+            new SimulationEntitySource("path2", "this is a different building block", _buildingBlock.GetType().Name, "", _oldPath)
+         });
       }
 
       protected override void Because()
@@ -85,8 +102,10 @@ namespace MoBi.Core.Service
       [Observation]
       public void the_entity_source_is_updated_with_a_new_path()
       {
-         _simulation1.EntitySources.Count.ShouldBeEqualTo(1);
-         _simulation1.EntitySources.First().SourcePath.ShouldBeEqualTo(_newPath);
+         var simulation1EntitySources = _simulation1.EntitySources.ToArray();
+         simulation1EntitySources.Length.ShouldBeEqualTo(2);
+         simulation1EntitySources[0].SourcePath.ShouldBeEqualTo(_newPath);
+         simulation1EntitySources[1].SourcePath.ShouldBeEqualTo(_oldPath);
       }
    }
 
@@ -182,7 +201,7 @@ namespace MoBi.Core.Service
          _project.AddSimulation(_simulation2);
          _templateBuildingBlock = new IndividualBuildingBlock().WithName("Individual");
 
-         _simulation1.AddEntitySources(new List<SimulationEntitySource> {new SimulationEntitySource("", "buildingBlock", simulation1Configuration.Individual.GetType().Name, null, "")});
+         _simulation1.AddEntitySources(new List<SimulationEntitySource> { new SimulationEntitySource("", "buildingBlock", simulation1Configuration.Individual.GetType().Name, null, "") });
       }
 
       private static ModuleConfiguration createModuleConfiguration()

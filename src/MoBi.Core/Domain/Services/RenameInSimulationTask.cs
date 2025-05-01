@@ -68,9 +68,9 @@ namespace MoBi.Core.Domain.Services
          sources.Add(new SimulationEntitySource(simulationEntitySource.SimulationEntityPath, newBuildingBlockName, simulationEntitySource.BuildingBlockType, simulationEntitySource.ModuleName, simulationEntitySource.SourcePath));
       }
 
-      private bool buildingBlockIsTemplateMatchFor(SimulationEntitySource simulationEntitySource, string oldBuildingBlockName, IBuildingBlock buildingBlock)
+      private static bool buildingBlockIsTemplateMatchFor(SimulationEntitySource simulationEntitySource, string buildingBlockName, IBuildingBlock buildingBlock)
       {
-         return string.Equals(oldBuildingBlockName, simulationEntitySource.BuildingBlockName) &&
+         return string.Equals(buildingBlockName, simulationEntitySource.BuildingBlockName) &&
                 (buildingBlock.Module == null ? string.IsNullOrEmpty(simulationEntitySource.ModuleName) : string.Equals(buildingBlock.Module.Name, simulationEntitySource.ModuleName)) &&
                 string.Equals(buildingBlock.GetType().Name, simulationEntitySource.BuildingBlockType);
       }
@@ -102,25 +102,35 @@ namespace MoBi.Core.Domain.Services
 
       public void UpdateEntitySourcesForEntityRename(ObjectPath newPath, ObjectPath originalPath, IBuildingBlock buildingBlock)
       {
-         _projectRetriever.Current.Simulations.Where(x => x.Uses(buildingBlock)).Each(simulation => updateEntitySourcePathsInSimulation(newPath, originalPath, simulation));
+         _projectRetriever.Current.Simulations.Where(x => x.Uses(buildingBlock)).Each(simulation => updateEntitySourcePathsInSimulation(newPath, originalPath, simulation, buildingBlock));
       }
 
       public void UpdateEntitySourcesForContainerRename(ObjectPath newPath, ObjectPath originalPath, IBuildingBlock buildingBlock)
       {
-         _projectRetriever.Current.Simulations.Where(x => x.Uses(buildingBlock)).Each(simulation => updateEntitySourceContainerPathsInSimulation(newPath, originalPath, simulation));
+         _projectRetriever.Current.Simulations.Where(x => x.Uses(buildingBlock)).Each(simulation => updateEntitySourceContainerPathsInSimulation(newPath, originalPath, simulation, buildingBlock));
       }
 
-      private static void updateEntitySourcePathsInSimulation(ObjectPath newPath, ObjectPath originalPath, IMoBiSimulation simulation)
+      private static void updateEntitySourcePathsInSimulation(ObjectPath newPath, ObjectPath originalPath, IMoBiSimulation simulation, IBuildingBlock buildingBlock)
       {
-         simulation.EntitySources.Where(x => x.SourcePath.Equals(originalPath.PathAsString)).ToList().Each(source => updateEntitySourcePath(newPath, simulation, source));
+         simulation.EntitySources.Where(x => isTemplateMatchForEntity(originalPath, x, buildingBlock)).ToList().Each(source => updateEntitySourcePath(newPath, simulation, source));
       }
 
-      private static void updateEntitySourceContainerPathsInSimulation(ObjectPath newPath, ObjectPath originalPath, IMoBiSimulation simulation)
+      private static bool isTemplateMatchForEntity(ObjectPath originalPath, SimulationEntitySource entitySource, IBuildingBlock buildingBlock)
       {
-         simulation.EntitySources.Where(x => x.SourcePath.Contains(originalPath.PathAsString)).ToList().Each(source =>
+         return buildingBlockIsTemplateMatchFor(entitySource, buildingBlock.Name, buildingBlock) && entitySource.SourcePath.Equals(originalPath.PathAsString);
+      }
+
+      private static void updateEntitySourceContainerPathsInSimulation(ObjectPath newPath, ObjectPath originalPath, IMoBiSimulation simulation, IBuildingBlock buildingBlock)
+      {
+         simulation.EntitySources.Where(x => isTemplateMatchForContainer(originalPath, x, buildingBlock)).ToList().Each(source =>
          {
             updateEntitySourcePath(source.SourcePath.Replace(originalPath, newPath).ToObjectPath(), simulation, source);
          });
+      }
+
+      private static bool isTemplateMatchForContainer(ObjectPath originalPath, SimulationEntitySource entitySource, IBuildingBlock buildingBlock)
+      {
+         return buildingBlockIsTemplateMatchFor(entitySource, buildingBlock.Name, buildingBlock) && entitySource.SourcePath.Contains(originalPath.PathAsString);
       }
 
       private static void updateEntitySourcePath(ObjectPath newPath, IMoBiSimulation simulation, SimulationEntitySource source)
