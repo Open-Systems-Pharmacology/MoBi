@@ -40,7 +40,23 @@ namespace MoBi.Core.Domain.Services
          {
             simulationAndBuildingBlock.Simulation.HasChanged = true;
             simulationAndBuildingBlock.BuildingBlock.Name = templateBuildingBlock.Name;
+
+            // ToList needed because iteration modifies the enumerable
+            simulationAndBuildingBlock.Simulation.EntitySources.Where(x => buildingBlockIsTemplateMatchFor(x, oldName, templateBuildingBlock)).ToList()
+               .Each(x => updateBuildingBlockNameInEntitySources(templateBuildingBlock.Name, simulationAndBuildingBlock.Simulation.EntitySources, x));
          });
+      }
+
+      private void updateBuildingBlockNameInEntitySources(string newBuildingBlockName, SimulationEntitySources sources, SimulationEntitySource simulationEntitySource)
+      {
+         sources.Add(new SimulationEntitySource(simulationEntitySource.SimulationEntityPath, newBuildingBlockName, simulationEntitySource.BuildingBlockType, simulationEntitySource.ModuleName, simulationEntitySource.SourcePath));
+      }
+
+      private bool buildingBlockIsTemplateMatchFor(SimulationEntitySource simulationEntitySource, string oldBuildingBlockName, IBuildingBlock buildingBlock)
+      {
+         return string.Equals(oldBuildingBlockName, simulationEntitySource.BuildingBlockName) &&
+                (buildingBlock.Module == null ? string.IsNullOrEmpty(simulationEntitySource.ModuleName) : string.Equals(buildingBlock.Module.Name, simulationEntitySource.ModuleName)) && 
+                string.Equals(buildingBlock.GetType().Name, simulationEntitySource.BuildingBlockType);
       }
 
       private IEnumerable<(IMoBiSimulation Simulation, IBuildingBlock BuildingBlock)> getBuildingBlocksWithMatchingNameAndType(string nameToMatch, IBuildingBlock templBuildingBlock)
@@ -62,7 +78,16 @@ namespace MoBi.Core.Domain.Services
             // Here, the names do not match because the module has already been renamed
             simulation.Modules.Where(module => module.IsNamed(oldModuleName))
                .Each(module => renameModules(simulation, module, templateModule.Name));
+
+            // ToList needed because iteration modifies the enumerable
+            simulation.EntitySources.Where(x => string.Equals(x.ModuleName, oldModuleName)).ToList().
+               Each(x => updateModuleNameInEntitySources(templateModule.Name, simulation.EntitySources, x));
          });
+      }
+
+      private static void updateModuleNameInEntitySources(string newModuleName, SimulationEntitySources sources, SimulationEntitySource entitySource)
+      {
+         sources.Add(new SimulationEntitySource(entitySource.SimulationEntityPath, entitySource.BuildingBlockName, entitySource.BuildingBlockType, newModuleName, entitySource.SourcePath));
       }
 
       private void renameModules(IMoBiSimulation moBiSimulation, Module module, string newModuleName)
