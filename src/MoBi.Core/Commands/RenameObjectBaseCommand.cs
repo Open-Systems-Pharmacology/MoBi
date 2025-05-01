@@ -5,6 +5,7 @@ using MoBi.Core.Helper;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
 
 namespace MoBi.Core.Commands
@@ -47,17 +48,25 @@ namespace MoBi.Core.Commands
 
       protected virtual void RenameObjectBase(IMoBiContext context)
       {
-         OldName = _objectBase.Name;
-         _objectBase.Name = _newName;
          var task = context.Resolve<IRenameInSimulationTask>();
-
+         OldName = _objectBase.Name;
+         
          switch (_objectBase)
          {
             case IBuildingBlock buildingBlock:
+               _objectBase.Name = _newName;
                task.RenameInSimulationUsingTemplateBuildingBlock(OldName, buildingBlock);
                break;
             case Module module:
+               _objectBase.Name = _newName;
                task.RenameInSimulationUsingTemplateModule(OldName, module);
+               break;
+            case IEntity entity:
+               var entityPathResolver = context.Resolve<IEntityPathResolver>();
+               var originalEntityPath = entityPathResolver.ObjectPathFor(entity);
+               _objectBase.Name = _newName;
+               var newEntityPath = entityPathResolver.ObjectPathFor(entity);
+               task.UpdateEntitySourcesForEntityRename(newEntityPath, originalEntityPath, _buildingBlock);
                break;
          }
       }

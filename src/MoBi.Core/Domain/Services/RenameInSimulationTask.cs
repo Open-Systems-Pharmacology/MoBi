@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
@@ -7,6 +6,7 @@ using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility.Extensions;
+using static OSPSuite.Assets.Captions.ValueOrigins;
 
 namespace MoBi.Core.Domain.Services
 {
@@ -23,6 +23,22 @@ namespace MoBi.Core.Domain.Services
       ///    <paramref name="templateModule" /> name
       /// </summary>
       void RenameInSimulationUsingTemplateModule(string oldModuleName, Module templateModule);
+
+      /// <summary>
+      ///    Updates entity sources in all simulations when a container is renamed. Updates container, sub containers and all contained entities
+      /// </summary>
+      /// <param name="newPath">The new path of the container</param>
+      /// <param name="originalPath">The original path of the container</param>
+      /// <param name="buildingBlock">Only simulations using the source building block will be updated</param>
+      void UpdateEntitySourcesForContainerRename(ObjectPath newPath, ObjectPath originalPath, IBuildingBlock buildingBlock);
+
+      /// <summary>
+      ///    Updates an entity source in all simulations when an entity is renamed.
+      /// </summary>
+      /// <param name="newPath">The new path of the entity</param>
+      /// <param name="originalPath">The original path of the entity</param>
+      /// <param name="buildingBlock">Only simulations using the source building block will be updated</param>
+      void UpdateEntitySourcesForEntityRename(ObjectPath newPath, ObjectPath originalPath, IBuildingBlock buildingBlock);
    }
 
    public class RenameInSimulationTask : IRenameInSimulationTask
@@ -55,7 +71,7 @@ namespace MoBi.Core.Domain.Services
       private bool buildingBlockIsTemplateMatchFor(SimulationEntitySource simulationEntitySource, string oldBuildingBlockName, IBuildingBlock buildingBlock)
       {
          return string.Equals(oldBuildingBlockName, simulationEntitySource.BuildingBlockName) &&
-                (buildingBlock.Module == null ? string.IsNullOrEmpty(simulationEntitySource.ModuleName) : string.Equals(buildingBlock.Module.Name, simulationEntitySource.ModuleName)) && 
+                (buildingBlock.Module == null ? string.IsNullOrEmpty(simulationEntitySource.ModuleName) : string.Equals(buildingBlock.Module.Name, simulationEntitySource.ModuleName)) &&
                 string.Equals(buildingBlock.GetType().Name, simulationEntitySource.BuildingBlockType);
       }
 
@@ -80,9 +96,36 @@ namespace MoBi.Core.Domain.Services
                .Each(module => renameModules(simulation, module, templateModule.Name));
 
             // ToList needed because iteration modifies the enumerable
-            simulation.EntitySources.Where(x => string.Equals(x.ModuleName, oldModuleName)).ToList().
-               Each(x => updateModuleNameInEntitySources(templateModule.Name, simulation.EntitySources, x));
+            simulation.EntitySources.Where(x => string.Equals(x.ModuleName, oldModuleName)).ToList().Each(x => updateModuleNameInEntitySources(templateModule.Name, simulation.EntitySources, x));
          });
+      }
+
+      public void UpdateEntitySourcesForEntityRename(ObjectPath newPath, ObjectPath originalPath, IBuildingBlock buildingBlock)
+      {
+         _projectRetriever.Current.Simulations.Where(x => x.Uses(buildingBlock)).Each(simulation => updateEntitySourcePathsInSimulation(newPath, originalPath, simulation));
+      }
+
+      public void UpdateEntitySourcesForContainerRename(ObjectPath newPath, ObjectPath originalPath, IBuildingBlock buildingBlock)
+      {
+         _projectRetriever.Current.Simulations.Where(x => x.Uses(buildingBlock)).Each(simulation => updateEntitySourceContainerPathsInSimulation(newPath, originalPath, simulation));
+      }
+
+      private static void updateEntitySourcePathsInSimulation(ObjectPath newPath, ObjectPath originalPath, IMoBiSimulation simulation)
+      {
+         simulation.EntitySources.Where(x => x.SourcePath.Equals(originalPath.PathAsString)).ToList().Each(source => updateEntitySourcePath(newPath, simulation, source));
+      }
+
+      private static void updateEntitySourceContainerPathsInSimulation(ObjectPath newPath, ObjectPath originalPath, IMoBiSimulation simulation)
+      {
+         simulation.EntitySources.Where(x => x.SourcePath.Contains(originalPath.PathAsString)).ToList().Each(source =>
+         {
+            updateEntitySourcePath(source.SourcePath.Replace(originalPath, newPath).ToObjectPath(), simulation, source);
+         });
+      }
+
+      private static void updateEntitySourcePath(ObjectPath newPath, IMoBiSimulation simulation, SimulationEntitySource source)
+      {
+         simulation.EntitySources.Add(new SimulationEntitySource(source.SimulationEntityPath, source.BuildingBlockName, source.BuildingBlockType, source.ModuleName, newPath.PathAsString));
       }
 
       private static void updateModuleNameInEntitySources(string newModuleName, SimulationEntitySources sources, SimulationEntitySource entitySource)

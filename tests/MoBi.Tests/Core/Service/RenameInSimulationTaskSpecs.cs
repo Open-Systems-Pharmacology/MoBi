@@ -8,6 +8,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.SimModel;
 
 namespace MoBi.Core.Service
 {
@@ -22,6 +23,70 @@ namespace MoBi.Core.Service
          _projectRetriever = A.Fake<IMoBiProjectRetriever>();
          A.CallTo(() => _projectRetriever.Current).Returns(_project);
          sut = new RenameInSimulationTask(_projectRetriever);
+      }
+   }
+
+   public class When_renaming_a_container_that_is_referenced_by_a_simulation : concern_for_RenameInSimulationTask
+   {
+      private ObjectPath _oldPath;
+      private ObjectPath _newPath;
+      private IMoBiSimulation _simulation1;
+      private IndividualBuildingBlock _buildingBlock;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation1 = new MoBiSimulation();
+         _project.AddSimulation(_simulation1);
+         _oldPath = new ObjectPath("container", "originalName");
+         _newPath = new ObjectPath("container", "new Container");
+         _buildingBlock = new IndividualBuildingBlock();
+         _simulation1.Configuration = new SimulationConfiguration { Individual = _buildingBlock };
+         _simulation1.AddEntitySources(new List<SimulationEntitySource> { new SimulationEntitySource("", "", "", "", new ObjectPath("container", "originalName", "subContainer", "entity")) });
+      }
+
+      protected override void Because()
+      {
+         sut.UpdateEntitySourcesForContainerRename(_newPath, _oldPath, _buildingBlock);
+      }
+
+      [Observation]
+      public void the_entity_source_is_updated_with_a_new_path()
+      {
+         _simulation1.EntitySources.Count.ShouldBeEqualTo(1);
+         _simulation1.EntitySources.First().SourcePath.ShouldBeEqualTo(new ObjectPath("container", "new Container", "subContainer", "entity"));
+      }
+   }
+
+   public class When_renaming_an_entity_that_is_referenced_by_a_simulation : concern_for_RenameInSimulationTask
+   {
+      private ObjectPath _oldPath;
+      private ObjectPath _newPath;
+      private IMoBiSimulation _simulation1;
+      private IndividualBuildingBlock _buildingBlock;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation1 = new MoBiSimulation();
+         _project.AddSimulation(_simulation1);
+         _oldPath = new ObjectPath("container", "originalName", "an entity");
+         _newPath = new ObjectPath("container", "originalName", "renamed entity");
+         _buildingBlock = new IndividualBuildingBlock();
+         _simulation1.Configuration = new SimulationConfiguration { Individual = _buildingBlock };
+         _simulation1.AddEntitySources(new List<SimulationEntitySource>{new SimulationEntitySource("", "", "", "", _oldPath)});
+      }
+
+      protected override void Because()
+      {
+         sut.UpdateEntitySourcesForEntityRename(_newPath, _oldPath, _buildingBlock);
+      }
+
+      [Observation]
+      public void the_entity_source_is_updated_with_a_new_path()
+      {
+         _simulation1.EntitySources.Count.ShouldBeEqualTo(1);
+         _simulation1.EntitySources.First().SourcePath.ShouldBeEqualTo(_newPath);
       }
    }
 
