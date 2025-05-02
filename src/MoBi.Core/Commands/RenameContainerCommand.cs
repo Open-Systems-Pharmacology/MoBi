@@ -41,17 +41,17 @@ namespace MoBi.Core.Commands
       protected override void ExecuteWith(IMoBiContext context)
       {
          base.ExecuteWith(context);
-         var task = context.Resolve<IRenameInSimulationTask>();
          var entityPathResolver = context.Resolve<IEntityPathResolver>();
+         var entitySourceUpdater = context.Resolve<ISimulationEntitySourceUpdater>();
 
          //perform the rename
          var originalContainerPath = entityPathResolver.ObjectPathFor(_container);
          _oldName = _container.Name;
          _container.Name = _newName;
          var newContainerPath = entityPathResolver.ObjectPathFor(_container);
-         
+
          // update entity sources
-         task.UpdateEntitySourcesForContainerRename(newContainerPath, originalContainerPath, _buildingBlock);
+         entitySourceUpdater.UpdateEntitySourcesForContainerRename(newContainerPath, originalContainerPath, _buildingBlock);
 
          context.PublishEvent(new RenamedEvent(_container));
       }

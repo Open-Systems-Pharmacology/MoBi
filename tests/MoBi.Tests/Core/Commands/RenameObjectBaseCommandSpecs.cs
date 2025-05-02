@@ -12,13 +12,18 @@ namespace MoBi.Core.Commands
    public abstract class concern_for_RenameObjectBaseCommand : ContextSpecification<RenameObjectBaseCommand>
    {
       protected IMoBiContext _context;
-      protected IRenameInSimulationTask _renamingTask;
+      protected ISimulationEntitySourceUpdater _simulationEntitySourceUpdater;
+      protected IRenameInSimulationTask _renameInSimulationTask;
 
       protected override void Context()
       {
          _context = A.Fake<IMoBiContext>();
-         _renamingTask = A.Fake<IRenameInSimulationTask>();
-         A.CallTo(() => _context.Resolve<IRenameInSimulationTask>()).Returns(_renamingTask);
+         _simulationEntitySourceUpdater = A.Fake<ISimulationEntitySourceUpdater>();
+         _renameInSimulationTask = A.Fake<IRenameInSimulationTask>();
+
+         A.CallTo(() => _context.Resolve<ISimulationEntitySourceUpdater>()).Returns(_simulationEntitySourceUpdater);
+         A.CallTo(() => _context.Resolve<IRenameInSimulationTask>()).Returns(_renameInSimulationTask);
+
          sut = new RenameObjectBaseCommand(GetObject(), "newName", GetBuildingBlock());
       }
 
@@ -47,7 +52,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void the_rename_in_simulation_task_is_used_to_update_source_paths()
       {
-         A.CallTo(() => _renamingTask.UpdateEntitySourcesForEntityRename(A<ObjectPath>.That.Matches(x => x.PathAsString.Equals("newName")), A<ObjectPath>.That.Matches(x => x.PathAsString.Equals("originalName")), _spatialStructure)).MustHaveHappened();
+         A.CallTo(() => _simulationEntitySourceUpdater.UpdateEntitySourcesForEntityRename(A<ObjectPath>.That.Matches(x => x.PathAsString.Equals("newName")), A<ObjectPath>.That.Matches(x => x.PathAsString.Equals("originalName")), _spatialStructure)).MustHaveHappened();
       }
 
       protected override IBuildingBlock GetBuildingBlock() => _spatialStructure;
@@ -74,7 +79,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void the_renaming_task_is_used_to_rename_the_module()
       {
-         A.CallTo(() => _renamingTask.RenameInSimulationUsingTemplateBuildingBlock("oldName", _buildingBlock)).MustHaveHappened();
+         A.CallTo(() => _renameInSimulationTask.RenameInSimulationUsingTemplateBuildingBlock("oldName", _buildingBlock)).MustHaveHappened();
       }
    }
 
@@ -97,7 +102,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void the_renaming_task_is_used_to_rename_the_module()
       {
-         A.CallTo(() => _renamingTask.RenameInSimulationUsingTemplateModule("oldName", _module)).MustHaveHappened();
+         A.CallTo(() => _renameInSimulationTask.RenameInSimulationUsingTemplateModule("oldName", _module)).MustHaveHappened();
       }
    }
 }

@@ -48,25 +48,26 @@ namespace MoBi.Core.Commands
 
       protected virtual void RenameObjectBase(IMoBiContext context)
       {
-         var task = context.Resolve<IRenameInSimulationTask>();
+         var renameInSimulationTask = context.Resolve<IRenameInSimulationTask>();
          OldName = _objectBase.Name;
          
          switch (_objectBase)
          {
             case IBuildingBlock buildingBlock:
                _objectBase.Name = _newName;
-               task.RenameInSimulationUsingTemplateBuildingBlock(OldName, buildingBlock);
+               renameInSimulationTask.RenameInSimulationUsingTemplateBuildingBlock(OldName, buildingBlock);
                break;
             case Module module:
                _objectBase.Name = _newName;
-               task.RenameInSimulationUsingTemplateModule(OldName, module);
+               renameInSimulationTask.RenameInSimulationUsingTemplateModule(OldName, module);
                break;
             case IEntity entity:
+               var simulationEntitySourceUpdater = context.Resolve<ISimulationEntitySourceUpdater>();
                var entityPathResolver = context.Resolve<IEntityPathResolver>();
                var originalEntityPath = entityPathResolver.ObjectPathFor(entity);
                _objectBase.Name = _newName;
                var newEntityPath = entityPathResolver.ObjectPathFor(entity);
-               task.UpdateEntitySourcesForEntityRename(newEntityPath, originalEntityPath, _buildingBlock);
+               simulationEntitySourceUpdater.UpdateEntitySourcesForEntityRename(newEntityPath, originalEntityPath, _buildingBlock);
                break;
          }
       }

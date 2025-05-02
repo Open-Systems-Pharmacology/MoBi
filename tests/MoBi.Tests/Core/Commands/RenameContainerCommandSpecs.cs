@@ -27,7 +27,7 @@ namespace MoBi.Core.Commands
       protected Container _child3;
       protected IMoBiContext _context;
       protected Container _similarContainer;
-      protected IRenameInSimulationTask _renameInSimulationTask;
+      protected ISimulationEntitySourceUpdater _simulationEntitySourceUpdater;
       private IEntityPathResolver _entityPathResolver;
       protected ObjectPath _originalPath;
       protected ObjectPath _newPath;
@@ -71,8 +71,8 @@ namespace MoBi.Core.Commands
          _context = A.Fake<IMoBiContext>();
          A.CallTo(() => _context.ObjectPathFactory).Returns(new ObjectPathFactoryForSpecs());
 
-         _renameInSimulationTask = A.Fake<IRenameInSimulationTask>();
-         A.CallTo(() => _context.Resolve<IRenameInSimulationTask>()).Returns(_renameInSimulationTask);
+         _simulationEntitySourceUpdater = A.Fake<ISimulationEntitySourceUpdater>();
+         A.CallTo(() => _context.Resolve<ISimulationEntitySourceUpdater>()).Returns(_simulationEntitySourceUpdater);
 
          _entityPathResolver = A.Fake<IEntityPathResolver>();
          A.CallTo(() => _context.Resolve<IEntityPathResolver>()).Returns(_entityPathResolver);
@@ -109,7 +109,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void should_update_simulation_source_references()
       {
-         A.CallTo(() => _renameInSimulationTask.UpdateEntitySourcesForContainerRename(_newPath, _originalPath, _spatialStructure)).MustHaveHappened();
+         A.CallTo(() => _simulationEntitySourceUpdater.UpdateEntitySourcesForContainerRename(_newPath, _originalPath, _spatialStructure)).MustHaveHappened();
       }
    }
 
