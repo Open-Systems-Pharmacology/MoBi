@@ -26,6 +26,38 @@ namespace MoBi.Core.Service
       }
    }
 
+   public class When_updating_sources_for_changes_in_path_and_value_entities : concern_for_SimulationEntitySourceUpdater
+   {
+      private IMoBiSimulation _simulation;
+      private ObjectPath _objectPath;
+      private ParameterValuesBuildingBlock _parameterValuesBuildingBlock;
+
+      protected override void Context()
+      {
+         base.Context();
+         _parameterValuesBuildingBlock = new ParameterValuesBuildingBlock().WithName("PVBB");
+         _simulation = new MoBiSimulation();
+         _objectPath = new ObjectPath("Root", "Container", "Parameter");
+         _simulation.AddEntitySources(new []
+         {
+            new SimulationEntitySource("Root|Container|Parameter", "someBuildingBlock", "someType", null, "originalPath")
+         });
+      }
+
+      protected override void Because()
+      {
+         sut.UpdateSourcesForNewPathAndValueEntity(_parameterValuesBuildingBlock, _objectPath, _simulation);
+      }
+
+      [Observation]
+      public void the_existing_entity_source_is_updated()
+      {
+         _simulation.EntitySources.First().SourcePath.ShouldBeEqualTo(_objectPath);
+         _simulation.EntitySources.First().BuildingBlockName.ShouldBeEqualTo(_parameterValuesBuildingBlock.Name);
+         _simulation.EntitySources.First().BuildingBlockType.ShouldBeEqualTo(_parameterValuesBuildingBlock.GetType().Name);
+      }
+   }
+
    public class When_renaming_a_container_that_is_referenced_by_a_simulation : concern_for_SimulationEntitySourceUpdater
    {
       private ObjectPath _oldPath;

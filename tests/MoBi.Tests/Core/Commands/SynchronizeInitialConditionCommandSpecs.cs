@@ -6,6 +6,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.SimModel;
 
 namespace MoBi.Core.Commands
 {
@@ -18,6 +19,7 @@ namespace MoBi.Core.Commands
       private Unit _displayUnit1;
       protected Unit _displayUnit2;
       protected IMoBiContext _context;
+      private IMoBiSimulation _simulation;
 
       protected override void Context()
       {
@@ -25,6 +27,7 @@ namespace MoBi.Core.Commands
          _dimension2 = A.Fake<IDimension>();
          _displayUnit1 = A.Fake<Unit>();
          _displayUnit2 = A.Fake<Unit>();
+         _simulation = new MoBiSimulation();
 
          _moleculeAmount = new MoleculeAmount()
             .WithFormula(new ConstantFormula(10))
@@ -38,7 +41,7 @@ namespace MoBi.Core.Commands
          _moleculeAmount.ValueOrigin.Description = "Hello";
 
          _initialCondition = new InitialCondition();
-         sut = new SynchronizeInitialConditionCommand(_moleculeAmount, _initialCondition, new InitialConditionsBuildingBlock());
+         sut = new SynchronizeInitialConditionCommand(_moleculeAmount, _initialCondition, new InitialConditionsBuildingBlock(), _simulation);
 
          _context = A.Fake<IMoBiContext>();
       }

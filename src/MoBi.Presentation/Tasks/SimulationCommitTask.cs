@@ -90,12 +90,12 @@ namespace MoBi.Presentation.Tasks
          if (lastModuleConfiguration.SelectedInitialConditions == null)
             macroCommand.AddRange(addNewInitialConditionsFromSimulationChanges(simulationWithChanges, lastModuleConfiguration, moleculeChanges));
          else
-            macroCommand.AddRange(updateInitialConditionsFromSimulationChanges(lastModuleConfiguration, moleculeChanges));
+            macroCommand.AddRange(updateInitialConditionsFromSimulationChanges(lastModuleConfiguration, moleculeChanges, simulationWithChanges));
 
          if (lastModuleConfiguration.SelectedParameterValues == null)
             macroCommand.AddRange(addNewParameterValuesFromSimulationChanges(simulationWithChanges, lastModuleConfiguration, parameterChanges));
          else
-            macroCommand.AddRange(updateParameterValuesFromSimulationChanges(lastModuleConfiguration, parameterChanges));
+            macroCommand.AddRange(updateParameterValuesFromSimulationChanges(lastModuleConfiguration, parameterChanges, simulationWithChanges));
 
          macroCommand.Add(new ClearOriginalQuantitiesTrackerCommand(simulationWithChanges));
 
@@ -116,10 +116,10 @@ namespace MoBi.Presentation.Tasks
       ///    <paramref name="moduleConfiguration" /> and it must  have SelectedParameterValues as that building block will
       ///    receive the updates. The template module and building block is resolved from the project by name
       /// </summary>
-      private IEnumerable<IMoBiCommand> updateParameterValuesFromSimulationChanges(ModuleConfiguration moduleConfiguration, IReadOnlyList<(ObjectPath quantityPath, IParameter quantity)> parameterChanges)
+      private IEnumerable<IMoBiCommand> updateParameterValuesFromSimulationChanges(ModuleConfiguration moduleConfiguration, IReadOnlyList<(ObjectPath quantityPath, IParameter quantity)> parameterChanges, IMoBiSimulation simulation)
       {
          var templateBuildingBlock = _templateResolverTask.TemplateBuildingBlockFor(moduleConfiguration.SelectedParameterValues);
-         return parameterChanges.Select(x => synchronizeParameterValueCommand(x.quantity, x.quantityPath, templateBuildingBlock)).Concat(parameterChanges.Select(x => synchronizeParameterValueCommand(x.quantity, x.quantityPath, moduleConfiguration.SelectedParameterValues).AsHidden()));
+         return parameterChanges.Select(x => synchronizeParameterValueCommand(x.quantity, x.quantityPath, templateBuildingBlock, simulation)).Concat(parameterChanges.Select(x => synchronizeParameterValueCommand(x.quantity, x.quantityPath, moduleConfiguration.SelectedParameterValues, simulation).AsHidden()));
       }
 
       /// <summary>
@@ -128,11 +128,11 @@ namespace MoBi.Presentation.Tasks
       ///    by    <paramref name="moduleConfiguration" /> and it must have SelectedInitialConditions as that building block will
       ///    receive the updates. The template module and building block is resolved from the project by name
       /// </summary>
-      private IEnumerable<IMoBiCommand> updateInitialConditionsFromSimulationChanges(ModuleConfiguration moduleConfiguration, IReadOnlyList<(ObjectPath quantityPath, MoleculeAmount quantity)> moleculeChanges)
+      private IEnumerable<IMoBiCommand> updateInitialConditionsFromSimulationChanges(ModuleConfiguration moduleConfiguration, IReadOnlyList<(ObjectPath quantityPath, MoleculeAmount quantity)> moleculeChanges, IMoBiSimulation simulation)
       {
          var templateBuildingBlock = _templateResolverTask.TemplateBuildingBlockFor(moduleConfiguration.SelectedInitialConditions);
 
-         return moleculeChanges.Select(x => synchronizeInitialConditionCommand(x.quantity, x.quantityPath, templateBuildingBlock)).Concat(moleculeChanges.Select(x => synchronizeInitialConditionCommand(x.quantity, x.quantityPath, moduleConfiguration.SelectedInitialConditions).AsHidden()));
+         return moleculeChanges.Select(x => synchronizeInitialConditionCommand(x.quantity, x.quantityPath, templateBuildingBlock, simulation)).Concat(moleculeChanges.Select(x => synchronizeInitialConditionCommand(x.quantity, x.quantityPath, moduleConfiguration.SelectedInitialConditions, simulation).AsHidden()));
       }
 
       /// <summary>
@@ -214,24 +214,24 @@ namespace MoBi.Presentation.Tasks
          return _parameterValuesCreator.CreateParameterValue(parameterPath, parameter);
       }
 
-      private IMoBiCommand synchronizeInitialConditionCommand(MoleculeAmount moleculeAmount, ObjectPath quantityPath, InitialConditionsBuildingBlock initialConditionsBuildingBlock)
+      private IMoBiCommand synchronizeInitialConditionCommand(MoleculeAmount moleculeAmount, ObjectPath quantityPath, InitialConditionsBuildingBlock initialConditionsBuildingBlock, IMoBiSimulation simulation)
       {
          var initialConditionToUpdate = initialConditionsBuildingBlock[quantityPath];
 
          if (initialConditionToUpdate != null)
-            return new SynchronizeInitialConditionCommand(moleculeAmount, initialConditionToUpdate, initialConditionsBuildingBlock);
+            return new SynchronizeInitialConditionCommand(moleculeAmount, initialConditionToUpdate, initialConditionsBuildingBlock, simulation);
 
-         return new AddInitialConditionFromQuantityInSimulationCommand(moleculeAmount, initialConditionsBuildingBlock);
+         return new AddInitialConditionFromQuantityInSimulationCommand(moleculeAmount, initialConditionsBuildingBlock, simulation);
       }
 
-      private IMoBiCommand synchronizeParameterValueCommand(IParameter parameter, ObjectPath quantityPath, ParameterValuesBuildingBlock parameterValuesBuildingBlock)
+      private IMoBiCommand synchronizeParameterValueCommand(IParameter parameter, ObjectPath quantityPath, ParameterValuesBuildingBlock parameterValuesBuildingBlock, IMoBiSimulation simulation)
       {
-         var parameterToUpdate = parameterValuesBuildingBlock[quantityPath];
+         var parameterValueToUpdate = parameterValuesBuildingBlock[quantityPath];
 
-         if (parameterToUpdate != null)
-            return new SynchronizeParameterValueCommand(parameter, parameterToUpdate, parameterValuesBuildingBlock);
+         if (parameterValueToUpdate != null)
+            return new SynchronizeParameterValueCommand(parameter, parameterValueToUpdate, parameterValuesBuildingBlock, simulation);
 
-         return new AddParameterValueFromQuantityInSimulationCommand(parameter, parameterValuesBuildingBlock);
+         return new AddParameterValueFromQuantityInSimulationCommand(parameter, parameterValuesBuildingBlock, simulation);
       }
    }
 }

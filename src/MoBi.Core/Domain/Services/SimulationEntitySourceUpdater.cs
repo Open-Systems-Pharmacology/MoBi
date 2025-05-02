@@ -20,6 +20,8 @@ namespace MoBi.Core.Domain.Services
       void UpdateEntitySourcesForModuleRename(string oldModuleName, string newModuleName, IMoBiSimulation simulation);
       
       void UpdateEntitySourcesForBuildingBlockRename(string oldName, IBuildingBlock renamedBuildingBlock, IMoBiSimulation simulation);
+
+      void UpdateSourcesForNewPathAndValueEntity<TPathAndValueEntity>(PathAndValueEntityBuildingBlock<TPathAndValueEntity> buildingBlock, ObjectPath objectPath, IMoBiSimulation simulation) where TPathAndValueEntity : PathAndValueEntity;
    }
 
    public class SimulationEntitySourceUpdater : ISimulationEntitySourceUpdater
@@ -56,8 +58,19 @@ namespace MoBi.Core.Domain.Services
             .Each(x => updateBuildingBlockNameInEntitySources(renamedBuildingBlock.Name, simulation.EntitySources, x));
       }
 
-      private void updateBuildingBlockNameInEntitySources(string newBuildingBlockName, SimulationEntitySources sources, SimulationEntitySource simulationEntitySource) => 
-         sources.Add(new SimulationEntitySource(simulationEntitySource.SimulationEntityPath, newBuildingBlockName, simulationEntitySource.BuildingBlockType, simulationEntitySource.ModuleName, simulationEntitySource.SourcePath));
+      public void UpdateSourcesForNewPathAndValueEntity<TPathAndValueEntity>(PathAndValueEntityBuildingBlock<TPathAndValueEntity> buildingBlock, ObjectPath objectPath, IMoBiSimulation simulation) where TPathAndValueEntity : PathAndValueEntity
+      {
+            simulation.EntitySources.Where(x => x.SimulationEntityPath.Equals(objectPath.PathAsString)).ToList().Each(source =>
+               updateBuildingBlockInEntitySources(buildingBlock.Module?.Name, buildingBlock.Name, simulation.EntitySources, source.SimulationEntityPath, buildingBlock.GetType().Name, objectPath));
+      }
+
+      private static void updateBuildingBlockNameInEntitySources(string newBuildingBlockName, SimulationEntitySources sources, SimulationEntitySource simulationEntitySource) => 
+         updateBuildingBlockInEntitySources(simulationEntitySource.ModuleName, newBuildingBlockName, sources, simulationEntitySource.SimulationEntityPath, simulationEntitySource.BuildingBlockType, simulationEntitySource.SourcePath);
+
+      private static void updateBuildingBlockInEntitySources(string moduleName, string newBuildingBlockName, SimulationEntitySources sources, string simulationEntityPath, string buildingBlockType, string sourcePath)
+      {
+         sources.Add(new SimulationEntitySource(simulationEntityPath, newBuildingBlockName, buildingBlockType, moduleName, sourcePath));
+      }
 
       private static bool buildingBlockIsTemplateMatchFor(SimulationEntitySource simulationEntitySource, string buildingBlockName, IBuildingBlock buildingBlock)
       {
@@ -81,7 +94,7 @@ namespace MoBi.Core.Domain.Services
       private static void updateEntitySourcePath(ObjectPath newPath, IMoBiSimulation simulation, SimulationEntitySource source) => 
          simulation.EntitySources.Add(new SimulationEntitySource(source.SimulationEntityPath, source.BuildingBlockName, source.BuildingBlockType, source.ModuleName, newPath.PathAsString));
 
-      private void updateModuleNameInEntitySources(string newModuleName, SimulationEntitySources sources, SimulationEntitySource entitySource) => 
+      private static void updateModuleNameInEntitySources(string newModuleName, SimulationEntitySources sources, SimulationEntitySource entitySource) => 
          sources.Add(new SimulationEntitySource(entitySource.SimulationEntityPath, entitySource.BuildingBlockName, entitySource.BuildingBlockType, newModuleName, entitySource.SourcePath));
    }
 }
