@@ -5,8 +5,10 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Infrastructure;
+using OSPSuite.Infrastructure.Container.Autofac;
 using OSPSuite.Infrastructure.Container.Castle;
 using OSPSuite.Utility.Container;
+using System.Threading;
 using CoreRegister = MoBi.Core.CoreRegister;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 
@@ -27,29 +29,31 @@ namespace MoBi.R.Bootstrap
 
       private IContainer performInitialization(ApiConfig apiConfig)
       {
-         var container = new CastleWindsorContainer();
-         container.WindsorContainer.AddFacility<TypedFactoryFacility>();
-         container.RegisterImplementationOf((IContainer)container);
-         registerDependencies(container);
+         var container = new AutofacContainer();
+         var serializerRegister = new SerializerRegister();
+
+         using (container.OptimizeDependencyResolution())
+         {
+
+            container.RegisterImplementationOf((IContainer)container);
+            container.RegisterImplementationOf(new SynchronizationContext());
+            container.AddRegister(x => x.FromType<OSPSuite.R.RRegister>());
+            container.AddRegister(x => x.FromType<CoreRegister>());
+            container.AddRegister(x => x.FromType<OSPSuite.Core.CoreRegister>());
+            container.AddRegister(x => x.FromType<InfrastructureRegister>());
+            container.AddRegister(x => x.FromType<RRegister>());
+            container.AddRegister(x => x.FromInstance(serializerRegister));
+         }
+
+
+         serializerRegister.PerformMappingForSerializerIn(container);
+         
+         //container.WindsorContainer.AddFacility<TypedFactoryFacility>();
 
          initializeConfiguration(container, apiConfig);
          initializeDimensions(container);
 
          return container;
-      }
-
-      private static void registerDependencies(CastleWindsorContainer container)
-      {
-         container.AddRegister(x => x.FromType<CoreRegister>());
-         container.AddRegister(x => x.FromType<RRegister>());
-         container.AddRegister(x => x.FromType<OSPSuite.Core.CoreRegister>());
-         container.AddRegister(x => x.FromType<InfrastructureRegister>());
-         //container.AddRegister(x => x.FromType<OSPSuite.R.RRegister>());
-         
-
-         var serializerRegister = new SerializerRegister();
-         container.AddRegister(x => x.FromInstance(serializerRegister));
-         serializerRegister.PerformMappingForSerializerIn(container);
       }
 
       private void initializeConfiguration(IContainer container, ApiConfig apiConfig)

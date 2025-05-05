@@ -12,6 +12,7 @@ namespace MoBi.R.Services
       IReadOnlyList<string> GetModuleNames(MoBiProject moBiProject);
       IReadOnlyList<string> GetSimulationNames(MoBiProject moBiProject);
       IReadOnlyList<string> GetBuildingBlocksNamesFromModuleName(string moduleName);
+      IReadOnlyList<IMoBiSimulation> GetSimulations();
    }
 
    public class ProjectTask : IProjectTask
@@ -46,5 +47,8 @@ namespace MoBi.R.Services
 
       public IReadOnlyList<string> GetSimulationNames(MoBiProject moBiProject) =>
          moBiProject.Simulations.Select(x => x.Name).ToList();
+
+      public IReadOnlyList<IMoBiSimulation> GetSimulations() =>
+         _moBiContext.CurrentProject.Simulations;
    }
 }

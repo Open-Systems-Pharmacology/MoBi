@@ -1,21 +1,19 @@
-﻿using System.Data;
-using System.Linq;
-using System.Threading;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using FakeItEasy;
+using MoBi.Core.Domain.Model;
 using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Domain.Populations;
 using OSPSuite.Core.Domain.Services;
-using static MoBi.R.Tests.DomainHelperForSpecs;
-using OSPSuite.R.Domain;
 using OSPSuite.R.Services;
 using OSPSuite.SimModel;
 using OSPSuite.Utility.Events;
-using SimulationRunOptions = OSPSuite.R.Domain.SimulationRunOptions;
+using static MoBi.R.Tests.DomainHelperForSpecs;
+using SimulationRunner = OSPSuite.R.Services.SimulationRunner;
+using IProjectTask = MoBi.R.Services.IProjectTask;
 
 namespace MoBi.R.Tests.Services
 {
@@ -27,12 +25,7 @@ namespace MoBi.R.Tests.Services
       protected IPopulationRunner _populationRunner;
       protected IPopulationTask _populationTask;
       protected IProgressManager _progressManager;
-
-      public override void GlobalContext()
-      {
-         base.GlobalContext();
-         sut = Api.GetSimulationRunner();
-      }
+      protected IProjectTask _projectTask;
 
       protected override void Context()
       {
@@ -42,11 +35,10 @@ namespace MoBi.R.Tests.Services
          _populationTask = A.Fake<IPopulationTask>();
          _progressManager = A.Fake<IProgressManager>();
          _simulationResultsCreator = new SimulationResultsCreator();
+         _projectTask = Api.GetProjectTask();
 
-
-         //sut = Api.GetSimulationRunner();
-         //sut = new SimulationRunner(_simModelManager, _populationRunner, _simulationResultsCreator, _simulationPersitableUpdater, _populationTask,
-           // _progressManager);
+         sut = new SimulationRunner(_simModelManager, _populationRunner, _simulationResultsCreator, _simulationPersitableUpdater, _populationTask,
+            _progressManager);
       }
    }
 
@@ -81,6 +73,32 @@ namespace MoBi.R.Tests.Services
       {
          _results.AllIndividualResults.Count.ShouldBeEqualTo(1);
          _results.AllIndividualResults.ElementAt(0).AllValues.Count.ShouldBeEqualTo(1);
+      }
+   }
+
+   public class When_running_a_simulation_from_mobi_project : concern_for_SimulationRunner
+   {
+      private IMoBiSimulation _simulation;
+      private SimulationResults _results;
+      private SimulationRunResults _simulationRunResults;
+
+      protected override void Context()
+      {
+         base.Context();
+         var projectFile = TestFileFullPath("SampleProjectWith2Simulations.mbp3");
+         _projectTask.GetProject(projectFile);
+         _simulation = _projectTask.GetSimulations().FirstOrDefault();
+      }
+
+      protected override void Because()
+      {
+         _results = sut.Run(new SimulationRunArgs { Simulation = _simulation });
+      }
+
+      [Observation]
+      public void should_return_results_for_the_execution_of_the_simulation()
+      {
+         _results.ShouldNotBeNull();
       }
    }
 }

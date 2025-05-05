@@ -1,6 +1,7 @@
 ﻿using OSPSuite.Core.Domain.UnitSystem;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +18,12 @@ namespace MoBi.R.Tests
       private static Dimension _concentrationDimension;
       private static Dimension _timeDimension;
       private static Dimension _fractionDimension;
+
+      public static string TestFileFullPath(string fileName)
+      {
+         var dataFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data");
+         return Path.Combine(dataFolder, fileName);
+      }
 
       public static IDimension TimeDimensionForSpecs()
       {

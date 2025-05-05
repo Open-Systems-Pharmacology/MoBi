@@ -4,7 +4,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.R.Services;
 using NUnit.Framework;
 using OSPSuite.BDDHelper.Extensions;
-using static MoBi.R.Tests.HelperForSpecs;
+using static MoBi.R.Tests.DomainHelperForSpecs;
 
 namespace MoBi.R.Tests.Services
 {
