@@ -1,12 +1,12 @@
-﻿using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Commands.Core;
 
 namespace MoBi.Core.Commands
 {
@@ -39,7 +39,7 @@ namespace MoBi.Core.Commands
          sut = new AddParameterValueFromQuantityInSimulationCommand(_parameter, _parameterValuesBuildingBlock, _simulation);
          _project.AddSimulation(_simulation);
          _context = A.Fake<IMoBiContext>();
-         
+
          _parameterValuesCreator = A.Fake<IParameterValuesCreator>();
          _entityPathResolver = A.Fake<IEntityPathResolver>();
          _entitySourceUpdater = A.Fake<ISimulationEntitySourceUpdater>();

@@ -77,8 +77,6 @@ namespace MoBi.Core.Commands
          _entityPathResolver = A.Fake<IEntityPathResolver>();
          A.CallTo(() => _context.Resolve<IEntityPathResolver>()).Returns(_entityPathResolver);
          A.CallTo(() => _entityPathResolver.ObjectPathFor(A<IEntity>._, false)).ReturnsLazily(x => new ObjectPath(x.Arguments.Get<IEntity>(0).Name));
-
-
       }
    }
 
@@ -134,7 +132,7 @@ namespace MoBi.Core.Commands
       {
          sut = new RenameContainerCommand(_similarContainer, "NEW_NAME", _spatialStructure).RunCommand(_context);
       }
-      
+
       [Observation]
       public void should_not_rename_the_path_in_the_neighborhoods_not_referencing_this_container()
       {
@@ -144,7 +142,6 @@ namespace MoBi.Core.Commands
          _neighborhood2.SecondNeighborPath.PathAsString.ShouldBeEqualTo("A|B|B");
       }
    }
-
 
    public class When_renaming_a_container_and_neighborhoods_and_executing_the_inverse_command : concern_for_RenameContainerCommand
    {

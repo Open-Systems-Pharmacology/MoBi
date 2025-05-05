@@ -39,7 +39,6 @@ namespace MoBi.Core.Domain.Services
       {
          getBuildingBlocksWithMatchingNameAndType(oldName, templateBuildingBlock).Each(simulationAndBuildingBlock =>
          {
-
             simulationAndBuildingBlock.Simulation.HasChanged = true;
             simulationAndBuildingBlock.BuildingBlock.Name = templateBuildingBlock.Name;
 

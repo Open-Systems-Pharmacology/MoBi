@@ -1,13 +1,13 @@
-﻿using FakeItEasy;
+﻿using System.Collections.Generic;
+using System.Linq;
+using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Services;
 using OSPSuite.BDDHelper;
-using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain;
-using System.Collections.Generic;
-using System.Linq;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Service
 {
@@ -38,7 +38,7 @@ namespace MoBi.Core.Service
          _parameterValuesBuildingBlock = new ParameterValuesBuildingBlock().WithName("PVBB");
          _simulation = new MoBiSimulation();
          _objectPath = new ObjectPath("Root", "Container", "Parameter");
-         _simulation.AddEntitySources(new []
+         _simulation.AddEntitySources(new[]
          {
             new SimulationEntitySource("Root|Container|Parameter", "someBuildingBlock", "someType", null, "originalPath")
          });

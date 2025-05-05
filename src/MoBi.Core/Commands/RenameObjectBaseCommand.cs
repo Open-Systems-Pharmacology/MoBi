@@ -50,7 +50,7 @@ namespace MoBi.Core.Commands
       {
          var renameInSimulationTask = context.Resolve<IRenameInSimulationTask>();
          OldName = _objectBase.Name;
-         
+
          switch (_objectBase)
          {
             case IBuildingBlock buildingBlock:

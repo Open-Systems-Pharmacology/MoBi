@@ -72,7 +72,7 @@ namespace MoBi.Presentation.Tasks
       public void a_dialog_reminds_user_about_the_project_conversion()
       {
          A.CallTo(() => _interactionTaskContext.DialogCreator.MessageBoxError(
-            AppConstants.Captions.SimulationHasChangesThatCannotBeCommitted(_simulationWithChanges.Name)))
+               AppConstants.Captions.SimulationHasChangesThatCannotBeCommitted(_simulationWithChanges.Name)))
             .MustHaveHappened();
       }
 

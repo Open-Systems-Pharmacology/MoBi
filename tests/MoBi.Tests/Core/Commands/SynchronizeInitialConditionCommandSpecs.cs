@@ -1,12 +1,11 @@
-﻿using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.SimModel;
 
 namespace MoBi.Core.Commands
 {
@@ -55,7 +54,7 @@ namespace MoBi.Core.Commands
          _initialCondition.Dimension = _dimension1;
          _initialCondition.DisplayUnit = _displayUnit2;
          _initialCondition.Value = 20;
-         _initialCondition.ValueOrigin.Method  = ValueOriginDeterminationMethods.InVitro;
+         _initialCondition.ValueOrigin.Method = ValueOriginDeterminationMethods.InVitro;
       }
 
       protected override void Because()
@@ -131,7 +130,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class When_synchronizing_the_value_of_a_molecule_start_value_for_a_start_value_defined_as_a_formula_but_overriden_by_the_user_: concern_for_SynchronizeInitialConditionCommand
+   public class When_synchronizing_the_value_of_a_molecule_start_value_for_a_start_value_defined_as_a_formula_but_overriden_by_the_user_ : concern_for_SynchronizeInitialConditionCommand
    {
       protected override void Context()
       {
