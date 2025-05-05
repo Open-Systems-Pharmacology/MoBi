@@ -35,8 +35,8 @@
 	</ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MoBi.Core\MoBi.Core.csproj" />
-    <ProjectReference Include="..\Mobi.R\MoBi.R.csproj" />
+    <ProjectReference Include="..\..\src\MoBi.Core\MoBi.Core.csproj" />
+    <ProjectReference Include="..\..\src\Mobi.R\MoBi.R.csproj" />
   </ItemGroup>
 
   <ItemGroup>

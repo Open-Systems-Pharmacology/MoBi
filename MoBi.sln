@@ -37,7 +37,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoBi.Engine", "src\MoBi.Eng
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoBi.R", "src\Mobi.R\MoBi.R.csproj", "{259DA791-3352-4BFA-AB42-BE0F07621FFF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoBi.R.Tests", "src\MoBi.R.Tests\MoBi.R.Tests.csproj", "{FC91836B-185D-40A8-A483-8B515D4C49BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoBi.R.Tests", "tests\MoBi.R.Tests\MoBi.R.Tests.csproj", "{FC91836B-185D-40A8-A483-8B515D4C49BE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

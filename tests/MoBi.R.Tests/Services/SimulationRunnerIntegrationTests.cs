@@ -19,7 +19,6 @@ namespace MoBi.R.Tests.Services
       protected string _simulationFile;
       protected IModelCoreSimulation _simulation;
       protected IPopulationTask _populationTask;
-      protected ISerializationTask _serializationTask;
 
       public override void GlobalContext()
       {
@@ -27,7 +26,6 @@ namespace MoBi.R.Tests.Services
          _populationFile = TestFileFullPath("pop_10.csv");
          _simulationFile = TestFileFullPath("S1.pkml");
          _simulationPersister = Api.GetSimulationPersister();
-         _serializationTask = Api.GetSerializationTask();
          _populationTask = Api.GetPopulationTask();
          sut = Api.GetSimulationRunner();
 
