@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
-using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Extensions;
@@ -35,8 +34,6 @@ namespace MoBi.Presentation.Tasks
       private readonly IMoBiContext _context;
       private readonly ITemplateResolverTask _templateResolverTask;
       private readonly IEntitiesInSimulationRetriever _entitiesInSimulationRetriever;
-      private readonly IInitialConditionsCreator _initialConditionsCreator;
-      private readonly IParameterValuesCreator _parameterValuesCreator;
       private readonly INameCorrector _nameCorrector;
       private readonly IObjectTypeResolver _objectTypeResolver;
       private readonly IInteractionTaskContext _interactionTaskContext;
@@ -44,8 +41,6 @@ namespace MoBi.Presentation.Tasks
       public SimulationCommitTask(IMoBiContext context,
          ITemplateResolverTask templateResolverTask,
          IEntitiesInSimulationRetriever entitiesInSimulationRetriever,
-         IInitialConditionsCreator initialConditionsCreator,
-         IParameterValuesCreator parameterValuesCreator,
          INameCorrector nameCorrector,
          IObjectTypeResolver objectTypeResolver,
          IInteractionTaskContext interactionTaskContext)
@@ -53,8 +48,6 @@ namespace MoBi.Presentation.Tasks
          _context = context;
          _templateResolverTask = templateResolverTask;
          _entitiesInSimulationRetriever = entitiesInSimulationRetriever;
-         _initialConditionsCreator = initialConditionsCreator;
-         _parameterValuesCreator = parameterValuesCreator;
          _nameCorrector = nameCorrector;
          _objectTypeResolver = objectTypeResolver;
          _interactionTaskContext = interactionTaskContext;
@@ -100,7 +93,7 @@ namespace MoBi.Presentation.Tasks
          macroCommand.Add(new ClearOriginalQuantitiesTrackerCommand(simulationWithChanges));
 
          macroCommand.RunCommand(_context);
-         _context.PublishEvent(new SimulationStatusChangedEvent(simulationWithChanges));
+         _context.PublishEvent(new SimulationReloadEvent(simulationWithChanges));
 
          return macroCommand;
       }
@@ -136,33 +129,51 @@ namespace MoBi.Presentation.Tasks
       }
 
       /// <summary>
-      ///    Creates two new commands that add new ParameterValuesBuildingBlock to a simulation module and to a template
-      ///    module respectively. The simulation module is
-      ///    identified by <paramref name="moduleConfiguration" /> and the template module is resolved from the project by name.
-      ///    The new building blocks will contain values for changes
-      ///    in the <paramref name="simulation" />. The new building block will be selected in
-      ///    <paramref name="moduleConfiguration" />
+      ///    Creates new commands that add new ParameterValuesBuildingBlock to a simulation module and to a template
+      ///    module respectively. The simulation module is identified by <paramref name="moduleConfiguration" /> and the
+      ///    template module is resolved from the project by name. The new building blocks will contain values for changes
+      ///    in the <paramref name="simulation" />. The new building block will be selected in <paramref name="moduleConfiguration" />
       /// </summary>
       private IEnumerable<IMoBiCommand> addNewParameterValuesFromSimulationChanges(IMoBiSimulation simulation, ModuleConfiguration moduleConfiguration, IReadOnlyList<(ObjectPath quantityPath, IParameter quantity)> parameterChanges)
       {
-         // Create two parameter values for each Parameter change, one for the project building block and one for the simulation building block
-         var parameterValuesToAdd = parameterChanges.Select(x => (simulation: createParameterValue(x.quantity, x.quantityPath), project: createParameterValue(x.quantity, x.quantityPath))).ToList();
-         return createAddBuildingBlockCommands<ParameterValuesBuildingBlock, ParameterValue>(simulation, moduleConfiguration, parameterValuesToAdd);
+         if (!parameterChanges.Any())
+            return new[] { new MoBiEmptyCommand() };
+
+         var (templateModule, templateBuildingBlock, simulationBuildingBlock) = createNewBuildingBlocks<ParameterValuesBuildingBlock>(simulation, moduleConfiguration);
+
+         var commands = new List<IMoBiCommand>
+         {
+            new AddBuildingBlockToModuleCommand<ParameterValuesBuildingBlock>(templateBuildingBlock, templateModule),
+            new AddSelectedBuildingBlockToLastModuleConfigurationCommand<ParameterValuesBuildingBlock>(simulationBuildingBlock, simulation).AsHidden()
+         };
+
+         commands.AddRange(parameterChanges.Select(x => synchronizeParameterValueCommand(x.quantity, x.quantityPath, templateBuildingBlock, simulation).AsHidden()));
+         commands.AddRange(parameterChanges.Select(x => synchronizeParameterValueCommand(x.quantity, x.quantityPath, simulationBuildingBlock, simulation).AsHidden()));
+         return commands;
       }
 
       /// <summary>
-      ///    Creates two new commands that add new InitialConditionsBuildingBlock to a simulation module and to a template
-      ///    module respectively. The simulation module is
-      ///    identified by <paramref name="moduleConfiguration" /> and the template module is resolved from the project by name.
-      ///    The new building blocks will contain values for changes
-      ///    in the <paramref name="simulation" />. The new building block will be selected in
-      ///    <paramref name="moduleConfiguration" />
+      ///    Creates new commands that add new InitialConditionsBuildingBlock to a simulation module and to a template
+      ///    module respectively. The simulation module is identified by <paramref name="moduleConfiguration" /> and the
+      ///    template module is resolved from the project by name. The new building blocks will contain values for changes
+      ///    in the <paramref name="simulation" />. The new building block will be selected in <paramref name="moduleConfiguration" />
       /// </summary>
       private IEnumerable<IMoBiCommand> addNewInitialConditionsFromSimulationChanges(IMoBiSimulation simulation, ModuleConfiguration moduleConfiguration, IReadOnlyList<(ObjectPath quantityPath, MoleculeAmount quantity)> moleculeChanges)
       {
-         // Create two initial conditions for each MoleculeAmount change, one for the project building block and one for the simulation building block
-         var initialConditionsToAdd = moleculeChanges.Select(x => (simulation: createInitialCondition(x.quantity, x.quantityPath), project: createInitialCondition(x.quantity, x.quantityPath))).ToList();
-         return createAddBuildingBlockCommands<InitialConditionsBuildingBlock, InitialCondition>(simulation, moduleConfiguration, initialConditionsToAdd);
+         if (!moleculeChanges.Any())
+            return new[] { new MoBiEmptyCommand() };
+
+         var (templateModule, templateBuildingBlock, simulationBuildingBlock) = createNewBuildingBlocks<InitialConditionsBuildingBlock>(simulation, moduleConfiguration);
+
+         var commands = new List<IMoBiCommand>
+         {
+            new AddBuildingBlockToModuleCommand<InitialConditionsBuildingBlock>(templateBuildingBlock, templateModule),
+            new AddSelectedBuildingBlockToLastModuleConfigurationCommand<InitialConditionsBuildingBlock>(simulationBuildingBlock, simulation).AsHidden()
+         };
+
+         commands.AddRange(moleculeChanges.Select(x => synchronizeInitialConditionCommand(x.quantity, x.quantityPath, templateBuildingBlock, simulation).AsHidden()));
+         commands.AddRange(moleculeChanges.Select(x => synchronizeInitialConditionCommand(x.quantity, x.quantityPath, simulationBuildingBlock, simulation).AsHidden()));
+         return commands;
       }
 
       /// <summary>
@@ -175,43 +186,17 @@ namespace MoBi.Presentation.Tasks
          return simulation.OriginalQuantityValues.Select(x => (objectPath: x.Path.ToObjectPath(), quantity: quantities[x.Path])).Where(x => x.quantity != null);
       }
 
-      private IEnumerable<IMoBiCommand> createAddBuildingBlockCommands<TBuildingBlock, TPathAndValueEntity>(IMoBiSimulation simulation,
-         ModuleConfiguration moduleConfiguration,
-         IReadOnlyList<(TPathAndValueEntity simulationEntity, TPathAndValueEntity projectEntity)> entitiesToAdd)
-         where TBuildingBlock : PathAndValueEntityBuildingBlock<TPathAndValueEntity>, IBuildingBlock where TPathAndValueEntity : PathAndValueEntity
+      private (Module templateModule, TBuildingBlock templateBuildingBlock, TBuildingBlock simulationBuildingBlock) createNewBuildingBlocks<TBuildingBlock>(IMoBiSimulation simulation,
+         ModuleConfiguration moduleConfiguration)
+         where TBuildingBlock : class, IBuildingBlock
       {
-         if (!entitiesToAdd.Any())
-            return new[] {new MoBiEmptyCommand()};
-
          var templateModule = _templateResolverTask.TemplateModuleFor(moduleConfiguration.Module);
 
-         var templateBuildingBlock = createBuildingBlockAndAddEntities<TBuildingBlock, TPathAndValueEntity>(entitiesToAdd.Select(x => x.projectEntity)).WithName(simulation.Name);
+         var templateBuildingBlock = _context.Create<TBuildingBlock>().WithName(simulation.Name);
          _nameCorrector.AutoCorrectName(templateModule.BuildingBlocks.OfType<TBuildingBlock>().AllNames(), templateBuildingBlock);
 
-         var simulationBuildingBlock = createBuildingBlockAndAddEntities<TBuildingBlock, TPathAndValueEntity>(entitiesToAdd.Select(x => x.simulationEntity)).WithName(templateBuildingBlock.Name);
-
-         return new[]
-         {
-            new AddBuildingBlockToModuleCommand<TBuildingBlock>(templateBuildingBlock, templateModule),
-            new AddSelectedBuildingBlockToLastModuleConfigurationCommand<TBuildingBlock>(simulationBuildingBlock, simulation).AsHidden()
-         };
-      }
-
-      private TBuildingBlock createBuildingBlockAndAddEntities<TBuildingBlock, TPathAndValueEntity>(IEnumerable<TPathAndValueEntity> pathAndValueEntities) where TBuildingBlock : PathAndValueEntityBuildingBlock<TPathAndValueEntity>, IBuildingBlock where TPathAndValueEntity : PathAndValueEntity
-      {
-         var templateBuildingBlock = _context.Create<TBuildingBlock>();
-         templateBuildingBlock.AddRange(pathAndValueEntities);
-         return templateBuildingBlock;
-      }
-
-      private InitialCondition createInitialCondition(MoleculeAmount moleculeAmount, ObjectPath moleculeAmountPath)
-      {
-         return _initialConditionsCreator.CreateInitialCondition(moleculeAmountPath, moleculeAmount);
-      }
-
-      private ParameterValue createParameterValue(IParameter parameter, ObjectPath parameterPath)
-      {
-         return _parameterValuesCreator.CreateParameterValue(parameterPath, parameter);
+         var simulationBuildingBlock = _context.Create<TBuildingBlock>().WithName(templateBuildingBlock.Name);
+         return (templateModule, templateBuildingBlock, simulationBuildingBlock);
       }
 
       private IMoBiCommand synchronizeInitialConditionCommand(MoleculeAmount moleculeAmount, ObjectPath quantityPath, InitialConditionsBuildingBlock initialConditionsBuildingBlock, IMoBiSimulation simulation)
