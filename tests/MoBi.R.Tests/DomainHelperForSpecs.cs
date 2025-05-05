@@ -1,23 +1,15 @@
-﻿using OSPSuite.Core.Domain.UnitSystem;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Domain.UnitSystem;
 
 namespace MoBi.R.Tests
 {
    public static class DomainHelperForSpecs
    {
-      private static readonly string PATH_TO_DATA = "..\\..\\..\\Data\\";
-
-      private static Dimension _lengthDimension;
       private static Dimension _concentrationDimension;
       private static Dimension _timeDimension;
-      private static Dimension _fractionDimension;
 
       public static string TestFileFullPath(string fileName)
       {
@@ -35,6 +27,7 @@ namespace MoBi.R.Tests
 
          return _timeDimension;
       }
+
       public static IDimension ConcentrationDimensionForSpecs()
       {
          if (_concentrationDimension == null)
@@ -45,6 +38,7 @@ namespace MoBi.R.Tests
 
          return _concentrationDimension;
       }
+
       public static DataRepository IndividualSimulationDataRepositoryFor(string simulationName)
       {
          var simulationResults = new DataRepository("Results");
@@ -60,7 +54,6 @@ namespace MoBi.R.Tests
 
          return simulationResults;
       }
-
 
       public static DataColumn ConcentrationColumnForSimulation(string simulationName, BaseGrid baseGrid)
       {

@@ -34,7 +34,6 @@ namespace MoBi.R.Bootstrap
 
          using (container.OptimizeDependencyResolution())
          {
-
             container.RegisterImplementationOf((IContainer)container);
             container.RegisterImplementationOf(new SynchronizationContext());
             container.AddRegister(x => x.FromType<OSPSuite.R.RRegister>());
@@ -45,11 +44,8 @@ namespace MoBi.R.Bootstrap
             container.AddRegister(x => x.FromInstance(serializerRegister));
          }
 
-
          serializerRegister.PerformMappingForSerializerIn(container);
          
-         //container.WindsorContainer.AddFacility<TypedFactoryFacility>();
-
          initializeConfiguration(container, apiConfig);
          initializeDimensions(container);
 
