@@ -25,9 +25,9 @@ namespace MoBi.R.Tests.Services
          base.GlobalContext();
          _populationFile = TestFileFullPath("pop_10.csv");
          _simulationFile = TestFileFullPath("S1.pkml");
-         _simulationPersister = Api.GetSimulationPersister();
-         _populationTask = Api.GetPopulationTask();
-         sut = Api.GetSimulationRunner();
+         _simulationPersister = OSPSuite.R.Api.GetSimulationPersister();
+         _populationTask = OSPSuite.R.Api.GetPopulationTask();
+         sut = OSPSuite.R.Api.GetSimulationRunner();
 
          _simulation = _simulationPersister.LoadSimulation(_simulationFile);
       }

@@ -9,6 +9,7 @@ using OSPSuite.Infrastructure.Container.Autofac;
 using OSPSuite.Infrastructure.Container.Castle;
 using OSPSuite.Utility.Container;
 using System.Threading;
+using OSPSuite.R;
 using CoreRegister = MoBi.Core.CoreRegister;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 
@@ -22,6 +23,8 @@ namespace MoBi.R.Bootstrap
       {
          if (_container != null)
             return _container;
+
+         OSPSuite.R.Api.InitializeOnce(apiConfig);
 
          _container = new ApplicationStartup().performInitialization(apiConfig);
          return _container;
@@ -46,18 +49,11 @@ namespace MoBi.R.Bootstrap
 
          serializerRegister.PerformMappingForSerializerIn(container);
          
-         initializeConfiguration(container, apiConfig);
          initializeDimensions(container);
 
          return container;
-      }
+      } 
 
-      private void initializeConfiguration(IContainer container, ApiConfig apiConfig)
-      {
-         var applicationConfiguration = container.Resolve<IApplicationConfiguration>();
-         applicationConfiguration.PKParametersFilePath = apiConfig.PKParametersFilePath;
-         applicationConfiguration.DimensionFilePath = apiConfig.DimensionFilePath;
-      }
 
       private static void initializeDimensions(IContainer container)
       {

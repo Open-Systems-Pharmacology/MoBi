@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using OSPSuite.BDDHelper;
+using OSPSuite.R;
 
 namespace MoBi.R.Tests
 {
