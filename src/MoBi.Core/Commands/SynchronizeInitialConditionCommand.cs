@@ -5,26 +5,30 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using MoBi.Assets;
 using OSPSuite.Assets;
+using MoBi.Core.Domain.Services;
 
 namespace MoBi.Core.Commands
 {
-
    public class SynchronizeInitialConditionCommand : BuildingBlockChangeCommandBase<InitialConditionsBuildingBlock>
    {
       private IQuantity _quantity;
       private MoleculeAmount _moleculeAmount;
       private readonly InitialCondition _initialCondition;
+      private IMoBiSimulation _simulation;
+      private readonly string _simulationId;
       private readonly string _quantityId;
 
       /// <summary>
       ///    Ensures that the value defined in the <see cref="InitialCondition" /> of simulation are synchronized
       ///    with the values defined in the <see cref="IQuantity" /> 
       /// </summary>
-      public SynchronizeInitialConditionCommand(IQuantity quantity, InitialCondition initialCondition, InitialConditionsBuildingBlock buildingBlock) : base(buildingBlock)
+      public SynchronizeInitialConditionCommand(IQuantity quantity, InitialCondition initialCondition, InitialConditionsBuildingBlock buildingBlock, IMoBiSimulation simulation) : base(buildingBlock)
       {
          _quantity = quantity;
          _quantityId = quantity.Id;
          _initialCondition = initialCondition;
+         _simulation = simulation;
+         _simulationId = simulation.Id;
          _moleculeAmount = quantity as MoleculeAmount ?? quantity.ParentContainer as MoleculeAmount;
          ObjectType = ObjectTypes.InitialCondition;
          CommandType = AppConstants.Commands.UpdateCommand;
@@ -42,6 +46,8 @@ namespace MoBi.Core.Commands
             _initialCondition.ScaleDivisor = _moleculeAmount.ScaleDivisor;
 
          Description = AppConstants.Commands.UpdateInitialCondition(_initialCondition.Path, _initialCondition.Value, _initialCondition.IsPresent, _initialCondition.DisplayUnit, _initialCondition.ScaleDivisor, _initialCondition.NegativeValuesAllowed);
+
+         context.Resolve<ISimulationEntitySourceUpdater>().UpdateSourcesForNewPathAndValueEntity(_buildingBlock, _initialCondition.Path, _simulation);
       }
 
       private void updateInitialCondition()
@@ -70,12 +76,13 @@ namespace MoBi.Core.Commands
       {
          base.ClearReferences();
          _quantity = null;
+         _simulation = null;
          _moleculeAmount = null;
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return new SynchronizeInitialConditionCommand(_quantity, _initialCondition, _buildingBlock)
+         return new SynchronizeInitialConditionCommand(_quantity, _initialCondition, _buildingBlock, _simulation)
          {
             Visible = Visible
          }.AsInverseFor(this);
@@ -85,6 +92,7 @@ namespace MoBi.Core.Commands
       {
          base.RestoreExecutionData(context);
          _quantity = context.Get<IQuantity>(_quantityId);
+         _simulation = context.CurrentProject.Simulations.FindById(_simulationId);
       }
    }
 }

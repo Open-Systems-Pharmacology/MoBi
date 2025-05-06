@@ -1,11 +1,13 @@
 ﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Services;
 using MoBi.Core.Extensions;
 using MoBi.Helpers;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Core.Commands
 {
@@ -25,6 +27,10 @@ namespace MoBi.Core.Commands
       protected Container _child3;
       protected IMoBiContext _context;
       protected Container _similarContainer;
+      protected ISimulationEntitySourceUpdater _simulationEntitySourceUpdater;
+      private IEntityPathResolver _entityPathResolver;
+      protected ObjectPath _originalPath;
+      protected ObjectPath _newPath;
 
       protected override void Context()
       {
@@ -64,11 +70,25 @@ namespace MoBi.Core.Commands
 
          _context = A.Fake<IMoBiContext>();
          A.CallTo(() => _context.ObjectPathFactory).Returns(new ObjectPathFactoryForSpecs());
+
+         _simulationEntitySourceUpdater = A.Fake<ISimulationEntitySourceUpdater>();
+         A.CallTo(() => _context.Resolve<ISimulationEntitySourceUpdater>()).Returns(_simulationEntitySourceUpdater);
+
+         _entityPathResolver = A.Fake<IEntityPathResolver>();
+         A.CallTo(() => _context.Resolve<IEntityPathResolver>()).Returns(_entityPathResolver);
+         A.CallTo(() => _entityPathResolver.ObjectPathFor(A<IEntity>._, false)).ReturnsLazily(x => new ObjectPath(x.Arguments.Get<IEntity>(0).Name));
       }
    }
 
    public class When_renaming_a_container_that_is_not_used_in_any_neighborhood : concern_for_RenameContainerCommand
    {
+      protected override void Context()
+      {
+         base.Context();
+         _newPath = new ObjectPath("NEW_NAME");
+         _originalPath = new ObjectPath(_child3.Name);
+      }
+
       protected override void Because()
       {
          sut = new RenameContainerCommand(_child3, "NEW_NAME", _spatialStructure).RunCommand(_context);
@@ -82,6 +102,12 @@ namespace MoBi.Core.Commands
 
          _neighborhood2.FirstNeighborPath.PathAsString.ShouldBeEqualTo("A|B|A");
          _neighborhood2.SecondNeighborPath.PathAsString.ShouldBeEqualTo("A|B|B");
+      }
+
+      [Observation]
+      public void should_update_simulation_source_references()
+      {
+         A.CallTo(() => _simulationEntitySourceUpdater.UpdateEntitySourcesForContainerRename(_newPath, _originalPath, _spatialStructure)).MustHaveHappened();
       }
    }
 
@@ -106,7 +132,7 @@ namespace MoBi.Core.Commands
       {
          sut = new RenameContainerCommand(_similarContainer, "NEW_NAME", _spatialStructure).RunCommand(_context);
       }
-      
+
       [Observation]
       public void should_not_rename_the_path_in_the_neighborhoods_not_referencing_this_container()
       {
@@ -116,7 +142,6 @@ namespace MoBi.Core.Commands
          _neighborhood2.SecondNeighborPath.PathAsString.ShouldBeEqualTo("A|B|B");
       }
    }
-
 
    public class When_renaming_a_container_and_neighborhoods_and_executing_the_inverse_command : concern_for_RenameContainerCommand
    {

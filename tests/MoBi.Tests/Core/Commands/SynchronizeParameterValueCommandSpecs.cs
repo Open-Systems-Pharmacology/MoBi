@@ -13,13 +13,15 @@ namespace MoBi.Core.Commands
       protected ParameterValue _parameterStartValue;
       protected IParameter _parameter;
       protected IMoBiContext _context;
+      private IMoBiSimulation _simulation;
 
       protected override void Context()
       {
          _parameter = new Parameter();
          _parameterStartValue = new ParameterValue();
+         _simulation = new MoBiSimulation();
          _context = A.Fake<IMoBiContext>();
-         sut = new SynchronizeParameterValueCommand(_parameter, _parameterStartValue, new ParameterValuesBuildingBlock());
+         sut = new SynchronizeParameterValueCommand(_parameter, _parameterStartValue, new ParameterValuesBuildingBlock(), _simulation);
       }
    }
 

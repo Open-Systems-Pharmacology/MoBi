@@ -363,8 +363,15 @@ namespace MoBi.UI.Views
          _colModule.Visible = _presenter.HasModules();
          _colBuildingBlock.Visible = _presenter.HasBuildingBlocks();
          _colNavigate.Visible = _colBuildingBlock.Visible;
-         if (_colModule.XtraColumn.VisibleIndex < _colBuildingBlock.XtraColumn.VisibleIndex) 
-            (_colModule.XtraColumn.VisibleIndex, _colBuildingBlock.XtraColumn.VisibleIndex) = (_colBuildingBlock.XtraColumn.VisibleIndex, _colModule.XtraColumn.VisibleIndex);
+
+         if(_colBuildingBlock.Visible)
+            _colBuildingBlock.XtraColumn.VisibleIndex = _colValue.XtraColumn.VisibleIndex + 1;
+
+         if(_colModule.Visible)
+            _colModule.XtraColumn.VisibleIndex = _colValue.XtraColumn.VisibleIndex + 1;
+
+         if (_colNavigate.Visible)
+            _colNavigate.XtraColumn.VisibleIndex = gridView.VisibleColumns.Count;
       }
 
       private void updateGroupVisibility()
