@@ -69,6 +69,9 @@ namespace MoBi.Core.Commands
                var newEntityPath = entityPathResolver.ObjectPathFor(entity);
                simulationEntitySourceUpdater.UpdateEntitySourcesForEntityRename(newEntityPath, originalEntityPath, _buildingBlock);
                break;
+            default:
+               _objectBase.Name = _newName;
+               break;
          }
       }
 

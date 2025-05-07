@@ -3,6 +3,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Helpers;
 using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
@@ -30,6 +31,30 @@ namespace MoBi.Core.Commands
       protected abstract IBuildingBlock GetBuildingBlock();
 
       protected abstract IObjectBase GetObject();
+   }
+
+   public class When_renaming_a_simulation : concern_for_RenameObjectBaseCommand
+   {
+      private IObjectBase _simulation;
+
+      protected override void Context()
+      {
+         _simulation = new MoBiSimulation().WithName("originalName");
+         base.Context();
+         A.CallTo(() => _context.Resolve<IEntityPathResolver>()).Returns(new EntityPathResolverForSpecs());
+      }
+
+      protected override void Because() => sut.Execute(_context);
+
+      [Observation]
+      public void the_rename_in_simulation_task_is_used_to_update_source_paths()
+      {
+         _simulation.Name.ShouldBeEqualTo("newName");
+      }
+
+      protected override IBuildingBlock GetBuildingBlock() => null;
+
+      protected override IObjectBase GetObject() => _simulation;
    }
 
    public class When_renaming_a_parameter : concern_for_RenameObjectBaseCommand
