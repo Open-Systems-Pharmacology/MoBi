@@ -18,8 +18,8 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
     <PackageReference Include="nunit" Version="3.14.0" />
     <PackageReference Include="OSPSuite.BDDHelper" Version="4.0.1.1" />
-    <PackageReference Include="OSPSuite.Core" Version="12.1.96" />
-    <PackageReference Include="OSPSuite.UI" Version="12.1.96" />
+    <PackageReference Include="OSPSuite.Core" Version="12.1.98" />
+    <PackageReference Include="OSPSuite.UI" Version="12.1.98" />
    </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\MoBi.Core\MoBi.Core.csproj" />
