@@ -66,7 +66,9 @@ namespace MoBi.Core.Commands
 
       private void updateObjectPath(ObjectPath path)
       {
-         if (!path.First().Equals(_oldName)) return;
+         if (!path.First().Equals(_oldName)) 
+            return;
+
          path.Remove(_oldName);
          path.AddAtFront(_newName);
       }

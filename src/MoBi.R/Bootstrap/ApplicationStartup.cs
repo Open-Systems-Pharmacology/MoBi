@@ -17,43 +17,22 @@ namespace MoBi.R.Bootstrap
 {
    internal class ApplicationStartup
    {
-      private static IContainer _container;
+      public static IContainer _container;
+      
 
-      public static IContainer Initialize(ApiConfig apiConfig)
+      public static void Initialize(ApiConfig apiConfig)
       {
-         if (_container != null)
-            return _container;
+         OSPSuite.R.Api.InitializeOnce(apiConfig, registerAction);
 
-         OSPSuite.R.Api.InitializeOnce(apiConfig);
-
-         _container = new ApplicationStartup().performInitialization(apiConfig);
-         return _container;
+         new SerializerRegister().PerformMappingForMoBiSerializerRepository(OSPSuite.R.Api.Container);
       }
 
-      private IContainer performInitialization(ApiConfig apiConfig)
+      private static void registerAction(IContainer container)
       {
-         var container = new AutofacContainer();
-         var serializerRegister = new SerializerRegister();
-
-         using (container.OptimizeDependencyResolution())
-         {
-            container.RegisterImplementationOf((IContainer)container);
-            container.RegisterImplementationOf(new SynchronizationContext());
-            container.AddRegister(x => x.FromType<OSPSuite.R.RRegister>());
-            container.AddRegister(x => x.FromType<CoreRegister>());
-            container.AddRegister(x => x.FromType<OSPSuite.Core.CoreRegister>());
-            container.AddRegister(x => x.FromType<InfrastructureRegister>());
-            container.AddRegister(x => x.FromType<RRegister>());
-            container.AddRegister(x => x.FromInstance(serializerRegister));
-         }
-
-         serializerRegister.PerformMappingForSerializerIn(container);
-         
-         initializeDimensions(container);
-
-         return container;
-      } 
-
+         container.AddRegister(x => x.FromType<CoreRegister>());
+         container.AddRegister(x => x.FromType<InfrastructureRegister>());
+         container.AddRegister(x => x.FromType<RRegister>());
+      }
 
       private static void initializeDimensions(IContainer container)
       {

@@ -1,9 +1,7 @@
-﻿using MoBi.R.Bootstrap;
-using OSPSuite.R.Services;
-using OSPSuite.Utility.Extensions;
-using System;
-using MoBi.Presentation.Tasks;
+﻿using System;
+using MoBi.R.Bootstrap;
 using OSPSuite.R;
+using OSPSuite.Utility.Extensions;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 using IProjectTask = MoBi.R.Services.IProjectTask;
 
@@ -11,11 +9,14 @@ namespace MoBi.R
 {
    public static class Api
    {
-      public static IContainer Container { get; private set; }
+      private static IContainer container => OSPSuite.R.Api.Container;
 
       public static void InitializeOnce(ApiConfig apiConfig)
       {
-         Container = ApplicationStartup.Initialize(apiConfig);
+         if (container != null)
+            return;
+
+         ApplicationStartup.Initialize(apiConfig);
       }
 
       public static IProjectTask GetProjectTask() => resolveTask<IProjectTask>();
@@ -24,7 +25,7 @@ namespace MoBi.R
       {
          try
          {
-            return Container.Resolve<T>();
+            return container.Resolve<T>();
          }
          catch (Exception e)
          {
