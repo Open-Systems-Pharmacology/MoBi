@@ -10,6 +10,7 @@ using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Commands;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -53,7 +54,7 @@ namespace MoBi.Presentation
          _moBiProject.AddIndividualBuildingBlock(_individualBuildingBlock);
          A.CallTo(() => _moBiContext.CurrentProject).Returns(_moBiProject);
          A.CallTo(() => _interactionTaskContext.Context).Returns(_moBiContext);
-         
+
          _templateResolver = A.Fake<ITemplateResolverTask>();
 
          sut = new InteractionTasksForSimulation(_interactionTaskContext, _editTask, _simulationReferenceUpdater, _simulationFactory, _templateResolver, _cloneManager);
@@ -64,6 +65,7 @@ namespace MoBi.Presentation
    {
       private IMoBiSimulation _originalSimulation;
       private IMoBiSimulation _clonedSimulation;
+
       protected override void Context()
       {
          base.Context();
@@ -97,6 +99,7 @@ namespace MoBi.Presentation
    {
       private IMoBiSimulation _originalSimulation;
       private IMoBiSimulation _clonedSimulation;
+
       protected override void Context()
       {
          base.Context();
