@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using DevExpress.Data.ChartDataSources;
 using DevExpress.Utils;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
@@ -46,6 +47,7 @@ namespace MoBi.UI.Views
       private IGridViewBoundColumn<ParameterDTO, string> _colBuildingBlock;
       private IGridViewColumn<ParameterDTO> _colNavigate;
       private readonly RepositoryItemButtonEdit _navigateButtonRepository = new UxRepositoryItemButtonEdit(ButtonPredefines.Search);
+      private readonly IImageListRetriever _imageListRetriever;
       public BarManager PopupBarManager { get; }
 
       public EditParameterListView(PathElementsBinder<ParameterDTO> pathBinder,
@@ -54,6 +56,7 @@ namespace MoBi.UI.Views
          ValueOriginBinder<ParameterDTO> valueOriginBinder)
       {
          InitializeComponent();
+         _imageListRetriever = imageListRetriever;
          _valueOriginBinder = valueOriginBinder;
          _gridViewBinder = new GridViewBinder<ParameterDTO>(_gridView);
          _unitControl = new UxComboBoxUnit<ParameterDTO>(_gridControl);
@@ -72,6 +75,12 @@ namespace MoBi.UI.Views
          toolTipController.Initialize();
          toolTipController.GetActiveObjectInfo += onToolTipControllerGetActiveObjectInfo;
          _gridControl.ToolTipController = toolTipController;
+      }
+
+      private RepositoryItem buildingBlockRepository(ParameterDTO parameterDTO)
+      {
+         var repository = new UxRepositoryItemImageComboBox(_gridView, _imageListRetriever);
+         return repository.AddItem(parameterDTO.SourceReference?.BuildingBlock?.Name, parameterDTO.SourceReference?.BuildingBlock?.Icon);
       }
 
       public override void InitializeResources()
@@ -112,7 +121,7 @@ namespace MoBi.UI.Views
       {
          _gridViewBinder.BindToSource(parameters);
          _gridView.RefreshData();
-
+         
          _colModule.Visible = _presenter.HasModules();
          _colBuildingBlock.Visible = _presenter.HasBuildingBlocks();
          _colNavigate.Visible = _colBuildingBlock.Visible;
@@ -144,6 +153,7 @@ namespace MoBi.UI.Views
             .AsReadOnly();
 
          _colBuildingBlock = _gridViewBinder.Bind(dto => dto.BuildingBlockName)
+            .WithRepository(buildingBlockRepository)
             .WithCaption(AppConstants.Captions.BuildingBlock)
             .AsReadOnly();
 
