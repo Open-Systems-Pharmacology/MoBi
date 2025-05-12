@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using DevExpress.Data.ChartDataSources;
 using DevExpress.Utils;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
@@ -77,11 +76,9 @@ namespace MoBi.UI.Views
          _gridControl.ToolTipController = toolTipController;
       }
 
-      private RepositoryItem buildingBlockRepository(ParameterDTO parameterDTO)
-      {
-         var repository = new UxRepositoryItemImageComboBox(_gridView, _imageListRetriever);
-         return repository.AddItem(parameterDTO.SourceReference?.BuildingBlock?.Name, parameterDTO.SourceReference?.BuildingBlock?.Icon);
-      }
+      private RepositoryItem buildingBlockRepository(ParameterDTO parameterDTO) =>
+         new UxRepositoryItemImageComboBox(_gridView, _imageListRetriever).
+            AddItem(parameterDTO.SourceReference?.BuildingBlock?.Name ?? string.Empty, parameterDTO.SourceReference?.BuildingBlock?.Icon ?? null);
 
       public override void InitializeResources()
       {
@@ -121,7 +118,7 @@ namespace MoBi.UI.Views
       {
          _gridViewBinder.BindToSource(parameters);
          _gridView.RefreshData();
-         
+
          _colModule.Visible = _presenter.HasModules();
          _colBuildingBlock.Visible = _presenter.HasBuildingBlocks();
          _colNavigate.Visible = _colBuildingBlock.Visible;
