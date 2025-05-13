@@ -14,7 +14,6 @@ using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraGrid.Views.Grid.ViewInfo;
 using DevExpress.XtraLayout.Utils;
 using MoBi.Assets;
-using MoBi.Core.Domain.Repository;
 using MoBi.Presentation;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
@@ -379,10 +378,10 @@ namespace MoBi.UI.Views
          _colBuildingBlock.Visible = _presenter.HasBuildingBlocks();
          _colNavigate.Visible = _colBuildingBlock.Visible;
 
-         if(_colBuildingBlock.Visible)
+         if (_colBuildingBlock.Visible)
             _colBuildingBlock.XtraColumn.VisibleIndex = _colValue.XtraColumn.VisibleIndex + 1;
 
-         if(_colModule.Visible)
+         if (_colModule.Visible)
             _colModule.XtraColumn.VisibleIndex = _colValue.XtraColumn.VisibleIndex + 1;
 
          if (_colNavigate.Visible)

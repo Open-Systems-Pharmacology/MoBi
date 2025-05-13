@@ -85,7 +85,6 @@ namespace MoBi.UI.Views
 
          return repository;
       }
-         
 
       public override void InitializeResources()
       {
