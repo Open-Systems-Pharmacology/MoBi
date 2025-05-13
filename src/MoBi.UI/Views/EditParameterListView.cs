@@ -78,7 +78,7 @@ namespace MoBi.UI.Views
 
       private RepositoryItem buildingBlockRepository(ParameterDTO parameterDTO)
       {
-         var buildingBlock = parameterDTO.SourceReference?.BuildingBlock;
+         var buildingBlock = parameterDTO.BuildingBlock;
          var repository = new UxRepositoryItemImageComboBox(_gridView, _imageListRetriever);
          if (buildingBlock != null)
             repository.AddItem(buildingBlock.Name, buildingBlock.Icon);
