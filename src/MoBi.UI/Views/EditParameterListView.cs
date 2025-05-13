@@ -76,9 +76,16 @@ namespace MoBi.UI.Views
          _gridControl.ToolTipController = toolTipController;
       }
 
-      private RepositoryItem buildingBlockRepository(ParameterDTO parameterDTO) =>
-         new UxRepositoryItemImageComboBox(_gridView, _imageListRetriever).
-            AddItem(parameterDTO.SourceReference?.BuildingBlock?.Name ?? string.Empty, parameterDTO.SourceReference?.BuildingBlock?.Icon ?? null);
+      private RepositoryItem buildingBlockRepository(ParameterDTO parameterDTO)
+      {
+         var buildingBlock = parameterDTO.SourceReference?.BuildingBlock;
+         var repository = new UxRepositoryItemImageComboBox(_gridView, _imageListRetriever);
+         if (buildingBlock != null)
+            repository.AddItem(buildingBlock.Name, buildingBlock.Icon);
+
+         return repository;
+      }
+         
 
       public override void InitializeResources()
       {
