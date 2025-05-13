@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Linq;
-using MoBi.Presentation.Tasks;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
