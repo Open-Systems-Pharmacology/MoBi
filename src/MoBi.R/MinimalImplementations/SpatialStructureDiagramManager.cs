@@ -33,7 +33,7 @@ namespace MoBi.R.MinimalImplementations
 
       public IDiagramManager<MoBiSpatialStructure> Create()
       {
-         throw new NotImplementedException();
+         return null;
       }
 
       public void InitializeWith(MoBiSpatialStructure pkModel, IDiagramOptions diagramOptions)

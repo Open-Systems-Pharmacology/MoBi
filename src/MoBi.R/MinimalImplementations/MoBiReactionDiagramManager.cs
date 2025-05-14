@@ -40,7 +40,7 @@ namespace MoBi.R.MinimalImplementations
 
       public IDiagramManager<MoBiReactionBuildingBlock> Create()
       {
-         throw new System.NotImplementedException();
+         return null;
       }
 
       public IEnumerable<IMoleculeNode> GetMoleculeNodes(string moleculeName)

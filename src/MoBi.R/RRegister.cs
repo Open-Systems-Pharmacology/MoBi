@@ -1,16 +1,21 @@
 ﻿using MoBi.Core;
 using MoBi.Core.Domain.Model.Diagram;
+using MoBi.Core.Domain.Services;
 using MoBi.Core.Serialization.Xml.Services;
+using MoBi.Core.Services;
 using MoBi.Presentation.Serialization.Xml.Serializer;
+using MoBi.Presentation.Settings;
+using MoBi.Presentation.Tasks;
 using MoBi.R.MinimalImplementations;
-using MoBi.R.Services;
 using OSPSuite.Core;
 using OSPSuite.Core.Journal;
 using OSPSuite.Core.Serialization.Diagram;
 using OSPSuite.Infrastructure.Serialization.ORM.History;
+using OSPSuite.Presentation;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.FileLocker;
 using IContainer = OSPSuite.Utility.Container.IContainer;
+using IProjectTask = MoBi.R.Services.IProjectTask;
 
 namespace MoBi.R
 {
@@ -30,6 +35,7 @@ namespace MoBi.R
 
       private static void registerMinimalTypes(IContainer container)
       {
+         container.Register<ISimulationFactory, SimulationFactory>();
          container.Register<IFileLocker, FileLocker>(LifeStyle.Singleton);
          container.Register<ISpatialStructureDiagramManager, SpatialStructureDiagramManager>();
          container.Register<IDiagramModelToXmlMapper, DiagramModelToXmlMapper>();
@@ -39,6 +45,9 @@ namespace MoBi.R
          container.Register<IMoBiConfiguration, IApplicationConfiguration, MoBiConfiguration>(LifeStyle.Singleton);
          container.Register<IMoBiXmlSerializerRepository, MoBiXmlSerializerRepository>(LifeStyle.Singleton);
          container.Register<IHistoryManagerFactory, HistoryManagerFactory>(LifeStyle.Singleton);
+         container.Register<IDiagramManagerFactory, DiagramManagerFactory>(LifeStyle.Singleton);
+         container.Register<IDimensionValidator, DimensionValidator>(LifeStyle.Singleton);
+         container.Register<IPresentationUserSettings, IUserSettings, ICoreUserSettings, BatchUserSettings>(LifeStyle.Transient);
       }
    }
 }

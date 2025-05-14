@@ -101,5 +101,31 @@ namespace MoBi.R.Tests.Services
          _simulationNames.ShouldContain("Simulation1");
          _simulationNames.ShouldContain("Simulation2");
       }
+      internal class when_creating_simulation_from_module_names : concern_for_ProjectTask
+      {
+         private IReadOnlyList<string> _moduleNames;
+         private MoBiProject _project;
+         private string _simulationName;
+         protected override void Context()
+         {
+            base.Context();
+
+            var projectFile = TestFileFullPath("SampleProject.mbp3");
+            _project = sut.GetProject(projectFile);
+         }
+
+         protected override void Because()
+         {
+            _moduleNames = sut.GetModuleNames(_project);
+            var expressionProfileNames = sut.GetExpressionProfileNames(_project);
+            _simulationName = sut.CreateSimulation(_moduleNames, expressionProfileNames, "","Sim1");
+         }
+
+         [Test]
+         public void should_return_simulation_name()
+         {
+            _simulationName.ShouldNotBeNull();
+         }
+      }
    }
 }
