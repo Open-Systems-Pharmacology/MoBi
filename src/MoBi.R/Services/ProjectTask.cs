@@ -3,6 +3,7 @@ using System.Linq;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Serialization.ORM;
 using OSPSuite.Core.Domain;
+using OSPSuite.R.Domain;
 
 namespace MoBi.R.Services
 {
@@ -12,7 +13,7 @@ namespace MoBi.R.Services
       IReadOnlyList<string> GetModuleNames(MoBiProject moBiProject);
       IReadOnlyList<string> GetSimulationNames(MoBiProject moBiProject);
       IReadOnlyList<string> GetBuildingBlocksNamesFromModuleName(string moduleName);
-      IReadOnlyList<IMoBiSimulation> GetSimulations();
+      IReadOnlyList<Simulation> GetSimulations();
    }
 
    public class ProjectTask : IProjectTask
@@ -49,7 +50,7 @@ namespace MoBi.R.Services
       public IReadOnlyList<string> GetSimulationNames(MoBiProject moBiProject) =>
          moBiProject.Simulations.Select(x => x.Name).ToList();
 
-      public IReadOnlyList<IMoBiSimulation> GetSimulations() =>
-         _moBiContext.CurrentProject.Simulations;
+      public IReadOnlyList<Simulation> GetSimulations() =>
+         _moBiContext.CurrentProject.Simulations.Select(x=> new Simulation(x)).ToList();
    }
 }

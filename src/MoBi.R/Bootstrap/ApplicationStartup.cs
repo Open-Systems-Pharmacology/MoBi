@@ -13,8 +13,6 @@ namespace MoBi.R.Bootstrap
 {
    internal class ApplicationStartup
    {
-      public static IContainer _container;
-
       public static void Initialize(ApiConfig apiConfig)
       {
          OSPSuite.R.Api.InitializeOnce(apiConfig, registerAction);
