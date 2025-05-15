@@ -17,6 +17,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.FuncParser;
 using OSPSuite.Infrastructure.Export;
 using OSPSuite.Infrastructure.Import;
