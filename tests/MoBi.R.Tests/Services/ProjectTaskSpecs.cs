@@ -2,11 +2,14 @@
 using System.Linq;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
+using MoBi.R.Domain;
 using MoBi.R.Services;
 using NUnit.Framework;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
 using OSPSuite.R.Domain;
 using static MoBi.R.Tests.DomainHelperForSpecs;
+using ModuleConfiguration = MoBi.R.Domain.ModuleConfiguration;
 
 namespace MoBi.R.Tests.Services
 {
@@ -102,44 +105,6 @@ namespace MoBi.R.Tests.Services
          _simulationNames.Count.ShouldBeEqualTo(2);
          _simulationNames.ShouldContain("Simulation1");
          _simulationNames.ShouldContain("Simulation2");
-      }
-      internal class when_creating_simulation_from_module_names : concern_for_ProjectTask
-      {
-         private IReadOnlyList<string> _moduleNames;
-         private MoBiProject _project;
-         private Simulation _simulation;
-         private string _simulationName;
-         protected override void Context()
-         {
-            base.Context();
-
-            var projectFile = TestFileFullPath("SampleProject.mbp3");
-            _project = sut.GetProject(projectFile);
-         }
-
-         protected override void Because()
-         {
-            _simulationName = "Sim1";
-            _moduleNames = sut.GetModuleNames(_project);
-            var expressionProfileNames = sut.GetExpressionProfileNames(_project);
-            var simulationConfig = new SimulationConfiguration();
-            
-            simulationConfig.ModuleConfigurations.AddRange(_moduleNames.Select(x=> new ModuleConfiguration{ModuleName = x}));//Add parameterValuename and ...
-            simulationConfig.IndividualName = "";
-            simulationConfig.ExpressionProfileNames = expressionProfileNames.ToList();
-            simulationConfig.SimulationName = _simulationName;
-            _simulation = sut.CreateSimulationFrom(simulationConfig);
-         }
-
-         [Test]
-         public void should_return_simulation_name()
-         {
-            _simulation.ShouldNotBeNull();
-            _simulation.Name.ShouldBeEqualTo(_simulationName);
-         }
-      }
+      } 
    }
-
-  
-
 }

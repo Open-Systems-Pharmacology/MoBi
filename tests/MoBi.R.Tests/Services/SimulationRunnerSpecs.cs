@@ -78,7 +78,7 @@ namespace MoBi.R.Tests.Services
 
    public class When_running_a_simulation_from_mobi_project : concern_for_SimulationRunner
    {
-      private IMoBiSimulation _simulation;
+      private OSPSuite.R.Domain.Simulation _simulation;
       private SimulationResults _results;
       private SimulationRunResults _simulationRunResults;
 
