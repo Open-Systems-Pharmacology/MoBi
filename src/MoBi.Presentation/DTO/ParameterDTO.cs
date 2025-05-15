@@ -6,6 +6,7 @@ using MoBi.Assets;
 using MoBi.Core.Helper;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.DTO;
@@ -179,5 +180,7 @@ namespace MoBi.Presentation.DTO
       public string ModuleName => SourceReference?.Module?.Name ?? string.Empty;
       public string BuildingBlockName => SourceReference?.BuildingBlock.Name ?? string.Empty;
       public string SourceName => SourceReference?.Source.Name ?? string.Empty;
+
+      public IBuildingBlock BuildingBlock => SourceReference?.BuildingBlock;
    }
 }

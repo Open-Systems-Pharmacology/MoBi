@@ -19,7 +19,6 @@ using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using MoBi.UI.Extensions;
-using MoBi.UI.Services;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
@@ -33,7 +32,9 @@ using OSPSuite.UI.Binders;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
+using OSPSuite.UI.Services;
 using OSPSuite.Utility.Extensions;
+using IToolTipCreator = MoBi.UI.Services.IToolTipCreator;
 using ToolTips = MoBi.Assets.ToolTips;
 
 namespace MoBi.UI.Views
@@ -64,8 +65,9 @@ namespace MoBi.UI.Views
       private IGridViewBoundColumn<ParameterDTO, string> _colModule;
       private IGridViewBoundColumn<ParameterDTO, string> _colBuildingBlock;
       private IGridViewColumn<ParameterDTO> _colNavigate;
+      private readonly IImageListRetriever _imageListRetriever;
 
-      public EditParametersInContainerView(IToolTipCreator toolTipCreator, ValueOriginBinder<ParameterDTO> valueOriginBinder)
+      public EditParametersInContainerView(IToolTipCreator toolTipCreator, ValueOriginBinder<ParameterDTO> valueOriginBinder, IImageListRetriever imageListRetriever)
       {
          _toolTipCreator = toolTipCreator;
          _valueOriginBinder = valueOriginBinder;
@@ -88,6 +90,7 @@ namespace MoBi.UI.Views
          gridView.PopupMenuShowing += OnPopupMenuShowing;
          _checkBoxRepository = new UxRepositoryItemCheckEdit(gridView);
          _screenBinder = new ScreenBinder<IEditParametersInContainerPresenter>();
+         _imageListRetriever = imageListRetriever;
       }
 
       private void OnPopupMenuShowing(object sender, PopupMenuShowingEventArgs e)
@@ -170,6 +173,7 @@ namespace MoBi.UI.Views
             .AsReadOnly();
 
          _colBuildingBlock = _gridViewBinder.Bind(dto => dto.BuildingBlockName)
+            .WithRepository(buildingBlockRepository)
             .WithCaption(AppConstants.Captions.BuildingBlock)
             .AsReadOnly();
 
@@ -246,6 +250,16 @@ namespace MoBi.UI.Views
             .To(cbSelectIndividual)
             .WithValues(x => x.AllIndividuals)
             .OnValueUpdated += (o, e) => OnEvent(_presenter.UpdatePreview);
+      }
+
+      private RepositoryItem buildingBlockRepository(ParameterDTO parameterDTO)
+      {
+         var buildingBlock = parameterDTO.BuildingBlock;
+         var repository = new UxRepositoryItemImageComboBox(gridView, _imageListRetriever);
+         if (buildingBlock != null)
+            repository.AddItem(buildingBlock.Name, buildingBlock.Icon);
+
+         return repository;
       }
 
       private void onRowStyle(RowStyleEventArgs e)
@@ -364,10 +378,10 @@ namespace MoBi.UI.Views
          _colBuildingBlock.Visible = _presenter.HasBuildingBlocks();
          _colNavigate.Visible = _colBuildingBlock.Visible;
 
-         if(_colBuildingBlock.Visible)
+         if (_colBuildingBlock.Visible)
             _colBuildingBlock.XtraColumn.VisibleIndex = _colValue.XtraColumn.VisibleIndex + 1;
 
-         if(_colModule.Visible)
+         if (_colModule.Visible)
             _colModule.XtraColumn.VisibleIndex = _colValue.XtraColumn.VisibleIndex + 1;
 
          if (_colNavigate.Visible)
