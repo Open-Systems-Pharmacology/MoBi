@@ -46,6 +46,7 @@ namespace MoBi.UI.Views
       private IGridViewBoundColumn<ParameterDTO, string> _colBuildingBlock;
       private IGridViewColumn<ParameterDTO> _colNavigate;
       private readonly RepositoryItemButtonEdit _navigateButtonRepository = new UxRepositoryItemButtonEdit(ButtonPredefines.Search);
+      private readonly IImageListRetriever _imageListRetriever;
       public BarManager PopupBarManager { get; }
 
       public EditParameterListView(PathElementsBinder<ParameterDTO> pathBinder,
@@ -54,6 +55,7 @@ namespace MoBi.UI.Views
          ValueOriginBinder<ParameterDTO> valueOriginBinder)
       {
          InitializeComponent();
+         _imageListRetriever = imageListRetriever;
          _valueOriginBinder = valueOriginBinder;
          _gridViewBinder = new GridViewBinder<ParameterDTO>(_gridView);
          _unitControl = new UxComboBoxUnit<ParameterDTO>(_gridControl);
@@ -72,6 +74,16 @@ namespace MoBi.UI.Views
          toolTipController.Initialize();
          toolTipController.GetActiveObjectInfo += onToolTipControllerGetActiveObjectInfo;
          _gridControl.ToolTipController = toolTipController;
+      }
+
+      private RepositoryItem buildingBlockRepository(ParameterDTO parameterDTO)
+      {
+         var buildingBlock = parameterDTO.BuildingBlock;
+         var repository = new UxRepositoryItemImageComboBox(_gridView, _imageListRetriever);
+         if (buildingBlock != null)
+            repository.AddItem(buildingBlock.Name, buildingBlock.Icon);
+
+         return repository;
       }
 
       public override void InitializeResources()
@@ -144,6 +156,7 @@ namespace MoBi.UI.Views
             .AsReadOnly();
 
          _colBuildingBlock = _gridViewBinder.Bind(dto => dto.BuildingBlockName)
+            .WithRepository(buildingBlockRepository)
             .WithCaption(AppConstants.Captions.BuildingBlock)
             .AsReadOnly();
 
