@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.R.Services;
 using NUnit.Framework;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.R.Domain;
 using static MoBi.R.Tests.DomainHelperForSpecs;
 
 namespace MoBi.R.Tests.Services
@@ -105,6 +107,7 @@ namespace MoBi.R.Tests.Services
       {
          private IReadOnlyList<string> _moduleNames;
          private MoBiProject _project;
+         private Simulation _simulation;
          private string _simulationName;
          protected override void Context()
          {
@@ -116,16 +119,27 @@ namespace MoBi.R.Tests.Services
 
          protected override void Because()
          {
+            _simulationName = "Sim1";
             _moduleNames = sut.GetModuleNames(_project);
             var expressionProfileNames = sut.GetExpressionProfileNames(_project);
-            _simulationName = sut.CreateSimulation(_moduleNames, expressionProfileNames, "","Sim1");
+            var simulationConfig = new SimulationConfiguration();
+            
+            simulationConfig.ModuleConfigurations.AddRange(_moduleNames.Select(x=> new ModuleConfiguration{ModuleName = x}));//Add parameterValuename and ...
+            simulationConfig.IndividualName = "";
+            simulationConfig.ExpressionProfileNames = expressionProfileNames.ToList();
+            simulationConfig.SimulationName = _simulationName;
+            _simulation = sut.CreateSimulationFrom(simulationConfig);
          }
 
          [Test]
          public void should_return_simulation_name()
          {
-            _simulationName.ShouldNotBeNull();
+            _simulation.ShouldNotBeNull();
+            _simulation.Name.ShouldBeEqualTo(_simulationName);
          }
       }
    }
+
+  
+
 }

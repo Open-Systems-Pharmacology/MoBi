@@ -10,9 +10,25 @@ using OSPSuite.Utility.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OSPSuite.R.Domain;
 
 namespace MoBi.R.Services
 {
+   public class SimulationConfiguration
+   {
+      public string IndividualName { get; set; }
+      public List<ModuleConfiguration> ModuleConfigurations { get; set; } = new List<ModuleConfiguration>();
+      public List<string> ExpressionProfileNames { get; set; } = new List<string>();
+      public string SimulationName { get; set; }
+   }
+   public class ModuleConfiguration
+   {
+      public string ModuleName { get; set; }
+      public string SelectedParameterValueName { get; set; }
+      public string SelectedInitialConditionsName { get; set; }
+
+
+   }
    public interface IProjectTask
    {
       MoBiProject GetProject(string fileName);
@@ -21,7 +37,7 @@ namespace MoBi.R.Services
       IReadOnlyList<string> GetSimulationNames(MoBiProject moBiProject);
       IReadOnlyList<string> GetBuildingBlocksNamesFromModuleName(string moduleName);
       IReadOnlyList<IMoBiSimulation> GetSimulations();
-      string CreateSimulation(IEnumerable<string> moduleNames, IEnumerable<string> expressionProfileNames, string individualName, string simulationName);
+      Simulation CreateSimulationFrom(SimulationConfiguration simulationConfiguration, MoBiProject moBiProject);
    }
 
    public class ProjectTask : IProjectTask
@@ -84,77 +100,10 @@ namespace MoBi.R.Services
       public IReadOnlyList<IMoBiSimulation> GetSimulations() =>
          _moBiContext.CurrentProject.Simulations;
 
-      public string CreateSimulation(IEnumerable<string> moduleNames, IEnumerable<string> expressionProfileNames, string individualName, string simulationName)
+      Simulation CreateSimulationFrom(SimulationConfiguration simulationConfiguration, MoBiProject moBiProject)
       {
-         var builder = new Domain.SimulationBuilder(_moBiContext, _simulationConfigurationFactory, _simulationFactory);
-         var simulation = builder
-            .WithModules(moduleNames)
-            .WithExpressionProfiles(expressionProfileNames)
-            .WithIndividual(individualName)
-            .WithName(simulationName)
-            .Build();
-
-         return simulation.Name;
-      }
-
-      private SimulationConfiguration addIndividualToSimulationConfiguration(string individualName, SimulationConfiguration simulationConfiguration)
-      {
-         var individual = _moBiContext.CurrentProject.IndividualsCollection.FirstOrDefault(x => x.Name.Equals(individualName));
-         if(individual!=null)
-            simulationConfiguration.Individual = individual;
-
-         return simulationConfiguration;
-      }
-
-      private SimulationConfiguration addExpressionProfilesToSimulationConfiguration(IEnumerable<string> expressionProfileNames, SimulationConfiguration simulationConfiguration)
-      {
-         var expressionProfileBuildingBlocks = new List<ExpressionProfileBuildingBlock>();
-         foreach (var expressionProfileName in expressionProfileNames)
-         {
-            var expressionProfile = getExpressionProfileFromProject(_moBiContext.CurrentProject, expressionProfileName);
-            if(expressionProfile!=null)
-               expressionProfileBuildingBlocks.Add(expressionProfile);
-         }
+         var builder = new Domain.SimulationFactory(_moBiContext, _simulationConfigurationFactory, _simulationFactory);
          
-         expressionProfileBuildingBlocks.Each(simulationConfiguration.AddExpressionProfile);
-         return simulationConfiguration;
-      }
-
-
-      private IMoBiSimulation createSimulationFromSimulationConfiguration(SimulationConfiguration simulationConfiguration, string simulationName)
-      {
-         var simulation = _simulationFactory.CreateSimulationAndValidate(simulationConfiguration, simulationName);
-         if (_moBiContext.CurrentProject.Simulations.Any(x => x.Name == simulation.Name))
-            throw new Exception("Simulation already exists on this project");
-
-         _moBiContext.CurrentProject.AddSimulation(simulation);
-
-         return simulation;
-      }
-
-      private SimulationConfiguration createSimulationConfigurationFromModuleNames(IEnumerable<string> moduleNames)
-      {
-         var simulationConfiguration = _simulationConfigurationFactory.Create();
-         var moduleConfigurationDTOs = createModuleConfigurationFromModuleNames(moduleNames);
-         moduleConfigurationDTOs.Each(simulationConfiguration.AddModuleConfiguration);
-         return simulationConfiguration;
-      }
-
-      private List<ModuleConfiguration> createModuleConfigurationFromModuleNames(IEnumerable<string> moduleNames)
-      {
-         var modules = moduleNames
-            .Select(name => _moBiContext.CurrentProject.ModuleByName(name))
-            .Where(module => module != null)
-            .ToList();
-
-         if (!modules.Any())
-            throw new ArgumentException("No valid modules found for given names");
-
-         var moduleConfigurationDTOs = modules
-            .Select(module => new ModuleConfiguration(module))
-            .ToList();
-
-         return moduleConfigurationDTOs;
       }
    }
 }
