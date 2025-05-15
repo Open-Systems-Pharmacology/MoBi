@@ -96,12 +96,11 @@ namespace MoBi.R.Tests.Services
          _buildingBlockNames = sut.GetBuildingBlocksNamesFromModuleName(moduleNames.First());
       }
 
-      [Test]
+      [Observation]
       public void should_return_module_building_blocks_names()
       {
          _buildingBlockNames.ShouldNotBeNull();
          _buildingBlockNames.ShouldOnlyContain("Organism", "Molecules", "Initial Conditions", "Reactions");
-         ;
       }
    }
 
@@ -123,7 +122,7 @@ namespace MoBi.R.Tests.Services
          _simulationNames = sut.GetSimulationNames(_project);
       }
 
-      [Test]
+      [Observation]
       public void should_return_simulation_names()
       {
          _simulationNames.ShouldNotBeNull();

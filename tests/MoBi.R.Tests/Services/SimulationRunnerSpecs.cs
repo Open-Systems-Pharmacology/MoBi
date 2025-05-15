@@ -63,7 +63,7 @@ namespace MoBi.R.Tests.Services
          _results = sut.Run(new SimulationRunArgs { Simulation = _simulation });
       }
 
-      [Test]
+      [Observation]
       public void should_update_the_persistable_flag_in_the_simulation_based_on_the_simulation_settings()
       {
          A.CallTo(() => _simulationPersitableUpdater.UpdateSimulationPersistable(_simulation)).MustHaveHappened();
