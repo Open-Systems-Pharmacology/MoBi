@@ -9,76 +9,72 @@ namespace MoBi.R.MinimalImplementations
 {
    public class SpatialStructureDiagramManager : ISpatialStructureDiagramManager
    {
-      public MoBiSpatialStructure PkModel => throw new NotImplementedException();
+      public MoBiSpatialStructure PkModel { get; set; }
 
-      public bool IsInitialized => throw new NotImplementedException();
+      public bool IsInitialized { get; set; }
 
-      public IDiagramOptions DiagramOptions => throw new NotImplementedException();
+      public IDiagramOptions DiagramOptions { get; set; }
 
-      public PointF CurrentInsertLocation
-      {
-         get => throw new NotImplementedException();
-         set => throw new NotImplementedException();
-      }
+      public PointF CurrentInsertLocation { get; set; }
 
       public void AddObjectBase(IObjectBase objectBase)
       {
-         throw new NotImplementedException();
+         //Nothing to do
       }
 
       public void Cleanup()
       {
-         throw new NotImplementedException();
+         //Nothing to do
       }
 
       public IDiagramManager<MoBiSpatialStructure> Create()
       {
-         throw new NotImplementedException();
+         return null;
       }
 
       public void InitializeWith(MoBiSpatialStructure pkModel, IDiagramOptions diagramOptions)
       {
-         throw new NotImplementedException();
+         //Nothing to do
       }
 
       public bool InsertLocationHasChanged()
       {
-         throw new NotImplementedException();
+         return false;
       }
 
       public bool MustHandleExisting(string id)
       {
-         throw new NotImplementedException();
+         return false;
       }
 
       public ObjectPath PathForNodeWithoutEntity(IContainerNode containerNode)
       {
-         throw new NotImplementedException();
+         return null;
       }
 
       public void RefreshDiagramFromModel()
       {
-         throw new NotImplementedException();
+         //Nothing to do
       }
 
       public void RefreshFromDiagramOptions()
       {
-         throw new NotImplementedException();
+         //Nothing to do
       }
 
       public void RefreshObjectBase(IObjectBase objectBase)
       {
-         throw new NotImplementedException();
+         //Nothing to do
       }
 
       public void RemoveObjectBase(IObjectBase objectBase)
       {
-         throw new NotImplementedException();
+         //Nothing to do
       }
 
       public void UpdateInsertLocation()
       {
-         throw new NotImplementedException();
+         //Nothing to do
       }
    }
 }

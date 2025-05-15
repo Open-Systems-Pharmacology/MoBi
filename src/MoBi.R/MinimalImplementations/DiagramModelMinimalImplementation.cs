@@ -24,10 +24,12 @@ namespace MoBi.R.MinimalImplementations
 
       public void AddChildNode(IBaseNode node)
       {
+         //nothing to do
       }
 
       public void RemoveChildNode(IBaseNode node)
       {
+         //nothing to do
       }
 
       public bool ContainsChildNode(IBaseNode node, bool recursive)
@@ -42,18 +44,22 @@ namespace MoBi.R.MinimalImplementations
 
       public void SetHiddenRecursive(bool hidden)
       {
+         //nothing to do
       }
 
       public void PostLayoutStep()
       {
+         //nothing to do
       }
 
       public void Collapse(int level)
       {
+         //nothing to do
       }
 
       public void Expand(int level)
       {
+         //nothing to do
       }
 
       public IBaseNode GetNode(string id)
@@ -73,10 +79,12 @@ namespace MoBi.R.MinimalImplementations
 
       public void RemoveNode(string id)
       {
+         //nothing to do
       }
 
       public void RenameNode(string id, string name)
       {
+         //nothing to do
       }
 
       public IDiagramModel CreateCopy(string containerId = null)
@@ -86,6 +94,7 @@ namespace MoBi.R.MinimalImplementations
 
       public void ReplaceNodeIds(IDictionary<string, string> changedIds)
       {
+         //nothing to do
       }
 
       public bool IsEmpty()
@@ -95,30 +104,37 @@ namespace MoBi.R.MinimalImplementations
 
       public void Clear()
       {
+         //nothing to do
       }
 
       public void SetDefaultExpansion()
       {
+         //nothing to do
       }
 
       public void RefreshSize()
       {
+         //nothing to do
       }
 
       public void Undo()
       {
+         //nothing to do
       }
 
       public void ClearUndoStack()
       {
+         //nothing to do
       }
 
       public void BeginUpdate()
       {
+         //nothing to do
       }
 
       public void EndUpdate()
       {
+         //nothing to do
       }
 
       public bool StartTransaction()
@@ -133,6 +149,7 @@ namespace MoBi.R.MinimalImplementations
 
       public void ShowDefaultExpansion()
       {
+         //nothing to do
       }
 
       public IBaseNode FindByName(string name)
@@ -142,6 +159,7 @@ namespace MoBi.R.MinimalImplementations
 
       public void AddNodeId(IBaseNode baseNode)
       {
+         //nothing to do
       }
 
       public bool IsLayouted { get; set; }

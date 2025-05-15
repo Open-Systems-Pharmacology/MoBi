@@ -23,62 +23,62 @@ namespace MoBi.R.MinimalImplementations
 
       public void AddObjectBase(IObjectBase objectBase)
       {
-         throw new NotImplementedException();
+         //Nothing to do
       }
 
       public void Cleanup()
       {
-         throw new NotImplementedException();
+         //Nothing to do
       }
 
       public IDiagramManager<IMoBiSimulation> Create()
       {
-         throw new NotImplementedException();
+         return new SimulationDiagramManager();
       }
 
       public void InitializeWith(IMoBiSimulation pkModel, IDiagramOptions diagramOptions)
       {
-         throw new NotImplementedException();
+         //Nothing to do
       }
 
       public bool InsertLocationHasChanged()
       {
-         throw new NotImplementedException();
+         return false;
       }
 
       public bool MustHandleExisting(string id)
       {
-         throw new NotImplementedException();
+         return false;
       }
 
       public ObjectPath PathForNodeWithoutEntity(IContainerNode containerNode)
       {
-         throw new NotImplementedException();
+         return null;
       }
 
       public void RefreshDiagramFromModel()
       {
-         throw new NotImplementedException();
+         //Nothing to do
       }
 
       public void RefreshFromDiagramOptions()
       {
-         throw new NotImplementedException();
+         //Nothing to do
       }
 
       public void RefreshObjectBase(IObjectBase objectBase)
       {
-         throw new NotImplementedException();
+         //Nothing to do
       }
 
       public void RemoveObjectBase(IObjectBase objectBase)
       {
-         throw new NotImplementedException();
+         //Nothing to do
       }
 
       public void UpdateInsertLocation()
       {
-         throw new NotImplementedException();
+         //Nothing to do
       }
    }
 }
