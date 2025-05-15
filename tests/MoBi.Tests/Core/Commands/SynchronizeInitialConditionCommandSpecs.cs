@@ -1,7 +1,7 @@
-﻿using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -18,6 +18,7 @@ namespace MoBi.Core.Commands
       private Unit _displayUnit1;
       protected Unit _displayUnit2;
       protected IMoBiContext _context;
+      private IMoBiSimulation _simulation;
 
       protected override void Context()
       {
@@ -25,6 +26,7 @@ namespace MoBi.Core.Commands
          _dimension2 = A.Fake<IDimension>();
          _displayUnit1 = A.Fake<Unit>();
          _displayUnit2 = A.Fake<Unit>();
+         _simulation = new MoBiSimulation();
 
          _moleculeAmount = new MoleculeAmount()
             .WithFormula(new ConstantFormula(10))
@@ -38,7 +40,7 @@ namespace MoBi.Core.Commands
          _moleculeAmount.ValueOrigin.Description = "Hello";
 
          _initialCondition = new InitialCondition();
-         sut = new SynchronizeInitialConditionCommand(_moleculeAmount, _initialCondition, new InitialConditionsBuildingBlock());
+         sut = new SynchronizeInitialConditionCommand(_moleculeAmount, _initialCondition, new InitialConditionsBuildingBlock(), _simulation);
 
          _context = A.Fake<IMoBiContext>();
       }
@@ -52,7 +54,7 @@ namespace MoBi.Core.Commands
          _initialCondition.Dimension = _dimension1;
          _initialCondition.DisplayUnit = _displayUnit2;
          _initialCondition.Value = 20;
-         _initialCondition.ValueOrigin.Method  = ValueOriginDeterminationMethods.InVitro;
+         _initialCondition.ValueOrigin.Method = ValueOriginDeterminationMethods.InVitro;
       }
 
       protected override void Because()
@@ -128,7 +130,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class When_synchronizing_the_value_of_a_molecule_start_value_for_a_start_value_defined_as_a_formula_but_overriden_by_the_user_: concern_for_SynchronizeInitialConditionCommand
+   public class When_synchronizing_the_value_of_a_molecule_start_value_for_a_start_value_defined_as_a_formula_but_overriden_by_the_user_ : concern_for_SynchronizeInitialConditionCommand
    {
       protected override void Context()
       {

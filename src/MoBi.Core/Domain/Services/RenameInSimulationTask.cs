@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
@@ -28,10 +27,12 @@ namespace MoBi.Core.Domain.Services
    public class RenameInSimulationTask : IRenameInSimulationTask
    {
       private readonly IMoBiProjectRetriever _projectRetriever;
+      private readonly ISimulationEntitySourceUpdater _simulationEntitySourceUpdater;
 
-      public RenameInSimulationTask(IMoBiProjectRetriever projectRetriever)
+      public RenameInSimulationTask(IMoBiProjectRetriever projectRetriever, ISimulationEntitySourceUpdater simulationEntitySourceUpdater)
       {
          _projectRetriever = projectRetriever;
+         _simulationEntitySourceUpdater = simulationEntitySourceUpdater;
       }
 
       public void RenameInSimulationUsingTemplateBuildingBlock(string oldName, IBuildingBlock templateBuildingBlock)
@@ -40,16 +41,18 @@ namespace MoBi.Core.Domain.Services
          {
             simulationAndBuildingBlock.Simulation.HasChanged = true;
             simulationAndBuildingBlock.BuildingBlock.Name = templateBuildingBlock.Name;
+
+            _simulationEntitySourceUpdater.UpdateEntitySourcesForBuildingBlockRename(oldName, templateBuildingBlock, simulationAndBuildingBlock.Simulation);
          });
       }
 
-      private IEnumerable<(IMoBiSimulation Simulation, IBuildingBlock BuildingBlock)> getBuildingBlocksWithMatchingNameAndType(string nameToMatch, IBuildingBlock templBuildingBlock)
+      private IEnumerable<(IMoBiSimulation Simulation, IBuildingBlock BuildingBlock)> getBuildingBlocksWithMatchingNameAndType(string nameToMatch, IBuildingBlock templateBuildingBlock)
       {
          return _projectRetriever.Current.Simulations.SelectMany(simulation =>
          {
             // We cannot test for in use using the members of simulation. The standard in-use or created-by tests match based on names.
             // Here, the names do not match because the building block has already been renamed
-            return simulation.BuildingBlocks().Where(buildingBlock => buildingBlock.IsTemplateMatchFor(templBuildingBlock, nameToMatch))
+            return simulation.BuildingBlocks().Where(buildingBlock => buildingBlock.IsTemplateMatchFor(templateBuildingBlock, nameToMatch))
                .Select(b => (simulation, b));
          });
       }
@@ -62,6 +65,8 @@ namespace MoBi.Core.Domain.Services
             // Here, the names do not match because the module has already been renamed
             simulation.Modules.Where(module => module.IsNamed(oldModuleName))
                .Each(module => renameModules(simulation, module, templateModule.Name));
+
+            _simulationEntitySourceUpdater.UpdateEntitySourcesForModuleRename(oldModuleName, templateModule.Name, simulation);
          });
       }
 

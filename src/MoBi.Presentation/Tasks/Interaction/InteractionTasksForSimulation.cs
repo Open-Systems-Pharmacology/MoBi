@@ -10,7 +10,7 @@ using MoBi.Core.Services;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Assets;
-using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Commands;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
@@ -41,8 +41,8 @@ namespace MoBi.Presentation.Tasks.Interaction
       IReadOnlyList<Module> FindChangedModules(IMoBiSimulation simulation);
 
       /// <summary>
-      /// Create a clone of the <paramref name="simulationToClone"/> and add it to the current project
-      /// Returns the cloned simulation if created, otherwise null
+      ///    Create a clone of the <paramref name="simulationToClone" /> and add it to the current project
+      ///    Returns the cloned simulation if created, otherwise null
       /// </summary>
       IMoBiSimulation CloneSimulation(IMoBiSimulation simulationToClone);
    }
@@ -58,7 +58,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          IEditTasksForSimulation editTask,
          ISimulationReferenceUpdater simulationReferenceUpdater,
          ISimulationFactory simulationFactory,
-         ITemplateResolverTask templateResolverTask, 
+         ITemplateResolverTask templateResolverTask,
          ICloneManagerForSimulation cloneManager)
          : base(interactionTaskContext, editTask)
       {
@@ -175,7 +175,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new AddSimulationCommand(simulation);
       }
 
-      public IReadOnlyList<IBuildingBlock> FindChangedBuildingBlocks(IMoBiSimulation simulation) => 
+      public IReadOnlyList<IBuildingBlock> FindChangedBuildingBlocks(IMoBiSimulation simulation) =>
          simulation.BuildingBlocks().Where(buildingBlock => TemplateBuildingBlockFor(buildingBlock).Version != buildingBlock.Version).ToList();
 
       public IReadOnlyList<Module> FindChangedModules(IMoBiSimulation simulation)
@@ -193,7 +193,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          // during cloning, we don't need to track the rename in history since the simulation is not yet added to the project
          new RenameModelCommand(newSimulation.Model, newName).RunCommand(_interactionTaskContext.Context);
-         
+
          return newSimulation;
       }
 

@@ -1,7 +1,9 @@
-﻿using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Services;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
@@ -16,21 +18,37 @@ namespace MoBi.Core.Commands
       protected IMoBiContext _context;
       private IEntityPathResolver _entityPathResolver;
       protected IParameterValuesCreator _parameterValuesCreator;
+      protected IMoBiSimulation _simulation;
+      protected ISimulationEntitySourceUpdater _entitySourceUpdater;
+      private MoBiProject _project;
 
       protected override void Context()
       {
          _parameterValuesBuildingBlock = new ParameterValuesBuildingBlock().WithId("PSVBB");
          _objectPath = new ObjectPath("A", "B", "P");
          _parameter = A.Fake<IParameter>().WithName("P").WithId("P");
-         sut = new AddParameterValueFromQuantityInSimulationCommand(_parameter, _parameterValuesBuildingBlock);
-
+         _simulation = new MoBiSimulation();
+         _project = new MoBiProject();
+         _simulation.Model = new Model
+         {
+            Root = new Container
+            {
+               _parameter
+            }
+         };
+         sut = new AddParameterValueFromQuantityInSimulationCommand(_parameter, _parameterValuesBuildingBlock, _simulation);
+         _project.AddSimulation(_simulation);
          _context = A.Fake<IMoBiContext>();
+
          _parameterValuesCreator = A.Fake<IParameterValuesCreator>();
          _entityPathResolver = A.Fake<IEntityPathResolver>();
+         _entitySourceUpdater = A.Fake<ISimulationEntitySourceUpdater>();
          A.CallTo(() => _context.Resolve<IEntityPathResolver>()).Returns(_entityPathResolver);
+         A.CallTo(() => _context.Resolve<ISimulationEntitySourceUpdater>()).Returns(_entitySourceUpdater);
          A.CallTo(() => _context.Resolve<IParameterValuesCreator>()).Returns(_parameterValuesCreator);
          A.CallTo(() => _context.Get<IParameter>(_parameter.Id)).Returns(_parameter);
          A.CallTo(() => _context.Get<PathAndValueEntityBuildingBlock<ParameterValue>>(_parameterValuesBuildingBlock.Id)).Returns(_parameterValuesBuildingBlock);
+         A.CallTo(() => _context.CurrentProject).Returns(_project);
 
          A.CallTo(() => _entityPathResolver.ObjectPathFor(_parameter, false)).Returns(_objectPath);
       }
@@ -43,7 +61,7 @@ namespace MoBi.Core.Commands
       protected override void Context()
       {
          base.Context();
-         _parameterValue = new ParameterValue {Path = _objectPath};
+         _parameterValue = new ParameterValue { Path = _objectPath };
          A.CallTo(() => _parameterValuesCreator.CreateParameterValue(_objectPath, _parameter)).Returns(_parameterValue);
       }
 
@@ -57,6 +75,12 @@ namespace MoBi.Core.Commands
       {
          _parameterValuesBuildingBlock[_objectPath].ShouldBeEqualTo(_parameterValue);
       }
+
+      [Observation]
+      public void the_source_must_be_updated_in_the_simulation()
+      {
+         A.CallTo(() => _entitySourceUpdater.UpdateSourcesForNewPathAndValueEntity(_parameterValuesBuildingBlock, _objectPath, _simulation)).MustHaveHappened();
+      }
    }
 
    public class adding_a_parameter_value_based_on_a_simulation_parameter_to_a_building_block_defined_in_a_simulation_that_already_exists : concern_for_AddParameterValueFromQuantityInSimulationCommand
@@ -66,7 +90,7 @@ namespace MoBi.Core.Commands
       protected override void Context()
       {
          base.Context();
-         _parameterValue = new ParameterValue {Path = _objectPath};
+         _parameterValue = new ParameterValue { Path = _objectPath };
          _parameterValuesBuildingBlock.Add(_parameterValue);
       }
 
@@ -87,7 +111,7 @@ namespace MoBi.Core.Commands
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _parameterValuesCreator.CreateParameterValue(_objectPath, _parameter)).Returns(new ParameterValue {Path = _objectPath});
+         A.CallTo(() => _parameterValuesCreator.CreateParameterValue(_objectPath, _parameter)).Returns(new ParameterValue { Path = _objectPath });
       }
 
       protected override void Because()
@@ -99,6 +123,30 @@ namespace MoBi.Core.Commands
       public void should_have_removed_the_added_parameter_start_value()
       {
          _parameterValuesBuildingBlock[_objectPath].ShouldBeNull();
+      }
+   }
+
+   public class reverting_and_reverting_again_the_add_parameter_value_from_quantity_in_simulation_command : concern_for_AddParameterValueFromQuantityInSimulationCommand
+   {
+      private ParameterValue _parameterValue;
+
+      protected override void Context()
+      {
+         base.Context();
+         _parameterValue = new ParameterValue { Path = _objectPath };
+         A.CallTo(() => _parameterValuesCreator.CreateParameterValue(_objectPath, _parameter)).Returns(_parameterValue);
+      }
+
+      protected override void Because()
+      {
+         var inverse = sut.ExecuteAndInvokeInverse(_context) as IReversibleCommand<IMoBiContext>;
+         inverse.InvokeInverse(_context);
+      }
+
+      [Observation]
+      public void should_add_a_new_parameter_start_value_in_the_given_building_block()
+      {
+         _parameterValuesBuildingBlock[_objectPath].ShouldBeEqualTo(_parameterValue);
       }
    }
 }
