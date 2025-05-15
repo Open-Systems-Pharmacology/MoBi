@@ -1,14 +1,9 @@
-name: Build and Test
+name: Build and Test V13
 
 on:
   pull_request:
     branches:
-    - develop
-
-env:
-  MAJOR: 12
-  MINOR: 1
-  RUN: ${{ github.run_number }}
+    - V13
 
 jobs:
 
@@ -29,7 +24,7 @@ jobs:
           dotnet restore
 
       - name: Build
-        run: msbuild MoBi.sln /p:Version=12.1.9999
+        run: msbuild MoBi.sln /p:Version=13.0.9999
 
       - name: Test
         run: dotnet test .\tests\**\bin\Debug\net472\MoBi*Tests.dll -v normal --no-build  --logger:"html;LogFileName=../testLog_Windows.html"
