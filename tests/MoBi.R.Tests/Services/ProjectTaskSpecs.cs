@@ -93,7 +93,7 @@ namespace MoBi.R.Tests.Services
       protected override void Because()
       {
          var moduleNames = sut.GetModuleNames(_project);
-         _buildingBlockNames = sut.GetBuildingBlocksNamesFromModuleName(moduleNames.First());
+         _buildingBlockNames = sut.GetBuildingBlocksNamesFromModuleName(_project, moduleNames.First());
       }
 
       [Observation]

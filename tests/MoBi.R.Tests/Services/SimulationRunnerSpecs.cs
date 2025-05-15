@@ -87,8 +87,8 @@ namespace MoBi.R.Tests.Services
       {
          base.Context();
          var projectFile = TestFileFullPath("SampleProjectWith2Simulations.mbp3");
-         _projectTask.GetProject(projectFile);
-         _simulation = _projectTask.GetSimulations().FirstOrDefault();
+         var project = _projectTask.GetProject(projectFile);
+         _simulation = _projectTask.GetSimulations(project).FirstOrDefault();
       }
 
       protected override void Because()
