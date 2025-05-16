@@ -17,4 +17,8 @@
     <ProjectReference Include="..\MoBi.Presentation\MoBi.Presentation.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Domain\" />
+  </ItemGroup>
+
 </Project>

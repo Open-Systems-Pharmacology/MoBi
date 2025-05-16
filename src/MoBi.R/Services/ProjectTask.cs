@@ -6,6 +6,7 @@ using MoBi.Core.Services;
 using MoBi.R.Domain;
 using OSPSuite.Core.Domain;
 using OSPSuite.R.Domain;
+using OSPSuite.R.Domain;
 using ISimulationFactory = MoBi.R.Services.ISimulationFactory;
 
 namespace MoBi.R.Services
@@ -16,8 +17,8 @@ namespace MoBi.R.Services
       IReadOnlyList<string> GetModuleNames(MoBiProject moBiProject);
       IReadOnlyList<string> GetExpressionProfileNames(MoBiProject moBiProject);
       IReadOnlyList<string> GetSimulationNames(MoBiProject moBiProject);
-      IReadOnlyList<string> GetBuildingBlocksNamesFromModuleName(string moduleName);
-      IReadOnlyList<Simulation> GetSimulations();
+      IReadOnlyList<string> GetBuildingBlocksNamesFromModuleName(MoBiProject moBiProject, string moduleName);
+      IReadOnlyList<Simulation> GetSimulations(MoBiProject moBiProject);
    }
 
    public class ProjectTask : IProjectTask
@@ -43,9 +44,9 @@ namespace MoBi.R.Services
       public IReadOnlyList<string> GetModuleNames(MoBiProject moBiProject) =>
          moBiProject.Modules.AllNames();
 
-      public IReadOnlyList<string> GetBuildingBlocksNamesFromModuleName(string moduleName)
+      public IReadOnlyList<string> GetBuildingBlocksNamesFromModuleName(MoBiProject moBiProject, string moduleName)
       {
-         var module = _moBiContext.CurrentProject.ModuleByName(moduleName);
+         var module = moBiProject.ModuleByName(moduleName);
          if (module != null)
             return module.BuildingBlocks.AllNames();
 
@@ -62,7 +63,7 @@ namespace MoBi.R.Services
       public IReadOnlyList<string> GetSimulationNames(MoBiProject moBiProject) =>
          moBiProject.Simulations.Select(x => x.Name).ToList();
 
-      public IReadOnlyList<Simulation> GetSimulations() =>
-         _moBiContext.CurrentProject.Simulations.Select(x => new Simulation(x)).ToList();
+      public IReadOnlyList<Simulation> GetSimulations(MoBiProject moBiProject) =>
+         moBiProject.Simulations.Select(x=> new Simulation(x)).ToList();
    }
 }

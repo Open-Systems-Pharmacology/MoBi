@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using FakeItEasy;
-using MoBi.Core.Domain.Model;
+using OSPSuite.R.Domain;
 using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -14,6 +14,7 @@ using OSPSuite.Utility.Events;
 using static MoBi.R.Tests.DomainHelperForSpecs;
 using SimulationRunner = OSPSuite.R.Services.SimulationRunner;
 using IProjectTask = MoBi.R.Services.IProjectTask;
+using Simulation = OSPSuite.R.Domain.Simulation;
 
 namespace MoBi.R.Tests.Services
 {
@@ -62,7 +63,7 @@ namespace MoBi.R.Tests.Services
          _results = sut.Run(new SimulationRunArgs { Simulation = _simulation });
       }
 
-      [Test]
+      [Observation]
       public void should_update_the_persistable_flag_in_the_simulation_based_on_the_simulation_settings()
       {
          A.CallTo(() => _simulationPersitableUpdater.UpdateSimulationPersistable(_simulation)).MustHaveHappened();
@@ -78,7 +79,7 @@ namespace MoBi.R.Tests.Services
 
    public class When_running_a_simulation_from_mobi_project : concern_for_SimulationRunner
    {
-      private OSPSuite.R.Domain.Simulation _simulation;
+      private Simulation _simulation;
       private SimulationResults _results;
       private SimulationRunResults _simulationRunResults;
 
@@ -86,8 +87,8 @@ namespace MoBi.R.Tests.Services
       {
          base.Context();
          var projectFile = TestFileFullPath("SampleProjectWith2Simulations.mbp3");
-         _projectTask.GetProject(projectFile);
-         _simulation = _projectTask.GetSimulations().FirstOrDefault();
+         var project = _projectTask.GetProject(projectFile);
+         _simulation = _projectTask.GetSimulations(project).FirstOrDefault();
       }
 
       protected override void Because()

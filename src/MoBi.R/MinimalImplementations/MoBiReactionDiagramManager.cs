@@ -10,122 +10,122 @@ namespace MoBi.R.MinimalImplementations
 {
    public class MoBiReactionDiagramManager : IMoBiReactionDiagramManager
    {
-      public MoBiReactionBuildingBlock PkModel => throw new System.NotImplementedException();
+      public MoBiReactionBuildingBlock PkModel { get; set; }
 
-      public bool IsInitialized => throw new System.NotImplementedException();
+      public bool IsInitialized { get; set; }
 
-      public IDiagramOptions DiagramOptions => throw new System.NotImplementedException();
+      public IDiagramOptions DiagramOptions { get; set; }
 
-      public PointF CurrentInsertLocation { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+      public PointF CurrentInsertLocation { get; set; }
 
       public void AddMolecule(ReactionBuilder reactionBuilder, string moleculeName)
       {
-         throw new System.NotImplementedException();
+         //Nothing to do
       }
 
       public IMoleculeNode AddMoleculeNode(string moleculeName)
       {
-         throw new System.NotImplementedException();
+         return null;
       }
 
       public void AddObjectBase(IObjectBase objectBase)
       {
-         throw new System.NotImplementedException();
+         //Nothing to do
       }
 
       public void Cleanup()
       {
-         throw new System.NotImplementedException();
+         //Nothing to do
       }
 
       public IDiagramManager<MoBiReactionBuildingBlock> Create()
       {
-         return null;
+         return new MoBiReactionDiagramManager();
       }
 
       public IEnumerable<IMoleculeNode> GetMoleculeNodes(string moleculeName)
       {
-         throw new System.NotImplementedException();
+         return new List<IMoleculeNode>();
       }
 
       public IEnumerable<IMoleculeNode> GetMoleculeNodes()
       {
-         throw new System.NotImplementedException();
+         return new List<IMoleculeNode>();
       }
 
       public void InitializeWith(MoBiReactionBuildingBlock pkModel, IDiagramOptions diagramOptions)
       {
-         throw new System.NotImplementedException();
+         //Nothing to do
       }
 
       public bool InsertLocationHasChanged()
       {
-         throw new System.NotImplementedException();
+         return false;
       }
 
       public bool MustHandleExisting(string id)
       {
-         throw new System.NotImplementedException();
+         return false;
       }
 
       public ObjectPath PathForNodeWithoutEntity(IContainerNode containerNode)
       {
-         throw new System.NotImplementedException();
+         return new ObjectPath();
       }
 
       public IReactionNode ReactionNodeFor(ReactionBuilder reactionBuilder)
       {
-         throw new System.NotImplementedException();
+         return null;
       }
 
       public void RefreshDiagramFromModel()
       {
-         throw new System.NotImplementedException();
+         //Nothing to do
       }
 
       public void RefreshFromDiagramOptions()
       {
-         throw new System.NotImplementedException();
+         //Nothing to do
       }
 
       public void RefreshObjectBase(IObjectBase objectBase)
       {
-         throw new System.NotImplementedException();
+         //Nothing to do
       }
 
       public void RemoveMolecule(ReactionBuilder reactionBuilder, string moleculeName)
       {
-         throw new System.NotImplementedException();
+         //Nothing to do
       }
 
       public void RemoveMoleculeNode(IMoleculeNode moleculeNode)
       {
-         throw new System.NotImplementedException();
+         //Nothing to do
       }
 
       public void RemoveObjectBase(IObjectBase objectBase)
       {
-         throw new System.NotImplementedException();
+         //Nothing to do
       }
 
       public void RenameMolecule(ReactionBuilder reactionBuilder, string oldMoleculeName, string newMoleculeName)
       {
-         throw new System.NotImplementedException();
+         //Nothing to do
       }
 
       public void UpdateInsertLocation()
       {
-         throw new System.NotImplementedException();
+         //Nothing to do
       }
 
       public void UpdateReactionBuilder(IObjectBase reactionAsObjectBase, IBaseNode reactionNodeAsBaseNode)
       {
-         throw new System.NotImplementedException();
+         //Nothing to do
       }
 
       public void UpdateReactionBuilder(ReactionBuilder reactionBuilder)
       {
-         throw new System.NotImplementedException();
+         //Nothing to do
       }
    }
 }

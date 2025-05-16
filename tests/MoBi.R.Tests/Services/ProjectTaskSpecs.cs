@@ -5,6 +5,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.R.Domain;
 using MoBi.R.Services;
 using NUnit.Framework;
+using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.R.Domain;
@@ -19,6 +20,34 @@ namespace MoBi.R.Tests.Services
       {
          base.GlobalContext();
          sut = Api.GetProjectTask();
+      }
+   }
+
+   internal class when_running_a_simulation_from_a_project : concern_for_ProjectTask
+   {
+      protected IModelCoreSimulation _simulation;
+      protected ISimulationRunner _simulationRunnerTask;
+      private SimulationResults _results;
+      private MoBiProject _project;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulationRunnerTask = OSPSuite.R.Api.GetSimulationRunner();
+         var projectFile = TestFileFullPath("SampleProjectWith2Simulations.mbp3");
+         _project = sut.GetProject(projectFile);
+         _simulation = _project.Simulations.FirstOrDefault();
+      }
+
+      protected override void Because()
+      {
+         _results = _simulationRunnerTask.Run(new SimulationRunArgs { Simulation = _simulation });
+      }
+
+      [Observation]
+      public void should_create_results()
+      {
+         _results.ShouldNotBeNull();
       }
    }
 
@@ -66,17 +95,14 @@ namespace MoBi.R.Tests.Services
       protected override void Because()
       {
          var moduleNames = sut.GetModuleNames(_project);
-         _buildingBlockNames = sut.GetBuildingBlocksNamesFromModuleName(moduleNames.First());
+         _buildingBlockNames = sut.GetBuildingBlocksNamesFromModuleName(_project, moduleNames.First());
       }
 
-      [Test]
+      [Observation]
       public void should_return_module_building_blocks_names()
       {
          _buildingBlockNames.ShouldNotBeNull();
-         _buildingBlockNames.ShouldContain("Organism");
-         _buildingBlockNames.ShouldContain("Molecules");
-         _buildingBlockNames.ShouldContain("Initial Conditions");
-         _buildingBlockNames.ShouldContain("Reactions");
+         _buildingBlockNames.ShouldOnlyContain("Organism", "Molecules", "Initial Conditions", "Reactions");
       }
    }
 
@@ -98,13 +124,12 @@ namespace MoBi.R.Tests.Services
          _simulationNames = sut.GetSimulationNames(_project);
       }
 
-      [Test]
+      [Observation]
       public void should_return_simulation_names()
       {
          _simulationNames.ShouldNotBeNull();
          _simulationNames.Count.ShouldBeEqualTo(2);
-         _simulationNames.ShouldContain("Simulation1");
-         _simulationNames.ShouldContain("Simulation2");
-      } 
+         _simulationNames.ShouldOnlyContain("Simulation1", "Simulation2");
+      }
    }
 }

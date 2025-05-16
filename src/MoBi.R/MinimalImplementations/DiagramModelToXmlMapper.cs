@@ -10,10 +10,12 @@ namespace MoBi.R.MinimalImplementations
 
       public void AddElementBaseNodeBindingFor<T>(T node)
       {
+         //nothing to do
       }
 
       public void Deserialize(IDiagramModel model, XmlDocument xmlDoc)
       {
+         //nothing to do
       }
 
       public XmlDocument DiagramModelToXmlDocument(IDiagramModel diagramModel)
