@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Linq;
 using FakeItEasy;
 using MoBi.Assets;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using OSPSuite.BDDHelper;
@@ -332,7 +332,7 @@ namespace MoBi.Presentation.Mapper
          _numberOfRowsToImport = numberOfRowsToImport;
       }
 
-      private static readonly string[] _units = {"mol", "ml", "s"};
+      private static readonly string[] _units = { "mol", "ml", "s" };
 
       protected virtual string GetUnits(int i)
       {

@@ -1,9 +1,9 @@
-﻿using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Serialization.Services;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Serialization;
@@ -12,7 +12,6 @@ namespace MoBi.Core
 {
    public abstract class concern_for_ProjectClassifiableUpdaterAfterDeserialization : ContextSpecification<IProjectClassifiableUpdaterAfterDeserialization>
    {
-
       protected override void Context()
       {
          sut = new ProjectClassifiableUpdaterAfterDeserialization();
@@ -59,7 +58,7 @@ namespace MoBi.Core
       [Observation]
       public void should_remove_the_classification_that_are_not_found()
       {
-         _project.AllClassifiables.ShouldOnlyContain(_classifiable1,_classifiable2);
+         _project.AllClassifiables.ShouldOnlyContain(_classifiable1, _classifiable2);
       }
    }
 }

@@ -1,7 +1,10 @@
-﻿using FakeItEasy;
+﻿using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Presenter;
@@ -25,10 +28,6 @@ using OSPSuite.Presentation.Regions;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Extensions;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using FakeItEasy.Core;
 using TreeNodeFactory = MoBi.Presentation.Nodes.TreeNodeFactory;
 
 namespace MoBi.Presentation
@@ -187,6 +186,7 @@ namespace MoBi.Presentation
       private ITreeNode<RootNodeType> _moduleNode;
       private InitialConditionsFolderNode _initialConditionsFolderNode;
       private ParameterValuesFolderNode _parameterValuesFolderNode;
+
       protected override void Context()
       {
          base.Context();
@@ -238,7 +238,6 @@ namespace MoBi.Presentation
          _moduleNodeZ = _treeNodeFactory.CreateFor(new Module().WithName("Z")) as ITreeNode<Module>;
          _spatialStructureA = _treeNodeFactory.CreateFor<SpatialStructure>(new SpatialStructure().WithName("A"));
          _spatialStructureZ = _treeNodeFactory.CreateFor<SpatialStructure>(new SpatialStructure().WithName("Z"));
-
       }
 
       [Observation]
@@ -300,7 +299,7 @@ namespace MoBi.Presentation
          _eventGroupNode = new BuildingBlockNode(_eventGroupBuildingBlock);
          A.CallTo(() => _view.TreeView.NodeById(_rootNode.Id)).Returns(_rootNode);
          A.CallTo(() => _view.TreeView.NodeById(_addedObject.Id)).Returns(_moduleNode);
-         
+
 
          _addedObject.Add(_eventGroupBuildingBlock);
 
@@ -473,7 +472,7 @@ namespace MoBi.Presentation
          _allNodesAdded.Count(x => Equals(MoBiRootNodeTypes.IndividualsFolder, x.TagAsObject)).ShouldBeEqualTo(1);
          _allNodesAdded.Count(x => Equals(RootNodeTypes.ObservedDataFolder, x.TagAsObject)).ShouldBeEqualTo(1);
          _allNodesAdded.Count(x => Equals(RootNodeTypes.ModulesFolder, x.TagAsObject)).ShouldBeEqualTo(1);
-         
+
          // The 4 nodes above + Spatial Struct, PSV Folder, MSV Folder, 2x PSV and 1x MSV
          _allNodesAdded.Count.ShouldBeEqualTo(10);
       }

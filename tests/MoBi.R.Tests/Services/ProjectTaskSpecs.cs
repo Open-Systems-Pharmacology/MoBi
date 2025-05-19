@@ -1,16 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
-using MoBi.R.Domain;
+using MoBi.HelpersForTests;
 using MoBi.R.Services;
 using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
-using OSPSuite.R.Domain;
-using static MoBi.R.Tests.DomainHelperForSpecs;
-using ModuleConfiguration = MoBi.R.Domain.ModuleConfiguration;
+using OSPSuite.Core.Domain.Data;
+using OSPSuite.R.Services;
 
 namespace MoBi.R.Tests.Services
 {
@@ -34,7 +32,7 @@ namespace MoBi.R.Tests.Services
       {
          base.Context();
          _simulationRunnerTask = OSPSuite.R.Api.GetSimulationRunner();
-         var projectFile = TestFileFullPath("SampleProjectWith2Simulations.mbp3");
+         var projectFile = DomainHelperForSpecs.DataTestFileFullPath("SampleProjectWith2Simulations.mbp3");
          _project = sut.GetProject(projectFile);
          _simulation = _project.Simulations.FirstOrDefault();
       }
@@ -60,7 +58,7 @@ namespace MoBi.R.Tests.Services
       {
          base.Context();
 
-         var projectFile = TestFileFullPath("SampleProject.mbp3");
+         var projectFile = DomainHelperForSpecs.DataTestFileFullPath("SampleProject.mbp3");
          _project = sut.GetProject(projectFile);
       }
 
@@ -88,7 +86,7 @@ namespace MoBi.R.Tests.Services
       {
          base.Context();
 
-         var projectFile = TestFileFullPath("SampleProject.mbp3");
+         var projectFile = DomainHelperForSpecs.DataTestFileFullPath("SampleProject.mbp3");
          _project = sut.GetProject(projectFile);
       }
 
@@ -115,7 +113,7 @@ namespace MoBi.R.Tests.Services
       {
          base.Context();
 
-         var projectFile = TestFileFullPath("SampleProjectWith2Simulations.mbp3");
+         var projectFile = DomainHelperForSpecs.DataTestFileFullPath("SampleProjectWith2Simulations.mbp3");
          _project = sut.GetProject(projectFile);
       }
 

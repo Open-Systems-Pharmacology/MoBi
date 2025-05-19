@@ -7,7 +7,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Helper;
 using MoBi.Core.Services;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using MoBi.Presentation.Presenter;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -85,6 +85,7 @@ namespace MoBi.Presentation.Tasks
       protected override IDimension OriginalFormulaDimension => A.Fake<IDimension>();
       protected override FormulaUsablePath OriginalFormulaUsablePath => new FormulaUsablePath("Time");
       private IDimension _newDimension;
+
       protected override void Context()
       {
          base.Context();
@@ -127,6 +128,7 @@ namespace MoBi.Presentation.Tasks
       protected override IDimension OriginalFormulaDimension => _timeDimension;
       protected override FormulaUsablePath OriginalFormulaUsablePath => new TimePath();
       private IDimension _newDimension;
+
       protected override void Context()
       {
          base.Context();

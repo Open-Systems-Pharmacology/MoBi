@@ -6,11 +6,10 @@ using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Helper;
 using MoBi.Core.Services;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
@@ -77,7 +76,7 @@ namespace MoBi.Presentation.Tasks
       public void a_dialog_reminds_user_about_the_project_conversion()
       {
          A.CallTo(() => _interactionTaskContext.DialogCreator.MessageBoxError(
-            AppConstants.Captions.SimulationHasChangesThatCannotBeCommitted(_simulationWithChanges.Name)))
+               AppConstants.Captions.SimulationHasChangesThatCannotBeCommitted(_simulationWithChanges.Name)))
             .MustHaveHappened();
       }
 

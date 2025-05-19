@@ -1,8 +1,8 @@
 ﻿using FakeItEasy;
+using MoBi.Core.Domain.Model;
+using MoBi.HelpersForTests;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using MoBi.Core.Domain.Model;
-using MoBi.Helpers;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using ISimulationPersistableUpdater = MoBi.Core.Services.ISimulationPersistableUpdater;
@@ -36,13 +36,13 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_return_true_if_the_quantity_is_a_parameter_that_is_persistable()
       {
-         sut.QuantityIsSelectable(new Parameter {Persistable = true}).ShouldBeTrue();
+         sut.QuantityIsSelectable(new Parameter { Persistable = true }).ShouldBeTrue();
       }
 
       [Observation]
       public void should_return_false_if_the_quantity_is_a_parameter_that_is_not_persistable()
       {
-         sut.QuantityIsSelectable(new Parameter {Persistable = false}).ShouldBeFalse();
+         sut.QuantityIsSelectable(new Parameter { Persistable = false }).ShouldBeFalse();
       }
 
       [Observation]

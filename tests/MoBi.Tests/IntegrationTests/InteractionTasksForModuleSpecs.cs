@@ -2,11 +2,10 @@
 using MoBi.Core;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Repository;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Repositories;
 using MoBi.Core.Services;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using MoBi.Presentation;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
@@ -82,7 +81,7 @@ namespace MoBi.IntegrationTests
          };
          moBiSimulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(_module));
          _project.AddSimulation(moBiSimulation);
-         
+
          A.CallTo(() => _moBiContext.CurrentProject).Returns(_project);
          A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, A<ViewResult>._)).Returns(ViewResult.Yes);
       }

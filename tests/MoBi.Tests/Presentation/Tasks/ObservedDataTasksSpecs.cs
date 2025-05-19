@@ -2,11 +2,11 @@
 using System.Linq;
 using FakeItEasy;
 using MoBi.Assets;
-using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
 using MoBi.Core.Services;
 using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -20,7 +20,6 @@ using OSPSuite.Core.Import;
 using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Import.Core;
 using OSPSuite.Infrastructure.Import.Services;
-using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Extensions;
 using ImporterConfiguration = OSPSuite.Core.Import.ImporterConfiguration;
 
@@ -42,6 +41,7 @@ namespace MoBi.Presentation.Tasks
       protected IObjectBaseNamingTask _namingTask;
       private IConfirmationManager _confirmationManager;
       protected IParameterIdentificationTask _parameterIdentificationTask;
+
       protected override void Context()
       {
          _dataImporter = A.Fake<IDataImporter>();
@@ -393,7 +393,7 @@ namespace MoBi.Presentation.Tasks
          _matchingRepository.BaseGrid.Values = new[] { 10.0f };
          _matchingRepository.AllButBaseGrid().Each(x => x.Values = new[] { 11.0f });
          _matchingRepository.BaseGrid.Name = "Time";
-         _matchingRepository.AllButBaseGrid().ToList().Each((x,i) => x.Name = $"name{i}");
+         _matchingRepository.AllButBaseGrid().ToList().Each((x, i) => x.Name = $"name{i}");
       }
 
       protected override void Because()

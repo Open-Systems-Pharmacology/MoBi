@@ -7,7 +7,7 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Services;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
@@ -21,7 +21,6 @@ using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.SimModel;
 using OSPSuite.Utility.Extensions;
-using static OSPSuite.Core.Domain.Constants;
 using ISimulationPersistableUpdater = MoBi.Core.Services.ISimulationPersistableUpdater;
 
 namespace MoBi.Presentation.Tasks
@@ -232,7 +231,7 @@ namespace MoBi.Presentation.Tasks
                Root = new Container()
             }
          };
-         var globalMoleculeContainer = new Container {Name = "DRUG" };
+         var globalMoleculeContainer = new Container { Name = "DRUG" };
          _moleculeWeight = new Parameter()
             .WithName(Constants.Parameters.MOL_WEIGHT)
             .WithFormula(new ConstantFormula(400))
@@ -269,7 +268,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override async Task Because()
       {
-         await sut.SecureAwait(x=> x.RunSimulationAsync(_simulation));
+         await sut.SecureAwait(x => x.RunSimulationAsync(_simulation));
       }
 
       [Observation]
@@ -321,6 +320,7 @@ namespace MoBi.Presentation.Tasks
          _fractionColumn.DataInfo.MolWeight.ShouldBeNull();
       }
    }
+
    public class When_stopping_a_specific_simulation : concern_for_SimulationRunner
    {
       private IMoBiSimulation _simulation;
@@ -339,11 +339,8 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _simModelManagerFactory.Create()).Returns(_simModelManager);
 
          // Simulate a long-running task that can be cancelled
-         A.CallTo(() => _simModelManager.RunSimulationAsync(_simulation, A<CancellationToken>._,null))
-            .Invokes(call =>
-            {
-               capturedToken = call.GetArgument<CancellationToken>(1);
-            })
+         A.CallTo(() => _simModelManager.RunSimulationAsync(_simulation, A<CancellationToken>._, null))
+            .Invokes(call => { capturedToken = call.GetArgument<CancellationToken>(1); })
             .ReturnsLazily(async () =>
             {
                try
@@ -463,10 +460,23 @@ namespace MoBi.Presentation.Tasks
          Task.Delay(100).Wait();
 
          // Stop all simulations
-         sut.StopAllSimulations(); 
+         sut.StopAllSimulations();
 
-         try { task1.Wait(); } catch (AggregateException ex) when (ex.InnerException is TaskCanceledException) { }
-         try { task2.Wait(); } catch (AggregateException ex) when (ex.InnerException is TaskCanceledException) { }
+         try
+         {
+            task1.Wait();
+         }
+         catch (AggregateException ex) when (ex.InnerException is TaskCanceledException)
+         {
+         }
+
+         try
+         {
+            task2.Wait();
+         }
+         catch (AggregateException ex) when (ex.InnerException is TaskCanceledException)
+         {
+         }
       }
 
       [Observation]

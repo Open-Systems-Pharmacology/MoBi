@@ -1,6 +1,6 @@
 ﻿using FakeItEasy;
 using MoBi.Core.Repositories;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -119,5 +119,4 @@ namespace MoBi.Presentation.Mapper
          _containerDTO.SourceReference.ShouldNotBeNull();
       }
    }
-
 }

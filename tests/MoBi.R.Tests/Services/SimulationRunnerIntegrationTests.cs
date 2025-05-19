@@ -7,7 +7,7 @@ using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Populations;
 using OSPSuite.R.Services;
 using OSPSuite.Utility;
-using static MoBi.R.Tests.DomainHelperForSpecs;
+using MoBi.HelpersForTests;
 
 namespace MoBi.R.Tests.Services
 {
@@ -22,8 +22,8 @@ namespace MoBi.R.Tests.Services
       public override void GlobalContext()
       {
          base.GlobalContext();
-         _populationFile = TestFileFullPath("pop_10.csv");
-         _simulationFile = TestFileFullPath("S1.pkml");
+         _populationFile = DomainHelperForSpecs.DataTestFileFullPath("pop_10.csv");
+         _simulationFile = DomainHelperForSpecs.DataTestFileFullPath("S1.pkml");
          _simulationPersister = OSPSuite.R.Api.GetSimulationPersister();
          _populationTask = OSPSuite.R.Api.GetPopulationTask();
          sut = OSPSuite.R.Api.GetSimulationRunner();

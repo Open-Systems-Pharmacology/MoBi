@@ -1,8 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using FakeItEasy;
-using OSPSuite.R.Domain;
-using NUnit.Framework;
+using MoBi.HelpersForTests;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -11,7 +10,6 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.R.Services;
 using OSPSuite.SimModel;
 using OSPSuite.Utility.Events;
-using static MoBi.R.Tests.DomainHelperForSpecs;
 using SimulationRunner = OSPSuite.R.Services.SimulationRunner;
 using IProjectTask = MoBi.R.Services.IProjectTask;
 using Simulation = OSPSuite.R.Domain.Simulation;
@@ -53,7 +51,7 @@ namespace MoBi.R.Tests.Services
       {
          base.Context();
          _simulationRunResults = new SimulationRunResults(Enumerable.Empty<SolverWarning>(),
-            IndividualSimulationDataRepositoryFor("Sim"));
+            DomainHelperForSpecs.IndividualSimulationDataRepositoryFor("Sim"));
          _simulation = new ModelCoreSimulation();
          A.CallTo(_simModelManager).WithReturnType<Task<SimulationRunResults>>().Returns(_simulationRunResults);
       }
@@ -86,7 +84,7 @@ namespace MoBi.R.Tests.Services
       protected override void Context()
       {
          base.Context();
-         var projectFile = TestFileFullPath("SampleProjectWith2Simulations.mbp3");
+         var projectFile = DomainHelperForSpecs.DataTestFileFullPath("SampleProjectWith2Simulations.mbp3");
          var project = _projectTask.GetProject(projectFile);
          _simulation = _projectTask.GetSimulations(project).FirstOrDefault();
       }
