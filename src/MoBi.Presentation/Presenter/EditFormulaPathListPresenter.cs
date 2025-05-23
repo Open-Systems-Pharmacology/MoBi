@@ -124,8 +124,7 @@ namespace MoBi.Presentation.Presenter
          var path = new ObjectPath(newPath.ToPathArray());
          var formulaUsablePath = _formula.FormulaUsablePathBy(dto.Alias);
 
-         if (_circularReferenceChecker.HasCircularReference(path, _formulaOwner))
-            throw new OSPSuiteException(AppConstants.Exceptions.CircularReferenceException(path, _formula));
+         checkForCircularReference(path);
 
          AddCommand(_moBiFormulaTask.ChangePathInFormula(_formula, path, formulaUsablePath, BuildingBlock));
       }
@@ -182,13 +181,13 @@ namespace MoBi.Presentation.Presenter
          AddCommand(_moBiFormulaTask.AddFormulaUsablePath(_formula, path, BuildingBlock));
       }
 
-      private void checkForCircularReference(FormulaUsablePath path)
+      private void checkForCircularReference(ObjectPath path)
       {
          if (hasCircularReference(path))
             throw new OSPSuiteException(AppConstants.Exceptions.CircularReferenceException(path, _formula));
       }
 
-      private bool hasCircularReference(FormulaUsablePath path)
+      private bool hasCircularReference(ObjectPath path)
       {
          return CheckCircularReference && _formulaOwner != null && _circularReferenceChecker.HasCircularReference(path, _formulaOwner);
       }
