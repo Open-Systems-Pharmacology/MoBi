@@ -1,12 +1,11 @@
-﻿using MoBi.Core.Domain.Model;
-using MoBi.R.Domain;
+﻿using MoBi.R.Domain;
 using OSPSuite.R.Domain;
 
 namespace MoBi.R.Services
 {
    public interface ISimulationCreateTask
    {
-      Simulation CreateSimulationFrom(SimulationConfiguration simulationConfiguration, MoBiProject moBiProject);
+      Simulation CreateSimulationFrom(SimulationConfiguration simulationConfiguration);
    }
 
    public class SimulationCreateTask : ISimulationCreateTask
@@ -18,7 +17,7 @@ namespace MoBi.R.Services
          _simulationFactory = simulationFactory;
       }
 
-      public Simulation CreateSimulationFrom(SimulationConfiguration simulationConfiguration, MoBiProject moBiProject) =>
-         _simulationFactory.CreateSimulation(simulationConfiguration, moBiProject);
+      public Simulation CreateSimulationFrom(SimulationConfiguration simulationConfiguration) =>
+         _simulationFactory.CreateSimulation(simulationConfiguration);
    }
 }

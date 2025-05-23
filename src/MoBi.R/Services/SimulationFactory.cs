@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Linq;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using MoBi.R.Domain;
-using OSPSuite.Core.Domain;
 using OSPSuite.R.Domain;
 using OSPSuite.Utility.Extensions;
 using ModuleConfiguration = OSPSuite.Core.Domain.ModuleConfiguration;
@@ -12,7 +10,7 @@ namespace MoBi.R.Services
 {
    public interface ISimulationFactory
    {
-      Simulation CreateSimulation(SimulationConfiguration configuration, MoBiProject moBiProject);
+      Simulation CreateSimulation(SimulationConfiguration configuration);
    }
 
    public class SimulationFactory : ISimulationFactory
@@ -28,7 +26,7 @@ namespace MoBi.R.Services
          _context = context;
       }
 
-      public Simulation CreateSimulation(SimulationConfiguration configuration, MoBiProject moBiProject)
+      public Simulation CreateSimulation(SimulationConfiguration configuration)
       {
          if (string.IsNullOrWhiteSpace(configuration.SimulationName))
             throw new InvalidOperationException("Simulation name is required");
@@ -37,35 +35,18 @@ namespace MoBi.R.Services
 
          configuration.ModuleConfigurations.Each(x =>
          {
-            var module = _context.CurrentProject.ModuleByName(x.ModuleName);
-            if (module == null)
-               throw new InvalidOperationException($"Module {x.ModuleName} not found in the project");
-
-            simulationConfiguration.AddModuleConfiguration(new ModuleConfiguration(module, module.InitialConditionsCollection.FindByName(x.SelectedInitialConditionsName),
-               module.ParameterValuesCollection.FindByName(x.SelectedParameterValueName)));
+            simulationConfiguration.AddModuleConfiguration(
+               new ModuleConfiguration(x.Module, x.SelectedInitialCondition, x.SelectedParameterValue));
          });
 
-         configuration.ExpressionProfileNames.Each(x =>
-         {
-            var expressionProfile = _context.CurrentProject.ExpressionProfileCollection.FirstOrDefault(y => y.Name == x);
-            if (expressionProfile == null)
-               throw new InvalidOperationException($"Expression profile {x} not found in the project");
+         configuration.ExpressionProfiles.AddRange(configuration.ExpressionProfiles);
 
-            simulationConfiguration.AddExpressionProfile(expressionProfile);
-         });
-
-         if (!string.IsNullOrWhiteSpace(configuration.IndividualName))
-         {
-            var individual = moBiProject.IndividualsCollection.FirstOrDefault(x => x.Name == configuration.IndividualName);
-            if (individual == null)
-               throw new InvalidOperationException($"Individual {configuration.IndividualName} not found in the project");
-
-            simulationConfiguration.Individual = individual;
-         }
+         simulationConfiguration.Individual = configuration.Individual;
 
          simulationConfiguration.ShouldValidate = true;
 
          var simulation = _simulationFactory.CreateSimulationAndValidate(simulationConfiguration, configuration.SimulationName);
+
          return new Simulation(simulation);
       }
    }

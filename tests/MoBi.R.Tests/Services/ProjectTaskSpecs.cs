@@ -33,7 +33,7 @@ namespace MoBi.R.Tests.Services
          base.Context();
          _simulationRunnerTask = OSPSuite.R.Api.GetSimulationRunner();
          var projectFile = DomainHelperForSpecs.DataTestFileFullPath("SampleProjectWith2Simulations.mbp3");
-         _project = sut.GetProject(projectFile);
+         _project = sut.LoadProject(projectFile);
          _simulation = _project.Simulations.FirstOrDefault();
       }
 
@@ -59,12 +59,12 @@ namespace MoBi.R.Tests.Services
          base.Context();
 
          var projectFile = DomainHelperForSpecs.DataTestFileFullPath("SampleProject.mbp3");
-         _project = sut.GetProject(projectFile);
+         _project = sut.LoadProject(projectFile);
       }
 
       protected override void Because()
       {
-         _moduleNames = sut.GetModuleNames(_project);
+         _moduleNames = sut.AllModuleNames(_project);
       }
 
       [Test]
@@ -87,13 +87,13 @@ namespace MoBi.R.Tests.Services
          base.Context();
 
          var projectFile = DomainHelperForSpecs.DataTestFileFullPath("SampleProject.mbp3");
-         _project = sut.GetProject(projectFile);
+         _project = sut.LoadProject(projectFile);
       }
 
       protected override void Because()
       {
-         var moduleNames = sut.GetModuleNames(_project);
-         _buildingBlockNames = sut.GetBuildingBlocksNamesFromModuleName(_project, moduleNames.First());
+         var moduleNames = sut.AllModuleNames(_project);
+         _buildingBlockNames = sut.AllBuildingBlocksNamesFromModuleName(_project, moduleNames.First());
       }
 
       [Observation]
@@ -114,12 +114,12 @@ namespace MoBi.R.Tests.Services
          base.Context();
 
          var projectFile = DomainHelperForSpecs.DataTestFileFullPath("SampleProjectWith2Simulations.mbp3");
-         _project = sut.GetProject(projectFile);
+         _project = sut.LoadProject(projectFile);
       }
 
       protected override void Because()
       {
-         _simulationNames = sut.GetSimulationNames(_project);
+         _simulationNames = sut.AllSimulationNames(_project);
       }
 
       [Observation]

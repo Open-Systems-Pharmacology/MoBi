@@ -85,8 +85,8 @@ namespace MoBi.R.Tests.Services
       {
          base.Context();
          var projectFile = DomainHelperForSpecs.DataTestFileFullPath("SampleProjectWith2Simulations.mbp3");
-         var project = _projectTask.GetProject(projectFile);
-         _simulation = _projectTask.GetSimulations(project).FirstOrDefault();
+         var project = _projectTask.LoadProject(projectFile);
+         _simulation = _projectTask.AllSimulations(project).FirstOrDefault();
       }
 
       protected override void Because()

@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
-using MoBi.R.Services;
+using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.R.Domain
 {
    public class SimulationConfiguration
    {
-      public string IndividualName { get; set; }
+      public IndividualBuildingBlock Individual { get; set; }
       public List<ModuleConfiguration> ModuleConfigurations { get; set; } = new List<ModuleConfiguration>();
-      public List<string> ExpressionProfileNames { get; set; } = new List<string>();
+      public List<ExpressionProfileBuildingBlock> ExpressionProfiles { get; set; } = new List<ExpressionProfileBuildingBlock>();
       public string SimulationName { get; set; }
    }
 }

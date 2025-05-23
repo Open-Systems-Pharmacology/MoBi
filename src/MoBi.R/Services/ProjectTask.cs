@@ -2,23 +2,31 @@
 using System.Linq;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Serialization.ORM;
-using MoBi.Core.Services;
-using MoBi.R.Domain;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.R.Domain;
-using OSPSuite.R.Domain;
-using ISimulationFactory = MoBi.R.Services.ISimulationFactory;
 
 namespace MoBi.R.Services
 {
-    public interface IProjectTask
+   public interface IProjectTask
    {
-      MoBiProject GetProject(string fileName);
-      IReadOnlyList<string> GetModuleNames(MoBiProject moBiProject);
-      IReadOnlyList<string> GetExpressionProfileNames(MoBiProject moBiProject);
-      IReadOnlyList<string> GetSimulationNames(MoBiProject moBiProject);
-      IReadOnlyList<string> GetBuildingBlocksNamesFromModuleName(MoBiProject moBiProject, string moduleName);
-      IReadOnlyList<Simulation> GetSimulations(MoBiProject moBiProject);
+      MoBiProject LoadProject(string fileName);
+      IReadOnlyList<string> AllModuleNames(MoBiProject moBiProject);
+      IReadOnlyList<string> AllExpressionProfileNames(MoBiProject moBiProject);
+      IReadOnlyList<string> AllIndividualNames(MoBiProject moBiProject);
+      IReadOnlyList<string> AllSimulationNames(MoBiProject moBiProject);
+      IReadOnlyList<string> AllBuildingBlocksNamesFromModuleName(MoBiProject moBiProject, string moduleName);
+      IReadOnlyList<Simulation> AllSimulations(MoBiProject moBiProject);
+      IReadOnlyList<IndividualBuildingBlock> AllIndividuals(MoBiProject moBiProject);
+      IReadOnlyList<InitialConditionsBuildingBlock> AllInitialConditions(MoBiProject moBiProject);
+      IReadOnlyList<ParameterValuesBuildingBlock> AllParameterValues(MoBiProject moBiProject);
+      IReadOnlyList<InitialConditionsBuildingBlock> AllInitialConditionsFromModule(Module module);
+      IReadOnlyList<ParameterValuesBuildingBlock> AllParameterValuesFromModule(Module module);
+      ExpressionProfileBuildingBlock ExpressionProfileByName(MoBiProject moBiProject, string name);
+      Module ModuleByName(MoBiProject moBiProject, string name);
+      IndividualBuildingBlock IndividualByName(MoBiProject moBiProject, string name);
+      InitialConditionsBuildingBlock InitialConditionByName(Module module, string name);
+      ParameterValuesBuildingBlock ParameterValueByName(Module module, string name);
    }
 
    public class ProjectTask : IProjectTask
@@ -32,7 +40,7 @@ namespace MoBi.R.Services
          _contextPersistor = contextPersistor;
       }
 
-      public IReadOnlyList<string> GetExpressionProfileNames(MoBiProject moBiProject)
+      public IReadOnlyList<string> AllExpressionProfileNames(MoBiProject moBiProject)
       {
          var expressionProfiles = moBiProject.ExpressionProfileCollection;
          if (expressionProfiles != null)
@@ -41,10 +49,13 @@ namespace MoBi.R.Services
          return new List<string>();
       }
 
-      public IReadOnlyList<string> GetModuleNames(MoBiProject moBiProject) =>
+      public ExpressionProfileBuildingBlock ExpressionProfileByName(MoBiProject moBiProject, string name) =>
+         moBiProject.ExpressionProfileCollection.FindByName(name);
+
+      public IReadOnlyList<string> AllModuleNames(MoBiProject moBiProject) =>
          moBiProject.Modules.AllNames();
 
-      public IReadOnlyList<string> GetBuildingBlocksNamesFromModuleName(MoBiProject moBiProject, string moduleName)
+      public IReadOnlyList<string> AllBuildingBlocksNamesFromModuleName(MoBiProject moBiProject, string moduleName)
       {
          var module = moBiProject.ModuleByName(moduleName);
          if (module != null)
@@ -53,17 +64,47 @@ namespace MoBi.R.Services
          return new List<string>();
       }
 
-      public MoBiProject GetProject(string fileName)
+      public MoBiProject LoadProject(string fileName)
       {
          _contextPersistor.CloseProject(_moBiContext);
          _contextPersistor.Load(_moBiContext, fileName);
          return _moBiContext.CurrentProject;
       }
 
-      public IReadOnlyList<string> GetSimulationNames(MoBiProject moBiProject) =>
+      public IReadOnlyList<string> AllSimulationNames(MoBiProject moBiProject) =>
          moBiProject.Simulations.Select(x => x.Name).ToList();
 
-      public IReadOnlyList<Simulation> GetSimulations(MoBiProject moBiProject) =>
-         moBiProject.Simulations.Select(x=> new Simulation(x)).ToList();
+      public IReadOnlyList<Simulation> AllSimulations(MoBiProject moBiProject) =>
+         moBiProject.Simulations.Select(x => new Simulation(x)).ToList();
+
+      public Module ModuleByName(MoBiProject moBiProject, string name) =>
+         moBiProject.Modules.FindByName(name);
+
+      public InitialConditionsBuildingBlock InitialConditionByName(Module module, string name) =>
+         module.InitialConditionsCollection.FindByName(name);
+
+      public IndividualBuildingBlock IndividualByName(MoBiProject moBiProject, string name) =>
+         moBiProject.IndividualsCollection.FindByName(name);
+
+      public IReadOnlyList<string> AllIndividualNames(MoBiProject moBiProject) =>
+         moBiProject.IndividualsCollection.AllNames();
+
+      public IReadOnlyList<InitialConditionsBuildingBlock> AllInitialConditionsFromModule(Module module) =>
+         module.InitialConditionsCollection.ToList();
+
+      public ParameterValuesBuildingBlock ParameterValueByName(Module module, string name) =>
+         module.ParameterValuesCollection.FindByName(name);
+
+      public IReadOnlyList<ParameterValuesBuildingBlock> AllParameterValuesFromModule(Module module) =>
+         module.ParameterValuesCollection;
+
+      public IReadOnlyList<IndividualBuildingBlock> AllIndividuals(MoBiProject moBiProject) =>
+         moBiProject.IndividualsCollection;
+
+      public IReadOnlyList<InitialConditionsBuildingBlock> AllInitialConditions(MoBiProject moBiProject) =>
+         moBiProject.Modules.SelectMany(x => x.InitialConditionsCollection).ToList();
+
+      public IReadOnlyList<ParameterValuesBuildingBlock> AllParameterValues(MoBiProject moBiProject) =>
+         moBiProject.Modules.SelectMany(x => x.ParameterValuesCollection).ToList();
    }
 }
