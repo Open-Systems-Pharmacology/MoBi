@@ -33,7 +33,7 @@ namespace MoBi.R.Tests.Services
       {
          base.Context();
          _projectTask = Api.GetProjectTask();
-         var projectFile = DomainHelperForSpecs.DataTestFileFullPath("SampleProject.mbp3");
+         var projectFile = DomainHelperForSpecs.TestFileFullPath("SampleProject.mbp3");
          _project = _projectTask.LoadProject(projectFile);
       }
 
@@ -96,7 +96,7 @@ namespace MoBi.R.Tests.Services
       {
          base.Context();
          _projectTask = Api.GetProjectTask();
-         var projectFile = DomainHelperForSpecs.DataTestFileFullPath("SampleProject.mbp3");
+         var projectFile = DomainHelperForSpecs.TestFileFullPath("SampleProject.mbp3");
          _project = _projectTask.LoadProject(projectFile);
       }
 
