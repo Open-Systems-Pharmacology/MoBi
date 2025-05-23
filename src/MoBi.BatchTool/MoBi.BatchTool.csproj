@@ -12,7 +12,7 @@
     <NoWarn>1591, 3246</NoWarn>
     <ApplicationIcon>MoBi.ico</ApplicationIcon>
     <Description>MoBi.BatchTool</Description>
-    <Version Condition="'$(Version)' == ''">12.1.0</Version>
+    <Version Condition="'$(Version)' == ''">13.0.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

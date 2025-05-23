@@ -20,7 +20,7 @@ using IProjectTask = MoBi.R.Services.IProjectTask;
 
 namespace MoBi.R
 {
-    public class RRegister : Register
+   public class RRegister : Register
    {
       public override void RegisterInContainer(IContainer container)
       {

@@ -26,5 +26,6 @@ namespace MoBi.IntegrationTests
          serializationTask.LoadProject(projectFile);
          return context.CurrentProject;
       }
+
    }
 }

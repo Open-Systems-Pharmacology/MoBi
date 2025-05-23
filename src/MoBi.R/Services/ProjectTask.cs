@@ -66,6 +66,7 @@ namespace MoBi.R.Services
 
       public MoBiProject LoadProject(string fileName)
       {
+         // Load the project from the file 
          _contextPersistor.CloseProject(_moBiContext);
          _contextPersistor.Load(_moBiContext, fileName);
          return _moBiContext.CurrentProject;
