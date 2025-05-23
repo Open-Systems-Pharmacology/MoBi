@@ -22,8 +22,6 @@ namespace MoBi.Presentation.Tasks
       protected MoBiSimulation _simulationWithChanges;
       protected IInteractionTaskContext _interactionTaskContext;
       protected INameCorrector _nameCorrector;
-      protected IInitialConditionsCreator _initialConditionsCreator;
-      protected IParameterValuesCreator _parameterValuesCreator;
       protected IEntitiesInSimulationRetriever _entitiesInSimulationRetriever;
       protected ITemplateResolverTask _templateResolverTask;
       protected IMoBiContext _context;
@@ -42,12 +40,10 @@ namespace MoBi.Presentation.Tasks
          _context = A.Fake<IMoBiContext>();
          _templateResolverTask = A.Fake<ITemplateResolverTask>();
          _entitiesInSimulationRetriever = A.Fake<IEntitiesInSimulationRetriever>();
-         _initialConditionsCreator = A.Fake<IInitialConditionsCreator>();
-         _parameterValuesCreator = A.Fake<IParameterValuesCreator>();
          _nameCorrector = A.Fake<INameCorrector>();
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
          A.CallTo(() => _interactionTaskContext.DialogCreator.MessageBoxYesNo(A<string>._, A<ViewResult>._)).Returns(ViewResult.Yes);
-         sut = new SimulationCommitTask(_context, _templateResolverTask, _entitiesInSimulationRetriever, _initialConditionsCreator, _parameterValuesCreator, _nameCorrector, new ObjectTypeResolver(), _interactionTaskContext);
+         sut = new SimulationCommitTask(_context, _templateResolverTask, _entitiesInSimulationRetriever, _nameCorrector, new ObjectTypeResolver(), _interactionTaskContext);
       }
 
       [Observation]

@@ -26,6 +26,7 @@ namespace MoBi.Core.Commands
       protected override void RaiseEvents(IMoBiContext context)
       {
          context.PublishEvent(new RemovedEvent(_buildingBlock, _existingModule));
+         PublishSimulationStatusChangedEvents(_existingModule, context);
       }
 
       protected override void DoExecute(IMoBiContext context)
@@ -33,7 +34,6 @@ namespace MoBi.Core.Commands
          removeBuildingBlockFromModule();
          context.Unregister(_buildingBlock);
          _serializationStream = context.Serialize(_buildingBlock);
-         PublishSimulationStatusChangedEvents(_existingModule, context);
       }
 
       public override void RestoreExecutionData(IMoBiContext context)

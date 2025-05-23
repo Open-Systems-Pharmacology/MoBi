@@ -17,10 +17,7 @@ namespace MoBi.Presentation.Tasks
       private IMoBiContext _context;
       private MoBiProject _project;
       protected SpatialStructure _spatialStructure;
-      protected IInteractionTask _interactionTask;
-      protected BuildingBlock _buildingBlock;
 
-      protected IMoBiApplicationController _applicationController;
 
       protected override void Context()
       {
@@ -29,8 +26,6 @@ namespace MoBi.Presentation.Tasks
          _project = DomainHelperForSpecs.NewProject();
          _spatialStructure = new SpatialStructure();
          _spatialStructure.Name = "TestName";
-         _interactionTask = A.Fake<IInteractionTask>();
-         _applicationController = A.Fake<IMoBiApplicationController>();
 
          A.CallTo(() => _context.CurrentProject).Returns(_project);
          A.CallTo(() => _interactionTaskContext.NamingTask.RenameFor(A<IObjectBase>.Ignored, A<IReadOnlyList<string>>.Ignored)).Returns("Test");
@@ -44,7 +39,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class When_renaming_a_buildingblock : concern_for_EditTasksForBuildingBlock
+   public class When_renaming_a_building_block : concern_for_EditTasksForBuildingBlock
    {
       protected override void Because()
       {

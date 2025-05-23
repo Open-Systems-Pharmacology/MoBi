@@ -36,7 +36,7 @@ namespace MoBi.Presentation.Tasks
       protected IKeyPathMapper _keyPathMapper;
       protected IEntityValidationTask _eventValidationTask;
 
-      protected override async Task Context()
+      protected override Task Context()
       {
          _context = A.Fake<IMoBiContext>();
          _outputSelectionsRetriever = A.Fake<IOutputSelectionsRetriever>();
@@ -56,6 +56,9 @@ namespace MoBi.Presentation.Tasks
             _simModelManagerFactory,
             _keyPathMapper,
             _eventValidationTask);
+
+         return Task.CompletedTask;
+
       }
    }
 
@@ -66,7 +69,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _settings = A.Fake<OutputSelections>();
          A.CallTo(() => _settings.HasSelection).Returns(false);
          _simulation = A.Fake<IMoBiSimulation>();
@@ -98,7 +101,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _settings = A.Fake<OutputSelections>();
          A.CallTo(() => _settings.HasSelection).Returns(false);
          _simulation = A.Fake<IMoBiSimulation>();
@@ -125,7 +128,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _outputSelections = A.Fake<OutputSelections>();
          A.CallTo(() => _outputSelections.HasSelection).Returns(true);
          _simulation = A.Fake<IMoBiSimulation>();
@@ -160,7 +163,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _outputSelections = new OutputSelections();
          _outputSelections.AddOutput(new QuantitySelection("A", QuantityType.Drug));
 
@@ -363,7 +366,7 @@ namespace MoBi.Presentation.Tasks
       {
          var runTask = sut.RunSimulationAsync(_simulation);
 
-         Task.Delay(100).Wait();
+         await Task.Delay(100);
 
          sut.StopSimulation(_simulation);
 
@@ -457,7 +460,7 @@ namespace MoBi.Presentation.Tasks
          var task2 = sut.RunSimulationAsync(_simulation2);
 
          // Give time for both to register their tokens
-         Task.Delay(100).Wait();
+         await Task.Delay(100);
 
          // Stop all simulations
          sut.StopAllSimulations();
