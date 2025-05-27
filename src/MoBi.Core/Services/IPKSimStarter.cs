@@ -1,6 +1,6 @@
-﻿using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
+﻿using OSPSuite.Core.Domain.Builder;
 using System.Collections.Generic;
+using OSPSuite.Core.Serialization.Exchange;
 
 namespace MoBi.Core.Services
 {
@@ -11,5 +11,6 @@ namespace MoBi.Core.Services
       IBuildingBlock CreateProfileExpression(ExpressionType expressionType);
       IBuildingBlock CreateIndividual();
       IReadOnlyList<ExpressionParameterValueUpdate> UpdateExpressionProfileFromDatabase(ExpressionProfileBuildingBlock expressionProfile);
+      SimulationTransfer RecreateSimulationTransfer(string snapshot);
    }
 }

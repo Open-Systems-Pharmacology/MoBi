@@ -43,8 +43,18 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          _allMenuItems.Add(createSaveItemFor(module));
          _allMenuItems.Add(createRemoveItemFor(module));
          _allMenuItems.Add(createCloneMenuItem(module));
+
+         if(module.HasSnapshot)
+            _allMenuItems.Add(createRecreateMenuItem(module));
          
          return this;
+      }
+
+      private IMenuBarItem createRecreateMenuItem(Module module)
+      {
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.RecreateFromSnapshot)
+            .WithCommandFor<RecreateModuleUICommand, Module>(module, _container)
+            .WithIcon(ApplicationIcons.PKSim);
       }
 
       private IMenuBarItem createDefaultMergeBehaviorItemFor(Module module)
