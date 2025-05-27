@@ -2,14 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Core.Domain.Model;
-using MoBi.HelpersForTests;
 using MoBi.R.Domain;
 using MoBi.R.Services;
 using NUnit.Framework;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Domain.Populations;
 using OSPSuite.R.Domain;
-using static MoBi.Core.Mappers.ColumnIndexes;
 using ModuleConfiguration = MoBi.R.Domain.ModuleConfiguration;
 
 namespace MoBi.R.Tests.Services
@@ -42,7 +39,7 @@ namespace MoBi.R.Tests.Services
       protected override void Because()
       {
          var moduleForSimulation = _projectTask.ModuleByName(_project, "Module1");
-         
+
          var individualForSimulation = _projectTask.IndividualByName(_project, "European (P-gp modified, CYP3A4 36 h)");
 
          var expressionProfilesForSimulation = _projectTask.ExpressionProfilesByName(_project, "UDPGT1|Human|Healthy");
