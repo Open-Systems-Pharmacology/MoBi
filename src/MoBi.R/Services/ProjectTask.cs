@@ -23,10 +23,10 @@ namespace MoBi.R.Services
       IReadOnlyList<InitialConditionsBuildingBlock> AllInitialConditionsFromModule(Module module);
       IReadOnlyList<ParameterValuesBuildingBlock> AllParameterValuesFromModule(Module module);
       Module ModuleByName(MoBiProject moBiProject, string name);
-      IndividualBuildingBlock IndividualByName(MoBiProject moBiProject, string name);
-      InitialConditionsBuildingBlock InitialConditionByName(Module module, string name);
-      ParameterValuesBuildingBlock ParameterValueByName(Module module, string name);
-      List<ExpressionProfileBuildingBlock> ExpressionProfilesByName(MoBiProject moBiProject, params string[] names);
+      IndividualBuildingBlock IndividualBuildingBlockByName(MoBiProject moBiProject, string name);
+      InitialConditionsBuildingBlock InitialConditionBuildingBlockByName(Module module, string name);
+      ParameterValuesBuildingBlock ParameterValueBuildingBlockByName(Module module, string name);
+      List<ExpressionProfileBuildingBlock> ExpressionProfileBuildingBlocksByName(MoBiProject moBiProject, params string[] names);
    }
 
    public class ProjectTask : IProjectTask
@@ -40,35 +40,22 @@ namespace MoBi.R.Services
          _contextPersistor = contextPersistor;
       }
 
-      public IReadOnlyList<string> AllExpressionProfileNames(MoBiProject moBiProject)
-      {
-         var expressionProfiles = moBiProject.ExpressionProfileCollection;
-         if (expressionProfiles != null)
-            return expressionProfiles.AllNames();
+      public IReadOnlyList<string> AllExpressionProfileNames(MoBiProject moBiProject) =>
+         moBiProject.ExpressionProfileCollection.AllNames();
 
-         return new List<string>();
-      }
-
-      public List<ExpressionProfileBuildingBlock> ExpressionProfilesByName(MoBiProject moBiProject, params string[] names)
-      {
-         return moBiProject.ExpressionProfileCollection
+      public List<ExpressionProfileBuildingBlock> ExpressionProfileBuildingBlocksByName(MoBiProject moBiProject, params string[] names) =>
+         moBiProject.ExpressionProfileCollection
             .Where(p => names.Contains(p.Name))
             .ToList();
-      }
+      
 
 
 
       public IReadOnlyList<string> AllModuleNames(MoBiProject moBiProject) =>
          moBiProject.Modules.AllNames();
 
-      public IReadOnlyList<string> AllBuildingBlocksNamesFromModuleName(MoBiProject moBiProject, string moduleName)
-      {
-         var module = moBiProject.ModuleByName(moduleName);
-         if (module != null)
-            return module.BuildingBlocks.AllNames();
-
-         return new List<string>();
-      }
+      public IReadOnlyList<string> AllBuildingBlocksNamesFromModuleName(MoBiProject moBiProject, string moduleName) =>
+         moBiProject.ModuleByName(moduleName).BuildingBlocks?.AllNames();
 
       public MoBiProject LoadProject(string fileName)
       {
@@ -87,10 +74,10 @@ namespace MoBi.R.Services
       public Module ModuleByName(MoBiProject moBiProject, string name) =>
          moBiProject.Modules.FindByName(name);
 
-      public InitialConditionsBuildingBlock InitialConditionByName(Module module, string name) =>
+      public InitialConditionsBuildingBlock InitialConditionBuildingBlockByName(Module module, string name) =>
          module.InitialConditionsCollection.FindByName(name);
 
-      public IndividualBuildingBlock IndividualByName(MoBiProject moBiProject, string name) =>
+      public IndividualBuildingBlock IndividualBuildingBlockByName(MoBiProject moBiProject, string name) =>
          moBiProject.IndividualsCollection.FindByName(name);
 
       public IReadOnlyList<string> AllIndividualNames(MoBiProject moBiProject) =>
@@ -99,7 +86,7 @@ namespace MoBi.R.Services
       public IReadOnlyList<InitialConditionsBuildingBlock> AllInitialConditionsFromModule(Module module) =>
          module.InitialConditionsCollection.ToList();
 
-      public ParameterValuesBuildingBlock ParameterValueByName(Module module, string name) =>
+      public ParameterValuesBuildingBlock ParameterValueBuildingBlockByName(Module module, string name) =>
          module.ParameterValuesCollection.FindByName(name);
 
       public IReadOnlyList<ParameterValuesBuildingBlock> AllParameterValuesFromModule(Module module) =>
