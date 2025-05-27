@@ -9,7 +9,6 @@ using MoBi.Core.Events;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Mappers;
 using MoBi.Core.Services;
-using MoBi.Helpers;
 using MoBi.HelpersForTests;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;

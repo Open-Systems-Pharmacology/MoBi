@@ -22,11 +22,11 @@ namespace MoBi.R.Services
       IReadOnlyList<ParameterValuesBuildingBlock> AllParameterValues(MoBiProject moBiProject);
       IReadOnlyList<InitialConditionsBuildingBlock> AllInitialConditionsFromModule(Module module);
       IReadOnlyList<ParameterValuesBuildingBlock> AllParameterValuesFromModule(Module module);
-      ExpressionProfileBuildingBlock ExpressionProfileByName(MoBiProject moBiProject, string name);
       Module ModuleByName(MoBiProject moBiProject, string name);
       IndividualBuildingBlock IndividualByName(MoBiProject moBiProject, string name);
       InitialConditionsBuildingBlock InitialConditionByName(Module module, string name);
       ParameterValuesBuildingBlock ParameterValueByName(Module module, string name);
+      List<ExpressionProfileBuildingBlock> ExpressionProfilesByName(MoBiProject moBiProject, params string[] names);
    }
 
    public class ProjectTask : IProjectTask
@@ -49,8 +49,14 @@ namespace MoBi.R.Services
          return new List<string>();
       }
 
-      public ExpressionProfileBuildingBlock ExpressionProfileByName(MoBiProject moBiProject, string name) =>
-         moBiProject.ExpressionProfileCollection.FindByName(name);
+      public List<ExpressionProfileBuildingBlock> ExpressionProfilesByName(MoBiProject moBiProject, params string[] names)
+      {
+         return moBiProject.ExpressionProfileCollection
+            .Where(p => names.Contains(p.Name))
+            .ToList();
+      }
+
+
 
       public IReadOnlyList<string> AllModuleNames(MoBiProject moBiProject) =>
          moBiProject.Modules.AllNames();

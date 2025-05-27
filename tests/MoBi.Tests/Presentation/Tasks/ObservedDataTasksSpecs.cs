@@ -5,7 +5,6 @@ using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
 using MoBi.Core.Services;
-using MoBi.Helpers;
 using MoBi.HelpersForTests;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.BDDHelper;

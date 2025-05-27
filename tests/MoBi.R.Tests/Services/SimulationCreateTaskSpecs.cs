@@ -7,7 +7,9 @@ using MoBi.R.Domain;
 using MoBi.R.Services;
 using NUnit.Framework;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain.Populations;
 using OSPSuite.R.Domain;
+using static MoBi.Core.Mappers.ColumnIndexes;
 using ModuleConfiguration = MoBi.R.Domain.ModuleConfiguration;
 
 namespace MoBi.R.Tests.Services
@@ -39,33 +41,21 @@ namespace MoBi.R.Tests.Services
 
       protected override void Because()
       {
-         _moduleNames = _projectTask.AllModuleNames(_project);
-         var expressionProfileNames = _projectTask.AllExpressionProfileNames(_project);
-         var individualNames = _projectTask.AllIndividualNames(_project);
+         var moduleForSimulation = _projectTask.ModuleByName(_project, "Module1");
+         
+         var individualForSimulation = _projectTask.IndividualByName(_project, "European (P-gp modified, CYP3A4 36 h)");
 
-         var firstModuleName = _moduleNames.First();
-         var moduleForSimulation = _projectTask.ModuleByName(_project, firstModuleName);
-         var initialConditions = _projectTask.AllInitialConditionsFromModule(moduleForSimulation);
-         var parameterValues = _projectTask.AllParameterValuesFromModule(moduleForSimulation);
+         var expressionProfilesForSimulation = _projectTask.ExpressionProfilesByName(_project, "UDPGT1|Human|Healthy");
 
-         var simulationConfig = new SimulationConfiguration
-         {
-            SimulationName = _simulationName,
-            Individual = _projectTask.IndividualByName(_project, individualNames.FirstOrDefault())
-         };
+         var initialConditionForModule = _projectTask.InitialConditionByName(moduleForSimulation, "Initial Conditions");
 
-         simulationConfig.ModuleConfigurations.Add(new ModuleConfiguration
-         {
-            Module = moduleForSimulation,
-            SelectedInitialCondition = initialConditions.FirstOrDefault(),
-            SelectedParameterValue = parameterValues.FirstOrDefault()
-         });
+         var parameterValuesForModule = _projectTask.ParameterValueByName(moduleForSimulation, "Parameter Values");
 
-         simulationConfig.ExpressionProfiles.AddRange(
-            expressionProfileNames
-               .Select(x => _projectTask.ExpressionProfileByName(_project, x))
-               .Where(p => p != null)
-         );
+         var moduleConfiguration = sut.CreateModuleConfiguration(moduleForSimulation, parameterValuesForModule, initialConditionForModule);
+
+         var moduleConfigurations = new List<ModuleConfiguration> { moduleConfiguration };
+
+         var simulationConfig = sut.CreateConfiguration(_simulationName, moduleConfigurations, expressionProfilesForSimulation, individualForSimulation);
 
          _simulation = sut.CreateSimulationFrom(simulationConfig);
       }
@@ -81,7 +71,7 @@ namespace MoBi.R.Tests.Services
       public void should_contain_module()
       {
          var module = _simulation.Configuration.ModuleConfigurations
-            .FirstOrDefault(x => x.Module.Name == _moduleNames.FirstOrDefault())?.Module;
+            .FirstOrDefault(x => x.Module.Name == "Module1")?.Module;
          module.ShouldNotBeNull();
       }
    }

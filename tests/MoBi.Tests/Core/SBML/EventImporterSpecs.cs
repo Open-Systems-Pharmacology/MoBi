@@ -6,7 +6,7 @@ using libsbmlcs;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Engine.Sbml;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using MoBi.IntegrationTests;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;

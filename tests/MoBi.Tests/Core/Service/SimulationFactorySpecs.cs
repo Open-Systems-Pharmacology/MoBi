@@ -4,7 +4,7 @@ using OSPSuite.BDDHelper.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Services;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using MoBi.IntegrationTests;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
