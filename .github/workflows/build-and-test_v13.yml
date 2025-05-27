@@ -3,7 +3,7 @@ name: Build and Test V13
 on:
   pull_request:
     branches:
-    - V13
+    - v13
 
 jobs:
 
