@@ -12,7 +12,7 @@ using OSPSuite.Utility.Events;
 
 namespace MoBi.HelpersForTests
 {
-   public class DomainHelperForSpecs
+   public static class DomainHelperForSpecs
    {
       private static Dimension _concentrationDimension;
       private static Dimension _timeDimension;

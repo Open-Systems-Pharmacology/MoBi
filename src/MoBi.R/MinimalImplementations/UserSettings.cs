@@ -18,7 +18,7 @@ using OSPSuite.Presentation.Settings;
 
 namespace MoBi.R.MinimalImplementations
 {
-   public class BatchUserSettings : IUserSettings
+   public class UserSettings : IUserSettings
    {
       public string DefaultChartEditorLayout { get; set; }
       public string ActiveSkin { get; set; }
