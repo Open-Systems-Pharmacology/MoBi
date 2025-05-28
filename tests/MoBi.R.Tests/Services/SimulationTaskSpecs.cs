@@ -18,7 +18,7 @@ namespace MoBi.R.Tests.Services
       public override void GlobalContext()
       {
          base.GlobalContext();
-         sut = Api.GetSimulationTask;
+         sut = Api.GetSimulationTask();
       }
    }
 
@@ -28,12 +28,13 @@ namespace MoBi.R.Tests.Services
       private Simulation _simulation;
       private readonly string _simulationName = "Sim1";
       private IProjectTask _projectTask;
-      private IReadOnlyList<string> _moduleNames;
+      private IModuleTask _moduleTask;
 
       protected override void Context()
       {
          base.Context();
          _projectTask = Api.GetProjectTask();
+         _moduleTask = Api.GetModuleTask();
          var projectFile = DomainHelperForSpecs.DataTestFileFullPath("SampleProject.mbp3");
          _project = _projectTask.LoadProject(projectFile);
       }
@@ -46,9 +47,9 @@ namespace MoBi.R.Tests.Services
 
          var expressionProfilesForSimulation = _projectTask.ExpressionProfileBuildingBlocksByName(_project, "UDPGT1|Human|Healthy");
 
-         var initialConditionForModule = _projectTask.InitialConditionBuildingBlockByName(moduleForSimulation, "Initial Conditions");
+         var initialConditionForModule = _moduleTask.InitialConditionBuildingBlockByName(moduleForSimulation, "Initial Conditions");
 
-         var parameterValuesForModule = _projectTask.ParameterValueBuildingBlockByName(moduleForSimulation, "Parameter Values");
+         var parameterValuesForModule = _moduleTask.ParameterValueBuildingBlockByName(moduleForSimulation, "Parameter Values");
 
          var moduleConfiguration = sut.CreateModuleConfiguration(moduleForSimulation, parameterValuesForModule, initialConditionForModule);
 

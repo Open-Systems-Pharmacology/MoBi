@@ -20,12 +20,8 @@ namespace MoBi.R.Services
       IReadOnlyList<IndividualBuildingBlock> AllIndividuals(MoBiProject moBiProject);
       IReadOnlyList<InitialConditionsBuildingBlock> AllInitialConditions(MoBiProject moBiProject);
       IReadOnlyList<ParameterValuesBuildingBlock> AllParameterValues(MoBiProject moBiProject);
-      IReadOnlyList<InitialConditionsBuildingBlock> AllInitialConditionsFromModule(Module module);
-      IReadOnlyList<ParameterValuesBuildingBlock> AllParameterValuesFromModule(Module module);
       Module ModuleByName(MoBiProject moBiProject, string name);
       IndividualBuildingBlock IndividualBuildingBlockByName(MoBiProject moBiProject, string name);
-      InitialConditionsBuildingBlock InitialConditionBuildingBlockByName(Module module, string name);
-      ParameterValuesBuildingBlock ParameterValueBuildingBlockByName(Module module, string name);
       List<ExpressionProfileBuildingBlock> ExpressionProfileBuildingBlocksByName(MoBiProject moBiProject, params string[] names);
    }
 
@@ -44,12 +40,7 @@ namespace MoBi.R.Services
          moBiProject.ExpressionProfileCollection.AllNames();
 
       public List<ExpressionProfileBuildingBlock> ExpressionProfileBuildingBlocksByName(MoBiProject moBiProject, params string[] names) =>
-         moBiProject.ExpressionProfileCollection
-            .Where(p => names.Contains(p.Name))
-            .ToList();
-      
-
-
+         moBiProject.ExpressionProfileCollection.Where(p => names.Contains(p.Name)).ToList();
 
       public IReadOnlyList<string> AllModuleNames(MoBiProject moBiProject) =>
          moBiProject.Modules.AllNames();
@@ -74,23 +65,11 @@ namespace MoBi.R.Services
       public Module ModuleByName(MoBiProject moBiProject, string name) =>
          moBiProject.Modules.FindByName(name);
 
-      public InitialConditionsBuildingBlock InitialConditionBuildingBlockByName(Module module, string name) =>
-         module.InitialConditionsCollection.FindByName(name);
-
       public IndividualBuildingBlock IndividualBuildingBlockByName(MoBiProject moBiProject, string name) =>
          moBiProject.IndividualsCollection.FindByName(name);
 
       public IReadOnlyList<string> AllIndividualNames(MoBiProject moBiProject) =>
          moBiProject.IndividualsCollection.AllNames();
-
-      public IReadOnlyList<InitialConditionsBuildingBlock> AllInitialConditionsFromModule(Module module) =>
-         module.InitialConditionsCollection.ToList();
-
-      public ParameterValuesBuildingBlock ParameterValueBuildingBlockByName(Module module, string name) =>
-         module.ParameterValuesCollection.FindByName(name);
-
-      public IReadOnlyList<ParameterValuesBuildingBlock> AllParameterValuesFromModule(Module module) =>
-         module.ParameterValuesCollection;
 
       public IReadOnlyList<IndividualBuildingBlock> AllIndividuals(MoBiProject moBiProject) =>
          moBiProject.IndividualsCollection;
