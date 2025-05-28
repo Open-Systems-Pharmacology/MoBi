@@ -93,6 +93,34 @@ namespace MoBi.Presentation
       protected override bool CreatesCircularRef => false;
    }
 
+   internal class When_setting_a_path_that_creates_a_circular_reference_but_the_presenter_is_forbidden_to_check : When_setting_a_path
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.CheckCircularReference = false;
+      }
+
+      protected override void Because()
+      {
+         sut.SetFormulaUsablePath(_aNewPath, _formulaUsablePathDTO);
+      }
+
+      [Observation]
+      public void the_formula_task_sets_the_formula()
+      {
+         A.CallTo(() => _moBiFormulaTask.ChangePathInFormula(A<IFormula>._, A<ObjectPath>._, A<FormulaUsablePath>._, A<IBuildingBlock>._)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_circular_reference_checker_is_not_used_to_check_for_circular_references()
+      {
+         A.CallTo(() => _circularReferenceChecker.HasCircularReference(A<ObjectPath>._, _parameter)).MustNotHaveHappened();
+      }
+
+      protected override bool CreatesCircularRef => true;
+   }
+
    internal class When_setting_a_path_that_creates_a_circular_reference : When_setting_a_path
    {
       [Observation]
