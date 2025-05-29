@@ -63,7 +63,6 @@ namespace MoBi.Presentation.Tasks
       private IMoBiCommand addFromSimulationTransfer(MoBiProject project, string filename)
       {
          var simulation = _interactionTaskContext.InteractionTask.LoadTransfer<SimulationTransfer>(filename).Simulation;
-
          // Clone the simulation configuration so that any loaded objects will have unique Ids.
          var configuration = _cloneManager.CloneSimulationConfiguration(simulation.Configuration);
 
