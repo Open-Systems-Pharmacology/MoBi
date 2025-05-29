@@ -11,6 +11,6 @@ namespace MoBi.Core.Services
       IBuildingBlock CreateProfileExpression(ExpressionType expressionType);
       IBuildingBlock CreateIndividual();
       IReadOnlyList<ExpressionParameterValueUpdate> UpdateExpressionProfileFromDatabase(ExpressionProfileBuildingBlock expressionProfile);
-      SimulationTransfer RecreateSimulationTransfer(string snapshot);
+      SimulationTransfer LoadSimulationTransferFromSnapshot(string serializedSnapshot);
    }
 }

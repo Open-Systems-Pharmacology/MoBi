@@ -42,18 +42,18 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          _allMenuItems.Add(createRenameItemFor(module));
          _allMenuItems.Add(createSaveItemFor(module));
          _allMenuItems.Add(createRemoveItemFor(module));
-         _allMenuItems.Add(createCloneMenuItem(module));
+         _allMenuItems.Add(createCloneItem(module));
 
          if(module.HasSnapshot)
-            _allMenuItems.Add(createRecreateMenuItem(module));
+            _allMenuItems.Add(createLoadFromSnapshotItem(module));
          
          return this;
       }
 
-      private IMenuBarItem createRecreateMenuItem(Module module)
+      private IMenuBarItem createLoadFromSnapshotItem(Module module)
       {
-         return CreateMenuButton.WithCaption(AppConstants.MenuNames.RecreateFromSnapshot)
-            .WithCommandFor<RecreateModuleUICommand, Module>(module, _container)
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.LoadFromSnapshot)
+            .WithCommandFor<LoadModuleFromSnapshotUICommand, Module>(module, _container)
             .WithIcon(ApplicationIcons.PKSim);
       }
 
@@ -75,7 +75,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithCommandFor<SaveUICommandFor<Module>, Module>(module, _container);
       }
 
-      private IMenuBarItem createCloneMenuItem(Module module)
+      private IMenuBarItem createCloneItem(Module module)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Clone.WithEllipsis())
             .WithIcon(ApplicationIcons.Clone)

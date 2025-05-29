@@ -105,12 +105,12 @@ namespace MoBi.Presentation.Tasks
          return executeMethod(getMethod(PKSIM_UI_STARTER_EXPRESSION_PROFILE_CREATOR, GET_EXPRESSION_DATABASE_QUERY), new object[] { expressionProfile }) as List<ExpressionParameterValueUpdate>;
       }
 
-      public SimulationTransfer RecreateSimulationTransfer(string snapshot)
+      public SimulationTransfer LoadSimulationTransferFromSnapshot(string serializedSnapshot)
       {
          SimulationTransfer transfer = null;
          _heavyWorkManager.Start(() =>
          {
-            var element = executeMethod(getMethod(PKSIM_UI_STARTER_SIMULATION_TRANSFER_CONSTRUCTOR, CREATE_SIMULATION_TRANSFER), new object[] { snapshot }) as string;
+            var element = executeMethod(getMethod(PKSIM_UI_STARTER_SIMULATION_TRANSFER_CONSTRUCTOR, CREATE_SIMULATION_TRANSFER), new object[] { serializedSnapshot }) as string;
             transfer =  _serializationService.Deserialize<SimulationTransfer>(element, _projectRetriever.Current);
          }, AppConstants.Captions.Loading.WithEllipsis());
          return transfer;

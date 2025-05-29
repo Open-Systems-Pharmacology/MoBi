@@ -1160,7 +1160,7 @@ namespace MoBi.Assets
          public static readonly string ImportFromExcel = "Import from Excel®...";
          public static readonly string ShowChanges = "Show Changes";
          public static readonly string StopAllRunningSimulations = "Stop all running simulations";
-         public static readonly string RecreateFromSnapshot = "Recreate from snapshot";
+         public static readonly string LoadFromSnapshot = "Load from snapshot";
          public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
 
          public static string AddExistingAs(string objectTypeName, string targetTypeName) => $"Load {objectTypeName} as {targetTypeName}...";
