@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Tasks.Interaction;
@@ -20,7 +21,7 @@ namespace MoBi.R.Services
       IReadOnlyList<DataRepository> GetObservedDataSets(MoBiProject project);
       IndividualBuildingBlock CreateIndividual(string name);
       IReadOnlyList<Module> LoadModulesFromFile(string filePath);
-      void ExtendInitialConditionsWithModule(InitialConditionsBuildingBlock icBB, Module module);
+      void AddInitialConditions(List<InitialConditionsBuildingBlock> initialConditions, Module module);
       void AddProteinExpression(ParameterValuesBuildingBlock pvBB, string moleculeName, double expressionValue);
       void SetParameterValue(ParameterValuesBuildingBlock pvBB, string parameterName, double newValue);
    }
@@ -53,16 +54,14 @@ namespace MoBi.R.Services
       public IReadOnlyList<Module> LoadModulesFromFile(string filePath) =>
          _serializationTask.LoadMany<Module>(filePath).ToList();
 
-      public void ExtendInitialConditionsWithModule(InitialConditionsBuildingBlock icBB, Module module)
+      public void AddInitialConditions(List<InitialConditionsBuildingBlock> initialConditions, Module module)
+      { 
+        module.InitialConditionsCollection.AddRange(new  initialConditions); 
+      }
+
+      public void DeleteInitialCondition(InitialConditionsBuildingBlock initialConditions, Module module)
       {
-         throw new NotImplementedException();
-         //foreach (var molecule in module.Molecules)
-         //{
-         //   if (!icBB.Molecules.Contains(molecule))
-         //   {
-         //      icBB.AddMolecule(molecule);
-         //   }
-         //}
+         module.InitialConditionsCollection.Re(new initialConditions);
       }
 
       public void AddProteinExpression(ParameterValuesBuildingBlock pvBB, string moleculeName, double expressionValue)

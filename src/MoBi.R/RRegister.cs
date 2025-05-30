@@ -50,7 +50,6 @@ namespace MoBi.R
          container.Register<IXmlContentSelector, XmlContentSelector>();
          container.Register<IMoBiApplicationController, MoBiApplicationController>();
          container.Register<IProjectConverterLogger, ProjectConverterLogger>();
-         container.Register<IMoBiContext, MoBiContext>();
          container.Register<IPostSerializationStepsMaker, PostSerializationStepsMaker>();
          container.Register<IFileLocker, FileLocker>(LifeStyle.Singleton);
          container.Register<ISpatialStructureDiagramManager, SpatialStructureDiagramManager>();

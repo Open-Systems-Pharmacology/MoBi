@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Module id="gPnocK96eE6kXtf0ij4wVg" name="Second module" icon="Module" moduleImportVersion="-1699228221" mergeBehavior="Overwrite" version="17">
+  <BuildingBlocks>
+    <SpatialStructure id="Wz77fi1Ev06MKGVockqmUg" name="Organism" icon="SpatialStructure" bbVersion="26">
+      <Creation createdAt="5250237131218080745" createdBy="mcint" creationMode="New" origin="MoBi" version="12.0" internalVersion="17" />
+      <GlobalMoleculeDependentProperties id="ABnRzGpkn0idlBzOM_NFVg" name="MoleculeProperties" mode="Logical" containerType="Molecule" />
+      <TopContainers>
+        <Container id="ZOyLMqdGgkiMknO7N5NPeQ" name="Container A" icon="CONTAINER" mode="Logical" containerType="Compartment">
+          <ParentPath path="0" />
+          <Children>
+            <Container id="ZPqwr8WvUUyaHvAUTXoCjg" name="MoleculeProperties" mode="Logical" containerType="Other" />
+          </Children>
+        </Container>
+        <Container id="W5ucElfmy02LAL_iH8D02w" name="Container B" icon="CONTAINER" mode="Logical" containerType="Compartment">
+          <ParentPath path="0" />
+          <Children>
+            <Container id="ZzXZfUvwkUWdRdWXiN-_TQ" name="MoleculeProperties" mode="Logical" containerType="Other" />
+          </Children>
+        </Container>
+      </TopContainers>
+      <NeighborhoodsContainer id="ojs2QzSKt0Suo9U_8PyNKA" name="Neighborhoods" mode="Logical" containerType="Other" />
+      <FormulaCache>
+        <StringMap>
+          <Map s="Organism" id="0" />
+        </StringMap>
+      </FormulaCache>
+    </SpatialStructure>
+  </BuildingBlocks>
+</Module>
