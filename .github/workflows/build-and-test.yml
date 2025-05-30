@@ -20,6 +20,11 @@ jobs:
         with:
           submodules: 'true'
 
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.0.204' 
+
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v2
 
