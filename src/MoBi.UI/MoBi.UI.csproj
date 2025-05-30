@@ -9,6 +9,7 @@
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
     <Version Condition="'$(Version)' == ''">12.1.0</Version>
+     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,6 +28,7 @@
     <PackageReference Include="OSPSuite.Presentation" Version="12.1.107" />
     <PackageReference Include="OSPSuite.UI" Version="12.1.107" />
     <PackageReference Include="OSPSuite.Core" Version="12.1.107" />
+    <PackageReference Include="System.Resources.Extensions" Version="9.0.5" />
    </ItemGroup>
   <ItemGroup>
     <None Include="..\..\LICENSE">
