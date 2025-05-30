@@ -23,7 +23,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '9.0.204' 
+          dotnet-version: '9.0.300' 
 
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v2
