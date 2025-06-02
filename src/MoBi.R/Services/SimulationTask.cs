@@ -31,13 +31,13 @@ namespace MoBi.R.Services
 
       public SimulationConfiguration CreateConfiguration(string simulationName, List<ModuleConfiguration> moduleConfigurations = null,
          List<ExpressionProfileBuildingBlock> expressionProfiles = null,
-         IndividualBuildingBlock ondividual = null) =>
+         IndividualBuildingBlock individual = null) =>
          new SimulationConfiguration
          {
             SimulationName = simulationName,
             ModuleConfigurations = moduleConfigurations,
             ExpressionProfiles = expressionProfiles,
-            Individual = ondividual
+            Individual = individual
          };
 
       public ModuleConfiguration CreateModuleConfiguration(Module module,

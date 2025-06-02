@@ -52,12 +52,12 @@ namespace MoBi.R.MinimalImplementations
       public string ParameterDefaultDimension { get; set; }
       public void SaveLayout()
       {
-         throw new NotImplementedException();
+         //do nothing
       }
 
       public void RestoreLayout()
       {
-         throw new NotImplementedException();
+         //do nothing
       }
 
       public int LayoutVersion { get; set; }
