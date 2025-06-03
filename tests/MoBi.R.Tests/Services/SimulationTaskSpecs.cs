@@ -37,10 +37,10 @@ namespace MoBi.R.Tests.Services
       {
          var projectFile = DomainHelperForSpecs.DataTestFileFullPath("SampleProject.mbp3");
          _project = _projectTask.LoadProject(projectFile);
-      }
+   }
 
       protected Simulation CreateSimulationFromModule(Module module)
-      {
+   {
          var individual = _projectTask.IndividualBuildingBlockByName(_project, "European (P-gp modified, CYP3A4 36 h)");
          var expressionProfiles = _projectTask.ExpressionProfileBuildingBlocksByName(_project, "UDPGT1|Human|Healthy");
          var initialConditions = _moduleTask.InitialConditionBuildingBlockByName(module, "Initial Conditions");
@@ -56,6 +56,9 @@ namespace MoBi.R.Tests.Services
    internal class when_creating_simulation_from_project_module : concern_for_SimulationCreateTask
    {
       private Simulation _simulation;
+      private readonly string _simulationName = "Sim1";
+      private IProjectTask _projectTask;
+      private IModuleTask _moduleTask;
 
       protected override void Context()
       {
@@ -72,6 +75,7 @@ namespace MoBi.R.Tests.Services
       [Observation]
       public void should_return_simulation_name() =>
          _simulation.Name.ShouldBeEqualTo(_simulationName);
+      }
 
       [Observation]
       public void should_contain_module() =>
