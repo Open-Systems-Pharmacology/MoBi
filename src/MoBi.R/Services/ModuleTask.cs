@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using OSPSuite.Core.Domain;
 using System.Linq;
+using MoBi.Presentation.Tasks;
+using OSPSuite.Core.Serialization;
+using OSPSuite.Presentation.Services;
+using ISerializationTask = MoBi.Presentation.Tasks.ISerializationTask;
 
 namespace MoBi.R.Services
 {
@@ -11,10 +15,21 @@ namespace MoBi.R.Services
       IReadOnlyList<ParameterValuesBuildingBlock> AllParameterValuesFromModule(Module module);
       InitialConditionsBuildingBlock InitialConditionBuildingBlockByName(Module module, string name);
       ParameterValuesBuildingBlock ParameterValueBuildingBlockByName(Module module, string name);
+      IReadOnlyList<Module> LoadModulesFromFile(string filePath);
    }
 
    public class ModuleTask : IModuleTask
    {
+      private readonly ISerializationTask _serializationTask;
+
+      public ModuleTask(IProjectTask projectTask, ISerializationTask serializationTask)
+      {
+         _serializationTask = serializationTask;
+      }
+
+      public IReadOnlyList<Module> LoadModulesFromFile(string filePath) =>
+         _serializationTask.LoadMany<Module>(filePath).ToList();
+
       public InitialConditionsBuildingBlock InitialConditionBuildingBlockByName(Module module, string name) =>
          module.InitialConditionsCollection.FindByName(name);
 

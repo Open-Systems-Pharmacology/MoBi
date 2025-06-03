@@ -16,7 +16,6 @@ namespace MoBi.R.Tests.Services
       protected MoBiProject _project;
       protected IProjectTask _projectTask;
       protected IModuleTask _moduleTask;
-      protected IMoBiRIntegrationService _integrationTask;
       protected string _simulationName = "Sim1";
 
       public override void GlobalContext()
@@ -25,7 +24,6 @@ namespace MoBi.R.Tests.Services
          sut = Api.GetSimulationTask();
          _projectTask = Api.GetProjectTask();
          _moduleTask = Api.GetModuleTask();
-         _integrationTask = Api.GetIntegrationTask();
       }
 
       protected void LoadSampleProject()
@@ -86,7 +84,7 @@ namespace MoBi.R.Tests.Services
 
       protected override void Because()
       {
-         var module = _integrationTask.LoadModulesFromFile(DomainHelperForSpecs.DataTestFileFullPath("Second module.pkml")).First();
+         var module = _moduleTask.LoadModulesFromFile(DomainHelperForSpecs.DataTestFileFullPath("Second module.pkml")).First();
          _simulationName = "SimFromPKML";
          _simulation = CreateSimulationFromModule(module);
       }
