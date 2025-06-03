@@ -1,38 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
-using MoBi.Presentation.Tasks;
-using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.ParameterIdentifications;
-using OSPSuite.Core.Serialization;
-using OSPSuite.Infrastructure.Import.Core;
 using ISerializationTask = MoBi.Presentation.Tasks.ISerializationTask;
+
 namespace MoBi.R.Services
 {
-
    public interface IMoBiRIntegrationService
    {
       IReadOnlyList<ParameterIdentification> GetParameterIdentifications(MoBiProject project);
       IReadOnlyList<DataRepository> GetObservedDataSets(MoBiProject project);
       IndividualBuildingBlock CreateIndividual(string name);
       IReadOnlyList<Module> LoadModulesFromFile(string filePath);
-      void AddInitialConditions(List<InitialConditionsBuildingBlock> initialConditions, Module module);
-      void AddProteinExpression(ParameterValuesBuildingBlock pvBB, string moleculeName, double expressionValue);
       void SetParameterValue(ParameterValuesBuildingBlock pvBB, string parameterName, double newValue);
    }
-
 
    public class MoBiRIntegrationService : IMoBiRIntegrationService
    {
       private readonly IProjectTask _projectTask;
       private readonly ISerializationTask _serializationTask;
 
-      public MoBiRIntegrationService(IProjectTask projectTask, ISerializationTask  serializationTask)
+      public MoBiRIntegrationService(IProjectTask projectTask, ISerializationTask serializationTask)
       {
          _projectTask = projectTask;
          _serializationTask = serializationTask;
@@ -44,8 +35,6 @@ namespace MoBi.R.Services
       public IReadOnlyList<DataRepository> GetObservedDataSets(MoBiProject project) =>
          project.AllObservedData.ToList();
 
-
-
       public IndividualBuildingBlock CreateIndividual(string name)
       {
          return new IndividualBuildingBlock { Name = name };
@@ -53,30 +42,6 @@ namespace MoBi.R.Services
 
       public IReadOnlyList<Module> LoadModulesFromFile(string filePath) =>
          _serializationTask.LoadMany<Module>(filePath).ToList();
-
-      public void AddInitialConditions(List<InitialConditionsBuildingBlock> initialConditions, Module module)
-      { 
-        module.InitialConditionsCollection.AddRange(new  initialConditions); 
-      }
-
-      public void DeleteInitialCondition(InitialConditionsBuildingBlock initialConditions, Module module)
-      {
-         module.InitialConditionsCollection.Re(new initialConditions);
-      }
-
-      public void AddProteinExpression(ParameterValuesBuildingBlock pvBB, string moleculeName, double expressionValue)
-      {
-         throw new NotImplementedException();
-
-         //var parameter = new Parameter
-         //{
-         //   Name = moleculeName + " Expression",
-         //   Value = expressionValue,
-         //   Dimension = "concentration"
-         //};
-
-         //pvBB.Add(parameter);
-      }
 
       public void SetParameterValue(ParameterValuesBuildingBlock pvBB, string parameterName, double newValue)
       {
