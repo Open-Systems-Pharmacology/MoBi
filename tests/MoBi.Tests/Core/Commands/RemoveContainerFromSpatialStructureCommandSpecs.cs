@@ -1,7 +1,7 @@
 ﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -25,7 +25,7 @@ namespace MoBi.Core.Commands
       {
          _objectPathFactory = new ObjectPathFactoryForSpecs();
          _spatialStructureDiagramManager = A.Fake<ISpatialStructureDiagramManager>();
-         _spatialStructure = new MoBiSpatialStructure {DiagramManager = _spatialStructureDiagramManager}.WithName("SpSt");
+         _spatialStructure = new MoBiSpatialStructure { DiagramManager = _spatialStructureDiagramManager }.WithName("SpSt");
          _spatialStructure.NeighborhoodsContainer = new Container().WithName(Constants.NEIGHBORHOODS);
          _parent = new Container().WithName("Top").WithMode(ContainerMode.Logical).WithId(_parentId);
          _containerToRemove = new Container().WithName("A").WithMode(ContainerMode.Physical).WithParentContainer(_parent);

@@ -11,7 +11,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.R.Services;
 using OSPSuite.SimModel;
 using OSPSuite.Utility.Events;
-using static MoBi.R.Tests.DomainHelperForSpecs;
+using static MoBi.HelpersForTests.DomainHelperForSpecs;
 using SimulationRunner = OSPSuite.R.Services.SimulationRunner;
 using IProjectTask = MoBi.R.Services.IProjectTask;
 using Simulation = OSPSuite.R.Domain.Simulation;
@@ -86,9 +86,9 @@ namespace MoBi.R.Tests.Services
       protected override void Context()
       {
          base.Context();
-         var projectFile = TestFileFullPath("SampleProjectWith2Simulations.mbp3");
-         var project = _projectTask.GetProject(projectFile);
-         _simulation = _projectTask.GetSimulations(project).FirstOrDefault();
+         var projectFile = DataTestFileFullPath("SampleProjectWith2Simulations.mbp3");
+         var project = _projectTask.LoadProject(projectFile);
+         _simulation = _projectTask.AllSimulations(project).FirstOrDefault();
       }
 
       protected override void Because()

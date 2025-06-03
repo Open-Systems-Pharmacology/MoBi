@@ -1,6 +1,6 @@
 ﻿using MoBi.Core.Domain;
 using MoBi.Core.Services;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -38,7 +38,6 @@ namespace MoBi.Core.Service
          };
          _quantity.UpdateValueOriginFrom(new ValueOrigin { Source = ValueOriginSources.Internet });
       }
-
 
       protected override void Because()
       {

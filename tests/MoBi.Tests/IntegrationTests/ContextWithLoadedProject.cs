@@ -1,8 +1,8 @@
-﻿using OSPSuite.Utility.Container;
-using MoBi.Core.Domain.Model;
-using MoBi.Helpers;
+﻿using MoBi.Core.Domain.Model;
+using MoBi.HelpersForTests;
 using MoBi.Presentation.Tasks;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Container;
 
 namespace MoBi.IntegrationTests
 {

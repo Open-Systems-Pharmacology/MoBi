@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MoBi.Core.Domain.Model;
+using MoBi.HelpersForTests;
 using MoBi.R.Services;
 using NUnit.Framework;
 using OSPSuite.BDDHelper;
@@ -8,7 +9,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.R.Services;
-using static MoBi.R.Tests.DomainHelperForSpecs;
+using static MoBi.HelpersForTests.DomainHelperForSpecs;
 
 namespace MoBi.R.Tests.Services
 {
@@ -32,8 +33,8 @@ namespace MoBi.R.Tests.Services
       {
          base.Context();
          _simulationRunnerTask = OSPSuite.R.Api.GetSimulationRunner();
-         var projectFile = TestFileFullPath("SampleProjectWith2Simulations.mbp3");
-         _project = sut.GetProject(projectFile);
+         var projectFile = DataTestFileFullPath("SampleProjectWith2Simulations.mbp3");
+         _project = sut.LoadProject(projectFile);
          _simulation = _project.Simulations.FirstOrDefault();
       }
 
@@ -58,13 +59,13 @@ namespace MoBi.R.Tests.Services
       {
          base.Context();
 
-         var projectFile = TestFileFullPath("SampleProject.mbp3");
-         _project = sut.GetProject(projectFile);
+         var projectFile = DataTestFileFullPath("SampleProject.mbp3");
+         _project = sut.LoadProject(projectFile);
       }
 
       protected override void Because()
       {
-         _moduleNames = sut.GetModuleNames(_project);
+         _moduleNames = sut.AllModuleNames(_project);
       }
 
       [Test]
@@ -86,14 +87,14 @@ namespace MoBi.R.Tests.Services
       {
          base.Context();
 
-         var projectFile = TestFileFullPath("SampleProject.mbp3");
-         _project = sut.GetProject(projectFile);
+         var projectFile = DataTestFileFullPath("SampleProject.mbp3");
+         _project = sut.LoadProject(projectFile);
       }
 
       protected override void Because()
       {
-         var moduleNames = sut.GetModuleNames(_project);
-         _buildingBlockNames = sut.GetBuildingBlocksNamesFromModuleName(_project, moduleNames.First());
+         var moduleNames = sut.AllModuleNames(_project);
+         _buildingBlockNames = sut.AllBuildingBlocksNamesFromModuleName(_project, moduleNames.First());
       }
 
       [Observation]
@@ -113,13 +114,13 @@ namespace MoBi.R.Tests.Services
       {
          base.Context();
 
-         var projectFile = TestFileFullPath("SampleProjectWith2Simulations.mbp3");
-         _project = sut.GetProject(projectFile);
+         var projectFile = DataTestFileFullPath("SampleProjectWith2Simulations.mbp3");
+         _project = sut.LoadProject(projectFile);
       }
 
       protected override void Because()
       {
-         _simulationNames = sut.GetSimulationNames(_project);
+         _simulationNames = sut.AllSimulationNames(_project);
       }
 
       [Observation]

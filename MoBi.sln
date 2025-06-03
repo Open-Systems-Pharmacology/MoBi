@@ -39,6 +39,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoBi.R", "src\Mobi.R\MoBi.R
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoBi.R.Tests", "tests\MoBi.R.Tests\MoBi.R.Tests.csproj", "{FC91836B-185D-40A8-A483-8B515D4C49BE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoBi.HelpersForTests", "tests\MoBi.HelpersForTests\MoBi.HelpersForTests.csproj", "{75AFC0FD-904F-4F20-AF3E-0DBF26592055}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -167,6 +169,18 @@ Global
 		{FC91836B-185D-40A8-A483-8B515D4C49BE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{FC91836B-185D-40A8-A483-8B515D4C49BE}.Release|x86.ActiveCfg = Release|Any CPU
 		{FC91836B-185D-40A8-A483-8B515D4C49BE}.Release|x86.Build.0 = Release|Any CPU
+		{75AFC0FD-904F-4F20-AF3E-0DBF26592055}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75AFC0FD-904F-4F20-AF3E-0DBF26592055}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75AFC0FD-904F-4F20-AF3E-0DBF26592055}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{75AFC0FD-904F-4F20-AF3E-0DBF26592055}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{75AFC0FD-904F-4F20-AF3E-0DBF26592055}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{75AFC0FD-904F-4F20-AF3E-0DBF26592055}.Debug|x86.Build.0 = Debug|Any CPU
+		{75AFC0FD-904F-4F20-AF3E-0DBF26592055}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75AFC0FD-904F-4F20-AF3E-0DBF26592055}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75AFC0FD-904F-4F20-AF3E-0DBF26592055}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{75AFC0FD-904F-4F20-AF3E-0DBF26592055}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{75AFC0FD-904F-4F20-AF3E-0DBF26592055}.Release|x86.ActiveCfg = Release|Any CPU
+		{75AFC0FD-904F-4F20-AF3E-0DBF26592055}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -2,7 +2,7 @@ using System.Linq;
 using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Domain.Services;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using MoBi.IntegrationTests;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Tasks;

@@ -12,7 +12,7 @@ using Reaction = libsbmlcs.Reaction;
 using MoBi.Core.Exceptions;
 using NUnit.Framework;
 using OSPSuite.Core.Domain.Formulas;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 
 namespace MoBi.Core.SBML
 {

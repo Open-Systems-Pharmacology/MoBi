@@ -1,5 +1,6 @@
 ﻿using System;
 using MoBi.R.Bootstrap;
+using MoBi.R.Services;
 using OSPSuite.R;
 using OSPSuite.Utility.Extensions;
 using IContainer = OSPSuite.Utility.Container.IContainer;
@@ -20,6 +21,8 @@ namespace MoBi.R
       }
 
       public static IProjectTask GetProjectTask() => resolveTask<IProjectTask>();
+      public static ISimulationTask GetSimulationTask() => resolveTask<ISimulationTask>();
+      public static IModuleTask GetModuleTask() => resolveTask<IModuleTask>();
 
       private static T resolveTask<T>()
       {

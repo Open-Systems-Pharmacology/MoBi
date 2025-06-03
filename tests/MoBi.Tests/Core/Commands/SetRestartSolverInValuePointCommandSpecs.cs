@@ -1,8 +1,8 @@
-﻿using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 
@@ -19,14 +19,14 @@ namespace MoBi.Core.Commands
       protected override void Context()
       {
          _buildingBlock = A.Fake<IBuildingBlock>();
-         _tableFormula = new TableFormula() {Dimension = DomainHelperForSpecs.AmountDimension, XDimension = DomainHelperForSpecs.TimeDimension};
+         _tableFormula = new TableFormula() { Dimension = DomainHelperForSpecs.AmountDimension, XDimension = DomainHelperForSpecs.TimeDimension };
          _valuePoint = new ValuePoint(1.0, 1.0) { RestartSolver = false };
          _newRestartSolverValue = true;
          _tableFormula.AddPoint(_valuePoint);
 
          _context = A.Fake<IMoBiContext>();
          A.CallTo(() => _context.Get<TableFormula>(_tableFormula.Id)).Returns(_tableFormula);
-            sut = new SetRestartSolverInValuePointCommand(_tableFormula, _valuePoint, _newRestartSolverValue, _buildingBlock);
+         sut = new SetRestartSolverInValuePointCommand(_tableFormula, _valuePoint, _newRestartSolverValue, _buildingBlock);
       }
    }
 

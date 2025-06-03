@@ -2,7 +2,7 @@
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Presenter.ModelDiagram;
 using MoBi.Presentation.Tasks;
@@ -58,14 +58,13 @@ namespace MoBi.Presentation
          _context = A.Fake<IMoBiContext>();
          _simulationChangesPresenter = A.Fake<ISimulationChangesPresenter>();
          _outputMappingMatchingTask = A.Fake<IOutputMappingMatchingTask>();
-         _entitySourceReferenceFactory= A.Fake<ISimulationEntitySourceReferenceFactory>();
+         _entitySourceReferenceFactory = A.Fake<ISimulationEntitySourceReferenceFactory>();
 
          sut = new EditSimulationPresenter(_view, _chartPresenter, _hierarchicalSimulationPresenter, _diagramPresenter,
             _solverSettings, _outputSchemaPresenter, _presenterFactory, new HeavyWorkManagerForSpecs(),
             A.Fake<IChartFactory>(), _editFavoritePresenter, _chartTasks, _userDefinedParametersPresenter, _simulationOutputMappingPresenter,
-            _simulationPredictedVsObservedChartPresenter, _simulationResidualVsTimeChartPresenter, _context, _outputMappingMatchingTask, _simulationChangesPresenter,_entitySourceReferenceFactory);
+            _simulationPredictedVsObservedChartPresenter, _simulationResidualVsTimeChartPresenter, _context, _outputMappingMatchingTask, _simulationChangesPresenter, _entitySourceReferenceFactory);
       }
-
 
       protected Curve createObservedCurve(DataRepository observedDataRepository)
       {
@@ -100,7 +99,7 @@ namespace MoBi.Presentation
       {
          base.Context();
          _simulation = new MoBiSimulation();
-         _simulation.Configuration = new SimulationConfiguration {SimulationSettings = new SimulationSettings()};
+         _simulation.Configuration = new SimulationConfiguration { SimulationSettings = new SimulationSettings() };
       }
 
       protected override void Because()
@@ -205,7 +204,7 @@ namespace MoBi.Presentation
 
    public class
       When_the_simulation_simulation_presenter_is_notified_that_a_simulation_run_is_finished_for_the_edited_simulation :
-         concern_for_EditSimulationPresenter
+      concern_for_EditSimulationPresenter
    {
       private IMoBiSimulation _simulation;
       private CurveChart _chart;
@@ -316,7 +315,7 @@ namespace MoBi.Presentation
 
    public class
       When_the_edit_simulation_presenter_is_notified_that_a_parameter_should_be_selected_for_the_edited_simulation :
-         concern_for_EditSimulationPresenter
+      concern_for_EditSimulationPresenter
    {
       private IParameter _parameter;
       private IMoBiSimulation _simulation;
@@ -370,13 +369,12 @@ namespace MoBi.Presentation
       }
    }
 
-
    public class When_adding_observed_data_to_the_simulation : concern_for_EditSimulationPresenter
    {
       private IMoBiSimulation _simulation;
       private DataRepository _firstObservedDataRepository;
       private DataRepository _secondObservedDataRepository;
-      private List<DataRepository> _repositoryList = new List<DataRepository>();
+      private readonly List<DataRepository> _repositoryList = new List<DataRepository>();
       private OutputMapping _firstOutputMapping;
 
       protected override void Context()
@@ -405,7 +403,6 @@ namespace MoBi.Presentation
       {
          _chartPresenter.OnObservedDataAddedToChart += Raise.With(new ObservedDataAddedToChartEventArgs { AddedDataRepositories = _repositoryList });
       }
-
 
       [Observation]
       public void should_add_missing_mapping()

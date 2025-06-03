@@ -10,25 +10,78 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Utility.Events;
 
-namespace MoBi.Helpers
+namespace MoBi.HelpersForTests
 {
    public static class DomainHelperForSpecs
    {
-      static DomainHelperForSpecs()
+      private static Dimension _concentrationDimension;
+      private static Dimension _timeDimension;
+
+      public static string DataTestFileFullPath(string fileName)
       {
-         TimeDimension.AddUnit(new Unit("seconds", 1 / 60.0, 0.0));
-         AmountDimension.AddUnit(new Unit("mmol", 1000.0, 0.0));
+         var dataFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data");
+         return Path.Combine(dataFolder, fileName);
       }
 
-      /// <summary>
-      ///    Returns the full path of the test data file
-      /// </summary>
-      /// <param name="fileName">The filename and extension</param>
-      /// <returns>The full path including the name and extension</returns>
       public static string TestFileFullPath(string fileName)
       {
          var dataFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "TestFiles");
          return Path.Combine(dataFolder, fileName);
+      }
+
+      public static IDimension TimeDimensionForSpecs()
+      {
+         if (_timeDimension == null)
+         {
+            _timeDimension = new Dimension(new BaseDimensionRepresentation { TimeExponent = 1 }, Constants.Dimension.TIME, "min");
+            _timeDimension.AddUnit(new Unit("h", 60, 0));
+         }
+
+         return _timeDimension;
+      }
+
+      public static IDimension ConcentrationDimensionForSpecs()
+      {
+         if (_concentrationDimension == null)
+         {
+            _concentrationDimension = new Dimension(new BaseDimensionRepresentation { AmountExponent = 3, LengthExponent = -1 }, Constants.Dimension.MOLAR_CONCENTRATION, "µmol/l");
+            _concentrationDimension.AddUnit(new Unit("mol/l", 1E6, 0));
+         }
+
+         return _concentrationDimension;
+      }
+
+      public static DataRepository IndividualSimulationDataRepositoryFor(string simulationName)
+      {
+         var simulationResults = new DataRepository("Results");
+         var baseGrid = new BaseGrid("Time", TimeDimensionForSpecs())
+         {
+            Values = new[] { 1.0f, 2.0f, 3.0f }
+         };
+         simulationResults.Add(baseGrid);
+
+         var data = ConcentrationColumnForSimulation(simulationName, baseGrid);
+
+         simulationResults.Add(data);
+
+         return simulationResults;
+      }
+
+      public static DataColumn ConcentrationColumnForSimulation(string simulationName, BaseGrid baseGrid)
+      {
+         var data = new DataColumn("Col", ConcentrationDimensionForSpecs(), baseGrid)
+         {
+            Values = new[] { 10f, 20f, 30f },
+            DataInfo = { Origin = ColumnOrigins.Calculation },
+            QuantityInfo = new QuantityInfo(new[] { simulationName, "Comp", "Liver", "Cell", "Concentration" }, QuantityType.Drug)
+         };
+         return data;
+      }
+
+      static DomainHelperForSpecs()
+      {
+         TimeDimension.AddUnit(new Unit("seconds", 1 / 60.0, 0.0));
+         AmountDimension.AddUnit(new Unit("mmol", 1000.0, 0.0));
       }
 
       public static IDimension AmountDimension { get; } = new Dimension(new BaseDimensionRepresentation { AmountExponent = 1 }, Constants.Dimension.MOLAR_AMOUNT, "µmol");
@@ -92,27 +145,6 @@ namespace MoBi.Helpers
       public static MoBiProject NewProject()
       {
          return new MoBiProject { SimulationSettings = new SimulationSettings() };
-      }
-   }
-
-   public class ObjectPathFactoryForSpecs : ObjectPathFactory
-   {
-      public ObjectPathFactoryForSpecs() : base(new AliasCreator())
-      {
-      }
-   }
-
-   public class EntityPathResolverForSpecs : EntityPathResolver
-   {
-      public EntityPathResolverForSpecs() : base(new ObjectPathFactoryForSpecs())
-      {
-      }
-   }
-
-   public class PathCacheForSpecs<T> : PathCache<T> where T : class, IEntity
-   {
-      public PathCacheForSpecs() : base(new EntityPathResolverForSpecs())
-      {
       }
    }
 }
