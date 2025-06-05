@@ -1,10 +1,14 @@
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Services;
+using MoBi.Core.Snapshots.Services;
+using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Interaction;
+using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
@@ -40,6 +44,8 @@ namespace MoBi.Presentation.Tasks
       private readonly IHeavyWorkManager _heavyWorkManager;
       private readonly ISimulationLoader _simulationLoader;
       private readonly ISbmlTask _sbmlTask;
+      private readonly ISnapshotTask _snapshotTask;
+      private readonly IMoBiApplicationController _applicationController;
 
       public ProjectTask(
          IMoBiContext context,
@@ -48,12 +54,15 @@ namespace MoBi.Presentation.Tasks
          IMRUProvider mruProvider,
          IHeavyWorkManager heavyWorkManager,
          ISimulationLoader simulationLoader,
-         ISbmlTask sbmlTask
-      )
+         ISbmlTask sbmlTask,
+         ISnapshotTask snapshotTask,
+         IMoBiApplicationController applicationController)
       {
          _context = context;
          _simulationLoader = simulationLoader;
          _sbmlTask = sbmlTask;
+         _snapshotTask = snapshotTask;
+         _applicationController = applicationController;
          _heavyWorkManager = heavyWorkManager;
          _mruProvider = mruProvider;
          _serializationTask = serializationTask;
@@ -139,6 +148,44 @@ namespace MoBi.Presentation.Tasks
          {
             return loadSimulationTransferFromFileUsingDimensionMode(fileName, ReactionDimensionMode.ConcentrationBased);
          }
+      }
+
+      public Task ExportCurrentProjectToSnapshot()
+      {
+         var project = _context.CurrentProject;
+
+         var anySimulationInChangedState = project.All<MoBiSimulation>().Any(x => x.OriginalQuantityValues.Any());
+
+         if (exitIf(anySimulationInChangedState, Captions.SnapshotOfProjectWithChangedSimulation))
+            return Task.CompletedTask;
+
+         return _snapshotTask.ExportModelToSnapshotAsync(project);
+      }
+
+      public void LoadProjectFromSnapshot()
+      {
+         using (var presenter = _applicationController.Start<ILoadProjectFromSnapshotPresenter>())
+         {
+            var project = presenter.LoadProject();
+            //Action was canceled, do not change anything
+            if (project == null)
+               return;
+
+            //Make sure we close the project before loading the new one from snapshot
+            CloseProject();
+            
+            _context.LoadFrom(project);
+            notifyProjectLoaded();
+         }
+      }
+
+      private bool exitIf(bool condition, string message)
+      {
+         if (!condition)
+            return false;
+
+         var proceed = _dialogCreator.MessageBoxYesNo(message);
+         return (proceed == ViewResult.No);
       }
 
       private SimulationTransfer loadSimulationTransferFromFileUsingDimensionMode(string fileName, ReactionDimensionMode dimensionMode)

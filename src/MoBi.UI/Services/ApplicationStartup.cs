@@ -1,9 +1,5 @@
-using System;
-using System.Globalization;
-using System.IO;
-using System.Threading;
-using System.Windows.Forms;
 using Castle.Facilities.TypedFactory;
+using Microsoft.Extensions.Logging;
 using MoBi.Assets;
 using MoBi.Core;
 using MoBi.Core.Domain.UnitSystem;
@@ -30,6 +26,7 @@ using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure;
 using OSPSuite.Infrastructure.Container.Castle;
 using OSPSuite.Infrastructure.Import.Core;
+using OSPSuite.Infrastructure.Services;
 using OSPSuite.Presentation;
 using OSPSuite.Presentation.Services;
 using OSPSuite.UI;
@@ -39,6 +36,12 @@ using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.FileLocker;
+using System;
+using System.Globalization;
+using System.IO;
+using System.Threading;
+using System.Windows.Forms;
+using MoBi.Presentation.Tasks;
 using CoreRegister = OSPSuite.Core.CoreRegister;
 using IApplicationSettings = MoBi.Core.IApplicationSettings;
 using IContainer = OSPSuite.Utility.Container.IContainer;
@@ -218,6 +221,7 @@ namespace MoBi.UI.Services
 
          container.AddRegister(x => x.FromType<PresenterRegister>());
          container.AddRegister(x => x.FromType<UIRegister>());
+         container.AddRegister(x => x.FromType<InfrastructureRegister>());
 
          // Global Singleton Objects
          container.Register<IExceptionManager, ExceptionManager>(LifeStyle.Singleton);
@@ -226,7 +230,6 @@ namespace MoBi.UI.Services
 
          container.Register<IEventPublisher, EventPublisher>(LifeStyle.Singleton);
          container.Register<IFileLocker, FileLocker>(LifeStyle.Singleton);
-         container.Register<IOSPSuiteLogger, MoBiLogger>(LifeStyle.Singleton);
          container.Register<ISplashScreen, SplashScreen>();
          container.Register<ISplashScreenPresenter, SplashScreenPresenter>();
          container.Register<IProgressUpdater, ProgressUpdater>();
@@ -238,7 +241,22 @@ namespace MoBi.UI.Services
 
          EnvironmentHelper.ApplicationName = () => "mobi";
 
+         configureLogger(container, LogLevel.Information);
+         
          registrationAction?.Invoke(container);
+      }
+
+      private void configureLogger(IContainer container, LogLevel logLevel)
+      {
+         var loggerCreator = container.Resolve<ILoggerCreator>();
+
+         loggerCreator
+            .AddLoggingBuilderConfiguration(builder =>
+               builder
+                  .SetMinimumLevel(logLevel)
+                  .AddDebug()
+                  .AddPresenter()
+            );
       }
 
       private static void registerRunOptionsIn(IContainer container)
@@ -261,7 +279,7 @@ namespace MoBi.UI.Services
       {
          container.AddRegister(x => x.FromType<CoreRegister>());
          container.AddRegister(x => x.FromType<Core.CoreRegister>());
-         container.AddRegister(x => x.FromType<InfrastructureRegister>());
+         // container.AddRegister(x => x.FromType<InfrastructureRegister>());
       }
 
       private static void registerImport(IContainer container)
