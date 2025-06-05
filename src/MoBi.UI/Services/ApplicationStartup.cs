@@ -279,7 +279,6 @@ namespace MoBi.UI.Services
       {
          container.AddRegister(x => x.FromType<CoreRegister>());
          container.AddRegister(x => x.FromType<Core.CoreRegister>());
-         // container.AddRegister(x => x.FromType<InfrastructureRegister>());
       }
 
       private static void registerImport(IContainer container)

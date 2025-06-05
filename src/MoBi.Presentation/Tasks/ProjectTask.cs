@@ -173,7 +173,7 @@ namespace MoBi.Presentation.Tasks
 
             //Make sure we close the project before loading the new one from snapshot
             CloseProject();
-            
+
             _context.LoadFrom(project);
             notifyProjectLoaded();
          }

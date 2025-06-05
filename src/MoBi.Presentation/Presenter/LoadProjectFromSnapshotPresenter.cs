@@ -41,19 +41,10 @@ namespace MoBi.Presentation.Presenter
          _unRegisterTask = unRegisterTask;
       }
 
-      protected override IReadOnlyList<QualificationPlan> AllQualificationPlansFrom(MoBiProject project)
-      {
-         return Array.Empty<QualificationPlan>();
-      }
+      protected override IReadOnlyList<QualificationPlan> AllQualificationPlansFrom(MoBiProject project) => Array.Empty<QualificationPlan>();
 
-      protected override void RegisterProject(MoBiProject project)
-      {
-         _registerTask.Register(project);
-      }
+      protected override void RegisterProject(MoBiProject project) => _registerTask.Register(project);
 
-      protected override void UnRegisterProjects(List<MoBiProject> projects)
-      {
-         _unRegisterTask.UnregisterAllIn(ProjectFrom(projects));
-      }
+      protected override void UnRegisterProjects(List<MoBiProject> projects) => _unRegisterTask.UnregisterAllIn(ProjectFrom(projects));
    }
 }

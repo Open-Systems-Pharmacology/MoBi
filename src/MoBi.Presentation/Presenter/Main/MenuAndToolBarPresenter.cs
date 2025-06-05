@@ -217,7 +217,6 @@ namespace MoBi.Presentation.Presenter.Main
             updateSaveProjectButtons(enabled);
             _menuBarItemRepository[MenuBarItemIds.CloseProject].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.ExportProjectToSnapshot].Enabled = enabled;
-            
             _menuBarItemRepository[MenuBarItemIds.ManageUserDisplayUnits].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.ManageProjectDisplayUnits].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.UpdateAllToDisplayUnits].Enabled = enabled;

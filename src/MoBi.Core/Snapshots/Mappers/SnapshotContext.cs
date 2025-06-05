@@ -29,8 +29,4 @@ namespace MoBi.Core.Snapshots.Mappers
 
       public bool RunSimulations { get; }
    }
-
-   public abstract class SnapshotMapperBase<TModel, TSnapshot> : SnapshotMapperBase<TModel, TSnapshot, SnapshotContext> where TSnapshot : new()
-   {
-   }
 }

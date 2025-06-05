@@ -39,29 +39,17 @@ namespace MoBi.Presentation.Tasks
          _eventPublisher.PublishEvent(new LogEntryEvent(logEntry));
       }
 
-      public bool IsEnabled(LogLevel logLevel)
-      {
-         return true;
-      }
+      public bool IsEnabled(LogLevel logLevel) => true;
 
-      public IDisposable BeginScope<TState>(TState state)
-      {
-         return NullLogger.Instance.BeginScope(state);
-      }
+      public IDisposable BeginScope<TState>(TState state) => NullLogger.Instance.BeginScope(state);
    }
    public class PresenterLoggerProvider : ILoggerProvider
    {
       private readonly ConcurrentDictionary<string, PresenterLogger> _loggers = new ConcurrentDictionary<string, PresenterLogger>();
 
-      public ILogger CreateLogger(string categoryName)
-      {
-         return _loggers.GetOrAdd(categoryName, createLoggerImplementation);
-      }
+      public ILogger CreateLogger(string categoryName) => _loggers.GetOrAdd(categoryName, createLoggerImplementation);
 
-      private PresenterLogger createLoggerImplementation(string name)
-      {
-         return new PresenterLogger(name);
-      }
+      private PresenterLogger createLoggerImplementation(string name) => new PresenterLogger(name);
 
       public void Dispose()
       {

@@ -32,20 +32,11 @@ namespace MoBi.Core.Snapshots.Services
          _projectMapper = projectMapper;
       }
 
-      protected override Task<MoBiProject> ProjectFrom(Project snapshot, bool runSimulations)
-      {
-         return _projectMapper.MapToModel(snapshot, new ProjectContext(runSimulations));
-      }
+      protected override Task<MoBiProject> ProjectFrom(Project snapshot, bool runSimulations) => _projectMapper.MapToModel(snapshot, new ProjectContext(runSimulations));
 
-      protected override SnapshotContext GetSnapshotContext()
-      {
-         return new Mappers.SnapshotContext(_projectRetriever.Current, ProjectVersions.Current);
-      }
+      protected override SnapshotContext GetSnapshotContext() => new Mappers.SnapshotContext(_projectRetriever.Current, ProjectVersions.Current);
 
-      protected override MoBiProject GetProject()
-      {
-         return _projectRetriever.Current;
-      }
+      protected override MoBiProject GetProject() => _projectRetriever.Current;
    }
    
 }

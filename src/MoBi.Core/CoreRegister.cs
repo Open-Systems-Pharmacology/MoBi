@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Comparison;
 using MoBi.Core.Domain.Model;
@@ -26,7 +27,6 @@ using OSPSuite.Infrastructure.Serialization;
 using OSPSuite.Infrastructure.Serialization.ORM.History;
 using OSPSuite.TeXReporting;
 using OSPSuite.Utility.Container;
-using System.Collections.Generic;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.Core
@@ -48,21 +48,21 @@ namespace MoBi.Core
             scan.ExcludeType<GroupRepository>();
             scan.ExcludeType<ClipboardManager>();
             scan.ExcludeType<ApplicationSettings>();
-            // scan.ExcludeType<MoBiLogger>();
             scan.ExcludeNamespaceContainingType<IMoBiObjectConverter>();
             scan.ExcludeNamespaceContainingType<ProjectReporter>();
             scan.ExcludeNamespaceContainingType<MoBiSimulationDiffBuilder>();
             scan.ExcludeNamespaceContainingType<ProjectMapper>();
             scan.WithConvention(new OSPSuiteRegistrationConvention(registerConcreteType: true));
          });
-         
+
+         // Registered to satisfy the repository of ISnapshotMapperSpecification
          container.AddScanner(scan =>
          {
             scan.AssemblyContainingType<CoreRegister>();
             scan.IncludeNamespaceContainingType<ProjectMapper>();
             scan.WithConvention<RegisterTypeConvention<ISnapshotMapperSpecification>>();
          });
-         
+
          container.Register<IMoBiContext, IOSPSuiteExecutionContext, IWorkspace, MoBiContext>(LifeStyle.Singleton);
          container.Register<OSPSuite.Core.IApplicationSettings, IApplicationSettings, ApplicationSettings>(LifeStyle.Singleton);
          container.Register<IMoBiDimensionFactory, IDimensionFactory, MoBiDimensionFactory>(LifeStyle.Singleton);
