@@ -116,6 +116,8 @@ namespace MoBi.Presentation.MenusAndBars
       public static MenuBarItemId SensitivityAnalysisFeedbackView = createMenuBarItemId("SensitivityAnalysisFeedbackView");
       public static MenuBarItemId ClearHistory = createMenuBarItemId("ClearHistory");
       public static MenuBarItemId NewNeighborhood = createMenuBarItemId("NewNeighborhood");
+      public static MenuBarItemId ExportProjectToSnapshot = createMenuBarItemId("ExportProjectToSnapshot");
+      public static MenuBarItemId LoadProjectFromSnahpshot = createMenuBarItemId("LoadProjectFromSnahpshot");
 
       private static MenuBarItemId createMenuBarItemId(string name)
       {

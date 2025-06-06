@@ -12,6 +12,7 @@
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\PKSim.Core.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
     <Version Condition="'$(Version)' == ''">13.0.0</Version>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -34,13 +35,13 @@
     <PackageReference Include="FluentNHibernate" Version="3.4.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="OSPSuite.Utility" Version="4.1.1.1" />
-    <PackageReference Include="OSPSuite.Core" Version="13.0.14" />
-    <PackageReference Include="OSPSuite.Assets" Version="13.0.14" />
-    <PackageReference Include="OSPSuite.Assets.Images" Version="13.0.14" />
-    <PackageReference Include="OSPSuite.Infrastructure.Export" Version="13.0.14" />
-    <PackageReference Include="OSPSuite.Infrastructure.Reporting" Version="13.0.14" />
-    <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="13.0.14" />
-    <PackageReference Include="OSPSuite.Infrastructure.Import" Version="13.0.14" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.15" />
+    <PackageReference Include="OSPSuite.Assets" Version="13.0.15" />
+    <PackageReference Include="OSPSuite.Assets.Images" Version="13.0.15" />
+    <PackageReference Include="OSPSuite.Infrastructure.Export" Version="13.0.15" />
+    <PackageReference Include="OSPSuite.Infrastructure.Reporting" Version="13.0.15" />
+    <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="13.0.15" />
+    <PackageReference Include="OSPSuite.Infrastructure.Import" Version="13.0.15" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
   </ItemGroup>
 

@@ -168,6 +168,7 @@ namespace MoBi.Presentation.Presenter.Main
          _menuBarItemRepository[MenuBarItemIds.NewAmountProject].Enabled = true;
          _menuBarItemRepository[MenuBarItemIds.NewConcentrationProject].Enabled = true;
          _menuBarItemRepository[MenuBarItemIds.OpenProject].Enabled = true;
+         _menuBarItemRepository[MenuBarItemIds.LoadProjectFromSnahpshot].Enabled = true;
          _menuBarItemRepository[MenuBarItemIds.Options].Enabled = true;
          _menuBarItemRepository[MenuBarItemIds.HistoryView].Enabled = true;
          _menuBarItemRepository[MenuBarItemIds.NotificationView].Enabled = true;
@@ -215,6 +216,7 @@ namespace MoBi.Presentation.Presenter.Main
             bool enabled = value;
             updateSaveProjectButtons(enabled);
             _menuBarItemRepository[MenuBarItemIds.CloseProject].Enabled = enabled;
+            _menuBarItemRepository[MenuBarItemIds.ExportProjectToSnapshot].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.ManageUserDisplayUnits].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.ManageProjectDisplayUnits].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.UpdateAllToDisplayUnits].Enabled = enabled;
