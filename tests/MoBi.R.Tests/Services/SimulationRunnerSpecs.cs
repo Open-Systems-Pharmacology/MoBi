@@ -1,8 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using FakeItEasy;
-using OSPSuite.R.Domain;
-using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -15,6 +13,7 @@ using static MoBi.HelpersForTests.DomainHelperForSpecs;
 using SimulationRunner = OSPSuite.R.Services.SimulationRunner;
 using IProjectTask = MoBi.R.Services.IProjectTask;
 using Simulation = OSPSuite.R.Domain.Simulation;
+using static MoBi.R.Tests.HelperForSpecs;
 
 namespace MoBi.R.Tests.Services
 {

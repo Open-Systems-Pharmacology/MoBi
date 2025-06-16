@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "MoBi": {
+      "commandName": "Project",
+      "commandLineArgs": "--dev"
+    }
+  }
+}

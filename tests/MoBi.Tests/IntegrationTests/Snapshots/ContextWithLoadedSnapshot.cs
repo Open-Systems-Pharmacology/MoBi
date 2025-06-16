@@ -19,7 +19,7 @@ namespace MoBi.IntegrationTests.Snapshots
 
       public void LoadSnapshot(string snapshotFileName, bool isFullPath = false)
       {
-         var snapshotFile = isFullPath ? snapshotFileName : DomainHelperForSpecs.DataTestFileFullPath($"{snapshotFileName}.json");
+         var snapshotFile = isFullPath ? snapshotFileName : DomainHelperForSpecs.TestFileFullPath($"{snapshotFileName}.json");
          _snapshotTask = IoC.Resolve<ISnapshotTask>();
          _project = _snapshotTask.LoadProjectFromSnapshotFileAsync(snapshotFile).Result;
       }

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MoBi.Core.Domain.Model;
-using MoBi.HelpersForTests;
 using MoBi.R.Services;
 using NUnit.Framework;
 using OSPSuite.BDDHelper;
@@ -9,7 +8,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.R.Services;
-using static MoBi.HelpersForTests.DomainHelperForSpecs;
+using static MoBi.R.Tests.HelperForSpecs;
 
 namespace MoBi.R.Tests.Services
 {

@@ -1,5 +1,6 @@
 ﻿using OSPSuite.Core.Snapshots.Mappers;
 using MoBi.Core.Domain.Model;
+using OSPSuite.Core.Domain.Data;
 
 namespace MoBi.Core.Snapshots.Mappers
 {
@@ -28,5 +29,12 @@ namespace MoBi.Core.Snapshots.Mappers
       }
 
       public bool RunSimulations { get; }
+   }
+
+   public class SnapshotContextWithDataRepository : SnapshotContextWithDataRepository<MoBiProject>
+   {
+      public SnapshotContextWithDataRepository(DataRepository dataRepository, SnapshotContext<MoBiProject> baseContext) : base(dataRepository, baseContext, ProjectVersions.Current)
+      {
+      }
    }
 }
