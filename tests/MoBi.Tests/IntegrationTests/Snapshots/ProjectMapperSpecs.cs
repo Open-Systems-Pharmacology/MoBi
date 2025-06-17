@@ -1,13 +1,19 @@
 ﻿using System.Linq;
+using FakeItEasy;
 using MoBi.Core;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Snapshots.Mappers;
+using MoBi.Core.Snapshots.Services;
+using MoBi.HelpersForTests;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.ParameterIdentifications;
+using OSPSuite.Core.Domain.SensitivityAnalyses;
+using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Container;
 using SnapshotProject = MoBi.Core.Snapshots.Project;
 
@@ -18,23 +24,66 @@ namespace MoBi.IntegrationTests.Snapshots
       protected MoBiProject _project;
       private IXmlSerializationService _xmlSerializationService;
       private ICreationMetaDataFactory _creationMetaDataFactory;
+      private IClassificationSnapshotTask _classificationSnapshotTask;
+      private Classification _moduleClassification;
+      private Classification _observedDataClassification;
+      private Classification _simulationClassification;
+      private Classification _parameterIdentificationClassification;
+      private IMoBiContext _context;
+      private IOSPSuiteLogger _ospSuiteLogger;
 
       protected override void Context()
       {
+         _context = A.Fake<IMoBiContext>();
+
          _xmlSerializationService = IoC.Resolve<IXmlSerializationService>();
          _creationMetaDataFactory = IoC.Resolve<ICreationMetaDataFactory>();
+         _classificationSnapshotTask = IoC.Resolve<IClassificationSnapshotTask>();
+         _ospSuiteLogger = A.Fake<IOSPSuiteLogger>();
+
+         A.CallTo(() => _context.Resolve<ISnapshotMapper>()).ReturnsLazily(x => IoC.Resolve<ISnapshotMapper>());
 
          _project = new MoBiProject();
-         sut = new ProjectMapper(_xmlSerializationService, _creationMetaDataFactory);
-         
-         _project.AddModule(new Module());
+         sut = new ProjectMapper(_xmlSerializationService, _creationMetaDataFactory, _classificationSnapshotTask, _context, _ospSuiteLogger);
+
+         var module = new Module().WithId("module").WithName("module");
+         _project.AddModule(module);
+
+         var dataRepository = DomainHelperForSpecs.ObservedData();
+         _project.AddObservedData(dataRepository);
+
+         var simulation = new MoBiSimulation().WithId("simulation").WithName("simulation");
+         _project.AddSimulation(simulation);
+
+         var parameterIdentification = new ParameterIdentification();
+         _project.AddParameterIdentification(parameterIdentification);
+
+         var sensitivityAnalysis = new SensitivityAnalysis();
+         _project.AddSensitivityAnalysis(sensitivityAnalysis);
+
+
          var expressionProfileBuildingBlock = new ExpressionProfileBuildingBlock
          {
             Type = ExpressionTypes.MetabolizingEnzyme
          };
-         
+
          _project.AddExpressionProfileBuildingBlock(expressionProfileBuildingBlock);
          _project.AddIndividualBuildingBlock(new IndividualBuildingBlock());
+
+         _moduleClassification = new Classification { ClassificationType = ClassificationType.Module }.WithName("Module Classification");
+         _observedDataClassification = new Classification { ClassificationType = ClassificationType.ObservedData }.WithName("Observed Data Classification");
+         _simulationClassification = new Classification { ClassificationType = ClassificationType.Simulation }.WithName("Simulation Classification");
+         _parameterIdentificationClassification = new Classification { ClassificationType = ClassificationType.ParameterIdentification }.WithName("Parameter Identification Classification");
+
+         _project.AddClassification(_simulationClassification);
+         _project.AddClassification(_moduleClassification);
+         _project.AddClassification(_observedDataClassification);
+         _project.AddClassification(_parameterIdentificationClassification);
+
+         _project.AddClassifiable(new ClassifiableModule { Subject = module, Parent = _moduleClassification });
+         _project.AddClassifiable(new ClassifiableObservedData { Subject = dataRepository, Parent = _observedDataClassification });
+         _project.AddClassifiable(new ClassifiableSimulation { Subject = simulation, Parent = _simulationClassification });
+         _project.AddClassifiable(new ClassifiableParameterIdentification { Subject = parameterIdentification, Parent = _parameterIdentificationClassification });
       }
    }
 
@@ -51,25 +100,43 @@ namespace MoBi.IntegrationTests.Snapshots
 
       protected override void Because()
       {
-         _result = sut.MapToModel(_snapshot, new ProjectContext(runSimulations:false)).Result;
+         _result = sut.MapToModel(_snapshot, new ProjectContext(runSimulations: false)).Result;
       }
 
       [Observation]
-      public void the_snapshot_should_contain_extension_modules_snapshots_for_each_extension_module()
+      public void the_project_should_contain_extension_modules_snapshots_for_each_extension_module()
       {
-          _result.Modules.Count(x => !x.IsPKSimModule).ShouldBeEqualTo(_snapshot.ExtensionModules.Length);
+         _result.Modules.Count(x => !x.IsPKSimModule).ShouldBeEqualTo(_snapshot.ExtensionModules.Length);
       }
 
       [Observation]
-      public void the_snapshot_should_contain_expression_snapshots_for_each_expression()
+      public void the_project_should_contain_expression_snapshots_for_each_expression()
       {
          _result.ExpressionProfileCollection.Count.ShouldBeEqualTo(_snapshot.ExpressionProfileBuildingBlocks.Length);
       }
 
       [Observation]
-      public void the_snapshot_should_contain_individual_snapshots_for_each_individual()
+      public void the_project_should_contain_individual_snapshots_for_each_individual()
       {
          _result.IndividualsCollection.Count.ShouldBeEqualTo(_snapshot.IndividualBuildingBlocks.Length);
+      }
+
+      [Observation]
+      public void the_project_should_have_classifications()
+      {
+         _result.AllClassificationsByType(ClassificationType.Module).Count.ShouldBeEqualTo(1);
+         _result.AllClassificationsByType(ClassificationType.ObservedData).Count.ShouldBeEqualTo(1);
+         _result.AllClassificationsByType(ClassificationType.Simulation).Count.ShouldBeEqualTo(1);
+         _result.AllClassificationsByType(ClassificationType.ParameterIdentification).Count.ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void the_project_should_have_classifiables()
+      {
+         _result.AllClassifiablesByType<ClassifiableModule>().Count.ShouldBeEqualTo(1);
+         _result.AllClassifiablesByType<ClassifiableObservedData>().Count.ShouldBeEqualTo(1);
+         // _result.AllClassifiablesByType<ClassifiableSimulation>().Count.ShouldBeEqualTo(1);
+         // _result.AllClassifiablesByType<ClassifiableParameterIdentification>().Count.ShouldBeEqualTo(1);
       }
    }
 
@@ -104,6 +171,15 @@ namespace MoBi.IntegrationTests.Snapshots
       public void the_snapshot_version_should_be_project_latest()
       {
          _snapshot.Version.ShouldBeEqualTo(ProjectVersions.Current);
+      }
+
+      [Observation]
+      public void there_should_be_classifications_for_each_type()
+      {
+         _snapshot.ModuleClassifications.Length.ShouldBeEqualTo(1);
+         _snapshot.ObservedDataClassifications.Length.ShouldBeEqualTo(1);
+         _snapshot.SimulationClassifications.Length.ShouldBeEqualTo(1);
+         _snapshot.ParameterIdentificationClassifications.Length.ShouldBeEqualTo(1);
       }
    }
 }

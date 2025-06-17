@@ -1,5 +1,7 @@
-﻿using OSPSuite.Core.Domain;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Snapshots;
+using Classification = OSPSuite.Core.Snapshots.Classification;
 
 namespace MoBi.Core.Snapshots;
 
@@ -16,4 +18,16 @@ public class Project : IWithDescription, IWithName
    public string[] ExpressionProfileBuildingBlocks { set; get; }
       
    public string[] IndividualBuildingBlocks { set; get; }
+
+   public Classification[] ObservedDataClassifications { get; set; }
+   
+   public Classification[] SimulationClassifications { get; set; }
+   
+   public Classification[] ParameterIdentificationClassifications { get; set; }
+   
+   public Classification[] ModuleClassifications { get; set; }
+   
+   public DataRepository[] ObservedData { get; set; }
+   
+   public ParameterIdentification[] ParameterIdentifications { get; set; }
 }

@@ -7,7 +7,7 @@ using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Populations;
 using OSPSuite.R.Services;
 using OSPSuite.Utility;
-using static MoBi.HelpersForTests.DomainHelperForSpecs;
+using static MoBi.R.Tests.HelperForSpecs;
 
 namespace MoBi.R.Tests.Services
 {

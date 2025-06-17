@@ -10,6 +10,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.R.Domain;
 using ModuleConfiguration = MoBi.R.Domain.ModuleConfiguration;
+using static MoBi.R.Tests.HelperForSpecs;
 
 namespace MoBi.R.Tests.Services
 {
@@ -35,7 +36,7 @@ namespace MoBi.R.Tests.Services
          base.Context();
          _projectTask = Api.GetProjectTask();
          _moduleTask = Api.GetModuleTask();
-         var projectFile = DomainHelperForSpecs.DataTestFileFullPath("SampleProject.mbp3");
+         var projectFile = DataTestFileFullPath("SampleProject.mbp3");
          _project = _projectTask.LoadProject(projectFile);
       }
 
