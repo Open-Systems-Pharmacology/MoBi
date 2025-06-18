@@ -1,5 +1,6 @@
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Exceptions;
@@ -290,6 +291,16 @@ namespace MoBi.Presentation.Tasks
          notifyProjectLoaded();
 
          return true;
+      }
+
+      public Task ExportCurrentProjectToSnapshot()
+      {
+         throw new System.NotImplementedException();
+      }
+
+      public void LoadProjectFromSnapshot()
+      {
+         throw new System.NotImplementedException();
       }
    }
 }

@@ -26,9 +26,9 @@ namespace MoBi.R.Tests.Services
          _moduleTask = Api.GetModuleTask();
       }
 
-      protected void LoadSampleProject()
+      protected void LoadSampleProject(string fileName)
       {
-         var projectFile = DomainHelperForSpecs.DataTestFileFullPath("SampleProject.mbp3");
+         var projectFile = DomainHelperForSpecs.DataTestFileFullPath(fileName);
          _project = _projectTask.LoadProject(projectFile);
       }
 
@@ -54,7 +54,7 @@ namespace MoBi.R.Tests.Services
       protected override void Context()
       {
          base.Context();
-         LoadSampleProject();
+         LoadSampleProject("SampleProject.mbp3");
       }
 
       protected override void Because()
@@ -79,7 +79,7 @@ namespace MoBi.R.Tests.Services
       protected override void Context()
       {
          base.Context();
-         LoadSampleProject();
+         LoadSampleProject("SampleProject.mbp3");
       }
 
       protected override void Because()
