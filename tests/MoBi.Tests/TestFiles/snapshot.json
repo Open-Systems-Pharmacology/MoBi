@@ -17,6 +17,14 @@
       ]
     }
   ],
+  "ParameterIdentificationClassifications": [
+    {
+      "Name": "pi folder",
+      "Classifiables": [
+        "Parameter Identification 1"
+      ]
+    }
+  ],
   "ModuleClassifications": [
     {
       "Name": "module folder",
@@ -129,6 +137,57 @@
         ],
         "Dimension": "Time",
         "Unit": "h"
+      }
+    }
+  ],
+  "ParameterIdentifications": [
+    {
+      "Name": "Parameter Identification 1",
+      "Simulations": [],
+      "Configuration": {
+        "LLOQMode": "SimulationOutputAsObservedDataLLOQ",
+        "RemoveLLOQMode": "Never",
+        "CalculateJacobian": false,
+        "Algorithm": {
+          "Name": "Levenberg - Marquardt (MPFit)",
+          "Properties": [
+            {
+              "Name": "ftol",
+              "Value": 0.001,
+              "Type": "Double"
+            },
+            {
+              "Name": "xtol",
+              "Value": 1E-06,
+              "Type": "Double"
+            },
+            {
+              "Name": "gtol",
+              "Value": 1E-10,
+              "Type": "Double"
+            },
+            {
+              "Name": "stepfactor",
+              "Value": 100.0,
+              "Type": "Double"
+            },
+            {
+              "Name": "maxiter",
+              "Value": 200,
+              "Type": "Integer"
+            },
+            {
+              "Name": "maxfev",
+              "Value": 0,
+              "Type": "Integer"
+            },
+            {
+              "Name": "epsfcn",
+              "Value": 1E-09,
+              "Type": "Double"
+            }
+          ]
+        }
       }
     }
   ]

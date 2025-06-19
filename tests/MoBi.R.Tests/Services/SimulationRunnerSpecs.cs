@@ -80,7 +80,6 @@ namespace MoBi.R.Tests.Services
    {
       private Simulation _simulation;
       private SimulationResults _results;
-      private SimulationRunResults _simulationRunResults;
 
       protected override void Context()
       {

@@ -28,6 +28,9 @@ using OSPSuite.Infrastructure.Serialization.ORM.History;
 using OSPSuite.TeXReporting;
 using OSPSuite.Utility.Container;
 using IContainer = OSPSuite.Utility.Container.IContainer;
+using ParameterIdentificationRunModeMapper = MoBi.Core.Snapshots.Mappers.ParameterIdentificationRunModeMapper;
+using IdentificationParameterMapper = MoBi.Core.Snapshots.Mappers.IdentificationParameterMapper;
+using TableFormulaMapper = MoBi.Core.Snapshots.Mappers.TableFormulaMapper;
 
 namespace MoBi.Core
 {
@@ -62,6 +65,10 @@ namespace MoBi.Core
             scan.IncludeNamespaceContainingType<ProjectMapper>();
             scan.WithConvention<RegisterTypeConvention<ISnapshotMapperSpecification>>();
          });
+         container.Register<OSPSuite.Core.Snapshots.Mappers.ParameterIdentificationRunModeMapper, ParameterIdentificationRunModeMapper>();
+         container.Register<OSPSuite.Core.Snapshots.Mappers.IdentificationParameterMapper, IdentificationParameterMapper>();
+         container.Register<OSPSuite.Core.Snapshots.Mappers.TableFormulaMapper, TableFormulaMapper>();
+         
 
          container.Register<IMoBiContext, IOSPSuiteExecutionContext, IWorkspace, MoBiContext>(LifeStyle.Singleton);
          container.Register<OSPSuite.Core.IApplicationSettings, IApplicationSettings, ApplicationSettings>(LifeStyle.Singleton);
