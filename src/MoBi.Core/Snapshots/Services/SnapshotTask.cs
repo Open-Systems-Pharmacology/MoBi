@@ -4,39 +4,35 @@ using MoBi.Core.Services;
 using MoBi.Core.Snapshots.Mappers;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots;
 using OSPSuite.Core.Snapshots.Mappers;
 using SnapshotContext = OSPSuite.Core.Snapshots.Mappers.SnapshotContext;
 
-namespace MoBi.Core.Snapshots.Services
+namespace MoBi.Core.Snapshots.Services;
+
+public interface ISnapshotTask : OSPSuite.Core.Snapshots.Services.ISnapshotTask<MoBiProject, Project>;
+
+public class SnapshotTask : OSPSuite.Core.Snapshots.Services.SnapshotTask<MoBiProject, Project>, ISnapshotTask
 {
-   public interface ISnapshotTask : OSPSuite.Core.Snapshots.Services.ISnapshotTask<MoBiProject, Project>
-   {
+   private readonly IMoBiProjectRetriever _projectRetriever;
+   private readonly ProjectMapper _projectMapper;
 
+   public SnapshotTask(IJsonSerializer jsonSerializer, 
+      ISnapshotMapper snapshotMapper, 
+      IDialogCreator dialogCreator, 
+      IObjectTypeResolver objectTypeResolver, 
+      IMoBiContext executionContext,
+      IMoBiProjectRetriever projectRetriever,
+      ProjectMapper projectMapper) : 
+      base(jsonSerializer, snapshotMapper, dialogCreator, objectTypeResolver, executionContext)
+   {
+      _projectRetriever = projectRetriever;
+      _projectMapper = projectMapper;
    }
 
-   public class SnapshotTask : OSPSuite.Core.Snapshots.Services.SnapshotTask<MoBiProject, Project>, ISnapshotTask
-   {
-      private readonly IMoBiProjectRetriever _projectRetriever;
-      private readonly ProjectMapper _projectMapper;
+   protected override Task<MoBiProject> ProjectFrom(Project snapshot, bool runSimulations) => _projectMapper.MapToModel(snapshot, new ProjectContext(new MoBiProject(), runSimulations));
 
-      public SnapshotTask(IJsonSerializer jsonSerializer, 
-         ISnapshotMapper snapshotMapper, 
-         IDialogCreator dialogCreator, 
-         IObjectTypeResolver objectTypeResolver, 
-         IMoBiContext executionContext,
-         IMoBiProjectRetriever projectRetriever,
-         ProjectMapper projectMapper) : 
-         base(jsonSerializer, snapshotMapper, dialogCreator, objectTypeResolver, executionContext)
-      {
-         _projectRetriever = projectRetriever;
-         _projectMapper = projectMapper;
-      }
+   protected override SnapshotContext GetSnapshotContext() => new(_projectRetriever.Current, SnapshotVersions.Current);
 
-      protected override Task<MoBiProject> ProjectFrom(Project snapshot, bool runSimulations) => _projectMapper.MapToModel(snapshot, new ProjectContext(runSimulations));
-
-      protected override SnapshotContext GetSnapshotContext() => new Mappers.SnapshotContext(_projectRetriever.Current, ProjectVersions.Current);
-
-      protected override MoBiProject GetProject() => _projectRetriever.Current;
-   }
-   
+   protected override MoBiProject GetProject() => _projectRetriever.Current;
 }

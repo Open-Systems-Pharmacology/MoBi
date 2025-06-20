@@ -4,17 +4,19 @@ using MoBi.Core;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Snapshots.Mappers;
-using MoBi.Core.Snapshots.Services;
 using MoBi.HelpersForTests;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Chart.ParameterIdentifications;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.ParameterIdentifications;
-using OSPSuite.Core.Domain.SensitivityAnalyses;
 using OSPSuite.Core.Services;
 using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Container;
+using Classification = OSPSuite.Core.Domain.Classification;
+using OutputMapping = OSPSuite.Core.Domain.OutputMapping;
+using ParameterIdentification = OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentification;
 using SnapshotProject = MoBi.Core.Snapshots.Project;
 
 namespace MoBi.IntegrationTests.Snapshots
@@ -31,6 +33,7 @@ namespace MoBi.IntegrationTests.Snapshots
       private Classification _parameterIdentificationClassification;
       private IMoBiContext _context;
       private IOSPSuiteLogger _ospSuiteLogger;
+      private ParameterIdentificationMapper _parameterIdentificationMapper;
 
       protected override void Context()
       {
@@ -39,12 +42,13 @@ namespace MoBi.IntegrationTests.Snapshots
          _xmlSerializationService = IoC.Resolve<IXmlSerializationService>();
          _creationMetaDataFactory = IoC.Resolve<ICreationMetaDataFactory>();
          _classificationSnapshotTask = IoC.Resolve<IClassificationSnapshotTask>();
+         _parameterIdentificationMapper = IoC.Resolve<ParameterIdentificationMapper>();
          _ospSuiteLogger = A.Fake<IOSPSuiteLogger>();
 
          A.CallTo(() => _context.Resolve<ISnapshotMapper>()).ReturnsLazily(x => IoC.Resolve<ISnapshotMapper>());
 
          _project = new MoBiProject();
-         sut = new ProjectMapper(_xmlSerializationService, _creationMetaDataFactory, _classificationSnapshotTask, _context, _ospSuiteLogger);
+         sut = new ProjectMapper(_xmlSerializationService, _creationMetaDataFactory, _classificationSnapshotTask, _context, _ospSuiteLogger, _parameterIdentificationMapper);
 
          var module = new Module().WithId("module").WithName("module");
          _project.AddModule(module);
@@ -56,11 +60,15 @@ namespace MoBi.IntegrationTests.Snapshots
          _project.AddSimulation(simulation);
 
          var parameterIdentification = new ParameterIdentification();
+         var outputMapping = new OutputMapping();
+         outputMapping.OutputSelection = new SimulationQuantitySelection(simulation, new QuantitySelection("the|path"));
+         parameterIdentification.AddSimulation(simulation);
+         parameterIdentification.AddOutputMapping(outputMapping);
+         parameterIdentification.Configuration.AlgorithmProperties = new OptimizationAlgorithmProperties("toto");
+
+         var parameterIdentificationAnalysis = new ParameterIdentificationTimeProfileChart();
+         parameterIdentification.AddAnalysis(parameterIdentificationAnalysis);
          _project.AddParameterIdentification(parameterIdentification);
-
-         var sensitivityAnalysis = new SensitivityAnalysis();
-         _project.AddSensitivityAnalysis(sensitivityAnalysis);
-
 
          var expressionProfileBuildingBlock = new ExpressionProfileBuildingBlock
          {
@@ -100,7 +108,7 @@ namespace MoBi.IntegrationTests.Snapshots
 
       protected override void Because()
       {
-         _result = sut.MapToModel(_snapshot, new ProjectContext(runSimulations: false)).Result;
+         _result = sut.MapToModel(_snapshot, new ProjectContext(new MoBiProject(), runSimulations: false)).Result;
       }
 
       [Observation]
@@ -136,7 +144,14 @@ namespace MoBi.IntegrationTests.Snapshots
          _result.AllClassifiablesByType<ClassifiableModule>().Count.ShouldBeEqualTo(1);
          _result.AllClassifiablesByType<ClassifiableObservedData>().Count.ShouldBeEqualTo(1);
          // _result.AllClassifiablesByType<ClassifiableSimulation>().Count.ShouldBeEqualTo(1);
-         // _result.AllClassifiablesByType<ClassifiableParameterIdentification>().Count.ShouldBeEqualTo(1);
+         _result.AllClassifiablesByType<ClassifiableParameterIdentification>().Count.ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void the_parameter_identification_should_contain_analyses()
+      {
+         _result.AllParameterIdentifications.FirstOrDefault().Analyses.Count().ShouldBeEqualTo(1);
+         (_result.AllParameterIdentifications.FirstOrDefault().Analyses.First() is ParameterIdentificationTimeProfileChart).ShouldBeTrue();
       }
    }
 

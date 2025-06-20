@@ -4,10 +4,10 @@ using System.Text;
 using System.Threading.Tasks;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Serialization.Xml.Services;
-using MoBi.Core.Snapshots.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots;
 using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Extensions;
 using ModelDataRepository = OSPSuite.Core.Domain.Data.DataRepository;
@@ -21,7 +21,12 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
 {
    private readonly IXmlSerializationService _xmlSerializationService;
 
-   public ProjectMapper(IXmlSerializationService xmlSerializationService, ICreationMetaDataFactory creationMetaDataFactory, IClassificationSnapshotTask classificationSnapshotTask, IMoBiContext context, IOSPSuiteLogger logger) : base(creationMetaDataFactory, logger, context, classificationSnapshotTask)
+   public ProjectMapper(IXmlSerializationService xmlSerializationService,
+      ICreationMetaDataFactory creationMetaDataFactory,
+      IClassificationSnapshotTask classificationSnapshotTask,
+      IMoBiContext context,
+      IOSPSuiteLogger logger,
+      ParameterIdentificationMapper parameterIdentificationMapper) : base(creationMetaDataFactory, logger, context, classificationSnapshotTask, parameterIdentificationMapper)
    {
       _xmlSerializationService = xmlSerializationService;
    }
@@ -41,10 +46,13 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
 
       snapshot.IndividualBuildingBlocks?.Each(x => project.AddIndividualBuildingBlock(deserializeFromBase64PKML<IndividualBuildingBlock>(x, project)));
 
-      var snapshotContext = new SnapshotContext(project, snapshot.Version);
+      var snapshotContext = new SnapshotContext(project, SnapshotVersions.FindBy(snapshot.Version));
 
       var observedData = await ObservedDataFrom(snapshot.ObservedData, snapshotContext);
       observedData?.Each(repository => AddObservedDataToProject(project, repository));
+
+      var parameterIdentifications = await AllParameterIdentificationsFrom(snapshot.ParameterIdentifications, snapshotContext);
+      parameterIdentifications?.Each(pi => AddParameterIdentificationToProject(project, pi));
 
       await updateProjectClassifications(snapshot, snapshotContext);
 
@@ -53,7 +61,7 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
 
    private Task updateProjectClassifications(SnapshotProject snapshot, SnapshotContext snapshotContext)
    {
-      var project = snapshotContext.Project;
+      var project = snapshotContext.MoBiProject();
       var tasks = new[]
       {
          _classificationSnapshotTask.UpdateProjectClassifications<ClassifiableObservedData, ModelDataRepository>(
@@ -72,7 +80,6 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       return Task.WhenAll(tasks);
    }
 
-
    public override async Task<SnapshotProject> MapToSnapshot(ModelProject project)
    {
       var snapshot = await SnapshotFrom(project, x =>
@@ -85,6 +92,7 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       snapshot.ExpressionProfileBuildingBlocks = await mapExpressionProfilesBuildingBlocks(project);
       snapshot.IndividualBuildingBlocks = await mapIndividualBuildingBlocks(project);
       snapshot.ObservedData = await MapObservedDataToSnapshots(project.AllObservedData);
+      snapshot.ParameterIdentifications = await MapParameterIdentificationToSnapshots(project.AllParameterIdentifications);
 
       snapshot.ObservedDataClassifications = await MapClassifications<ClassifiableObservedData>(project);
       snapshot.SimulationClassifications = await MapClassifications<ClassifiableSimulation>(project);
@@ -105,6 +113,4 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
    private string fromBase64String(string encodedElement) => Encoding.UTF8.GetString(Convert.FromBase64String(encodedElement));
 
    private static string toBase64String(string serializeAsString) => Convert.ToBase64String(Encoding.UTF8.GetBytes(serializeAsString));
-
-   private ISnapshotMapper snapshotMapper => _snapshotMapper.Value;
 }

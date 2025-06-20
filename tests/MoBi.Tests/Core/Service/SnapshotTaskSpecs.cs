@@ -1,21 +1,20 @@
-﻿using FakeItEasy;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using MoBi.Core.Snapshots.Mappers;
 using MoBi.Core.Snapshots.Services;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Core.Snapshots.Mappers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using OSPSuite.Core.Domain;
 using SnapshotProject = MoBi.Core.Snapshots.Project;
 using ModelProject = MoBi.Core.Domain.Model.MoBiProject;
-using SnapshotContext = MoBi.Core.Snapshots.Mappers.SnapshotContext;
 
 namespace MoBi.Core.Service
 {
@@ -142,7 +141,7 @@ namespace MoBi.Core.Service
          _project1 = new ModelProject();
          _project2 = new ModelProject();
 
-         A.CallTo(() => _snapshotMapper.SnapshotTypeFor<MoBiProject>()).Returns(_snapshotType);
+         A.CallTo(() => _snapshotMapper.SnapshotTypeFor<ModelProject>()).Returns(_snapshotType);
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(_fileName);
          A.CallTo(() => _jsonSerializer.DeserializeAsArray(_fileName, _snapshotType)).Returns(new[] { _snapshot1, _snapshot2 });
          A.CallTo(() => _snapshotMapper.MapToModel(_snapshot1, A<SnapshotContext>._)).Returns(_project1);
@@ -151,7 +150,7 @@ namespace MoBi.Core.Service
 
       protected override async Task Because()
       {
-         _projects = (await sut.LoadModelsFromSnapshotFileAsync<MoBiProject>()).ToList();
+         _projects = (await sut.LoadModelsFromSnapshotFileAsync<ModelProject>()).ToList();
       }
 
       [Observation]
