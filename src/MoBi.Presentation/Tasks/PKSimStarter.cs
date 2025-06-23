@@ -38,11 +38,11 @@ namespace MoBi.Presentation.Tasks
       private readonly IHeavyWorkManager _heavyWorkManager;
       private readonly IXmlSerializationService _serializationService;
 
-      public PKSimStarter(IMoBiConfiguration configuration, 
+      public PKSimStarter(IMoBiConfiguration configuration,
          IApplicationSettings applicationSettings,
-         IStartableProcessFactory startableProcessFactory, 
-         ICloneManagerForBuildingBlock cloneManager, 
-         IXmlSerializationService serializationService, 
+         IStartableProcessFactory startableProcessFactory,
+         ICloneManagerForBuildingBlock cloneManager,
+         IXmlSerializationService serializationService,
          IMoBiProjectRetriever projectRetriever,
          IHeavyWorkManager heavyWorkManager)
       {
@@ -111,7 +111,7 @@ namespace MoBi.Presentation.Tasks
          _heavyWorkManager.Start(() =>
          {
             var element = executeMethod(getMethod(PKSIM_UI_STARTER_SIMULATION_TRANSFER_CONSTRUCTOR, CREATE_SIMULATION_TRANSFER), new object[] { serializedSnapshot }) as string;
-            transfer =  _serializationService.Deserialize<SimulationTransfer>(element, _projectRetriever.Current);
+            transfer = _serializationService.Deserialize<SimulationTransfer>(element, _projectRetriever.Current);
          }, AppConstants.Captions.Loading.WithEllipsis());
          return transfer;
       }
