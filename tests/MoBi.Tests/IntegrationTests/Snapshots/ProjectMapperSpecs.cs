@@ -1,8 +1,10 @@
 ﻿using System.Linq;
 using FakeItEasy;
 using MoBi.Core;
+using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Serialization.Xml.Services;
+using MoBi.Core.Services;
 using MoBi.Core.Snapshots.Mappers;
 using MoBi.HelpersForTests;
 using OSPSuite.BDDHelper;
@@ -11,6 +13,7 @@ using OSPSuite.Core.Chart.ParameterIdentifications;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.ParameterIdentifications;
+using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Services;
 using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Container;
@@ -34,6 +37,8 @@ namespace MoBi.IntegrationTests.Snapshots
       private IMoBiContext _context;
       private IOSPSuiteLogger _ospSuiteLogger;
       private ParameterIdentificationMapper _parameterIdentificationMapper;
+      private IPKSimStarter _pkSimStarter;
+      private ISimulationSettingsFactory _simulationSettingsFactory;
 
       protected override void Context()
       {
@@ -43,15 +48,32 @@ namespace MoBi.IntegrationTests.Snapshots
          _creationMetaDataFactory = IoC.Resolve<ICreationMetaDataFactory>();
          _classificationSnapshotTask = IoC.Resolve<IClassificationSnapshotTask>();
          _parameterIdentificationMapper = IoC.Resolve<ParameterIdentificationMapper>();
+         _simulationSettingsFactory = IoC.Resolve<ISimulationSettingsFactory>();
          _ospSuiteLogger = A.Fake<IOSPSuiteLogger>();
+         _pkSimStarter = A.Fake<IPKSimStarter>();
 
          A.CallTo(() => _context.Resolve<ISnapshotMapper>()).ReturnsLazily(x => IoC.Resolve<ISnapshotMapper>());
 
+
          _project = new MoBiProject();
-         sut = new ProjectMapper(_xmlSerializationService, _creationMetaDataFactory, _classificationSnapshotTask, _context, _ospSuiteLogger, _parameterIdentificationMapper);
+         sut = new ProjectMapper(_xmlSerializationService, _creationMetaDataFactory, _classificationSnapshotTask, _context, _ospSuiteLogger, _parameterIdentificationMapper, _pkSimStarter, _simulationSettingsFactory);
 
          var module = new Module().WithId("module").WithName("module");
          _project.AddModule(module);
+
+         var pksimModule = new Module { IsPKSimModule = true, Snapshot = "snapshot" };
+         _project.AddModule(pksimModule);
+
+         var simulationTransfer = new SimulationTransfer();
+         var moduleConfiguration = new ModuleConfiguration(new Module { IsPKSimModule = true }, new InitialConditionsBuildingBlock(), new ParameterValuesBuildingBlock());
+         simulationTransfer.Simulation = new MoBiSimulation
+         {
+            Configuration = new SimulationConfiguration()
+         };
+
+         simulationTransfer.Simulation.Configuration.AddModuleConfiguration(moduleConfiguration);
+
+         A.CallTo(() => _pkSimStarter.LoadSimulationTransferFromSnapshot(pksimModule.Snapshot)).Returns(simulationTransfer);
 
          var dataRepository = DomainHelperForSpecs.ObservedData();
          _project.AddObservedData(dataRepository);
@@ -114,7 +136,7 @@ namespace MoBi.IntegrationTests.Snapshots
       [Observation]
       public void the_project_should_contain_extension_modules_snapshots_for_each_extension_module()
       {
-         _result.Modules.Count(x => !x.IsPKSimModule).ShouldBeEqualTo(_snapshot.ExtensionModules.Length);
+         _result.Modules.Count(x => !x.IsPKSimModule).ShouldBeEqualTo(1);
       }
 
       [Observation]
@@ -167,7 +189,13 @@ namespace MoBi.IntegrationTests.Snapshots
       [Observation]
       public void the_snapshot_should_contain_extension_modules_snapshots_for_each_extension_module()
       {
-         _snapshot.ExtensionModules.Length.ShouldBeEqualTo(_project.Modules.Count(x => !x.IsPKSimModule));
+         _snapshot.ExtensionModules.Length.ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void the_snapshot_should_contain_pksim_modules_snapshots_for_each_pksim_module()
+      {
+         _snapshot.PKSimModules.Length.ShouldBeEqualTo(1);
       }
 
       [Observation]
