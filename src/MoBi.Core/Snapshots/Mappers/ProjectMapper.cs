@@ -83,6 +83,8 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       simulationConfiguration.ModuleConfigurations.Each(x => project.AddModule(x.Module));
       simulationConfiguration.ExpressionProfiles.Each(project.AddExpressionProfileBuildingBlock);
       project.AddIndividualBuildingBlock(simulationConfiguration.Individual);
+
+      simulationTransfer.AllObservedData.Each(x => AddObservedDataToProject(project, x));
    }
 
    private Task updateProjectClassifications(SnapshotProject snapshot, SnapshotContext snapshotContext)
