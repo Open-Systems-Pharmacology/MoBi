@@ -78,9 +78,11 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
    {
       var simulationTransfer = _pkSimStarter.LoadSimulationTransferFromSnapshot(snapshot);
 
-      simulationTransfer.Simulation.Configuration.ModuleConfigurations.Each(x => project.AddModule(x.Module));
-      simulationTransfer.Simulation.Configuration.ExpressionProfiles.Each(project.AddExpressionProfileBuildingBlock);
-      project.AddIndividualBuildingBlock(simulationTransfer.Simulation.Configuration.Individual);
+      var simulationConfiguration = simulationTransfer.Simulation.Configuration;
+
+      simulationConfiguration.ModuleConfigurations.Each(x => project.AddModule(x.Module));
+      simulationConfiguration.ExpressionProfiles.Each(project.AddExpressionProfileBuildingBlock);
+      project.AddIndividualBuildingBlock(simulationConfiguration.Individual);
    }
 
    private Task updateProjectClassifications(SnapshotProject snapshot, SnapshotContext snapshotContext)
@@ -112,10 +114,10 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
          x.Description = SnapshotValueFor(project.Description);
       });
 
-      snapshot.PKSimModules = await mapPKSimModules(project);
-      snapshot.ExtensionModules = await mapExtensionModules(project);
-      snapshot.ExpressionProfileBuildingBlocks = await mapExpressionProfilesBuildingBlocks(project);
-      snapshot.IndividualBuildingBlocks = await mapIndividualBuildingBlocks(project);
+      snapshot.PKSimModules = mapPKSimModules(project);
+      snapshot.ExtensionModules = mapExtensionModules(project);
+      snapshot.ExpressionProfileBuildingBlocks = mapExpressionProfilesBuildingBlocks(project);
+      snapshot.IndividualBuildingBlocks = mapIndividualBuildingBlocks(project);
       snapshot.ObservedData = await MapObservedDataToSnapshots(project.AllObservedData);
       snapshot.ParameterIdentifications = await MapParameterIdentificationToSnapshots(project.AllParameterIdentifications);
 
@@ -127,10 +129,10 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       return snapshot;
    }
 
-   private Task<string[]> mapPKSimModules(ModelProject project) => Task.FromResult(project.Modules.Where(x => x.IsPKSimModule).Select(x => x.Snapshot).ToArray());
-   private Task<string[]> mapExtensionModules(ModelProject project) => Task.FromResult(project.Modules.Where(x => !x.IsPKSimModule).Select(serializeToBase64PKML).ToArray());
-   private Task<string[]> mapExpressionProfilesBuildingBlocks(ModelProject project) => Task.FromResult(project.ExpressionProfileCollection.Select(serializeToBase64PKML).ToArray());
-   private Task<string[]> mapIndividualBuildingBlocks(ModelProject project) => Task.FromResult(project.IndividualsCollection.Select(serializeToBase64PKML).ToArray());
+   private string[] mapPKSimModules(ModelProject project) => project.Modules.Where(x => x.IsPKSimModule).Select(x => x.Snapshot).ToArray();
+   private string[] mapExtensionModules(ModelProject project) => project.Modules.Where(x => !x.IsPKSimModule).Select(serializeToBase64PKML).ToArray();
+   private string[] mapExpressionProfilesBuildingBlocks(ModelProject project) => project.ExpressionProfileCollection.Select(serializeToBase64PKML).ToArray();
+   private string[] mapIndividualBuildingBlocks(ModelProject project) => project.IndividualsCollection.Select(serializeToBase64PKML).ToArray();
 
    private T deserializeFromBase64PKML<T>(string encodedModule, ModelProject project) => _xmlSerializationService.Deserialize<T>(fromBase64String(encodedModule), project);
 

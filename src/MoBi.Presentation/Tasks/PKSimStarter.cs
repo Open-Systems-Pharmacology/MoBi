@@ -8,6 +8,7 @@ using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
@@ -107,11 +108,11 @@ namespace MoBi.Presentation.Tasks
       public SimulationTransfer LoadSimulationTransferFromSnapshot(string serializedSnapshot)
       {
          SimulationTransfer transfer = null;
-         // _heavyWorkManager.Start(() =>
-         // {
-         var element = executeMethod(getMethod(PKSIM_UI_STARTER_SIMULATION_TRANSFER_CONSTRUCTOR, CREATE_SIMULATION_TRANSFER), new object[] { serializedSnapshot }) as string;
-         transfer = _serializationService.Deserialize<SimulationTransfer>(element, _projectRetriever.Current);
-         // }, AppConstants.Captions.Loading.WithEllipsis());
+         _heavyWorkManager.Start(() =>
+         {
+            var element = executeMethod(getMethod(PKSIM_UI_STARTER_SIMULATION_TRANSFER_CONSTRUCTOR, CREATE_SIMULATION_TRANSFER), new object[] { serializedSnapshot }) as string;
+            transfer = _serializationService.Deserialize<SimulationTransfer>(element, _projectRetriever.Current);
+         }, AppConstants.Captions.Loading.WithEllipsis());
          return transfer;
       }
 
