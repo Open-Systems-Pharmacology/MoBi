@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Core.Snapshots;
 using OSPSuite.Core.Snapshots.Mappers;
@@ -22,6 +24,7 @@ namespace MoBi.Core.Snapshots.Mappers;
 public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, ProjectContext>
 {
    private readonly IXmlSerializationService _xmlSerializationService;
+   private readonly SimulationMapper _simulationMapper;
    private readonly IPKSimStarter _pkSimStarter;
    private readonly ISimulationSettingsFactory _simulationSettingsFactory;
 
@@ -31,23 +34,26 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       IMoBiContext context,
       IOSPSuiteLogger logger,
       ParameterIdentificationMapper parameterIdentificationMapper,
+      SimulationMapper simulationMapper,
       IPKSimStarter pkSimStarter,
       ISimulationSettingsFactory simulationSettingsFactory) : base(creationMetaDataFactory, logger, context, classificationSnapshotTask, parameterIdentificationMapper)
    {
       _xmlSerializationService = xmlSerializationService;
+      _simulationMapper = simulationMapper;
       _pkSimStarter = pkSimStarter;
       _simulationSettingsFactory = simulationSettingsFactory;
    }
 
    public override async Task<ModelProject> MapToModel(SnapshotProject snapshot, ProjectContext context)
    {
-      var project = new ModelProject
-      {
-         Name = snapshot.Name,
-         Description = snapshot.Description,
-         Creation = _creationMetaDataFactory.Create(),
-         SimulationSettings = _simulationSettingsFactory.CreateDefault()
-      };
+      var project = context.MoBiProject();
+
+      project.Name = snapshot.Name;
+      project.Description = snapshot.Description;
+      project.Creation = _creationMetaDataFactory.Create();
+      project.SimulationSettings = _simulationSettingsFactory.CreateDefault();
+
+      project.ReactionDimensionMode = snapshot.ReactionDimensionMode;
 
       snapshot.PKSimModules?.Each((x, i) =>
       {
@@ -69,9 +75,34 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       var parameterIdentifications = await AllParameterIdentificationsFrom(snapshot.ParameterIdentifications, snapshotContext);
       parameterIdentifications?.Each(pi => AddParameterIdentificationToProject(project, pi));
 
+      var simulationContext = new SimulationContext(context.RunSimulations, snapshotContext)
+      {
+         NumberOfSimulationsToLoad = snapshot.Simulations.Length,
+         NumberOfSimulationsLoaded = 0
+      };
+
+      foreach (var simulationSnapshot in snapshot.Simulations)
+      {
+         try
+         {
+            var simulation = await _simulationMapper.MapToModel(simulationSnapshot, simulationContext);
+            addSimulations(project, simulation);
+            simulationContext.NumberOfSimulationsLoaded++;
+         }
+         catch (Exception e)
+         {
+            _logger.AddException(e);
+         }
+      }
+
       await updateProjectClassifications(snapshot, snapshotContext);
 
       return project;
+   }
+
+   private void addSimulations(ModelProject project, MoBiSimulation x)
+   {
+      AddClassifiableToProject<ClassifiableSimulation, IMoBiSimulation>(project, x, project.AddSimulation, project.Simulations);
    }
 
    private void loadProjectContentFromPKSimSnapshot(string snapshot, ModelProject project)
@@ -83,8 +114,6 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       simulationConfiguration.ModuleConfigurations.Each(x => project.AddModule(x.Module));
       simulationConfiguration.ExpressionProfiles.Each(project.AddExpressionProfileBuildingBlock);
       project.AddIndividualBuildingBlock(simulationConfiguration.Individual);
-
-      simulationTransfer.AllObservedData.Each(x => AddObservedDataToProject(project, x));
    }
 
    private Task updateProjectClassifications(SnapshotProject snapshot, SnapshotContext snapshotContext)
@@ -127,14 +156,36 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       snapshot.SimulationClassifications = await MapClassifications<ClassifiableSimulation>(project);
       snapshot.ParameterIdentificationClassifications = await MapClassifications<ClassifiableParameterIdentification>(project);
       snapshot.ModuleClassifications = await MapClassifications<ClassifiableModule>(project);
+      snapshot.Simulations = mapSimulations(simulationsFromProject(project), project);
+      snapshot.ReactionDimensionMode = project.ReactionDimensionMode;
 
       return snapshot;
    }
 
+   private static IReadOnlyList<MoBiSimulation> simulationsFromProject(ModelProject project) => project.Simulations.OfType<MoBiSimulation>().ToList();
+
+   private Simulation[] mapSimulations(IReadOnlyList<MoBiSimulation> projectSimulations, ModelProject project) => _simulationMapper.MapToSnapshots(projectSimulations, project).Result;
+
    private string[] mapPKSimModules(ModelProject project) => project.Modules.Where(x => x.IsPKSimModule).Select(x => x.Snapshot).ToArray();
    private string[] mapExtensionModules(ModelProject project) => project.Modules.Where(x => !x.IsPKSimModule).Select(serializeToBase64PKML).ToArray();
-   private string[] mapExpressionProfilesBuildingBlocks(ModelProject project) => project.ExpressionProfileCollection.Select(serializeToBase64PKML).ToArray();
-   private string[] mapIndividualBuildingBlocks(ModelProject project) => project.IndividualsCollection.Select(serializeToBase64PKML).ToArray();
+   private string[] mapExpressionProfilesBuildingBlocks(ModelProject project) => project.ExpressionProfileCollection.Where(x => !isFromSnapshot(x, project)).Select(serializeToBase64PKML).ToArray();
+   private string[] mapIndividualBuildingBlocks(ModelProject project) => project.IndividualsCollection.Where(x => !isFromSnapshot(x, project)).Select(serializeToBase64PKML).ToArray();
+
+   private static bool isFromSnapshot(ExpressionProfileBuildingBlock expressionProfileBuildingBlock, ModelProject project) => 
+      projectHasPKSimModule(expressionProfileBuildingBlock.SnapshotOriginModuleId, project);
+
+   private static bool projectHasPKSimModule(string snapshotOriginModuleId, ModelProject project)
+   {
+      if (snapshotOriginModuleId == null)
+         return false;
+
+      var module = project.Modules.FindById(snapshotOriginModuleId);
+
+      return module.IsPKSimModule;
+   }
+
+   private static bool isFromSnapshot(IndividualBuildingBlock individualBuildingBlock, ModelProject project) => 
+      projectHasPKSimModule(individualBuildingBlock.SnapshotOriginModuleId, project);
 
    private T deserializeFromBase64PKML<T>(string encodedModule, ModelProject project) => _xmlSerializationService.Deserialize<T>(fromBase64String(encodedModule), project);
 

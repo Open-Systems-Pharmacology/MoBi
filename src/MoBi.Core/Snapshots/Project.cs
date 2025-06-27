@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Snapshots;
 using Classification = OSPSuite.Core.Snapshots.Classification;
 
@@ -31,4 +32,8 @@ public class Project : IWithDescription, IWithName
    public DataRepository[] ObservedData { get; set; }
 
    public ParameterIdentification[] ParameterIdentifications { get; set; }
+
+   public Simulation[] Simulations { get; set; }
+
+   public ReactionDimensionMode ReactionDimensionMode { get; set; }
 }

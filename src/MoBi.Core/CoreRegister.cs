@@ -31,6 +31,9 @@ using IContainer = OSPSuite.Utility.Container.IContainer;
 using ParameterIdentificationRunModeMapper = MoBi.Core.Snapshots.Mappers.ParameterIdentificationRunModeMapper;
 using IdentificationParameterMapper = MoBi.Core.Snapshots.Mappers.IdentificationParameterMapper;
 using TableFormulaMapper = MoBi.Core.Snapshots.Mappers.TableFormulaMapper;
+using OutputIntervalMapper = MoBi.Core.Snapshots.Mappers.OutputIntervalMapper;
+using OutputSchemaMapper = MoBi.Core.Snapshots.Mappers.OutputSchemaMapper;
+using SolverSettingsMapper = MoBi.Core.Snapshots.Mappers.SolverSettingsMapper;
 
 namespace MoBi.Core
 {
@@ -68,7 +71,10 @@ namespace MoBi.Core
          container.Register<OSPSuite.Core.Snapshots.Mappers.ParameterIdentificationRunModeMapper, ParameterIdentificationRunModeMapper>();
          container.Register<OSPSuite.Core.Snapshots.Mappers.IdentificationParameterMapper, IdentificationParameterMapper>();
          container.Register<OSPSuite.Core.Snapshots.Mappers.TableFormulaMapper, TableFormulaMapper>();
-         
+         container.Register<OSPSuite.Core.Snapshots.Mappers.OutputIntervalMapper, OutputIntervalMapper>();
+         container.Register<OSPSuite.Core.Snapshots.Mappers.OutputSchemaMapper, OutputSchemaMapper>();
+         container.Register<OSPSuite.Core.Snapshots.Mappers.SolverSettingsMapper, SolverSettingsMapper>();
+
 
          container.Register<IMoBiContext, IOSPSuiteExecutionContext, IWorkspace, MoBiContext>(LifeStyle.Singleton);
          container.Register<OSPSuite.Core.IApplicationSettings, IApplicationSettings, ApplicationSettings>(LifeStyle.Singleton);
