@@ -78,7 +78,7 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       var simulationContext = new SimulationContext(context.RunSimulations, snapshotContext)
       {
          NumberOfSimulationsToLoad = snapshot.Simulations.Length,
-         NumberOfSimulationsLoaded = 1
+         NumberOfSimulationsLoaded = 0
       };
 
       foreach (var simulationSnapshot in snapshot.Simulations)

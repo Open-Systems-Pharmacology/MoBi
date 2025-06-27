@@ -42,7 +42,7 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
 
    public override async Task<MoBiSimulation> MapToModel(Simulation snapshot, SimulationContext context)
    {
-      _logger.AddInfo(Captions.LoadingSimulation(snapshot.Name, context.NumberOfSimulationsLoaded, context.NumberOfSimulationsToLoad), context.Project.Name);
+      _logger.AddInfo(Captions.LoadingSimulation(snapshot.Name, context.NumberOfSimulationsLoaded + 1, context.NumberOfSimulationsToLoad), context.Project.Name);
       var configuration = await _simulationConfigurationMapper.MapToModel(snapshot.Configuration, context);
 
       var simulation = _simulationFactory.CreateSimulationAndValidate(configuration, snapshot.Name) as MoBiSimulation;
