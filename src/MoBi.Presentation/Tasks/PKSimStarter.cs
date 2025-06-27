@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-using MoBi.Assets;
+﻿using MoBi.Assets;
 using MoBi.Core;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
+using MoBi.Core.Snapshots;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
@@ -13,6 +11,10 @@ using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -113,6 +115,12 @@ namespace MoBi.Presentation.Tasks
             var element = executeMethod(getMethod(PKSIM_UI_STARTER_SIMULATION_TRANSFER_CONSTRUCTOR, CREATE_SIMULATION_TRANSFER), new object[] { serializedSnapshot }) as string;
             transfer = _serializationService.Deserialize<SimulationTransfer>(element, _projectRetriever.Current);
          }, AppConstants.Captions.Loading.WithEllipsis());
+
+         var simulationConfiguration = transfer.Simulation.Configuration;
+
+         var module = simulationConfiguration.ModuleConfigurations.Single().Module;
+         simulationConfiguration.ExpressionProfiles.Each(x => x.SnapshotOriginModuleId = module.Id);
+         simulationConfiguration.Individual.SnapshotOriginModuleId = module.Id;
          return transfer;
       }
 

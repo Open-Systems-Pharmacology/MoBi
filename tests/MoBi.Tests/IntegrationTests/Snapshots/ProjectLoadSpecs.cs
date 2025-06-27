@@ -30,7 +30,11 @@ namespace MoBi.IntegrationTests.Snapshots
             }
          };
 
-         _simulationTransfer.Simulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(new Module { IsPKSimModule = true }, new InitialConditionsBuildingBlock(), new ParameterValuesBuildingBlock()));
+         _simulationTransfer.Simulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(new Module
+         {
+            IsPKSimModule = true,
+            Name = "Henrist oral Hot stage extrusion as table"
+         }, new InitialConditionsBuildingBlock(), new ParameterValuesBuildingBlock()));
 
          A.CallTo(() => starter.LoadSimulationTransferFromSnapshot(A<string>._)).Returns(_simulationTransfer);
 

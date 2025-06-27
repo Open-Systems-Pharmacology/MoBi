@@ -164,17 +164,22 @@ namespace MoBi.Presentation.Tasks
 
       public void LoadProjectFromSnapshot()
       {
+         if (!CloseProject())
+            return;
+
          using (var presenter = _applicationController.Start<ILoadProjectFromSnapshotPresenter>())
          {
+
+
             var project = presenter.LoadProject();
-            //Action was canceled, do not change anything
+            // //Action was canceled, do not change anything
             if (project == null)
                return;
-
-            //Make sure we close the project before loading the new one from snapshot
-            CloseProject();
-
-            _context.LoadFrom(project);
+            //
+            // //Make sure we close the project before loading the new one from snapshot
+            // CloseProject();
+            //
+            // _context.LoadFrom(project);
             notifyProjectLoaded();
          }
       }

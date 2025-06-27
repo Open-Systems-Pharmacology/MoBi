@@ -39,6 +39,8 @@ namespace MoBi.IntegrationTests.Snapshots
       private ParameterIdentificationMapper _parameterIdentificationMapper;
       private IPKSimStarter _pkSimStarter;
       private ISimulationSettingsFactory _simulationSettingsFactory;
+      protected SimulationTransfer _simulationTransfer;
+      private SimulationMapper _simulationMapper;
 
       protected override void Context()
       {
@@ -51,39 +53,64 @@ namespace MoBi.IntegrationTests.Snapshots
          _simulationSettingsFactory = IoC.Resolve<ISimulationSettingsFactory>();
          _ospSuiteLogger = A.Fake<IOSPSuiteLogger>();
          _pkSimStarter = A.Fake<IPKSimStarter>();
+         _simulationMapper = IoC.Resolve<SimulationMapper>();
 
          A.CallTo(() => _context.Resolve<ISnapshotMapper>()).ReturnsLazily(x => IoC.Resolve<ISnapshotMapper>());
 
 
          _project = new MoBiProject();
-         sut = new ProjectMapper(_xmlSerializationService, _creationMetaDataFactory, _classificationSnapshotTask, _context, _ospSuiteLogger, _parameterIdentificationMapper, _pkSimStarter, _simulationSettingsFactory);
+         sut = new ProjectMapper(_xmlSerializationService, _creationMetaDataFactory, _classificationSnapshotTask, _context, _ospSuiteLogger, _parameterIdentificationMapper, _simulationMapper, _pkSimStarter, _simulationSettingsFactory);
 
          var module = new Module().WithId("module").WithName("module");
          _project.AddModule(module);
 
-         var pksimModule = new Module { IsPKSimModule = true, Snapshot = "snapshot" };
+         var pksimModule = new Module { IsPKSimModule = true, Snapshot = "snapshot", Id = "pksimmodule" };
          _project.AddModule(pksimModule);
 
-         var simulationTransfer = new SimulationTransfer();
-         var moduleConfiguration = new ModuleConfiguration(new Module { IsPKSimModule = true }, new InitialConditionsBuildingBlock(), new ParameterValuesBuildingBlock());
-         simulationTransfer.Simulation = new MoBiSimulation
+         var snapshotIndividualBuildingBlock = new IndividualBuildingBlock
          {
-            Configuration = new SimulationConfiguration()
+            SnapshotOriginModuleId = pksimModule.Id,
+            Id = "pksimInd"
          };
 
-         simulationTransfer.Simulation.Configuration.AddModuleConfiguration(moduleConfiguration);
+         var snapshotExpressionProfile = new ExpressionProfileBuildingBlock
+         {
+            Type = ExpressionTypes.MetabolizingEnzyme,
+            SnapshotOriginModuleId = pksimModule.Id,
+            Id = "pksimexpression"
+         };
 
-         A.CallTo(() => _pkSimStarter.LoadSimulationTransferFromSnapshot(pksimModule.Snapshot)).Returns(simulationTransfer);
+         _simulationTransfer = new SimulationTransfer();
+         var moduleConfiguration = new ModuleConfiguration(new Module { IsPKSimModule = true }, new InitialConditionsBuildingBlock(), new ParameterValuesBuildingBlock());
+         _simulationTransfer.Simulation = new MoBiSimulation
+         {
+            Configuration = new SimulationConfiguration
+            {
+               Individual = snapshotIndividualBuildingBlock
+            }
+         };
+
+         _simulationTransfer.Simulation.Configuration.AddExpressionProfile(snapshotExpressionProfile);
+         _simulationTransfer.Simulation.Configuration.AddModuleConfiguration(moduleConfiguration);
+
+         A.CallTo(() => _pkSimStarter.LoadSimulationTransferFromSnapshot(pksimModule.Snapshot)).Returns(_simulationTransfer);
 
          var dataRepository = DomainHelperForSpecs.ObservedData();
          _project.AddObservedData(dataRepository);
 
          var simulation = new MoBiSimulation().WithId("simulation").WithName("simulation");
+         simulation.Configuration = new SimulationConfiguration
+         {
+            SimulationSettings = _simulationSettingsFactory.CreateDefault()
+         };
+         simulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(pksimModule));
          _project.AddSimulation(simulation);
 
          var parameterIdentification = new ParameterIdentification();
-         var outputMapping = new OutputMapping();
-         outputMapping.OutputSelection = new SimulationQuantitySelection(simulation, new QuantitySelection("the|path"));
+         var outputMapping = new OutputMapping
+         {
+            OutputSelection = new SimulationQuantitySelection(simulation, new QuantitySelection("the|path"))
+         };
          parameterIdentification.AddSimulation(simulation);
          parameterIdentification.AddOutputMapping(outputMapping);
          parameterIdentification.Configuration.AlgorithmProperties = new OptimizationAlgorithmProperties("toto");
@@ -98,7 +125,9 @@ namespace MoBi.IntegrationTests.Snapshots
          };
 
          _project.AddExpressionProfileBuildingBlock(expressionProfileBuildingBlock);
+         _project.AddExpressionProfileBuildingBlock(snapshotExpressionProfile);
          _project.AddIndividualBuildingBlock(new IndividualBuildingBlock());
+         _project.AddIndividualBuildingBlock(snapshotIndividualBuildingBlock);
 
          _moduleClassification = new Classification { ClassificationType = ClassificationType.Module }.WithName("Module Classification");
          _observedDataClassification = new Classification { ClassificationType = ClassificationType.ObservedData }.WithName("Observed Data Classification");
@@ -142,13 +171,13 @@ namespace MoBi.IntegrationTests.Snapshots
       [Observation]
       public void the_project_should_contain_expression_snapshots_for_each_expression()
       {
-         _result.ExpressionProfileCollection.Count.ShouldBeEqualTo(_snapshot.ExpressionProfileBuildingBlocks.Length);
+         _result.ExpressionProfileCollection.Count.ShouldBeEqualTo(_snapshot.ExpressionProfileBuildingBlocks.Length + _simulationTransfer.Simulation.Configuration.ExpressionProfiles.Count);
       }
 
       [Observation]
       public void the_project_should_contain_individual_snapshots_for_each_individual()
       {
-         _result.IndividualsCollection.Count.ShouldBeEqualTo(_snapshot.IndividualBuildingBlocks.Length);
+         _result.IndividualsCollection.Count.ShouldBeEqualTo(_snapshot.IndividualBuildingBlocks.Length + (_simulationTransfer.Simulation.Configuration.Individual == null ? 0 : 1));
       }
 
       [Observation]
@@ -199,15 +228,15 @@ namespace MoBi.IntegrationTests.Snapshots
       }
 
       [Observation]
-      public void the_snapshot_should_contain_expression_snapshots_for_each_expression()
+      public void the_snapshot_should_contain_expression_snapshots_for_each_expression_that_is_not_a_snapshot_expression()
       {
-         _snapshot.ExpressionProfileBuildingBlocks.Length.ShouldBeEqualTo(_project.ExpressionProfileCollection.Count);
+         _snapshot.ExpressionProfileBuildingBlocks.Length.ShouldBeEqualTo(1);
       }
 
       [Observation]
-      public void the_snapshot_should_contain_individual_snapshots_for_each_individual()
+      public void the_snapshot_should_contain_individual_snapshots_for_each_individual_that_is_not_a_snapshot_individual()
       {
-         _snapshot.IndividualBuildingBlocks.Length.ShouldBeEqualTo(_project.IndividualsCollection.Count);
+         _snapshot.IndividualBuildingBlocks.Length.ShouldBeEqualTo(1);
       }
 
       [Observation]
