@@ -5,7 +5,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Events;
 using MoBi.Core.Services;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using MoBi.Presentation;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks;
@@ -93,7 +93,7 @@ namespace MoBi.Core.Service
       protected override void Context()
       {
          base.Context();
-         _moBiSimulation = new MoBiSimulation {Model = new Model {Root = new Container()}.WithName("OLD_MODEL")};
+         _moBiSimulation = new MoBiSimulation { Model = new Model { Root = new Container() }.WithName("OLD_MODEL") };
          _simulationConfiguration = new SimulationConfiguration();
          _moBiSimulation.Configuration = _simulationConfiguration;
       }
@@ -127,13 +127,13 @@ namespace MoBi.Core.Service
       {
          base.Context();
          _moBiProject = new MoBiProject();
-         _simulationToConfigure = new MoBiSimulation {Model = new Model {Root = new Container()}.WithName("OLD_MODEL")};
-         _simulationToConfigure.AddOriginalQuantityValue(new OriginalQuantityValue {Path = "a path"});
+         _simulationToConfigure = new MoBiSimulation { Model = new Model { Root = new Container() }.WithName("OLD_MODEL") };
+         _simulationToConfigure.AddOriginalQuantityValue(new OriginalQuantityValue { Path = "a path" });
          _simulationToConfigure.Configuration = new SimulationConfiguration();
          _model = new Model().WithName("NEW MODEL");
          var simulationBuilder = A.Fake<SimulationBuilder>();
-         _entitySource =new SimulationEntitySource("SimPath", "BBName", "bbType", "moduleName", "sourcePath");
-         A.CallTo(() => simulationBuilder.EntitySources).Returns(new List<SimulationEntitySource> {_entitySource});
+         _entitySource = new SimulationEntitySource("SimPath", "BBName", "bbType", "moduleName", "sourcePath");
+         A.CallTo(() => simulationBuilder.EntitySources).Returns(new List<SimulationEntitySource> { _entitySource });
          var creationResults = new CreationResult(_model, simulationBuilder);
          _model.Root = new Container();
          A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._, A<string>._)).Returns(creationResults);
@@ -190,8 +190,8 @@ namespace MoBi.Core.Service
       protected override void Context()
       {
          base.Context();
-         _simulationToConfigure = new MoBiSimulation {Model = new Model {Root = new Container()}.WithName("OLD_MODEL")};
-         _simulationToConfigure.AddOriginalQuantityValue(new OriginalQuantityValue {Path = "a path"});
+         _simulationToConfigure = new MoBiSimulation { Model = new Model { Root = new Container() }.WithName("OLD_MODEL") };
+         _simulationToConfigure.AddOriginalQuantityValue(new OriginalQuantityValue { Path = "a path" });
          _simulationToConfigure.Configuration = new SimulationConfiguration();
          _model = new Model().WithName("NEW MODEL");
          _model.Root = new Container();

@@ -1,14 +1,14 @@
 ﻿using System.Linq;
 using MoBi.Assets;
-using MoBi.Helpers;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
+using MoBi.HelpersForTests;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
+using OSPSuite.Assets;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Assets;
 
 namespace MoBi.Presentation.Mapper
 {
@@ -22,7 +22,6 @@ namespace MoBi.Presentation.Mapper
          sut = new ParameterValueToObjectBaseSummaryDTOMapper();
       }
    }
-
 
    public class mapping_value_with_formulat : concern_for_ParameterValueToObjectBaseSummaryDTOMapper
    {
@@ -63,7 +62,6 @@ namespace MoBi.Presentation.Mapper
          _builder.ContainerPath = new ObjectPath("A");
          _builder.Dimension = DomainHelperForSpecs.AmountDimension;
          _builder.DisplayUnit = _builder.Dimension.DefaultUnit;
-
       }
 
       protected override void Because()
@@ -75,7 +73,7 @@ namespace MoBi.Presentation.Mapper
       public void dto_should_have_correct_fields_mapped()
       {
          _result.EntityName.ShouldBeEqualTo("Name");
-         
+
          _result.ApplicationIcon.ShouldBeEqualTo(ApplicationIcons.ParameterValues);
       }
 
@@ -88,5 +86,4 @@ namespace MoBi.Presentation.Mapper
          _result.Dictionary.Count(x => x.Key.Equals(AppConstants.Captions.Formula)).ShouldBeEqualTo(0);
       }
    }
-
 }

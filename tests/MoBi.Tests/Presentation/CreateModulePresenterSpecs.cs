@@ -1,6 +1,6 @@
 ﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -8,7 +8,6 @@ using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation
 {
@@ -26,7 +25,7 @@ namespace MoBi.Presentation
          _mapper = A.Fake<ICreateModuleDTOToModuleMapper>();
          _context = A.Fake<IMoBiContext>();
          A.CallTo(() => _context.CurrentProject).Returns(_project);
-         
+
 
          sut = new CreateModulePresenter(_view, _context, _mapper);
       }

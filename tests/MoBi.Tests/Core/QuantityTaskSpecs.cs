@@ -4,7 +4,7 @@ using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
@@ -442,7 +442,7 @@ namespace MoBi.Core
       {
          base.Context();
          _quantity = new Parameter();
-         _newValueOrigin = new ValueOrigin {Method = ValueOriginDeterminationMethods.InVitro};
+         _newValueOrigin = new ValueOrigin { Method = ValueOriginDeterminationMethods.InVitro };
       }
 
       protected override void Because()

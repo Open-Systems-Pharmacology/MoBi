@@ -7,7 +7,7 @@ namespace MoBi.Core.Serialization.Converter
       IMoBiObjectConverter FindConverterFor(int version);
    }
 
-   internal class MoBiObjectConverterFinder: IMoBiObjectConverterFinder
+   public class MoBiObjectConverterFinder: IMoBiObjectConverterFinder
    {
       private readonly IRepository<IMoBiObjectConverter> _objectConverters;
 

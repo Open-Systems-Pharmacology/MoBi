@@ -1,10 +1,10 @@
-﻿using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+﻿using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Extensions;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -20,19 +20,17 @@ namespace MoBi.Core.Commands
       protected override void Context()
       {
          _context = A.Fake<IMoBiContext>();
-         _owner = new Parameter {Id = "id", Name = "Parameter"};
+         _owner = new Parameter { Id = "id", Name = "Parameter" };
          _formula = new ConstantFormula(3.0);
          sut = new SetConstantFormulaValueCommand(
-            constantFormula: _formula, 
-            newValue: 4.0, 
-            displayUnit: DomainHelperForSpecs.AmountDimension.DefaultUnit, 
-            oldUnit: DomainHelperForSpecs.ConcentrationDimension.DefaultUnit, 
-            buildingBlock: new ParameterValuesBuildingBlock(), 
+            constantFormula: _formula,
+            newValue: 4.0,
+            displayUnit: DomainHelperForSpecs.AmountDimension.DefaultUnit,
+            oldUnit: DomainHelperForSpecs.ConcentrationDimension.DefaultUnit,
+            buildingBlock: new ParameterValuesBuildingBlock(),
             formulaOwner: _owner);
          A.CallTo(() => _context.Get<IEntity>("id")).Returns(_owner);
       }
-
-      
    }
 
    public class When_reverting_value_for_constant_formula : concern_for_SetConstantFormulaValueCommand

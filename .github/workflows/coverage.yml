@@ -19,7 +19,7 @@ jobs:
           dotnet restore
 
       - name: Build
-        run: dotnet build MoBi.sln /p:Version=12.1.999
+        run: dotnet build MoBi.sln /p:Version=13.0.999
 
         
       - name: Cover and report

@@ -28,6 +28,7 @@ namespace MoBi.Assets
       public static readonly string DefaultSkin = "Office 2013 Light Gray";
       public static readonly string NewFormulaDescription = "Create New Formula";
       public static readonly string NewFormulaName = "New Formula";
+      public static readonly string TableFormula = "Table Formula";
       public static readonly string SimulationRun = "Simulation(s) Running";
       public static readonly string ParameterType = "Type";
       public static readonly string NaN = "<NaN>";
@@ -1160,6 +1161,7 @@ namespace MoBi.Assets
          public static readonly string ImportFromExcel = "Import from Excel®...";
          public static readonly string ShowChanges = "Show Changes";
          public static readonly string StopAllRunningSimulations = "Stop all running simulations";
+         public static readonly string LoadFromSnapshot = "Load from snapshot";
          public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
 
          public static string AddExistingAs(string objectTypeName, string targetTypeName) => $"Load {objectTypeName} as {targetTypeName}...";
@@ -1668,6 +1670,7 @@ namespace MoBi.Assets
          public static readonly string ShowParametersFromIndividual = "Show parameters from Individual";
          public static readonly string ConvertToConstantValue = "Convert to constant value";
          public static readonly string GoToSource = "Go to Source";
+         public static readonly string Loading = "Loading";
          public static string SelectTheBuildingBlockWhereEntitiesWillBeAddedOrUpdated(string typeBeingAdded) => $"Select the building block where {typeBeingAdded} will be added or updated";
          public static readonly string SelectBuildingBlock = "Select Building Block";
          public static readonly string MakeDefault = "Make defaults";

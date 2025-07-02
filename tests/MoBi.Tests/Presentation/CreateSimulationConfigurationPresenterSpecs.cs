@@ -2,7 +2,7 @@
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Services;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using MoBi.IntegrationTests;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;

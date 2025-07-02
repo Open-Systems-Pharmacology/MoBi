@@ -12,7 +12,7 @@ using MoBi.Core.Domain.Services;
 using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
 using MoBi.Engine;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using MoBi.Presentation;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Serialization;
@@ -80,6 +80,7 @@ namespace MoBi.IntegrationTests
             container.RegisterImplementationOf(A.Fake<ILayerLayouter>());
             container.RegisterImplementationOf(A.Fake<IEntityValidationTask>());
             container.RegisterImplementationOf(A.Fake<IDiagramLayoutTask>());
+            container.RegisterImplementationOf(A.Fake<IPKSimStarter>());
 
             container.Register<IDiagramModelToXmlMapper, DiagramModelToXmlMapperForSpecs>();
             container.Register<IMoBiConfiguration, MoBiConfiguration>(LifeStyle.Singleton);

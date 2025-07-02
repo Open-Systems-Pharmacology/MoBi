@@ -8,8 +8,8 @@
     <OutputPath>bin\$(Configuration)</OutputPath>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
-    <Version Condition="'$(Version)' == ''">12.1.0</Version>
-     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+    <Version Condition="'$(Version)' == ''">13.0.0</Version>
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,12 +23,11 @@
     <PackageReference Include="OSPSuite.DataBinding.DevExpress" Version="6.0.1.2" />
     <PackageReference Include="OSPSuite.DevExpress" Version="21.2.15" />
     <PackageReference Include="OSPSuite.Utility" Version="4.1.1.1" />
-    <PackageReference Include="OSPSuite.Infrastructure" Version="12.1.107" />
-    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="12.1.107" />
-    <PackageReference Include="OSPSuite.Presentation" Version="12.1.107" />
-    <PackageReference Include="OSPSuite.UI" Version="12.1.107" />
-    <PackageReference Include="OSPSuite.Core" Version="12.1.107" />
-    <PackageReference Include="System.Resources.Extensions" Version="9.0.5" />
+    <PackageReference Include="OSPSuite.Infrastructure" Version="13.0.21" />
+    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="13.0.21" />
+    <PackageReference Include="OSPSuite.Presentation" Version="13.0.21" />
+    <PackageReference Include="OSPSuite.UI" Version="13.0.21" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.21" />
    </ItemGroup>
   <ItemGroup>
     <None Include="..\..\LICENSE">

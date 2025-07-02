@@ -1,11 +1,13 @@
 ﻿using System;
 using FakeItEasy;
 using MoBi.Core;
+using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
 using MoBi.Presentation.Tasks;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Exceptions;
@@ -26,7 +28,7 @@ namespace MoBi.Presentation
          _startableProcessFactory = A.Fake<IStartableProcessFactory>();
          _applicationSettings = A.Fake<IApplicationSettings>();
          _cloneManager = A.Fake<ICloneManagerForBuildingBlock>();
-         sut = new PKSimStarter(_configuration, _applicationSettings, _startableProcessFactory, _cloneManager);
+         sut = new PKSimStarter(_configuration, _applicationSettings, _startableProcessFactory, _cloneManager, A.Fake<IXmlSerializationService>(), A.Fake<IMoBiProjectRetriever>(), A.Fake<IHeavyWorkManager>());
       }
    }
 

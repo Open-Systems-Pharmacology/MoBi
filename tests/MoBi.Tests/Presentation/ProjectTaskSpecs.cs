@@ -7,7 +7,8 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Services;
-using MoBi.Helpers;
+using MoBi.Core.Snapshots.Services;
+using MoBi.HelpersForTests;
 using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Assets;
@@ -39,6 +40,8 @@ namespace MoBi.Presentation
       private IHeavyWorkManager _heavyWorkManager;
       private ISbmlTask _sbmlTask;
       protected IReactionBuildingBlockFactory _reactionBuildingBlockFactory;
+      private IMoBiApplicationController _applicationController;
+      private ISnapshotTask _snapshotTask;
 
       protected override void Context()
       {
@@ -53,8 +56,11 @@ namespace MoBi.Presentation
          _spatialStructureFactory = A.Fake<IMoBiSpatialStructureFactory>();
          _sbmlTask = A.Fake<ISbmlTask>();
          _reactionBuildingBlockFactory = A.Fake<IReactionBuildingBlockFactory>();
+         _applicationController = A.Fake<IMoBiApplicationController>();
+         _snapshotTask = A.Fake<ISnapshotTask>();
+         
          sut = new ProjectTask(_context, _serializationTask, _dialogCreator, _mruProvider, _heavyWorkManager,
-            new SimulationLoader(_cloneManager, _nameCorrector, _context), _sbmlTask);
+            new SimulationLoader(_cloneManager, _nameCorrector, _context), _sbmlTask, _snapshotTask, _applicationController);
       }
    }
 
