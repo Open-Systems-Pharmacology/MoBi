@@ -2,7 +2,7 @@
 using OSPSuite.Utility.Extensions;
 using System;
 
-namespace MoBi.R.MinimalImplementations
+namespace MoBi.CLI.Core.MinimalImplementations
 {
    internal class ExceptionManager : ExceptionManagerBase
    {

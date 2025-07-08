@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Linq;
 using OSPSuite.Core.Diagram;
 
-namespace MoBi.R.MinimalImplementations
+namespace MoBi.CLI.Core.MinimalImplementations
 {
    public class DiagramModelMinimalImplementation : IDiagramModel
    {

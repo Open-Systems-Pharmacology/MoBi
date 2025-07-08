@@ -4,7 +4,7 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Infrastructure.Serialization.ORM.History;
 
-namespace MoBi.R.MinimalImplementations
+namespace MoBi.CLI.Core.MinimalImplementations
 {
    public class DiagramManagerFactory : IDiagramManagerFactory
    {

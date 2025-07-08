@@ -6,7 +6,7 @@ using OSPSuite.Core.Domain.Builder;
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace MoBi.R.MinimalImplementations
+namespace MoBi.CLI.Core.MinimalImplementations
 {
    public class MoBiReactionDiagramManager : IMoBiReactionDiagramManager
    {

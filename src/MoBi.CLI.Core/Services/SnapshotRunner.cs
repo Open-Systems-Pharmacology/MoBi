@@ -4,6 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using MoBi.CLI.Core.RunOptions;
+using MoBi.Core;
+using MoBi.Core.Services;
+using MoBi.Core.Snapshots.Services;
 using OSPSuite.Assets.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
@@ -29,23 +32,23 @@ namespace MoBi.CLI.Core.Services
 
    public class SnapshotRunner : IBatchRunner<SnapshotRunOptions>
    {
-      //private readonly ICoreWorkspace _workspace;
-      //private readonly ISnapshotTask _snapshotTask;
-      //private readonly IWorkspacePersistor _workspacePersistor;
+      private readonly ICoreWorkspace _workspace;
+      private readonly ISnapshotTask _snapshotTask;
+      private readonly IWorkspacePersistor _workspacePersistor;
       private readonly IOSPSuiteLogger _logger;
 
       //For testing purposes only
       public Func<string, string, FileInfo[]> AllFilesFrom { get; set; }
 
       public SnapshotRunner(
-         //ICoreWorkspace workspace,
-         //ISnapshotTask snapshotTask,
-         //IWorkspacePersistor workspacePersistor,
+         ICoreWorkspace workspace,
+         ISnapshotTask snapshotTask,
+         IWorkspacePersistor workspacePersistor,
          IOSPSuiteLogger logger)
       {
-         //_workspace = workspace;
-         //_snapshotTask = snapshotTask;
-         //_workspacePersistor = workspacePersistor;
+         _workspace = workspace;
+         _snapshotTask = snapshotTask;
+         _workspacePersistor = workspacePersistor;
          _logger = logger;
          AllFilesFrom = allFilesFrom;
       }
@@ -189,7 +192,7 @@ namespace MoBi.CLI.Core.Services
          return directory.GetFiles(filter);
       }
 
-      public const string PROJECT_EXTENSION = ".pksim5";
+      public const string PROJECT_EXTENSION = ".pkml";
       public static readonly string PROJECT_FILTER = $"*{PROJECT_EXTENSION}";
 
       private static (string inputFilter, string outputExtension) inputFileFilterAndOutputFileExtensionFrom(SnapshotRunOptions runOptions)

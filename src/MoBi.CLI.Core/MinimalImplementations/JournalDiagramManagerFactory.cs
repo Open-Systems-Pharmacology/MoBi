@@ -2,7 +2,7 @@
 using OSPSuite.Core.Journal;
 using System;
 
-namespace MoBi.R.MinimalImplementations
+namespace MoBi.CLI.Core.MinimalImplementations
 {
    public class JournalDiagramManagerFactory : IJournalDiagramManagerFactory
    {

@@ -1,7 +1,12 @@
 ﻿using CommandLine;
+using Microsoft.Extensions.Logging;
+using MoBi.Assets;
 using MoBi.CLI.Commands;
+using MoBi.CLI.Core.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Container;
+using OSPSuite.Infrastructure;
+using OSPSuite.Infrastructure.Services;
 
 namespace MoBi.CLI
 {
@@ -19,7 +24,6 @@ namespace MoBi.CLI
 
       static int Main(string[] args)
       {
-
          ApplicationStartup.Initialize();
 
          Parser.Default.ParseArguments<SnapshotRunCommand>(args)
@@ -61,7 +65,7 @@ namespace MoBi.CLI
          var loggerCreator = IoC.Resolve<ILoggerCreator>();
 
          var logger = IoC.Resolve<IOSPSuiteLogger>();
-         logger.DefaultCategoryName = CoreConstants.PRODUCT_NAME;
+         logger.DefaultCategoryName = AppConstants.PRODUCT_NAME;
 
          loggerCreator.AddLoggingBuilderConfiguration(builder =>
             builder

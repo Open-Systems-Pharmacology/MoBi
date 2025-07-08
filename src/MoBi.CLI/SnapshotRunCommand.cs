@@ -6,7 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 using CommandLine;
 using CommandLine.Text;
+using Microsoft.Extensions.Logging;
 using MoBi.CLI.Commands;
+using MoBi.CLI.Core.RunOptions;
+using MoBi.CLI.Core.Services;
 
 namespace MoBi.CLI
 {

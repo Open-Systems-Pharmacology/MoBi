@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MoBi.Assets\MoBi.Assets.csproj" />
+    <ProjectReference Include="..\MoBi.CLI.Core\MoBi.CLI.Core.csproj" />
     <ProjectReference Include="..\MoBi.Core\MoBi.Core.csproj" />
     <ProjectReference Include="..\MoBi.Presentation\MoBi.Presentation.csproj" />
   </ItemGroup>

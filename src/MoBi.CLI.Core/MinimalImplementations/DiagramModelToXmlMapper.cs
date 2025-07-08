@@ -2,7 +2,7 @@
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Serialization.Diagram;
 
-namespace MoBi.R.MinimalImplementations
+namespace MoBi.CLI.Core.MinimalImplementations
 {
    public class DiagramModelToXmlMapper : IDiagramModelToXmlMapper
    {

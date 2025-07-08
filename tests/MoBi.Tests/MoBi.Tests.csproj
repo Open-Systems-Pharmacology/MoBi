@@ -55,6 +55,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\MoBi.CLI.Core\MoBi.CLI.Core.csproj" />
     <ProjectReference Include="..\..\src\MoBi.Core\MoBi.Core.csproj" />
     <ProjectReference Include="..\..\src\MoBi.Engine\MoBi.Engine.csproj" />
     <ProjectReference Include="..\..\src\MoBi.Presentation\MoBi.Presentation.csproj" />

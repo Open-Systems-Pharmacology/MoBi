@@ -5,21 +5,17 @@ using MoBi.Core.Domain.Model.Diagram;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
 
-namespace MoBi.R.MinimalImplementations
+namespace MoBi.CLI.Core.MinimalImplementations
 {
-   public class SimulationDiagramManager : ISimulationDiagramManager
+   public class SpatialStructureDiagramManager : ISpatialStructureDiagramManager
    {
-      public IMoBiSimulation PkModel => throw new NotImplementedException();
+      public MoBiSpatialStructure PkModel { get; set; }
 
-      public bool IsInitialized => throw new NotImplementedException();
+      public bool IsInitialized { get; set; }
 
-      public IDiagramOptions DiagramOptions => throw new NotImplementedException();
+      public IDiagramOptions DiagramOptions { get; set; }
 
-      public PointF CurrentInsertLocation
-      {
-         get => throw new NotImplementedException();
-         set => throw new NotImplementedException();
-      }
+      public PointF CurrentInsertLocation { get; set; }
 
       public void AddObjectBase(IObjectBase objectBase)
       {
@@ -31,12 +27,12 @@ namespace MoBi.R.MinimalImplementations
          //Nothing to do
       }
 
-      public IDiagramManager<IMoBiSimulation> Create()
+      public IDiagramManager<MoBiSpatialStructure> Create()
       {
-         return new SimulationDiagramManager();
+         return null;
       }
 
-      public void InitializeWith(IMoBiSimulation pkModel, IDiagramOptions diagramOptions)
+      public void InitializeWith(MoBiSpatialStructure pkModel, IDiagramOptions diagramOptions)
       {
          //Nothing to do
       }

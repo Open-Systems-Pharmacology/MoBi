@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Text;
 using MoBi.CLI.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Reflection;

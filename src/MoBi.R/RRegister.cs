@@ -1,4 +1,5 @@
-﻿using MoBi.Core;
+﻿using MoBi.CLI.Core.MinimalImplementations;
+using MoBi.Core;
 using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Serialization.Xml.Services;
@@ -6,7 +7,6 @@ using MoBi.Core.Services;
 using MoBi.Presentation.Serialization.Xml.Serializer;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Tasks;
-using MoBi.R.MinimalImplementations;
 using OSPSuite.Core;
 using OSPSuite.Core.Journal;
 using OSPSuite.Core.Serialization.Diagram;
