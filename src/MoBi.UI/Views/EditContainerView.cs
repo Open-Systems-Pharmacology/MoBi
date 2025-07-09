@@ -144,8 +144,6 @@ namespace MoBi.UI.Views
          var isInit = dto.Name.IsNullOrEmpty();
          editNameButton.Enabled = !isInit;
          editNameButton.Visible = !isInit && !_readOnly;
-         btName.ReadOnly = !isInit || !IsNewEntity;
-         btName.Enabled = !isInit || IsNewEntity;
       }
 
       private EditorButton editNameButton => btName.Properties.Buttons[0];
@@ -173,7 +171,6 @@ namespace MoBi.UI.Views
             var enabled = !_readOnly;
 
             btName.Enabled = enabled;
-            ContainerPropertiesEditable = enabled;
             btParentPath.Enabled = enabled;
             htmlEditor.Enabled = enabled;
             panelTags.Enabled = enabled;
@@ -182,26 +179,15 @@ namespace MoBi.UI.Views
          }
       }
 
-      public bool ContainerPropertiesEditable
-      {
-         get => cbContainerType.Enabled;
-         set
-         {
-            if (_readOnly && value)
-               return;
-            cbContainerType.Enabled = value;
-            cbContainerMode.Enabled = value;
-            btName.Enabled = value;
-            if (value) return;
-            editNameButton.Visible = false;
-         }
-      }
-
-      public bool IsNewEntity { get ; set ; }
-
       public void ShowParameters()
       {
          tabParameters.Show();
+      }
+
+      public void SetNameEnabled(bool isEnabled)
+      {
+         btName.Enabled = isEnabled;
+         btName.ReadOnly = !isEnabled;
       }
    }
 }

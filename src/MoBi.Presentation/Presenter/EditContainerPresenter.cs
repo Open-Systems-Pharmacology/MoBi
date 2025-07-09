@@ -205,10 +205,9 @@ namespace MoBi.Presentation.Presenter
          base.Edit(container, existingObjectsInParent);
          _containerDTO = _containerMapper.MapFrom(_container, _trackableSimulation);
          _containerDTO.AddUsedNames(_editTasks.GetForbiddenNamesWithoutSelf(container, existingObjectsInParent));
-         _view.IsNewEntity = _isNewEntity;
          _view.BindTo(_containerDTO);
+         _view.SetNameEnabled(_isNewEntity);
          _tagsPresenter.Edit(container);
-         _view.ContainerPropertiesEditable = !container.IsMoleculeProperties();
       }
 
       public override object Subject => _container;
