@@ -4,7 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using MoBi.CLI.Core.RunOptions;
+using MoBi.CLI.Services;
 using MoBi.Core;
+using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using MoBi.Core.Snapshots.Services;
 using OSPSuite.Assets.Extensions;
@@ -32,23 +34,26 @@ namespace MoBi.CLI.Core.Services
 
    public class SnapshotRunner : IBatchRunner<SnapshotRunOptions>
    {
-      private readonly ICoreWorkspace _workspace;
+      private readonly IMoBiContext _moBiContext;
       private readonly ISnapshotTask _snapshotTask;
-      private readonly IWorkspacePersistor _workspacePersistor;
       private readonly IOSPSuiteLogger _logger;
+      private readonly IProjectTask _projectTask;
+
+      public const string PROJECT_EXTENSION = ".pkml";
+      public static readonly string PROJECT_FILTER = $"*{PROJECT_EXTENSION}";
 
       //For testing purposes only
       public Func<string, string, FileInfo[]> AllFilesFrom { get; set; }
 
       public SnapshotRunner(
-         ICoreWorkspace workspace,
          ISnapshotTask snapshotTask,
-         IWorkspacePersistor workspacePersistor,
-         IOSPSuiteLogger logger)
+         IOSPSuiteLogger logger, 
+         IMoBiContext moBiMoBiContext,
+         IProjectTask projectTask)
       {
-         _workspace = workspace;
          _snapshotTask = snapshotTask;
-         _workspacePersistor = workspacePersistor;
+         _moBiContext = moBiMoBiContext;
+         _projectTask = projectTask;
          _logger = logger;
          AllFilesFrom = allFilesFrom;
       }
@@ -106,34 +111,18 @@ namespace MoBi.CLI.Core.Services
             return;
 
          _logger.AddDebug($"Snapshot loaded successfully from '{file.SnapshotFile}'");
-         _workspace.Project = project;
-         try
-         {
-            _workspacePersistor.SaveSession(_workspace, file.ProjectFile);
-         }
-         finally
-         {
-            _workspacePersistor.CloseSession();
-         }
+         _projectTask.LoadProject(file.ProjectFile);
          _logger.AddInfo($"Project saved to '{file.ProjectFile};");
       }
 
       private async Task createSnapshotFromProjectFile(FileMap file)
       {
          _logger.AddInfo($"Starting snapshot export for '{file.ProjectFile}'");
+         _projectTask.LoadProject(file.ProjectFile);
+         _logger.AddDebug($"Project loaded successfully from '{file.ProjectFile}'");
 
-         try
-         {
-            _workspacePersistor.LoadSession(_workspace, file.ProjectFile);
-            _logger.AddDebug($"Project loaded successfully from '{file.ProjectFile}'");
-
-            await _snapshotTask.ExportModelToSnapshotAsync(_workspace.Project, file.SnapshotFile);
-            _logger.AddInfo($"Snapshot saved to '{file.SnapshotFile}'");
-         }
-         finally
-         {
-            _workspacePersistor.CloseSession();
-         }
+         await _snapshotTask.ExportModelToSnapshotAsync(_moBiContext.Project, file.SnapshotFile);
+         _logger.AddInfo($"Snapshot saved to '{file.SnapshotFile}'");
       }
 
       private IEnumerable<FileMap> allFilesToExportFrom(SnapshotRunOptions runOptions)
@@ -191,9 +180,6 @@ namespace MoBi.CLI.Core.Services
 
          return directory.GetFiles(filter);
       }
-
-      public const string PROJECT_EXTENSION = ".pkml";
-      public static readonly string PROJECT_FILTER = $"*{PROJECT_EXTENSION}";
 
       private static (string inputFilter, string outputExtension) inputFileFilterAndOutputFileExtensionFrom(SnapshotRunOptions runOptions)
       {

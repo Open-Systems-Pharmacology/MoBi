@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using CommandLine;
 using Microsoft.Extensions.Logging;
 
@@ -22,7 +18,6 @@ namespace MoBi.CLI.Commands
 
       protected virtual void LogDefaultOptions(StringBuilder sb)
       {
-         //LogFilesFullPath.Each(x => sb.AppendLine($"Log file: {x}"));
          sb.AppendLine($"Log level: {LogLevel}");
       }
    }

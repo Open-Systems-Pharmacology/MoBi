@@ -15,7 +15,6 @@ using OSPSuite.Presentation;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.FileLocker;
 using IContainer = OSPSuite.Utility.Container.IContainer;
-using IProjectTask = MoBi.R.Services.IProjectTask;
 
 namespace MoBi.R
 {

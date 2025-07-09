@@ -4,9 +4,8 @@ using MoBi.Assets;
 using MoBi.CLI.Commands;
 using MoBi.CLI.Core.Services;
 using OSPSuite.Core.Services;
-using OSPSuite.Utility.Container;
-using OSPSuite.Infrastructure;
 using OSPSuite.Infrastructure.Services;
+using OSPSuite.Utility.Container;
 
 namespace MoBi.CLI
 {
@@ -19,7 +18,6 @@ namespace MoBi.CLI
 
    class Program
    {
-
       static bool _valid = true;
 
       static int Main(string[] args)
@@ -34,7 +32,6 @@ namespace MoBi.CLI
             return (int)ExitCodes.Error;
 
          return (int)ExitCodes.Success;
-
       }
 
       private static void startCommand<TRunOptions>(CLICommand<TRunOptions> command)

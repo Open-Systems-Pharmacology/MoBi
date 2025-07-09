@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using FakeItEasy;
 using MoBi.CLI.Core.RunOptions;
 using MoBi.CLI.Core.Services;
+using MoBi.CLI.Services;
 using MoBi.Core;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
@@ -18,15 +19,15 @@ namespace MoBi.CLI
 {
    public abstract class concern_for_SnapshotRunner : ContextSpecificationAsync<SnapshotRunner>
    {
-      protected ICoreWorkspace _workspace;
       protected ISnapshotTask _snapshotTask;
-      protected IWorkspacePersistor _workspacePersistor;
       protected IOSPSuiteLogger _logger;
       protected SnapshotRunOptions _runOptions;
       protected string _createdDirectory;
       private Func<string, string> _oldCreateDirectory;
       protected readonly string _inputFolder = @"C:\Input\";
       protected readonly string _outputFolder = @"C:\Output\";
+      protected IProjectTask _projectTask;
+      protected IMoBiContext _moBiContext;
 
       public override async Task GlobalContext()
       {
@@ -37,11 +38,11 @@ namespace MoBi.CLI
 
       protected override Task Context()
       {
-         _workspace = A.Fake<ICoreWorkspace>();
+         _projectTask = A.Fake<IProjectTask>();
+         _moBiContext = A.Fake<IMoBiContext>();
          _snapshotTask = A.Fake<ISnapshotTask>();
-         _workspacePersistor = A.Fake<IWorkspacePersistor>();
          _logger = A.Fake<IOSPSuiteLogger>();
-         sut = new SnapshotRunner(_workspace, _snapshotTask, _workspacePersistor, _logger);
+         sut = new SnapshotRunner(_snapshotTask, _logger, _moBiContext, _projectTask);
 
          _runOptions = new SnapshotRunOptions();
          return _completed;
@@ -85,7 +86,7 @@ namespace MoBi.CLI
       [Observation]
       public void should_generate_the_project_from_snapshot()
       {
-         A.CallTo(() => _workspacePersistor.SaveSession(_workspace, _projectFile)).MustHaveHappened();
+         A.CallTo(() => _projectTask.LoadProject(_projectFile)).MustHaveHappened();
       }
 
       [Observation]
@@ -121,13 +122,13 @@ namespace MoBi.CLI
       [Observation]
       public void should_load_the_project_into_workspace()
       {
-         A.CallTo(() => _workspacePersistor.LoadSession(_workspace, _projectFile)).MustHaveHappened();
+         A.CallTo(() => _projectTask.LoadProject(_projectFile)).MustHaveHappened();
       }
 
       [Observation]
       public void should_save_the_project_to_snapshot()
       {
-         A.CallTo(() => _snapshotTask.ExportModelToSnapshotAsync(A<MoBiProject>._, _snapshotFile)).MustHaveHappened();
+         A.CallTo(() => _snapshotTask.ExportModelToSnapshotAsync(A<IProject>._, _snapshotFile)).MustHaveHappened();
       }
 
       [Observation]
@@ -167,8 +168,7 @@ namespace MoBi.CLI
       [Observation]
       public void should_generate_the_project_from_snapshot()
       {
-         A.CallTo(() => _workspacePersistor.SaveSession(_workspace, _projectFile)).MustHaveHappened();
+         A.CallTo(() => _projectTask.LoadProject(_projectFile)).MustHaveHappened();
       }
-
    }
 }

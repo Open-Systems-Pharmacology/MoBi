@@ -48,9 +48,6 @@ namespace MoBi.CLI
 
          //Register container into container to avoid any reference to dependency in code
          container.RegisterImplementationOf(container.DowncastTo<IContainer>());
-
-         //container.RegisterImplementationOf(new SynchronizationContext());
-         //container.Register<IExceptionManager, CLIExceptionManager>(LifeStyle.Singleton);
       }
 
       public static void Start()
@@ -62,12 +59,6 @@ namespace MoBi.CLI
             container.RegisterImplementationOf(NumericFormatterOptions.Instance);
 
             registerMinimalTypes(container);
-
-            //container.AddRegister(x => x.FromType<CoreRegister>());
-            //container.AddRegister(x => x.FromType<InfrastructureRegister>());
-            //container.AddRegister(x => x.FromType<CLIRegister>());
-
-            //InfrastructureRegister.LoadSerializers(container);
          }
       }
 
@@ -85,22 +76,6 @@ namespace MoBi.CLI
          container.Register<IDiagramManagerFactory, DiagramManagerFactory>(LifeStyle.Singleton);
          container.Register<IDimensionValidator, DimensionValidator>(LifeStyle.Singleton);
          container.Register<IPresentationUserSettings, IUserSettings, ICoreUserSettings, UserSettings>(LifeStyle.Transient);
-      }
-
-      private static void registerCLITypes(IContainer container)
-      {
-         //container.Register<IProgressUpdater, NoneProgressUpdater>();
-         //container.Register<IDialogCreator, CLIDialogCreator>();
-         //container.Register<IDisplayUnitRetriever, CLIDisplayUnitRetriever>();
-         //container.Register<IJournalDiagramManagerFactory, CLIJournalDiagramManagerFactory>();
-         //container.Register<IDiagramModel, CLIDiagramModel>();
-         //container.Register<IDataImporter, CLIDataImporter>();
-         //container.Register<IEntityValidationTask, CLIEntityValidationTask>();
-         //container.Register<IOntogenyTask, CLIIndividualOntogenyTask>();
-         //container.Register<IDiagramModelToXmlMapper, CLIDiagramModelToXmlMapper>(LifeStyle.Singleton);
-         //container.Register<IHistoryManager, HistoryManager<IExecutionContext>>();
-         //container.Register<ICoreUserSettings, OSPSuite.Core.ICoreUserSettings, CLIUserSettings>(LifeStyle.Singleton);
-         //container.Register<ICoreWorkspace, IWorkspace, CLIWorkspace>(LifeStyle.Singleton);
       }
    }
 }

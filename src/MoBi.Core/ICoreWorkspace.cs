@@ -4,7 +4,7 @@ using OSPSuite.Core.Commands.Core;
 
 namespace MoBi.Core
 {
-   public interface ICoreWorkspace : ICommandCollector, OSPSuite.Core.IWorkspace
+   public interface ICoreWorkspace2 : ICommandCollector, OSPSuite.Core.IWorkspace
    {
       /// <summary>
       ///    Returns/sets the current project

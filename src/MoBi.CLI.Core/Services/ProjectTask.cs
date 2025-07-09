@@ -6,7 +6,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.R.Domain;
 
-namespace MoBi.R.Services
+namespace MoBi.CLI.Services
 {
    public interface IProjectTask
    {
