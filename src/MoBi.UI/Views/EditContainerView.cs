@@ -26,7 +26,6 @@ namespace MoBi.UI.Views
       protected ScreenBinder<ContainerDTO> _screenBinder;
       protected bool _readOnly;
       private readonly UserLookAndFeel _lookAndFeel;
-      private bool _isNameEditable;
 
       public EditContainerView(UserLookAndFeel lookAndFeel)
       {
@@ -190,12 +189,14 @@ namespace MoBi.UI.Views
 
       public bool IsNameEditable
       {
-         get => _isNameEditable;
+         get => btName.Enabled;
          set
          {
-            _isNameEditable = value;
             btName.Enabled = value;
             btName.ReadOnly = !value;
+            if (value)
+               return;
+            editNameButton.Visible = false;
          }
       }
 
