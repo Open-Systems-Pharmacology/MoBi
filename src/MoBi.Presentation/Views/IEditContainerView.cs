@@ -10,5 +10,6 @@ namespace MoBi.Presentation.Views
       void AddTagsView(IView view);
       bool ReadOnly { get; set; }
       bool ContainerPropertiesEditable { get; set; }
+      bool IsNewEntity { get; set; }
    }
 }

@@ -144,8 +144,8 @@ namespace MoBi.UI.Views
          var isInit = dto.Name.IsNullOrEmpty();
          editNameButton.Enabled = !isInit;
          editNameButton.Visible = !isInit && !_readOnly;
-         btName.ReadOnly = !isInit;
-         btName.Enabled = !isInit;
+         btName.ReadOnly = !isInit || !IsNewEntity;
+         btName.Enabled = !isInit || IsNewEntity;
       }
 
       private EditorButton editNameButton => btName.Properties.Buttons[0];
@@ -196,6 +196,8 @@ namespace MoBi.UI.Views
             editNameButton.Visible = false;
          }
       }
+
+      public bool IsNewEntity { get ; set ; }
 
       public void ShowParameters()
       {
