@@ -36,12 +36,16 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public override IContainer CreateNewEntity(TParent parent)
       {
-         var newEntity = base.CreateNewEntity(parent);
+         var newContainer = base.CreateNewEntity(parent);
+
+         if (newContainer.Mode != ContainerMode.Physical) 
+            return newContainer;
+
          var moleculeProperties = Context.Create<IContainer>()
             .WithName(Constants.MOLECULE_PROPERTIES)
             .WithMode(ContainerMode.Logical);
-         newEntity.Add(moleculeProperties);
-         return newEntity;
+         newContainer.Add(moleculeProperties);
+         return newContainer;
       }
 
       private MoBiSpatialStructure getSpatialStructure(IBuildingBlock buildingBlockWithFormulaCache)
