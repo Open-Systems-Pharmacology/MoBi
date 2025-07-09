@@ -28,10 +28,10 @@ namespace MoBi.Presentation
       {
          sut.AllowedBuildingBlockTypes.ShouldOnlyContainInOrder(
             BuildingBlockType.SpatialStructure,
-            BuildingBlockType.Molecule,
-            BuildingBlockType.Reaction,
+            BuildingBlockType.Molecules,
+            BuildingBlockType.Reactions,
             BuildingBlockType.PassiveTransport,
-            BuildingBlockType.Observer,
+            BuildingBlockType.Observers,
             BuildingBlockType.Events,
             BuildingBlockType.InitialConditions,
             BuildingBlockType.ParameterValues);
