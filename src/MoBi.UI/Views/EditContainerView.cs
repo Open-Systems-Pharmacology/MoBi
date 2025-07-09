@@ -26,6 +26,7 @@ namespace MoBi.UI.Views
       protected ScreenBinder<ContainerDTO> _screenBinder;
       protected bool _readOnly;
       private readonly UserLookAndFeel _lookAndFeel;
+      private bool _isNameEditable;
 
       public EditContainerView(UserLookAndFeel lookAndFeel)
       {
@@ -144,8 +145,6 @@ namespace MoBi.UI.Views
          var isInit = dto.Name.IsNullOrEmpty();
          editNameButton.Enabled = !isInit;
          editNameButton.Visible = !isInit && !_readOnly;
-         btName.ReadOnly = !isInit || !IsNewEntity;
-         btName.Enabled = !isInit || IsNewEntity;
       }
 
       private EditorButton editNameButton => btName.Properties.Buttons[0];
@@ -173,7 +172,6 @@ namespace MoBi.UI.Views
             var enabled = !_readOnly;
 
             btName.Enabled = enabled;
-            ContainerPropertiesEditable = enabled;
             btParentPath.Enabled = enabled;
             htmlEditor.Enabled = enabled;
             panelTags.Enabled = enabled;
@@ -197,7 +195,16 @@ namespace MoBi.UI.Views
          }
       }
 
-      public bool IsNewEntity { get ; set ; }
+      public bool IsNameEditable
+      {
+         get => _isNameEditable;
+         set
+         {
+            _isNameEditable = value;
+            btName.Enabled = value;
+            btName.ReadOnly = !value;
+         }
+      }
 
       public void ShowParameters()
       {
