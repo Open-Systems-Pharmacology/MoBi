@@ -238,7 +238,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          switch (buildingBlockType)
          {
-            case BuildingBlockType.Reaction:
+            case BuildingBlockType.Reactions:
                items.AddRange(InteractionTask.LoadItems<MoBiReactionBuildingBlock>(filename));
                break;
             case BuildingBlockType.Events:
@@ -250,10 +250,10 @@ namespace MoBi.Presentation.Tasks.Interaction
             case BuildingBlockType.PassiveTransport:
                items.AddRange(InteractionTask.LoadItems<PassiveTransportBuildingBlock>(filename));
                break;
-            case BuildingBlockType.Molecule:
+            case BuildingBlockType.Molecules:
                items.AddRange(InteractionTask.LoadItems<MoleculeBuildingBlock>(filename));
                break;
-            case BuildingBlockType.Observer:
+            case BuildingBlockType.Observers:
                items.AddRange(InteractionTask.LoadItems<ObserverBuildingBlock>(filename));
                break;
             //for the cases underneath, we could have multiple buildingBlocks being loaded
