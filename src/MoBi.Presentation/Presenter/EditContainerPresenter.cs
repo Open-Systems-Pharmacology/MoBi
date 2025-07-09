@@ -148,7 +148,7 @@ namespace MoBi.Presentation.Presenter
             if (moleculeProperties!= null)
                macroCommand.Add(new RemoveContainerFromSpatialStructureCommand(_container, moleculeProperties, (MoBiSpatialStructure)BuildingBlock).RunCommand(_context));
          }
-         else
+         else if(_editTasks.GetMoleculeProperties(_container) == null)
          {
             var moleculeProperties = _context.Create<IContainer>()
                .WithName(Constants.MOLECULE_PROPERTIES)
@@ -208,6 +208,7 @@ namespace MoBi.Presentation.Presenter
          _view.BindTo(_containerDTO);
          _tagsPresenter.Edit(container);
          _view.ContainerPropertiesEditable = !container.IsMoleculeProperties();
+         _view.NameEditable = _isNewEntity;
       }
 
       public override object Subject => _container;

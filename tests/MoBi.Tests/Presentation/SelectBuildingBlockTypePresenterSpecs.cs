@@ -33,7 +33,7 @@ namespace MoBi.Presentation
          A.CallTo(() => _view.BindTo(A<SelectBuildingBlockTypeDTO>._))
             .Invokes(x => _dto = x.GetArgument<SelectBuildingBlockTypeDTO>(0));
          A.CallTo(() => _view.Display())
-            .Invokes(() => _dto.SelectedBuildingBlockType = BuildingBlockType.Molecule);
+            .Invokes(() => _dto.SelectedBuildingBlockType = BuildingBlockType.Molecules);
       }
 
       protected override void Because()
@@ -44,7 +44,7 @@ namespace MoBi.Presentation
       [Observation]
       public void the_returned_type_should_be_correct()
       {
-         _result.ShouldBeEqualTo(BuildingBlockType.Molecule);
+         _result.ShouldBeEqualTo(BuildingBlockType.Molecules);
       }
    }
 
