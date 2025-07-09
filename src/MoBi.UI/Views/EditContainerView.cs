@@ -127,7 +127,6 @@ namespace MoBi.UI.Views
       public virtual void BindTo(ContainerDTO dto)
       {
          _screenBinder.BindToSource(dto);
-         initNameControl(dto);
          initParentPathControl(dto);
 
          layoutControlItemGoToSource.Visibility = LayoutVisibilityConvertor.FromBoolean(dto.SourceReference != null);
@@ -139,14 +138,7 @@ namespace MoBi.UI.Views
          editParentPathButton.Visible = dto.ParentPathEditable && !_readOnly;
          btParentPath.Enabled = dto.ParentPathEditable;
       }
-
-      private void initNameControl(ContainerDTO dto)
-      {
-         var isInit = dto.Name.IsNullOrEmpty();
-         editNameButton.Enabled = !isInit;
-         editNameButton.Visible = !isInit && !_readOnly;
-      }
-
+       
       private EditorButton editNameButton => btName.Properties.Buttons[0];
 
       private EditorButton editParentPathButton => btParentPath.Properties.Buttons[0];
