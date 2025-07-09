@@ -172,6 +172,7 @@ namespace MoBi.UI.Views
             var enabled = !_readOnly;
 
             btName.Enabled = enabled;
+            ContainerPropertiesEditable = enabled;
             btParentPath.Enabled = enabled;
             htmlEditor.Enabled = enabled;
             panelTags.Enabled = enabled;
