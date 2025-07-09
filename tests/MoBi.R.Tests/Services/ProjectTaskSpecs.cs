@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using MoBi.CLI.Services;
 using MoBi.Core.Domain.Model;
 using MoBi.R.Services;
 using NUnit.Framework;
