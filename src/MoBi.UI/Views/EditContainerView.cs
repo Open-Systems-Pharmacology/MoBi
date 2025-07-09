@@ -15,7 +15,6 @@ using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
-using OSPSuite.Utility.Extensions;
 using ToolTips = MoBi.Assets.ToolTips;
 
 namespace MoBi.UI.Views
@@ -174,7 +173,6 @@ namespace MoBi.UI.Views
 
       public bool ContainerPropertiesEditable
       {
-         get => cbContainerType.Enabled;
          set
          {
             if (_readOnly && value)
@@ -187,16 +185,14 @@ namespace MoBi.UI.Views
          }
       }
 
-      public bool IsNameEditable
+      public bool NameEditable
       {
-         get => btName.Enabled;
          set
          {
-            btName.Enabled = value;
+            // This control gets readonly to prevent direct typing of the name
+            // is stays enabled to allow the use of the button
             btName.ReadOnly = !value;
-            if (value)
-               return;
-            editNameButton.Visible = false;
+            editNameButton.Visible = btName.ReadOnly;
          }
       }
 

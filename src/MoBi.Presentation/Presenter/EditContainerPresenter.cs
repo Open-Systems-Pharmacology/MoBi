@@ -208,7 +208,7 @@ namespace MoBi.Presentation.Presenter
          _view.BindTo(_containerDTO);
          _tagsPresenter.Edit(container);
          _view.ContainerPropertiesEditable = !container.IsMoleculeProperties();
-         _view.IsNameEditable = _isNewEntity;
+         _view.NameEditable = _isNewEntity;
       }
 
       public override object Subject => _container;
