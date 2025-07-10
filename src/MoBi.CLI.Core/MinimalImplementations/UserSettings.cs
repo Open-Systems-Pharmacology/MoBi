@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using MoBi.Core;
 using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model.Diagram;
@@ -12,7 +13,6 @@ using OSPSuite.Presentation.Presenters.ParameterIdentifications;
 using OSPSuite.Presentation.Presenters.SensitivityAnalyses;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Settings;
-using System.Drawing;
 
 namespace MoBi.CLI.Core.MinimalImplementations
 {
@@ -48,6 +48,7 @@ namespace MoBi.CLI.Core.MinimalImplementations
       public string RibbonLayout { get; set; }
       public ObjectPathType ObjectPathType { get; set; }
       public string ParameterDefaultDimension { get; set; }
+
       public void SaveLayout()
       {
          //do nothing

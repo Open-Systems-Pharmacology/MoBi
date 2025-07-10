@@ -4,10 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using MoBi.CLI.Core.RunOptions;
-using MoBi.CLI.Services;
-using MoBi.Core;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Services;
 using MoBi.Core.Snapshots.Services;
 using OSPSuite.Assets.Extensions;
 using OSPSuite.Core.Domain;
@@ -47,7 +44,7 @@ namespace MoBi.CLI.Core.Services
 
       public SnapshotRunner(
          ISnapshotTask snapshotTask,
-         IOSPSuiteLogger logger, 
+         IOSPSuiteLogger logger,
          IMoBiContext moBiMoBiContext,
          IProjectTask projectTask)
       {
@@ -93,7 +90,7 @@ namespace MoBi.CLI.Core.Services
             finally
             {
                //Ensure that we reset the project to avoid any leaks
-               //_workspace.Project = null;
+               _projectTask.CloseProject();
             }
          }
 

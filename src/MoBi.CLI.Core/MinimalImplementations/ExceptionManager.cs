@@ -1,6 +1,6 @@
-﻿using OSPSuite.Utility.Exceptions;
+﻿using System;
+using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
-using System;
 
 namespace MoBi.CLI.Core.MinimalImplementations
 {

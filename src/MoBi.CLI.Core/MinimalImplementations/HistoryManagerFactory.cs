@@ -4,9 +4,10 @@ using OSPSuite.Infrastructure.Serialization.ORM.History;
 
 namespace MoBi.CLI.Core.MinimalImplementations
 {
-   public class HistoryManagerFactory: IHistoryManagerFactory
+   public class HistoryManagerFactory : IHistoryManagerFactory
    {
       private readonly IComponentContext _context;
+
       public HistoryManagerFactory(IComponentContext context)
       {
          _context = context;

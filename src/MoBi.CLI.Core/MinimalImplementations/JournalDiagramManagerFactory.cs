@@ -1,6 +1,6 @@
-﻿using OSPSuite.Core.Diagram;
+﻿using System;
+using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Journal;
-using System;
 
 namespace MoBi.CLI.Core.MinimalImplementations
 {
