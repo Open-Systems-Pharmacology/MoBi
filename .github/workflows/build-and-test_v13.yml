@@ -24,7 +24,7 @@ jobs:
         run: dotnet build MoBi.sln /p:Version=13.0.9999
 
       - name: Test
-        run: dotnet test .\tests\**\bin\Debug\net472\MoBi*Tests.dll -v normal --no-build  --logger:"html;LogFileName=../testLog_Windows.html"
+        run: dotnet test .\tests\**\bin\Debug\*\MoBi*Tests.dll -v normal --no-build  --logger:"html;LogFileName=../testLog_Windows.html"
 
       - name: Push test log as artifact
         uses: actions/upload-artifact@v4
