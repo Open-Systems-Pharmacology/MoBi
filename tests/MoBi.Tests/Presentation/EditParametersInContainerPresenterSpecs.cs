@@ -444,7 +444,45 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_copying_parameter_path : concern_for_EditParametersInContainerPresenter
+   public class When_copying_parameter_path_for_individual_parameter : concern_for_EditParametersInContainerPresenter
+   {
+      private ParameterDTO _parameterDTO;
+      private IndividualParameter _individualParameter;
+
+      protected override void Context()
+      {
+         base.Context();
+         _parameterDTO = new ParameterDTO(_parameter)
+         {
+            IsIndividualPreview = true
+         };
+
+         _individualParameter = new IndividualParameter {Path = new ObjectPath("Organism", "Container", "Organ", "ADC")};
+         var individualBuildingBlock = new IndividualBuildingBlock { _individualParameter };
+         var organism = new Container().WithName("Organism");
+         var container = new Container().WithName("Container");
+         var organ = new Container().WithName("Organ");
+         organism.Add(container);
+         container.Add(organ);
+         sut.Edit(organ);
+         sut.SelectedIndividual = individualBuildingBlock;
+         A.CallTo(() => _individualParameterToParameterDTOMapper.MapFrom(individualBuildingBlock, _individualParameter)).Returns(_parameterDTO);
+         sut.UpdatePreview();
+      }
+
+      protected override void Because()
+      {
+         sut.CopyPathForParameter(_parameterDTO);
+      }
+
+      [Observation]
+      public void should_copy_resolved_path_to_clipboard()
+      {
+         A.CallTo(() => _view.CopyToClipBoard(_individualParameter.Path)).MustHaveHappened();
+      }
+   }
+
+   public class When_copying_parameter_path_for_container_parameter : concern_for_EditParametersInContainerPresenter
    {
       private string _expectedPath;
       private ParameterDTO _parameterDTO;

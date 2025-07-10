@@ -134,11 +134,11 @@ namespace MoBi.IntegrationTests
       }
 
       [TestCase(BuildingBlockType.SpatialStructure)]
-      [TestCase(BuildingBlockType.Reaction)]
+      [TestCase(BuildingBlockType.Reactions)]
       [TestCase(BuildingBlockType.Events)]
       [TestCase(BuildingBlockType.PassiveTransport)]
-      [TestCase(BuildingBlockType.Molecule)]
-      [TestCase(BuildingBlockType.Observer)]
+      [TestCase(BuildingBlockType.Molecules)]
+      [TestCase(BuildingBlockType.Observers)]
       [TestCase(BuildingBlockType.InitialConditions)]
       [TestCase(BuildingBlockType.ParameterValues)]
       public void the_building_block_is_loaded_to_the_module(BuildingBlockType type)
