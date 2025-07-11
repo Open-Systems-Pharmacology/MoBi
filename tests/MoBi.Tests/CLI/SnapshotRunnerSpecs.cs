@@ -2,9 +2,11 @@
 using System.IO;
 using System.Threading.Tasks;
 using FakeItEasy;
+using MoBi.Assets;
 using MoBi.CLI.Core.RunOptions;
 using MoBi.CLI.Core.Services;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Serialization.ORM;
 using MoBi.Core.Snapshots.Services;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -25,6 +27,7 @@ namespace MoBi.CLI
       protected readonly string _outputFolder = @"C:\Output\";
       protected IProjectTask _projectTask;
       protected IMoBiContext _moBiContext;
+      protected IContextPersistor _contextPersistor;
 
       public override async Task GlobalContext()
       {
@@ -39,7 +42,8 @@ namespace MoBi.CLI
          _moBiContext = A.Fake<IMoBiContext>();
          _snapshotTask = A.Fake<ISnapshotTask>();
          _logger = A.Fake<IOSPSuiteLogger>();
-         sut = new SnapshotRunner(_snapshotTask, _logger, _moBiContext, _projectTask);
+         _contextPersistor = A.Fake<IContextPersistor>();
+         sut = new SnapshotRunner(_snapshotTask, _logger, _moBiContext, _projectTask, _contextPersistor);
 
          _runOptions = new SnapshotRunOptions();
          return _completed;
@@ -65,7 +69,7 @@ namespace MoBi.CLI
          _runOptions.InputFolder = _inputFolder;
          _runOptions.OutputFolder = _outputFolder;
          _snapshotFile = Path.Combine(_inputFolder, $"{_fileName}{Constants.Filter.JSON_EXTENSION}");
-         _projectFile = Path.Combine(_outputFolder, $"{_fileName}{Constants.Filter.PKML_EXTENSION}");
+         _projectFile = Path.Combine(_outputFolder, $"{_fileName}{AppConstants.Filter.MOBI_PROJECT_EXTENSION}");
          sut.AllFilesFrom = (folder, filter) => new[] { new FileInfo(_snapshotFile) };
       }
 
@@ -83,7 +87,7 @@ namespace MoBi.CLI
       [Observation]
       public void should_generate_the_project_from_snapshot()
       {
-         A.CallTo(() => _projectTask.LoadProject(_projectFile)).MustHaveHappened();
+         A.CallTo(() => _contextPersistor.Save(_moBiContext)).MustHaveHappened();
       }
 
       [Observation]
@@ -147,7 +151,7 @@ namespace MoBi.CLI
          _runOptions.ExportMode = SnapshotExportMode.Project;
          _runOptions.Folders = new[] { _inputFolder };
          _snapshotFile = Path.Combine(_inputFolder, $"{_fileName}{Constants.Filter.JSON_EXTENSION}");
-         _projectFile = Path.Combine(_inputFolder, $"{_fileName}{Constants.Filter.PKML_EXTENSION}");
+         _projectFile = Path.Combine(_inputFolder, $"{_fileName}{AppConstants.Filter.MOBI_PROJECT_EXTENSION}");
          sut.AllFilesFrom = (folder, filter) => new[] { new FileInfo(_snapshotFile) };
       }
 
@@ -165,7 +169,7 @@ namespace MoBi.CLI
       [Observation]
       public void should_generate_the_project_from_snapshot()
       {
-         A.CallTo(() => _projectTask.LoadProject(_projectFile)).MustHaveHappened();
+         A.CallTo(() => _contextPersistor.Save(_moBiContext)).MustHaveHappened();
       }
    }
 }

@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using MoBi.Assets;
 using MoBi.CLI.Core.RunOptions;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Serialization.ORM;
 using MoBi.Core.Snapshots.Services;
 using OSPSuite.Assets.Extensions;
 using OSPSuite.Core.Domain;
@@ -35,9 +37,7 @@ namespace MoBi.CLI.Core.Services
       private readonly ISnapshotTask _snapshotTask;
       private readonly IOSPSuiteLogger _logger;
       private readonly IProjectTask _projectTask;
-
-      public const string PROJECT_EXTENSION = ".pkml";
-      public static readonly string PROJECT_FILTER = $"*{PROJECT_EXTENSION}";
+      private readonly IContextPersistor _contextPersistor;
 
       //For testing purposes only
       public Func<string, string, FileInfo[]> AllFilesFrom { get; set; }
@@ -46,11 +46,13 @@ namespace MoBi.CLI.Core.Services
          ISnapshotTask snapshotTask,
          IOSPSuiteLogger logger,
          IMoBiContext moBiMoBiContext,
-         IProjectTask projectTask)
+         IProjectTask projectTask,
+         IContextPersistor contextPersistor)
       {
          _snapshotTask = snapshotTask;
          _moBiContext = moBiMoBiContext;
          _projectTask = projectTask;
+         _contextPersistor = contextPersistor;
          _logger = logger;
          AllFilesFrom = allFilesFrom;
       }
@@ -108,7 +110,8 @@ namespace MoBi.CLI.Core.Services
             return;
 
          _logger.AddDebug($"Snapshot loaded successfully from '{file.SnapshotFile}'");
-         _projectTask.LoadProject(file.ProjectFile);
+         _moBiContext.Project.FilePath = file.ProjectFile;
+         _contextPersistor.Save(_moBiContext);
          _logger.AddInfo($"Project saved to '{file.ProjectFile};");
       }
 
@@ -180,7 +183,7 @@ namespace MoBi.CLI.Core.Services
 
       private static (string inputFilter, string outputExtension) inputFileFilterAndOutputFileExtensionFrom(SnapshotRunOptions runOptions)
       {
-         return runOptions.ExportMode == SnapshotExportMode.Project ? (Constants.Filter.JSON_FILTER, PROJECT_EXTENSION) : (PROJECT_FILTER, Constants.Filter.JSON_EXTENSION);
+         return runOptions.ExportMode == SnapshotExportMode.Project ? (Constants.Filter.JSON_FILTER, AppConstants.Filter.MOBI_PROJECT_EXTENSION) : (AppConstants.Filter.MOBI_PROJECT_FILTER, Constants.Filter.JSON_EXTENSION);
       }
 
       private FileMap fileMapFor(string inputFileFullPath, string outputFileFullPath, SnapshotExportMode runOptionsExportMode)

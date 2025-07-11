@@ -19,9 +19,10 @@ namespace MoBi.HelpersForTests
 
       public static string TestFileFullPath(string fileName)
       {
-         var dataFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "TestFiles");
-         return Path.Combine(dataFolder, fileName);
+         return Path.Combine(TestFileDirectory, fileName);
       }
+
+      public static readonly string TestFileDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "TestFiles");
 
       public static IDimension TimeDimensionForSpecs()
       {

@@ -39,6 +39,7 @@ using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.FileLocker;
 using CoreRegister = OSPSuite.Core.CoreRegister;
 using IContainer = OSPSuite.Utility.Container.IContainer;
+using ICoreUserSettings = MoBi.Core.ICoreUserSettings;
 
 namespace MoBi.IntegrationTests
 {
@@ -61,6 +62,7 @@ namespace MoBi.IntegrationTests
             container.RegisterImplementationOf(new SynchronizationContext());
             container.Register<IExceptionManager, ExceptionManagerForSpecs>(LifeStyle.Singleton);
             container.RegisterImplementationOf(A.Fake<IUserSettings>());
+            container.RegisterImplementationOf(A.Fake<ICoreUserSettings>());
             container.RegisterImplementationOf(A.Fake<IDialogCreator>());
             container.RegisterImplementationOf(A.Fake<IProgressUpdater>());
             container.RegisterImplementationOf(A.Fake<IMoBiHistoryManager>());

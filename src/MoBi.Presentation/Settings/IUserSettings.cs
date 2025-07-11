@@ -2,7 +2,6 @@
 using MoBi.Core;
 using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model.Diagram;
-using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation;
 using OSPSuite.Presentation.Diagram.Elements;
@@ -14,7 +13,6 @@ namespace MoBi.Presentation.Settings
    {
       string IconSizeGeneral { get; set; }
       bool RenameDependentObjectsDefault { get; set; }
-      bool CheckDimensions { get; set; }
       IForceLayoutConfiguration ForceLayoutConfigutation { get; set; }
       ChartOptions ChartOptions { get; set; }
       string MainViewLayout { get; set; }
@@ -43,11 +41,8 @@ namespace MoBi.Presentation.Settings
       bool ShowAdvancedParameters { get; set; }
 
       NotificationType VisibleNotification { get; set; }
-      bool ShowPKSimDimensionProblemWarnings { get; set; }
-      bool ShowCannotCalcErrors { get; set; }
       bool ShowPKSimObserverMessages { get; set; }
       bool ShowUnresolvedEndosomeMessagesForInitialConditions { get; set; }
-      bool CheckRules { get; set; }
       bool CheckCircularReference { get; set; }
       bool GroupParameters { get; set; }
 

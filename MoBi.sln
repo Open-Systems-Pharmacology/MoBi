@@ -21,8 +21,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
-		.github\workflows\build-nightly.yml = .github\workflows\build-nightly.yml
 		.github\workflows\build-and-test_v13.yml = .github\workflows\build-and-test_v13.yml
+		.github\workflows\build-nightly.yml = .github\workflows\build-nightly.yml
 		.github\workflows\coverage.yml = .github\workflows\coverage.yml
 		postclean.bat = postclean.bat
 		rakefile.rb = rakefile.rb
@@ -38,6 +38,7 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoBi.CLI", "src\MoBi.CLI\MoBi.CLI.csproj", "{6F9BA897-8761-4ABF-A96A-4EC5F43888AF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoBi.CLI.Core", "src\MoBi.CLI.Core\MoBi.CLI.Core.csproj", "{8D21EB6A-9F65-4AD0-9D91-8C94195EE121}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoBi.R", "src\Mobi.R\MoBi.R.csproj", "{259DA791-3352-4BFA-AB42-BE0F07621FFF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoBi.R.Tests", "tests\MoBi.R.Tests\MoBi.R.Tests.csproj", "{FC91836B-185D-40A8-A483-8B515D4C49BE}"

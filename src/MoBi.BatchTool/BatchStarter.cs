@@ -24,7 +24,7 @@ namespace MoBi.BatchTool
          using (container.OptimizeDependencyResolution())
          {
             var register = new SerializerRegister();
-            container.Register<IPresentationUserSettings, IUserSettings, ICoreUserSettings, BatchUserSettings>(LifeStyle.Transient);
+            container.Register<IPresentationUserSettings, IUserSettings, ICoreUserSettings, Core.ICoreUserSettings, BatchUserSettings>(LifeStyle.Transient);
 
             container.AddRegister(x =>
             {

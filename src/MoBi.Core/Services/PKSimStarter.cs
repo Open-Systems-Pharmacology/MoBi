@@ -1,23 +1,29 @@
 ﻿using MoBi.Assets;
-using MoBi.Core;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Serialization.Xml.Services;
-using MoBi.Core.Services;
-using MoBi.Core.Snapshots;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Services;
-using OSPSuite.Utility;
-using OSPSuite.Utility.Extensions;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
 
-namespace MoBi.Presentation.Tasks
+namespace MoBi.Core.Services
 {
+   public interface IPKSimStarter
+   {
+      void StartPopulationSimulationWithSimulationFile(string simulationFilePath);
+      void StartWithWorkingJournalFile(string journalFilePath);
+      IBuildingBlock CreateProfileExpression(ExpressionType expressionType);
+      IBuildingBlock CreateIndividual();
+      IReadOnlyList<ExpressionParameterValueUpdate> UpdateExpressionProfileFromDatabase(ExpressionProfileBuildingBlock expressionProfile);
+      SimulationTransfer LoadSimulationTransferFromSnapshot(string serializedSnapshot);
+   }
+
    public class PKSimStarter : IPKSimStarter
    {
       private const string CREATE_INDIVIDUAL_ENZYME_EXPRESSION_PROFILE = "CreateIndividualEnzymeExpressionProfile";
@@ -37,7 +43,6 @@ namespace MoBi.Presentation.Tasks
       private Assembly _externalAssembly;
       private readonly ICloneManagerForBuildingBlock _cloneManager;
       private readonly IMoBiProjectRetriever _projectRetriever;
-      private readonly IHeavyWorkManager _heavyWorkManager;
       private readonly IXmlSerializationService _serializationService;
 
       public PKSimStarter(IMoBiConfiguration configuration,
@@ -45,8 +50,7 @@ namespace MoBi.Presentation.Tasks
          IStartableProcessFactory startableProcessFactory,
          ICloneManagerForBuildingBlock cloneManager,
          IXmlSerializationService serializationService,
-         IMoBiProjectRetriever projectRetriever,
-         IHeavyWorkManager heavyWorkManager)
+         IMoBiProjectRetriever projectRetriever)
       {
          _configuration = configuration;
          _applicationSettings = applicationSettings;
@@ -54,7 +58,6 @@ namespace MoBi.Presentation.Tasks
          _cloneManager = cloneManager;
          _serializationService = serializationService;
          _projectRetriever = projectRetriever;
-         _heavyWorkManager = heavyWorkManager;
       }
 
       public void StartPopulationSimulationWithSimulationFile(string simulationFilePath)
@@ -104,18 +107,13 @@ namespace MoBi.Presentation.Tasks
       public IReadOnlyList<ExpressionParameterValueUpdate> UpdateExpressionProfileFromDatabase(ExpressionProfileBuildingBlock expressionProfile)
       {
          loadPKSimAssembly();
-         return executeMethod(getMethod(PKSIM_UI_STARTER_EXPRESSION_PROFILE_CREATOR, GET_EXPRESSION_DATABASE_QUERY), new object[] { expressionProfile }) as List<ExpressionParameterValueUpdate>;
+         return executeMethod(getMethod(PKSIM_UI_STARTER_EXPRESSION_PROFILE_CREATOR, GET_EXPRESSION_DATABASE_QUERY), [expressionProfile]) as List<ExpressionParameterValueUpdate>;
       }
 
       public SimulationTransfer LoadSimulationTransferFromSnapshot(string serializedSnapshot)
       {
-         SimulationTransfer transfer = null;
-         _heavyWorkManager.Start(() =>
-         {
-            var element = executeMethod(getMethod(PKSIM_UI_STARTER_SIMULATION_TRANSFER_CONSTRUCTOR, CREATE_SIMULATION_TRANSFER), new object[] { serializedSnapshot }) as string;
-            transfer = _serializationService.Deserialize<SimulationTransfer>(element, _projectRetriever.Current);
-         }, AppConstants.Captions.Loading.WithEllipsis());
-
+         var element = executeMethod(getMethod(PKSIM_UI_STARTER_SIMULATION_TRANSFER_CONSTRUCTOR, CREATE_SIMULATION_TRANSFER), [serializedSnapshot]) as string;
+         var transfer = _serializationService.Deserialize<SimulationTransfer>(element, _projectRetriever.Current);
          var simulationConfiguration = transfer.Simulation.Configuration;
 
          var module = simulationConfiguration.ModuleConfigurations.Single().Module;
