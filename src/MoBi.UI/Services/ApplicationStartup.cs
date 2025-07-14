@@ -45,6 +45,7 @@ using MoBi.Presentation.Tasks;
 using CoreRegister = OSPSuite.Core.CoreRegister;
 using IApplicationSettings = MoBi.Core.IApplicationSettings;
 using IContainer = OSPSuite.Utility.Container.IContainer;
+using ICoreUserSettings = OSPSuite.Core.ICoreUserSettings;
 
 namespace MoBi.UI.Services
 {
@@ -107,7 +108,7 @@ namespace MoBi.UI.Services
 
       private static void registerSettings(IContainer container)
       {
-         container.Register<IUserSettings, IPresentationUserSettings, ICoreUserSettings, UserSettings>(LifeStyle.Singleton);
+         container.Register<IUserSettings, IPresentationUserSettings, ICoreUserSettings, Core.ICoreUserSettings, UserSettings>(LifeStyle.Singleton);
       }
 
       private void initContext(IContainer container)

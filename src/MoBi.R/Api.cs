@@ -1,5 +1,5 @@
 ﻿using System;
-using MoBi.CLI.Services;
+using MoBi.CLI.Core.Services;
 using MoBi.R.Bootstrap;
 using MoBi.R.Services;
 using OSPSuite.R;

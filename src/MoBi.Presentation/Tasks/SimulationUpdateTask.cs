@@ -9,8 +9,10 @@ using MoBi.Core.Services;
 using MoBi.Presentation.Presenter;
 using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -42,18 +44,20 @@ namespace MoBi.Presentation.Tasks
       private readonly ISimulationFactory _simulationFactory;
       private readonly ICloneManagerForBuildingBlock _cloneManager;
       private readonly ISimulationConfigurationFactory _simulationConfigurationFactory;
+      private readonly IHeavyWorkManager _heavyWorkManager;
 
       public SimulationUpdateTask(IMoBiContext context,
          IMoBiApplicationController applicationController,
          ISimulationFactory simulationFactory,
          ICloneManagerForBuildingBlock cloneManager,
-         ISimulationConfigurationFactory simulationConfigurationFactory)
+         ISimulationConfigurationFactory simulationConfigurationFactory, IHeavyWorkManager heavyWorkManager)
       {
          _context = context;
          _applicationController = applicationController;
          _simulationFactory = simulationFactory;
          _cloneManager = cloneManager;
          _simulationConfigurationFactory = simulationConfigurationFactory;
+         _heavyWorkManager = heavyWorkManager;
       }
 
       public ICommand UpdateSimulation(IMoBiSimulation simulationToUpdate)
@@ -108,9 +112,14 @@ namespace MoBi.Presentation.Tasks
          SimulationConfiguration simulationConfigurationReferencingTemplates,
          string message = AppConstants.Captions.ConfiguringSimulation)
       {
+         CreationResult results = null;
          _context.PublishEvent(new ClearNotificationsEvent(MessageOrigin.Simulation));
+         
          //create model using referencing templates
-         var results = _simulationFactory.CreateModelAndValidate(simulationConfigurationReferencingTemplates, simulationToUpdate.Model.Name, message);
+         _heavyWorkManager.Start(() =>
+         {
+            results = _simulationFactory.CreateModelAndValidate(simulationConfigurationReferencingTemplates, simulationToUpdate.Model.Name, message);
+         }, message);
 
          //create a clone then that will be saved in the simulation
          var simulationBuildConfiguration = _cloneManager.Clone(simulationConfigurationReferencingTemplates);

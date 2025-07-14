@@ -1,14 +1,13 @@
 ﻿using Autofac;
 using MoBi.Core.Services;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Diagram;
-using OSPSuite.Infrastructure.Serialization.ORM.History;
 
 namespace MoBi.CLI.Core.MinimalImplementations
 {
    public class DiagramManagerFactory : IDiagramManagerFactory
    {
       private readonly IComponentContext _context;
+
       public DiagramManagerFactory(IComponentContext context)
       {
          _context = context;
