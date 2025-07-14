@@ -11,6 +11,7 @@ using OSPSuite.Core;
 using OSPSuite.Core.Journal;
 using OSPSuite.Core.Serialization.Diagram;
 using OSPSuite.Infrastructure.Serialization.ORM.History;
+using OSPSuite.MinimalImplementations;
 using OSPSuite.Presentation;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.FileLocker;

@@ -24,6 +24,7 @@ using OSPSuite.Infrastructure;
 using OSPSuite.Infrastructure.Container.Castle;
 using OSPSuite.Infrastructure.Import.Services;
 using OSPSuite.Infrastructure.Serialization.ORM.History;
+using OSPSuite.MinimalImplementations;
 using OSPSuite.Presentation;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Events;
