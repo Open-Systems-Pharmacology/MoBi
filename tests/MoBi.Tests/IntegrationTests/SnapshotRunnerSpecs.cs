@@ -1,12 +1,11 @@
 ﻿using System.IO;
-using MoBi.CLI.Core.RunOptions;
-using MoBi.CLI.Core.Services;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Serialization.ORM;
 using MoBi.HelpersForTests;
-using MoBi.Presentation.Tasks;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.CLI.Core.RunOptions;
+using OSPSuite.CLI.Core.Services;
 using OSPSuite.Utility.Container;
 
 namespace MoBi.IntegrationTests

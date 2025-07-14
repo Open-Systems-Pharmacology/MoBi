@@ -3,8 +3,8 @@ using CommandLine;
 using CommandLine.Text;
 using Microsoft.Extensions.Logging;
 using MoBi.CLI.Commands;
-using MoBi.CLI.Core.RunOptions;
-using MoBi.CLI.Core.Services;
+using OSPSuite.CLI.Core.RunOptions;
+using OSPSuite.CLI.Core.Services;
 
 namespace MoBi.CLI
 {

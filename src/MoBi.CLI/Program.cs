@@ -2,8 +2,7 @@
 using Microsoft.Extensions.Logging;
 using MoBi.Assets;
 using MoBi.CLI.Commands;
-using MoBi.CLI.Core;
-using MoBi.CLI.Core.Services;
+using OSPSuite.CLI.Core.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Services;
 using OSPSuite.Utility.Container;

@@ -4,11 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using MoBi.Assets;
-using MoBi.CLI.Core.RunOptions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Serialization.ORM;
 using MoBi.Core.Snapshots.Services;
 using OSPSuite.Assets.Extensions;
+using OSPSuite.CLI.Core.RunOptions;
+using OSPSuite.CLI.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
@@ -18,19 +19,6 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.CLI.Core.Services
 {
-   public enum SnapshotExportMode
-   {
-      /// <summary>
-      ///    Exports project files from json files
-      /// </summary>
-      Project,
-
-      /// <summary>
-      ///    Exports json files from project files
-      /// </summary>
-      Snapshot
-   }
-
    public class SnapshotRunner : IBatchRunner<SnapshotRunOptions>
    {
       private readonly IMoBiContext _moBiContext;

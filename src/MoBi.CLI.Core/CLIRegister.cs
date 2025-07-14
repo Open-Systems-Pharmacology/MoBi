@@ -1,5 +1,6 @@
-﻿using MoBi.CLI.Core.RunOptions;
-using MoBi.CLI.Core.Services;
+﻿using MoBi.CLI.Core.Services;
+using OSPSuite.CLI.Core.RunOptions;
+using OSPSuite.CLI.Core.Services;
 using OSPSuite.Core;
 using OSPSuite.Utility.Container;
 

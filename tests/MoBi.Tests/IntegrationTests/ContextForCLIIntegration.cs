@@ -1,10 +1,9 @@
-﻿using MoBi.CLI.Core.RunOptions;
-using MoBi.CLI.Core.Services;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.Utility.Container;
 using MoBi.CLI.Core;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.CLI.Core.Services;
 
 namespace MoBi.IntegrationTests
 {
