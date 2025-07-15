@@ -1,13 +1,15 @@
-﻿using System.Threading;
-using Castle.Facilities.TypedFactory;
+﻿using Castle.Facilities.TypedFactory;
+using MoBi.Assets;
 using MoBi.CLI.Core.MinimalImplementations;
 using MoBi.Core;
 using MoBi.Core.Domain.Model.Diagram;
+using MoBi.Core.Domain.UnitSystem;
 using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Presentation.Serialization;
 using MoBi.Presentation.Serialization.Xml.Serializer;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Infrastructure;
@@ -17,6 +19,8 @@ using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.FileLocker;
 using OSPSuite.Utility.Format;
+using System.Threading;
+using OSPSuite.Core.Domain.Data;
 using CoreRegister = MoBi.Core.CoreRegister;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 using ICoreUserSettings = MoBi.Core.ICoreUserSettings;
@@ -68,6 +72,27 @@ namespace MoBi.CLI.Core
 
          register.PerformMappingForSerializerIn(container);
          initializeDimensions(container);
+         InitCalculationMethodRepository(container);
+      }
+
+      public static void InitCalculationMethodRepository(IContainer container)
+      {
+         var calculationMethodsRepositoryPersistor = container.Resolve<ICalculationMethodsRepositoryPersistor>();
+         calculationMethodsRepositoryPersistor.Load();
+         //Add Empty CM'S to use in non PK-Sim Models
+         var rep = container.Resolve<ICoreCalculationMethodRepository>();
+         var objectBaseFactory = container.Resolve<IObjectBaseFactory>();
+         rep.GetAllCategoriesDefault().Each(cm => rep.AddCalculationMethod(createDefaultCalculationMethodForCategory(cm.Category, objectBaseFactory)));
+      }
+
+      private static CoreCalculationMethod createDefaultCalculationMethodForCategory(string category, IObjectBaseFactory objectBaseFactory)
+      {
+         var cm = objectBaseFactory.Create<CoreCalculationMethod>()
+            .WithName(AppConstants.DefaultNames.EmptyCalculationMethod)
+            .WithDescription(AppConstants.DefaultNames.EmptyCalculationMethodDescription);
+
+         cm.Category = category;
+         return cm;
       }
 
       private static void initializeDimensions(IContainer container)
@@ -77,20 +102,36 @@ namespace MoBi.CLI.Core
          var persistor = container.Resolve<IDimensionFactoryPersistor>();
          persistor.Load(dimensionFactory, applicationConfiguration.DimensionFilePath);
          dimensionFactory.AddDimension(Constants.Dimension.NO_DIMENSION);
+         setupDimensionMerging(dimensionFactory);
 
-         var molarConcentrationDimension = dimensionFactory.Dimension(Constants.Dimension.MOLAR_CONCENTRATION);
-         var massConcentrationDimension = dimensionFactory.Dimension(Constants.Dimension.MASS_CONCENTRATION);
-         var amountDimension = dimensionFactory.Dimension(Constants.Dimension.MOLAR_AMOUNT);
-         var massDimension = dimensionFactory.Dimension(Constants.Dimension.MASS_AMOUNT);
-         var aucMolarDimension = dimensionFactory.Dimension(Constants.Dimension.MOLAR_AUC);
-         var aucMassDimension = dimensionFactory.Dimension(Constants.Dimension.MASS_AUC);
+         // var molarConcentrationDimension = dimensionFactory.Dimension(Constants.Dimension.MOLAR_CONCENTRATION);
+         // var massConcentrationDimension = dimensionFactory.Dimension(Constants.Dimension.MASS_CONCENTRATION);
+         // var amountDimension = dimensionFactory.Dimension(Constants.Dimension.MOLAR_AMOUNT);
+         // var massDimension = dimensionFactory.Dimension(Constants.Dimension.MASS_AMOUNT);
+         // var aucMolarDimension = dimensionFactory.Dimension(Constants.Dimension.MOLAR_AUC);
+         // var aucMassDimension = dimensionFactory.Dimension(Constants.Dimension.MASS_AUC);
+         //
+         // dimensionFactory.AddMergingInformation(new SimpleDimensionMergingInformation(molarConcentrationDimension, massConcentrationDimension));
+         // dimensionFactory.AddMergingInformation(new SimpleDimensionMergingInformation(massConcentrationDimension, molarConcentrationDimension));
+         // dimensionFactory.AddMergingInformation(new SimpleDimensionMergingInformation(amountDimension, massDimension));
+         // dimensionFactory.AddMergingInformation(new SimpleDimensionMergingInformation(massDimension, amountDimension));
+         // dimensionFactory.AddMergingInformation(new SimpleDimensionMergingInformation(aucMolarDimension, aucMassDimension));
+         // dimensionFactory.AddMergingInformation(new SimpleDimensionMergingInformation(aucMassDimension, aucMolarDimension));
+      }
 
-         dimensionFactory.AddMergingInformation(new SimpleDimensionMergingInformation(molarConcentrationDimension, massConcentrationDimension));
-         dimensionFactory.AddMergingInformation(new SimpleDimensionMergingInformation(massConcentrationDimension, molarConcentrationDimension));
-         dimensionFactory.AddMergingInformation(new SimpleDimensionMergingInformation(amountDimension, massDimension));
-         dimensionFactory.AddMergingInformation(new SimpleDimensionMergingInformation(massDimension, amountDimension));
-         dimensionFactory.AddMergingInformation(new SimpleDimensionMergingInformation(aucMolarDimension, aucMassDimension));
-         dimensionFactory.AddMergingInformation(new SimpleDimensionMergingInformation(aucMassDimension, aucMolarDimension));
+      private static void setupDimensionMerging(IDimensionFactory factory)
+      {
+         var concentrationDimension = factory.Dimension(Constants.Dimension.MASS_CONCENTRATION);
+         var molarConcentrationDimension = factory.Dimension(Constants.Dimension.MOLAR_CONCENTRATION);
+
+         factory.AddMergingInformation(new MoBiDimensionMergingInformation<IQuantity>(concentrationDimension, molarConcentrationDimension,
+            new MolWeightDimensionConverterForFormulaUsable(concentrationDimension, molarConcentrationDimension)));
+
+         factory.AddMergingInformation(new MoBiDimensionMergingInformation<DataColumn>(concentrationDimension, molarConcentrationDimension,
+            new ConcentrationToMolarConcentrationConverterForDataColumn(concentrationDimension, molarConcentrationDimension)));
+
+         factory.AddMergingInformation(new MoBiDimensionMergingInformation<DataColumn>(molarConcentrationDimension, concentrationDimension,
+            new MolarConcentrationToConcentrationConverterForDataColumn(molarConcentrationDimension, concentrationDimension)));
       }
    }
 }
