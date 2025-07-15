@@ -9,7 +9,6 @@ using MoBi.Presentation.Serialization.Xml.Serializer;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Serialization.Diagram;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Infrastructure;
 using OSPSuite.Infrastructure.Container.Castle;

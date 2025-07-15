@@ -6,14 +6,14 @@
 
 
 	<ItemGroup>
-		<PackageReference Include="OSPSuite.Assets" Version="13.0.0-MjAHd" />
-		<PackageReference Include="OSPSuite.Infrastructure.Autofac" Version="13.0.0-MjAHd" />
+		<PackageReference Include="OSPSuite.Assets" Version="13.0.0-BsEhl" />
+		<PackageReference Include="OSPSuite.Infrastructure.Autofac" Version="13.0.0-BsEhl" />
 		<PackageReference Include="OSPSuite.Utility" Version="4.1.1.1" />
-		<PackageReference Include="OSPSuite.Core" Version="13.0.0-MjAHd" />
-		<PackageReference Include="OSPSuite.Presentation" Version="13.0.0-MjAHd" />
-		<PackageReference Include="OSPSuite.R" Version="13.0.0-MjAHd" />
-      <PackageReference Include="OSPSuite.Infrastructure" Version="13.0.0-MjAHd" />
-      <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="13.0.0-MjAHd" />
+		<PackageReference Include="OSPSuite.Core" Version="13.0.0-BsEhl" />
+		<PackageReference Include="OSPSuite.Presentation" Version="13.0.0-BsEhl" />
+		<PackageReference Include="OSPSuite.R" Version="13.0.0-BsEhl" />
+      <PackageReference Include="OSPSuite.Infrastructure" Version="13.0.0-BsEhl" />
+      <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="13.0.0-BsEhl" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\MoBi.Assets\MoBi.Assets.csproj" />

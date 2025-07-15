@@ -1,4 +1,6 @@
-﻿using CommandLine;
+﻿using System;
+using System.Linq;
+using CommandLine;
 using Microsoft.Extensions.Logging;
 using MoBi.Assets;
 using MoBi.CLI.Commands;
@@ -22,7 +24,7 @@ namespace MoBi.CLI
 
       static int Main(string[] args)
       {
-         ApplicationStartup.Initialize();
+         Core.ApplicationStartup.Initialize();
 
          Parser.Default.ParseArguments<SnapshotRunCommand>(args)
             .WithParsed<SnapshotRunCommand>(startCommand)
@@ -36,12 +38,14 @@ namespace MoBi.CLI
 
       private static void startCommand<TRunOptions>(CLICommand<TRunOptions> command)
       {
+         Core.ApplicationStartup.Start();
+
          var logger = initializeLogger(command);
          if (command.LogCommandName)
             logger.AddInfo($"Starting {command.Name.ToLower()} run");
 
          logger.AddDebug($"Arguments:\n{command}");
-         ApplicationStartup.Start();
+         
          var runner = IoC.Resolve<IBatchRunner<TRunOptions>>();
          try
          {

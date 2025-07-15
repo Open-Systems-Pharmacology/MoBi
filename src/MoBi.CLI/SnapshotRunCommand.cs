@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using MoBi.CLI.Commands;
 using OSPSuite.CLI.Core.RunOptions;
 using OSPSuite.CLI.Core.Services;
+using System.Collections.Generic;
 
 namespace MoBi.CLI
 {
@@ -35,7 +36,7 @@ namespace MoBi.CLI
          get => ExportMode == SnapshotExportMode.Snapshot;
       }
 
-      [Usage(ApplicationAlias = "PKSim.CLI")]
+      [Usage(ApplicationAlias = "MoBi.CLI")]
       public static IEnumerable<Example> Examples
       {
          get
