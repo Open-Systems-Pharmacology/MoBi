@@ -17,6 +17,7 @@ using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Services;
 using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Container;
+using OSPSuite.Utility.Extensions;
 using Classification = OSPSuite.Core.Domain.Classification;
 using OutputMapping = OSPSuite.Core.Domain.OutputMapping;
 using ParameterIdentification = OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentification;
@@ -203,6 +204,34 @@ namespace MoBi.IntegrationTests.Snapshots
       {
          _result.AllParameterIdentifications.FirstOrDefault().Analyses.Count().ShouldBeEqualTo(1);
          (_result.AllParameterIdentifications.FirstOrDefault().Analyses.First() is ParameterIdentificationTimeProfileChart).ShouldBeTrue();
+      }
+   }
+
+   internal class When_mapping_project_to_snapshot_and_pksim_module_does_not_have_snapshot : concern_for_ProjectMapper
+   {
+      private SnapshotProject _snapshot;
+
+      protected override void Context()
+      {
+         base.Context();
+         _project.Modules.Where(x => x.IsPKSimModule).Each(x => x.Snapshot = string.Empty);
+      }
+
+      protected override void Because()
+      {
+         _snapshot = sut.MapToSnapshot(_project).Result;
+      }
+
+      [Observation]
+      public void the_snapshot_should_contain_extension_modules_snapshots_for_each_extension_module_and_pksim_module_without_a_snapshot()
+      {
+         _snapshot.ExtensionModules.Length.ShouldBeEqualTo(2);
+      }
+
+      [Observation]
+      public void the_snapshot_should_not_contain_pksim_modules()
+      {
+         _snapshot.PKSimModules.Length.ShouldBeEqualTo(0);
       }
    }
 
