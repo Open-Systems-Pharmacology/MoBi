@@ -1,11 +1,12 @@
-﻿using System.Threading.Tasks;
-using MoBi.Core.Domain.Model;
+﻿using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
+using MoBi.Core.Services;
 using OSPSuite.Assets;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Extensions;
+using System.Threading.Tasks;
 
 namespace MoBi.Core.Snapshots.Mappers;
 
@@ -19,6 +20,7 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
    private readonly SimulationPredictedVsObservedChartMapper _predictedVsObservedChartMapper;
    private readonly SimulationResidualVsTimeChartMapper _residualsVsTimeChartMapper;
    private readonly IOSPSuiteLogger _logger;
+   private ISimulationRunner _simulationRunner;
 
    public SimulationMapper(
       SimulationConfigurationMapper simulationConfigurationMapper,
@@ -28,7 +30,8 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
       OutputSelectionsMapper outputSelectionsMapper,
       SimulationPredictedVsObservedChartMapper predictedVsObservedChartMapper,
       SimulationResidualVsTimeChartMapper residualsVsTimeChartMapper,
-      IOSPSuiteLogger logger)
+      IOSPSuiteLogger logger,
+      ISimulationRunner simulationRunner)
    {
       _simulationConfigurationMapper = simulationConfigurationMapper;
       _outputMappingMapper = outputMappingMapper;
@@ -38,6 +41,7 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
       _predictedVsObservedChartMapper = predictedVsObservedChartMapper;
       _residualsVsTimeChartMapper = residualsVsTimeChartMapper;
       _logger = logger;
+      _simulationRunner = simulationRunner;
    }
 
    public override async Task<MoBiSimulation> MapToModel(Simulation snapshot, SimulationContext context)
@@ -62,7 +66,15 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
 
       snapshot.OutputMappings?.Each(x => simulation.OutputMappings.Add(_outputMappingMapper.MapToModel(x, snapshotContextWithSimulation).Result));
 
+      if (context.Run)
+         await runSimulation(simulation);
+
       return simulation;
+   }
+
+   private async Task runSimulation(MoBiSimulation simulation)
+   {
+      await _simulationRunner.RunSimulationAsync(simulation);
    }
 
    public override async Task<Simulation> MapToSnapshot(MoBiSimulation simulation, MoBiProject project)
