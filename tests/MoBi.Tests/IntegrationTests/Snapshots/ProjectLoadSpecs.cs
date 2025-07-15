@@ -9,7 +9,6 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Utility.Container;
-using OSPSuite.Utility.Extensions;
 
 namespace MoBi.IntegrationTests.Snapshots
 {
