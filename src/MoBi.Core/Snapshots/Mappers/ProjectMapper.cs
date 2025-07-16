@@ -166,8 +166,8 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
 
    private Simulation[] mapSimulations(IReadOnlyList<MoBiSimulation> projectSimulations, ModelProject project) => _simulationMapper.MapToSnapshots(projectSimulations, project).Result;
 
-   private string[] mapPKSimModules(ModelProject project) => project.Modules.Where(x => x.IsPKSimModule).Select(x => x.Snapshot).ToArray();
-   private string[] mapExtensionModules(ModelProject project) => project.Modules.Where(x => !x.IsPKSimModule).Select(serializeToBase64PKML).ToArray();
+   private string[] mapPKSimModules(ModelProject project) => project.Modules.Where(shouldUsePKSimSnapshot).Select(x => x.Snapshot).ToArray();
+   private string[] mapExtensionModules(ModelProject project) => project.Modules.Where(x => !shouldUsePKSimSnapshot(x)).Select(serializeToBase64PKML).ToArray();
    private string[] mapExpressionProfilesBuildingBlocks(ModelProject project) => project.ExpressionProfileCollection.Where(x => !isFromSnapshot(x, project)).Select(serializeToBase64PKML).ToArray();
    private string[] mapIndividualBuildingBlocks(ModelProject project) => project.IndividualsCollection.Where(x => !isFromSnapshot(x, project)).Select(serializeToBase64PKML).ToArray();
 
@@ -181,7 +181,12 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
 
       var module = project.Modules.FindById(snapshotOriginModuleId);
 
-      return module.IsPKSimModule;
+      return shouldUsePKSimSnapshot(module);
+   }
+
+   private static bool shouldUsePKSimSnapshot(Module module)
+   {
+      return module.IsPKSimModule && module.HasSnapshot;
    }
 
    private static bool isFromSnapshot(IndividualBuildingBlock individualBuildingBlock, ModelProject project) => 
