@@ -100,7 +100,7 @@ namespace MoBi.CLI.Core.Services
          _logger.AddDebug($"Snapshot loaded successfully from '{file.SnapshotFile}'");
          _moBiContext.Project.FilePath = file.ProjectFile;
          _contextPersistor.Save(_moBiContext);
-         _logger.AddInfo($"Project saved to '{file.ProjectFile};");
+         _logger.AddInfo($"Project saved to '{file.ProjectFile}';");
       }
 
       private async Task createSnapshotFromProjectFile(FileMap file)

@@ -24,6 +24,7 @@ using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.FileLocker;
 using OSPSuite.Utility.Format;
 using System.Threading;
+using MoBi.Core.Extensions;
 using CoreRegister = MoBi.Core.CoreRegister;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 using ICoreUserSettings = MoBi.Core.ICoreUserSettings;
@@ -106,22 +107,7 @@ namespace MoBi.CLI.Core
          var persistor = container.Resolve<IDimensionFactoryPersistor>();
          persistor.Load(dimensionFactory, applicationConfiguration.DimensionFilePath);
          dimensionFactory.AddDimension(Constants.Dimension.NO_DIMENSION);
-         setupDimensionMerging(dimensionFactory);
-      }
-
-      private static void setupDimensionMerging(IDimensionFactory factory)
-      {
-         var concentrationDimension = factory.Dimension(Constants.Dimension.MASS_CONCENTRATION);
-         var molarConcentrationDimension = factory.Dimension(Constants.Dimension.MOLAR_CONCENTRATION);
-
-         factory.AddMergingInformation(new MoBiDimensionMergingInformation<IQuantity>(concentrationDimension, molarConcentrationDimension,
-            new MolWeightDimensionConverterForFormulaUsable(concentrationDimension, molarConcentrationDimension)));
-
-         factory.AddMergingInformation(new MoBiDimensionMergingInformation<DataColumn>(concentrationDimension, molarConcentrationDimension,
-            new ConcentrationToMolarConcentrationConverterForDataColumn(concentrationDimension, molarConcentrationDimension)));
-
-         factory.AddMergingInformation(new MoBiDimensionMergingInformation<DataColumn>(molarConcentrationDimension, concentrationDimension,
-            new MolarConcentrationToConcentrationConverterForDataColumn(molarConcentrationDimension, concentrationDimension)));
+         dimensionFactory.SetupDimensionMerging();
       }
    }
 }
