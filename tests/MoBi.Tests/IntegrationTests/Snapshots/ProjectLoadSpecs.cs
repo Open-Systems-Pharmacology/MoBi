@@ -6,6 +6,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Utility.Container;
 
@@ -38,7 +39,17 @@ namespace MoBi.IntegrationTests.Snapshots
 
          A.CallTo(() => starter.LoadSimulationTransferFromSnapshot(A<string>._)).Returns(_simulationTransfer);
 
+         // EntityValidationTask is a fake
+         var validationTask = IoC.Resolve<IEntityValidationTask>();
+         A.CallTo(() => validationTask.Validate(A<MoBiSimulation>._)).Returns(true);
+
          LoadSnapshot("snapshot");
+      }
+
+      [Observation]
+      public void the_simulation_should_have_results_since_it_ran()
+      {
+         _project.Simulations.All(x => x.HasResults).ShouldBeTrue();
       }
 
       [Observation]
