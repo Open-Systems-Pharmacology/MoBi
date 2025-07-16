@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MoBi.CLI.Core.Services;
 using MoBi.Core.Domain.Model;
 using MoBi.HelpersForTests;
 using MoBi.R.Domain;

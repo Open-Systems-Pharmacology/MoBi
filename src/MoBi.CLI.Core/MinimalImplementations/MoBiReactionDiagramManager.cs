@@ -1,12 +1,12 @@
-﻿using MoBi.Core.Domain.Model;
+﻿using System.Collections.Generic;
+using System.Drawing;
+using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using System.Collections.Generic;
-using System.Drawing;
 
-namespace MoBi.R.MinimalImplementations
+namespace MoBi.CLI.Core.MinimalImplementations
 {
    public class MoBiReactionDiagramManager : IMoBiReactionDiagramManager
    {

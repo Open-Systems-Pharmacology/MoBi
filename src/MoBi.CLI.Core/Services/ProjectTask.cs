@@ -6,7 +6,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.R.Domain;
 
-namespace MoBi.R.Services
+namespace MoBi.CLI.Core.Services
 {
    public interface IProjectTask
    {
@@ -23,6 +23,7 @@ namespace MoBi.R.Services
       Module ModuleByName(MoBiProject moBiProject, string name);
       IndividualBuildingBlock IndividualBuildingBlockByName(MoBiProject moBiProject, string name);
       List<ExpressionProfileBuildingBlock> ExpressionProfileBuildingBlocksByName(MoBiProject moBiProject, params string[] names);
+      void CloseProject();
    }
 
    public class ProjectTask : IProjectTask
@@ -55,6 +56,8 @@ namespace MoBi.R.Services
          _contextPersistor.Load(_moBiContext, fileName);
          return _moBiContext.CurrentProject;
       }
+
+      public void CloseProject() => _contextPersistor.CloseProject(_moBiContext);
 
       public IReadOnlyList<string> AllSimulationNames(MoBiProject moBiProject) =>
          moBiProject.Simulations.Select(x => x.Name).ToList();

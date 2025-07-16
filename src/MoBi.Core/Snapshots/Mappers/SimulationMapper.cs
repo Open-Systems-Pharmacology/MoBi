@@ -20,7 +20,7 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
    private readonly SimulationPredictedVsObservedChartMapper _predictedVsObservedChartMapper;
    private readonly SimulationResidualVsTimeChartMapper _residualsVsTimeChartMapper;
    private readonly IOSPSuiteLogger _logger;
-   private ISimulationRunner _simulationRunner;
+   private readonly ICoreSimulationRunner _simulationRunner;
 
    public SimulationMapper(
       SimulationConfigurationMapper simulationConfigurationMapper,
@@ -31,7 +31,7 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
       SimulationPredictedVsObservedChartMapper predictedVsObservedChartMapper,
       SimulationResidualVsTimeChartMapper residualsVsTimeChartMapper,
       IOSPSuiteLogger logger,
-      ISimulationRunner simulationRunner)
+      ICoreSimulationRunner simulationRunner)
    {
       _simulationConfigurationMapper = simulationConfigurationMapper;
       _outputMappingMapper = outputMappingMapper;
@@ -67,14 +67,9 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
       snapshot.OutputMappings?.Each(x => simulation.OutputMappings.Add(_outputMappingMapper.MapToModel(x, snapshotContextWithSimulation).Result));
 
       if (context.Run)
-         await runSimulation(simulation);
+         await _simulationRunner.RunSimulationAsync(simulation);
 
       return simulation;
-   }
-
-   private async Task runSimulation(MoBiSimulation simulation)
-   {
-      await _simulationRunner.RunSimulationAsync(simulation);
    }
 
    public override async Task<Simulation> MapToSnapshot(MoBiSimulation simulation, MoBiProject project)

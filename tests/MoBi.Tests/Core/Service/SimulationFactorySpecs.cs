@@ -22,7 +22,6 @@ namespace MoBi.Core.Service
       private IDiagramManagerFactory _diagramManagerFactory;
       private ISimulationConfigurationFactory _simulationConfigurationFactory;
       private IDimensionValidator _dimensionValidator;
-      private IHeavyWorkManager _heavyWorkManager;
       private IModelConstructor _modelConstructor;
       protected ICloneManagerForBuildingBlock _cloneManager;
       private IMoBiContext _context;
@@ -35,7 +34,6 @@ namespace MoBi.Core.Service
          _diagramManagerFactory = IoC.Resolve<IDiagramManagerFactory>();
          _simulationConfigurationFactory = IoC.Resolve<ISimulationConfigurationFactory>();
          _dimensionValidator = IoC.Resolve<IDimensionValidator>();
-         _heavyWorkManager = IoC.Resolve<IHeavyWorkManager>();
          _modelConstructor = IoC.Resolve<IModelConstructor>();
          _context = IoC.Resolve<IMoBiContext>();
          _context.NewProject();
@@ -47,7 +45,6 @@ namespace MoBi.Core.Service
             _diagramManagerFactory,
             _simulationConfigurationFactory,
             _dimensionValidator, 
-            _heavyWorkManager, 
             _modelConstructor, 
             _context, 
             _cloneManager);

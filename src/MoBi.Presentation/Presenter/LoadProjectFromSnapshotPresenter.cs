@@ -25,6 +25,7 @@ namespace MoBi.Presentation.Presenter
    public class LoadProjectFromSnapshotPresenter : LoadProjectFromSnapshotPresenter<MoBiProject, Project>, ILoadProjectFromSnapshotPresenter
    {
       private readonly IUnregisterTask _unRegisterTask;
+      private readonly IRegisterTask _registerTask;
 
       public LoadProjectFromSnapshotPresenter(ILoadFromSnapshotView view,
          ILogPresenter logPresenter,
@@ -34,16 +35,18 @@ namespace MoBi.Presentation.Presenter
          IOSPSuiteLogger logger,
          IEventPublisher eventPublisher,
          IQualificationPlanRunner qualificationPlanRunner,
-         IUnregisterTask unRegisterTask) : base(view, logPresenter, snapshotTask, dialogCreator, objectTypeResolver, logger, eventPublisher, qualificationPlanRunner)
+         IUnregisterTask unRegisterTask,
+         IRegisterTask registerTask) : base(view, logPresenter, snapshotTask, dialogCreator, objectTypeResolver, logger, eventPublisher, qualificationPlanRunner)
       {
          _unRegisterTask = unRegisterTask;
+         _registerTask = registerTask;
       }
 
       protected override IReadOnlyList<QualificationPlan> AllQualificationPlansFrom(MoBiProject project) => Array.Empty<QualificationPlan>();
 
       protected override void RegisterProject(MoBiProject project)
       {
-         // In MoBi, the project must be registered before snapshots are loaded
+         _registerTask.Register(project);
       }
 
       protected override void UnRegisterProjects(List<MoBiProject> projects) => _unRegisterTask.UnregisterAllIn(ProjectFrom(projects));

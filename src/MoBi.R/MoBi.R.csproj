@@ -5,14 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Core" Version="13.0.22" />
-    <PackageReference Include="OSPSuite.Infrastructure" Version="13.0.22" />
-    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="13.0.22" />
-    <PackageReference Include="OSPSuite.R" Version="13.0.22" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.23" />
+    <PackageReference Include="OSPSuite.Infrastructure" Version="13.0.23" />
+    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="13.0.23" />
+    <PackageReference Include="OSPSuite.R" Version="13.0.23" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MoBi.Assets\MoBi.Assets.csproj" />
+    <ProjectReference Include="..\MoBi.CLI.Core\MoBi.CLI.Core.csproj" />
     <ProjectReference Include="..\MoBi.Core\MoBi.Core.csproj" />
     <ProjectReference Include="..\MoBi.Presentation\MoBi.Presentation.csproj" />
   </ItemGroup>

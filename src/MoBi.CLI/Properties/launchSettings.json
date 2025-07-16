@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "MoBi.CLI": {
+      "commandName": "Project",
+      "commandLineArgs": "-i C:\\snapshots -o C:\\Projects -p --logLevel Debug"
+    }
+  }
+}

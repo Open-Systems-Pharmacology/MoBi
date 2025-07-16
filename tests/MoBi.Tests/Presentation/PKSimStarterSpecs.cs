@@ -28,7 +28,7 @@ namespace MoBi.Presentation
          _startableProcessFactory = A.Fake<IStartableProcessFactory>();
          _applicationSettings = A.Fake<IApplicationSettings>();
          _cloneManager = A.Fake<ICloneManagerForBuildingBlock>();
-         sut = new PKSimStarter(_configuration, _applicationSettings, _startableProcessFactory, _cloneManager, A.Fake<IXmlSerializationService>(), A.Fake<IMoBiProjectRetriever>(), A.Fake<IHeavyWorkManager>());
+         sut = new PKSimStarter(_configuration, _applicationSettings, _startableProcessFactory, _cloneManager, A.Fake<IXmlSerializationService>(), A.Fake<IMoBiProjectRetriever>());
       }
    }
 

@@ -5,28 +5,28 @@ using System.Threading.Tasks;
 using MoBi.Assets;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Extensions;
-using MoBi.Presentation.Settings;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.FuncParser;
 using OSPSuite.Utility.Extensions;
+using IMoBiCoreUserSettings = MoBi.Core.ICoreUserSettings;
 
-namespace MoBi.Presentation.Tasks
+namespace MoBi.Core.Services
 {
    public class DimensionValidator : IDimensionValidator
    {
       private readonly DimensionParser _dimensionParser;
       private readonly IObjectPathFactory _objectPathFactory;
-      private readonly IUserSettings _userSettings;
+      private readonly IMoBiCoreUserSettings _userSettings;
       private bool _checkDimensions;
       private SimulationBuilder _simulationBuilder;
       private ValidationResult _result;
       private readonly IDictionary<string, string> _hiddenNotifications;
       private bool _checkRules;
 
-      public DimensionValidator(DimensionParser dimensionParser, IObjectPathFactory objectPathFactory, IUserSettings userSettings)
+      public DimensionValidator(DimensionParser dimensionParser, IObjectPathFactory objectPathFactory, IMoBiCoreUserSettings userSettings)
       {
          _dimensionParser = dimensionParser;
          _objectPathFactory = objectPathFactory;

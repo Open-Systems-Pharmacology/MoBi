@@ -25,6 +25,7 @@ namespace MoBi.R.Bootstrap
          container.AddRegister(x => x.FromType<CoreRegister>());
          container.AddRegister(x => x.FromType<InfrastructureRegister>());
          container.AddRegister(x => x.FromType<RRegister>());
+         container.AddRegister(x => x.FromType<OSPSuite.CLI.Core.CLIRegister>());
       }
    }
 }
