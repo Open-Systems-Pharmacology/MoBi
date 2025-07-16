@@ -12,6 +12,7 @@ using OSPSuite.Infrastructure;
 using OSPSuite.Presentation;
 using OSPSuite.Utility.Container;
 using CoreRegister = MoBi.Core.CoreRegister;
+using IMoBiCoreUserSettings = MoBi.Core.ICoreUserSettings;
 
 namespace MoBi.BatchTool
 {
@@ -24,7 +25,7 @@ namespace MoBi.BatchTool
          using (container.OptimizeDependencyResolution())
          {
             var register = new SerializerRegister();
-            container.Register<IPresentationUserSettings, IUserSettings, ICoreUserSettings, Core.ICoreUserSettings, BatchUserSettings>(LifeStyle.Transient);
+            container.Register<IPresentationUserSettings, IUserSettings, ICoreUserSettings, IMoBiCoreUserSettings, BatchUserSettings>(LifeStyle.Transient);
 
             container.AddRegister(x =>
             {

@@ -6,10 +6,11 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Presentation;
 using OSPSuite.Presentation.Diagram.Elements;
 using OSPSuite.Presentation.Services;
+using IMoBiCoreUserSettings = MoBi.Core.ICoreUserSettings;
 
 namespace MoBi.Presentation.Settings
 {
-   public interface IUserSettings : IPresentationUserSettings, ICoreUserSettings
+   public interface IUserSettings : IPresentationUserSettings, IMoBiCoreUserSettings
    {
       string IconSizeGeneral { get; set; }
       bool RenameDependentObjectsDefault { get; set; }

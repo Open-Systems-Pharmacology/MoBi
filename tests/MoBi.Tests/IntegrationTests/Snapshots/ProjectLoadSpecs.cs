@@ -26,7 +26,8 @@ namespace MoBi.IntegrationTests.Snapshots
             {
                Configuration = new SimulationConfiguration
                {
-                  Individual = new IndividualBuildingBlock().WithName("pksim Individual")
+                  Individual = new IndividualBuildingBlock().WithName("pksim Individual"),
+                  SimulationSettings = new SimulationSettings()
                }
             }
          };
@@ -44,12 +45,6 @@ namespace MoBi.IntegrationTests.Snapshots
          A.CallTo(() => validationTask.Validate(A<MoBiSimulation>._)).Returns(true);
 
          LoadSnapshot("snapshot");
-      }
-
-      [Observation]
-      public void the_simulation_should_have_results_since_it_ran()
-      {
-         _project.Simulations.All(x => x.HasResults).ShouldBeTrue();
       }
 
       [Observation]

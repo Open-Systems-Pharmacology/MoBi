@@ -11,6 +11,7 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.FuncParser;
 using OSPSuite.Utility.Extensions;
+using IMoBiCoreUserSettings = MoBi.Core.ICoreUserSettings;
 
 namespace MoBi.Core.Services
 {
@@ -18,14 +19,14 @@ namespace MoBi.Core.Services
    {
       private readonly DimensionParser _dimensionParser;
       private readonly IObjectPathFactory _objectPathFactory;
-      private readonly ICoreUserSettings _userSettings;
+      private readonly IMoBiCoreUserSettings _userSettings;
       private bool _checkDimensions;
       private SimulationBuilder _simulationBuilder;
       private ValidationResult _result;
       private readonly IDictionary<string, string> _hiddenNotifications;
       private bool _checkRules;
 
-      public DimensionValidator(DimensionParser dimensionParser, IObjectPathFactory objectPathFactory, ICoreUserSettings userSettings)
+      public DimensionValidator(DimensionParser dimensionParser, IObjectPathFactory objectPathFactory, IMoBiCoreUserSettings userSettings)
       {
          _dimensionParser = dimensionParser;
          _objectPathFactory = objectPathFactory;

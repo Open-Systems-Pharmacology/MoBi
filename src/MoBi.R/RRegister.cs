@@ -18,6 +18,7 @@ using OSPSuite.Utility.Container;
 using OSPSuite.Utility.FileLocker;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 using ICoreUserSettings = OSPSuite.Core.ICoreUserSettings;
+using IMoBiCoreUserSettings = MoBi.Core.ICoreUserSettings;
 
 namespace MoBi.R
 {
@@ -50,7 +51,7 @@ namespace MoBi.R
          container.Register<IHistoryManagerFactory, HistoryManagerFactory>(LifeStyle.Singleton);
          container.Register<IDiagramManagerFactory, DiagramManagerFactory>(LifeStyle.Singleton);
          container.Register<IDimensionValidator, DimensionValidator>(LifeStyle.Singleton);
-         container.Register<IPresentationUserSettings, IUserSettings, ICoreUserSettings, Core.ICoreUserSettings, UserSettings>(LifeStyle.Transient);
+         container.Register<IPresentationUserSettings, IUserSettings, ICoreUserSettings, IMoBiCoreUserSettings, UserSettings>(LifeStyle.Transient);
       }
    }
 }

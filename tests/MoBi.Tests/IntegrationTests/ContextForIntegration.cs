@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Threading;
-using Castle.Facilities.TypedFactory;
+﻿using Castle.Facilities.TypedFactory;
 using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core;
@@ -20,6 +17,7 @@ using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views.BaseDiagram;
 using MoBi.UI.Services;
 using OSPSuite.BDDHelper;
+using OSPSuite.CLI.Core.MinimalImplementations;
 using OSPSuite.Core;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
@@ -37,9 +35,12 @@ using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.FileLocker;
+using System;
+using System.IO;
+using System.Threading;
 using CoreRegister = OSPSuite.Core.CoreRegister;
 using IContainer = OSPSuite.Utility.Container.IContainer;
-using ICoreUserSettings = MoBi.Core.ICoreUserSettings;
+using IMoBiCoreUserSettings = MoBi.Core.ICoreUserSettings;
 
 namespace MoBi.IntegrationTests
 {
@@ -62,7 +63,7 @@ namespace MoBi.IntegrationTests
             container.RegisterImplementationOf(new SynchronizationContext());
             container.Register<IExceptionManager, ExceptionManagerForSpecs>(LifeStyle.Singleton);
             container.RegisterImplementationOf(A.Fake<IUserSettings>());
-            container.RegisterImplementationOf(A.Fake<ICoreUserSettings>());
+            container.RegisterImplementationOf(A.Fake<IMoBiCoreUserSettings>());
             container.RegisterImplementationOf(A.Fake<IDialogCreator>());
             container.RegisterImplementationOf(A.Fake<IProgressUpdater>());
             container.RegisterImplementationOf(A.Fake<IMoBiHistoryManager>());
@@ -84,6 +85,7 @@ namespace MoBi.IntegrationTests
             container.RegisterImplementationOf(A.Fake<IDiagramLayoutTask>());
             container.RegisterImplementationOf(A.Fake<IPKSimStarter>());
 
+            container.Register<IEntityValidationTask, CLIEntityValidationTask>();
             container.Register<IDiagramModelToXmlMapper, DiagramModelToXmlMapperForSpecs>();
             container.Register<IMoBiConfiguration, MoBiConfiguration>(LifeStyle.Singleton);
             container.Register<IEventPublisher, EventPublisher>(LifeStyle.Singleton);

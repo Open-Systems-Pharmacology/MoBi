@@ -2,6 +2,7 @@
 using OSPSuite.CLI.Core.RunOptions;
 using OSPSuite.CLI.Core.Services;
 using OSPSuite.Core;
+using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Utility.Container;
 
 namespace MoBi.CLI.Core
@@ -20,6 +21,8 @@ namespace MoBi.CLI.Core
          });
 
          container.Register<IBatchRunner<SnapshotRunOptions>, SnapshotRunner>();
+         container.Register<IPathToPathElementsMapper, PathToPathElementsMapper>();
+         container.Register<IDataColumnToPathElementsMapper, DataColumnToPathElementsMapper>();
       }
    }
 }
