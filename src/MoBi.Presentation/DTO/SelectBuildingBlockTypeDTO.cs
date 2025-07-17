@@ -9,7 +9,7 @@ namespace MoBi.Presentation.DTO
       Reactions,
       Events,
       SpatialStructure,
-      PassiveTransport,
+      PassiveTransports,
       Molecules,
       Observers,
       InitialConditions,
@@ -39,7 +39,7 @@ namespace MoBi.Presentation.DTO
             _allowedBuildingBlocks.Add(BuildingBlockType.Reactions);
 
          if (module.PassiveTransports == null)
-            _allowedBuildingBlocks.Add(BuildingBlockType.PassiveTransport);
+            _allowedBuildingBlocks.Add(BuildingBlockType.PassiveTransports);
 
          if (module.Observers == null)
             _allowedBuildingBlocks.Add(BuildingBlockType.Observers);
