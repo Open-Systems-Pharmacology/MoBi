@@ -2,7 +2,7 @@
   "profiles": {
     "MoBi.CLI": {
       "commandName": "Project",
-      "commandLineArgs": "-i C:\\snapshots -o C:\\Projects -p --logLevel Debug"
+      "commandLineArgs": "qualification -v -i C:\\snapshots\\configuration.json"
     }
   }
 }

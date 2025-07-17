@@ -26,8 +26,9 @@ namespace MoBi.CLI
       {
          Core.ApplicationStartup.Initialize();
 
-         Parser.Default.ParseArguments<SnapshotRunCommand>(args)
+         Parser.Default.ParseArguments<SnapshotRunCommand, QualificationRunCommand>(args)
             .WithParsed<SnapshotRunCommand>(startCommand)
+            .WithParsed<QualificationRunCommand>(startCommand)
             .WithNotParsed(err => _valid = false);
 
          if (!_valid)

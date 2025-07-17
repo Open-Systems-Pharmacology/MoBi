@@ -1,0 +1,84 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using MoBi.Assets;
+using MoBi.Core.Domain.Model;
+using MoBi.Core.Serialization.ORM;
+using MoBi.Core.Snapshots.Services;
+using OSPSuite.CLI.Core.RunOptions;
+using OSPSuite.CLI.Core.Services;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Qualification;
+using OSPSuite.Core.Services;
+using ModelProject = MoBi.Core.Domain.Model.MoBiProject;
+using SnapshotProject = MoBi.Core.Snapshots.Project;
+
+namespace MoBi.CLI.Core.Services
+{
+   public class QualificationRunner : QualificationRunner<SnapshotProject, ModelProject>
+   {
+      private readonly IMoBiContext _context;
+      private readonly IProjectPersistor _projectPersistor;
+
+      public QualificationRunner(IMoBiContext context, IProjectPersistor projectPersistor, IOSPSuiteLogger logger, IDataRepositoryExportTask dataRepositoryExportTask, IJsonSerializer jsonSerializer, ISnapshotTask snapshotTask) : base(logger, dataRepositoryExportTask, jsonSerializer, snapshotTask)
+      {
+         _context = context;
+         _projectPersistor = projectPersistor;
+      }
+
+      protected override void LoadProjectContext(ModelProject project)
+      {
+         _context.LoadFrom(project);
+      }
+
+      protected override IEnumerable<PlotMapping> RetrievePlotDefinitionsForSimulation(SimulationPlot simulationPlot, SnapshotProject snapshotProject)
+      {
+         throw new NotImplementedException();
+      }
+
+      protected override Task SwapSimulationParametersIn(SnapshotProject projectSnapshot, SimulationParameterSwap simulationParameterSwap)
+      {
+         throw new NotImplementedException();
+      }
+
+      protected override Task SwapBuildingBlockIn(SnapshotProject projectSnapshot, BuildingBlockSwap buildingBlockSwap)
+      {
+         throw new NotImplementedException();
+      }
+
+      protected override void ValidateInputs(SnapshotProject snapshotProject, QualificationConfiguration configuration)
+      {
+         if (configuration.Inputs?.Any() == true)
+            throw new QualificationRunException(AppConstants.Validation.InputsAreNotSupportedInMoBiQualification);
+      }
+
+      protected override string ProjectExtension => AppConstants.Filter.MOBI_PROJECT_EXTENSION;
+
+      protected override SimulationExportMode ExportMode(QualificationRunOptions runOptions)
+      {
+         return SimulationExportMode.Pkml;
+      }
+
+      protected override Task ExportToMarkdown(object buildingBlock, string fileFullPath, int? inputSectionLevel)
+      {
+         //TODO
+         return Task.CompletedTask;
+      }
+
+      protected override Task<SimulationMapping[]> ExportSimulationsIn(ModelProject project, ExportRunOptions exportRunOptions)
+      {
+         throw new NotImplementedException();
+      }
+
+      protected override object BuildingBlockBy(ModelProject project, Input input)
+      {
+         throw new NotImplementedException();
+      }
+
+      protected override void SaveProjectContext(string projectFile)
+      {
+         _projectPersistor.Save(_context.CurrentProject, _context);
+      }
+   }
+}
