@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "MoBi.CLI": {
-      "commandName": "Project",
-      "commandLineArgs": "qualification -v -i C:\\snapshots\\configuration.json"
-    }
-  }
-}
