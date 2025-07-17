@@ -1,17 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Snapshots;
 using Classification = OSPSuite.Core.Snapshots.Classification;
 
 namespace MoBi.Core.Snapshots;
 
-public class Project : IWithDescription, IWithName
+public class Project : SnapshotBase
 {
-   [Required] public int Version { get; set; }
-
-   public string Description { get; set; }
-   public string Name { get; set; }
+   [Required] 
+   public int Version { get; set; }
 
    public string[] PKSimModules { set; get; }
 

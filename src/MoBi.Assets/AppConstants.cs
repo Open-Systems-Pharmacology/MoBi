@@ -2125,6 +2125,8 @@ namespace MoBi.Assets
          public static readonly string ExtendingRequiresSpatialStructure = "Extending requires a spatial structure";
          public static readonly string CannotAssignAFormulaThatReferencesTheAssignmentTarget = "Cannot assign a formula that references the assignment target";
          public static readonly string CannotCreateANeighborhoodThatConnectsAContainerToItself = "Cannot create a neighborhood that connects a container to itself";
+         public static readonly string InputsAreNotSupportedInMoBiQualification = "Inputs are not supported in a MoBi qualification";
+
          public static string AnotherMoleculeNamedIsSelected(string moleculeName) => $"Another molecule named {moleculeName} is selected";
 
          public static string XDimensionColumnMustNotHaveRepeatedValues(string dimensionName)
