@@ -20,7 +20,7 @@ namespace MoBi.CLI
       [Option('r', "run", Required = false, HelpText = "Should the qualification runner also run the simulation or simply export the qualification report for further processing. Default is false")]
       public bool Run { get; set; } = false;
 
-      [Option('e', "exp", Required = false, HelpText = "Should the qualification runner also export the project files (snapshot and PK-Sim project file). Default is false")]
+      [Option('e', "exp", Required = false, HelpText = "Should the qualification runner also export the project files (snapshot and MoBi project file). Default is false")]
       public bool ExportProjectFiles { get; set; } = false;
 
       public override QualificationRunOptions ToRunOptions()
