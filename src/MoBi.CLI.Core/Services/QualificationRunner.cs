@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using MoBi.Assets;
@@ -8,9 +9,12 @@ using MoBi.Core.Serialization.ORM;
 using MoBi.Core.Snapshots.Services;
 using OSPSuite.CLI.Core.RunOptions;
 using OSPSuite.CLI.Core.Services;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Qualification;
+using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Services;
+using OSPSuite.Utility;
 using ModelProject = MoBi.Core.Domain.Model.MoBiProject;
 using SnapshotProject = MoBi.Core.Snapshots.Project;
 
@@ -20,11 +24,19 @@ namespace MoBi.CLI.Core.Services
    {
       private readonly IMoBiContext _context;
       private readonly IProjectPersistor _projectPersistor;
+      private readonly ISimulationPersistor _simulationPersistor;
 
-      public QualificationRunner(IMoBiContext context, IProjectPersistor projectPersistor, IOSPSuiteLogger logger, IDataRepositoryExportTask dataRepositoryExportTask, IJsonSerializer jsonSerializer, ISnapshotTask snapshotTask) : base(logger, dataRepositoryExportTask, jsonSerializer, snapshotTask)
+      public QualificationRunner(IMoBiContext context,
+         IProjectPersistor projectPersistor,
+         IOSPSuiteLogger logger,
+         IDataRepositoryExportTask dataRepositoryExportTask,
+         IJsonSerializer jsonSerializer,
+         ISnapshotTask snapshotTask,
+         ISimulationPersistor simulationPersistor) : base(logger, dataRepositoryExportTask, jsonSerializer, snapshotTask)
       {
          _context = context;
          _projectPersistor = projectPersistor;
+         _simulationPersistor = simulationPersistor;
       }
 
       protected override void LoadProjectContext(ModelProject project)
@@ -55,10 +67,7 @@ namespace MoBi.CLI.Core.Services
 
       protected override string ProjectExtension => AppConstants.Filter.MOBI_PROJECT_EXTENSION;
 
-      protected override SimulationExportMode ExportMode(QualificationRunOptions runOptions)
-      {
-         return SimulationExportMode.Pkml;
-      }
+      protected override SimulationExportMode ExportMode(QualificationRunOptions runOptions) => SimulationExportMode.Pkml;
 
       protected override Task ExportToMarkdown(object buildingBlock, string fileFullPath, int? inputSectionLevel)
       {
@@ -68,7 +77,52 @@ namespace MoBi.CLI.Core.Services
 
       protected override Task<SimulationMapping[]> ExportSimulationsIn(ModelProject project, ExportRunOptions exportRunOptions)
       {
-         throw new NotImplementedException();
+         var nameOfSimulationsToExport = (exportRunOptions.Simulations ?? Enumerable.Empty<string>()).ToList();
+         if (!nameOfSimulationsToExport.Any() && exportRunOptions.ExportAllSimulationsIfListIsEmpty)
+            nameOfSimulationsToExport.AddRange(project.Simulations.AllNames());
+
+         var simulationExports = new List<SimulationMapping>();
+
+         foreach (var simulationName in nameOfSimulationsToExport)
+         {
+            var simulation = project.Simulations.FindByName(simulationName);
+            if (simulation == null)
+            {
+               _logger.AddWarning($"Simulation '{simulationName}' was not found in project '{project.Name}'", project.Name);
+               continue;
+            }
+
+            simulationExports.Add(exportSimulation(simulation, exportRunOptions, project));
+         }
+
+         return Task.FromResult(simulationExports.ToArray());
+      }
+
+      private SimulationMapping exportSimulation(IMoBiSimulation simulation, ExportRunOptions exportRunOptions, ModelProject project)
+      {
+         var simulationFile = FileHelper.RemoveIllegalCharactersFrom(simulation.Name);
+         var simulationFolder = Path.Combine(exportRunOptions.OutputFolder, simulationFile);
+
+         DirectoryHelper.CreateDirectory(simulationFolder);
+
+         var simulationExport = new SimulationMapping
+         {
+            Project = project.Name,
+            Path = simulationFolder,
+            Simulation = simulation.Name,
+            SimulationFile = simulationFile
+         };
+
+         var simulationExportOptions = new SimulationExportOptions
+         {
+            OutputFolder = simulationFolder,
+            ExportMode = exportRunOptions.ExportMode,
+            ProjectName = project.Name,
+         };
+
+         _simulationPersistor.Save(new SimulationTransfer { Simulation = simulation }, simulationExportOptions.TargetPathFor(simulation, Constants.Filter.PKML_EXTENSION));
+
+         return simulationExport;
       }
 
       protected override object BuildingBlockBy(ModelProject project, Input input)

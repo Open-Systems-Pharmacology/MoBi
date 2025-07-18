@@ -1,9 +1,10 @@
-﻿using NUnit.Framework;
+﻿using MoBi.CLI.Core;
+using NUnit.Framework;
 using OSPSuite.BDDHelper;
-using OSPSuite.Utility.Container;
-using MoBi.CLI.Core;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.CLI.Core.RunOptions;
 using OSPSuite.CLI.Core.Services;
+using OSPSuite.Utility.Container;
 
 namespace MoBi.IntegrationTests
 {
@@ -25,5 +26,10 @@ namespace MoBi.IntegrationTests
       {
          sut.ShouldNotBeNull();
       }
+   }
+
+   public abstract class concern_for_QualificationRunner : concern_for_BatchRunnerSpecs<QualificationRunOptions>
+   {
+
    }
 }
