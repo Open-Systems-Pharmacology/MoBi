@@ -72,7 +72,6 @@ namespace MoBi.CLI.Core
          container.Register<ICoreUserSettings, UserSettings>();
          container.Register<ISpatialStructureDiagramManager, SpatialStructureDiagramManager>();
          container.Register<IMoBiReactionDiagramManager, MoBiReactionDiagramManager>();
-         container.Register<IEntityValidationTask, CLIEntityValidationTask>();
          container.Register<ISimulationDiagramManager, SimulationDiagramManager>();
 
          register.PerformMappingForSerializerIn(container);
