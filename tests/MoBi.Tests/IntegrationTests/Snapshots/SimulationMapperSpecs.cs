@@ -24,6 +24,7 @@ namespace MoBi.IntegrationTests.Snapshots
 
       private DataRepository _dataRepository;
       protected Parameter _parameter;
+      protected MoleculeAmount _moleculeAmount;
 
       protected override void Context()
       {
@@ -39,9 +40,9 @@ namespace MoBi.IntegrationTests.Snapshots
 
          var container = new Container().WithName("container");
          _parameter = new Parameter().WithName("quantity").WithValue(1);
+         
          container.Add(_parameter);
          _simulation.Model.Root.Add(container);
-
          
          _simulation.AddOriginalQuantityValue(new OriginalQuantityValue
          {
@@ -53,6 +54,16 @@ namespace MoBi.IntegrationTests.Snapshots
          });
 
          _parameter.Value = 5;
+
+         _moleculeAmount = new MoleculeAmount().WithName("amount").WithScaleFactor(1.0);
+         container.Add(_moleculeAmount);
+
+         _simulation.AddOriginalQuantityValue(new OriginalQuantityValue
+         {
+            Path = new ObjectPath(_simulation.Model.Root.Name, container.Name, _moleculeAmount.Name),
+            Type = OriginalQuantityValue.Types.ScaleDivisor,
+            Value = _moleculeAmount.ScaleDivisor
+         });
 
          _simulationConfigurationFactory = IoC.Resolve<ISimulationConfigurationFactory>();
          _dataRepository = DomainHelperForSpecs.ObservedData().WithName("obsdata");
@@ -103,6 +114,13 @@ namespace MoBi.IntegrationTests.Snapshots
       {
          _result.Parameters.Length.ShouldBeEqualTo(1);
          _result.Parameters.First().Path.ShouldBeEqualTo(_parameter.EntityPath());
+      }
+
+      [Observation]
+      public void scale_divisor_changes_should_be_stored()
+      {
+         _result.ScaleDivisors.Length.ShouldBeEqualTo(1);
+         _result.ScaleDivisors.First().Path.ShouldBeEqualTo(_moleculeAmount.EntityPath());
       }
 
       [Observation]

@@ -243,15 +243,6 @@
               "LineStyle": "None",
               "Symbol": "Circle"
             }
-          },
-          {
-            "Name": "PeripheralVenousBlood-Theophylline-Plasma (Peripheral Venous Blood)",
-            "X": "Time",
-            "Y": "test|Organism|PeripheralVenousBlood|Theophylline|Plasma (Peripheral Venous Blood)",
-            "CurveOptions": {
-              "Color": "#FF0000",
-              "LegendIndex": 3
-            }
           }
         ],
         "FontAndSize": {
@@ -301,7 +292,7 @@
               ]
             }
           ],
-          "RandomSeed": 439292953.0
+          "RandomSeed": 451732781.0
         },
         "IndividualBuildingBlock": "Clone of Man",
         "ExpressionProfiles": [
@@ -463,6 +454,392 @@
             "Source": "Publication",
             "Description": "Willmann S, Lippert J, Sevestre M, Solodenko J, Fois F, Schmitt W. PK-Sim®: a physiologically based pharmacokinetic ‘whole-body’ model. Biosilico. 2003; 1 (4): 121-124. http://dx.doi.org/10.1016/S1478-5382%2803%2902342-4"
           }
+        }
+      ],
+      "ScaleDivisors": [
+        {
+          "Path": "Organism|Lumen|Caecum|Theophylline",
+          "Value": 10.0
+        },
+        {
+          "Path": "Organism|Lumen|ColonAscendens|Theophylline",
+          "Value": 10.0
+        },
+        {
+          "Path": "Organism|Lumen|ColonDescendens|Theophylline",
+          "Value": 10.0
+        },
+        {
+          "Path": "Organism|Lumen|ColonTransversum|Theophylline",
+          "Value": 10.0
+        },
+        {
+          "Path": "Organism|Lumen|Duodenum|Theophylline",
+          "Value": 1E-05
+        },
+        {
+          "Path": "Organism|Lumen|LowerIleum|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|Lumen|LowerJejunum|Theophylline",
+          "Value": 0.001
+        },
+        {
+          "Path": "Organism|Lumen|Rectum|Theophylline",
+          "Value": 0.01
+        },
+        {
+          "Path": "Organism|Lumen|Stomach|Theophylline",
+          "Value": 0.001
+        },
+        {
+          "Path": "Organism|Lumen|UpperIleum|Theophylline",
+          "Value": 0.01
+        },
+        {
+          "Path": "Organism|Lumen|UpperJejunum|Theophylline",
+          "Value": 0.001
+        },
+        {
+          "Path": "Organism|VenousBlood|Plasma|Theophylline",
+          "Value": 10.0
+        },
+        {
+          "Path": "Organism|VenousBlood|BloodCells|Theophylline",
+          "Value": 10.0
+        },
+        {
+          "Path": "Organism|ArterialBlood|Plasma|Theophylline",
+          "Value": 10.0
+        },
+        {
+          "Path": "Organism|Bone|Plasma|Theophylline",
+          "Value": 10.0
+        },
+        {
+          "Path": "Organism|Bone|Interstitial|Theophylline",
+          "Value": 10.0
+        },
+        {
+          "Path": "Organism|Bone|Intracellular|Theophylline",
+          "Value": 100.0
+        },
+        {
+          "Path": "Organism|Brain|BloodCells|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|Brain|Interstitial|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|Brain|Intracellular|Theophylline",
+          "Value": 10.0
+        },
+        {
+          "Path": "Organism|Fat|Plasma|Theophylline",
+          "Value": 10.0
+        },
+        {
+          "Path": "Organism|Fat|Interstitial|Theophylline",
+          "Value": 100.0
+        },
+        {
+          "Path": "Organism|Fat|Intracellular|Theophylline",
+          "Value": 100.0
+        },
+        {
+          "Path": "Organism|Gonads|Plasma|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|Gonads|BloodCells|Theophylline",
+          "Value": 0.01
+        },
+        {
+          "Path": "Organism|Gonads|Interstitial|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|Heart|BloodCells|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|Heart|Intracellular|Theophylline",
+          "Value": 10.0
+        },
+        {
+          "Path": "Organism|Kidney|Intracellular|Theophylline",
+          "Value": 10.0
+        },
+        {
+          "Path": "Organism|Kidney|Urine|Theophylline",
+          "Value": 100.0
+        },
+        {
+          "Path": "Organism|Lumen|Feces|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|Stomach|Plasma|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|Stomach|BloodCells|Theophylline",
+          "Value": 0.01
+        },
+        {
+          "Path": "Organism|SmallIntestine|Plasma|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|SmallIntestine|BloodCells|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|SmallIntestine|Intracellular|Theophylline",
+          "Value": 10.0
+        },
+        {
+          "Path": "Organism|SmallIntestine|Mucosa|Duodenum|Plasma|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|SmallIntestine|Mucosa|Duodenum|BloodCells|Theophylline",
+          "Value": 0.01
+        },
+        {
+          "Path": "Organism|SmallIntestine|Mucosa|Duodenum|Interstitial|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|SmallIntestine|Mucosa|Duodenum|Intracellular|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|SmallIntestine|Mucosa|UpperJejunum|Plasma|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|SmallIntestine|Mucosa|UpperJejunum|BloodCells|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|SmallIntestine|Mucosa|LowerJejunum|Plasma|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|SmallIntestine|Mucosa|LowerJejunum|BloodCells|Theophylline",
+          "Value": 0.01
+        },
+        {
+          "Path": "Organism|SmallIntestine|Mucosa|LowerJejunum|Interstitial|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|SmallIntestine|Mucosa|UpperIleum|Plasma|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|SmallIntestine|Mucosa|UpperIleum|BloodCells|Theophylline",
+          "Value": 0.01
+        },
+        {
+          "Path": "Organism|SmallIntestine|Mucosa|UpperIleum|Interstitial|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|SmallIntestine|Mucosa|LowerIleum|Plasma|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|SmallIntestine|Mucosa|LowerIleum|BloodCells|Theophylline",
+          "Value": 0.01
+        },
+        {
+          "Path": "Organism|SmallIntestine|Mucosa|LowerIleum|Interstitial|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|SmallIntestine|Mucosa|LowerIleum|Intracellular|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|LargeIntestine|Plasma|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|LargeIntestine|BloodCells|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|LargeIntestine|Intracellular|Theophylline",
+          "Value": 10.0
+        },
+        {
+          "Path": "Organism|LargeIntestine|Mucosa|Caecum|Plasma|Theophylline",
+          "Value": 0.01
+        },
+        {
+          "Path": "Organism|LargeIntestine|Mucosa|Caecum|BloodCells|Theophylline",
+          "Value": 0.01
+        },
+        {
+          "Path": "Organism|LargeIntestine|Mucosa|Caecum|Interstitial|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|LargeIntestine|Mucosa|Caecum|Intracellular|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|LargeIntestine|Mucosa|ColonAscendens|Plasma|Theophylline",
+          "Value": 0.01
+        },
+        {
+          "Path": "Organism|LargeIntestine|Mucosa|ColonAscendens|BloodCells|Theophylline",
+          "Value": 0.01
+        },
+        {
+          "Path": "Organism|LargeIntestine|Mucosa|ColonAscendens|Interstitial|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|LargeIntestine|Mucosa|ColonAscendens|Intracellular|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|LargeIntestine|Mucosa|ColonTransversum|Plasma|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|LargeIntestine|Mucosa|ColonTransversum|BloodCells|Theophylline",
+          "Value": 0.01
+        },
+        {
+          "Path": "Organism|LargeIntestine|Mucosa|ColonTransversum|Intracellular|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|LargeIntestine|Mucosa|ColonDescendens|Plasma|Theophylline",
+          "Value": 0.01
+        },
+        {
+          "Path": "Organism|LargeIntestine|Mucosa|ColonDescendens|BloodCells|Theophylline",
+          "Value": 0.01
+        },
+        {
+          "Path": "Organism|LargeIntestine|Mucosa|ColonDescendens|Interstitial|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|LargeIntestine|Mucosa|ColonDescendens|Intracellular|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|LargeIntestine|Mucosa|ColonSigmoid|Plasma|Theophylline",
+          "Value": 0.01
+        },
+        {
+          "Path": "Organism|LargeIntestine|Mucosa|ColonSigmoid|BloodCells|Theophylline",
+          "Value": 0.01
+        },
+        {
+          "Path": "Organism|LargeIntestine|Mucosa|ColonSigmoid|Interstitial|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|LargeIntestine|Mucosa|ColonSigmoid|Intracellular|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|LargeIntestine|Mucosa|Rectum|Plasma|Theophylline",
+          "Value": 0.01
+        },
+        {
+          "Path": "Organism|LargeIntestine|Mucosa|Rectum|BloodCells|Theophylline",
+          "Value": 0.001
+        },
+        {
+          "Path": "Organism|LargeIntestine|Mucosa|Rectum|Interstitial|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|LargeIntestine|Mucosa|Rectum|Intracellular|Theophylline",
+          "Value": 0.01
+        },
+        {
+          "Path": "Organism|Liver|Periportal|Plasma|Theophylline",
+          "Value": 10.0
+        },
+        {
+          "Path": "Organism|Liver|Periportal|Interstitial|Theophylline",
+          "Value": 10.0
+        },
+        {
+          "Path": "Organism|Liver|Periportal|Intracellular|Theophylline",
+          "Value": 10.0
+        },
+        {
+          "Path": "Organism|Lung|Plasma|Theophylline",
+          "Value": 10.0
+        },
+        {
+          "Path": "Organism|Lung|BloodCells|Theophylline",
+          "Value": 10.0
+        },
+        {
+          "Path": "Organism|Lung|Interstitial|Theophylline",
+          "Value": 10.0
+        },
+        {
+          "Path": "Organism|Lung|Intracellular|Theophylline",
+          "Value": 10.0
+        },
+        {
+          "Path": "Organism|Muscle|Plasma|Theophylline",
+          "Value": 10.0
+        },
+        {
+          "Path": "Organism|Muscle|BloodCells|Theophylline",
+          "Value": 10.0
+        },
+        {
+          "Path": "Organism|Muscle|Interstitial|Theophylline",
+          "Value": 100.0
+        },
+        {
+          "Path": "Organism|Muscle|Intracellular|Theophylline",
+          "Value": 1000.0
+        },
+        {
+          "Path": "Organism|Pancreas|BloodCells|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|PortalVein|Plasma|Theophylline",
+          "Value": 10.0
+        },
+        {
+          "Path": "Organism|PortalVein|BloodCells|Theophylline",
+          "Value": 10.0
+        },
+        {
+          "Path": "Organism|Skin|Interstitial|Theophylline",
+          "Value": 10.0
+        },
+        {
+          "Path": "Organism|Skin|Intracellular|Theophylline",
+          "Value": 100.0
+        },
+        {
+          "Path": "Organism|Saliva|Saliva|Theophylline",
+          "Value": 0.1
+        },
+        {
+          "Path": "Organism|Saliva|SalivaGland|Theophylline",
+          "Value": 0.1
         }
       ]
     }

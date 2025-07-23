@@ -87,6 +87,8 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
 
       updateParameters(simulation, snapshot.Parameters, context);
 
+      updateScaleDivisors(simulation, snapshot.ScaleDivisors, context);
+
       if (context.Run)
          await _simulationRunner.RunSimulationAsync(simulation);
 
@@ -112,17 +114,37 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
 
       snapshot.Parameters = await allParametersChangedByUserFrom(simulation);
 
+      snapshot.ScaleDivisors = allScaleDivisorsChangedByUserFrom(simulation);
+
       return snapshot;
    }
 
    private void updateParameters(MoBiSimulation simulation, LocalizedParameter[] snapshotParameters, SnapshotContext snapshotContext)
    {
-      snapshotParameters.Each(x =>
+      snapshotParameters?.Each(x =>
       {
          var parameter = new ObjectPath(x.Path.ToPathArray()).TryResolve<IParameter>(simulation.Model.Root);
          if (parameter != null)
             changeQuantity(parameter, x, simulation, snapshotContext);
       });
+   }
+
+   private void updateScaleDivisors(MoBiSimulation simulation, ScaleDivisor[] snapshotScaleDivisors, SnapshotContext snapshotContext)
+   {
+      snapshotScaleDivisors?.Each(x =>
+      {
+         var moleculeAmount = new ObjectPath(x.Path.ToPathArray()).TryResolve<MoleculeAmount>(simulation.Model.Root);
+         if (moleculeAmount != null)
+            changeScaleDivisor(moleculeAmount, x, simulation, snapshotContext);
+      });
+   }
+
+   private void changeScaleDivisor(MoleculeAmount moleculeAmount, ScaleDivisor scaleDivisor, MoBiSimulation simulation, SnapshotContext snapshotContext)
+   {
+      _quantityChangeTracker.TrackScaleChange(moleculeAmount, simulation, x =>
+      {
+         x.ScaleDivisor = scaleDivisor.Value;
+      }, withEvents: false);
    }
 
    private void changeQuantity(IParameter parameter, LocalizedParameter snapshotParameter, MoBiSimulation simulation, SnapshotContext snapshotContext)
@@ -137,6 +159,19 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
          x.DisplayUnit = _dimensionFactory.FindUnit(snapshotParameter.Unit).unit;
          _valueOriginMapper.UpdateValueOrigin(x.ValueOrigin, snapshotParameter.ValueOrigin);
       }, withEvents: false);
+   }
+
+   private ScaleDivisor[] allScaleDivisorsChangedByUserFrom(MoBiSimulation simulation)
+   {
+      var allAmountsToExport = new List<ScaleDivisor>();
+      simulation.OriginalQuantityValues.Where(x => x.Type == OriginalQuantityValue.Types.ScaleDivisor).Each(x =>
+      {
+         var moleculeAmount = new ObjectPath(x.Path.ToPathArray()).TryResolve<MoleculeAmount>(simulation.Model.Root);
+         if (moleculeAmount != null)
+            allAmountsToExport.Add(new ScaleDivisor {Path = x.Path, Value = moleculeAmount.ScaleDivisor});
+      });
+
+      return allAmountsToExport.ToArray();
    }
 
    private Task<LocalizedParameter[]> allParametersChangedByUserFrom(MoBiSimulation simulation)
