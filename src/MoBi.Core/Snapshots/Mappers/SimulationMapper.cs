@@ -31,6 +31,7 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
    private readonly ICoreSimulationRunner _simulationRunner;
    private readonly IMoBiDimensionFactory _dimensionFactory;
    private readonly IQuantityValueInSimulationChangeTracker _quantityChangeTracker;
+   private readonly ValueOriginMapper _valueOriginMapper;
 
    public SimulationMapper(
       SimulationConfigurationMapper simulationConfigurationMapper,
@@ -44,7 +45,8 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
       ParameterMapper parameterMapper,
       ICoreSimulationRunner simulationRunner,
       IMoBiDimensionFactory dimensionFactory,
-      IQuantityValueInSimulationChangeTracker quantityChangeTracker)
+      IQuantityValueInSimulationChangeTracker quantityChangeTracker,
+      ValueOriginMapper valueOriginMapper)
    {
       _simulationConfigurationMapper = simulationConfigurationMapper;
       _outputMappingMapper = outputMappingMapper;
@@ -58,6 +60,7 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
       _simulationRunner = simulationRunner;
       _dimensionFactory = dimensionFactory;
       _quantityChangeTracker = quantityChangeTracker;
+      _valueOriginMapper = valueOriginMapper;
    }
 
    public override async Task<MoBiSimulation> MapToModel(Simulation snapshot, SimulationContext context)
@@ -114,21 +117,25 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
 
    private void updateParameters(MoBiSimulation simulation, LocalizedParameter[] snapshotParameters, SnapshotContext snapshotContext)
    {
-      snapshotParameters.Each(snapshotParameter =>
+      snapshotParameters.Each(x =>
       {
-         var parameter = new ObjectPath(snapshotParameter.Path.ToPathArray()).TryResolve<IParameter>(simulation.Model.Root);
-         if (parameter != null && snapshotParameter.Value.HasValue)
-            changeQuantity(parameter, snapshotParameter.Value.Value, snapshotParameter.Unit, simulation);
+         var parameter = new ObjectPath(x.Path.ToPathArray()).TryResolve<IParameter>(simulation.Model.Root);
+         if (parameter != null)
+            changeQuantity(parameter, x, simulation, snapshotContext);
       });
    }
 
-   private void changeQuantity(IParameter parameter, double snapshotParameterValue, string snapshotParameterUnit, MoBiSimulation simulation)
+   private void changeQuantity(IParameter parameter, LocalizedParameter snapshotParameter, MoBiSimulation simulation, SnapshotContext snapshotContext)
    {
+      if (!snapshotParameter.Value.HasValue)
+         return;
+
       _quantityChangeTracker.TrackQuantityChange(parameter, simulation, x =>
       {
          parameter.IsDefault = false;
-         x.Value = snapshotParameterValue;
-         x.DisplayUnit = _dimensionFactory.FindUnit(snapshotParameterUnit).unit;
+         x.Value = snapshotParameter.Value.Value;
+         x.DisplayUnit = _dimensionFactory.FindUnit(snapshotParameter.Unit).unit;
+         _valueOriginMapper.UpdateValueOrigin(x.ValueOrigin, snapshotParameter.ValueOrigin);
       }, withEvents: false);
    }
 
