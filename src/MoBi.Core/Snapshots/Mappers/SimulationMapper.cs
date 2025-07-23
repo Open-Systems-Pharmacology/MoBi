@@ -120,10 +120,11 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
       });
    }
 
-   private void changeQuantity(IQuantity quantity, double snapshotParameterValue, string snapshotParameterUnit, MoBiSimulation simulation)
+   private void changeQuantity(IParameter parameter, double snapshotParameterValue, string snapshotParameterUnit, MoBiSimulation simulation)
    {
-      _quantityChangeTracker.TrackQuantityChange(quantity, simulation, x =>
+      _quantityChangeTracker.TrackQuantityChange(parameter, simulation, x =>
       {
+         parameter.IsDefault = false;
          x.Value = snapshotParameterValue;
          x.DisplayUnit = _dimensionFactory.FindUnit(snapshotParameterUnit).unit;
       }, withEvents: false);
