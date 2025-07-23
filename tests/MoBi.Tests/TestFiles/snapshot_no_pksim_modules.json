@@ -243,6 +243,15 @@
               "LineStyle": "None",
               "Symbol": "Circle"
             }
+          },
+          {
+            "Name": "PeripheralVenousBlood-Theophylline-Plasma (Peripheral Venous Blood)",
+            "X": "Time",
+            "Y": "test|Organism|PeripheralVenousBlood|Theophylline|Plasma (Peripheral Venous Blood)",
+            "CurveOptions": {
+              "Color": "#FF0000",
+              "LegendIndex": 3
+            }
           }
         ],
         "FontAndSize": {
@@ -292,7 +301,7 @@
               ]
             }
           ],
-          "RandomSeed": 359519921.0
+          "RandomSeed": 439292953.0
         },
         "IndividualBuildingBlock": "Clone of Man",
         "ExpressionProfiles": [
@@ -311,6 +320,54 @@
       ],
       "SimulationPredictedVsObservedChart": {
         "DeviationFoldValues": [],
+        "Axes": [
+          {
+            "Unit": "µmol/l",
+            "Dimension": "Concentration (mass)",
+            "Caption": "Observed Concentration",
+            "Type": "X",
+            "GridLines": false,
+            "Visible": true,
+            "DefaultColor": "#FFFFFF",
+            "DefaultLineStyle": "None",
+            "Scaling": "Log",
+            "NumberMode": "Normal"
+          },
+          {
+            "Unit": "µmol/l",
+            "Dimension": "Concentration (molar)",
+            "Caption": "Simulated  Concentration",
+            "Type": "Y",
+            "GridLines": false,
+            "Visible": true,
+            "DefaultColor": "#FFFFFF",
+            "DefaultLineStyle": "Solid",
+            "Scaling": "Log",
+            "NumberMode": "Normal"
+          }
+        ],
+        "Curves": [
+          {
+            "Name": "PeripheralVenousBlood-Theophylline-Plasma (Peripheral Venous Blood)",
+            "X": "Human.Plasma.IV.Subj 1.Human.Plasma.IV.Subj 1|Measurement",
+            "Y": "test|Organism|PeripheralVenousBlood|Theophylline|Plasma (Peripheral Venous Blood)",
+            "CurveOptions": {
+              "Color": "#FF0000",
+              "LegendIndex": 1,
+              "LineStyle": "None",
+              "Symbol": "Diamond"
+            }
+          },
+          {
+            "Name": "Identity",
+            "X": "",
+            "Y": "",
+            "CurveOptions": {
+              "VisibleInLegend": false,
+              "LegendIndex": 2
+            }
+          }
+        ],
         "FontAndSize": {
           "Fonts": {
             "AxisSize": 10,
@@ -330,6 +387,54 @@
         }
       },
       "SimulationResidualVsTimeChart": {
+        "Axes": [
+          {
+            "Unit": "h",
+            "Dimension": "Time",
+            "Type": "X",
+            "GridLines": false,
+            "Visible": true,
+            "DefaultColor": "#FFFFFF",
+            "DefaultLineStyle": "None",
+            "Scaling": "Linear",
+            "NumberMode": "Normal"
+          },
+          {
+            "Unit": "",
+            "Dimension": "Dimensionless",
+            "Caption": "Residuals",
+            "Type": "Y",
+            "GridLines": false,
+            "Visible": true,
+            "DefaultColor": "#FFFFFF",
+            "DefaultLineStyle": "Solid",
+            "Scaling": "Linear",
+            "NumberMode": "Normal"
+          }
+        ],
+        "Curves": [
+          {
+            "Name": "PeripheralVenousBlood-Theophylline-Plasma (Peripheral Venous Blood)",
+            "X": "",
+            "Y": "test|Organism|PeripheralVenousBlood|Theophylline|Human.Plasma.IV.Subj 1.Human.Plasma.IV.Subj 1|Plasma (Peripheral Venous Blood)",
+            "CurveOptions": {
+              "Color": "#FF0000",
+              "LegendIndex": 1,
+              "LineStyle": "None",
+              "Symbol": "Circle"
+            }
+          },
+          {
+            "Name": "Zero",
+            "X": "",
+            "Y": "",
+            "CurveOptions": {
+              "VisibleInLegend": false,
+              "LegendIndex": 2,
+              "LineStyle": "Dash"
+            }
+          }
+        ],
         "FontAndSize": {
           "Fonts": {
             "AxisSize": 10,
@@ -355,7 +460,8 @@
           "Unit": "l",
           "ValueOrigin": {
             "Id": 35,
-            "Source": "Unknown"
+            "Source": "Publication",
+            "Description": "Willmann S, Lippert J, Sevestre M, Solodenko J, Fois F, Schmitt W. PK-Sim®: a physiologically based pharmacokinetic ‘whole-body’ model. Biosilico. 2003; 1 (4): 121-124. http://dx.doi.org/10.1016/S1478-5382%2803%2902342-4"
           }
         }
       ]
