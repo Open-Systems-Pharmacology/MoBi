@@ -1,12 +1,17 @@
-﻿using MoBi.Core.Domain.Model;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
+using MoBi.Core.Domain.UnitSystem;
+using MoBi.Core.Extensions;
 using MoBi.Core.Services;
 using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots;
 using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Extensions;
-using System.Threading.Tasks;
 
 namespace MoBi.Core.Snapshots.Mappers;
 
@@ -20,7 +25,10 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
    private readonly SimulationPredictedVsObservedChartMapper _predictedVsObservedChartMapper;
    private readonly SimulationResidualVsTimeChartMapper _residualsVsTimeChartMapper;
    private readonly IOSPSuiteLogger _logger;
+   private readonly ParameterMapper _parameterMapper;
    private readonly ICoreSimulationRunner _simulationRunner;
+   private readonly IMoBiDimensionFactory _dimensionFactory;
+   private readonly IQuantityValueInSimulationChangeTracker _quantityChangeTracker;
 
    public SimulationMapper(
       SimulationConfigurationMapper simulationConfigurationMapper,
@@ -31,7 +39,10 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
       SimulationPredictedVsObservedChartMapper predictedVsObservedChartMapper,
       SimulationResidualVsTimeChartMapper residualsVsTimeChartMapper,
       IOSPSuiteLogger logger,
-      ICoreSimulationRunner simulationRunner)
+      ParameterMapper parameterMapper,
+      ICoreSimulationRunner simulationRunner,
+      IMoBiDimensionFactory dimensionFactory,
+      IQuantityValueInSimulationChangeTracker quantityChangeTracker)
    {
       _simulationConfigurationMapper = simulationConfigurationMapper;
       _outputMappingMapper = outputMappingMapper;
@@ -41,7 +52,10 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
       _predictedVsObservedChartMapper = predictedVsObservedChartMapper;
       _residualsVsTimeChartMapper = residualsVsTimeChartMapper;
       _logger = logger;
+      _parameterMapper = parameterMapper;
       _simulationRunner = simulationRunner;
+      _dimensionFactory = dimensionFactory;
+      _quantityChangeTracker = quantityChangeTracker;
    }
 
    public override async Task<MoBiSimulation> MapToModel(Simulation snapshot, SimulationContext context)
@@ -66,6 +80,8 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
 
       snapshot.OutputMappings?.Each(x => simulation.OutputMappings.Add(_outputMappingMapper.MapToModel(x, snapshotContextWithSimulation).Result));
 
+      updateParameters(simulation, snapshot.Parameters, context);
+
       if (context.Run)
          await _simulationRunner.RunSimulationAsync(simulation);
 
@@ -89,6 +105,40 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
 
       snapshot.ParameterIdentificationWorkingDirectory = simulation.ParameterIdentificationWorkingDirectory;
 
+      snapshot.Parameters = await allParametersChangedByUserFrom(simulation);
+
       return snapshot;
+   }
+
+   private void updateParameters(MoBiSimulation simulation, LocalizedParameter[] snapshotParameters, SnapshotContext snapshotContext)
+   {
+      snapshotParameters.Each(snapshotParameter =>
+      {
+         var parameter = new ObjectPath(snapshotParameter.Path.ToPathArray()).TryResolve<IParameter>(simulation.Model.Root);
+         if (parameter != null && snapshotParameter.Value.HasValue)
+            changeQuantity(parameter, snapshotParameter.Value.Value, snapshotParameter.Unit, simulation);
+      });
+   }
+
+   private void changeQuantity(IQuantity quantity, double snapshotParameterValue, string snapshotParameterUnit, MoBiSimulation simulation)
+   {
+      _quantityChangeTracker.TrackQuantityChange(quantity, simulation, x =>
+      {
+         x.Value = snapshotParameterValue;
+         x.DisplayUnit = _dimensionFactory.FindUnit(snapshotParameterUnit).unit;
+      }, withEvents: false);
+   }
+
+   private Task<LocalizedParameter[]> allParametersChangedByUserFrom(MoBiSimulation simulation)
+   {
+      var allParametersToExport = new List<IParameter>();
+      simulation.OriginalQuantityValues.Each(x =>
+      {
+         var parameter = new ObjectPath(x.Path.ToPathArray()).TryResolve<IParameter>(simulation.Model.Root);
+         if (parameter != null && parameter.ShouldExportToSnapshot())
+            allParametersToExport.Add(parameter);
+      });
+
+      return _parameterMapper.LocalizedParametersFrom(allParametersToExport);
    }
 }

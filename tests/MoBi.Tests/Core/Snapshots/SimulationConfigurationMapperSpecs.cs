@@ -93,9 +93,9 @@ namespace MoBi.Core.Snapshots
       private MoBiProject _project;
       private SimulationContext _context;
 
-      protected override Task Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _project = new MoBiProject();
          _project.AddIndividualBuildingBlock(new IndividualBuildingBlock().WithName("individual"));
          _project.AddExpressionProfileBuildingBlock(new ExpressionProfileBuildingBlock().WithName("expression|human|healthy"));
@@ -117,8 +117,6 @@ namespace MoBi.Core.Snapshots
          var simulationSettings = new OSPSuite.Core.Domain.Builder.SimulationSettings();
          A.CallTo(() => _simulationSettingsMapper.MapToModel(_simulationConfiguration.Settings, _context)).Returns(simulationSettings);
          A.CallTo(() => _simulationConfigurationFactory.Create(simulationSettings)).Returns(new OSPSuite.Core.Domain.Builder.SimulationConfiguration { SimulationSettings = simulationSettings });
-
-         return Task.CompletedTask;
       }
 
       protected override Task Because()

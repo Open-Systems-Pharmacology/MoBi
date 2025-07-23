@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using FakeItEasy;
 using MoBi.CLI.Core.Services;
@@ -11,15 +12,15 @@ using MoBi.HelpersForTests;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.CLI.Core.RunOptions;
-using OSPSuite.CLI.Core.Services;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Qualification;
 using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots;
 using OSPSuite.Utility;
+using DataRepository = OSPSuite.Core.Domain.Data.DataRepository;
 using SnapshotProject = MoBi.Core.Snapshots.Project;
 using Simulation = MoBi.Core.Snapshots.Simulation;
 
@@ -97,8 +98,11 @@ namespace MoBi.CLI
    {
       protected SnapshotProject _projectSnapshot;
       protected MoBiProject _project;
+      protected string _parameterReferenceSnapshotFile;
+      protected SnapshotProject _parameterReferenceSnapshot;
       protected const string PROJECT_NAME = "toto";
       protected const string PROJECT_SNAPSHOT_NAME = "toto_model";
+      protected const string REFERENCE_SNAPSHOT_NAME = "ref";
 
       protected override async Task Context()
       {
@@ -114,12 +118,15 @@ namespace MoBi.CLI
          _qualificationConfiguration.TempFolder = $"c:/tests/temp";
          _qualificationConfiguration.ReportConfigurationFile = "c:/tests/outputs/report_config.json";
          _qualificationConfiguration.ObservedDataFolder = "c:/tests/outputs/OBS_DATA_FOLDER";
+         _parameterReferenceSnapshotFile = $"c:/tests/inputs/{REFERENCE_SNAPSHOT_NAME}.json";
 
          _projectSnapshot = new SnapshotProject().WithName(PROJECT_SNAPSHOT_NAME);
+         _parameterReferenceSnapshot = new SnapshotProject().WithName(REFERENCE_SNAPSHOT_NAME);
          _project = new MoBiProject().WithName(PROJECT_NAME);
          A.CallTo(() => _snapshotTask.LoadSnapshotFromFileAsync<SnapshotProject>(_qualificationConfiguration.SnapshotFile)).Returns(_projectSnapshot);
+         A.CallTo(() => _snapshotTask.LoadSnapshotFromFileAsync<SnapshotProject>(_parameterReferenceSnapshotFile)).Returns(_parameterReferenceSnapshot);
          A.CallTo(() => _snapshotTask.LoadProjectFromSnapshotAsync(_projectSnapshot, _runOptions.Run)).Returns(_project);
-         FileHelper.FileExists = s => s.IsOneOf(_qualificationConfiguration.SnapshotFile, _runOptions.ConfigurationFile);
+         FileHelper.FileExists = s => s.IsOneOf(_qualificationConfiguration.SnapshotFile, _runOptions.ConfigurationFile, _parameterReferenceSnapshotFile);
       }
    }
 
@@ -154,6 +161,22 @@ namespace MoBi.CLI
          _simulationExport = new SimulationMapping { Project = PROJECT_NAME, Simulation = _simulationName, Path = _expectedSimulationPath };
          _simulationExports = new[] { _simulationExport };
 
+
+         var referenceSimulation = new Simulation().WithName(_simulationName);
+         referenceSimulation.AddOrUpdate(new LocalizedParameter { Path = "the|path", Value = 10 });
+
+         _parameterReferenceSnapshot.Simulations = new[] { referenceSimulation };
+         _qualificationConfiguration.SimulationParameters = new[]
+         {
+            new SimulationParameterSwap
+            {
+               SnapshotFile = _parameterReferenceSnapshotFile,
+               Simulation = _simulationName,
+               Path = "the|path",
+               TargetSimulations = new[] { _simulationName }
+            }
+         };
+
          _observedData = DomainHelperForSpecs.ObservedData().WithName("OBS");
          _project.AddObservedData(_observedData);
          _projectSnapshot.Simulations = new[] { _simulation };
@@ -171,6 +194,13 @@ namespace MoBi.CLI
       protected override Task Because()
       {
          return sut.RunBatchAsync(_runOptions);
+      }
+
+      [Observation]
+      public void the_target_simulation_should_have_a_localized_parameter()
+      {
+         _simulation.Parameters.Length.ShouldBeEqualTo(1);
+         _simulation.Parameters.First().Path.ShouldBeEqualTo("the|path");
       }
 
       [Observation]
