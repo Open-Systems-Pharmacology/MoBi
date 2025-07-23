@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Domain.UnitSystem;
@@ -133,13 +135,13 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
    private Task<LocalizedParameter[]> allParametersChangedByUserFrom(MoBiSimulation simulation)
    {
       var allParametersToExport = new List<IParameter>();
-      simulation.OriginalQuantityValues.Each(x =>
+      simulation.OriginalQuantityValues.Where(x => x.Type == OriginalQuantityValue.Types.Quantity).Each(x =>
       {
          var parameter = new ObjectPath(x.Path.ToPathArray()).TryResolve<IParameter>(simulation.Model.Root);
          if (parameter != null && parameter.ShouldExportToSnapshot())
             allParametersToExport.Add(parameter);
       });
-
+      
       return _parameterMapper.LocalizedParametersFrom(allParametersToExport);
    }
 }
