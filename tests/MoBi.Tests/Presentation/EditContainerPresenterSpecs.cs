@@ -281,7 +281,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_change_mode()
       {
-         _muscle.Mode.ShouldBeEqualTo(ContainerMode.Logical);
+         A.CallTo(() => _editTasks.SetContainerMode(_spatialStructure, _muscle, ContainerMode.Logical)).MustHaveHappened();
       }
    }
 

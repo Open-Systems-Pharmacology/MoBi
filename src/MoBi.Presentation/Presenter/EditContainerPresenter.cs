@@ -119,13 +119,7 @@ namespace MoBi.Presentation.Presenter
       {
          var oldContainerMode = _container.Mode;
 
-         if (_isNewEntity)
-         {
-            _container.Mode = newContainerMode;
-            return newContainerMode;
-         }
-
-         if (newContainerMode == ContainerMode.Logical)
+         if (!_isNewEntity && newContainerMode == ContainerMode.Logical)
          {
             var ans = _dialogCreator.MessageBoxYesNo("This action will remove all MoleculeProperties of this container, are you sure?");
             if (ans == ViewResult.No)
