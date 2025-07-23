@@ -85,9 +85,9 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
 
       snapshot.OutputMappings?.Each(x => simulation.OutputMappings.Add(_outputMappingMapper.MapToModel(x, snapshotContextWithSimulation).Result));
 
-      updateParameters(simulation, snapshot.Parameters, context);
+      updateParameters(simulation, snapshot.Parameters);
 
-      updateScaleDivisors(simulation, snapshot.ScaleDivisors, context);
+      updateScaleDivisors(simulation, snapshot.ScaleDivisors);
 
       if (context.Run)
          await _simulationRunner.RunSimulationAsync(simulation);
@@ -119,35 +119,32 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
       return snapshot;
    }
 
-   private void updateParameters(MoBiSimulation simulation, LocalizedParameter[] snapshotParameters, SnapshotContext snapshotContext)
+   private void updateParameters(MoBiSimulation simulation, LocalizedParameter[] snapshotParameters)
    {
       snapshotParameters?.Each(x =>
       {
          var parameter = new ObjectPath(x.Path.ToPathArray()).TryResolve<IParameter>(simulation.Model.Root);
          if (parameter != null)
-            changeQuantity(parameter, x, simulation, snapshotContext);
+            changeQuantity(parameter, x, simulation);
       });
    }
 
-   private void updateScaleDivisors(MoBiSimulation simulation, ScaleDivisor[] snapshotScaleDivisors, SnapshotContext snapshotContext)
+   private void updateScaleDivisors(MoBiSimulation simulation, ScaleDivisor[] snapshotScaleDivisors)
    {
       snapshotScaleDivisors?.Each(x =>
       {
          var moleculeAmount = new ObjectPath(x.Path.ToPathArray()).TryResolve<MoleculeAmount>(simulation.Model.Root);
          if (moleculeAmount != null)
-            changeScaleDivisor(moleculeAmount, x, simulation, snapshotContext);
+            changeScaleDivisor(moleculeAmount, x, simulation);
       });
    }
 
-   private void changeScaleDivisor(MoleculeAmount moleculeAmount, ScaleDivisor scaleDivisor, MoBiSimulation simulation, SnapshotContext snapshotContext)
+   private void changeScaleDivisor(MoleculeAmount moleculeAmount, ScaleDivisor scaleDivisor, MoBiSimulation simulation)
    {
-      _quantityChangeTracker.TrackScaleChange(moleculeAmount, simulation, x =>
-      {
-         x.ScaleDivisor = scaleDivisor.Value;
-      }, withEvents: false);
+      _quantityChangeTracker.TrackScaleChange(moleculeAmount, simulation, x => x.ScaleDivisor = scaleDivisor.Value, withEvents: false);
    }
 
-   private void changeQuantity(IParameter parameter, LocalizedParameter snapshotParameter, MoBiSimulation simulation, SnapshotContext snapshotContext)
+   private void changeQuantity(IParameter parameter, LocalizedParameter snapshotParameter, MoBiSimulation simulation)
    {
       if (!snapshotParameter.Value.HasValue)
          return;
@@ -168,7 +165,7 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
       {
          var moleculeAmount = new ObjectPath(x.Path.ToPathArray()).TryResolve<MoleculeAmount>(simulation.Model.Root);
          if (moleculeAmount != null)
-            allAmountsToExport.Add(new ScaleDivisor {Path = x.Path, Value = moleculeAmount.ScaleDivisor});
+            allAmountsToExport.Add(new ScaleDivisor { Path = x.Path, Value = moleculeAmount.ScaleDivisor });
       });
 
       return allAmountsToExport.ToArray();
@@ -183,7 +180,7 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
          if (parameter != null && parameter.ShouldExportToSnapshot())
             allParametersToExport.Add(parameter);
       });
-      
+
       return _parameterMapper.LocalizedParametersFrom(allParametersToExport);
    }
 }
