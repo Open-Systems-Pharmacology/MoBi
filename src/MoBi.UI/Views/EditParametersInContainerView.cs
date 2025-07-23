@@ -425,6 +425,7 @@ namespace MoBi.UI.Views
                   _colFormula.Visible = true;
                   _colRHSFormula.Visible = false;
                   _colButtons.Visible = false;
+                  _colButtons.WithShowInColumnChooser(false);
                   _colDimension.ReadOnly = true;
                   btnAddParameter.Enabled = false;
                   btnLoadParameter.Enabled = false;
@@ -436,6 +437,7 @@ namespace MoBi.UI.Views
                case EditParameterMode.ReadOnly:
                   _colValue.ReadOnly = true;
                   _colButtons.Visible = false;
+                  _colButtons.WithShowInColumnChooser(false);
                   _colPersistable.Visible = false;
                   _colFormula.Visible = true;
                   _colRHSFormula.Visible = true;
