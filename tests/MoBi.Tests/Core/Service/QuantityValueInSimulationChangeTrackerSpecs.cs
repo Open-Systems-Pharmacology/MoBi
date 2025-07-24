@@ -49,7 +49,7 @@ namespace MoBi.Core.Service
       protected override void Because()
       {
          sut.TrackQuantityChange(_quantity, _simulation, x => x.Value = 3.0);
-         sut.TrackScaleChange(_quantity, _simulation, x => x.ScaleDivisor = 3.0, true);
+         sut.TrackScaleChange(_quantity, _simulation, x => x.ScaleDivisor = 3.0);
       }
 
       [Observation]
@@ -84,8 +84,8 @@ namespace MoBi.Core.Service
 
       protected override void Because()
       {
-         sut.TrackScaleChange(_quantity, _simulation, x => x.ScaleDivisor = 3.0, true);
-         sut.TrackScaleChange(_quantity, _simulation, x => x.ScaleDivisor = 1.0, true);
+         sut.TrackScaleChange(_quantity, _simulation, x => x.ScaleDivisor = 3.0);
+         sut.TrackScaleChange(_quantity, _simulation, x => x.ScaleDivisor = 1.0);
       }
 
       [Observation]
@@ -131,7 +131,7 @@ namespace MoBi.Core.Service
       }
    }
 
-   public abstract class When_tracking_no_changes_to_a_quantity_in_a_simulation : concern_for_QuantityValueChangeTracker
+   public class When_tracking_no_changes_to_a_quantity_in_a_simulation : concern_for_QuantityValueChangeTracker
    {
       protected IQuantity _quantity;
       protected IMoBiSimulation _simulation;
@@ -154,38 +154,21 @@ namespace MoBi.Core.Service
          container.Add(_quantity);
       }
 
-      [Observation]
-      public void the_simulation_should_contain_a_tracker_object_with_the_original_value()
-      {
-         _simulation.OriginalQuantityValues.Count.ShouldBeEqualTo(0);
-      }
-   }
-
-   public class When_tracking_no_changes_to_a_quantity_in_a_simulation_without_events : When_tracking_no_changes_to_a_quantity_in_a_simulation
-   {
       protected override void Because()
       {
-         sut.TrackQuantityChange(_quantity, _simulation, x => { }, false);
-      }
-
-      [Observation]
-      public void the_event_should_be_published()
-      {
-         A.CallTo(() => _eventPublisher.PublishEvent(A<SimulationStatusChangedEvent>._)).MustNotHaveHappened();
-      }
-   }
-
-   public class When_tracking_no_changes_to_a_quantity_in_a_simulation_with_events : When_tracking_no_changes_to_a_quantity_in_a_simulation
-   {
-      protected override void Because()
-      {
-         sut.TrackQuantityChange(_quantity, _simulation, x => { }, true);
+         sut.TrackQuantityChange(_quantity, _simulation, x => { });
       }
 
       [Observation]
       public void the_event_should_be_published()
       {
          A.CallTo(() => _eventPublisher.PublishEvent(A<SimulationStatusChangedEvent>.That.Matches(e => e.Simulation == _simulation))).MustHaveHappenedTwiceExactly();
+      }
+
+      [Observation]
+      public void the_simulation_should_contain_a_tracker_object_with_the_original_value()
+      {
+         _simulation.OriginalQuantityValues.Count.ShouldBeEqualTo(0);
       }
    }
 
