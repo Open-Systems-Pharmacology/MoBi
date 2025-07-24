@@ -23,6 +23,7 @@ using OSPSuite.Utility;
 using DataRepository = OSPSuite.Core.Domain.Data.DataRepository;
 using SnapshotProject = MoBi.Core.Snapshots.Project;
 using Simulation = MoBi.Core.Snapshots.Simulation;
+using OSPSuite.TeXReporting.Items;
 
 namespace MoBi.CLI
 {
@@ -268,4 +269,77 @@ namespace MoBi.CLI
          _mapping.ObservedDataMappings[0].Path.ShouldBeEqualTo($"OBS_DATA_FOLDER/{_observedData.Name}.csv");
       }
    }
+
+   public class When_running_the_qualification_runner_with_plot_definitions : concern_for_QualificationRunnerWithValidConfiguration
+   {
+      private SimulationPlot _simulationPlot;
+      private CurveChart _mainChart;
+      private CurveChart _residualChart;
+      private Simulation _simulation;
+      private QualificationMapping _mapping;
+      private string _simulationName;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+
+         _simulationName = "S1";
+
+         _mainChart = new CurveChart();
+         _residualChart = new CurveChart();
+
+         _mainChart.Name = "Main Chart";
+         _residualChart.Name = "Residual Chart";
+
+         _simulation = new Simulation
+         {
+            Name = _simulationName,
+            Chart = _mainChart,
+            SimulationResidualVsTimeChart = _residualChart
+         };
+
+         _projectSnapshot.Simulations = new[] { _simulation };
+
+         _simulationPlot = new SimulationPlot
+         {
+            Simulation = _simulationName,
+            SectionId = 123,
+            SectionReference = "REF456"
+         };
+
+         _qualificationConfiguration.SimulationPlots = new[] { _simulationPlot };
+         _qualificationConfiguration.Simulations = new[] { _simulationName };
+
+         A.CallTo(() => _jsonSerializer.Serialize(A<QualificationMapping>._, _qualificationConfiguration.MappingFile))
+            .Invokes(x => _mapping = x.GetArgument<QualificationMapping>(0));
+
+         _project = new MoBiProject().WithName(_qualificationConfiguration.Project);
+         A.CallTo(() => _snapshotTask.LoadProjectFromSnapshotAsync(_projectSnapshot, _runOptions.Run)).Returns(_project);
+      }
+
+      protected override Task Because()
+      {
+         return sut.RunBatchAsync(_runOptions);
+      }
+
+      [Observation]
+      public void should_include_main_and_residual_charts_in_plot_mappings()
+      {
+         _mapping.Plots.Length.ShouldBeEqualTo(2);
+      }
+
+      [Observation]
+      public void should_set_section_id_and_reference_correctly_in_plot_mappings()
+      {
+         foreach (var plot in _mapping.Plots)
+         {
+            plot.SectionId.ShouldBeEqualTo(123);
+            plot.SectionReference.ShouldBeEqualTo("REF456");
+            plot.Simulation.ShouldBeEqualTo(_simulationName);
+            plot.Project.ShouldBeEqualTo(_qualificationConfiguration.Project);
+         }
+      }
+   }
+
+
 }
