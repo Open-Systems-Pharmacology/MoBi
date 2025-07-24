@@ -49,6 +49,9 @@ namespace MoBi.Presentation
          _sourceReferenceNavigator = A.Fake<ISourceReferenceNavigator>();
          sut = new EditContainerPresenter(_view, _containerMapper, _editTasks, _parametersInContainerPresenter, _context, _tagsPresenter, _applicationController, _objectPathFactory, _dialogCreator, _sourceReferenceNavigator);
          _commandCollector = new MoBiMacroCommand();
+
+         A.CallTo(() => _editTasks.GetMoleculeProperties(A<IContainer>._)).ReturnsLazily(x => x.Arguments.Get<IContainer>(0).Children.FindByName(Constants.MOLECULE_PROPERTIES) as IContainer);
+
          sut.InitializeWith(_commandCollector);
       }
    }
@@ -249,7 +252,46 @@ namespace MoBi.Presentation
       }
    }
 
-   internal class When_setting_container_mode_to_new_container : concern_for_EditContainerPresenter
+   internal class When_setting_container_mode_to_physical_in_new_container : concern_for_EditContainerPresenter
+   {
+      private IContainer _muscle;
+      private MoBiSpatialStructure _spatialStructure;
+
+      protected override void Context()
+      {
+         base.Context();
+         _muscle = new Container { ParentPath = new ObjectPath("A", "B") };
+         _spatialStructure = new MoBiSpatialStructure
+         {
+            NeighborhoodsContainer = new Container(),
+            DiagramManager = A.Fake<IDiagramManager<MoBiSpatialStructure>>()
+         };
+         _spatialStructure.AddTopContainer(_muscle);
+         _muscle.Mode = ContainerMode.Logical;
+
+         sut.Edit(_muscle);
+         sut.BuildingBlock = _spatialStructure;
+      }
+
+      protected override void Because()
+      {
+         sut.ConfirmAndSetContainerMode(ContainerMode.Physical);
+      }
+
+      [Observation]
+      public void should_change_mode()
+      {
+         _muscle.Mode.ShouldBeEqualTo(ContainerMode.Physical);
+      }
+
+      [Observation]
+      public void should_add_molecule_properties()
+      {
+         _muscle.Children.FindByName(Constants.MOLECULE_PROPERTIES).ShouldNotBeNull();
+      }
+   }
+
+   internal class When_setting_container_mode_to_logical_in_new_container : concern_for_EditContainerPresenter
    {
       private IContainer _muscle;
       private MoBiSpatialStructure _spatialStructure;
@@ -281,7 +323,13 @@ namespace MoBi.Presentation
       [Observation]
       public void should_change_mode()
       {
-         A.CallTo(() => _editTasks.SetContainerMode(_spatialStructure, _muscle, ContainerMode.Logical)).MustHaveHappened();
+         _muscle.Mode.ShouldBeEqualTo(ContainerMode.Logical);
+      }
+
+      [Observation]
+      public void should_remove_molecule_properties()
+      {
+         _muscle.Children.FindByName(Constants.MOLECULE_PROPERTIES).ShouldBeNull();
       }
    }
 
