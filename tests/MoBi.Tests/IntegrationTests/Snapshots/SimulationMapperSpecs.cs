@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using MoBi.Core.Snapshots;
@@ -22,6 +23,8 @@ namespace MoBi.IntegrationTests.Snapshots
       protected MoBiProject _project;
 
       private DataRepository _dataRepository;
+      protected Parameter _parameter;
+      protected MoleculeAmount _moleculeAmount;
 
       protected override void Context()
       {
@@ -35,10 +38,32 @@ namespace MoBi.IntegrationTests.Snapshots
             }.WithName("sim")
          }.WithName("sim");
 
-         
          var container = new Container().WithName("container");
-         container.Add(new Parameter().WithName("quantity"));
+         _parameter = new Parameter().WithName("quantity").WithValue(1);
+         
+         container.Add(_parameter);
          _simulation.Model.Root.Add(container);
+         
+         _simulation.AddOriginalQuantityValue(new OriginalQuantityValue
+         {
+            Dimension = _parameter.Dimension, 
+            DisplayUnit = _parameter.DisplayUnit, 
+            Path = new ObjectPath(_simulation.Model.Root.Name, container.Name, _parameter.Name),
+            Type = OriginalQuantityValue.Types.Quantity,
+            Value = _parameter.Value
+         });
+
+         _parameter.Value = 5;
+
+         _moleculeAmount = new MoleculeAmount().WithName("amount").WithScaleFactor(1.0);
+         container.Add(_moleculeAmount);
+
+         _simulation.AddOriginalQuantityValue(new OriginalQuantityValue
+         {
+            Path = new ObjectPath(_simulation.Model.Root.Name, container.Name, _moleculeAmount.Name),
+            Type = OriginalQuantityValue.Types.ScaleDivisor,
+            Value = _moleculeAmount.ScaleDivisor
+         });
 
          _simulationConfigurationFactory = IoC.Resolve<ISimulationConfigurationFactory>();
          _dataRepository = DomainHelperForSpecs.ObservedData().WithName("obsdata");
@@ -82,6 +107,20 @@ namespace MoBi.IntegrationTests.Snapshots
       public void result_charts_are_mapped()
       {
          _result.Chart.ShouldNotBeNull();
+      }
+
+      [Observation]
+      public void parameter_value_changes_should_be_stored()
+      {
+         _result.Parameters.Length.ShouldBeEqualTo(1);
+         _result.Parameters.First().Path.ShouldBeEqualTo(_parameter.EntityPath());
+      }
+
+      [Observation]
+      public void scale_divisor_changes_should_be_stored()
+      {
+         _result.ScaleDivisors.Length.ShouldBeEqualTo(1);
+         _result.ScaleDivisors.First().Path.ShouldBeEqualTo(_moleculeAmount.EntityPath());
       }
 
       [Observation]

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Serialization.ORM;
+using MoBi.Core.Snapshots;
 using MoBi.Core.Snapshots.Services;
 using OSPSuite.CLI.Core.RunOptions;
 using OSPSuite.CLI.Core.Services;
@@ -15,6 +16,8 @@ using OSPSuite.Core.Qualification;
 using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
+using static OSPSuite.Assets.Error;
 using ModelProject = MoBi.Core.Domain.Model.MoBiProject;
 using SnapshotProject = MoBi.Core.Snapshots.Project;
 
@@ -49,9 +52,28 @@ namespace MoBi.CLI.Core.Services
          throw new NotImplementedException();
       }
 
-      protected override Task SwapSimulationParametersIn(SnapshotProject projectSnapshot, SimulationParameterSwap simulationParameterSwap)
+      protected override async Task SwapSimulationParametersIn(SnapshotProject projectSnapshot, SimulationParameterSwap simulationParameter)
       {
-         throw new NotImplementedException();
+         var (parameterPath, simulationName, snapshotPath) = simulationParameter;
+         var referenceSnapshot = await SnapshotProjectFromFile(snapshotPath);
+
+         var referenceSimulation = simulationFrom(referenceSnapshot, simulationName);
+
+         var referenceParameter = referenceSimulation.ParameterByPath(parameterPath);
+         if (referenceParameter == null)
+            throw new QualificationRunException(CannotFindSimulationParameterInSnapshot(parameterPath, simulationName, referenceSnapshot.Name));
+
+         simulationParameter.TargetSimulations?.Each(targetSimulationName =>
+         {
+            var targetSimulation = simulationFrom(projectSnapshot, targetSimulationName);
+            targetSimulation.AddOrUpdate(referenceParameter);
+         });
+      }
+
+      private Simulation simulationFrom(SnapshotProject snapshotProject, string simulationName)
+      {
+         var referenceSimulation = snapshotProject.Simulations?.FindByName(simulationName);
+         return referenceSimulation ?? throw new QualificationRunException(CannotFindSimulationInSnapshot(simulationName, snapshotProject.Name));
       }
 
       protected override Task SwapBuildingBlockIn(SnapshotProject projectSnapshot, BuildingBlockSwap buildingBlockSwap)

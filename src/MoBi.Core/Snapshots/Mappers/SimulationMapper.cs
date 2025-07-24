@@ -1,12 +1,19 @@
-﻿using MoBi.Core.Domain.Model;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using MoBi.Core.Domain;
+using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
+using MoBi.Core.Domain.UnitSystem;
+using MoBi.Core.Extensions;
 using MoBi.Core.Services;
 using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
+using OSPSuite.Core.Snapshots;
 using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Extensions;
-using System.Threading.Tasks;
 
 namespace MoBi.Core.Snapshots.Mappers;
 
@@ -20,7 +27,11 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
    private readonly SimulationPredictedVsObservedChartMapper _predictedVsObservedChartMapper;
    private readonly SimulationResidualVsTimeChartMapper _residualsVsTimeChartMapper;
    private readonly IOSPSuiteLogger _logger;
+   private readonly ParameterMapper _parameterMapper;
    private readonly ICoreSimulationRunner _simulationRunner;
+   private readonly IMoBiDimensionFactory _dimensionFactory;
+   private readonly IQuantityValueInSimulationChangeTracker _quantityChangeTracker;
+   private readonly ValueOriginMapper _valueOriginMapper;
 
    public SimulationMapper(
       SimulationConfigurationMapper simulationConfigurationMapper,
@@ -31,7 +42,11 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
       SimulationPredictedVsObservedChartMapper predictedVsObservedChartMapper,
       SimulationResidualVsTimeChartMapper residualsVsTimeChartMapper,
       IOSPSuiteLogger logger,
-      ICoreSimulationRunner simulationRunner)
+      ParameterMapper parameterMapper,
+      ICoreSimulationRunner simulationRunner,
+      IMoBiDimensionFactory dimensionFactory,
+      IQuantityValueInSimulationChangeTracker quantityChangeTracker,
+      ValueOriginMapper valueOriginMapper)
    {
       _simulationConfigurationMapper = simulationConfigurationMapper;
       _outputMappingMapper = outputMappingMapper;
@@ -41,7 +56,11 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
       _predictedVsObservedChartMapper = predictedVsObservedChartMapper;
       _residualsVsTimeChartMapper = residualsVsTimeChartMapper;
       _logger = logger;
+      _parameterMapper = parameterMapper;
       _simulationRunner = simulationRunner;
+      _dimensionFactory = dimensionFactory;
+      _quantityChangeTracker = quantityChangeTracker;
+      _valueOriginMapper = valueOriginMapper;
    }
 
    public override async Task<MoBiSimulation> MapToModel(Simulation snapshot, SimulationContext context)
@@ -66,6 +85,10 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
 
       snapshot.OutputMappings?.Each(x => simulation.OutputMappings.Add(_outputMappingMapper.MapToModel(x, snapshotContextWithSimulation).Result));
 
+      updateParameters(simulation, snapshot.Parameters);
+
+      updateScaleDivisors(simulation, snapshot.ScaleDivisors);
+
       if (context.Run)
          await _simulationRunner.RunSimulationAsync(simulation);
 
@@ -89,6 +112,80 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
 
       snapshot.ParameterIdentificationWorkingDirectory = simulation.ParameterIdentificationWorkingDirectory;
 
+      snapshot.Parameters = await allParametersChangedByUserFrom(simulation);
+
+      snapshot.ScaleDivisors = allScaleDivisorsChangedByUserFrom(simulation);
+
       return snapshot;
+   }
+
+   private void updateParameters(MoBiSimulation simulation, LocalizedParameter[] snapshotParameters)
+   {
+      snapshotParameters?.Each(x =>
+      {
+         var parameter = entityFromPath<IParameter>(x.Path, simulation.Model.Root);
+         if (parameter != null)
+            changeQuantity(parameter, x, simulation);
+      });
+   }
+
+   private void updateScaleDivisors(MoBiSimulation simulation, ScaleDivisor[] snapshotScaleDivisors)
+   {
+      snapshotScaleDivisors?.Each(x =>
+      {
+         var moleculeAmount = entityFromPath<MoleculeAmount>(x.Path, simulation.Model.Root);
+         if (moleculeAmount != null)
+            changeScaleDivisor(moleculeAmount, x, simulation);
+      });
+   }
+
+   private void changeScaleDivisor(MoleculeAmount moleculeAmount, ScaleDivisor scaleDivisor, MoBiSimulation simulation)
+   {
+      _quantityChangeTracker.TrackScaleChange(moleculeAmount, simulation, x => x.ScaleDivisor = scaleDivisor.Value);
+   }
+
+   private void changeQuantity(IParameter parameter, LocalizedParameter snapshotParameter, MoBiSimulation simulation)
+   {
+      if (!snapshotParameter.Value.HasValue)
+         return;
+
+      _quantityChangeTracker.TrackQuantityChange(parameter, simulation, x =>
+      {
+         parameter.IsDefault = false;
+         x.Value = snapshotParameter.Value.Value;
+         x.DisplayUnit = _dimensionFactory.FindUnit(snapshotParameter.Unit).unit;
+         _valueOriginMapper.UpdateValueOrigin(x.ValueOrigin, snapshotParameter.ValueOrigin);
+      });
+   }
+
+   private ScaleDivisor[] allScaleDivisorsChangedByUserFrom(MoBiSimulation simulation)
+   {
+      var allAmountsToExport = new List<ScaleDivisor>();
+      simulation.OriginalQuantityValues.Where(x => x.Type == OriginalQuantityValue.Types.ScaleDivisor).Each(x =>
+      {
+         var moleculeAmount = entityFromPath<MoleculeAmount>(x.Path, simulation.Model.Root);
+         if (moleculeAmount != null)
+            allAmountsToExport.Add(new ScaleDivisor { Path = x.Path, Value = moleculeAmount.ScaleDivisor });
+      });
+
+      return allAmountsToExport.ToArray();
+   }
+
+   private Task<LocalizedParameter[]> allParametersChangedByUserFrom(MoBiSimulation simulation)
+   {
+      var allParametersToExport = new List<IParameter>();
+      simulation.OriginalQuantityValues.Where(x => x.Type == OriginalQuantityValue.Types.Quantity).Each(x =>
+      {
+         var parameter = entityFromPath<IParameter>(x.Path, simulation.Model.Root);
+         if (parameter != null && parameter.ShouldExportToSnapshot())
+            allParametersToExport.Add(parameter);
+      });
+
+      return _parameterMapper.LocalizedParametersFrom(allParametersToExport);
+   }
+
+   private T entityFromPath<T>(string path, IContainer container) where T : class
+   {
+      return new ObjectPath(path.ToPathArray()).TryResolve<T>(container);
    }
 }
