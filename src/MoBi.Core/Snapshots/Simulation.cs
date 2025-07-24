@@ -1,7 +1,6 @@
 ﻿using OSPSuite.Core.Domain;
 using OSPSuite.Core.Snapshots;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using OutputMapping = OSPSuite.Core.Snapshots.OutputMapping;
 using OutputSelections = OSPSuite.Core.Snapshots.OutputSelections;
@@ -38,11 +37,4 @@ public class Simulation : SnapshotBase
 
       Parameters = localizedParameters.ToArray();
    }
-}
-
-public class ScaleDivisor
-{
-   [Required] public string Path { get; set; }
-
-   [Required] public double Value { set; get; }
 }
