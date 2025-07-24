@@ -247,7 +247,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             case BuildingBlockType.SpatialStructure:
                items.AddRange(InteractionTask.LoadItems<MoBiSpatialStructure>(filename));
                break;
-            case BuildingBlockType.PassiveTransport:
+            case BuildingBlockType.PassiveTransports:
                items.AddRange(InteractionTask.LoadItems<PassiveTransportBuildingBlock>(filename));
                break;
             case BuildingBlockType.Molecules:

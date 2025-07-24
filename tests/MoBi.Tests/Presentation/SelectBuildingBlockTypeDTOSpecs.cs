@@ -30,7 +30,7 @@ namespace MoBi.Presentation
             BuildingBlockType.SpatialStructure,
             BuildingBlockType.Molecules,
             BuildingBlockType.Reactions,
-            BuildingBlockType.PassiveTransport,
+            BuildingBlockType.PassiveTransports,
             BuildingBlockType.Observers,
             BuildingBlockType.Events,
             BuildingBlockType.InitialConditions,
