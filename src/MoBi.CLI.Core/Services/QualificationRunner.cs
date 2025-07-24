@@ -78,7 +78,8 @@ namespace MoBi.CLI.Core.Services
 
       protected override Task SwapBuildingBlockIn(SnapshotProject projectSnapshot, BuildingBlockSwap buildingBlockSwap)
       {
-         throw new NotImplementedException();
+         // TODO https://github.com/Open-Systems-Pharmacology/MoBi/issues/1990
+         return Task.CompletedTask;
       }
 
       protected override void ValidateInputs(SnapshotProject snapshotProject, QualificationConfiguration configuration)
@@ -93,7 +94,7 @@ namespace MoBi.CLI.Core.Services
 
       protected override Task ExportToMarkdown(object buildingBlock, string fileFullPath, int? inputSectionLevel)
       {
-         //TODO
+         // TODO https://github.com/Open-Systems-Pharmacology/MoBi/issues/1958
          return Task.CompletedTask;
       }
 
