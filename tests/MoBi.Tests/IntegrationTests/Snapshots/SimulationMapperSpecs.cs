@@ -34,13 +34,13 @@ namespace MoBi.IntegrationTests.Snapshots
          {
             Model = new Model
             {
-               Root = new Container().WithName("sim")
+               Root = new Container().WithName(Constants.ROOT)
             }.WithName("sim")
          }.WithName("sim");
 
          var container = new Container().WithName("container");
          _parameter = new Parameter().WithName("quantity").WithValue(1);
-         
+
          container.Add(_parameter);
          _simulation.Model.Root.Add(container);
          
@@ -48,7 +48,7 @@ namespace MoBi.IntegrationTests.Snapshots
          {
             Dimension = _parameter.Dimension, 
             DisplayUnit = _parameter.DisplayUnit, 
-            Path = new ObjectPath(_simulation.Model.Root.Name, container.Name, _parameter.Name),
+            Path = new ObjectPath(container.Name, _parameter.Name),
             Type = OriginalQuantityValue.Types.Quantity,
             Value = _parameter.Value
          });
@@ -60,7 +60,7 @@ namespace MoBi.IntegrationTests.Snapshots
 
          _simulation.AddOriginalQuantityValue(new OriginalQuantityValue
          {
-            Path = new ObjectPath(_simulation.Model.Root.Name, container.Name, _moleculeAmount.Name),
+            Path = new ObjectPath(container.Name, _moleculeAmount.Name),
             Type = OriginalQuantityValue.Types.ScaleDivisor,
             Value = _moleculeAmount.ScaleDivisor
          });
@@ -113,14 +113,14 @@ namespace MoBi.IntegrationTests.Snapshots
       public void parameter_value_changes_should_be_stored()
       {
          _result.Parameters.Length.ShouldBeEqualTo(1);
-         _result.Parameters.First().Path.ShouldBeEqualTo(_parameter.EntityPath());
+         _result.Parameters.First().Path.ShouldBeEqualTo(_parameter.ConsolidatedPath());
       }
 
       [Observation]
       public void scale_divisor_changes_should_be_stored()
       {
          _result.ScaleDivisors.Length.ShouldBeEqualTo(1);
-         _result.ScaleDivisors.First().Path.ShouldBeEqualTo(_moleculeAmount.EntityPath());
+         _result.ScaleDivisors.First().Path.ShouldBeEqualTo(_moleculeAmount.ConsolidatedPath());
       }
 
       [Observation]

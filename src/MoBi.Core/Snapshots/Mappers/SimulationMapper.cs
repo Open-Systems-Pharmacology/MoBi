@@ -123,7 +123,7 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
    {
       snapshotParameters?.Each(x =>
       {
-         var parameter = entityFromPath<IParameter>(x.Path, simulation.Model.Root);
+         var parameter = simulation.Model.Root.EntityAt<IParameter>(x.Path);
          if (parameter != null)
             changeQuantity(parameter, x, simulation);
       });
@@ -133,7 +133,7 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
    {
       snapshotScaleDivisors?.Each(x =>
       {
-         var moleculeAmount = entityFromPath<MoleculeAmount>(x.Path, simulation.Model.Root);
+         var moleculeAmount = simulation.Model.Root.EntityAt<MoleculeAmount>(x.Path);
          if (moleculeAmount != null)
             changeScaleDivisor(moleculeAmount, x, simulation);
       });
@@ -163,7 +163,7 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
       var allAmountsToExport = new List<ScaleDivisor>();
       simulation.OriginalQuantityValues.Where(x => x.Type == OriginalQuantityValue.Types.ScaleDivisor).Each(x =>
       {
-         var moleculeAmount = entityFromPath<MoleculeAmount>(x.Path, simulation.Model.Root);
+         var moleculeAmount = simulation.Model.Root.EntityAt<MoleculeAmount>(x.Path);
          if (moleculeAmount != null)
             allAmountsToExport.Add(new ScaleDivisor { Path = x.Path, Value = moleculeAmount.ScaleDivisor });
       });
@@ -176,16 +176,11 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
       var allParametersToExport = new List<IParameter>();
       simulation.OriginalQuantityValues.Where(x => x.Type == OriginalQuantityValue.Types.Quantity).Each(x =>
       {
-         var parameter = entityFromPath<IParameter>(x.Path, simulation.Model.Root);
+         var parameter = simulation.Model.Root.EntityAt<IParameter>(x.Path);
          if (parameter != null && parameter.ShouldExportToSnapshot())
             allParametersToExport.Add(parameter);
       });
 
       return _parameterMapper.LocalizedParametersFrom(allParametersToExport);
-   }
-
-   private T entityFromPath<T>(string path, IContainer container) where T : class
-   {
-      return new ObjectPath(path.ToPathArray()).TryResolve<T>(container);
    }
 }
