@@ -17,6 +17,7 @@ using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Extensions;
+using static MoBi.Assets.AppConstants.Captions;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -156,7 +157,12 @@ namespace MoBi.Presentation.Tasks
 
          var anySimulationInChangedState = project.All<MoBiSimulation>().Any(x => x.OriginalQuantityValues.Any());
 
+         var pkSimModulesWithoutSnapshots = project.Modules.Where(x => x.IsPKSimModule && !x.HasSnapshot).AllNames();
+
          if (exitIf(anySimulationInChangedState, Captions.SnapshotOfProjectWithChangedSimulation))
+            return Task.CompletedTask;
+
+         if(exitIf(pkSimModulesWithoutSnapshots.Any(), PKSimModulesWithoutSnapshots(pkSimModulesWithoutSnapshots)))
             return Task.CompletedTask;
 
          return _snapshotTask.ExportModelToSnapshotAsync(project);

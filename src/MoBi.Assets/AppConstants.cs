@@ -2024,6 +2024,16 @@ namespace MoBi.Assets
             return sb.ToString();
          }
 
+         public static string PKSimModulesWithoutSnapshots(IReadOnlyList<string> moduleNames)
+         {
+            var sb = new StringBuilder();
+            sb.AppendLine();
+            sb.Append($"The following PK-Sim modules will be exported as extension modules (PKML) and not PK-Sim modules (snapshots) because they are too old");
+            sb.AppendLine();
+            sb.Append(namesList(moduleNames));
+            return OSPSuite.Assets.Captions.DoYouWantToProceed(sb.ToString());
+         }
+
          public static string CouldNotAddExpressionProfilesDuplicatingProtein(IReadOnlyList<string> proteinNames)
          {
             var sb = new StringBuilder();

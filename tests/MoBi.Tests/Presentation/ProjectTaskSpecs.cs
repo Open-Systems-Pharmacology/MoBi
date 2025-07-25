@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DevExpress.Utils.Extensions;
 using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Domain.Builder;
@@ -41,7 +42,7 @@ namespace MoBi.Presentation
       private ISbmlTask _sbmlTask;
       protected IReactionBuildingBlockFactory _reactionBuildingBlockFactory;
       private IMoBiApplicationController _applicationController;
-      private ISnapshotTask _snapshotTask;
+      protected ISnapshotTask _snapshotTask;
 
       protected override void Context()
       {
@@ -61,6 +62,69 @@ namespace MoBi.Presentation
          
          sut = new ProjectTask(_context, _serializationTask, _dialogCreator, _mruProvider, _heavyWorkManager,
             new SimulationLoader(_cloneManager, _nameCorrector, _context), _sbmlTask, _snapshotTask, _applicationController);
+      }
+   }
+
+   internal class When_exporting_a_snapshot_and_declining_export_with_pksim_modules_that_do_not_have_snapshot : concern_for_ProjectTask
+   {
+      private string _moduleName;
+
+      protected override void Context()
+      {
+         base.Context();
+         _moduleName = "module";
+         var project = new MoBiProject();
+         var module = new Module().WithName(_moduleName);
+         module.IsPKSimModule = true;
+         project.AddModule(module);
+
+         A.CallTo(() => _context.CurrentProject).Returns(project);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>.That.Matches(x => Equals(x, AppConstants.Captions.PKSimModulesWithoutSnapshots(new[] { _moduleName }))), ViewResult.Yes)).Returns(ViewResult.No);
+      }
+
+      protected override void Because()
+      {
+         sut.ExportCurrentProjectToSnapshot();
+      }
+
+      [Observation]
+      public void the_project_should_not_be_exported()
+      {
+         A.CallTo(() => _snapshotTask.ExportModelToSnapshotAsync(_context.CurrentProject)).MustNotHaveHappened();
+      }
+   }
+
+   internal class When_exporting_a_snapshot_and_confirming_export_with_pksim_modules_that_do_not_have_snapshot : concern_for_ProjectTask
+   {
+      private string _moduleName;
+
+      protected override void Context()
+      {
+         base.Context();
+         _moduleName = "module";
+         var project = new MoBiProject();
+         var module = new Module().WithName(_moduleName);
+         module.IsPKSimModule = true;
+         project.AddModule(module);
+
+         A.CallTo(() => _context.CurrentProject).Returns(project);
+      }
+
+      protected override void Because()
+      {
+         sut.ExportCurrentProjectToSnapshot();
+      }
+
+      [Observation]
+      public void the_project_should_be_exported()
+      {
+         A.CallTo(() => _snapshotTask.ExportModelToSnapshotAsync(_context.CurrentProject)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_dialog_must_confirm_that_pksim_modules_without_snapshots_should_be_exported()
+      {
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>.That.Matches(x => Equals(x, AppConstants.Captions.PKSimModulesWithoutSnapshots(new[] { _moduleName }))), ViewResult.Yes)).MustHaveHappened();
       }
    }
 
