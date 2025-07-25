@@ -90,13 +90,14 @@ public class MoBiProject : Project
       RemoveClassifiableForWrappedObject(buildingBlockToRemove);
    }
 
-   public override void AcceptVisitor(IVisitor visitor)
-   {
-      base.AcceptVisitor(visitor);
-      _buildingBlocks.Each(x => x.AcceptVisitor(visitor));
-      _allSimulations.Each(x => x.AcceptVisitor(visitor));
-      _charts.Each(x => x.AcceptVisitor(visitor));
-   }
+      public override void AcceptVisitor(IVisitor visitor)
+      {
+         base.AcceptVisitor(visitor);
+         _modules.Each(x => x.AcceptVisitor(visitor));
+         _buildingBlocks.Each(x => x.AcceptVisitor(visitor));
+         _allSimulations.Each(x => x.AcceptVisitor(visitor));
+         _charts.Each(x => x.AcceptVisitor(visitor));
+      }
 
    public IReadOnlyList<IMoBiSimulation> SimulationsUsing(IBuildingBlock templateBuildingBlock) => Simulations.Where(simulation => simulation.Uses(templateBuildingBlock)).ToList();
 

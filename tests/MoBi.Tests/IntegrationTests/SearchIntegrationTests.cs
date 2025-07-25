@@ -1,13 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using MoBi.Core;
+﻿using System.Linq;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Serialization.Converter;
 using MoBi.Core.Services;
 using MoBi.Presentation.Tasks;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility.Container;
 
 namespace MoBi.IntegrationTests
@@ -44,7 +41,8 @@ namespace MoBi.IntegrationTests
          var searchResults = _searchTask.StartSearch(_searchOptions, null)
             .GroupBy(x => x.ProjectItem);
 
-         searchResults.Count().ShouldBeGreaterThan(0);
+         searchResults.Count(x => x.Key is MoBiSimulation).ShouldBeEqualTo(3);
+         searchResults.Count(x => x.Key is MoleculeBuildingBlock).ShouldBeEqualTo(1);
       }
 
       [Observation]
@@ -77,7 +75,9 @@ namespace MoBi.IntegrationTests
          var searchResults = _searchTask.StartSearch(_searchOptions, null)
             .GroupBy(x => x.ProjectItem);
 
-         searchResults.Count().ShouldBeGreaterThan(0);
+         searchResults.Count(x => x.Key is MoBiSimulation).ShouldBeEqualTo(2);
+         searchResults.Count(x => x.Key is MoleculeBuildingBlock).ShouldBeEqualTo(1);
+         searchResults.Count(x => x.Key is InitialConditionsBuildingBlock).ShouldBeEqualTo(1);
       }
 
       [Observation]
