@@ -49,7 +49,25 @@ namespace MoBi.CLI.Core.Services
 
       protected override IEnumerable<PlotMapping> RetrievePlotDefinitionsForSimulation(SimulationPlot simulationPlot, SnapshotProject snapshotProject)
       {
-         throw new NotImplementedException();
+         var simulationName = simulationPlot.Simulation;
+         var simulation = simulationFrom(snapshotProject, simulationName);
+
+         var charts = new[] { simulation.Chart, simulation.SimulationResidualVsTimeChart };
+
+         return charts.Select(chart => new PlotMapping
+         {
+            Plot = chart,
+            SectionId = simulationPlot.SectionId,
+            SectionReference = simulationPlot.SectionReference,
+            Simulation = simulationName,
+            Project = snapshotProject.Name
+         });
+      }
+
+      private Simulation simulationFrom(SnapshotProject snapshotProject, string simulationName)
+      {
+         var referenceSimulation = snapshotProject.Simulations?.FindByName(simulationName);
+         return referenceSimulation ?? throw new QualificationRunException(CannotFindSimulationInSnapshot(simulationName, snapshotProject.Name));
       }
 
       protected override async Task SwapSimulationParametersIn(SnapshotProject projectSnapshot, SimulationParameterSwap simulationParameter)
@@ -69,13 +87,7 @@ namespace MoBi.CLI.Core.Services
             targetSimulation.AddOrUpdate(referenceParameter);
          });
       }
-
-      private Simulation simulationFrom(SnapshotProject snapshotProject, string simulationName)
-      {
-         var referenceSimulation = snapshotProject.Simulations?.FindByName(simulationName);
-         return referenceSimulation ?? throw new QualificationRunException(CannotFindSimulationInSnapshot(simulationName, snapshotProject.Name));
-      }
-
+       
       protected override Task SwapBuildingBlockIn(SnapshotProject projectSnapshot, BuildingBlockSwap buildingBlockSwap)
       {
          // TODO https://github.com/Open-Systems-Pharmacology/MoBi/issues/1990
