@@ -131,6 +131,7 @@ namespace MoBi.Core.Domain.Model
       public override void AcceptVisitor(IVisitor visitor)
       {
          base.AcceptVisitor(visitor);
+         _modules.Each(x => x.AcceptVisitor(visitor));
          _buildingBlocks.Each(x => x.AcceptVisitor(visitor));
          _allSimulations.Each(x => x.AcceptVisitor(visitor));
          _charts.Each(x => x.AcceptVisitor(visitor));
