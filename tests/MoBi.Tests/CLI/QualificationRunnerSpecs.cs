@@ -23,7 +23,6 @@ using OSPSuite.Utility;
 using DataRepository = OSPSuite.Core.Domain.Data.DataRepository;
 using SnapshotProject = MoBi.Core.Snapshots.Project;
 using Simulation = MoBi.Core.Snapshots.Simulation;
-using OSPSuite.TeXReporting.Items;
 
 namespace MoBi.CLI
 {
@@ -340,6 +339,4 @@ namespace MoBi.CLI
          }
       }
    }
-
-
 }
