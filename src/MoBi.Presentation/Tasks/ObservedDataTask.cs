@@ -258,6 +258,7 @@ namespace MoBi.Presentation.Tasks
          }
 
          _parameterIdentificationTask.UpdateParameterIdentificationsUsing(observedDataFromSameFile);
+         _context.ProjectChanged();
       }
 
       private void replaceData(DataRepository dataSet, DataRepository existingDataSet)
@@ -265,7 +266,6 @@ namespace MoBi.Presentation.Tasks
          if (existingDataSet == null)
             return;
 
-         _context.ProjectChanged();
 
          foreach (var column in dataSet.Columns)
          {
