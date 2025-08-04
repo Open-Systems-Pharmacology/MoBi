@@ -81,8 +81,7 @@ namespace MoBi.Presentation.Tasks
             CommandType = AppConstants.Commands.AddCommand,
             Description = AppConstants.Commands.AddToProjectDescription(ObjectTypes.Simulation, clonedSimulation.Name)
          };
-
-         macroCommand.Add(ConfigureSimulation(clonedSimulation));
+         ConfigureSimulation(clonedSimulation);
          macroCommand.Add(new AddSimulationCommand(clonedSimulation).RunCommand(_context));
 
          return macroCommand;
