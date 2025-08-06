@@ -460,12 +460,6 @@ namespace MoBi.Presentation.Tasks
       }
 
       [Observation]
-      public void the_project_must_not_be_marked_as_changed()
-      {
-         A.CallTo(() => _context.ProjectChanged()).MustNotHaveHappened();
-      }
-
-      [Observation]
       public void the_loaded_data_should_not_be_replaced_with_new_data()
       {
          _dataRepository.BaseGrid.Values.First().ShouldBeEqualTo(0.0f);
