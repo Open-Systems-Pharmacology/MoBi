@@ -41,10 +41,9 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       protected override IEnumerable<IMenuBarItem> AllMenuItemsFor(IReadOnlyList<IBuildingBlock> buildingBlocks, IMoBiContext context)
       {
          if (buildingBlocks.Count == 2 && (buildingBlocks[0].GetType() == buildingBlocks[1].GetType()))
-            yield return ComparisonCommonContextMenuItems.CompareObjectsMenu(buildingBlocks, context, _container);
+            yield return ComparisonCommonContextMenuItems.CompareBuildingBlocksMenu(buildingBlocks, context, _container);
 
          yield return ObjectBaseCommonContextMenuItems.AddToJournal(buildingBlocks, _container);
-
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
             .WithCommandFor<RemoveMultipleBuildingBlocksUICommand, IReadOnlyList<IBuildingBlock>>(buildingBlocks, _container)
