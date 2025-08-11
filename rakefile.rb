@@ -101,7 +101,7 @@ def copy_templates_files(source_dir)
 end
 
 def relative_src_dir_for(configuration)
-   File.join('src', 'MoBi', 'bin', configuration, 'net472')
+   File.join('src', 'MoBi', 'bin', configuration, 'net8.0-windows')
 end
 
 def src_dir_for(configuration)
