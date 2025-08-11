@@ -7,6 +7,7 @@
 
     <RootNamespace>MoBi.UI</RootNamespace>
     <Version Condition="'$(Version)' == ''">13.0.0</Version>
+    <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
   </PropertyGroup>
 
   <ItemGroup>
