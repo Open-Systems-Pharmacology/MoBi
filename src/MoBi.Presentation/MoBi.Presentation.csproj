@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <Authors>Open-Systems-Pharmacology</Authors>
@@ -24,9 +24,9 @@
     <PackageReference Include="Northwoods.GoWin" Version="6.3.1" />
     <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.1.1" />
     <PackageReference Include="OSPSuite.Utility" Version="4.1.1.1" />
-    <PackageReference Include="OSPSuite.Presentation" Version="13.0.33" />
-    <PackageReference Include="OSPSuite.Presentation.Serialization" Version="13.0.33" />
-    <PackageReference Include="OSPSuite.Core" Version="13.0.33" />  
+    <PackageReference Include="OSPSuite.Presentation" Version="13.0.34" />
+    <PackageReference Include="OSPSuite.Presentation.Serialization" Version="13.0.34" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.34" />  
    </ItemGroup>
   <ItemGroup>
     <None Include="..\..\LICENSE">
