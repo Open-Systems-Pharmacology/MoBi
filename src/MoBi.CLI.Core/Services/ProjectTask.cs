@@ -13,20 +13,35 @@ namespace MoBi.CLI.Core.Services
    public interface IProjectTask
    {
       MoBiProject LoadProject(string fileName);
+
       IReadOnlyList<string> AllModuleNames(MoBiProject moBiProject);
+
       IReadOnlyList<string> AllExpressionProfileNames(MoBiProject moBiProject);
+
       IReadOnlyList<string> AllIndividualNames(MoBiProject moBiProject);
+
       IReadOnlyList<string> AllSimulationNames(MoBiProject moBiProject);
+
       IReadOnlyList<string> AllBuildingBlocksNamesFromModuleName(MoBiProject moBiProject, string moduleName);
+
       IReadOnlyList<Simulation> AllSimulations(MoBiProject moBiProject);
+
       IReadOnlyList<IndividualBuildingBlock> AllIndividuals(MoBiProject moBiProject);
+
       IReadOnlyList<InitialConditionsBuildingBlock> AllInitialConditions(MoBiProject moBiProject);
+
       IReadOnlyList<ParameterValuesBuildingBlock> AllParameterValues(MoBiProject moBiProject);
+
       Module ModuleByName(MoBiProject moBiProject, string name);
+
       IndividualBuildingBlock IndividualBuildingBlockByName(MoBiProject moBiProject, string name);
+
       List<ExpressionProfileBuildingBlock> ExpressionProfileBuildingBlocksByName(MoBiProject moBiProject, params string[] names);
+
       void CloseProject();
+
       IReadOnlyList<DataRepository> AllObservedDataSets(MoBiProject project);
+
       IReadOnlyList<ParameterIdentification> AllParameterIdentifications(MoBiProject project);
    }
 

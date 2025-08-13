@@ -2,7 +2,6 @@
 using System.Linq;
 using MoBi.CLI.Core.Services;
 using MoBi.Core.Domain.Model;
-using MoBi.HelpersForTests;
 using MoBi.R.Services;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
