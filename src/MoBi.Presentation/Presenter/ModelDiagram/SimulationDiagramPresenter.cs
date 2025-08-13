@@ -1,4 +1,3 @@
-using System.IO;
 using System.Linq;
 using MoBi.Core;
 using MoBi.Core.Domain.Model;
@@ -128,7 +127,7 @@ namespace MoBi.Presentation.Presenter.ModelDiagram
          //do nothing - modelDiagram does not allow structural changes
       }
 
-      protected override void Unlink(IBaseNode node1, IBaseNode node2, object portObject1, object portObject2)
+      public override void Unlink(IBaseNode node1, IBaseNode node2, object portObject1, object portObject2)
       {
          //do nothing - modelDiagram does not allow structural changes
       }
