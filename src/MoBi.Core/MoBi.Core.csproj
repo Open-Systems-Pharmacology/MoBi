@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <PackageTags>open-systems-pharmacology, ospsuite-components</PackageTags>
@@ -12,47 +11,41 @@
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\PKSim.Core.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
     <Version Condition="'$(Version)' == ''">13.0.0</Version>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Remove="Services\ProjectConversion\**" />
     <EmbeddedResource Remove="Services\ProjectConversion\**" />
     <None Remove="Services\ProjectConversion\**" />
   </ItemGroup>
-
   <ItemGroup>
     <Compile Include="..\..\SolutionInfo.cs" Link="Properties\SolutionInfo.cs" />
   </ItemGroup>
-
   <ItemGroup>
     <Folder Include="Properties\" />
     <Folder Include="Serialization\Converter\v12\" />
     <Folder Include="Serialization\Converter\v11\" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="FluentNHibernate" Version="3.4.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="OSPSuite.Utility" Version="4.1.1.1" />
-    <PackageReference Include="OSPSuite.Core" Version="13.0.14" />
-    <PackageReference Include="OSPSuite.Assets" Version="13.0.14" />
-    <PackageReference Include="OSPSuite.Assets.Images" Version="13.0.14" />
-    <PackageReference Include="OSPSuite.Infrastructure.Export" Version="13.0.14" />
-    <PackageReference Include="OSPSuite.Infrastructure.Reporting" Version="13.0.14" />
-    <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="13.0.14" />
-    <PackageReference Include="OSPSuite.Infrastructure.Import" Version="13.0.14" />
-    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.34" />
+    <PackageReference Include="OSPSuite.Assets" Version="13.0.34" />
+    <PackageReference Include="OSPSuite.Assets.Images" Version="13.0.34" />
+    <PackageReference Include="OSPSuite.Infrastructure.Export" Version="13.0.34" />
+    <PackageReference Include="OSPSuite.Infrastructure.Reporting" Version="13.0.34" />
+    <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="13.0.34" />
+    <PackageReference Include="OSPSuite.Infrastructure.Import" Version="13.0.34" />
   </ItemGroup>
-
   <ItemGroup>
     <None Include="..\..\LICENSE">
       <Pack>True</Pack>
-      <PackagePath></PackagePath>
+      <PackagePath>
+      </PackagePath>
     </None>
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\MoBi.Assets\MoBi.Assets.csproj" />
   </ItemGroup>
-
 </Project>

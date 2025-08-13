@@ -1,10 +1,10 @@
 ﻿using System;
+using MoBi.CLI.Core.Services;
 using MoBi.R.Bootstrap;
 using MoBi.R.Services;
 using OSPSuite.R;
 using OSPSuite.Utility.Extensions;
 using IContainer = OSPSuite.Utility.Container.IContainer;
-using IProjectTask = MoBi.R.Services.IProjectTask;
 
 namespace MoBi.R
 {

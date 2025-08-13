@@ -34,6 +34,7 @@ using OSPSuite.UI.Extensions;
 using OSPSuite.UI.RepositoryItems;
 using OSPSuite.UI.Services;
 using OSPSuite.Utility.Extensions;
+using static OSPSuite.UI.UIConstants.Size;
 using IToolTipCreator = MoBi.UI.Services.IToolTipCreator;
 using ToolTips = MoBi.Assets.ToolTips;
 
@@ -133,8 +134,8 @@ namespace MoBi.UI.Views
          layoutControlItemGroupBy.ContentVertAlignment = VertAlignment.Top;
 
          layoutControlItemSelectIndividual.Text = AppConstants.Captions.ShowParametersFromIndividual.FormatForLabel();
-         chkGroupBy.MaximumSize = new Size(150, 0);
-         chkShowAdvancedParameter.MaximumSize = new Size(200, 0);
+         chkGroupBy.MaximumSize = new Size(ScaleForScreenDPI(150), 0);
+         chkShowAdvancedParameter.MaximumSize = new Size(ScaleForScreenDPI(200), 0);
          cbSelectIndividual.ToolTip = ToolTips.BuildingBlockSpatialStructure.PreviewSpatialStructureWithIndividualSelection;
 
          tbContainerPath.ReadOnly = true;
@@ -209,14 +210,14 @@ namespace MoBi.UI.Views
 
          _gridViewBinder.Bind(dto => dto.IsFavorite)
             .WithCaption(Captions.Favorites)
-            .WithWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_CHECK_BOX_WIDTH)
+            .WithWidth(EMBEDDED_CHECK_BOX_WIDTH)
             .WithRepository(x => _checkBoxRepository)
             .WithToolTip(OSPSuite.Assets.ToolTips.FavoritesToolTip)
             .WithOnValueUpdating((o, e) => OnEvent(() => onIsFavoriteSet(o, e.NewValue)));
 
          _colPersistable = _gridViewBinder.Bind(dto => dto.Persistable)
             .WithCaption(AppConstants.Captions.Persistable)
-            .WithWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_CHECK_BOX_WIDTH)
+            .WithWidth(EMBEDDED_CHECK_BOX_WIDTH)
             .WithRepository(x => _checkBoxRepository)
             .WithOnValueUpdating((o, e) => OnEvent(() => onIsPersistableSet(o, e.NewValue)));
 
@@ -224,13 +225,13 @@ namespace MoBi.UI.Views
             .WithCaption(OSPSuite.UI.UIConstants.EMPTY_COLUMN)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(dto => _removeButtonRepository)
-            .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_BUTTON_WIDTH);
+            .WithFixedWidth(EMBEDDED_BUTTON_WIDTH);
 
          _colNavigate = _gridViewBinder.AddUnboundColumn()
             .WithCaption(OSPSuite.UI.UIConstants.EMPTY_COLUMN)
             .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithRepository(dto => _navigateButtonRepository)
-            .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_BUTTON_WIDTH)
+            .WithFixedWidth(EMBEDDED_BUTTON_WIDTH)
             .AsHidden();
 
          gridView.ShowingEditor += (o, e) => OnEvent(onShowingEditor, e);
@@ -424,6 +425,7 @@ namespace MoBi.UI.Views
                   _colFormula.Visible = true;
                   _colRHSFormula.Visible = false;
                   _colButtons.Visible = false;
+                  _colButtons.WithShowInColumnChooser(false);
                   _colDimension.ReadOnly = true;
                   btnAddParameter.Enabled = false;
                   btnLoadParameter.Enabled = false;
@@ -435,6 +437,7 @@ namespace MoBi.UI.Views
                case EditParameterMode.ReadOnly:
                   _colValue.ReadOnly = true;
                   _colButtons.Visible = false;
+                  _colButtons.WithShowInColumnChooser(false);
                   _colPersistable.Visible = false;
                   _colFormula.Visible = true;
                   _colRHSFormula.Visible = true;

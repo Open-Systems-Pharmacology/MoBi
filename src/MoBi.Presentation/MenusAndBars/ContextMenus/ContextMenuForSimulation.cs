@@ -2,8 +2,8 @@
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
+using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.UICommand;
 using OSPSuite.Assets;
@@ -24,7 +24,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       private readonly IContainer _container;
       private readonly IInteractionTasksForSimulation _interactionTask;
       private List<IMenuBarItem> _allMenuItems;
-      private ISimulationRunner _simulationRunner;
+      private readonly ISimulationRunner _simulationRunner;
 
       public ContextMenuForSimulation(IMoBiContext context, IContainer container, IInteractionTasksForSimulation interactionTask)
       {
@@ -57,6 +57,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          {
             _allMenuItems.Add(createCommit(simulation));
          }
+
          if (simulation.OriginalQuantityValues.Any())
          {
             _allMenuItems.Add(createShowDifferences(simulation));
@@ -248,7 +249,6 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithIcon(ApplicationIcons.SimulationConfigure)
             .WithCommandFor<ConfigureSimulationUICommand, IMoBiSimulation>(simulation, _container);
       }
-
 
       private IMenuBarItem exportSimulationResultsToExcel(IMoBiSimulation simulation)
       {

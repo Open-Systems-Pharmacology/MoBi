@@ -82,7 +82,6 @@ namespace MoBi.UI.Views.SimulationView
       public void SetModelDiagram(ISimulationDiagramView subView)
       {
          spliterDiagram.Panel2.FillWith(subView);
-         subView.Overview = modelOverview;
       }
 
       public bool ShowsResults => tabs.SelectedTabPage.Equals(tabResults);

@@ -133,8 +133,8 @@ namespace MoBi.Core.Service
 
    public class When_tracking_no_changes_to_a_quantity_in_a_simulation : concern_for_QuantityValueChangeTracker
    {
-      private IQuantity _quantity;
-      private IMoBiSimulation _simulation;
+      protected IQuantity _quantity;
+      protected IMoBiSimulation _simulation;
 
       protected override void Context()
       {
@@ -160,15 +160,15 @@ namespace MoBi.Core.Service
       }
 
       [Observation]
-      public void the_simulation_should_contain_a_tracker_object_with_the_original_value()
-      {
-         _simulation.OriginalQuantityValues.Count.ShouldBeEqualTo(0);
-      }
-
-      [Observation]
       public void the_event_should_be_published()
       {
          A.CallTo(() => _eventPublisher.PublishEvent(A<SimulationStatusChangedEvent>.That.Matches(e => e.Simulation == _simulation))).MustHaveHappenedTwiceExactly();
+      }
+
+      [Observation]
+      public void the_simulation_should_contain_a_tracker_object_with_the_original_value()
+      {
+         _simulation.OriginalQuantityValues.Count.ShouldBeEqualTo(0);
       }
    }
 
@@ -181,7 +181,7 @@ namespace MoBi.Core.Service
       {
          base.Context();
          _simulation = new MoBiSimulation();
-         
+
          _quantity = new Parameter
          {
             Name = "parameterName",

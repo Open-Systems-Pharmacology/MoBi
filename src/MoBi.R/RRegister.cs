@@ -1,5 +1,6 @@
-﻿using MoBi.Core;
-using MoBi.Core.Domain.Model;
+﻿using MoBi.CLI.Core;
+using MoBi.CLI.Core.MinimalImplementations;
+using MoBi.Core;
 using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Helper;
@@ -11,9 +12,9 @@ using MoBi.Core.Services;
 using MoBi.Presentation;
 using MoBi.Presentation.Serialization.Xml.Serializer;
 using MoBi.Presentation.Settings;
+using MoBi.R.Services;
+using OSPSuite.CLI.Core.MinimalImplementations;
 using MoBi.Presentation.Tasks;
-using MoBi.Presentation.Tasks.Interaction;
-using MoBi.R.MinimalImplementations;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Journal;
@@ -23,7 +24,9 @@ using OSPSuite.Presentation;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.FileLocker;
 using IContainer = OSPSuite.Utility.Container.IContainer;
-using IProjectTask = MoBi.R.Services.IProjectTask;
+using ICoreUserSettings = OSPSuite.Core.ICoreUserSettings;
+using IMoBiCoreUserSettings = MoBi.Core.ICoreUserSettings;
+using ObjectTypeResolver = MoBi.Core.Helper.ObjectTypeResolver;
 
 namespace MoBi.R
 {
@@ -31,10 +34,12 @@ namespace MoBi.R
    {
       public override void RegisterInContainer(IContainer container)
       {
+         container.AddRegister(x => x.FromType<CLIRegister>());
+
          container.AddScanner(scan =>
          {
             scan.AssemblyContainingType<RRegister>();
-            scan.IncludeNamespaceContainingType<IProjectTask>();
+            scan.IncludeNamespaceContainingType<IModuleTask>();
             scan.WithConvention<OSPSuiteRegistrationConvention>();
          });
 
@@ -62,7 +67,7 @@ namespace MoBi.R
          container.Register<IHistoryManagerFactory, HistoryManagerFactory>(LifeStyle.Singleton);
          container.Register<IDiagramManagerFactory, DiagramManagerFactory>(LifeStyle.Singleton);
          container.Register<IDimensionValidator, DimensionValidator>(LifeStyle.Singleton);
-         container.Register<IPresentationUserSettings, IUserSettings, ICoreUserSettings, UserSettings>(LifeStyle.Transient);
+         container.Register<IPresentationUserSettings, IUserSettings, ICoreUserSettings, IMoBiCoreUserSettings, UserSettings>(LifeStyle.Transient);
       }
    }
 }

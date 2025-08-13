@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using OSPSuite.Core.Domain;
 using System.Linq;
-using MoBi.Presentation.Tasks;
-using OSPSuite.Core.Serialization;
-using OSPSuite.Presentation.Services;
+using IProjectTask = MoBi.CLI.Core.Services.IProjectTask;
 using ISerializationTask = MoBi.Presentation.Tasks.ISerializationTask;
 
 namespace MoBi.R.Services

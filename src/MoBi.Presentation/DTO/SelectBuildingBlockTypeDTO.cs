@@ -6,12 +6,12 @@ namespace MoBi.Presentation.DTO
 {
    public enum BuildingBlockType
    {
-      Reaction,
+      Reactions,
       Events,
       SpatialStructure,
-      PassiveTransport,
-      Molecule,
-      Observer,
+      PassiveTransports,
+      Molecules,
+      Observers,
       InitialConditions,
       ParameterValues,
       None
@@ -29,23 +29,23 @@ namespace MoBi.Presentation.DTO
          SelectedBuildingBlockType = BuildingBlockType.None;
          _allowedBuildingBlocks = new List<BuildingBlockType>();
 
-         if (module.Molecules == null)
-            _allowedBuildingBlocks.Add(BuildingBlockType.Molecule);
-
-         if (module.Reactions == null)
-            _allowedBuildingBlocks.Add(BuildingBlockType.Reaction);
-
          if (module.SpatialStructure == null)
             _allowedBuildingBlocks.Add(BuildingBlockType.SpatialStructure);
 
+         if (module.Molecules == null)
+            _allowedBuildingBlocks.Add(BuildingBlockType.Molecules);
+
+         if (module.Reactions == null)
+            _allowedBuildingBlocks.Add(BuildingBlockType.Reactions);
+
          if (module.PassiveTransports == null)
-            _allowedBuildingBlocks.Add(BuildingBlockType.PassiveTransport);
+            _allowedBuildingBlocks.Add(BuildingBlockType.PassiveTransports);
+
+         if (module.Observers == null)
+            _allowedBuildingBlocks.Add(BuildingBlockType.Observers);
 
          if (module.EventGroups == null)
             _allowedBuildingBlocks.Add(BuildingBlockType.Events);
-
-         if (module.Observers == null)
-            _allowedBuildingBlocks.Add(BuildingBlockType.Observer);
 
          _allowedBuildingBlocks.Add(BuildingBlockType.InitialConditions);
          _allowedBuildingBlocks.Add(BuildingBlockType.ParameterValues);

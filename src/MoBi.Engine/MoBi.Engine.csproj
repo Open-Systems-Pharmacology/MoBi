@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <PackageTags>open-systems-pharmacology, ospsuite-components</PackageTags>
@@ -27,8 +27,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Core" Version="13.0.14" />
-    <PackageReference Include="OSPSuite.Assets" Version="13.0.14" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.34" />
+    <PackageReference Include="OSPSuite.Assets" Version="13.0.34" />
   </ItemGroup>
 
   <ItemGroup>

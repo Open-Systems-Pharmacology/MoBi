@@ -15,7 +15,6 @@ using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
-using OSPSuite.Utility.Extensions;
 using ToolTips = MoBi.Assets.ToolTips;
 
 namespace MoBi.UI.Views
@@ -126,7 +125,6 @@ namespace MoBi.UI.Views
       public virtual void BindTo(ContainerDTO dto)
       {
          _screenBinder.BindToSource(dto);
-         initNameControl(dto);
          initParentPathControl(dto);
 
          layoutControlItemGoToSource.Visibility = LayoutVisibilityConvertor.FromBoolean(dto.SourceReference != null);
@@ -138,16 +136,7 @@ namespace MoBi.UI.Views
          editParentPathButton.Visible = dto.ParentPathEditable && !_readOnly;
          btParentPath.Enabled = dto.ParentPathEditable;
       }
-
-      private void initNameControl(ContainerDTO dto)
-      {
-         var isInit = dto.Name.IsNullOrEmpty();
-         editNameButton.Enabled = !isInit;
-         editNameButton.Visible = !isInit && !_readOnly;
-         btName.ReadOnly = !isInit;
-         btName.Enabled = !isInit;
-      }
-
+       
       private EditorButton editNameButton => btName.Properties.Buttons[0];
 
       private EditorButton editParentPathButton => btParentPath.Properties.Buttons[0];
@@ -184,7 +173,6 @@ namespace MoBi.UI.Views
 
       public bool ContainerPropertiesEditable
       {
-         get => cbContainerType.Enabled;
          set
          {
             if (_readOnly && value)
@@ -194,6 +182,17 @@ namespace MoBi.UI.Views
             btName.Enabled = value;
             if (value) return;
             editNameButton.Visible = false;
+         }
+      }
+
+      public bool NameEditable
+      {
+         set
+         {
+            // This control gets readonly to prevent direct typing of the name
+            // is stays enabled to allow the use of the button
+            btName.ReadOnly = !value;
+            editNameButton.Visible = btName.ReadOnly;
          }
       }
 
