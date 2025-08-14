@@ -35,10 +35,10 @@ jobs:
         run: dotnet build MoBi.sln -p:Version=${{env.APP_VERSION}} -p:ExcludeDesigner=true
 
       - name : Test
-        run: dotnet test MoBi.Core.sln -v normal --no-build  --logger:"html;LogFileName=/testLog_Windows.html"
+        run: dotnet test MoBi.sln -v normal --no-build  --logger:"html;LogFileName=/testLog_Windows.html"
 
       - name: Pack the project
-        run: dotnet pack .\MoBi.Core.sln --no-build --no-restore -o ./ -p:PackageVersion=${{env.APP_VERSION}} --configuration=Debug
+        run: dotnet pack .\MoBi.sln --no-build --no-restore -o ./ -p:PackageVersion=${{env.APP_VERSION}} --configuration=Debug
 
       - name: Push test log as artifact
         uses: actions/upload-artifact@v4
