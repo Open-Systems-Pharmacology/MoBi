@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,6 +21,13 @@
 
   <ItemGroup>
     <Folder Include="Domain\" />
+  </ItemGroup>
+
+  <ItemGroup>
+     <None Include="..\..\LICENSE">
+        <Pack>True</Pack>
+        <PackagePath></PackagePath>
+     </None>
   </ItemGroup>
 
 </Project>
