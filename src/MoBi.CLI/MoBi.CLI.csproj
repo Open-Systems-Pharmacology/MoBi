@@ -13,6 +13,7 @@
      <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
      <Version Condition="'$(Version)' == ''">13.0.0</Version>
      <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
+     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
    <ItemGroup>

@@ -2,6 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
+      <PackageLicenseFile>LICENSE</PackageLicenseFile>
 	</PropertyGroup>
 
 
@@ -19,11 +20,13 @@
       <ProjectReference Include="..\MoBi.Assets\MoBi.Assets.csproj" />
       <ProjectReference Include="..\MoBi.Core\MoBi.Core.csproj" />
       <ProjectReference Include="..\MoBi.Presentation\MoBi.Presentation.csproj" />
-	</ItemGroup>
-
-
-	<ItemGroup>
       <ProjectReference Include="..\MoBi.Core\MoBi.Core.csproj" />
 	</ItemGroup>
-
+   <ItemGroup>
+      <None Include="..\..\LICENSE">
+         <Pack>True</Pack>
+         <PackagePath></PackagePath>
+      </None>
+   </ItemGroup>
+   
 </Project>
