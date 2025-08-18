@@ -43,6 +43,8 @@ namespace MoBi.CLI.Core.Services
       DataRepository[] AllObservedDataSets(MoBiProject project);
 
       ParameterIdentification[] AllParameterIdentifications(MoBiProject project);
+
+      string[] AllParameterIdentificationNames(MoBiProject project);
    }
 
    public class ProjectTask : IProjectTask
@@ -58,6 +60,9 @@ namespace MoBi.CLI.Core.Services
 
       public ParameterIdentification[] AllParameterIdentifications(MoBiProject project) =>
          project.AllParameterIdentifications.ToArray();
+
+      public string[] AllParameterIdentificationNames(MoBiProject project) => 
+         project.AllParameterIdentifications.AllNames().ToArray();
 
       public DataRepository[] AllObservedDataSets(MoBiProject project) =>
          project.AllObservedData.ToArray();

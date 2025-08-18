@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.R.Domain;
@@ -34,8 +35,8 @@ namespace MoBi.R.Services
          IndividualBuildingBlock individual = null) =>
          new SimulationConfiguration
          {
-            ModuleConfigurations = moduleConfigurations,
-            ExpressionProfiles = expressionProfiles,
+            ModuleConfigurations = (moduleConfigurations ?? Enumerable.Empty<ModuleConfiguration>()).ToArray(),
+            ExpressionProfiles = (expressionProfiles ?? Enumerable.Empty<ExpressionProfileBuildingBlock>()).ToArray(),
             Individual = individual
          };
 
