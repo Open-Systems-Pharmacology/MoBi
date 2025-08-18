@@ -42,7 +42,7 @@ namespace MoBi.R.Tests.Services
          var moduleConfig = sut.CreateModuleConfiguration(module, parameterValues, initialConditions);
          var moduleConfigurations = new List<ModuleConfiguration> { moduleConfig };
 
-         var config = sut.CreateConfiguration(_simulationName, moduleConfigurations, expressionProfiles, individual);
+         var config = sut.CreateConfiguration(_simulationName, moduleConfigurations, expressionProfiles.ToList(), individual);
          return sut.CreateSimulationFrom(config);
       }
    }

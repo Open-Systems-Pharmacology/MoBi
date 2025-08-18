@@ -14,35 +14,35 @@ namespace MoBi.CLI.Core.Services
    {
       MoBiProject LoadProject(string fileName);
 
-      IReadOnlyList<string> AllModuleNames(MoBiProject moBiProject);
+      string[] AllModuleNames(MoBiProject moBiProject);
 
-      IReadOnlyList<string> AllExpressionProfileNames(MoBiProject moBiProject);
+      string[] AllExpressionProfileNames(MoBiProject moBiProject);
 
-      IReadOnlyList<string> AllIndividualNames(MoBiProject moBiProject);
+      string[] AllIndividualNames(MoBiProject moBiProject);
 
-      IReadOnlyList<string> AllSimulationNames(MoBiProject moBiProject);
+      string[] AllSimulationNames(MoBiProject moBiProject);
 
-      IReadOnlyList<string> AllBuildingBlocksNamesFromModuleName(MoBiProject moBiProject, string moduleName);
+      string[] AllBuildingBlocksNamesFromModuleName(MoBiProject moBiProject, string moduleName);
 
-      IReadOnlyList<Simulation> AllSimulations(MoBiProject moBiProject);
+      Simulation[] AllSimulations(MoBiProject moBiProject);
 
-      IReadOnlyList<IndividualBuildingBlock> AllIndividuals(MoBiProject moBiProject);
+      IndividualBuildingBlock[] AllIndividuals(MoBiProject moBiProject);
 
-      IReadOnlyList<InitialConditionsBuildingBlock> AllInitialConditions(MoBiProject moBiProject);
+      InitialConditionsBuildingBlock[] AllInitialConditions(MoBiProject moBiProject);
 
-      IReadOnlyList<ParameterValuesBuildingBlock> AllParameterValues(MoBiProject moBiProject);
+      ParameterValuesBuildingBlock[] AllParameterValues(MoBiProject moBiProject);
 
       Module ModuleByName(MoBiProject moBiProject, string name);
 
       IndividualBuildingBlock IndividualBuildingBlockByName(MoBiProject moBiProject, string name);
 
-      List<ExpressionProfileBuildingBlock> ExpressionProfileBuildingBlocksByName(MoBiProject moBiProject, params string[] names);
+      ExpressionProfileBuildingBlock[] ExpressionProfileBuildingBlocksByName(MoBiProject moBiProject, params string[] names);
 
       void CloseProject();
 
-      IReadOnlyList<DataRepository> AllObservedDataSets(MoBiProject project);
+      DataRepository[] AllObservedDataSets(MoBiProject project);
 
-      IReadOnlyList<ParameterIdentification> AllParameterIdentifications(MoBiProject project);
+      ParameterIdentification[] AllParameterIdentifications(MoBiProject project);
    }
 
    public class ProjectTask : IProjectTask
@@ -56,23 +56,23 @@ namespace MoBi.CLI.Core.Services
          _contextPersistor = contextPersistor;
       }
 
-      public IReadOnlyList<ParameterIdentification> AllParameterIdentifications(MoBiProject project) =>
-         project.AllParameterIdentifications.ToList();
+      public ParameterIdentification[] AllParameterIdentifications(MoBiProject project) =>
+         project.AllParameterIdentifications.ToArray();
 
-      public IReadOnlyList<DataRepository> AllObservedDataSets(MoBiProject project) =>
-         project.AllObservedData.ToList();
+      public DataRepository[] AllObservedDataSets(MoBiProject project) =>
+         project.AllObservedData.ToArray();
 
-      public IReadOnlyList<string> AllExpressionProfileNames(MoBiProject moBiProject) =>
-         moBiProject.ExpressionProfileCollection.AllNames();
+      public string[] AllExpressionProfileNames(MoBiProject moBiProject) =>
+         moBiProject.ExpressionProfileCollection.AllNames().ToArray();
 
-      public List<ExpressionProfileBuildingBlock> ExpressionProfileBuildingBlocksByName(MoBiProject moBiProject, params string[] names) =>
-         moBiProject.ExpressionProfileCollection.Where(p => names.Contains(p.Name)).ToList();
+      public ExpressionProfileBuildingBlock[] ExpressionProfileBuildingBlocksByName(MoBiProject moBiProject, params string[] names) =>
+         moBiProject.ExpressionProfileCollection.Where(p => names.Contains(p.Name)).ToArray();
 
-      public IReadOnlyList<string> AllModuleNames(MoBiProject moBiProject) =>
-         moBiProject.Modules.AllNames();
+      public string[] AllModuleNames(MoBiProject moBiProject) =>
+         moBiProject.Modules.AllNames().ToArray();
 
-      public IReadOnlyList<string> AllBuildingBlocksNamesFromModuleName(MoBiProject moBiProject, string moduleName) =>
-         moBiProject.ModuleByName(moduleName).BuildingBlocks?.AllNames();
+      public string[] AllBuildingBlocksNamesFromModuleName(MoBiProject moBiProject, string moduleName) =>
+         moBiProject.ModuleByName(moduleName).BuildingBlocks?.AllNames().ToArray();
 
       public MoBiProject LoadProject(string fileName)
       {
@@ -84,11 +84,11 @@ namespace MoBi.CLI.Core.Services
 
       public void CloseProject() => _contextPersistor.CloseProject(_moBiContext);
 
-      public IReadOnlyList<string> AllSimulationNames(MoBiProject moBiProject) =>
-         moBiProject.Simulations.Select(x => x.Name).ToList();
+      public string[] AllSimulationNames(MoBiProject moBiProject) =>
+         moBiProject.Simulations.Select(x => x.Name).ToArray();
 
-      public IReadOnlyList<Simulation> AllSimulations(MoBiProject moBiProject) =>
-         moBiProject.Simulations.Select(x => new Simulation(x)).ToList();
+      public Simulation[] AllSimulations(MoBiProject moBiProject) =>
+         moBiProject.Simulations.Select(x => new Simulation(x)).ToArray();
 
       public Module ModuleByName(MoBiProject moBiProject, string name) =>
          moBiProject.Modules.FindByName(name);
@@ -96,16 +96,16 @@ namespace MoBi.CLI.Core.Services
       public IndividualBuildingBlock IndividualBuildingBlockByName(MoBiProject moBiProject, string name) =>
          moBiProject.IndividualsCollection.FindByName(name);
 
-      public IReadOnlyList<string> AllIndividualNames(MoBiProject moBiProject) =>
-         moBiProject.IndividualsCollection.AllNames();
+      public string[] AllIndividualNames(MoBiProject moBiProject) =>
+         moBiProject.IndividualsCollection.AllNames().ToArray();
 
-      public IReadOnlyList<IndividualBuildingBlock> AllIndividuals(MoBiProject moBiProject) =>
-         moBiProject.IndividualsCollection;
+      public IndividualBuildingBlock[] AllIndividuals(MoBiProject moBiProject) =>
+         moBiProject.IndividualsCollection.ToArray();
 
-      public IReadOnlyList<InitialConditionsBuildingBlock> AllInitialConditions(MoBiProject moBiProject) =>
-         moBiProject.Modules.SelectMany(x => x.InitialConditionsCollection).ToList();
+      public InitialConditionsBuildingBlock[] AllInitialConditions(MoBiProject moBiProject) =>
+         moBiProject.Modules.SelectMany(x => x.InitialConditionsCollection).ToArray();
 
-      public IReadOnlyList<ParameterValuesBuildingBlock> AllParameterValues(MoBiProject moBiProject) =>
-         moBiProject.Modules.SelectMany(x => x.ParameterValuesCollection).ToList();
+      public ParameterValuesBuildingBlock[] AllParameterValues(MoBiProject moBiProject) =>
+         moBiProject.Modules.SelectMany(x => x.ParameterValuesCollection).ToArray();
    }
 }
