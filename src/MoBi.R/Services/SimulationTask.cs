@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.R.Domain;
@@ -11,8 +12,8 @@ namespace MoBi.R.Services
    {
       Simulation CreateSimulationFrom(SimulationConfiguration simulationConfiguration, string simulationName);
 
-      SimulationConfiguration CreateConfiguration(List<ModuleConfiguration> moduleConfigurations = null,
-         List<ExpressionProfileBuildingBlock> expressionProfiles = null,
+      SimulationConfiguration CreateConfiguration(IReadOnlyList<ModuleConfiguration> moduleConfigurations = null,
+         IReadOnlyList<ExpressionProfileBuildingBlock> expressionProfiles = null,
          IndividualBuildingBlock individual = null);
 
       ModuleConfiguration CreateModuleConfiguration(Module module,
@@ -29,13 +30,13 @@ namespace MoBi.R.Services
          _simulationFactory = simulationFactory;
       }
 
-      public SimulationConfiguration CreateConfiguration(List<ModuleConfiguration> moduleConfigurations = null,
-         List<ExpressionProfileBuildingBlock> expressionProfiles = null,
+      public SimulationConfiguration CreateConfiguration(IReadOnlyList<ModuleConfiguration> moduleConfigurations = null,
+         IReadOnlyList<ExpressionProfileBuildingBlock> expressionProfiles = null,
          IndividualBuildingBlock individual = null) =>
          new SimulationConfiguration
          {
-            ModuleConfigurations = moduleConfigurations,
-            ExpressionProfiles = expressionProfiles,
+            ModuleConfigurations = (moduleConfigurations ?? Enumerable.Empty<ModuleConfiguration>()).ToArray(),
+            ExpressionProfiles = (expressionProfiles ?? Enumerable.Empty<ExpressionProfileBuildingBlock>()).ToArray(),
             Individual = individual
          };
 
@@ -49,9 +50,7 @@ namespace MoBi.R.Services
             SelectedInitialCondition = selectedInitialCondition
          };
 
-      public Simulation CreateSimulationFrom(SimulationConfiguration simulationConfiguration, string simulationName)
-      {
-         return _simulationFactory.CreateSimulation(simulationConfiguration, simulationName);
-      }
+      public Simulation CreateSimulationFrom(SimulationConfiguration simulationConfiguration, string simulationName) => 
+         _simulationFactory.CreateSimulation(simulationConfiguration, simulationName);
    }
 }

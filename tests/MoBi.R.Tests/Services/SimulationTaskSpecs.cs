@@ -42,7 +42,7 @@ internal class when_creating_from_mobi_project : concern_for_SimulationTask
    protected Simulation _simulation;
 
    protected IndividualBuildingBlock _individualForSimulation;
-   protected List<ExpressionProfileBuildingBlock> _expressionProfilesForSimulation;
+   protected IReadOnlyList<ExpressionProfileBuildingBlock> _expressionProfilesForSimulation;
    protected InitialConditionsBuildingBlock _initialConditionForModule;
    protected Module _moduleForSimulation;
    protected ParameterValuesBuildingBlock _parameterValuesForModule;
@@ -57,7 +57,7 @@ internal class when_creating_from_mobi_project : concern_for_SimulationTask
 
       _moduleForSimulation = _projectTask.ModuleByName(_project, "Module1");
       _individualForSimulation = _projectTask.IndividualBuildingBlockByName(_project, "European (P-gp modified, CYP3A4 36 h)");
-      _expressionProfilesForSimulation = _projectTask.ExpressionProfileBuildingBlocksByName(_project, "UDPGT1|Human|Healthy");
+      _expressionProfilesForSimulation = _projectTask.ExpressionProfileBuildingBlocksByName(_project, new string[] {"UDPGT1|Human|Healthy"});
       _initialConditionForModule = _moduleTask.InitialConditionBuildingBlockByName(_moduleForSimulation, "Initial Conditions");
       _parameterValuesForModule = _moduleTask.ParameterValueBuildingBlockByName(_moduleForSimulation, "Parameter Values");
       _moduleConfiguration = sut.CreateModuleConfiguration(_moduleForSimulation, _parameterValuesForModule, _initialConditionForModule);
