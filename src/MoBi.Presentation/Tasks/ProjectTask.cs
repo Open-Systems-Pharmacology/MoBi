@@ -343,15 +343,5 @@ namespace MoBi.Presentation.Tasks
 
          return true;
       }
-
-      public Task ExportCurrentProjectToSnapshot()
-      {
-         throw new System.NotImplementedException();
-      }
-
-      public void LoadProjectFromSnapshot()
-      {
-         throw new System.NotImplementedException();
-      }
    }
 }
