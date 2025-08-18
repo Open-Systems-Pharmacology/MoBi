@@ -117,5 +117,7 @@ namespace MoBi.CLI.Core.Services
 
       public ParameterValuesBuildingBlock[] AllParameterValues(MoBiProject moBiProject) =>
          moBiProject.Modules.SelectMany(x => x.ParameterValuesCollection).ToArray();
+
+      public string[] AllModuleNames(MoBiProject moBiProject) => moBiProject.Modules.AllNames().ToArray();
    }
 }
