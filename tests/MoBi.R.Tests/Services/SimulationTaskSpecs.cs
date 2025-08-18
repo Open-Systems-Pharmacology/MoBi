@@ -43,9 +43,7 @@ internal class when_creating_from_mobi_project : concern_for_SimulationTask
 
    protected IndividualBuildingBlock _individualForSimulation;
    protected IReadOnlyList<ExpressionProfileBuildingBlock> _expressionProfilesForSimulation;
-   protected InitialConditionsBuildingBlock _initialConditionForModule;
    protected Module _moduleForSimulation;
-   protected ParameterValuesBuildingBlock _parameterValuesForModule;
    protected ModuleConfiguration _moduleConfiguration;
    protected List<ModuleConfiguration> _moduleConfigurations;
    protected SimulationConfiguration _simulationConfig;
@@ -58,9 +56,8 @@ internal class when_creating_from_mobi_project : concern_for_SimulationTask
       _moduleForSimulation = _projectTask.ModuleByName(_project, "Module1");
       _individualForSimulation = _projectTask.IndividualBuildingBlockByName(_project, "European (P-gp modified, CYP3A4 36 h)");
       _expressionProfilesForSimulation = _projectTask.ExpressionProfileBuildingBlocksByName(_project, new string[] {"UDPGT1|Human|Healthy"});
-      _initialConditionForModule = _moduleTask.InitialConditionBuildingBlockByName(_moduleForSimulation, "Initial Conditions");
-      _parameterValuesForModule = _moduleTask.ParameterValueBuildingBlockByName(_moduleForSimulation, "Parameter Values");
-      _moduleConfiguration = sut.CreateModuleConfiguration(_moduleForSimulation, _parameterValuesForModule, _initialConditionForModule);
+
+      _moduleConfiguration = sut.CreateModuleConfiguration(_moduleForSimulation, "Parameter Values", "Initial Conditions");
       _moduleConfigurations = [_moduleConfiguration];
 
       _simulationConfig = sut.CreateConfiguration(_moduleConfigurations, _expressionProfilesForSimulation, _individualForSimulation);
@@ -117,28 +114,57 @@ internal class when_creating_simulation_without_a_name : when_creating_an_invali
    }
 }
 
-internal class when_creating_simulation_from_pkml_module : concern_for_SimulationTask
+internal class when_creating_simulation_from_pkml_module_and_the_selected_parameter_values_are_not_found : concern_for_SimulationTask
 {
-   private Simulation _simulation;
+   private Module _module;
 
    protected override void Because()
    {
-      var module = _moduleTask.LoadModulesFromFile(DataTestFileFullPath("Second module.pkml")).First();
-      _simulationName = "SimFromPKML";
-      _simulation = createSimulationFromModule(module);
+      _module = _moduleTask.LoadModulesFromFile(DataTestFileFullPath("Second module.pkml")).First();
    }
 
-   private Simulation createSimulationFromModule(Module module)
-   {
-      var individual = _projectTask.IndividualBuildingBlockByName(_project, "European (P-gp modified, CYP3A4 36 h)");
-      var expressionProfiles = _projectTask.ExpressionProfileBuildingBlocksByName(_project, "UDPGT1|Human|Healthy");
-      var initialConditions = _moduleTask.InitialConditionBuildingBlockByName(module, "Initial Conditions");
-      var parameterValues = _moduleTask.ParameterValueBuildingBlockByName(module, "Parameter Values");
-      var moduleConfig = sut.CreateModuleConfiguration(module, parameterValues, initialConditions);
-      var moduleConfigurations = new List<ModuleConfiguration> { moduleConfig };
+   [Observation]
+   public void the_exception_should_be_thrown() =>
+      The.Action(() => sut.CreateModuleConfiguration(_module, "Parameter Values")).ShouldThrowAn<InvalidArgumentException>();
+}
 
-      var config = sut.CreateConfiguration(moduleConfigurations, expressionProfiles, individual);
-      return sut.CreateSimulationFrom(config, _simulationName);
+internal class when_creating_simulation_from_pkml_module_and_the_selected_initial_conditions_are_not_found : concern_for_SimulationTask
+{
+   private Module _module;
+
+   protected override void Because()
+   {
+      _module = _moduleTask.LoadModulesFromFile(DataTestFileFullPath("Second module.pkml")).First();
+      _module.Add(new ParameterValuesBuildingBlock().WithName("Parameter Values"));
+   }
+
+   [Observation]
+   public void the_exception_should_be_thrown() =>
+      The.Action(() => sut.CreateModuleConfiguration(_module, null, "Initial Conditions")).ShouldThrowAn<InvalidArgumentException>();
+}
+
+internal class when_creating_simulation_from_pkml_module : concern_for_SimulationTask
+{
+   private Simulation _simulation;
+   private List<ModuleConfiguration> _moduleConfigurations;
+   
+   private IndividualBuildingBlock _individual;
+   private ExpressionProfileBuildingBlock[] _expressionProfiles;
+
+   protected override void Context()
+   {
+      base.Context();
+      var module = _moduleTask.LoadModulesFromFile(DataTestFileFullPath("Second module.pkml")).First();
+      _simulationName = "SimFromPKML";
+      _individual = _projectTask.IndividualBuildingBlockByName(_project, "European (P-gp modified, CYP3A4 36 h)");
+      _expressionProfiles = _projectTask.ExpressionProfileBuildingBlocksByName(_project, "UDPGT1|Human|Healthy");
+      var moduleConfig = sut.CreateModuleConfiguration(module);
+      _moduleConfigurations = [moduleConfig];
+   }
+
+   protected override void Because()
+   {
+      _simulation = sut.CreateSimulationFrom(sut.CreateConfiguration(_moduleConfigurations, _expressionProfiles, _individual), _simulationName);
    }
 
    [Observation]

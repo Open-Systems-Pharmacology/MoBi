@@ -1354,6 +1354,17 @@ namespace MoBi.Assets
 
          public static string CannotFindReactionForParameter(string parameterName) => $"Cannot find reaction for parameter {parameterName}";
          public static string CannotFindTransportForParameter(string parameterName) => $"Cannot find transport for parameter {parameterName}";
+
+         public static string CannotFindObjectWithName(string namedObjectToSelect, IReadOnlyList<string> allNames, string objectType)
+         {
+            var sb = new StringBuilder();
+            sb.AppendLine();
+            sb.Append($"Could not find '{objectType}' named '{namedObjectToSelect}' among:");
+            sb.AppendLine();
+            sb.Append(namesList(allNames));
+
+            return sb.ToString();
+         }
       }
 
       public static class Captions
@@ -2048,15 +2059,6 @@ namespace MoBi.Assets
             return sb.ToString();
          }
 
-         private static string namesList(IReadOnlyList<string> allNames)
-         {
-            var sb = new StringBuilder();
-            sb.AppendLine();
-            sb.Append(" - ");
-            sb.AppendLine(allNames.ToString("\n - "));
-            return sb.ToString();
-         }
-
          public static string BuildingBlockAlreadyContains(IReadOnlyList<string> paths)
          {
             var pathsNotAdded = paths.Count;
@@ -2435,6 +2437,15 @@ namespace MoBi.Assets
       public class MoBiObjectTypes
       {
          public static readonly string Data = "Data";
+      }
+
+      private static string namesList(IReadOnlyList<string> allNames)
+      {
+         var sb = new StringBuilder();
+         sb.AppendLine();
+         sb.Append(" - ");
+         sb.AppendLine(allNames.ToString("\n - "));
+         return sb.ToString();
       }
    }
 }
