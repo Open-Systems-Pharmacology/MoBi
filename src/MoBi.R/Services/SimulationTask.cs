@@ -51,8 +51,7 @@ namespace MoBi.R.Services
 
       public Simulation CreateSimulationFrom(SimulationConfiguration simulationConfiguration, string simulationName)
       {
-         simulationConfiguration.SimulationName = simulationName;
-         return _simulationFactory.CreateSimulation(simulationConfiguration);
+         return _simulationFactory.CreateSimulation(simulationConfiguration, simulationName);
       }
    }
 }
