@@ -13,6 +13,8 @@ namespace MoBi.R.Services
       ParameterValuesBuildingBlock[] AllParameterValuesFromModule(Module module);
       InitialConditionsBuildingBlock InitialConditionBuildingBlockByName(Module module, string name);
       ParameterValuesBuildingBlock ParameterValueBuildingBlockByName(Module module, string name);
+      string[] AllInitialConditionsBuildingBlockNames(Module module);
+      string[] AllParameterValueBuildingBlockNames(Module module);
       Module[] LoadModulesFromFile(string filePath);
    }
 

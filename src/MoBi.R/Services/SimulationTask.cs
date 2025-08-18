@@ -9,9 +9,9 @@ namespace MoBi.R.Services
 {
    public interface ISimulationTask
    {
-      Simulation CreateSimulationFrom(SimulationConfiguration simulationConfiguration);
+      Simulation CreateSimulationFrom(SimulationConfiguration simulationConfiguration, string simulationName);
 
-      SimulationConfiguration CreateConfiguration(string simulationName, IReadOnlyList<ModuleConfiguration> moduleConfigurations = null,
+      SimulationConfiguration CreateConfiguration(List<ModuleConfiguration> moduleConfigurations = null,
          List<ExpressionProfileBuildingBlock> expressionProfiles = null,
          IndividualBuildingBlock individual = null);
 
@@ -34,7 +34,6 @@ namespace MoBi.R.Services
          IndividualBuildingBlock individual = null) =>
          new SimulationConfiguration
          {
-            SimulationName = simulationName,
             ModuleConfigurations = moduleConfigurations,
             ExpressionProfiles = expressionProfiles,
             Individual = individual
@@ -50,7 +49,9 @@ namespace MoBi.R.Services
             SelectedInitialCondition = selectedInitialCondition
          };
 
-      public Simulation CreateSimulationFrom(SimulationConfiguration simulationConfiguration) =>
-         _simulationFactory.CreateSimulation(simulationConfiguration);
+      public Simulation CreateSimulationFrom(SimulationConfiguration simulationConfiguration, string simulationName)
+      {
+         return _simulationFactory.CreateSimulation(simulationConfiguration, simulationName);
+      }
    }
 }
