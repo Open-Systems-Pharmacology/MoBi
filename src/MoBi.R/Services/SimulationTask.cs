@@ -11,8 +11,8 @@ namespace MoBi.R.Services
    {
       Simulation CreateSimulationFrom(SimulationConfiguration simulationConfiguration, string simulationName);
 
-      SimulationConfiguration CreateConfiguration(List<ModuleConfiguration> moduleConfigurations = null,
-         List<ExpressionProfileBuildingBlock> expressionProfiles = null,
+      SimulationConfiguration CreateConfiguration(IReadOnlyList<ModuleConfiguration> moduleConfigurations = null,
+         IReadOnlyList<ExpressionProfileBuildingBlock> expressionProfiles = null,
          IndividualBuildingBlock individual = null);
 
       ModuleConfiguration CreateModuleConfiguration(Module module,
@@ -29,8 +29,8 @@ namespace MoBi.R.Services
          _simulationFactory = simulationFactory;
       }
 
-      public SimulationConfiguration CreateConfiguration(string simulationName, IReadOnlyList<ModuleConfiguration> moduleConfigurations = null,
-         List<ExpressionProfileBuildingBlock> expressionProfiles = null,
+      public SimulationConfiguration CreateConfiguration(IReadOnlyList<ModuleConfiguration> moduleConfigurations = null,
+         IReadOnlyList<ExpressionProfileBuildingBlock> expressionProfiles = null,
          IndividualBuildingBlock individual = null) =>
          new SimulationConfiguration
          {

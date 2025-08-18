@@ -42,7 +42,7 @@ internal class when_creating_from_mobi_project : concern_for_SimulationTask
    protected Simulation _simulation;
 
    protected IndividualBuildingBlock _individualForSimulation;
-   protected List<ExpressionProfileBuildingBlock> _expressionProfilesForSimulation;
+   protected ExpressionProfileBuildingBlock[] _expressionProfilesForSimulation;
    protected InitialConditionsBuildingBlock _initialConditionForModule;
    protected Module _moduleForSimulation;
    protected ParameterValuesBuildingBlock _parameterValuesForModule;
