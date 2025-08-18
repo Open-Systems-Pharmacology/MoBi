@@ -42,7 +42,7 @@ internal class when_creating_from_mobi_project : concern_for_SimulationTask
    protected Simulation _simulation;
 
    protected IndividualBuildingBlock _individualForSimulation;
-   protected List<ExpressionProfileBuildingBlock> _expressionProfilesForSimulation;
+   protected IReadOnlyList<ExpressionProfileBuildingBlock> _expressionProfilesForSimulation;
    protected Module _moduleForSimulation;
    protected ModuleConfiguration _moduleConfiguration;
    protected List<ModuleConfiguration> _moduleConfigurations;
@@ -55,7 +55,7 @@ internal class when_creating_from_mobi_project : concern_for_SimulationTask
 
       _moduleForSimulation = _projectTask.ModuleByName(_project, "Module1");
       _individualForSimulation = _projectTask.IndividualBuildingBlockByName(_project, "European (P-gp modified, CYP3A4 36 h)");
-      _expressionProfilesForSimulation = _projectTask.ExpressionProfileBuildingBlocksByName(_project, "UDPGT1|Human|Healthy");
+      _expressionProfilesForSimulation = _projectTask.ExpressionProfileBuildingBlocksByName(_project, new string[] {"UDPGT1|Human|Healthy"});
 
       _moduleConfiguration = sut.CreateModuleConfiguration(_moduleForSimulation, "Parameter Values", "Initial Conditions");
       _moduleConfigurations = [_moduleConfiguration];
@@ -147,8 +147,9 @@ internal class when_creating_simulation_from_pkml_module : concern_for_Simulatio
 {
    private Simulation _simulation;
    private List<ModuleConfiguration> _moduleConfigurations;
-   private List<ExpressionProfileBuildingBlock> _expressionProfiles;
+   
    private IndividualBuildingBlock _individual;
+   private ExpressionProfileBuildingBlock[] _expressionProfiles;
 
    protected override void Context()
    {

@@ -9,11 +9,11 @@ namespace MoBi.R.Services
 {
    public interface IModuleTask
    {
-      IReadOnlyList<InitialConditionsBuildingBlock> AllInitialConditionsFromModule(Module module);
-      IReadOnlyList<ParameterValuesBuildingBlock> AllParameterValuesFromModule(Module module);
+      InitialConditionsBuildingBlock[] AllInitialConditionsFromModule(Module module);
+      ParameterValuesBuildingBlock[] AllParameterValuesFromModule(Module module);
       InitialConditionsBuildingBlock InitialConditionBuildingBlockByName(Module module, string name);
       ParameterValuesBuildingBlock ParameterValueBuildingBlockByName(Module module, string name);
-      IReadOnlyList<Module> LoadModulesFromFile(string filePath);
+      Module[] LoadModulesFromFile(string filePath);
       string[] AllInitialConditionsBuildingBlockNames(Module module);
       string[] AllParameterValueBuildingBlockNames(Module module);
    }
@@ -27,20 +27,20 @@ namespace MoBi.R.Services
          _serializationTask = serializationTask;
       }
 
-      public IReadOnlyList<Module> LoadModulesFromFile(string filePath) =>
-         _serializationTask.LoadMany<Module>(filePath).ToList();
+      public Module[] LoadModulesFromFile(string filePath) =>
+         _serializationTask.LoadMany<Module>(filePath).ToArray();
 
       public InitialConditionsBuildingBlock InitialConditionBuildingBlockByName(Module module, string name) =>
          module.InitialConditionsCollection.FindByName(name);
 
-      public IReadOnlyList<InitialConditionsBuildingBlock> AllInitialConditionsFromModule(Module module) =>
-         module.InitialConditionsCollection.ToList();
+      public InitialConditionsBuildingBlock[] AllInitialConditionsFromModule(Module module) =>
+         module.InitialConditionsCollection.ToArray();
 
       public ParameterValuesBuildingBlock ParameterValueBuildingBlockByName(Module module, string name) =>
          module.ParameterValuesCollection.FindByName(name);
 
-      public IReadOnlyList<ParameterValuesBuildingBlock> AllParameterValuesFromModule(Module module) =>
-         module.ParameterValuesCollection;
+      public ParameterValuesBuildingBlock[] AllParameterValuesFromModule(Module module) =>
+         module.ParameterValuesCollection.ToArray();
 
       public string[] AllInitialConditionsBuildingBlockNames(Module module) => AllInitialConditionsFromModule(module).AllNames().ToArray();
 
