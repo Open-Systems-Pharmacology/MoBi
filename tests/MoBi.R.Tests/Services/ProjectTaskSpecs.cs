@@ -2,12 +2,12 @@
 using System.Linq;
 using MoBi.CLI.Core.Services;
 using MoBi.Core.Domain.Model;
-using MoBi.R.Services;
 using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
+using OSPSuite.R.Domain;
 using OSPSuite.R.Services;
 using static MoBi.R.Tests.HelperForSpecs;
 
@@ -129,6 +129,56 @@ namespace MoBi.R.Tests.Services
          _simulationNames.ShouldNotBeNull();
          _simulationNames.Count.ShouldBeEqualTo(2);
          _simulationNames.ShouldOnlyContain("Simulation1", "Simulation2");
+      }
+   }
+
+   internal class when_retrieving_a_present_simulation_by_name : concern_for_ProjectTask
+   {
+      private MoBiProject _project;
+      private Simulation _simulation;
+
+      protected override void Context()
+      {
+         base.Context();
+
+         var projectFile = DataTestFileFullPath("SampleProjectWith2Simulations.mbp3");
+         _project = sut.LoadProject(projectFile);
+      }
+
+      protected override void Because()
+      {
+         _simulation = sut.SimulationByName(_project, "Simulation1");
+      }
+
+      [Observation]
+      public void should_return_simulation_names()
+      {
+         _simulation.Name.ShouldBeEqualTo("Simulation1");
+      }
+   }
+
+   internal class when_retrieving_a_not_present_simulation_by_name : concern_for_ProjectTask
+   {
+      private MoBiProject _project;
+      private Simulation _simulation;
+
+      protected override void Context()
+      {
+         base.Context();
+
+         var projectFile = DataTestFileFullPath("SampleProjectWith2Simulations.mbp3");
+         _project = sut.LoadProject(projectFile);
+      }
+
+      protected override void Because()
+      {
+         _simulation = sut.SimulationByName(_project, "trala");
+      }
+
+      [Observation]
+      public void should_return_simulation_names()
+      {
+         _simulation.ShouldBeNull();
       }
    }
 }
