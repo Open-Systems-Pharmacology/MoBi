@@ -9,10 +9,10 @@ namespace MoBi.R.Services
 {
    public interface ISimulationTask
    {
-      Simulation CreateSimulationFrom(SimulationConfiguration simulationConfiguration);
+      Simulation CreateSimulationFrom(SimulationConfiguration simulationConfiguration, string simulationName);
 
-      SimulationConfiguration CreateConfiguration(string simulationName, IReadOnlyList<ModuleConfiguration> moduleConfigurations = null,
-         List<ExpressionProfileBuildingBlock> expressionProfiles = null,
+      SimulationConfiguration CreateConfiguration(IReadOnlyList<ModuleConfiguration> moduleConfigurations = null,
+         IReadOnlyList<ExpressionProfileBuildingBlock> expressionProfiles = null,
          IndividualBuildingBlock individual = null);
 
       ModuleConfiguration CreateModuleConfiguration(Module module,
@@ -29,12 +29,11 @@ namespace MoBi.R.Services
          _simulationFactory = simulationFactory;
       }
 
-      public SimulationConfiguration CreateConfiguration(string simulationName, IReadOnlyList<ModuleConfiguration> moduleConfigurations = null,
-         List<ExpressionProfileBuildingBlock> expressionProfiles = null,
+      public SimulationConfiguration CreateConfiguration(IReadOnlyList<ModuleConfiguration> moduleConfigurations = null,
+         IReadOnlyList<ExpressionProfileBuildingBlock> expressionProfiles = null,
          IndividualBuildingBlock individual = null) =>
          new SimulationConfiguration
          {
-            SimulationName = simulationName,
             ModuleConfigurations = moduleConfigurations,
             ExpressionProfiles = expressionProfiles,
             Individual = individual
@@ -50,7 +49,7 @@ namespace MoBi.R.Services
             SelectedInitialCondition = selectedInitialCondition
          };
 
-      public Simulation CreateSimulationFrom(SimulationConfiguration simulationConfiguration) =>
-         _simulationFactory.CreateSimulation(simulationConfiguration);
+      public Simulation CreateSimulationFrom(SimulationConfiguration simulationConfiguration, string simulationName) => 
+         _simulationFactory.CreateSimulation(simulationConfiguration, simulationName);
    }
 }
