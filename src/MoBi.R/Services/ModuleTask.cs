@@ -14,6 +14,8 @@ namespace MoBi.R.Services
       InitialConditionsBuildingBlock InitialConditionBuildingBlockByName(Module module, string name);
       ParameterValuesBuildingBlock ParameterValueBuildingBlockByName(Module module, string name);
       IReadOnlyList<Module> LoadModulesFromFile(string filePath);
+      string[] AllInitialConditionsBuildingBlockNames(Module module);
+      string[] AllParameterValueBuildingBlockNames(Module module);
    }
 
    public class ModuleTask : IModuleTask

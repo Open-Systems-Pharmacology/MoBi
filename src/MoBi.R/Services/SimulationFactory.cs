@@ -12,7 +12,7 @@ namespace MoBi.R.Services
 {
    public interface ISimulationFactory
    {
-      Simulation CreateSimulation(SimulationConfiguration configuration);
+      Simulation CreateSimulation(SimulationConfiguration configuration, string simulationName);
    }
 
    public class SimulationFactory : ISimulationFactory
@@ -30,12 +30,12 @@ namespace MoBi.R.Services
          _forbiddenNamesRetriever = forbiddenNamesRetriever;
       }
 
-      public Simulation CreateSimulation(SimulationConfiguration configuration)
+      public Simulation CreateSimulation(SimulationConfiguration configuration, string simulationName)
       {
-         if (string.IsNullOrWhiteSpace(configuration.SimulationName))
+         if (string.IsNullOrWhiteSpace(simulationName))
             throw new InvalidOperationException("Simulation name is required");
 
-         if (Constants.ILLEGAL_CHARACTERS.Any(configuration.SimulationName.Contains))
+         if (Constants.ILLEGAL_CHARACTERS.Any(simulationName.Contains))
             throw new InvalidOperationException("Simulation name contains illegal characters");
 
          var simulationConfiguration = _configurationFactory.Create();
@@ -52,9 +52,9 @@ namespace MoBi.R.Services
 
          simulationConfiguration.ShouldValidate = true;
 
-         var simulation = _simulationFactory.CreateSimulationAndValidate(simulationConfiguration, configuration.SimulationName);
+         var simulation = _simulationFactory.CreateSimulationAndValidate(simulationConfiguration, simulationName);
 
-         if (_forbiddenNamesRetriever.For(simulation).Contains(configuration.SimulationName))
+         if (_forbiddenNamesRetriever.For(simulation).Contains(simulationName))
             throw new InvalidOperationException("Simulation name is forbidden");
 
          return new Simulation(simulation);
