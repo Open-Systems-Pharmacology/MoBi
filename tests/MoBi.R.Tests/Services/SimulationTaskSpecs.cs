@@ -17,10 +17,30 @@ namespace MoBi.R.Tests.Services;
 
 internal abstract class concern_for_SimulationTask : ContextForIntegration<ISimulationTask>
 {
-   protected Simulation _simulation;
+   protected IModuleTask _moduleTask; 
    protected string _simulationName = "Sim1";
    protected IProjectTask _projectTask;
-   protected IModuleTask _moduleTask;
+   protected MoBiProject _project;
+
+   public override void GlobalContext()
+   {
+      base.GlobalContext();
+      _moduleTask = Api.GetModuleTask();
+
+      _projectTask = Api.GetProjectTask();
+
+      var projectFile = DataTestFileFullPath("SampleProject.mbp3");
+      _project = _projectTask.LoadProject(projectFile);
+
+      sut = Api.GetSimulationTask();
+      
+   }
+}
+
+internal class when_creating_from_mobi_project : concern_for_SimulationTask
+{
+   protected Simulation _simulation;
+
    protected IndividualBuildingBlock _individualForSimulation;
    protected List<ExpressionProfileBuildingBlock> _expressionProfilesForSimulation;
    protected InitialConditionsBuildingBlock _initialConditionForModule;
@@ -28,17 +48,12 @@ internal abstract class concern_for_SimulationTask : ContextForIntegration<ISimu
    protected ParameterValuesBuildingBlock _parameterValuesForModule;
    protected ModuleConfiguration _moduleConfiguration;
    protected List<ModuleConfiguration> _moduleConfigurations;
-   protected MoBiProject _project;
    protected SimulationConfiguration _simulationConfig;
 
-   public override void GlobalContext()
+   protected override void Context()
    {
-      base.GlobalContext();
-      sut = Api.GetSimulationTask();
-      _projectTask = Api.GetProjectTask();
-      _moduleTask = Api.GetModuleTask();
-      var projectFile = DataTestFileFullPath("SampleProject.mbp3");
-      _project = _projectTask.LoadProject(projectFile);
+      base.Context();
+
 
       _moduleForSimulation = _projectTask.ModuleByName(_project, "Module1");
       _individualForSimulation = _projectTask.IndividualBuildingBlockByName(_project, "European (P-gp modified, CYP3A4 36 h)");
@@ -52,7 +67,7 @@ internal abstract class concern_for_SimulationTask : ContextForIntegration<ISimu
    }
 }
 
-internal class when_creating_simulation : concern_for_SimulationTask
+internal class when_creating_simulation : when_creating_from_mobi_project
 {
    protected override void Because()
    {
@@ -75,7 +90,7 @@ internal class when_creating_simulation : concern_for_SimulationTask
    }
 }
 
-internal abstract class when_creating_an_invalid_configuration : concern_for_SimulationTask
+internal abstract class when_creating_an_invalid_configuration : when_creating_from_mobi_project
 {
    [Observation]
    public void should_throw_expected_exception()
@@ -101,3 +116,37 @@ internal class when_creating_simulation_without_a_name : when_creating_an_invali
       _simulationName = null;
    }
 }
+
+internal class when_creating_simulation_from_pkml_module : concern_for_SimulationTask
+{
+   private Simulation _simulation;
+
+   protected override void Because()
+   {
+      var module = _moduleTask.LoadModulesFromFile(DataTestFileFullPath("Second module.pkml")).First();
+      _simulationName = "SimFromPKML";
+      _simulation = CreateSimulationFromModule(module);
+   }
+
+   protected Simulation CreateSimulationFromModule(Module module)
+   {
+      var individual = _projectTask.IndividualBuildingBlockByName(_project, "European (P-gp modified, CYP3A4 36 h)");
+      var expressionProfiles = _projectTask.ExpressionProfileBuildingBlocksByName(_project, "UDPGT1|Human|Healthy");
+      var initialConditions = _moduleTask.InitialConditionBuildingBlockByName(module, "Initial Conditions");
+      var parameterValues = _moduleTask.ParameterValueBuildingBlockByName(module, "Parameter Values");
+      var moduleConfig = sut.CreateModuleConfiguration(module, parameterValues, initialConditions);
+      var moduleConfigurations = new List<ModuleConfiguration> { moduleConfig };
+
+      var config = sut.CreateConfiguration(moduleConfigurations, expressionProfiles, individual);
+      return sut.CreateSimulationFrom(config, _simulationName);
+   }
+
+   [Observation]
+   public void should_return_simulation_name() =>
+      _simulation.Name.ShouldBeEqualTo(_simulationName);
+
+   [Observation]
+   public void should_contain_loaded_module() =>
+      _simulation.Configuration.ModuleConfigurations.Any().ShouldBeTrue();
+}
+
