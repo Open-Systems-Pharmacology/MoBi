@@ -26,14 +26,15 @@ namespace MoBi.Presentation
       [Observation]
       public void all_building_block_types_should_be_allowed()
       {
-         sut.AllowedBuildingBlockTypes.Count.ShouldBeEqualTo(8);
-         sut.AllowedBuildingBlockTypes.ShouldContain(BuildingBlockType.Reaction);
-         sut.AllowedBuildingBlockTypes.ShouldContain(BuildingBlockType.Molecule);
-         sut.AllowedBuildingBlockTypes.ShouldContain(BuildingBlockType.Observer);
-         sut.AllowedBuildingBlockTypes.ShouldContain(BuildingBlockType.Events);
-         sut.AllowedBuildingBlockTypes.ShouldContain(BuildingBlockType.SpatialStructure);
-         sut.AllowedBuildingBlockTypes.ShouldContain(BuildingBlockType.ParameterValues);
-         sut.AllowedBuildingBlockTypes.ShouldContain(BuildingBlockType.InitialConditions);
+         sut.AllowedBuildingBlockTypes.ShouldOnlyContainInOrder(
+            BuildingBlockType.SpatialStructure,
+            BuildingBlockType.Molecules,
+            BuildingBlockType.Reactions,
+            BuildingBlockType.PassiveTransports,
+            BuildingBlockType.Observers,
+            BuildingBlockType.Events,
+            BuildingBlockType.InitialConditions,
+            BuildingBlockType.ParameterValues);
       }
    }
 

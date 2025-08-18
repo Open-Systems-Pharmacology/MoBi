@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <OutputType>WinExe</OutputType>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
@@ -14,19 +13,15 @@
     <Description>MoBi.BatchTool</Description>
     <Version Condition="'$(Version)' == ''">13.0.0</Version>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
-
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
-
   <ItemGroup>
     <Compile Include="..\..\SolutionInfo.cs" Link="Properties\SolutionInfo.cs" />
   </ItemGroup>
-
   <ItemGroup>
     <Content Include="..\..\dimensions\OSPSuite.Dimensions.xml" Link="OSPSuite.Dimensions.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -44,29 +39,27 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-
   <ItemGroup>
     <None Include="..\..\LICENSE">
       <Pack>True</Pack>
-      <PackagePath></PackagePath>
+      <PackagePath>
+      </PackagePath>
     </None>
   </ItemGroup>
-
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Core" Version="13.0.18" />
-    <PackageReference Include="OSPSuite.DevExpress" Version="21.2.15" />
-    <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.73" GeneratePathProperty="true" />
-    <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.75" GeneratePathProperty="true" />
+    <PackageReference Include="DevExpress.Win.Design" Version="21.2.15" Condition="'$(ExcludeDesigner)' != 'true'" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.34" />
+    <PackageReference Include="OSPSuite.DevExpress" Version="21.2.15.1" />
+    <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.74" GeneratePathProperty="true" />
+    <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.76" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModelSolver_CVODES" Version="4.1.0.19" GeneratePathProperty="true" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.119" GeneratePathProperty="true" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\MoBi.Core\MoBi.Core.csproj" />
     <ProjectReference Include="..\MoBi.Engine\MoBi.Engine.csproj" />
     <ProjectReference Include="..\MoBi.UI\MoBi.UI.csproj" />
   </ItemGroup>
-
   <!-- Content comes from Stub.system.data.sqlite.core. Basically, implements the same task as if you added this binary as content and copy to output folder -->
   <PropertyGroup>
     <ContentSQLiteInteropFiles>true</ContentSQLiteInteropFiles>
@@ -74,11 +67,4 @@
     <CleanSQLiteInteropFiles>false</CleanSQLiteInteropFiles>
     <CollectSQLiteInteropFiles>false</CollectSQLiteInteropFiles>
   </PropertyGroup>
-
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <ItemGroup>
-      <WindowsFiles Include="$(TargetDir)x64/SQLite.Interop.dll" />
-    </ItemGroup>
-    <Copy SourceFiles="@(WindowsFiles);" DestinationFolder="$(TargetFolder)" DestinationFiles="@(WindowsFiles-&gt;Replace('x64/SQLite.Interop.dll', 'SQLite.Interop.dll'))" />
-  </Target>
 </Project>

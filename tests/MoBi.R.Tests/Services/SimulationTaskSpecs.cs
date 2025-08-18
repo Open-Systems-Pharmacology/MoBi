@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using MoBi.CLI.Core.Services;
 using MoBi.Core.Domain.Model;
-using MoBi.HelpersForTests;
 using MoBi.R.Services;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.R.Domain;
 using ModuleConfiguration = MoBi.R.Domain.ModuleConfiguration;
+using static MoBi.R.Tests.HelperForSpecs;
 
 namespace MoBi.R.Tests.Services
 {
@@ -28,7 +29,7 @@ namespace MoBi.R.Tests.Services
 
       protected void LoadSampleProject(string fileName)
       {
-         var projectFile = DomainHelperForSpecs.DataTestFileFullPath(fileName);
+         var projectFile = DataTestFileFullPath("SampleProject.mbp3");
          _project = _projectTask.LoadProject(projectFile);
       }
 
@@ -54,7 +55,11 @@ namespace MoBi.R.Tests.Services
       protected override void Context()
       {
          base.Context();
-         LoadSampleProject("SampleProject.mbp3");
+         _projectTask = Api.GetProjectTask();
+         _moduleTask = Api.GetModuleTask();
+         var projectFile = DataTestFileFullPath("SampleProject.mbp3");
+         _project = _projectTask.LoadProject(projectFile);
+         LoadSampleProject();
       }
 
       protected override void Because()
@@ -84,7 +89,7 @@ namespace MoBi.R.Tests.Services
 
       protected override void Because()
       {
-         var module = _moduleTask.LoadModulesFromFile(DomainHelperForSpecs.DataTestFileFullPath("Second module.pkml")).First();
+         var module = _moduleTask.LoadModulesFromFile(DataTestFileFullPath("Second module.pkml")).First();
          _simulationName = "SimFromPKML";
          _simulation = CreateSimulationFromModule(module);
       }

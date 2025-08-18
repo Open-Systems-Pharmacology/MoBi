@@ -179,7 +179,13 @@ namespace MoBi.Presentation.Presenter
 
       public void EnableContainerCriteriaSupport() => _editParameterPresenter.EnableContainerCriteriaSupport();
 
-      public void CopyPathForParameter(ParameterDTO parameter) => _view.CopyToClipBoard(_entityPathResolver.PathFor(parameter.Parameter));
+      public void CopyPathForParameter(ParameterDTO parameter)
+      {
+         if(!parameter.IsIndividualPreview)
+            _view.CopyToClipBoard(_entityPathResolver.PathFor(parameter.Parameter));
+         else
+            _view.CopyToClipBoard(_individualParameterCache[parameter].Path.PathAsString);
+      }
 
       private void createParameterCache()
       {

@@ -4,16 +4,18 @@ using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 using Castle.Facilities.TypedFactory;
+using Microsoft.Extensions.Logging;
 using MoBi.Assets;
 using MoBi.Core;
 using MoBi.Core.Domain.UnitSystem;
+using MoBi.Core.Extensions;
 using MoBi.Core.Serialization.Xml.Services;
-using MoBi.Core.Services;
 using MoBi.Presentation;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Serialization;
 using MoBi.Presentation.Serialization.Xml;
 using MoBi.Presentation.Settings;
+using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Views;
 using MoBi.UI.Diagram;
 using MoBi.UI.Settings;
@@ -26,10 +28,10 @@ using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.PKAnalyses;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Serialization.Xml;
-using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure;
 using OSPSuite.Infrastructure.Container.Castle;
 using OSPSuite.Infrastructure.Import.Core;
+using OSPSuite.Infrastructure.Services;
 using OSPSuite.Presentation;
 using OSPSuite.Presentation.Services;
 using OSPSuite.UI;
@@ -42,6 +44,8 @@ using OSPSuite.Utility.FileLocker;
 using CoreRegister = OSPSuite.Core.CoreRegister;
 using IApplicationSettings = MoBi.Core.IApplicationSettings;
 using IContainer = OSPSuite.Utility.Container.IContainer;
+using ICoreUserSettings = OSPSuite.Core.ICoreUserSettings;
+using IMoBiCoreUserSettings = MoBi.Core.ICoreUserSettings;
 
 namespace MoBi.UI.Services
 {
@@ -104,7 +108,7 @@ namespace MoBi.UI.Services
 
       private static void registerSettings(IContainer container)
       {
-         container.Register<IUserSettings, IPresentationUserSettings, ICoreUserSettings, UserSettings>(LifeStyle.Singleton);
+         container.Register<IUserSettings, IPresentationUserSettings, ICoreUserSettings, IMoBiCoreUserSettings, UserSettings>(LifeStyle.Singleton);
       }
 
       private void initContext(IContainer container)
@@ -147,7 +151,7 @@ namespace MoBi.UI.Services
          persister.Load(dimFactory, configuration.DimensionFilePath);
          dimFactory.AddDimension(Constants.Dimension.NO_DIMENSION);
          container.RegisterImplementationOf<IDimensionFactory>(dimFactory);
-         setupDimensionMergings(dimFactory);
+         dimFactory.SetupDimensionMerging();
       }
 
       // because Setup cannot copy into each user profile app data, copy has to be done here
@@ -187,21 +191,6 @@ namespace MoBi.UI.Services
          return cm;
       }
 
-      private static void setupDimensionMergings(IDimensionFactory factory)
-      {
-         var concentrationDimension = factory.Dimension(Constants.Dimension.MASS_CONCENTRATION);
-         var molarConcentrationDimension = factory.Dimension(Constants.Dimension.MOLAR_CONCENTRATION);
-
-         factory.AddMergingInformation(new MoBiDimensionMergingInformation<IQuantity>(concentrationDimension, molarConcentrationDimension,
-            new MolWeightDimensionConverterForFormulaUsable(concentrationDimension, molarConcentrationDimension)));
-
-         factory.AddMergingInformation(new MoBiDimensionMergingInformation<DataColumn>(concentrationDimension, molarConcentrationDimension,
-            new ConcentrationToMolarConcentrationConverterForDataColumn(concentrationDimension, molarConcentrationDimension)));
-
-         factory.AddMergingInformation(new MoBiDimensionMergingInformation<DataColumn>(molarConcentrationDimension, concentrationDimension,
-            new MolarConcentrationToConcentrationConverterForDataColumn(molarConcentrationDimension, concentrationDimension)));
-      }
-
       public void InitializeForStartup(Action<IContainer> registrationAction)
       {
          Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
@@ -218,6 +207,7 @@ namespace MoBi.UI.Services
 
          container.AddRegister(x => x.FromType<PresenterRegister>());
          container.AddRegister(x => x.FromType<UIRegister>());
+         container.AddRegister(x => x.FromType<InfrastructureRegister>());
 
          // Global Singleton Objects
          container.Register<IExceptionManager, ExceptionManager>(LifeStyle.Singleton);
@@ -226,7 +216,6 @@ namespace MoBi.UI.Services
 
          container.Register<IEventPublisher, EventPublisher>(LifeStyle.Singleton);
          container.Register<IFileLocker, FileLocker>(LifeStyle.Singleton);
-         container.Register<IOSPSuiteLogger, MoBiLogger>(LifeStyle.Singleton);
          container.Register<ISplashScreen, SplashScreen>();
          container.Register<ISplashScreenPresenter, SplashScreenPresenter>();
          container.Register<IProgressUpdater, ProgressUpdater>();
@@ -238,7 +227,22 @@ namespace MoBi.UI.Services
 
          EnvironmentHelper.ApplicationName = () => "mobi";
 
+         configureLogger(container, LogLevel.Information);
+
          registrationAction?.Invoke(container);
+      }
+
+      private void configureLogger(IContainer container, LogLevel logLevel)
+      {
+         var loggerCreator = container.Resolve<ILoggerCreator>();
+
+         loggerCreator
+            .AddLoggingBuilderConfiguration(builder =>
+               builder
+                  .SetMinimumLevel(logLevel)
+                  .AddDebug()
+                  .AddPresenter()
+            );
       }
 
       private static void registerRunOptionsIn(IContainer container)
@@ -261,12 +265,11 @@ namespace MoBi.UI.Services
       {
          container.AddRegister(x => x.FromType<CoreRegister>());
          container.AddRegister(x => x.FromType<Core.CoreRegister>());
-         container.AddRegister(x => x.FromType<InfrastructureRegister>());
       }
 
       private static void registerImport(IContainer container)
       {
-         var mobiDataImporterSettings = new DataImporterSettings {IconName = ApplicationIcons.MoBi.IconName, Caption = "MoBi Data Import"};
+         var mobiDataImporterSettings = new DataImporterSettings { IconName = ApplicationIcons.MoBi.IconName, Caption = "MoBi Data Import" };
          container.RegisterImplementationOf(mobiDataImporterSettings);
       }
 
@@ -287,7 +290,6 @@ namespace MoBi.UI.Services
          container.AddRegister(x => x.FromInstance(register));
          register.PerformMappingForSerializerIn(container);
       }
-
 
       private void initializeSynchronizationContext()
       {

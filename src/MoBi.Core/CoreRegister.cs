@@ -9,15 +9,17 @@ using MoBi.Core.Helper;
 using MoBi.Core.Reporting;
 using MoBi.Core.Serialization.Converter;
 using MoBi.Core.Services;
+using MoBi.Core.Snapshots.Mappers;
 using OSPSuite.Core;
 using OSPSuite.Core.Commands;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Comparison;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Serialization.Xml;
+using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.FuncParser;
 using OSPSuite.Infrastructure.Export;
 using OSPSuite.Infrastructure.Import;
@@ -26,7 +28,14 @@ using OSPSuite.Infrastructure.Serialization;
 using OSPSuite.Infrastructure.Serialization.ORM.History;
 using OSPSuite.TeXReporting;
 using OSPSuite.Utility.Container;
+using Constants = OSPSuite.Core.Domain.Constants;
 using IContainer = OSPSuite.Utility.Container.IContainer;
+using ParameterIdentificationRunModeMapper = MoBi.Core.Snapshots.Mappers.ParameterIdentificationRunModeMapper;
+using IdentificationParameterMapper = MoBi.Core.Snapshots.Mappers.IdentificationParameterMapper;
+using TableFormulaMapper = MoBi.Core.Snapshots.Mappers.TableFormulaMapper;
+using OutputIntervalMapper = MoBi.Core.Snapshots.Mappers.OutputIntervalMapper;
+using OutputSchemaMapper = MoBi.Core.Snapshots.Mappers.OutputSchemaMapper;
+using SolverSettingsMapper = MoBi.Core.Snapshots.Mappers.SolverSettingsMapper;
 
 namespace MoBi.Core
 {
@@ -47,12 +56,27 @@ namespace MoBi.Core
             scan.ExcludeType<GroupRepository>();
             scan.ExcludeType<ClipboardManager>();
             scan.ExcludeType<ApplicationSettings>();
-            scan.ExcludeType<MoBiLogger>();
             scan.ExcludeNamespaceContainingType<IMoBiObjectConverter>();
             scan.ExcludeNamespaceContainingType<ProjectReporter>();
             scan.ExcludeNamespaceContainingType<MoBiSimulationDiffBuilder>();
+            scan.ExcludeNamespaceContainingType<ProjectMapper>();
             scan.WithConvention(new OSPSuiteRegistrationConvention(registerConcreteType: true));
          });
+
+         // Registered to satisfy the repository of ISnapshotMapperSpecification
+         container.AddScanner(scan =>
+         {
+            scan.AssemblyContainingType<CoreRegister>();
+            scan.IncludeNamespaceContainingType<ProjectMapper>();
+            scan.WithConvention<RegisterTypeConvention<ISnapshotMapperSpecification>>();
+         });
+         container.Register<OSPSuite.Core.Snapshots.Mappers.ParameterIdentificationRunModeMapper, ParameterIdentificationRunModeMapper>();
+         container.Register<OSPSuite.Core.Snapshots.Mappers.IdentificationParameterMapper, IdentificationParameterMapper>();
+         container.Register<OSPSuite.Core.Snapshots.Mappers.TableFormulaMapper, TableFormulaMapper>();
+         container.Register<OSPSuite.Core.Snapshots.Mappers.OutputIntervalMapper, OutputIntervalMapper>();
+         container.Register<OSPSuite.Core.Snapshots.Mappers.OutputSchemaMapper, OutputSchemaMapper>();
+         container.Register<OSPSuite.Core.Snapshots.Mappers.SolverSettingsMapper, SolverSettingsMapper>();
+
 
          container.Register<IMoBiContext, IOSPSuiteExecutionContext, IWorkspace, MoBiContext>(LifeStyle.Singleton);
          container.Register<OSPSuite.Core.IApplicationSettings, IApplicationSettings, ApplicationSettings>(LifeStyle.Singleton);

@@ -36,11 +36,16 @@ namespace MoBi.Core.Services
          if (buildingBlock == null)
             return;
 
-         if (shouldConvertToExtensionModule(buildingBlock, conversionOption)) 
+         if (shouldConvertToExtensionModule(buildingBlock, conversionOption))
             buildingBlock.Module.IsPKSimModule = false;
 
          if (shouldConvertToPKSimModule(buildingBlock, conversionOption))
             buildingBlock.Module.IsPKSimModule = true;
+
+         if (buildingBlock is IndividualBuildingBlock individual)
+            individual.SnapshotOriginModuleId = null;
+         else if (buildingBlock is ExpressionProfileBuildingBlock expressionProfileBuildingBlock)
+            expressionProfileBuildingBlock.SnapshotOriginModuleId = null;
 
          buildingBlock.Version = newVersion;
 

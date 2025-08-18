@@ -176,7 +176,7 @@ namespace MoBi.Presentation.Tasks
          base.Context();
          _module = new Module();
          _presenter = A.Fake<ISelectBuildingBlockTypePresenter>();
-         A.CallTo(() => _presenter.GetBuildingBlockType(_module)).Returns(BuildingBlockType.Observer);
+         A.CallTo(() => _presenter.GetBuildingBlockType(_module)).Returns(BuildingBlockType.Observers);
          A.CallTo(() => _context.ApplicationController.Start<ISelectBuildingBlockTypePresenter>()).Returns(_presenter);
          A.CallTo(() => _context.ApplicationController.Start<ISelectBuildingBlockTypePresenter>()).Returns(_presenter);
 
@@ -291,7 +291,7 @@ namespace MoBi.Presentation.Tasks
          _module = new Module();
          _observerList = new List<ObserverBuildingBlock> { new ObserverBuildingBlock().WithId("observer_from_PKML") };
          _presenter = A.Fake<ISelectBuildingBlockTypePresenter>();
-         A.CallTo(() => _presenter.GetBuildingBlockType(_module)).Returns(BuildingBlockType.Observer);
+         A.CallTo(() => _presenter.GetBuildingBlockType(_module)).Returns(BuildingBlockType.Observers);
          A.CallTo(() => _context.ApplicationController.Start<ISelectBuildingBlockTypePresenter>()).Returns(_presenter);
          A.CallTo(() => _context.ApplicationController.Start<ISelectBuildingBlockTypePresenter>()).Returns(_presenter);
          A.CallTo(() => _context.InteractionTask.AskForFileToOpen(A<string>.Ignored, A<string>.Ignored, A<string>.Ignored)).Returns("observer_file");
@@ -325,7 +325,7 @@ namespace MoBi.Presentation.Tasks
          _observerList = new List<ObserverBuildingBlock>
             { new ObserverBuildingBlock().WithId("observer_from_PKML"), new ObserverBuildingBlock().WithId("SecondId") };
          _presenter = A.Fake<ISelectBuildingBlockTypePresenter>();
-         A.CallTo(() => _presenter.GetBuildingBlockType(_module)).Returns(BuildingBlockType.Observer);
+         A.CallTo(() => _presenter.GetBuildingBlockType(_module)).Returns(BuildingBlockType.Observers);
          A.CallTo(() => _context.ApplicationController.Start<ISelectBuildingBlockTypePresenter>()).Returns(_presenter);
          A.CallTo(() => _context.ApplicationController.Start<ISelectBuildingBlockTypePresenter>()).Returns(_presenter);
          A.CallTo(() => _context.InteractionTask.AskForFileToOpen(A<string>.Ignored, A<string>.Ignored, A<string>.Ignored)).Returns("observer_file");

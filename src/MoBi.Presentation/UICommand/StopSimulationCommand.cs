@@ -1,8 +1,5 @@
-using OSPSuite.Presentation.MenuAndBars;
-using MoBi.Core.Services;
-using MoBi.Presentation.Presenter;
 using MoBi.Core.Domain.Model;
-using OSPSuite.Core.Services;
+using MoBi.Presentation.Tasks;
 using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.UICommand

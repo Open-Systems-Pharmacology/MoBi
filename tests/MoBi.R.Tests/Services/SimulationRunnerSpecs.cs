@@ -1,8 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using FakeItEasy;
-using OSPSuite.R.Domain;
-using NUnit.Framework;
+using MoBi.CLI.Core.Services;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -13,8 +12,8 @@ using OSPSuite.SimModel;
 using OSPSuite.Utility.Events;
 using static MoBi.HelpersForTests.DomainHelperForSpecs;
 using SimulationRunner = OSPSuite.R.Services.SimulationRunner;
-using IProjectTask = MoBi.R.Services.IProjectTask;
 using Simulation = OSPSuite.R.Domain.Simulation;
+using static MoBi.R.Tests.HelperForSpecs;
 
 namespace MoBi.R.Tests.Services
 {
@@ -81,7 +80,6 @@ namespace MoBi.R.Tests.Services
    {
       private Simulation _simulation;
       private SimulationResults _results;
-      private SimulationRunResults _simulationRunResults;
 
       protected override void Context()
       {

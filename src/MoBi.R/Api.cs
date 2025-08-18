@@ -1,10 +1,10 @@
 ﻿using System;
+using MoBi.CLI.Core.Services;
 using MoBi.R.Bootstrap;
 using MoBi.R.Services;
 using OSPSuite.R;
 using OSPSuite.Utility.Extensions;
 using IContainer = OSPSuite.Utility.Container.IContainer;
-using IProjectTask = MoBi.R.Services.IProjectTask;
 
 namespace MoBi.R
 {
@@ -21,9 +21,14 @@ namespace MoBi.R
       }
 
       public static IProjectTask GetProjectTask() => resolveTask<IProjectTask>();
+
       public static ISimulationTask GetSimulationTask() => resolveTask<ISimulationTask>();
+
       public static IModuleTask GetModuleTask() => resolveTask<IModuleTask>();
-      public static IMoBiRIntegrationService GetIntegrationTask() => resolveTask<IMoBiRIntegrationService>();
+
+      public static IIndividualTask GetIndividualTask() => resolveTask<IIndividualTask>();
+
+      public static IParameterValuesTask GetParameterValuesTask() => resolveTask<IParameterValuesTask>();
 
       private static T resolveTask<T>()
       {

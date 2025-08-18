@@ -76,7 +76,6 @@ namespace MoBi.UI.Views
       public void SetSpaceDiagramView(ISpatialStructureDiagramView view)
       {
          spliterDiagram.Panel2.FillWith(view);
-         view.Overview = _diagramOverview;
       }
    }
 }

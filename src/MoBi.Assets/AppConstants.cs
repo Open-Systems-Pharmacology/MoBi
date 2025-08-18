@@ -28,6 +28,7 @@ namespace MoBi.Assets
       public static readonly string DefaultSkin = "Office 2013 Light Gray";
       public static readonly string NewFormulaDescription = "Create New Formula";
       public static readonly string NewFormulaName = "New Formula";
+      public static readonly string TableFormula = "Table Formula";
       public static readonly string SimulationRun = "Simulation(s) Running";
       public static readonly string ParameterType = "Type";
       public static readonly string NaN = "<NaN>";
@@ -2023,6 +2024,16 @@ namespace MoBi.Assets
             return sb.ToString();
          }
 
+         public static string PKSimModulesWithoutSnapshots(IReadOnlyList<string> moduleNames)
+         {
+            var sb = new StringBuilder();
+            sb.AppendLine();
+            sb.Append($"The following PK-Sim modules will be exported as extension modules (PKML) and not PK-Sim modules (snapshots) because they are too old");
+            sb.AppendLine();
+            sb.Append(namesList(moduleNames));
+            return OSPSuite.Assets.Captions.DoYouWantToProceed(sb.ToString());
+         }
+
          public static string CouldNotAddExpressionProfilesDuplicatingProtein(IReadOnlyList<string> proteinNames)
          {
             var sb = new StringBuilder();
@@ -2124,6 +2135,8 @@ namespace MoBi.Assets
          public static readonly string ExtendingRequiresSpatialStructure = "Extending requires a spatial structure";
          public static readonly string CannotAssignAFormulaThatReferencesTheAssignmentTarget = "Cannot assign a formula that references the assignment target";
          public static readonly string CannotCreateANeighborhoodThatConnectsAContainerToItself = "Cannot create a neighborhood that connects a container to itself";
+         public static readonly string InputsAreNotSupportedInMoBiQualification = "Inputs are not supported in a MoBi qualification";
+
          public static string AnotherMoleculeNamedIsSelected(string moleculeName) => $"Another molecule named {moleculeName} is selected";
 
          public static string XDimensionColumnMustNotHaveRepeatedValues(string dimensionName)

@@ -62,9 +62,6 @@ namespace MoBi.Presentation.Presenter
 
       public override void ShowContextMenu(IViewItem objectRequestingPopup, Point popupLocation)
       {
-         if (!SimulationFavorites().Any())
-            return;
-
          var contextMenu = _contextMenuFactory.CreateFor(objectRequestingPopup, this);
          contextMenu.Show(_view, popupLocation);
       }

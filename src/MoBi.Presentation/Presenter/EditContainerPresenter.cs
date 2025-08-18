@@ -118,10 +118,15 @@ namespace MoBi.Presentation.Presenter
       public ContainerMode ConfirmAndSetContainerMode(ContainerMode newContainerMode)
       {
          var oldContainerMode = _container.Mode;
-
          if (_isNewEntity)
          {
             _container.Mode = newContainerMode;
+
+            if(newContainerMode == ContainerMode.Physical && !hasMoleculeProperties(_container))
+               _container.Add(createMoleculePropertiesContainer());
+            else if (newContainerMode == ContainerMode.Logical && hasMoleculeProperties(_container))
+               _container.RemoveChild(_editTasks.GetMoleculeProperties(_container));
+              
             return newContainerMode;
          }
 
@@ -145,21 +150,24 @@ namespace MoBi.Presentation.Presenter
          {
             var moleculeProperties = _editTasks.GetMoleculeProperties(_container);
 
-            if (moleculeProperties!= null)
+            if (hasMoleculeProperties(_container))
                macroCommand.Add(new RemoveContainerFromSpatialStructureCommand(_container, moleculeProperties, (MoBiSpatialStructure)BuildingBlock).RunCommand(_context));
          }
-         else
+         else if(!hasMoleculeProperties(_container))
          {
-            var moleculeProperties = _context.Create<IContainer>()
-               .WithName(Constants.MOLECULE_PROPERTIES)
-               .WithMode(ContainerMode.Logical);
-
-            macroCommand.Add(new AddContainerToSpatialStructureCommand(_container, moleculeProperties, (MoBiSpatialStructure)BuildingBlock).RunCommand(_context));
+            macroCommand.Add(new AddContainerToSpatialStructureCommand(_container, createMoleculePropertiesContainer(), (MoBiSpatialStructure)BuildingBlock).RunCommand(_context));
          }
 
          AddCommand(macroCommand);
          return newContainerMode;
       }
+
+      private bool hasMoleculeProperties(IContainer container) => _editTasks.GetMoleculeProperties(container) != null;
+
+      private IContainer createMoleculePropertiesContainer() =>
+         _context.Create<IContainer>()
+            .WithName(Constants.MOLECULE_PROPERTIES)
+            .WithMode(ContainerMode.Logical);
 
       public IReadOnlyList<ContainerType> AllContainerTypes { get; } = new[]
       {
@@ -208,6 +216,7 @@ namespace MoBi.Presentation.Presenter
          _view.BindTo(_containerDTO);
          _tagsPresenter.Edit(container);
          _view.ContainerPropertiesEditable = !container.IsMoleculeProperties();
+         _view.NameEditable = _isNewEntity;
       }
 
       public override object Subject => _container;
