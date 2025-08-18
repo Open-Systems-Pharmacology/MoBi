@@ -59,7 +59,7 @@ namespace MoBi.R.Tests.Services
          _moduleTask = Api.GetModuleTask();
          var projectFile = DataTestFileFullPath("SampleProject.mbp3");
          _project = _projectTask.LoadProject(projectFile);
-         LoadSampleProject();
+         LoadSampleProject(projectFile);
       }
 
       protected override void Because()
