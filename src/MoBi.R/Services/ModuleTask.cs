@@ -40,5 +40,8 @@ namespace MoBi.R.Services
       public IReadOnlyList<ParameterValuesBuildingBlock> AllParameterValuesFromModule(Module module) =>
          module.ParameterValuesCollection;
 
+      public string[] AllInitialConditionsBuildingBlockNames(Module module) => AllInitialConditionsFromModule(module).AllNames().ToArray();
+
+      public string[] AllParameterValueBuildingBlockNames(Module module) => AllParameterValuesFromModule(module).AllNames().ToArray();
    }
 }
