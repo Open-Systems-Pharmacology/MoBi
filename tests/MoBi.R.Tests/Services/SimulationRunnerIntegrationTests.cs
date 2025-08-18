@@ -27,7 +27,6 @@ namespace MoBi.R.Tests.Services
          _simulationPersister = OSPSuite.R.Api.GetSimulationPersister();
          _populationTask = OSPSuite.R.Api.GetPopulationTask();
          sut = OSPSuite.R.Api.GetSimulationRunner();
-
          _simulation = _simulationPersister.LoadSimulation(_simulationFile);
       }
    }

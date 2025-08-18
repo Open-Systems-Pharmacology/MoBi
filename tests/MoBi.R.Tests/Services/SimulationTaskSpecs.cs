@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using MoBi.CLI.Core.Services;
 using MoBi.Core.Domain.Model;
-using MoBi.HelpersForTests;
-using MoBi.R.Domain;
 using MoBi.R.Services;
-using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
 using OSPSuite.R.Domain;
 using ModuleConfiguration = MoBi.R.Domain.ModuleConfiguration;
 using static MoBi.R.Tests.HelperForSpecs;
@@ -17,20 +14,43 @@ namespace MoBi.R.Tests.Services
 {
    internal abstract class concern_for_SimulationCreateTask : ContextForIntegration<ISimulationTask>
    {
+      protected MoBiProject _project;
+      protected IProjectTask _projectTask;
+      protected IModuleTask _moduleTask;
+      protected string _simulationName = "Sim1";
+
       public override void GlobalContext()
       {
          base.GlobalContext();
          sut = Api.GetSimulationTask();
+         _projectTask = Api.GetProjectTask();
+         _moduleTask = Api.GetModuleTask();
+      }
+
+      protected void LoadSampleProject(string fileName)
+      {
+         var projectFile = DataTestFileFullPath("SampleProject.mbp3");
+         _project = _projectTask.LoadProject(projectFile);
+      }
+
+      protected Simulation CreateSimulationFromModule(Module module)
+      {
+         var individual = _projectTask.IndividualBuildingBlockByName(_project, "European (P-gp modified, CYP3A4 36 h)");
+         var expressionProfiles = _projectTask.ExpressionProfileBuildingBlocksByName(_project, "UDPGT1|Human|Healthy");
+         var initialConditions = _moduleTask.InitialConditionBuildingBlockByName(module, "Initial Conditions");
+         var parameterValues = _moduleTask.ParameterValueBuildingBlockByName(module, "Parameter Values");
+         var moduleConfig = sut.CreateModuleConfiguration(module, parameterValues, initialConditions);
+         var moduleConfigurations = new List<ModuleConfiguration> { moduleConfig };
+
+         var config = sut.CreateConfiguration(_simulationName, moduleConfigurations, expressionProfiles, individual);
+         return sut.CreateSimulationFrom(config);
       }
    }
 
-   internal class when_creating_simulation : concern_for_SimulationCreateTask
+   internal class when_creating_simulation_from_project_module : concern_for_SimulationCreateTask
    {
-      private MoBiProject _project;
       private Simulation _simulation;
       private readonly string _simulationName = "Sim1";
-      private IProjectTask _projectTask;
-      private IModuleTask _moduleTask;
 
       protected override void Context()
       {
@@ -39,70 +59,47 @@ namespace MoBi.R.Tests.Services
          _moduleTask = Api.GetModuleTask();
          var projectFile = DataTestFileFullPath("SampleProject.mbp3");
          _project = _projectTask.LoadProject(projectFile);
+         LoadSampleProject(projectFile);
       }
 
       protected override void Because()
       {
-         var moduleForSimulation = _projectTask.ModuleByName(_project, "Module1");
-
-         var individualForSimulation = _projectTask.IndividualBuildingBlockByName(_project, "European (P-gp modified, CYP3A4 36 h)");
-
-         var expressionProfilesForSimulation = _projectTask.ExpressionProfileBuildingBlocksByName(_project, "UDPGT1|Human|Healthy");
-
-         var initialConditionForModule = _moduleTask.InitialConditionBuildingBlockByName(moduleForSimulation, "Initial Conditions");
-
-         var parameterValuesForModule = _moduleTask.ParameterValueBuildingBlockByName(moduleForSimulation, "Parameter Values");
-
-         var moduleConfiguration = sut.CreateModuleConfiguration(moduleForSimulation, parameterValuesForModule, initialConditionForModule);
-
-         var moduleConfigurations = new List<ModuleConfiguration> { moduleConfiguration };
-
-         var simulationConfig = sut.CreateConfiguration(_simulationName, moduleConfigurations, expressionProfilesForSimulation, individualForSimulation);
-
-         _simulation = sut.CreateSimulationFrom(simulationConfig);
+         var module = _projectTask.ModuleByName(_project, "Module1");
+         _simulation = CreateSimulationFromModule(module);
       }
 
       [Observation]
-      public void should_return_simulation_name()
-      {
-         _simulation.ShouldNotBeNull();
+      public void should_return_simulation_name() =>
          _simulation.Name.ShouldBeEqualTo(_simulationName);
-      }
 
       [Observation]
-      public void should_contain_module()
-      {
-         var module = _simulation.Configuration.ModuleConfigurations
-            .FirstOrDefault(x => x.Module.Name == "Module1")?.Module;
-         module.ShouldNotBeNull();
-      }
+      public void should_contain_module() =>
+         _simulation.Configuration.ModuleConfigurations.Any(x => x.Module.Name == "Module1").ShouldBeTrue();
    }
 
-   internal abstract class concern_for_invalid_simulation_configuration : concern_for_SimulationCreateTask
+   internal class when_creating_simulation_from_pkml_module : concern_for_SimulationCreateTask
    {
-      protected MoBiProject _project;
-      protected IProjectTask _projectTask;
-      protected SimulationConfiguration _simulationConfig;
+      private Simulation _simulation;
 
       protected override void Context()
       {
          base.Context();
-         _projectTask = Api.GetProjectTask();
-         var projectFile = DomainHelperForSpecs.TestFileFullPath("SampleProject.mbp3");
-         _project = _projectTask.LoadProject(projectFile);
+         LoadSampleProject("SampleProject.mbp3");
       }
 
       protected override void Because()
       {
-         _simulationConfig = CreateInvalidConfiguration();
+         var module = _moduleTask.LoadModulesFromFile(DataTestFileFullPath("Second module.pkml")).First();
+         _simulationName = "SimFromPKML";
+         _simulation = CreateSimulationFromModule(module);
       }
 
-      protected abstract SimulationConfiguration CreateInvalidConfiguration();
+      [Observation]
+      public void should_return_simulation_name() =>
+         _simulation.Name.ShouldBeEqualTo(_simulationName);
 
-      [Test]
-      public void should_throw_expected_exception()
-      {
-         The.Action(() => sut.CreateSimulationFrom(_simulationConfig)).ShouldThrowAn<InvalidOperationException>();
-      }
+      [Observation]
+      public void should_contain_loaded_module() =>
+         _simulation.Configuration.ModuleConfigurations.Any().ShouldBeTrue();
    }
 }

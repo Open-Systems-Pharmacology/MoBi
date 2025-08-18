@@ -21,8 +21,14 @@ namespace MoBi.R
       }
 
       public static IProjectTask GetProjectTask() => resolveTask<IProjectTask>();
+
       public static ISimulationTask GetSimulationTask() => resolveTask<ISimulationTask>();
+
       public static IModuleTask GetModuleTask() => resolveTask<IModuleTask>();
+
+      public static IIndividualTask GetIndividualTask() => resolveTask<IIndividualTask>();
+
+      public static IParameterValuesTask GetParameterValuesTask() => resolveTask<IParameterValuesTask>();
 
       private static T resolveTask<T>()
       {
