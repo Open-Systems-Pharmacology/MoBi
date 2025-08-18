@@ -22,6 +22,8 @@ namespace MoBi.CLI.Core.Services
 
       string[] AllSimulationNames(MoBiProject moBiProject);
 
+      Simulation SimulationByName(MoBiProject project, string simulationName);
+
       string[] AllBuildingBlocksNamesFromModuleName(MoBiProject moBiProject, string moduleName);
 
       Simulation[] AllSimulations(MoBiProject moBiProject);
@@ -73,8 +75,11 @@ namespace MoBi.CLI.Core.Services
       public ExpressionProfileBuildingBlock[] ExpressionProfileBuildingBlocksByName(MoBiProject moBiProject, params string[] names) =>
          moBiProject.ExpressionProfileCollection.Where(p => names.Contains(p.Name)).ToArray();
 
-      public string[] AllModuleNames(MoBiProject moBiProject) =>
-         moBiProject.Modules.AllNames().ToArray();
+      public Simulation SimulationByName(MoBiProject project, string simulationName)
+      {
+         var simulation = project.Simulations.FindByName(simulationName);
+         return simulation == null ? null : new Simulation(simulation);
+      }
 
       public string[] AllBuildingBlocksNamesFromModuleName(MoBiProject moBiProject, string moduleName) =>
          moBiProject.ModuleByName(moduleName).BuildingBlocks?.AllNames().ToArray();
