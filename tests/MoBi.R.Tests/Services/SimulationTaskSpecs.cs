@@ -125,10 +125,10 @@ internal class when_creating_simulation_from_pkml_module : concern_for_Simulatio
    {
       var module = _moduleTask.LoadModulesFromFile(DataTestFileFullPath("Second module.pkml")).First();
       _simulationName = "SimFromPKML";
-      _simulation = CreateSimulationFromModule(module);
+      _simulation = createSimulationFromModule(module);
    }
 
-   protected Simulation CreateSimulationFromModule(Module module)
+   private Simulation createSimulationFromModule(Module module)
    {
       var individual = _projectTask.IndividualBuildingBlockByName(_project, "European (P-gp modified, CYP3A4 36 h)");
       var expressionProfiles = _projectTask.ExpressionProfileBuildingBlocksByName(_project, "UDPGT1|Human|Healthy");
