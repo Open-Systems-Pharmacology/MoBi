@@ -22,6 +22,8 @@ namespace MoBi.CLI.Core.Services
 
       IReadOnlyList<string> AllSimulationNames(MoBiProject moBiProject);
 
+      Simulation SimulationByName(MoBiProject project, string simulationName);
+
       IReadOnlyList<string> AllBuildingBlocksNamesFromModuleName(MoBiProject moBiProject, string moduleName);
 
       IReadOnlyList<Simulation> AllSimulations(MoBiProject moBiProject);
@@ -70,6 +72,12 @@ namespace MoBi.CLI.Core.Services
 
       public IReadOnlyList<string> AllModuleNames(MoBiProject moBiProject) =>
          moBiProject.Modules.AllNames();
+
+      public Simulation SimulationByName(MoBiProject project, string simulationName)
+      {
+         var simulation = project.Simulations.FindByName(simulationName);
+         return simulation == null ? null : new Simulation(simulation);
+      }
 
       public IReadOnlyList<string> AllBuildingBlocksNamesFromModuleName(MoBiProject moBiProject, string moduleName) =>
          moBiProject.ModuleByName(moduleName).BuildingBlocks?.AllNames();
