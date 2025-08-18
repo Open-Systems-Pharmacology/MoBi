@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
+using MoBi.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Extensions;
 using OSPSuite.R.Domain;
 using ModuleConfiguration = MoBi.R.Domain.ModuleConfiguration;
 using SimulationConfiguration = MoBi.R.Domain.SimulationConfiguration;
@@ -16,17 +19,20 @@ namespace MoBi.R.Services
          IndividualBuildingBlock individual = null);
 
       ModuleConfiguration CreateModuleConfiguration(Module module,
-         ParameterValuesBuildingBlock selectedParameterValue = null,
-         InitialConditionsBuildingBlock selectedInitialCondition = null);
+         string selectedParameterValues = null,
+         string selectedInitialConditions = null);
    }
 
    public class SimulationTask : ISimulationTask
    {
       private readonly ISimulationFactory _simulationFactory;
+      private readonly IObjectTypeResolver _objectTypeResolver;
 
-      public SimulationTask(ISimulationFactory simulationFactory)
+      public SimulationTask(ISimulationFactory simulationFactory, 
+         IObjectTypeResolver objectTypeResolver)
       {
          _simulationFactory = simulationFactory;
+         _objectTypeResolver = objectTypeResolver;
       }
 
       public SimulationConfiguration CreateConfiguration(List<ModuleConfiguration> moduleConfigurations = null,
@@ -40,14 +46,26 @@ namespace MoBi.R.Services
          };
 
       public ModuleConfiguration CreateModuleConfiguration(Module module,
-         ParameterValuesBuildingBlock selectedParameterValue = null,
-         InitialConditionsBuildingBlock selectedInitialCondition = null) =>
+         string selectedParameterValues = null,
+         string selectedInitialConditions = null) =>
          new ModuleConfiguration
          {
             Module = module,
-            SelectedParameterValue = selectedParameterValue,
-            SelectedInitialCondition = selectedInitialCondition
+            SelectedParameterValue = selectByName(module.ParameterValuesCollection, selectedParameterValues),
+            SelectedInitialCondition = selectByName(module.InitialConditionsCollection, selectedInitialConditions)
          };
+
+      private T selectByName<T>(IReadOnlyList<T> allNamedObjects, string namedObjectToSelect) where T : class, IWithName
+      {
+         // empty, or null string indicates no selection was required
+         if (string.IsNullOrEmpty(namedObjectToSelect))
+            return null;
+
+         if (!allNamedObjects.ExistsByName(namedObjectToSelect))
+            throw new InvalidArgumentException(AppConstants.Exceptions.CannotFindObjectWithName(namedObjectToSelect, allNamedObjects.AllNames(), _objectTypeResolver.TypeFor<T>().SplitToUpperCase()));
+
+         return allNamedObjects.FindByName(namedObjectToSelect);
+      }
 
       public Simulation CreateSimulationFrom(SimulationConfiguration simulationConfiguration, string simulationName)
       {
