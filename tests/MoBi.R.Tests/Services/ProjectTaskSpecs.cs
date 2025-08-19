@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using MoBi.CLI.Core.Services;
 using MoBi.Core.Domain.Model;
@@ -179,6 +180,24 @@ namespace MoBi.R.Tests.Services
       public void should_return_simulation_names()
       {
          _simulation.ShouldBeNull();
+      }
+   }
+
+   internal class when_project_file_is_not_present : concern_for_ProjectTask
+   {
+      [Observation]
+      public void an_exception_is_thrown()
+      {
+         The.Action(() => sut.LoadProject(DataTestFileFullPath("tralalala.mbp3"))).ShouldThrowAn<InvalidOperationException>();
+      }
+   }
+
+   internal class when_project_file_cannot_be_opened : concern_for_ProjectTask
+   {
+      [Observation]
+      public void an_exception_is_thrown()
+      {
+         The.Action(() => sut.LoadProject(DataTestFileFullPath("Second module.pkml"))).ShouldThrowAn<Exception>();
       }
    }
 }

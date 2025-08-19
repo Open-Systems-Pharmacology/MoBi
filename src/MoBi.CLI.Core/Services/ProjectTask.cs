@@ -1,12 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Serialization.ORM;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.R.Domain;
+using OSPSuite.Utility;
 
 namespace MoBi.CLI.Core.Services
 {
@@ -63,7 +65,7 @@ namespace MoBi.CLI.Core.Services
       public ParameterIdentification[] AllParameterIdentifications(MoBiProject project) =>
          project.AllParameterIdentifications.ToArray();
 
-      public string[] AllParameterIdentificationNames(MoBiProject project) => 
+      public string[] AllParameterIdentificationNames(MoBiProject project) =>
          project.AllParameterIdentifications.AllNames().ToArray();
 
       public DataRepository[] AllObservedDataSets(MoBiProject project) =>
@@ -86,6 +88,8 @@ namespace MoBi.CLI.Core.Services
 
       public MoBiProject LoadProject(string fileName)
       {
+         if (!FileHelper.FileExists(fileName))
+            throw new InvalidOperationException(Error.FileDoesNotExist(fileName));
          // Load the project from the file 
          _contextPersistor.CloseProject(_moBiContext);
          _contextPersistor.Load(_moBiContext, fileName);
