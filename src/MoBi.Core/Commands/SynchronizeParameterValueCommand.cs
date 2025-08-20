@@ -43,7 +43,6 @@ namespace MoBi.Core.Commands
       {
          base.ClearReferences();
          _parameter = null;
-         _simulation = null;
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
