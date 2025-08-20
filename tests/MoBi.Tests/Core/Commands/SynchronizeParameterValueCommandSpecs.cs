@@ -5,6 +5,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.SimModel;
 
 namespace MoBi.Core.Commands
 {
@@ -13,7 +14,7 @@ namespace MoBi.Core.Commands
       protected ParameterValue _parameterStartValue;
       protected IParameter _parameter;
       protected IMoBiContext _context;
-      private IMoBiSimulation _simulation;
+      protected IMoBiSimulation _simulation;
 
       protected override void Context()
       {
@@ -64,6 +65,37 @@ namespace MoBi.Core.Commands
       public void should_update_the_value_description()
       {
          _parameterStartValue.ValueOrigin.ShouldBeEqualTo(_parameter.ValueOrigin);
+      }
+   }
+
+
+   public class synchronizing_a_parameter_value_with_a_parameter_and_getting_reverse_command : concern_for_SynchronizeParameterValueCommand
+   {
+      private int _initialValue = 5;
+      private int _newValue = 3;
+      protected override void Context()
+      {
+         base.Context();
+         _parameter.Value = _newValue;
+         _parameter.Dimension = A.Fake<IDimension>();
+         _parameter.ValueOrigin.Method = ValueOriginDeterminationMethods.Assumption;
+         _parameter.DisplayUnit = A.Fake<Unit>();
+      }
+
+      protected override void Because()
+      {
+         var reverseCommand = sut.InverseCommand(_context);
+         var newParameter = new Parameter();
+         newParameter.Value = _initialValue;
+         sut = new SynchronizeParameterValueCommand(newParameter, _parameterStartValue, new ParameterValuesBuildingBlock(), _simulation);
+         sut.Execute(_context);
+         reverseCommand.Execute(_context);
+      }
+
+      [Observation]
+      public void should_update_the_value_when_reversing()
+      {
+         _parameterStartValue.Value.ShouldBeEqualTo(_newValue);
       }
    }
 }
