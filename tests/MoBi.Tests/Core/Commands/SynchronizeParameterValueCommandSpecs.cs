@@ -5,7 +5,6 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.SimModel;
 
 namespace MoBi.Core.Commands
 {
@@ -68,11 +67,11 @@ namespace MoBi.Core.Commands
       }
    }
 
-
    public class synchronizing_a_parameter_value_with_a_parameter_and_getting_reverse_command : concern_for_SynchronizeParameterValueCommand
    {
-      private int _initialValue = 5;
-      private int _newValue = 3;
+      private readonly int _initialValue = 5;
+      private readonly int _newValue = 3;
+
       protected override void Context()
       {
          base.Context();
