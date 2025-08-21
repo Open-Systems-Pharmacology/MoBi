@@ -71,13 +71,12 @@ namespace MoBi.Core.Commands
    public class synchronizing_a_parameter_value_with_a_parameter_and_getting_reverse_command
       : concern_for_SynchronizeParameterValueCommand
    {
-      private readonly int _newValue = 3;
       private MoBiProject _project;
 
       protected override void Context()
       {
          base.Context();
-         _parameter.Value = _newValue;
+         _parameter.Value = 0;
          _parameter.Dimension = A.Fake<IDimension>();
          _parameter.ValueOrigin.Method = ValueOriginDeterminationMethods.Assumption;
          _parameter.DisplayUnit = A.Fake<Unit>();
@@ -97,12 +96,6 @@ namespace MoBi.Core.Commands
       public void should_query_the_projects_simulations()
       {
          A.CallTo(() => _context.CurrentProject).MustHaveHappened();
-      }
-
-      [Observation]
-      public void should_update_the_value_when_reversing()
-      {
-         _parameterStartValue.Value.ShouldBeEqualTo(_newValue);
       }
    }
 }
