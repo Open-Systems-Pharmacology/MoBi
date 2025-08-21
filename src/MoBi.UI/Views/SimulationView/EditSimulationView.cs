@@ -115,18 +115,7 @@ namespace MoBi.UI.Views.SimulationView
 
       public void SetParametersTabEnabled(bool enabled)
       {
-         foreach (Control c in tabSimulation.Controls)
-         {
-            if (c is BaseEdit edit)
-            {
-               edit.Properties.ReadOnly = !enabled;
-               edit.Properties.AllowFocused = enabled;
-            }
-            else
-            {
-               c.Enabled = enabled;
-            }
-         }
+         splitSimulationParameters.Enabled = enabled;
       }
    }
 }
