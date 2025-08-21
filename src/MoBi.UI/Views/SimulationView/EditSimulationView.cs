@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Forms;
 using DevExpress.XtraEditors;
 using DevExpress.XtraTab;
 using MoBi.Assets;
@@ -110,6 +111,22 @@ namespace MoBi.UI.Views.SimulationView
       public void SetChangesView(ISimulationChangesView view)
       {
          tabChanges.FillWith(view);
+      }
+
+      public void SetParametersTabEnabled(bool enabled)
+      {
+         foreach (Control c in tabSimulation.Controls)
+         {
+            if (c is BaseEdit edit)
+            {
+               edit.Properties.ReadOnly = !enabled;
+               edit.Properties.AllowFocused = enabled;
+            }
+            else
+            {
+               c.Enabled = enabled;
+            }
+         }
       }
    }
 }

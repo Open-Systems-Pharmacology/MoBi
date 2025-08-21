@@ -102,6 +102,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       private IMenuBarItem createImportReactionParameters(IMoBiSimulation simulation)
       {
          return CreateMenuButton.WithCaption(AppConstants.Captions.ImportSimulationParameters.WithEllipsis())
+            .WithEnabled(!_simulationRunner.IsSimulationRunning(simulation))
             .WithIcon(ApplicationIcons.ParameterValuesImport)
             .WithCommandFor<ImportSimulationParameterValuesUICommand, IMoBiSimulation>(simulation, _container);
       }
@@ -204,6 +205,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       private IMenuBarItem createDeleteAllResultsItem(IMoBiSimulation simulation)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.DeleteAllResults)
+            .WithEnabled(!_simulationRunner.IsSimulationRunning(simulation))
             .WithCommandFor<DeleteAllResultsInSimulationUICommand, IMoBiSimulation>(simulation, _container);
       }
 
@@ -238,6 +240,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       private IMenuBarItem createUpdate(IMoBiSimulation simulation)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.UpdateFromBuildingBlocks)
+            .WithEnabled(!_simulationRunner.IsSimulationRunning(simulation))
             .WithIcon(ApplicationIcons.Update)
             .WithCommandFor<UpdateSimulationUICommand, IMoBiSimulation>(simulation, _container);
       }
@@ -245,6 +248,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       private IMenuBarItem createConfigure(IMoBiSimulation simulation)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Configure)
+            .WithEnabled(!_simulationRunner.IsSimulationRunning(simulation))
             .WithIcon(ApplicationIcons.SimulationConfigure)
             .WithCommandFor<ConfigureSimulationUICommand, IMoBiSimulation>(simulation, _container);
       }
@@ -254,6 +258,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          //create sub menu containing all compounds
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.ExportSimulationResultsToExcel)
+            .WithEnabled(!_simulationRunner.IsSimulationRunning(simulation))
             .WithCommandFor<ExportSimulationResultsToExcelCommand, IMoBiSimulation>(simulation, _container)
             .WithIcon(ApplicationIcons.ObservedData);
       }
