@@ -7,7 +7,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.UICommand
