@@ -1,5 +1,6 @@
 ﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Helpers;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -13,7 +14,7 @@ namespace MoBi.Core.Commands
       protected ParameterValue _parameterStartValue;
       protected IParameter _parameter;
       protected IMoBiContext _context;
-      private IMoBiSimulation _simulation;
+      protected IMoBiSimulation _simulation;
 
       protected override void Context()
       {
@@ -64,6 +65,37 @@ namespace MoBi.Core.Commands
       public void should_update_the_value_description()
       {
          _parameterStartValue.ValueOrigin.ShouldBeEqualTo(_parameter.ValueOrigin);
+      }
+   }
+
+   public class synchronizing_a_parameter_value_with_a_parameter_and_getting_reverse_command
+      : concern_for_SynchronizeParameterValueCommand
+   {
+      private MoBiProject _project;
+
+      protected override void Context()
+      {
+         base.Context();
+         _parameter.Value = 0;
+         _parameter.Dimension = A.Fake<IDimension>();
+         _parameter.ValueOrigin.Method = ValueOriginDeterminationMethods.Assumption;
+         _parameter.DisplayUnit = A.Fake<Unit>();
+
+         _project = new MoBiProject();
+         _project = DomainHelperForSpecs.NewProject();
+         _project.AddSimulation(_simulation);
+         A.CallTo(() => _context.CurrentProject).Returns(_project);
+      }
+
+      protected override void Because()
+      {
+         sut.ExecuteAndInvokeInverse(_context);
+      }
+
+      [Observation]
+      public void should_query_the_projects_simulations()
+      {
+         A.CallTo(() => _context.CurrentProject).MustHaveHappened();
       }
    }
 }
