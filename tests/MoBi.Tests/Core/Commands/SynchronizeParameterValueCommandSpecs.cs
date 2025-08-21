@@ -1,5 +1,6 @@
 ﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Helpers;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -67,10 +68,11 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class synchronizing_a_parameter_value_with_a_parameter_and_getting_reverse_command : concern_for_SynchronizeParameterValueCommand
+   public class synchronizing_a_parameter_value_with_a_parameter_and_getting_reverse_command
+      : concern_for_SynchronizeParameterValueCommand
    {
-      private readonly int _initialValue = 5;
       private readonly int _newValue = 3;
+      private MoBiProject _project;
 
       protected override void Context()
       {
@@ -79,16 +81,22 @@ namespace MoBi.Core.Commands
          _parameter.Dimension = A.Fake<IDimension>();
          _parameter.ValueOrigin.Method = ValueOriginDeterminationMethods.Assumption;
          _parameter.DisplayUnit = A.Fake<Unit>();
+
+         _project = new MoBiProject();
+         _project = DomainHelperForSpecs.NewProject();
+         _project.AddSimulation(_simulation);
+         A.CallTo(() => _context.CurrentProject).Returns(_project);
       }
 
       protected override void Because()
       {
-         var reverseCommand = sut.InverseCommand(_context);
-         var newParameter = new Parameter();
-         newParameter.Value = _initialValue;
-         sut = new SynchronizeParameterValueCommand(newParameter, _parameterStartValue, new ParameterValuesBuildingBlock(), _simulation);
-         sut.Execute(_context);
-         reverseCommand.Execute(_context);
+         sut.ExecuteAndInvokeInverse(_context);
+      }
+
+      [Observation]
+      public void should_query_the_projects_simulations()
+      {
+         A.CallTo(() => _context.CurrentProject).MustHaveHappened();
       }
 
       [Observation]
