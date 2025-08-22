@@ -3,6 +3,7 @@ using MoBi.Core.Services;
 using MoBi.Presentation.Tasks;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.UICommands;
 
@@ -13,7 +14,7 @@ namespace MoBi.Presentation.UICommand
       private readonly IPKSimStarter _pkSimStarter;
       private readonly IModuleLoader _moduleLoader;
       private readonly IMoBiProjectRetriever _projectRetriever;
-      private IHeavyWorkManager _heavyWorkManager;
+      private readonly IHeavyWorkManager _heavyWorkManager;
 
       public LoadModuleFromSnapshotUICommand(IPKSimStarter pkSimStarter, 
          IModuleLoader moduleLoader, 
@@ -28,10 +29,15 @@ namespace MoBi.Presentation.UICommand
 
       protected override void PerformExecute()
       {
+         SimulationTransfer transfer = null;
          _heavyWorkManager.Start(() =>
-         {
-            _moduleLoader.LoadProjectContentFromSimulationTransfer(_projectRetriever.Current, _pkSimStarter.LoadSimulationTransferFromSnapshot(Subject.Snapshot));
-         }, AppConstants.Captions.Loading.WithEllipsis());
+            {
+               transfer = _pkSimStarter.LoadSimulationTransferFromSnapshot(Subject.Snapshot);
+            }, AppConstants.Captions.Loading.WithEllipsis()
+         );
+         
+         if(transfer != null)
+            _moduleLoader.LoadProjectContentFromSimulationTransfer(_projectRetriever.Current, transfer);
       }
    }
 }
