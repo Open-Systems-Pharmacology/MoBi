@@ -9,6 +9,7 @@ namespace MoBi.Core.Services
       void StopSimulation(IMoBiSimulation simulation);
       void StopAllSimulations();
       bool IsSimulationRunning(IMoBiSimulation simulation);
+      bool IsAnySimulationRunning();
       bool IsSimulationIdle(IMoBiSimulation simulation);
    }
 }

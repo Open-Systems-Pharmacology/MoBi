@@ -12,7 +12,6 @@ using MoBi.Core.Events;
 using MoBi.Core.Extensions;
 using MoBi.Core.Services;
 using MoBi.Presentation.Presenter;
-using OSPSuite.Assets;
 using OSPSuite.Core.Commands;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
@@ -40,7 +39,6 @@ namespace MoBi.Presentation.Tasks
       private readonly IEntityValidationTask _entityValidationTask;
       private readonly ConcurrentDictionary<IMoBiSimulation, CancellationTokenSource> _cancellationTokenSources = new ConcurrentDictionary<IMoBiSimulation, CancellationTokenSource>();
 
-
       public SimulationRunner(IMoBiContext context,
          IMoBiApplicationController applicationController,
          IOutputSelectionsRetriever outputSelectionsRetriever,
@@ -58,7 +56,6 @@ namespace MoBi.Presentation.Tasks
          _simModelManagerFactory = simModelManagerFactory;
          _keyPathMapper = keyPathMapper;
          _entityValidationTask = entityValidationTask;
-
       }
 
       public bool IsSimulationRunning(IMoBiSimulation simulation)
@@ -96,7 +93,6 @@ namespace MoBi.Presentation.Tasks
 
          await startSimulationRunAsync(simulation);
       }
-
 
       private void addPersitableParametersToOutputSelection(IMoBiSimulation simulation)
       {
@@ -187,6 +183,7 @@ namespace MoBi.Presentation.Tasks
                   ctsToDispose.Dispose();
                }
             }
+
             removeEvents();
             _context.PublishEvent(new SimulationRunFinishedEvent(simulation));
          }
@@ -289,6 +286,11 @@ namespace MoBi.Presentation.Tasks
          if (_simModelManager == null) return;
          _simModelManager.SimulationProgress += onSimulationProgress;
          _simModelManager.Terminated += onSimulationFinished;
+      }
+
+      public bool IsAnySimulationRunning()
+      {
+         return _cancellationTokenSources.Values.Any(cts => !cts.IsCancellationRequested);
       }
    }
 }
