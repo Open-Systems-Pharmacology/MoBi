@@ -67,6 +67,13 @@ namespace MoBi.Presentation.Tasks
                 !cts.IsCancellationRequested;
       }
 
+      public bool IsSimulationIdle(IMoBiSimulation simulation)
+      {
+         return !_cancellationTokenSources.TryGetValue(simulation, out var cts)
+                || cts.IsCancellationRequested;
+      }
+
+
       public Task RunSimulationAsync(IMoBiSimulation simulation, bool defineSettings = false)
       {
          return runSimulationAsync(simulation, defineSettings);

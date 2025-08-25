@@ -64,7 +64,7 @@ namespace MoBi.Presentation.Presenter
       private readonly ISimulationOutputMappingPresenter _simulationOutputMappingPresenter;
       private readonly IOutputMappingMatchingTask _outputMappingMatchingTask;
       private TrackableSimulation _trackableSimulation;
-      private ISimulationRunner _simulationRunner;
+      private readonly ISimulationRunner _simulationRunner;
 
       public EditSimulationPresenter(
          IEditSimulationView view,
@@ -85,7 +85,7 @@ namespace MoBi.Presentation.Presenter
          IMoBiContext context,
          IOutputMappingMatchingTask outputMappingMatchingTask,
          ISimulationChangesPresenter changesPresenter,
-         ISimulationEntitySourceReferenceFactory entitySourceReferenceFactory, 
+         ISimulationEntitySourceReferenceFactory entitySourceReferenceFactory,
          ISimulationRunner simulationRunner)
          : base(view)
       {
@@ -121,7 +121,7 @@ namespace MoBi.Presentation.Presenter
          AddSubPresenters(_chartPresenter, _hierarchicalPresenter, _simulationDiagramPresenter, _solverSettingsPresenter, _editOutputSchemaPresenter,
             _favoritesPresenter, _userDefinedParametersPresenter, _simulationOutputMappingPresenter, _simulationPredictedVsObservedChartPresenter,
             _simulationResidualVsTimeChartPresenter, _simulationChangesPresenter);
-         _cacheShowPresenter = new Cache<Type, IEditInSimulationPresenter> {OnMissingKey = x => null};
+         _cacheShowPresenter = new Cache<Type, IEditInSimulationPresenter> { OnMissingKey = x => null };
          _chartPresenter.OnObservedDataAddedToChart += onObservedDataAddedToChart;
       }
 
@@ -138,8 +138,6 @@ namespace MoBi.Presentation.Presenter
          base.ReleaseFrom(eventPublisher);
          _cacheShowPresenter.Each(p => p.ReleaseFrom(eventPublisher));
          _cacheShowPresenter.Clear();
-
-
       }
 
       public void Edit(IMoBiSimulation simulation)
@@ -159,7 +157,7 @@ namespace MoBi.Presentation.Presenter
          _trackableSimulation = new TrackableSimulation(_simulation, _entitySourceReferenceFactory.CreateFor(simulation));
          _favoritesPresenter.TrackableSimulation = _trackableSimulation;
          _favoritesPresenter.Edit(_simulation);
-         _view.SetParametersTabEnabled(!_simulationRunner.IsSimulationRunning(simulation));
+         _view.SetParametersTabEnabled(_simulationRunner.IsSimulationIdle(simulation));
       }
 
       private void addObservedDataRepositories(IList<DataRepository> data, IEnumerable<Curve> curves)
