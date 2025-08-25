@@ -23,9 +23,9 @@
   <ItemGroup>
     <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.1.1" />
     <PackageReference Include="OSPSuite.Utility" Version="4.1.1.1" />
-    <PackageReference Include="OSPSuite.Presentation" Version="13.0.38" />
-    <PackageReference Include="OSPSuite.Presentation.Serialization" Version="13.0.38" />
-    <PackageReference Include="OSPSuite.Core" Version="13.0.38" />  
+    <PackageReference Include="OSPSuite.Presentation" Version="13.0.39" />
+    <PackageReference Include="OSPSuite.Presentation.Serialization" Version="13.0.39" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.39" />  
    </ItemGroup>
   <ItemGroup>
     <None Include="..\..\LICENSE">

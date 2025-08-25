@@ -6,6 +6,7 @@ using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Helper;
+using MoBi.Core.Services;
 using MoBi.Presentation.Presenter.ModelDiagram;
 using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Views;
@@ -31,7 +32,8 @@ namespace MoBi.Presentation.Presenter
       IListener<SimulationReloadEvent>,
       IListener<FavoritesSelectedEvent>,
       IListener<UserDefinedSelectedEvent>,
-      IListener<ShowSimulationChangesEvent>
+      IListener<ShowSimulationChangesEvent>,
+      IListener<SimulationRunStartedEvent>
    {
       void LoadDiagram();
       string CreateResultTabCaption(string viewCaption);
@@ -62,6 +64,7 @@ namespace MoBi.Presentation.Presenter
       private readonly ISimulationOutputMappingPresenter _simulationOutputMappingPresenter;
       private readonly IOutputMappingMatchingTask _outputMappingMatchingTask;
       private TrackableSimulation _trackableSimulation;
+      private readonly ISimulationRunner _simulationRunner;
 
       public EditSimulationPresenter(
          IEditSimulationView view,
@@ -82,7 +85,8 @@ namespace MoBi.Presentation.Presenter
          IMoBiContext context,
          IOutputMappingMatchingTask outputMappingMatchingTask,
          ISimulationChangesPresenter changesPresenter,
-         ISimulationEntitySourceReferenceFactory entitySourceReferenceFactory)
+         ISimulationEntitySourceReferenceFactory entitySourceReferenceFactory,
+         ISimulationRunner simulationRunner)
          : base(view)
       {
          _simulationChangesPresenter = changesPresenter;
@@ -113,11 +117,11 @@ namespace MoBi.Presentation.Presenter
          _view.SetPredictedVsObservedView(simulationPredictedVsObservedChartPresenter.View);
          _view.SetResidualsVsTimeView(simulationResidualVsTimeChartPresenter.View);
          _view.SetDataView(_simulationOutputMappingPresenter.View);
-
+         _simulationRunner = simulationRunner;
          AddSubPresenters(_chartPresenter, _hierarchicalPresenter, _simulationDiagramPresenter, _solverSettingsPresenter, _editOutputSchemaPresenter,
             _favoritesPresenter, _userDefinedParametersPresenter, _simulationOutputMappingPresenter, _simulationPredictedVsObservedChartPresenter,
             _simulationResidualVsTimeChartPresenter, _simulationChangesPresenter);
-         _cacheShowPresenter = new Cache<Type, IEditInSimulationPresenter> {OnMissingKey = x => null};
+         _cacheShowPresenter = new Cache<Type, IEditInSimulationPresenter> { OnMissingKey = x => null };
          _chartPresenter.OnObservedDataAddedToChart += onObservedDataAddedToChart;
       }
 
@@ -153,6 +157,7 @@ namespace MoBi.Presentation.Presenter
          _trackableSimulation = new TrackableSimulation(_simulation, _entitySourceReferenceFactory.CreateFor(simulation));
          _favoritesPresenter.TrackableSimulation = _trackableSimulation;
          _favoritesPresenter.Edit(_simulation);
+         _view.SetParametersTabEnabled(_simulationRunner.IsSimulationIdle(simulation));
       }
 
       private void addObservedDataRepositories(IList<DataRepository> data, IEnumerable<Curve> curves)
@@ -215,6 +220,8 @@ namespace MoBi.Presentation.Presenter
       {
          if (!_simulation.Equals(eventToHandle.Simulation))
             return;
+
+         _view.SetParametersTabEnabled(true);
 
          if (!_view.ShowsResults)
             _view.ShowResultsTab();
@@ -356,6 +363,14 @@ namespace MoBi.Presentation.Presenter
          {
             _view.ShowChangesTab();
          }
+      }
+
+      public void Handle(SimulationRunStartedEvent eventToHandle)
+      {
+         if (!_simulation.Equals(eventToHandle.Simulation))
+            return;
+
+         _view.SetParametersTabEnabled(false);
       }
    }
 }

@@ -194,8 +194,6 @@ namespace MoBi.Presentation.Tasks
          if (expectedElementName.Equals(AppConstants.XmlNames.MoleculeBuildingBlock)) return AppConstants.XmlNames.Molecules;
          if (expectedElementName.Equals(AppConstants.XmlNames.ObserverBuildingBlock)) return AppConstants.XmlNames.Observers;
          if (expectedElementName.Equals(AppConstants.XmlNames.EventGroupBuildingBlock)) return AppConstants.XmlNames.EventGroups;
-         if (expectedElementName.Equals(AppConstants.XmlNames.InitialConditionsBuildingBlock)) return AppConstants.XmlNames.InitialConditions;
-         if (expectedElementName.Equals(AppConstants.XmlNames.ParameterValuesBuildingBlock)) return AppConstants.XmlNames.ParameterValues;
          if (expectedElementName.Equals(AppConstants.XmlNames.MoBiReactionBuildingBlock)) return AppConstants.XmlNames.Reactions;
          if (expectedElementName.Equals(AppConstants.XmlNames.ReactionBuildingBlock)) return AppConstants.XmlNames.Reactions;
          if (expectedElementName.Equals(AppConstants.XmlNames.MoBiSpatialStructure)) return AppConstants.XmlNames.SpatialStructure;

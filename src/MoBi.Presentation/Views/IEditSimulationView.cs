@@ -30,5 +30,6 @@ namespace MoBi.Presentation.Views
       void SetResidualsVsTimeView(ISimulationVsObservedDataView view);
       void ShowChangesTab();
       void SetChangesView(ISimulationChangesView view);
+      void SetParametersTabEnabled(bool enabled);
    }
 }

@@ -1,4 +1,6 @@
-﻿using MoBi.Assets;
+﻿using System.Collections.Generic;
+using MoBi.Assets;
+using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Tasks.Interaction;
@@ -12,6 +14,7 @@ using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Utility.Container;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
@@ -34,7 +37,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithIcon(ApplicationIcons.ExportToExcel)
             .WithCommandFor<ExportInitialConditionsBuildingBlockToExcelUICommand, InitialConditionsBuildingBlock>(buildingBlock, _container));
 
-         _allMenuItems.Add(createExtendBuildingBlockCommand(buildingBlock));
+         createExtendBuildingBlockCommands(buildingBlock).Each(x => _allMenuItems.Add(x));
          return this;
       }
 
@@ -45,11 +48,15 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithCommandFor<ClonePathAndValueEntityBuildingBlockUICommand<InitialConditionsBuildingBlock, InitialCondition, IInitialConditionsTask<InitialConditionsBuildingBlock>>, InitialConditionsBuildingBlock>(buildingBlock, _container);
       }
 
-      private IMenuBarItem createExtendBuildingBlockCommand(InitialConditionsBuildingBlock buildingBlock)
+      private IEnumerable<IMenuBarItem> createExtendBuildingBlockCommands(InitialConditionsBuildingBlock buildingBlock)
       {
-         return CreateMenuButton.WithCaption(AppConstants.MenuNames.ExtendFrom(ObjectTypes.InitialConditionsBuildingBlock))
+         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.ExtendFrom(ObjectTypes.InitialConditionsBuildingBlock))
             .WithIcon(ApplicationIcons.LoadIconFor(nameof(InitialConditionsBuildingBlock)))
             .WithCommandFor<ExtendInitialConditionsFromInitialConditionsUICommand, InitialConditionsBuildingBlock>(buildingBlock, _container);
+
+         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.ExtendFrom(ObjectTypes.ExpressionProfileBuildingBlock))
+            .WithIcon(ApplicationIcons.LoadIconFor(nameof(ExpressionProfileBuildingBlock)))
+            .WithCommandFor<ExtendInitialConditionsFromExpressionProfileUICommand, InitialConditionsBuildingBlock>(buildingBlock, _container);
       }
    }
 }

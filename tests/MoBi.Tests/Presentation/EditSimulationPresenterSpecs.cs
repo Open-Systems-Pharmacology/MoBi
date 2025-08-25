@@ -2,6 +2,7 @@
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
+using MoBi.Core.Services;
 using MoBi.HelpersForTests;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Presenter.ModelDiagram;
@@ -39,6 +40,7 @@ namespace MoBi.Presentation
       protected IOutputMappingMatchingTask _outputMappingMatchingTask;
       private ISimulationChangesPresenter _simulationChangesPresenter;
       private ISimulationEntitySourceReferenceFactory _entitySourceReferenceFactory;
+      private ISimulationRunner _simulationRunner;
 
       protected override void Context()
       {
@@ -59,11 +61,12 @@ namespace MoBi.Presentation
          _simulationChangesPresenter = A.Fake<ISimulationChangesPresenter>();
          _outputMappingMatchingTask = A.Fake<IOutputMappingMatchingTask>();
          _entitySourceReferenceFactory = A.Fake<ISimulationEntitySourceReferenceFactory>();
+         _simulationRunner = A.Fake<ISimulationRunner>();
 
          sut = new EditSimulationPresenter(_view, _chartPresenter, _hierarchicalSimulationPresenter, _diagramPresenter,
             _solverSettings, _outputSchemaPresenter, _presenterFactory, new HeavyWorkManagerForSpecs(),
             A.Fake<IChartFactory>(), _editFavoritePresenter, _chartTasks, _userDefinedParametersPresenter, _simulationOutputMappingPresenter,
-            _simulationPredictedVsObservedChartPresenter, _simulationResidualVsTimeChartPresenter, _context, _outputMappingMatchingTask, _simulationChangesPresenter, _entitySourceReferenceFactory);
+            _simulationPredictedVsObservedChartPresenter, _simulationResidualVsTimeChartPresenter, _context, _outputMappingMatchingTask, _simulationChangesPresenter, _entitySourceReferenceFactory, _simulationRunner);
       }
 
       protected Curve createObservedCurve(DataRepository observedDataRepository)

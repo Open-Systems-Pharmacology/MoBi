@@ -3,11 +3,11 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using MoBi.Core.Domain.Model;
 using System.Threading.Tasks;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Extensions;
+using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Extensions;
 using OSPSuite.Core.Commands;
@@ -38,18 +38,18 @@ public class CoreSimulationRunner : ICoreSimulationRunner
    private readonly IDisplayUnitUpdater _displayUnitUpdater;
    private readonly ISimModelManagerFactory _simModelManagerFactory;
    private readonly IKeyPathMapper _keyPathMapper;
-   private readonly ConcurrentDictionary<IMoBiSimulation, CancellationTokenSource> _cancellationTokenSources = new();
+   protected readonly ConcurrentDictionary<IMoBiSimulation, CancellationTokenSource> _cancellationTokenSources = new();
    private readonly IEntityValidationTask _entityValidationTask;
    private readonly IQuantitySelectionsRetriever _quantitySelectionsRetriever;
    private ISimModelManager _simModelManager;
 
    public CoreSimulationRunner(
-      IMoBiContext context, 
-      ISimulationPersistableUpdater simulationPersistableUpdater, 
-      IDisplayUnitUpdater displayUnitUpdater, 
-      ISimModelManagerFactory simModelManagerFactory, 
-      IKeyPathMapper keyPathMapper, 
-      IEntityValidationTask entityValidationTask, 
+      IMoBiContext context,
+      ISimulationPersistableUpdater simulationPersistableUpdater,
+      IDisplayUnitUpdater displayUnitUpdater,
+      ISimModelManagerFactory simModelManagerFactory,
+      IKeyPathMapper keyPathMapper,
+      IEntityValidationTask entityValidationTask,
       IQuantitySelectionsRetriever quantitySelectionsRetriever)
    {
       _context = context;
@@ -69,7 +69,7 @@ public class CoreSimulationRunner : ICoreSimulationRunner
 
    public virtual Task RunSimulationAsync(IMoBiSimulation simulation, bool defineSettings = false)
    {
-      return RunSimulationAsync(simulation, defineSettings, createOutputs:null, showWarnings:null);
+      return RunSimulationAsync(simulation, defineSettings, createOutputs: null, showWarnings: null);
    }
 
    protected async Task RunSimulationAsync(IMoBiSimulation simulation, bool defineSettings, Func<IMoBiSimulation, bool> createOutputs, Action<SimulationRunResults> showWarnings)
@@ -77,7 +77,7 @@ public class CoreSimulationRunner : ICoreSimulationRunner
       if (validate(simulation, defineSettings, createOutputs))
          return;
 
-      await StartSimulationRunAsync(simulation, showWarnings);
+      await startSimulationRunAsync(simulation, showWarnings);
    }
 
    private bool validate(IMoBiSimulation simulation, bool defineSettings, Func<IMoBiSimulation, bool> createOutputs)
@@ -114,7 +114,7 @@ public class CoreSimulationRunner : ICoreSimulationRunner
       return AppConstants.ResultName + DateTime.Now.ToIsoFormat(withSeconds: true);
    }
 
-   protected void AddCommand(ICommand command)
+   private void addCommand(ICommand command)
    {
       _context.AddToHistory(command);
    }
@@ -202,7 +202,7 @@ public class CoreSimulationRunner : ICoreSimulationRunner
       _quantitySelectionsRetriever.UpdatePersistableOutputsIn(simulation);
    }
 
-   protected async Task StartSimulationRunAsync(IMoBiSimulation simulation, Action<SimulationRunResults> resultsAction = null)
+   private async Task startSimulationRunAsync(IMoBiSimulation simulation, Action<SimulationRunResults> resultsAction = null)
    {
       var cts = new CancellationTokenSource();
       if (!_cancellationTokenSources.TryAdd(simulation, cts)) //this will prevent from running one that is already running
@@ -230,7 +230,7 @@ public class CoreSimulationRunner : ICoreSimulationRunner
             copyResultsToSimulation(simulationRunResults, simulation);
          }
 
-         AddCommand(getSimulationResultLabel(simulationRunResults));
+         addCommand(getSimulationResultLabel(simulationRunResults));
       }
       finally
       {
@@ -285,6 +285,6 @@ public class CoreSimulationRunner : ICoreSimulationRunner
          return;
 
       //they are different. Issue an update command
-      AddCommand(new UpdateOutputSelectionsInSimulationCommand(outputSelections, simulation).RunCommand(_context));
+      addCommand(new UpdateOutputSelectionsInSimulationCommand(outputSelections, simulation).RunCommand(_context));
    }
 }

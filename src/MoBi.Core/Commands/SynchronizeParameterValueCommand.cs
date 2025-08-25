@@ -1,10 +1,10 @@
-﻿using OSPSuite.Core.Commands.Core;
+﻿using MoBi.Assets;
 using MoBi.Core.Domain.Model;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
-using MoBi.Assets;
 using MoBi.Core.Domain.Services;
 using OSPSuite.Assets;
+using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
@@ -34,7 +34,7 @@ namespace MoBi.Core.Commands
          _parameterValue.Dimension = _parameter.Dimension;
          _parameterValue.DisplayUnit = _parameter.DisplayUnit;
          _parameterValue.UpdateValueOriginFrom(_parameter.ValueOrigin);
-         
+
          Description = AppConstants.Commands.UpdateParameterValue(_parameterValue.Path, _parameterValue.Value, _parameterValue.DisplayUnit);
          context.Resolve<ISimulationEntitySourceUpdater>().UpdateSourcesForNewPathAndValueEntity(_buildingBlock, _parameterValue.Path, _simulation);
       }
@@ -58,7 +58,7 @@ namespace MoBi.Core.Commands
       {
          base.RestoreExecutionData(context);
          _parameter = context.Get<IParameter>(_parameterId);
-         context.CurrentProject.Simulations.FindById(_simulationId);
+         _simulation = context.CurrentProject.Simulations.FindById(_simulationId);
       }
    }
 }

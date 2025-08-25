@@ -10,11 +10,6 @@ using ISimulationPersistableUpdater = MoBi.Core.Services.ISimulationPersistableU
 
 namespace MoBi.Presentation.Tasks
 {
-   public interface ISimulationRunner : ICoreSimulationRunner
-   {
-
-   }
-
    public class SimulationRunner : CoreSimulationRunner, ISimulationRunner
    {
       private readonly IMoBiApplicationController _applicationController;
@@ -31,6 +26,7 @@ namespace MoBi.Presentation.Tasks
       {
          _outputSelectionsRetriever = outputSelectionsRetriever;
          _applicationController = applicationController;
+         _outputSelectionsRetriever = outputSelectionsRetriever;
       }
 
       public override Task RunSimulationAsync(IMoBiSimulation simulation, bool defineSettings = false)
@@ -57,6 +53,17 @@ namespace MoBi.Presentation.Tasks
          {
             presenter.Show(results.Warnings);
          }
+      }
+
+      public bool IsSimulationIdle(IMoBiSimulation simulation)
+      {
+         return !_cancellationTokenSources.TryGetValue(simulation, out var cts)
+                || cts.IsCancellationRequested;
+      }
+
+      public bool IsAnySimulationRunning()
+      {
+         return _cancellationTokenSources.Values.Any(cts => !cts.IsCancellationRequested);
       }
    }
 }

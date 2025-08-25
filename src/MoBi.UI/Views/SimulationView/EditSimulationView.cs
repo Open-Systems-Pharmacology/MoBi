@@ -110,5 +110,10 @@ namespace MoBi.UI.Views.SimulationView
       {
          tabChanges.FillWith(view);
       }
+
+      public void SetParametersTabEnabled(bool enabled)
+      {
+         splitSimulationParameters.Enabled = enabled;
+      }
    }
 }

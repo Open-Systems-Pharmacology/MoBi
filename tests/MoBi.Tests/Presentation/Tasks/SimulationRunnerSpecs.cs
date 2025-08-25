@@ -494,5 +494,12 @@ namespace MoBi.Presentation.Tasks
       {
          A.CallTo(() => _context.PublishEvent(A<SimulationRunCanceledEvent>._)).MustHaveHappened();
       }
+
+
+      [Observation]
+      public void is_any_simulation_running_must_be_false()
+      {
+         sut.IsAnySimulationRunning().ShouldBeFalse();
+      }
    }
 }
