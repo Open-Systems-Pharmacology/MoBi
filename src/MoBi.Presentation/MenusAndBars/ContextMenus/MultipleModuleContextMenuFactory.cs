@@ -14,7 +14,7 @@ using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
-   public class MultipleModuleContextMenuFactory : MultipleNodeContextMenuFactory<Module>
+   public class MultipleModuleContextMenuFactory : MultipleNodeContextMenuFactory<ClassifiableModule>
    {
       private readonly IMoBiContext _context;
       private readonly IContainer _container;
@@ -25,9 +25,9 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          _container = container;
       }
 
-      protected override IContextMenu CreateFor(IReadOnlyList<Module> modules, IPresenterWithContextMenu<IReadOnlyList<ITreeNode>> presenter)
+      protected override IContextMenu CreateFor(IReadOnlyList<ClassifiableModule> modules, IPresenterWithContextMenu<IReadOnlyList<ITreeNode>> presenter)
       {
-         return new MultipleModuleContextMenu(modules.Select(x => x).ToList(), _context, _container);
+         return new MultipleModuleContextMenu(modules.Select(x => x.Subject).ToList(), _context, _container);
       }
    }
 
