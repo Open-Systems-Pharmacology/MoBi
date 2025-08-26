@@ -10,6 +10,7 @@ using MoBi.Core.Helper;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
@@ -30,8 +31,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       void MakeOverwriteModule(Module module);
       void MoveBuildingBlock(IBuildingBlock buildingBlockToMove, Module destinationModule);
       void CopyBuildingBlock(IBuildingBlock buildingBlockToCopy, Module destinationModule);
-      void ConfirmAndRemove(IReadOnlyList<Module> modulesToRemove);
-      IMoBiCommand Remove(IReadOnlyList<Module> modulesToRemove);
+      bool Remove(IReadOnlyList<Module> modulesToRemove);
    }
 
    public class InteractionTasksForModule : InteractionTasksForChildren<MoBiProject, Module>, IInteractionTasksForModule
@@ -171,16 +171,11 @@ namespace MoBi.Presentation.Tasks.Interaction
             .RunCommand(context));
       }
 
-      public void ConfirmAndRemove(IReadOnlyList<Module> modulesToRemove)
+      public bool Remove(IReadOnlyList<Module> modulesToRemove)
       {
-         if (_interactionTaskContext.DialogCreator.MessageBoxYesNo(AppConstants.Dialog.RemoveMultipleModules) != ViewResult.Yes)
-            return;
+         if (_interactionTaskContext.DialogCreator.MessageBoxYesNo(AppConstants.Dialog.RemoveAllModules(modulesToRemove.AllNames())) != ViewResult.Yes)
+            return false;
 
-         context.AddToHistory(Remove(modulesToRemove));
-      }
-
-      public IMoBiCommand Remove(IReadOnlyList<Module> modulesToRemove)
-      {
          var macroCommand = new MoBiMacroCommand
          {
             Description = AppConstants.Commands.RemoveMultipleModules,
@@ -192,10 +187,12 @@ namespace MoBi.Presentation.Tasks.Interaction
          modulesRemoved.Each(x => macroCommand.Add(GetRemoveCommand(x, null, null)));
 
          var modulesSkipped = modulesToRemove.Except(modulesRemoved).ToList();
-         if (modulesSkipped.Any()) 
+         if (modulesSkipped.Any())
             showCouldNotRemoveMessage(modulesSkipped.ToList());
 
-         return macroCommand.RunCommand(context);
+         context.AddToHistory(macroCommand.RunCommand(context));
+
+         return macroCommand.IsEmpty || macroCommand.All().All(x => x.IsEmpty());
       }
 
       private void showCouldNotRemoveMessage(IReadOnlyList<Module> modulesNotRemoved)

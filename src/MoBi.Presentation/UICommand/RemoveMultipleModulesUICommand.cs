@@ -16,7 +16,7 @@ namespace MoBi.Presentation.UICommand
 
       protected override void PerformExecute()
       {
-         _interactionTasks.ConfirmAndRemove(Subject);
+         _interactionTasks.Remove(Subject);
       }
    }
 }

@@ -89,7 +89,7 @@ namespace MoBi.IntegrationTests
 
       protected override void Because()
       {
-         sut.ConfirmAndRemove(new[] { _module, _module2 });
+         sut.Remove(new[] { _module, _module2 });
       }
 
       [Observation]
@@ -115,7 +115,7 @@ namespace MoBi.IntegrationTests
 
       protected override void Because()
       {
-         sut.ConfirmAndRemove(new[] { _module, _module2 });
+         sut.Remove(new[] { _module, _module2 });
       }
 
       [Observation]

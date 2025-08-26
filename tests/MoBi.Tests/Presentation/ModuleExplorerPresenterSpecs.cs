@@ -773,7 +773,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.RemoveChildrenClassifications(_classificationNode, true, true);
+         sut.RemoveChildrenClassifications(_classificationNode, removeParent:true, removeData:true);
       }
 
       [Observation]
@@ -806,7 +806,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.RemoveChildrenClassifications(_classificationNode, true, false);
+         sut.RemoveChildrenClassifications(_classificationNode, removeParent:true, removeData:false);
       }
 
       [Observation]
