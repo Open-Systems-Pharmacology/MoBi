@@ -749,4 +749,70 @@ namespace MoBi.Presentation
          _result.ShouldBeFalse();
       }
    }
+
+   public class When_removing_module_classification_nodes_and_data : concern_for_ModuleExplorerPresenter
+   {
+      private ITreeNode<IClassification> _classificationNode;
+      private Module _module;
+
+      protected override void Context()
+      {
+         base.Context();
+         _module = new Module();
+         var classifiableModule = new ClassifiableModule
+         {
+            Subject = _module
+         };
+         var classification = new Classification
+         {
+            ClassificationType = ClassificationType.Module
+         };
+         _classificationNode = new ClassificationNode(classification);
+         _classificationNode.AddChild(new ModuleNode(classifiableModule));
+      }
+
+      protected override void Because()
+      {
+         sut.RemoveChildrenClassifications(_classificationNode, removeParent:true, removeData:true);
+      }
+
+      [Observation]
+      public void the_interaction_task_is_used_to_remove_child_modules()
+      {
+         A.CallTo(() => _interactionTaskForModule.Remove(A<IReadOnlyList<Module>>.That.Contains(_module))).MustHaveHappened();
+      }
+   }
+
+   public class When_removing_module_classification_nodes_and_not_data : concern_for_ModuleExplorerPresenter
+   {
+      private ITreeNode<IClassification> _classificationNode;
+      private Module _module;
+
+      protected override void Context()
+      {
+         base.Context();
+         _module = new Module();
+         var classifiableModule = new ClassifiableModule
+         {
+            Subject = _module
+         };
+         var classification = new Classification
+         {
+            ClassificationType = ClassificationType.Module
+         };
+         _classificationNode = new ClassificationNode(classification);
+         _classificationNode.AddChild(new ModuleNode(classifiableModule));
+      }
+
+      protected override void Because()
+      {
+         sut.RemoveChildrenClassifications(_classificationNode, removeParent:true, removeData:false);
+      }
+
+      [Observation]
+      public void the_interaction_task_is_used_to_remove_child_modules()
+      {
+         A.CallTo(() => _interactionTaskForModule.Remove(A<IReadOnlyList<Module>>.That.Contains(_module))).MustNotHaveHappened();
+      }
+   }
 }
