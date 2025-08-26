@@ -346,7 +346,7 @@ namespace MoBi.Presentation.Presenter.Main
             return false;
 
          var allModules = classificationNode.AllNodes<ModuleNode>().Select(x => x.Tag.Subject).ToList();
-         return _interactionTaskForModule.Remove(allModules);
+         return !allModules.Any() || _interactionTaskForModule.Remove(allModules);
       }
 
       private void addBuildingBlockToTree<TBuildingBlock>(TBuildingBlock buildingBlock, RootNodeType buildingBlockFolderType)
