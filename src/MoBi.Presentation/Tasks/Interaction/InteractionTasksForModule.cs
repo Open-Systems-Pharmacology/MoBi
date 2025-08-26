@@ -192,7 +192,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          context.AddToHistory(macroCommand.RunCommand(context));
 
-         return macroCommand.IsEmpty || macroCommand.All().All(x => x.IsEmpty());
+         return !macroCommand.IsEmpty && macroCommand.All().All(x => !x.IsEmpty());
       }
 
       private void showCouldNotRemoveMessage(IReadOnlyList<Module> modulesNotRemoved)
