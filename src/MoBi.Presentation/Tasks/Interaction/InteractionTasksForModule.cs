@@ -30,7 +30,8 @@ namespace MoBi.Presentation.Tasks.Interaction
       void MakeOverwriteModule(Module module);
       void MoveBuildingBlock(IBuildingBlock buildingBlockToMove, Module destinationModule);
       void CopyBuildingBlock(IBuildingBlock buildingBlockToCopy, Module destinationModule);
-      void Remove(IReadOnlyList<Module> modulesToRemove);
+      void ConfirmAndRemove(IReadOnlyList<Module> modulesToRemove);
+      IMoBiCommand Remove(IReadOnlyList<Module> modulesToRemove);
    }
 
    public class InteractionTasksForModule : InteractionTasksForChildren<MoBiProject, Module>, IInteractionTasksForModule
@@ -170,11 +171,16 @@ namespace MoBi.Presentation.Tasks.Interaction
             .RunCommand(context));
       }
 
-      public void Remove(IReadOnlyList<Module> modulesToRemove)
+      public void ConfirmAndRemove(IReadOnlyList<Module> modulesToRemove)
       {
          if (_interactionTaskContext.DialogCreator.MessageBoxYesNo(AppConstants.Dialog.RemoveMultipleModules) != ViewResult.Yes)
             return;
 
+         context.AddToHistory(Remove(modulesToRemove));
+      }
+
+      public IMoBiCommand Remove(IReadOnlyList<Module> modulesToRemove)
+      {
          var macroCommand = new MoBiMacroCommand
          {
             Description = AppConstants.Commands.RemoveMultipleModules,
@@ -189,7 +195,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (modulesSkipped.Any()) 
             showCouldNotRemoveMessage(modulesSkipped.ToList());
 
-         context.AddToHistory(macroCommand.RunCommand(context));
+         return macroCommand.RunCommand(context);
       }
 
       private void showCouldNotRemoveMessage(IReadOnlyList<Module> modulesNotRemoved)

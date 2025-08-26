@@ -8,10 +8,12 @@ using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using OSPSuite.Assets;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.Classifications;
@@ -50,17 +52,17 @@ namespace MoBi.Presentation.Presenter.Main
       private readonly IModulesInExplorerPresenter _modulesInExplorerPresenter;
       private bool _editSinglesOnLoad = true;
 
-      public ModuleExplorerPresenter(IModuleExplorerView view, 
-         IRegionResolver regionResolver, 
+      public ModuleExplorerPresenter(IModuleExplorerView view,
+         IRegionResolver regionResolver,
          ITreeNodeFactory treeNodeFactory,
-         IViewItemContextMenuFactory viewItemContextMenuFactory, 
-         IMoBiContext context, 
+         IViewItemContextMenuFactory viewItemContextMenuFactory,
+         IMoBiContext context,
          IClassificationPresenter classificationPresenter,
-         IToolTipPartCreator toolTipPartCreator, 
+         IToolTipPartCreator toolTipPartCreator,
          IObservedDataInExplorerPresenter observedDataInExplorerPresenter,
-         IMultipleTreeNodeContextMenuFactory multipleTreeNodeContextMenuFactory, 
+         IMultipleTreeNodeContextMenuFactory multipleTreeNodeContextMenuFactory,
          IProjectRetriever projectRetriever,
-         IEditBuildingBlockStarter editBuildingBlockStarter, 
+         IEditBuildingBlockStarter editBuildingBlockStarter,
          IInteractionTasksForModule interactionTaskForModule,
          IModulesInExplorerPresenter modulesInExplorerPresenter) :
          base(view, regionResolver, treeNodeFactory, viewItemContextMenuFactory, context, RegionNames.ModuleExplorer,
@@ -111,7 +113,7 @@ namespace MoBi.Presentation.Presenter.Main
 
          if (draggingModule(nodeToDrop))
          {
-            if(targetNode is ClassificationNode classificationNode && nodeTagIsModuleRootNode(classificationNode))
+            if (targetNode is ClassificationNode classificationNode && nodeTagIsModuleRootNode(classificationNode))
                return true;
 
             return false;
@@ -335,7 +337,19 @@ namespace MoBi.Presentation.Presenter.Main
          _observedDataInExplorerPresenter.GroupObservedDataByCategory(parentNode, category);
       }
 
-      public override bool RemoveDataUnderClassification(ITreeNode<IClassification> classificationNode) => _observedDataInExplorerPresenter.RemoveObservedDataUnder(classificationNode);
+      public override bool RemoveDataUnderClassification(ITreeNode<IClassification> classificationNode)
+      {
+         if (classificationNode.Tag.ClassificationType == ClassificationType.ObservedData)
+            return _observedDataInExplorerPresenter.RemoveObservedDataUnder(classificationNode);
+
+         if (classificationNode.Tag.ClassificationType != ClassificationType.Module)
+            return false;
+
+         var allModules = classificationNode.AllNodes<ModuleNode>().Select(x => x.Tag.Subject).ToList();
+         var command = _interactionTaskForModule.Remove(allModules);
+         _context.AddToHistory(command);
+         return !command.IsEmpty();
+      }
 
       private void addBuildingBlockToTree<TBuildingBlock>(TBuildingBlock buildingBlock, RootNodeType buildingBlockFolderType)
          where TBuildingBlock : IBuildingBlock
@@ -426,7 +440,7 @@ namespace MoBi.Presentation.Presenter.Main
          {
             case InitialConditionsFolderNode initialConditionsFolderNode:
             {
-               if (!initialConditionsFolderNode.HasChildren) 
+               if (!initialConditionsFolderNode.HasChildren)
                   removeFolderNode(initialConditionsFolderNode);
                break;
             }
