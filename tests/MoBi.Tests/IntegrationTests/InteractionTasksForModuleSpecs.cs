@@ -66,10 +66,45 @@ namespace MoBi.IntegrationTests
       }
    }
 
+   public class When_removing_multiple_modules_from_the_project_the_user_declines_to_confirm : concern_for_InteractionTasksForModule
+   {
+      private Module _module2;
+      private MoBiProject _project;
+      private bool _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         _module2 = new Module();
+         _project = new MoBiProject();
+         var moBiSimulation = new MoBiSimulation
+         {
+            Configuration = new SimulationConfiguration()
+         };
+         moBiSimulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(_module));
+         _project.AddSimulation(moBiSimulation);
+
+         A.CallTo(() => _moBiContext.CurrentProject).Returns(_project);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, A<ViewResult>._)).Returns(ViewResult.No);
+      }
+
+      protected override void Because()
+      {
+         _result = sut.Remove(new[] { _module, _module2 });
+      }
+
+      [Observation]
+      public void the_return_value_should_indicate_to_not_remove_the_folder()
+      {
+         _result.ShouldBeFalse();
+      }
+   }
+   
    public class When_removing_multiple_modules_from_the_project_and_some_are_used_in_simulation : concern_for_InteractionTasksForModule
    {
       private Module _module2;
       private MoBiProject _project;
+      private bool _result;
 
       protected override void Context()
       {
@@ -89,7 +124,7 @@ namespace MoBi.IntegrationTests
 
       protected override void Because()
       {
-         sut.Remove(new[] { _module, _module2 });
+         _result = sut.Remove(new[] { _module, _module2 });
       }
 
       [Observation]
@@ -97,12 +132,19 @@ namespace MoBi.IntegrationTests
       {
          A.CallTo(() => _context.DialogCreator.MessageBoxInfo(A<string>._)).MustHaveHappened();
       }
+
+      [Observation]
+      public void the_return_value_should_indicate_to_remove_the_folder()
+      {
+         _result.ShouldBeTrue();
+      }
    }
 
    public class When_removing_multiple_modules_from_the_project_and_none_are_used_in_simulation : concern_for_InteractionTasksForModule
    {
       private Module _module2;
       private MoBiProject _project;
+      private bool _result;
 
       protected override void Context()
       {
@@ -115,13 +157,19 @@ namespace MoBi.IntegrationTests
 
       protected override void Because()
       {
-         sut.Remove(new[] { _module, _module2 });
+         _result = sut.Remove(new[] { _module, _module2 });
       }
 
       [Observation]
       public void the_user_should_not_be_prompted()
       {
          A.CallTo(() => _context.DialogCreator.MessageBoxInfo(A<string>._)).MustNotHaveHappened();
+      }
+
+      [Observation]
+      public void the_return_value_should_indicate_to_remove_the_folder()
+      {
+         _result.ShouldBeTrue();
       }
    }
 
