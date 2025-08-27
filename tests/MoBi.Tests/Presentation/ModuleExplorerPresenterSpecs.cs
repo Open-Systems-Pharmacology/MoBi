@@ -40,7 +40,7 @@ namespace MoBi.Presentation
       protected IViewItemContextMenuFactory _viewItemContextMenuFactory;
       private IRegionResolver _regionResolver;
       protected TreeNodeFactory _treeNodeFactory;
-      private IClassificationPresenter _classificationPresenter;
+      protected IClassificationPresenter _classificationPresenter;
       private IToolTipPartCreator _toolTipPartCreator;
       protected IObservedDataInExplorerPresenter _observedDataInExplorerPresenter;
       private IMultipleTreeNodeContextMenuFactory _multipleTreeNodeContextMenuFactory;
@@ -780,6 +780,39 @@ namespace MoBi.Presentation
       public void the_interaction_task_is_used_to_remove_child_modules()
       {
          A.CallTo(() => _interactionTaskForModule.Remove(A<IReadOnlyList<Module>>.That.Contains(_module))).MustHaveHappened();
+      }
+   }
+
+   public class When_removing_module_classification_without_module_children : concern_for_ModuleExplorerPresenter
+   {
+      private ITreeNode<IClassification> _classificationNode;
+
+      protected override void Context()
+      {
+         base.Context();
+
+         var classification = new Classification
+         {
+            ClassificationType = ClassificationType.Module
+         };
+         _classificationNode = new ClassificationNode(classification);
+      }
+
+      protected override void Because()
+      {
+         sut.RemoveChildrenClassifications(_classificationNode, removeParent: true, removeData: true);
+      }
+
+      [Observation]
+      public void the_interaction_task_is_used_to_remove_child_modules()
+      {
+         A.CallTo(() => _interactionTaskForModule.Remove(A<IReadOnlyList<Module>>._)).MustNotHaveHappened();
+      }
+
+      [Observation]
+      public void the_classification_should_be_removed()
+      {
+         A.CallTo(() => _classificationPresenter.RemoveClassification(_classificationNode)).MustHaveHappened();
       }
    }
 
