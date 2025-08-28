@@ -44,44 +44,44 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       _simulationSettingsFactory = simulationSettingsFactory;
    }
 
-   public override async Task<ModelProject> MapToModel(SnapshotProject snapshot, ProjectContext context)
+   public override async Task<ModelProject> MapToModel(SnapshotProject projectSnapshot, ProjectContext context)
    {
       var project = context.MoBiProject();
 
-      project.Name = snapshot.Name;
-      project.Description = snapshot.Description;
+      project.Name = projectSnapshot.Name;
+      project.Description = projectSnapshot.Description;
       project.Creation = _creationMetaDataFactory.Create();
       project.SimulationSettings = _simulationSettingsFactory.CreateDefault();
 
-      project.ReactionDimensionMode = snapshot.ReactionDimensionMode;
+      project.ReactionDimensionMode = projectSnapshot.ReactionDimensionMode;
 
-      snapshot.PKSimModules?.Each((x, i) =>
+      projectSnapshot.PKSimModules?.Each((x, i) =>
       {
-         _logger.AddInfo($"Loading PK-Sim module from project snapshot ({i + 1}/{snapshot.PKSimModules.Length})...", snapshot.Name);
+         _logger.AddInfo($"Loading PK-Sim module from project snapshot ({i + 1}/{projectSnapshot.PKSimModules.Length})...", projectSnapshot.Name);
          loadProjectContentFromPKSimSnapshot(x, project);
       });
 
-      snapshot.ExtensionModules?.Each(x => project.AddModule(deserializeFromBase64PKML<Module>(x, project)));
+      projectSnapshot.ExtensionModules?.Each(x => project.AddModule(deserializeFromBase64PKML<Module>(x, project)));
 
-      snapshot.ExpressionProfileBuildingBlocks?.Each(x => project.AddExpressionProfileBuildingBlock(deserializeFromBase64PKML<ExpressionProfileBuildingBlock>(x, project)));
+      projectSnapshot.ExpressionProfileBuildingBlocks?.Each(x => project.AddExpressionProfileBuildingBlock(deserializeFromBase64PKML<ExpressionProfileBuildingBlock>(x, project)));
 
-      snapshot.IndividualBuildingBlocks?.Each(x => project.AddIndividualBuildingBlock(deserializeFromBase64PKML<IndividualBuildingBlock>(x, project)));
+      projectSnapshot.IndividualBuildingBlocks?.Each(x => project.AddIndividualBuildingBlock(deserializeFromBase64PKML<IndividualBuildingBlock>(x, project)));
 
-      var snapshotContext = new SnapshotContext(project, SnapshotVersions.FindBy(snapshot.Version));
+      var snapshotContext = new SnapshotContext(project, SnapshotVersions.FindByMoBiProjectVersion(projectSnapshot.Version));
 
-      var observedData = await ObservedDataFrom(snapshot.ObservedData, snapshotContext);
+      var observedData = await ObservedDataFrom(projectSnapshot.ObservedData, snapshotContext);
       observedData?.Each(repository => AddObservedDataToProject(project, repository));
 
-      var parameterIdentifications = await AllParameterIdentificationsFrom(snapshot.ParameterIdentifications, snapshotContext);
+      var parameterIdentifications = await AllParameterIdentificationsFrom(projectSnapshot.ParameterIdentifications, snapshotContext);
       parameterIdentifications?.Each(pi => AddParameterIdentificationToProject(project, pi));
 
       var simulationContext = new SimulationContext(context.RunSimulations, snapshotContext)
       {
-         NumberOfSimulationsToLoad = snapshot.Simulations.Length,
+         NumberOfSimulationsToLoad = projectSnapshot.Simulations.Length,
          NumberOfSimulationsLoaded = 0
       };
 
-      foreach (var simulationSnapshot in snapshot.Simulations)
+      foreach (var simulationSnapshot in projectSnapshot.Simulations)
       {
          try
          {
@@ -95,7 +95,7 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
          }
       }
 
-      await updateProjectClassifications(snapshot, snapshotContext);
+      await updateProjectClassifications(projectSnapshot, snapshotContext);
 
       return project;
    }
