@@ -67,7 +67,7 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
 
       projectSnapshot.IndividualBuildingBlocks?.Each(x => project.AddIndividualBuildingBlock(deserializeFromBase64PKML<IndividualBuildingBlock>(x, project)));
 
-      var snapshotContext = new SnapshotContext(project, SnapshotVersions.FindBy(projectSnapshot.Version));
+      var snapshotContext = new SnapshotContext(project, SnapshotVersions.FindByMoBiProjectVersion(projectSnapshot.Version));
 
       var observedData = await ObservedDataFrom(projectSnapshot.ObservedData, snapshotContext);
       observedData?.Each(repository => AddObservedDataToProject(project, repository));
