@@ -56,11 +56,6 @@ namespace MoBi.Presentation.DTO
          return path1 == null || string.IsNullOrEmpty(path1.PathAsString);
       }
 
-      public bool IsLogicalContainer(NeighborhoodBuilderDTO buildeDto)
-      {
-         return buildeDto.Mode == ContainerMode.Logical;
-      }
-
       public bool HasConnectionBetween(string path, string secondNeighborPath)
       {
          if (!_connections.Contains(path))
@@ -91,22 +86,10 @@ namespace MoBi.Presentation.DTO
             .WithRule((dto, path) => !Equals(path, dto.FirstNeighborPath))
             .WithError((dto, path) => AppConstants.Validation.CannotCreateANeighborhoodThatConnectsAContainerToItself);
 
-         private static IBusinessRule notLogicalFirstNeighbor { get; } = CreateRule.For<NeighborhoodBuilderDTO>()
-            .Property(x => x.FirstNeighborDTO)
-            .WithRule((dto, _) => dto.Mode != ContainerMode.Logical)
-            .WithError((dto, _) => AppConstants.Validation.CannotCreateANeighborhoodFromLogicalContainers);
-
-         private static IBusinessRule notLogicalSecondNeighbor { get; } = CreateRule.For<NeighborhoodBuilderDTO>()
-            .Property(x => x.SecondNeighborDTO)
-            .WithRule((dto, _) => dto.Mode != ContainerMode.Logical)
-            .WithError((dto, _) => AppConstants.Validation.CannotCreateANeighborhoodFromLogicalContainers);
-
          public static IReadOnlyList<IBusinessRule> All { get; } = new[]
          {
             noEquivalentForFirstNeighbor,
             noEquivalentForSecondNeighbor,
-            notLogicalFirstNeighbor,
-            notLogicalSecondNeighbor,
             notEqualToSecondNeighbor,
             notEqualToFirstNeighbor
          };
