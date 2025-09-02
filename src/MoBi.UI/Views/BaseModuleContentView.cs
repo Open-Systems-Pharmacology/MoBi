@@ -39,7 +39,7 @@ namespace MoBi.UI.Views
          cbEventGroup.Text = AppConstants.Captions.Events;
          cbReactions.Text = Reactions;
          cbMolecules.Text = Molecules;
-         cbObservers.Text = Observer;
+         cbObservers.Text = Observers;
          cbPassiveTransports.Text = PassiveTransports;
          cbInitialConditions.Text = InitialConditions;
          cbParameterValues.Text = ParameterValues;
