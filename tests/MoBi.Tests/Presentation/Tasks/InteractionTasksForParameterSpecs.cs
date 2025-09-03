@@ -189,5 +189,26 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
+   public class When_creating_a_new_parameter : concern_for_InteractionTasksForParameter
+   {
+      private IContainer _parent;
+      private IParameter _result;
 
+      protected override void Context()
+      {
+         base.Context();
+         _parent = new Container();
+      }
+
+      protected override void Because()
+      {
+         _result = sut.CreateNewEntity(_parent);
+      }
+
+      [Observation]
+      public void the_parameter_is_not_added_to_the_parent()
+      {
+         _parent.ShouldNotContain(_result);
+      }
+   }
 }

@@ -1420,7 +1420,6 @@ namespace MoBi.Assets
          public static readonly string Event = "Event";
          public static readonly string Observers = "Observers";
          public static readonly string Simulations = "Simulations";
-         public static readonly string Observer = "Observer";
          public static readonly string ObservedData = "Observed Data";
          public static readonly string PassiveTransports = "Passive Transports";
          public static readonly string Reactions = "Reactions";

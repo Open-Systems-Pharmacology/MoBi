@@ -127,7 +127,7 @@ namespace MoBi.UI.Views
 
       private void onIsPresentValueSet(MoleculeBuilderDTO moleculeBuilder, PropertyValueSetEventArgs<bool> value)
       {
-         _presenter.SetStationaryProperty(value.NewValue, value.OldValue);
+         this.DoWithinExceptionHandler(() => _presenter.SetStationaryProperty(value.NewValue, value.OldValue));
       }
 
       private void OnValueUpdating<T>(MoleculeBuilderDTO moleculeBuilder, PropertyValueSetEventArgs<T> value)
