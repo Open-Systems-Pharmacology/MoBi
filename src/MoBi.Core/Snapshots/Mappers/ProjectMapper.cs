@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
+using OSPSuite.Assets.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Qualification;
+using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Services;
 using OSPSuite.Core.Snapshots;
 using OSPSuite.Core.Snapshots.Mappers;
@@ -44,7 +46,26 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       _simulationSettingsFactory = simulationSettingsFactory;
    }
 
-   public override async Task<ModelProject> MapToModel(SnapshotProject projectSnapshot, ProjectContext context)
+   /// <summary>
+   ///    Loads the project from the snapshot. If there are any PK-Sim modules, they are rebuilt through a local installation
+   ///    of PK-Sim.
+   ///    If any of the PK-Sim building blocks should have markdown exported it will be done during the module rebuild.
+   /// </summary>
+   /// <param name="snapshot">The MoBi project snapshot</param>
+   /// <param name="projectContext">Context for the project load from snapshot</param>
+   /// <param name="qualificationConfiguration">
+   ///    The configuration containing any building block inputs that should have report
+   ///    markdown exported while the module is rebuilt in PK-Sim
+   /// </param>
+   /// <returns>The project that was created and any input mappings that were exported</returns>
+   public async Task<(ModelProject, InputMapping[])> MapToModelAndExportInputs(SnapshotProject snapshot, ProjectContext projectContext, QualificationConfiguration qualificationConfiguration)
+   {
+      InputMapping[] inputMappings = [];
+
+      return (await mapToModel(snapshot, projectContext, (module, project) => inputMappings = loadProjectContentAndExportInputsFromPKSimSnapshot(module, project, qualificationConfiguration)), inputMappings);
+   }
+
+   private async Task<ModelProject> mapToModel(SnapshotProject projectSnapshot, ProjectContext context, Action<string, ModelProject> rebuildAction)
    {
       var project = context.MoBiProject();
 
@@ -58,7 +79,7 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       projectSnapshot.PKSimModules?.Each((x, i) =>
       {
          _logger.AddInfo($"Loading PK-Sim module from project snapshot ({i + 1}/{projectSnapshot.PKSimModules.Length})...", projectSnapshot.Name);
-         loadProjectContentFromPKSimSnapshot(x, project);
+         rebuildAction(x, project);
       });
 
       projectSnapshot.ExtensionModules?.Each(x => project.AddModule(deserializeFromBase64PKML<Module>(x, project)));
@@ -100,6 +121,11 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       return project;
    }
 
+   public override async Task<ModelProject> MapToModel(SnapshotProject projectSnapshot, ProjectContext context)
+   {
+      return await mapToModel(projectSnapshot, context, loadProjectContentFromPKSimSnapshot);
+   }
+
    private void addSimulations(ModelProject project, MoBiSimulation x)
    {
       AddClassifiableToProject<ClassifiableSimulation, IMoBiSimulation>(project, x, project.AddSimulation, project.Simulations);
@@ -109,11 +135,25 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
    {
       var simulationTransfer = _pkSimStarter.LoadSimulationTransferFromSnapshot(snapshot);
 
+      loadSimulationTransferContentToProject(project, simulationTransfer);
+   }
+
+   private static void loadSimulationTransferContentToProject(ModelProject project, SimulationTransfer simulationTransfer)
+   {
       var simulationConfiguration = simulationTransfer.Simulation.Configuration;
 
       simulationConfiguration.ModuleConfigurations.Each(x => project.AddModule(x.Module));
       simulationConfiguration.ExpressionProfiles.Each(project.AddExpressionProfileBuildingBlock);
       project.AddIndividualBuildingBlock(simulationConfiguration.Individual);
+   }
+
+   private InputMapping[] loadProjectContentAndExportInputsFromPKSimSnapshot(string snapshot, ModelProject project, QualificationConfiguration config)
+   {
+      var (simulationTransfer, inputMappings) = _pkSimStarter.LoadSimulationTransferFromSnapshotAndExportInputs(snapshot, config);
+
+      loadSimulationTransferContentToProject(project, simulationTransfer);
+
+      return inputMappings;
    }
 
    private Task updateProjectClassifications(SnapshotProject snapshot, SnapshotContext snapshotContext)
@@ -171,7 +211,7 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
    private string[] mapExpressionProfilesBuildingBlocks(ModelProject project) => project.ExpressionProfileCollection.Where(x => !isFromSnapshot(x, project)).Select(serializeToBase64PKML).ToArray();
    private string[] mapIndividualBuildingBlocks(ModelProject project) => project.IndividualsCollection.Where(x => !isFromSnapshot(x, project)).Select(serializeToBase64PKML).ToArray();
 
-   private static bool isFromSnapshot(ExpressionProfileBuildingBlock expressionProfileBuildingBlock, ModelProject project) => 
+   private static bool isFromSnapshot(ExpressionProfileBuildingBlock expressionProfileBuildingBlock, ModelProject project) =>
       projectHasPKSimModule(expressionProfileBuildingBlock.SnapshotOriginModuleId, project);
 
    private static bool projectHasPKSimModule(string snapshotOriginModuleId, ModelProject project)
@@ -189,14 +229,10 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       return module.IsPKSimModule && module.HasSnapshot;
    }
 
-   private static bool isFromSnapshot(IndividualBuildingBlock individualBuildingBlock, ModelProject project) => 
+   private static bool isFromSnapshot(IndividualBuildingBlock individualBuildingBlock, ModelProject project) =>
       projectHasPKSimModule(individualBuildingBlock.SnapshotOriginModuleId, project);
 
-   private T deserializeFromBase64PKML<T>(string encodedModule, ModelProject project) => _xmlSerializationService.Deserialize<T>(fromBase64String(encodedModule), project);
+   private T deserializeFromBase64PKML<T>(string encodedModule, ModelProject project) => _xmlSerializationService.Deserialize<T>(encodedModule.FromBase64String(), project);
 
-   private string serializeToBase64PKML<T>(T elementToSerialize) => toBase64String(_xmlSerializationService.SerializeAsString(elementToSerialize));
-
-   private string fromBase64String(string encodedElement) => Encoding.UTF8.GetString(Convert.FromBase64String(encodedElement));
-
-   private static string toBase64String(string serializeAsString) => Convert.ToBase64String(Encoding.UTF8.GetBytes(serializeAsString));
+   private string serializeToBase64PKML<T>(T elementToSerialize) => _xmlSerializationService.SerializeAsString(elementToSerialize).ToBase64String();
 }

@@ -125,7 +125,7 @@ namespace MoBi.CLI
          _project = new MoBiProject().WithName(PROJECT_NAME);
          A.CallTo(() => _snapshotTask.LoadSnapshotFromFileAsync<SnapshotProject>(_qualificationConfiguration.SnapshotFile)).Returns(_projectSnapshot);
          A.CallTo(() => _snapshotTask.LoadSnapshotFromFileAsync<SnapshotProject>(_parameterReferenceSnapshotFile)).Returns(_parameterReferenceSnapshot);
-         A.CallTo(() => _snapshotTask.LoadProjectFromSnapshotAsync(_projectSnapshot, _runOptions.Run)).Returns(_project);
+         A.CallTo(() => _snapshotTask.LoadProjectFromSnapshotAndExportInputsAsync(_projectSnapshot, _runOptions.Run, _qualificationConfiguration)).Returns((_project, []));
          FileHelper.FileExists = s => s.IsOneOf(_qualificationConfiguration.SnapshotFile, _runOptions.ConfigurationFile, _parameterReferenceSnapshotFile);
       }
    }
