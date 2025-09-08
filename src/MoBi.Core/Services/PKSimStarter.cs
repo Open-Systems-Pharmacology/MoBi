@@ -137,7 +137,9 @@ namespace MoBi.Core.Services
 
       public (SimulationTransfer simulationTransfer, InputMapping[] inputMappings) LoadSimulationTransferFromSnapshotAndExportInputs(string serializedSnapshot, QualificationConfiguration qualificationConfiguration)
       {
-         var (transfer, mappings) = executeMethod(getMethod(PKSIM_UI_STARTER_SIMULATION_TRANSFER_CONSTRUCTOR, CREATE_SIMULATION_TRANSFER_AND_EXPORT_INPUTS), [serializedSnapshot, qualificationConfiguration]) is ValueTuple<SimulationTransfer, InputMapping[]> ? ((SimulationTransfer transfer, InputMapping[] mappings))executeMethod(getMethod(PKSIM_UI_STARTER_SIMULATION_TRANSFER_CONSTRUCTOR, CREATE_SIMULATION_TRANSFER_AND_EXPORT_INPUTS), [serializedSnapshot, qualificationConfiguration]) : (null, null);
+         var obj = executeMethod(getMethod(PKSIM_UI_STARTER_SIMULATION_TRANSFER_CONSTRUCTOR, CREATE_SIMULATION_TRANSFER_AND_EXPORT_INPUTS), [serializedSnapshot, qualificationConfiguration]);
+         
+         var (transfer, mappings) = obj as (SimulationTransfer transfer, InputMapping[] mappings)? ?? (null, null);
 
          setModuleOriginId(transfer.Simulation.Configuration);
          return (transfer, mappings);
