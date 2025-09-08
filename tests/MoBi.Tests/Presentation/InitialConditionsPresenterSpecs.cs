@@ -1,24 +1,25 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Commands.Core;
-using FakeItEasy;
+﻿using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
+using MoBi.Core.Mappers;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
+using NUnit.Framework;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
-using MoBi.Core.Mappers;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MoBi.Presentation
 {
@@ -51,15 +52,39 @@ namespace MoBi.Presentation
          _formulaToValueFormulaDTOMapper = new FormulaToValueFormulaDTOMapper();
          _buildingBlockMapper = new InitialConditionsBuildingBlockToInitialConditionsBuildingBlockDTOMapper(_dtoMapper, _mapper);
 
-      sut = new InitialConditionsPresenter(
-            _view, _dtoMapper, _initialConditionTask,
-            _initialConditionsCreator, _context, _formulaToValueFormulaDTOMapper, _dimensionFactory, _distributedParameterPresenter, _buildingBlockMapper);
+         sut = new InitialConditionsPresenter(
+               _view, _dtoMapper, _initialConditionTask,
+               _initialConditionsCreator, _context, _formulaToValueFormulaDTOMapper, _dimensionFactory, _distributedParameterPresenter, _buildingBlockMapper);
          _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock();
 
          sut.InitializeWith(_commandCollector);
       }
    }
 
+   public class When_setting_negative_values_allowed : concern_for_InitialConditionsPresenter
+   {
+      private InitialCondition _initialCondition;
+      private InitialConditionDTO _dto;
+
+      protected override void Context()
+      {
+         base.Context();
+         _initialCondition = new InitialCondition();
+         _initialConditionsBuildingBlock.Add(_initialCondition);
+         _dto = new InitialConditionDTO(_initialCondition, _initialConditionsBuildingBlock);
+
+         A.CallTo(() => _dtoMapper.MapFrom(_initialCondition, _initialConditionsBuildingBlock)).Returns(_dto);
+         sut.Edit(_initialConditionsBuildingBlock);
+      }
+
+      [TestCase(true)]
+      [TestCase(false)]
+      public void the_negativeValueShouldBeSet(bool allowNegative)
+      {
+         sut.SetNegativeValuesAllowed(_dto, allowNegative);
+         A.CallTo(() => _initialConditionTask.SetNegativeValuesAllowed(_initialConditionsBuildingBlock, A<IEnumerable<InitialCondition>>.That.Contains(_initialCondition), allowNegative)).MustHaveHappened();
+      }
+   }
 
    public class When_adding_a_new_empty_start_value : concern_for_InitialConditionsPresenter
    {
