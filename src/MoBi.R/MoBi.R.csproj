@@ -6,10 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Core" Version="13.0.47" />
-    <PackageReference Include="OSPSuite.Infrastructure" Version="13.0.47" />
-    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="13.0.47" />
-    <PackageReference Include="OSPSuite.R" Version="13.0.47" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.50" />
+    <PackageReference Include="OSPSuite.Infrastructure" Version="13.0.50" />
+    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="13.0.50" />
+    <PackageReference Include="OSPSuite.R" Version="13.0.50" />
   </ItemGroup>
 
   <ItemGroup>

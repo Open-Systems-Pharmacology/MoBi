@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using Castle.Facilities.TypedFactory;
+﻿using Castle.Facilities.TypedFactory;
 using MoBi.Assets;
 using MoBi.CLI.Core.MinimalImplementations;
 using MoBi.Core;
@@ -7,7 +6,9 @@ using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Core.Extensions;
 using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Presentation.Serialization;
+using MoBi.Presentation.Serialization.Xml;
 using MoBi.Presentation.Serialization.Xml.Serializer;
+using MoBi.Presentation.Settings;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -15,14 +16,17 @@ using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Infrastructure;
 using OSPSuite.Infrastructure.Container.Castle;
+using OSPSuite.Presentation;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.FileLocker;
 using OSPSuite.Utility.Format;
+using System.Threading;
+using ApplicationSettings = MoBi.Core.ApplicationSettings;
 using CoreRegister = MoBi.Core.CoreRegister;
+using IApplicationSettings = MoBi.Core.IApplicationSettings;
 using IContainer = OSPSuite.Utility.Container.IContainer;
-using ICoreUserSettings = MoBi.Core.ICoreUserSettings;
 
 namespace MoBi.CLI.Core
 {
@@ -64,17 +68,28 @@ namespace MoBi.CLI.Core
          container.Register<IFileLocker, FileLocker>(LifeStyle.Singleton);
          container.Register<IMoBiConfiguration, IApplicationConfiguration, MoBiConfiguration>(LifeStyle.Singleton);
          container.Register<IMoBiXmlSerializerRepository, MoBiXmlSerializerRepository>(LifeStyle.Singleton);
-         container.Register<ICoreUserSettings, UserSettings>();
+         container.Register<IUserSettings, IPresentationUserSettings, OSPSuite.Core.ICoreUserSettings, MoBi.Core.ICoreUserSettings, UserSettings>(LifeStyle.Singleton);
+         container.Register<IApplicationSettings, OSPSuite.Core.IApplicationSettings, ApplicationSettings>(LifeStyle.Singleton);
          container.Register<ISpatialStructureDiagramManager, SpatialStructureDiagramManager>();
          container.Register<IMoBiReactionDiagramManager, MoBiReactionDiagramManager>();
          container.Register<ISimulationDiagramManager, SimulationDiagramManager>();
+         container.Register<ISettingsPersistor<IUserSettings>, UserSettingsPersistor>();
+         container.Register<ISettingsPersistor<IApplicationSettings>, ApplicationSettingsPersistor>();
+
+         
 
          register.PerformMappingForSerializerIn(container);
          initializeDimensions(container);
-         InitCalculationMethodRepository(container);
+         initCalculationMethodRepository(container);
+
+         var userSettingsPersistor = container.Resolve<ISettingsPersistor<IUserSettings>>();
+         userSettingsPersistor.Load();
+
+         var applicationSettingsPersistor = container.Resolve<ISettingsPersistor<IApplicationSettings>>();
+         applicationSettingsPersistor.Load();
       }
 
-      public static void InitCalculationMethodRepository(IContainer container)
+      private static void initCalculationMethodRepository(IContainer container)
       {
          var calculationMethodsRepositoryPersistor = container.Resolve<ICalculationMethodsRepositoryPersistor>();
          calculationMethodsRepositoryPersistor.Load();

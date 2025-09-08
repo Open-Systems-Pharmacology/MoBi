@@ -44,15 +44,29 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          _allMenuItems.Add(createRemoveItemFor(module));
          _allMenuItems.Add(createCloneItem(module));
 
-         if(module.HasSnapshot)
-            _allMenuItems.Add(createLoadFromSnapshotItem(module));
+         if (module.HasSnapshot) 
+            _allMenuItems.Add(createSnapshotMenu(module));
          
          return this;
       }
 
-      private IMenuBarItem createLoadFromSnapshotItem(Module module)
+      private IMenuBarItem createSnapshotMenu(Module module)
       {
-         return CreateMenuButton.WithCaption(AppConstants.MenuNames.LoadFromSnapshot)
+         return CreateSubMenu.WithCaption(AppConstants.MenuNames.Snapshot)
+            .WithItem(createLoadFromItemFor(module))
+            .WithItem(createExportFromItemFor(module));
+      }
+
+      private IMenuBarItem createExportFromItemFor(Module module)
+      {
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.Export.WithEllipsis())
+            .WithCommandFor<ExportModuleSnapshotUICommand, Module>(module, _container)
+            .WithIcon(ApplicationIcons.SnapshotExport);
+      }
+
+      private IMenuBarItem createLoadFromItemFor(Module module)
+      {
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.ReloadModule)
             .WithCommandFor<LoadModuleFromSnapshotUICommand, Module>(module, _container)
             .WithIcon(ApplicationIcons.PKSim);
       }

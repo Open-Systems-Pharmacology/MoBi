@@ -1,14 +1,16 @@
-﻿using MoBi.Assets;
-using MoBi.Core.Exceptions;
-using MoBi.Core.Serialization.Xml.Services;
-using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Serialization.Exchange;
-using OSPSuite.Core.Services;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using MoBi.Assets;
+using MoBi.Core.Exceptions;
+using MoBi.Core.Serialization.Xml.Services;
+using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Qualification;
+using OSPSuite.Core.Serialization.Exchange;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 
@@ -22,6 +24,19 @@ namespace MoBi.Core.Services
       IBuildingBlock CreateIndividual();
       IReadOnlyList<ExpressionParameterValueUpdate> UpdateExpressionProfileFromDatabase(ExpressionProfileBuildingBlock expressionProfile);
       SimulationTransfer LoadSimulationTransferFromSnapshot(string serializedSnapshot);
+
+      /// <summary>
+      ///    Loads the project from the snapshot. If there are any PK-Sim modules, they are rebuilt through a local installation
+      ///    of PK-Sim.
+      ///    If any of the PK-Sim building blocks should have markdown exported it will be done during the module rebuild.
+      /// </summary>
+      /// <param name="serializedSnapshot">The PK-Sim project snapshot</param>
+      /// <param name="qualificationConfiguration">
+      ///    The configuration containing any building block inputs that should have report
+      ///    markdown exported while the module is rebuilt in PK-Sim
+      /// </param>
+      /// <returns>A SimulationTransfer containing the module and any input mappings that were exported</returns>
+      (SimulationTransfer simulationTransfer, InputMapping[] inputMappings) LoadSimulationTransferFromSnapshotAndExportInputs(string serializedSnapshot, QualificationConfiguration qualificationConfiguration);
    }
 
    public class PKSimStarter : IPKSimStarter
@@ -31,6 +46,7 @@ namespace MoBi.Core.Services
       private const string CREATE_TRANSPORTER_EXPRESSION_PROFILE = "CreateTransporterExpressionProfile";
       private const string CREATE_INDIVIDUAL = "CreateIndividual";
       private const string CREATE_SIMULATION_TRANSFER = "CreateSimulationTransfer";
+      private const string CREATE_SIMULATION_TRANSFER_AND_EXPORT_INPUTS = "CreateSimulationTransferAndExportInputs";
       private const string GET_EXPRESSION_DATABASE_QUERY = "GetExpressionDatabaseQuery";
       private const string PKSIM_UI_STARTER_EXPRESSION_PROFILE_CREATOR = "PKSim.UI.Starter.ExpressionProfileCreator";
       private const string PKSIM_UI_STARTER_INDIVIDUAL_CREATOR = "PKSim.UI.Starter.IndividualCreator";
@@ -112,14 +128,28 @@ namespace MoBi.Core.Services
 
       public SimulationTransfer LoadSimulationTransferFromSnapshot(string serializedSnapshot)
       {
-         var element = executeMethod(getMethod(PKSIM_UI_STARTER_SIMULATION_TRANSFER_CONSTRUCTOR, CREATE_SIMULATION_TRANSFER), [serializedSnapshot]) as string;
-         var transfer = _serializationService.Deserialize<SimulationTransfer>(element, _projectRetriever.Current);
-         var simulationConfiguration = transfer.Simulation.Configuration;
+         var transfer = executeMethod(getMethod(PKSIM_UI_STARTER_SIMULATION_TRANSFER_CONSTRUCTOR, CREATE_SIMULATION_TRANSFER), [serializedSnapshot]) as SimulationTransfer;
 
+         setModuleOriginId(transfer.Simulation.Configuration);
+
+         return transfer;
+      }
+
+      public (SimulationTransfer simulationTransfer, InputMapping[] inputMappings) LoadSimulationTransferFromSnapshotAndExportInputs(string serializedSnapshot, QualificationConfiguration qualificationConfiguration)
+      {
+         var obj = executeMethod(getMethod(PKSIM_UI_STARTER_SIMULATION_TRANSFER_CONSTRUCTOR, CREATE_SIMULATION_TRANSFER_AND_EXPORT_INPUTS), [serializedSnapshot, qualificationConfiguration]);
+         
+         var (transfer, mappings) = obj as (SimulationTransfer transfer, InputMapping[] mappings)? ?? (null, null);
+
+         setModuleOriginId(transfer.Simulation.Configuration);
+         return (transfer, mappings);
+      }
+
+      private static void setModuleOriginId(SimulationConfiguration simulationConfiguration)
+      {
          var module = simulationConfiguration.ModuleConfigurations.Single().Module;
          simulationConfiguration.ExpressionProfiles.Each(x => x.SnapshotOriginModuleId = module.Id);
          simulationConfiguration.Individual.SnapshotOriginModuleId = module.Id;
-         return transfer;
       }
 
       private object executeMethod(MethodInfo method, object[] parameters = null)

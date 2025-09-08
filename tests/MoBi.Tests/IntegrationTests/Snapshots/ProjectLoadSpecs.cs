@@ -12,7 +12,7 @@ using OSPSuite.Utility.Container;
 
 namespace MoBi.IntegrationTests.Snapshots
 {
-   public class When_loading_a_snapshot_ : ContextWithLoadedSnapshot
+   public class When_loading_a_snapshot : ContextWithLoadedSnapshot
    {
       private SimulationTransfer _simulationTransfer;
 

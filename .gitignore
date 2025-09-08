@@ -6,7 +6,6 @@
 *.user
 *.userosscache
 *.sln.docstates
-launchSettings.json
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -256,6 +255,7 @@ setup/deploy
 setup/MoBi*
 setup/*.zip
 src/**/licenses.licx
+/src/**/launchSettings.json
 
 *.ncrunchproject
 /MoBi.v3.ncrunchsolution

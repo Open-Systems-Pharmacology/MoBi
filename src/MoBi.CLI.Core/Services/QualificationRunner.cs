@@ -28,6 +28,7 @@ namespace MoBi.CLI.Core.Services
       private readonly IMoBiContext _context;
       private readonly IProjectPersistor _projectPersistor;
       private readonly ISimulationPersistor _simulationPersistor;
+      private readonly ISnapshotTask _moBiSnapshotTask;
 
       public QualificationRunner(IMoBiContext context,
          IProjectPersistor projectPersistor,
@@ -40,6 +41,7 @@ namespace MoBi.CLI.Core.Services
          _context = context;
          _projectPersistor = projectPersistor;
          _simulationPersistor = simulationPersistor;
+         _moBiSnapshotTask = snapshotTask;
       }
 
       protected override void LoadProjectContext(ModelProject project)
@@ -87,7 +89,7 @@ namespace MoBi.CLI.Core.Services
             targetSimulation.AddOrUpdate(referenceParameter);
          });
       }
-       
+
       protected override Task SwapBuildingBlockIn(SnapshotProject projectSnapshot, BuildingBlockSwap buildingBlockSwap)
       {
          // TODO https://github.com/Open-Systems-Pharmacology/MoBi/issues/1990
@@ -96,19 +98,15 @@ namespace MoBi.CLI.Core.Services
 
       protected override void ValidateInputs(SnapshotProject snapshotProject, QualificationConfiguration configuration)
       {
-         if (configuration.Inputs?.Any() == true)
-            throw new QualificationRunException(AppConstants.Validation.InputsAreNotSupportedInMoBiQualification);
+         // Inputs are processed relative to PK-Sim module snapshots. They are not validated here.
       }
 
       protected override string ProjectExtension => AppConstants.Filter.MOBI_PROJECT_EXTENSION;
 
       protected override SimulationExportMode ExportMode(QualificationRunOptions runOptions) => SimulationExportMode.Pkml;
 
-      protected override Task ExportToMarkdown(object buildingBlock, string fileFullPath, int? inputSectionLevel)
-      {
-         // TODO https://github.com/Open-Systems-Pharmacology/MoBi/issues/1958
-         return Task.CompletedTask;
-      }
+      protected override Task<(ModelProject, InputMapping[])> LoadProjectAndExportInputs(QualificationRunOptions runOptions, SnapshotProject snapshot, QualificationConfiguration qualificationConfiguration) =>
+         _moBiSnapshotTask.LoadProjectFromSnapshotAndExportInputsAsync(snapshot, runOptions.Run, qualificationConfiguration);
 
       protected override Task<SimulationMapping[]> ExportSimulationsIn(ModelProject project, ExportRunOptions exportRunOptions)
       {

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using FakeItEasy;
 using MoBi.Core;
 using MoBi.Core.Domain.Builder;
@@ -13,6 +14,7 @@ using OSPSuite.Core.Chart.ParameterIdentifications;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.ParameterIdentifications;
+using OSPSuite.Core.Qualification;
 using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Services;
 using OSPSuite.Core.Snapshots.Mappers;
@@ -95,6 +97,7 @@ namespace MoBi.IntegrationTests.Snapshots
          _simulationTransfer.Simulation.Configuration.AddModuleConfiguration(moduleConfiguration);
 
          A.CallTo(() => _pkSimStarter.LoadSimulationTransferFromSnapshot(pksimModule.Snapshot)).Returns(_simulationTransfer);
+         A.CallTo(() => _pkSimStarter.LoadSimulationTransferFromSnapshotAndExportInputs(pksimModule.Snapshot, A<QualificationConfiguration>._)).Returns((_simulationTransfer, Array.Empty<InputMapping>()));
 
          var dataRepository = DomainHelperForSpecs.ObservedData();
          _project.AddObservedData(dataRepository);
@@ -144,6 +147,66 @@ namespace MoBi.IntegrationTests.Snapshots
          _project.AddClassifiable(new ClassifiableObservedData { Subject = dataRepository, Parent = _observedDataClassification });
          _project.AddClassifiable(new ClassifiableSimulation { Subject = simulation, Parent = _simulationClassification });
          _project.AddClassifiable(new ClassifiableParameterIdentification { Subject = parameterIdentification, Parent = _parameterIdentificationClassification });
+      }
+   }
+
+   internal class When_mapping_snapshot_to_project_and_exporting_inputs : concern_for_ProjectMapper
+   {
+      private SnapshotProject _snapshot;
+      private MoBiProject _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         _snapshot = sut.MapToSnapshot(_project).Result;
+      }
+
+      protected override void Because()
+      {
+         (_result, _) = sut.MapToModelAndExportInputs(_snapshot, new ProjectContext(new MoBiProject(), runSimulations: false), new QualificationConfiguration()).Result;
+      }
+
+      [Observation]
+      public void the_project_should_contain_extension_modules_snapshots_for_each_extension_module()
+      {
+         _result.Modules.Count(x => !x.IsPKSimModule).ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void the_project_should_contain_expression_snapshots_for_each_expression()
+      {
+         _result.ExpressionProfileCollection.Count.ShouldBeEqualTo(_snapshot.ExpressionProfileBuildingBlocks.Length + _simulationTransfer.Simulation.Configuration.ExpressionProfiles.Count);
+      }
+
+      [Observation]
+      public void the_project_should_contain_individual_snapshots_for_each_individual()
+      {
+         _result.IndividualsCollection.Count.ShouldBeEqualTo(_snapshot.IndividualBuildingBlocks.Length + (_simulationTransfer.Simulation.Configuration.Individual == null ? 0 : 1));
+      }
+
+      [Observation]
+      public void the_project_should_have_classifications()
+      {
+         _result.AllClassificationsByType(ClassificationType.Module).Count.ShouldBeEqualTo(1);
+         _result.AllClassificationsByType(ClassificationType.ObservedData).Count.ShouldBeEqualTo(1);
+         _result.AllClassificationsByType(ClassificationType.Simulation).Count.ShouldBeEqualTo(1);
+         _result.AllClassificationsByType(ClassificationType.ParameterIdentification).Count.ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void the_project_should_have_classifiables()
+      {
+         _result.AllClassifiablesByType<ClassifiableModule>().Count.ShouldBeEqualTo(1);
+         _result.AllClassifiablesByType<ClassifiableObservedData>().Count.ShouldBeEqualTo(1);
+         // _result.AllClassifiablesByType<ClassifiableSimulation>().Count.ShouldBeEqualTo(1);
+         _result.AllClassifiablesByType<ClassifiableParameterIdentification>().Count.ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void the_parameter_identification_should_contain_analyses()
+      {
+         _result.AllParameterIdentifications.FirstOrDefault().Analyses.Count().ShouldBeEqualTo(1);
+         (_result.AllParameterIdentifications.FirstOrDefault().Analyses.First() is ParameterIdentificationTimeProfileChart).ShouldBeTrue();
       }
    }
 
