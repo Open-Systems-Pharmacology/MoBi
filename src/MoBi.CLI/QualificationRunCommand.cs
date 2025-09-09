@@ -1,12 +1,12 @@
-﻿using System.Text;
-using CommandLine;
+﻿using CommandLine;
 using MoBi.CLI.Commands;
-using OSPSuite.CLI.Core.RunOptions;
+using MoBi.CLI.Core.RunOptions;
+using System.Text;
 
 namespace MoBi.CLI
 {
    [Verb("qualification", HelpText = "Start qualification run workflow")]
-   public class QualificationRunCommand : CLICommand<QualificationRunOptions>
+   public class QualificationRunCommand : CLICommand<MoBiQualificationRunOptions>
    {
       public override string Name { get; } = "Qualification";
       public override bool LogCommandName { get; } = false;
@@ -23,14 +23,18 @@ namespace MoBi.CLI
       [Option('e', "exp", Required = false, HelpText = "Should the qualification runner also export the project files (snapshot and MoBi project file). Default is false")]
       public bool ExportProjectFiles { get; set; } = false;
 
-      public override QualificationRunOptions ToRunOptions()
+      [Option('p', "pksim", Required = false, HelpText = "The file path where PK-Sim can be found for qualifications that use PK-Sim modules. Default is to use the value from user settings in MoBi")]
+      public string PKSimExecutablePath { get; set; }
+
+      public override MoBiQualificationRunOptions ToRunOptions()
       {
-         return new QualificationRunOptions
+         return new MoBiQualificationRunOptions
          {
             ConfigurationFile = ConfigurationFile,
             Validate = Validate,
             Run = Run,
-            ExportProjectFiles = ExportProjectFiles
+            ExportProjectFiles = ExportProjectFiles,
+            PKSimExecutablePath = PKSimExecutablePath
          };
       }
 
@@ -42,6 +46,7 @@ namespace MoBi.CLI
          sb.AppendLine($"Configuration file: {ConfigurationFile}");
          sb.AppendLine($"Run simulations: {Run}");
          sb.AppendLine($"Export project files: {ExportProjectFiles}");
+         sb.AppendLine($"Path to PK-Sim: {PKSimExecutablePath}");
          return sb.ToString();
       }
    }

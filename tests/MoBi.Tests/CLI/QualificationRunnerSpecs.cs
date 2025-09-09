@@ -4,14 +4,15 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using FakeItEasy;
+using MoBi.CLI.Core.RunOptions;
 using MoBi.CLI.Core.Services;
+using MoBi.Core;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Serialization.ORM;
 using MoBi.Core.Snapshots.Services;
 using MoBi.HelpersForTests;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.CLI.Core.RunOptions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
@@ -39,9 +40,10 @@ namespace MoBi.CLI
       private Func<string, bool> _oldDirectoryExists;
       private Action<string, bool> _oldDeleteDirectory;
       private Func<string, bool> _oldFileExists;
-      protected List<string> _createdDirectories = new List<string>();
-      protected QualificationRunOptions _runOptions;
+      protected readonly List<string> _createdDirectories = [];
+      protected MoBiQualificationRunOptions _runOptions;
       protected QualificationConfiguration _qualificationConfiguration;
+      protected IApplicationSettings _applicationSettings;
 
       public override async Task GlobalContext()
       {
@@ -55,6 +57,7 @@ namespace MoBi.CLI
             _createdDirectories.Add(s);
             return s;
          };
+         _applicationSettings = new ApplicationSettings();
       }
 
       protected override Task Context()
@@ -67,10 +70,14 @@ namespace MoBi.CLI
          _snapshotTask = A.Fake<ISnapshotTask>();
          _simulationPersistor = A.Fake<ISimulationPersistor>();
 
-         _runOptions = new QualificationRunOptions();
+         _runOptions = new MoBiQualificationRunOptions
+         {
+            PKSimExecutablePath = "C:/Test.exe"
+         };
+         
          _qualificationConfiguration = new QualificationConfiguration();
 
-         sut = new QualificationRunner(_context, _projectPersistor, _logger, _dataRepositoryTask, _jsonSerializer, _snapshotTask, _simulationPersistor);
+         sut = new QualificationRunner(_context, _projectPersistor, _logger, _dataRepositoryTask, _jsonSerializer, _snapshotTask, _simulationPersistor, _applicationSettings);
 
          return _completed;
       }
@@ -115,7 +122,7 @@ namespace MoBi.CLI
          _qualificationConfiguration.InputsFolder = "c:/tests/outputs/INPUTS";
          _qualificationConfiguration.SnapshotFile = $"c:/tests/inputs/{PROJECT_SNAPSHOT_NAME}.json";
          _qualificationConfiguration.MappingFile = $"c:/tests/temp/{PROJECT_NAME}_Mapping.json";
-         _qualificationConfiguration.TempFolder = $"c:/tests/temp";
+         _qualificationConfiguration.TempFolder = "c:/tests/temp";
          _qualificationConfiguration.ReportConfigurationFile = "c:/tests/outputs/report_config.json";
          _qualificationConfiguration.ObservedDataFolder = "c:/tests/outputs/OBS_DATA_FOLDER";
          _parameterReferenceSnapshotFile = $"c:/tests/inputs/{REFERENCE_SNAPSHOT_NAME}.json";
@@ -135,8 +142,6 @@ namespace MoBi.CLI
       private string _expectedOutputPath;
       private string _deletedDirectory;
       private DataRepository _observedData;
-      private SimulationMapping[] _simulationExports;
-      private SimulationMapping _simulationExport;
       private string _expectedSimulationPath;
       private QualificationMapping _mapping;
       private string _simulationName;
@@ -151,35 +156,32 @@ namespace MoBi.CLI
 
          _expectedOutputPath = Path.Combine(_qualificationConfiguration.OutputFolder, PROJECT_NAME);
          DirectoryHelper.DirectoryExists = s => string.Equals(s, _expectedOutputPath);
-         DirectoryHelper.DeleteDirectory = (s, b) => _deletedDirectory = s;
+         DirectoryHelper.DeleteDirectory = (s, _) => _deletedDirectory = s;
 
          _simulationName = "S1";
          _simulation = new Simulation { Name = _simulationName };
          _moBiSimulation = new MoBiSimulation { Name = _simulationName };
 
          _expectedSimulationPath = Path.ChangeExtension(Path.Combine(_expectedOutputPath, _simulationName, _simulationName), Constants.Filter.PKML_EXTENSION);
-         _simulationExport = new SimulationMapping { Project = PROJECT_NAME, Simulation = _simulationName, Path = _expectedSimulationPath };
-         _simulationExports = new[] { _simulationExport };
-
 
          var referenceSimulation = new Simulation().WithName(_simulationName);
          referenceSimulation.AddOrUpdate(new LocalizedParameter { Path = "the|path", Value = 10 });
 
-         _parameterReferenceSnapshot.Simulations = new[] { referenceSimulation };
-         _qualificationConfiguration.SimulationParameters = new[]
-         {
+         _parameterReferenceSnapshot.Simulations = [referenceSimulation];
+         _qualificationConfiguration.SimulationParameters =
+         [
             new SimulationParameterSwap
             {
                SnapshotFile = _parameterReferenceSnapshotFile,
                Simulation = _simulationName,
                Path = "the|path",
-               TargetSimulations = new[] { _simulationName }
+               TargetSimulations = [_simulationName]
             }
-         };
+         ];
 
          _observedData = DomainHelperForSpecs.ObservedData().WithName("OBS");
          _project.AddObservedData(_observedData);
-         _projectSnapshot.Simulations = new[] { _simulation };
+         _projectSnapshot.Simulations = [_simulation];
          _expectedObservedDataXlsFullPath = Path.Combine(_qualificationConfiguration.ObservedDataFolder, $"{_observedData.Name}{Constants.Filter.XLSX_EXTENSION}");
          _expectedObservedDataCsvFullPath = Path.Combine(_qualificationConfiguration.ObservedDataFolder, $"{_observedData.Name}{Constants.Filter.CSV_EXTENSION}");
 
@@ -187,13 +189,19 @@ namespace MoBi.CLI
             .Invokes(x => _mapping = x.GetArgument<QualificationMapping>(0));
 
          _project.AddSimulation(_moBiSimulation);
-         _qualificationConfiguration.Simulations = new[] { _simulationName, };
+         _qualificationConfiguration.Simulations = [_simulationName];
          _runOptions.Run = true;
       }
 
       protected override Task Because()
       {
          return sut.RunBatchAsync(_runOptions);
+      }
+
+      [Observation]
+      public void the_application_settings_pk_sim_path_is_overridden()
+      {
+         _applicationSettings.PKSimPath.ShouldBeEqualTo(_runOptions.PKSimExecutablePath);
       }
 
       [Observation]
@@ -297,7 +305,7 @@ namespace MoBi.CLI
             SimulationResidualVsTimeChart = _residualChart
          };
 
-         _projectSnapshot.Simulations = new[] { _simulation };
+         _projectSnapshot.Simulations = [_simulation];
 
          _simulationPlot = new SimulationPlot
          {
@@ -306,8 +314,8 @@ namespace MoBi.CLI
             SectionReference = "REF456"
          };
 
-         _qualificationConfiguration.SimulationPlots = new[] { _simulationPlot };
-         _qualificationConfiguration.Simulations = new[] { _simulationName };
+         _qualificationConfiguration.SimulationPlots = [_simulationPlot];
+         _qualificationConfiguration.Simulations = [_simulationName];
 
          A.CallTo(() => _jsonSerializer.Serialize(A<QualificationMapping>._, _qualificationConfiguration.MappingFile))
             .Invokes(x => _mapping = x.GetArgument<QualificationMapping>(0));
