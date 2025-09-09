@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Core" Version="13.0.50" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.51" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,4 +1,5 @@
-﻿using MoBi.CLI.Core.Services;
+﻿using MoBi.CLI.Core.RunOptions;
+using MoBi.CLI.Core.Services;
 using OSPSuite.CLI.Core.RunOptions;
 using OSPSuite.CLI.Core.Services;
 using OSPSuite.Core;
@@ -21,7 +22,7 @@ namespace MoBi.CLI.Core
          });
 
          container.Register<IBatchRunner<SnapshotRunOptions>, SnapshotRunner>();
-         container.Register<IBatchRunner<QualificationRunOptions>, QualificationRunner>();
+         container.Register<IBatchRunner<MoBiQualificationRunOptions>, QualificationRunner>();
          container.Register<IPathToPathElementsMapper, PathToPathElementsMapper>();
          container.Register<IDataColumnToPathElementsMapper, DataColumnToPathElementsMapper>();
       }

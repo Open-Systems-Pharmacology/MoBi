@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using MoBi.Assets;
+using MoBi.CLI.Core.RunOptions;
+using MoBi.Core;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Serialization.ORM;
 using MoBi.Core.Snapshots;
@@ -23,11 +25,12 @@ using SnapshotProject = MoBi.Core.Snapshots.Project;
 
 namespace MoBi.CLI.Core.Services
 {
-   public class QualificationRunner : QualificationRunner<SnapshotProject, ModelProject>
+   public class QualificationRunner : QualificationRunner<SnapshotProject, ModelProject, MoBiQualificationRunOptions>
    {
       private readonly IMoBiContext _context;
       private readonly IProjectPersistor _projectPersistor;
       private readonly ISimulationPersistor _simulationPersistor;
+      private readonly IApplicationSettings _applicationSettings;
       private readonly ISnapshotTask _moBiSnapshotTask;
 
       public QualificationRunner(IMoBiContext context,
@@ -36,17 +39,28 @@ namespace MoBi.CLI.Core.Services
          IDataRepositoryExportTask dataRepositoryExportTask,
          IJsonSerializer jsonSerializer,
          ISnapshotTask snapshotTask,
-         ISimulationPersistor simulationPersistor) : base(logger, dataRepositoryExportTask, jsonSerializer, snapshotTask)
+         ISimulationPersistor simulationPersistor,
+         IApplicationSettings applicationSettings) : base(logger, dataRepositoryExportTask, jsonSerializer, snapshotTask)
       {
          _context = context;
          _projectPersistor = projectPersistor;
          _simulationPersistor = simulationPersistor;
+         _applicationSettings = applicationSettings;
          _moBiSnapshotTask = snapshotTask;
       }
 
       protected override void LoadProjectContext(ModelProject project)
       {
          _context.LoadFrom(project);
+      }
+
+      public override Task RunBatchAsync(MoBiQualificationRunOptions runOptions)
+      {
+         // For any process that will access PK-Sim services, use the path from the command line if specified
+         if (!string.IsNullOrEmpty(runOptions.PKSimPath)) 
+            _applicationSettings.PKSimPath = runOptions.PKSimPath;
+         
+         return base.RunBatchAsync(runOptions);
       }
 
       protected override IEnumerable<PlotMapping> RetrievePlotDefinitionsForSimulation(SimulationPlot simulationPlot, SnapshotProject snapshotProject)
@@ -103,10 +117,9 @@ namespace MoBi.CLI.Core.Services
 
       protected override string ProjectExtension => AppConstants.Filter.MOBI_PROJECT_EXTENSION;
 
-      protected override SimulationExportMode ExportMode(QualificationRunOptions runOptions) => SimulationExportMode.Pkml;
+      protected override SimulationExportMode ExportMode(MoBiQualificationRunOptions runOptions) => SimulationExportMode.Pkml;
 
-      protected override Task<(ModelProject, InputMapping[])> LoadProjectAndExportInputs(QualificationRunOptions runOptions, SnapshotProject snapshot, QualificationConfiguration qualificationConfiguration) =>
-         _moBiSnapshotTask.LoadProjectFromSnapshotAndExportInputsAsync(snapshot, runOptions.Run, qualificationConfiguration);
+      protected override Task<(ModelProject, InputMapping[])> LoadProjectAndExportInputs(MoBiQualificationRunOptions runOptions, SnapshotProject snapshot, QualificationConfiguration qualificationConfiguration) => _moBiSnapshotTask.LoadProjectFromSnapshotAndExportInputsAsync(snapshot, runOptions.Run, qualificationConfiguration);
 
       protected override Task<SimulationMapping[]> ExportSimulationsIn(ModelProject project, ExportRunOptions exportRunOptions)
       {
