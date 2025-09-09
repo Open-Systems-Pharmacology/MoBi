@@ -72,7 +72,7 @@ namespace MoBi.CLI
 
          _runOptions = new MoBiQualificationRunOptions
          {
-            PKSimExecutablePath = "C:/Test.exe"
+            PKSimPath = "C:/Test.exe"
          };
          
          _qualificationConfiguration = new QualificationConfiguration();
@@ -201,7 +201,7 @@ namespace MoBi.CLI
       [Observation]
       public void the_application_settings_pk_sim_path_is_overridden()
       {
-         _applicationSettings.PKSimPath.ShouldBeEqualTo(_runOptions.PKSimExecutablePath);
+         _applicationSettings.PKSimPath.ShouldBeEqualTo(_runOptions.PKSimPath);
       }
 
       [Observation]

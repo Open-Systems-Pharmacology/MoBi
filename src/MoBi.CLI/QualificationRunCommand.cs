@@ -24,7 +24,7 @@ namespace MoBi.CLI
       public bool ExportProjectFiles { get; set; } = false;
 
       [Option('p', "pksim", Required = false, HelpText = "The file path where PK-Sim can be found for qualifications that use PK-Sim modules. Default is to use the value from user settings in MoBi")]
-      public string PKSimExecutablePath { get; set; }
+      public string PKSimPath { get; set; }
 
       public override MoBiQualificationRunOptions ToRunOptions()
       {
@@ -34,7 +34,7 @@ namespace MoBi.CLI
             Validate = Validate,
             Run = Run,
             ExportProjectFiles = ExportProjectFiles,
-            PKSimExecutablePath = PKSimExecutablePath
+            PKSimPath = PKSimPath
          };
       }
 
@@ -46,7 +46,7 @@ namespace MoBi.CLI
          sb.AppendLine($"Configuration file: {ConfigurationFile}");
          sb.AppendLine($"Run simulations: {Run}");
          sb.AppendLine($"Export project files: {ExportProjectFiles}");
-         sb.AppendLine($"Path to PK-Sim: {PKSimExecutablePath}");
+         sb.AppendLine($"Path to PK-Sim: {PKSimPath}");
          return sb.ToString();
       }
    }

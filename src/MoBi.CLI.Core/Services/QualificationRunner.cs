@@ -57,8 +57,8 @@ namespace MoBi.CLI.Core.Services
       public override Task RunBatchAsync(MoBiQualificationRunOptions runOptions)
       {
          // For any process that will access PK-Sim services, use the path from the command line if specified
-         if (!string.IsNullOrEmpty(runOptions.PKSimExecutablePath)) 
-            _applicationSettings.PKSimPath = runOptions.PKSimExecutablePath;
+         if (!string.IsNullOrEmpty(runOptions.PKSimPath)) 
+            _applicationSettings.PKSimPath = runOptions.PKSimPath;
          
          return base.RunBatchAsync(runOptions);
       }
