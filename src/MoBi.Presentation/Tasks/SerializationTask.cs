@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
@@ -114,12 +115,13 @@ namespace MoBi.Presentation.Tasks
          xelPart.PermissiveSave(filename);
       }
 
-      public T Load<T>(string fileName, bool resetIds = false)
-      {
-         return LoadMany<T>(fileName, resetIds).FirstOrDefault();
-      }
+      public T Load<T>(string fileName, bool resetIds = false) => LoadMany<T>(fileName, resetIds).FirstOrDefault();
 
-      public IEnumerable<T> LoadMany<T>(string fileName, bool resetIds = false)
+      public IReadOnlyList<T> LoadMany<T>(string fileName, bool resetIds = false) => loadMany<T>(fileName, x => selectToDeserialize(x, _objectTypeResolver.TypeFor<T>()), resetIds).ToList();
+
+      public IReadOnlyList<T> LoadAll<T>(string fileName, bool resetIds = false) => loadMany<T>(fileName, x => x, resetIds).ToList();
+
+      private IEnumerable<T> loadMany<T>(string fileName, Func<IReadOnlyList<XElement>, IReadOnlyList<XElement>> elementSelector, bool resetIds = false)
       {
          if (string.IsNullOrEmpty(fileName))
             return Enumerable.Empty<T>();
@@ -127,11 +129,11 @@ namespace MoBi.Presentation.Tasks
          _projectConverterLogger.Clear();
 
          var xelRoot = XElementSerializer.PermissiveLoad(fileName);
-         
+
          var possibleElementsToDeserialize = retrieveElementsToDeserializeFromFile<T>(xelRoot, fileName).ToList();
 
          var selection = possibleElementsToDeserialize.Count > 1
-            ? selectToDeserialize(possibleElementsToDeserialize, _objectTypeResolver.TypeFor<T>())
+            ? elementSelector(possibleElementsToDeserialize)
             : possibleElementsToDeserialize;
 
          if (!selection.Any())
@@ -207,9 +209,7 @@ namespace MoBi.Presentation.Tasks
          return expectedElementName;
       }
 
-      private IReadOnlyList<XElement> selectToDeserialize(IEnumerable<XElement> possibleElements, string searchedEntityType)
-      {
-         return _xmlContentSelector.SelectFrom(possibleElements, searchedEntityType).ToList();
-      }
+      private IReadOnlyList<XElement> selectToDeserialize(IEnumerable<XElement> possibleElements, string searchedEntityType) => 
+         _xmlContentSelector.SelectFrom(possibleElements, searchedEntityType).ToList();
    }
 }

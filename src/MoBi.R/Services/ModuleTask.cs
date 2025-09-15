@@ -1,7 +1,6 @@
-﻿using OSPSuite.Core.Domain.Builder;
-using System.Collections.Generic;
+﻿using System.Linq;
 using OSPSuite.Core.Domain;
-using System.Linq;
+using OSPSuite.Core.Domain.Builder;
 using IProjectTask = MoBi.CLI.Core.Services.IProjectTask;
 using ISerializationTask = MoBi.Presentation.Tasks.ISerializationTask;
 
@@ -28,7 +27,7 @@ namespace MoBi.R.Services
       }
 
       public Module[] LoadModulesFromFile(string filePath) =>
-         _serializationTask.LoadMany<Module>(filePath).ToArray();
+         _serializationTask.LoadAll<Module>(filePath).ToArray();
 
       public InitialConditionsBuildingBlock InitialConditionBuildingBlockByName(Module module, string name) =>
          module.InitialConditionsCollection.FindByName(name);
