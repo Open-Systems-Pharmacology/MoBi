@@ -7,5 +7,6 @@ namespace MoBi.Presentation.Views
    public interface IIndividualBuildingBlockView : IView<IIndividualBuildingBlockPresenter>, IPathAndValueEntitiesView
    {
       void BindTo(IndividualBuildingBlockDTO individualBuildingBlockDTO);
+      void Select(IndividualParameterDTO individualParameterDTO);
    }
 }

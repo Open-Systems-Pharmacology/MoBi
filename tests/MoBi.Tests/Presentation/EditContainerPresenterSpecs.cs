@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
+using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
@@ -20,10 +21,10 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation
 {
-   public abstract class concern_for_EditContainerPresenter : ContextSpecification<IEditContainerPresenter>
+   public abstract class concern_for_EditContainerPresenter : ContextSpecification<EditContainerPresenter>
    {
       protected IEditContainerView _view;
-      private IContainerToContainerDTOMapper _containerMapper;
+      protected IContainerToContainerDTOMapper _containerMapper;
       protected IEditTaskForContainer _editTasks;
       protected IEditParametersInContainerPresenter _parametersInContainerPresenter;
       protected IMoBiContext _context;
@@ -32,6 +33,7 @@ namespace MoBi.Presentation
       protected ICommandCollector _commandCollector;
       private IObjectPathFactory _objectPathFactory;
       protected IDialogCreator _dialogCreator;
+      protected ISourceReferenceNavigator _sourceReferenceNavigator;
 
       protected override void Context()
       {
@@ -44,8 +46,12 @@ namespace MoBi.Presentation
          _tagsPresenter = A.Fake<ITagsPresenter>();
          _applicationController = A.Fake<IApplicationController>();
          _objectPathFactory = A.Fake<IObjectPathFactory>();
-         sut = new EditContainerPresenter(_view, _containerMapper, _editTasks, _parametersInContainerPresenter, _context, _tagsPresenter, _applicationController, _objectPathFactory, _dialogCreator);
+         _sourceReferenceNavigator = A.Fake<ISourceReferenceNavigator>();
+         sut = new EditContainerPresenter(_view, _containerMapper, _editTasks, _parametersInContainerPresenter, _context, _tagsPresenter, _applicationController, _objectPathFactory, _dialogCreator, _sourceReferenceNavigator);
          _commandCollector = new MoBiMacroCommand();
+
+         A.CallTo(() => _editTasks.GetMoleculeProperties(A<IContainer>._)).ReturnsLazily(x => x.Arguments.Get<IContainer>(0).Children.FindByName(Constants.MOLECULE_PROPERTIES) as IContainer);
+
          sut.InitializeWith(_commandCollector);
       }
    }
@@ -75,6 +81,12 @@ namespace MoBi.Presentation
       public void should_tell_parameter_presenter_to_select_parameter()
       {
          A.CallTo(() => _parametersInContainerPresenter.Select(_parameter)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_parameter_presenter_should_be_set_to_allow_changes_to_localisation()
+      {
+         _parametersInContainerPresenter.ChangeLocalisationAllowed.ShouldBeEqualTo(true);
       }
    }
 
@@ -240,7 +252,46 @@ namespace MoBi.Presentation
       }
    }
 
-   internal class When_setting_container_mode_to_new_container : concern_for_EditContainerPresenter
+   internal class When_setting_container_mode_to_physical_in_new_container : concern_for_EditContainerPresenter
+   {
+      private IContainer _muscle;
+      private MoBiSpatialStructure _spatialStructure;
+
+      protected override void Context()
+      {
+         base.Context();
+         _muscle = new Container { ParentPath = new ObjectPath("A", "B") };
+         _spatialStructure = new MoBiSpatialStructure
+         {
+            NeighborhoodsContainer = new Container(),
+            DiagramManager = A.Fake<IDiagramManager<MoBiSpatialStructure>>()
+         };
+         _spatialStructure.AddTopContainer(_muscle);
+         _muscle.Mode = ContainerMode.Logical;
+
+         sut.Edit(_muscle);
+         sut.BuildingBlock = _spatialStructure;
+      }
+
+      protected override void Because()
+      {
+         sut.ConfirmAndSetContainerMode(ContainerMode.Physical);
+      }
+
+      [Observation]
+      public void should_change_mode()
+      {
+         _muscle.Mode.ShouldBeEqualTo(ContainerMode.Physical);
+      }
+
+      [Observation]
+      public void should_add_molecule_properties()
+      {
+         _muscle.Children.FindByName(Constants.MOLECULE_PROPERTIES).ShouldNotBeNull();
+      }
+   }
+
+   internal class When_setting_container_mode_to_logical_in_new_container : concern_for_EditContainerPresenter
    {
       private IContainer _muscle;
       private MoBiSpatialStructure _spatialStructure;
@@ -274,9 +325,112 @@ namespace MoBi.Presentation
       {
          _muscle.Mode.ShouldBeEqualTo(ContainerMode.Logical);
       }
+
+      [Observation]
+      public void should_remove_molecule_properties()
+      {
+         _muscle.Children.FindByName(Constants.MOLECULE_PROPERTIES).ShouldBeNull();
+      }
    }
 
-   internal class When_setting_container_mode_to_existing_container : concern_for_EditContainerPresenter
+   internal class When_setting_container_mode_physical_to_existing_container_without_molecule_properties : concern_for_EditContainerPresenter
+   {
+      private IContainer _muscle;
+      private MoBiSpatialStructure _spatialStructure;
+
+      protected override void Context()
+      {
+         base.Context();
+         _muscle = new Container { ParentPath = new ObjectPath("A", "B") };
+         _spatialStructure = new MoBiSpatialStructure
+         {
+            NeighborhoodsContainer = new Container(),
+            DiagramManager = A.Fake<IDiagramManager<MoBiSpatialStructure>>()
+         };
+         _spatialStructure.AddTopContainer(_muscle);
+         _muscle.Mode = ContainerMode.Logical;
+
+         sut.BuildingBlock = _spatialStructure;
+         _muscle.Name = "Muscle";
+         sut.Edit(_muscle);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>.Ignored, A<ViewResult>.Ignored)).Returns(ViewResult.Yes);
+         A.CallTo(() => _editTasks.GetMoleculeProperties(_muscle)).Returns(null);
+         A.CallTo(() => _editTasks.SetContainerMode(A<IBuildingBlock>.Ignored, _muscle, ContainerMode.Physical)).Returns(new SetContainerModeCommand(new MoBiSpatialStructure(), _muscle, ContainerMode.Logical));
+      }
+
+      protected override void Because()
+      {
+         sut.ConfirmAndSetContainerMode(ContainerMode.Physical);
+      }
+
+      [Observation]
+      public void should_add_molecule_properties_when_not_present_already()
+      {
+         _commandCollector.All().Any(x => x.IsAnImplementationOf<MoBiMacroCommand>()).ShouldBeTrue();
+         var macroCommand = _commandCollector.All().FirstOrDefault() as MoBiMacroCommand;
+         macroCommand.All().Any(x => x.IsAnImplementationOf<AddContainerToSpatialStructureCommand>()).ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_create_the_macro_command_for_changing_mode()
+      {
+         _commandCollector.All().Any(x => x.IsAnImplementationOf<MoBiMacroCommand>()).ShouldBeTrue();
+         var macroCommand = (_commandCollector.All().FirstOrDefault() as MoBiMacroCommand);
+         macroCommand.All().Any(x => x.IsAnImplementationOf<SetContainerModeCommand>()).ShouldBeTrue();
+      }
+   }
+
+   internal class When_setting_container_mode_physical_to_existing_container_with_molecule_properties : concern_for_EditContainerPresenter
+   {
+      private IContainer _muscle;
+      private MoBiSpatialStructure _spatialStructure;
+
+      protected override void Context()
+      {
+         base.Context();
+         _muscle = new Container { ParentPath = new ObjectPath("A", "B") };
+         _spatialStructure = new MoBiSpatialStructure
+         {
+            NeighborhoodsContainer = new Container(),
+            DiagramManager = A.Fake<IDiagramManager<MoBiSpatialStructure>>()
+         };
+         _spatialStructure.AddTopContainer(_muscle);
+         _muscle.Mode = ContainerMode.Logical;
+         var moleculeProperties = _context.Create<IContainer>()
+            .WithName(Constants.MOLECULE_PROPERTIES)
+            .WithMode(ContainerMode.Logical);
+         _muscle.Add(moleculeProperties);
+         sut.BuildingBlock = _spatialStructure;
+         _muscle.Name = "Muscle";
+         sut.Edit(_muscle);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>.Ignored, A<ViewResult>.Ignored)).Returns(ViewResult.Yes);
+         A.CallTo(() => _editTasks.GetMoleculeProperties(_muscle)).Returns(moleculeProperties);
+         A.CallTo(() => _editTasks.SetContainerMode(A<IBuildingBlock>.Ignored, _muscle, ContainerMode.Physical)).Returns(new SetContainerModeCommand(new MoBiSpatialStructure(), _muscle, ContainerMode.Logical));
+      }
+
+      protected override void Because()
+      {
+         sut.ConfirmAndSetContainerMode(ContainerMode.Physical);
+      }
+
+      [Observation]
+      public void should_not_add_molecule_properties_when_present_already()
+      {
+         _commandCollector.All().Any(x => x.IsAnImplementationOf<MoBiMacroCommand>()).ShouldBeTrue();
+         var macroCommand = _commandCollector.All().FirstOrDefault() as MoBiMacroCommand;
+         macroCommand.All().Any(x => x.IsAnImplementationOf<AddContainerToSpatialStructureCommand>()).ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_create_the_macro_command_for_changing_mode()
+      {
+         _commandCollector.All().Any(x => x.IsAnImplementationOf<MoBiMacroCommand>()).ShouldBeTrue();
+         var macroCommand = (_commandCollector.All().FirstOrDefault() as MoBiMacroCommand);
+         macroCommand.All().Any(x => x.IsAnImplementationOf<SetContainerModeCommand>()).ShouldBeTrue();
+      }
+   }
+
+   internal class When_setting_container_mode_logical_to_existing_container : concern_for_EditContainerPresenter
    {
       private IContainer _muscle;
       private MoBiSpatialStructure _spatialStructure;
@@ -323,6 +477,97 @@ namespace MoBi.Presentation
          var macroCommand = (_commandCollector.All().FirstOrDefault() as MoBiMacroCommand);
          macroCommand.All().Any(x => x.IsAnImplementationOf<SetContainerModeCommand>()).ShouldBeTrue();
          macroCommand.All().Any(x => x.IsAnImplementationOf<RemoveContainerFromSpatialStructureCommand>()).ShouldBeTrue();
+      }
+   }
+
+   public class When_enabling_individual_preview : concern_for_EditContainerPresenter
+   {
+      protected override void Because()
+      {
+         sut.EnableIndividualPreview();
+      }
+
+      [Observation]
+      public void the_sub_presenter_should_be_called_to_enable_preview()
+      {
+         A.CallTo(() => _parametersInContainerPresenter.ShowIndividualSelection()).MustHaveHappened();
+      }
+   }
+
+   public class When_navigating_to_a_source_of_container : concern_for_EditContainerPresenter
+   {
+      private TrackableSimulation _trackableSimulation;
+      private IContainer _container;
+      private SimulationEntitySourceReference _sourceRef;
+
+      protected override void Context()
+      {
+         base.Context();
+         _container = new Container();
+         _trackableSimulation = new TrackableSimulation(null, new SimulationEntitySourceReferenceCache());
+         _sourceRef = new SimulationEntitySourceReference(null, null, null, _container);
+         _trackableSimulation.ReferenceCache.Add(_container, _sourceRef);
+         sut.EnableSimulationTracking(_trackableSimulation);
+         A.CallTo(() => _containerMapper.MapFrom(_container, _trackableSimulation)).Returns(new ContainerDTO(_container) { SourceReference = _sourceRef });
+         sut.Edit(_container);
+      }
+
+      protected override void Because()
+      {
+         sut.NavigateToSource();
+      }
+
+      [Observation]
+      public void the_navigator_should_be_used()
+      {
+         A.CallTo(() => _sourceReferenceNavigator.GoTo(_sourceRef)).MustHaveHappened();
+      }
+   }
+
+   public class When_editing_a_container_within_tracking_enabled : concern_for_EditContainerPresenter
+   {
+      private TrackableSimulation _trackableSimulation;
+      private IContainer _container;
+
+      protected override void Context()
+      {
+         base.Context();
+         _container = new Container();
+         _trackableSimulation = new TrackableSimulation(null, new SimulationEntitySourceReferenceCache());
+         sut.EnableSimulationTracking(_trackableSimulation);
+      }
+
+      protected override void Because()
+      {
+         sut.Edit(_container);
+      }
+
+      [Observation]
+      public void the_mapper_must_include_tracking_in_dto()
+      {
+         A.CallTo(() => _containerMapper.MapFrom(_container, _trackableSimulation)).MustHaveHappened();
+      }
+   }
+
+   public class When_enabling_simulation_tracking : concern_for_EditContainerPresenter
+   {
+      private TrackableSimulation _trackableSimulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _trackableSimulation = new TrackableSimulation(null, new SimulationEntitySourceReferenceCache());
+      }
+
+      protected override void Because()
+      {
+         sut.EnableSimulationTracking(_trackableSimulation);
+      }
+
+      [Observation]
+      public void the_parameters_presenter_must_also_enable_tracking()
+      {
+         A.CallTo(() => _parametersInContainerPresenter.EnableSimulationTracking(_trackableSimulation)).MustHaveHappened();
       }
    }
 }

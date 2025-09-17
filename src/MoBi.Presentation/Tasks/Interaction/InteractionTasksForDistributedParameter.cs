@@ -1,7 +1,6 @@
-using MoBi.Assets;
+﻿using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.UnitSystem;
-using MoBi.Presentation.Settings;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -37,7 +36,6 @@ namespace MoBi.Presentation.Tasks.Interaction
       public override IDistributedParameter CreateNewEntity(IContainer container)
       {
          var parameter = base.CreateNewEntity(container)
-            .WithParentContainer(container)
             .WithDimension(_dimensionFactory.TryGetDimension(_interactionTaskContext.UserSettings.ParameterDefaultDimension, fallBackDimension: _dimensionFactory.NoDimension));
 
          parameter.DisplayUnit = _interactionTaskContext.DisplayUnitFor(parameter);

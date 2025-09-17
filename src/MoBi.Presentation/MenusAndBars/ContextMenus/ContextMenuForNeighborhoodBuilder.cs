@@ -10,6 +10,7 @@ using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Assets;
 using OSPSuite.Utility.Container;
+using OSPSuite.Core.Extensions;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
@@ -41,7 +42,11 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.Rename)
             .WithIcon(ApplicationIcons.Rename)
             .WithCommandFor<RenameObjectCommand<NeighborhoodBuilder>, NeighborhoodBuilder>(neighborhoodBuilder, _container));
-         
+
+         _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.SaveAsPKML.WithEllipsis())
+            .WithIcon(ApplicationIcons.PKMLSave)
+            .WithCommandFor<SaveNeighborhoodUICommand, NeighborhoodBuilder>(neighborhoodBuilder, _container));
+
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
             .WithIcon(ApplicationIcons.Delete)
             .WithRemoveCommand(neighborhoodBuilder.ParentContainer,neighborhoodBuilder));

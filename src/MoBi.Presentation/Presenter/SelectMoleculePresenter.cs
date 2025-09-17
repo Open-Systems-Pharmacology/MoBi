@@ -9,6 +9,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Validation;
+using IBuildingBlockRepository = MoBi.Core.Domain.Repository.IBuildingBlockRepository;
 
 namespace MoBi.Presentation.Presenter
 {

@@ -17,5 +17,8 @@ namespace MoBi.Presentation.DTO
          get => Value.Dimension;
          set => Value.Dimension = value;
       }
+
+      public SimulationEntitySourceReference SourceReference { get; set; }
+      public string SourceDisplayName => SourceReference?.BuildingBlock?.DisplayName ?? string.Empty;
    }
 }

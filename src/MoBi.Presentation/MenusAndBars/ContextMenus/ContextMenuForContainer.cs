@@ -1,4 +1,4 @@
-﻿using System.Windows;
+﻿using System.Windows.Forms;
 using MoBi.Assets;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
@@ -114,7 +114,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithIcon(ApplicationIcons.PKMLSave));
 
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.Captions.CopyPath)
-            .WithActionCommand(() => Clipboard.SetText(_entityPathResolver.FullPathFor(container)))
+            .WithActionCommand(() => Clipboard.SetText(_entityPathResolver.PathFor(container)))
             .WithIcon(ApplicationIcons.Copy));
       }
    }

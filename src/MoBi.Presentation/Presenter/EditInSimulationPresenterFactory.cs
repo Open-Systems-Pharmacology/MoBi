@@ -1,14 +1,13 @@
-﻿using OSPSuite.Utility.Extensions;
-using MoBi.Core.Domain.Model;
-using OSPSuite.Core.Domain;
+﻿using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Extensions;
 using IoC = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.Presentation.Presenter
 {
    public interface IEditInSimulationPresenter : IEditPresenter
    {
-      IMoBiSimulation Simulation { get; set; }
+      TrackableSimulation TrackableSimulation { get; set; }
    }
 
    public interface IEditInSimulationPresenterFactory

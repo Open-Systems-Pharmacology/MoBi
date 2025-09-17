@@ -6,6 +6,7 @@ using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using MoBi.Core.Domain.Repository;
+using IBuildingBlockRepository = MoBi.Core.Domain.Repository.IBuildingBlockRepository;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -34,7 +35,7 @@ namespace MoBi.Presentation.Presenter
 
       public void Init(IEntity refObjectBase, IReadOnlyList<IObjectBase> entities, ReactionBuilder reactionBuilder)
       {
-         _objectPathCreatorAtReaction.Reaction = reactionBuilder;
+         _objectPathCreatorAtReaction.ProcessBuilder = reactionBuilder;
          base.Init(refObjectBase, entities, reactionBuilder);
       }
 

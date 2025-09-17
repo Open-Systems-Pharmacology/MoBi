@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using DevExpress.LookAndFeel;
 using DevExpress.XtraEditors.Controls;
+using DevExpress.XtraLayout.Utils;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
@@ -14,7 +15,6 @@ using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
-using OSPSuite.Utility.Extensions;
 using ToolTips = MoBi.Assets.ToolTips;
 
 namespace MoBi.UI.Views
@@ -59,11 +59,13 @@ namespace MoBi.UI.Views
             .To(htmlEditor)
             .OnValueUpdating += onValueUpdating;
 
+         _screenBinder.Bind(dto => dto.SourceDisplayName).To(tbSource);
 
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
 
          btName.ButtonClick += (o, e) => OnEvent(_presenter.RenameSubject);
          btParentPath.ButtonClick += (o, e) => OnEvent(_presenter.UpdateParentPath);
+         btnGoToSource.Click += (o, e) => OnEvent(_presenter.NavigateToSource);
       }
 
       private void executeContainerModeChange(ContainerDTO container, ContainerMode newMode)
@@ -92,6 +94,12 @@ namespace MoBi.UI.Views
          tabParameters.InitWith(AppConstants.Captions.Parameters, ApplicationIcons.Parameter);
          layoutItemParentPath.Text = AppConstants.Captions.ParentPath.FormatForLabel();
          layoutControl.InitializeDisabledColors(_lookAndFeel);
+
+         btnGoToSource.InitWithImage(ApplicationIcons.Search, AppConstants.Captions.GoToSource);
+         layoutControlItemGoToSource.AdjustControlSize(OSPSuite.UI.UIConstants.Size.BUTTON_WIDTH, layoutControlItemGoToSource.ControlMaxSize.Height);
+
+         layoutControlItemSource.Text = AppConstants.Captions.Source.FormatForLabel();
+         tbSource.Enabled = false;
       }
 
       private void onNameSet(ContainerDTO container, PropertyValueSetEventArgs<string> e)
@@ -117,8 +125,10 @@ namespace MoBi.UI.Views
       public virtual void BindTo(ContainerDTO dto)
       {
          _screenBinder.BindToSource(dto);
-         initNameControl(dto);
          initParentPathControl(dto);
+
+         layoutControlItemGoToSource.Visibility = LayoutVisibilityConvertor.FromBoolean(dto.SourceReference != null);
+         layoutControlItemSource.Visibility = layoutControlItemGoToSource.Visibility;
       }
 
       private void initParentPathControl(ContainerDTO dto)
@@ -126,16 +136,7 @@ namespace MoBi.UI.Views
          editParentPathButton.Visible = dto.ParentPathEditable && !_readOnly;
          btParentPath.Enabled = dto.ParentPathEditable;
       }
-
-      private void initNameControl(ContainerDTO dto)
-      {
-         var isInit = dto.Name.IsNullOrEmpty();
-         editNameButton.Enabled = !isInit;
-         editNameButton.Visible = !isInit && !_readOnly;
-         btName.ReadOnly = !isInit;
-         btName.Enabled = !isInit;
-      }
-
+       
       private EditorButton editNameButton => btName.Properties.Buttons[0];
 
       private EditorButton editParentPathButton => btParentPath.Properties.Buttons[0];
@@ -159,21 +160,39 @@ namespace MoBi.UI.Views
          {
             _readOnly = value;
             var enabled = !_readOnly;
-            layoutControl.Enabled = enabled;
+
+            btName.Enabled = enabled;
+            ContainerPropertiesEditable = enabled;
+            btParentPath.Enabled = enabled;
+            htmlEditor.Enabled = enabled;
+            panelTags.Enabled = enabled;
+
             tabProperties.Enabled = enabled;
          }
       }
 
       public bool ContainerPropertiesEditable
       {
-         get => cbContainerType.Enabled;
          set
          {
+            if (_readOnly && value)
+               return;
             cbContainerType.Enabled = value;
             cbContainerMode.Enabled = value;
             btName.Enabled = value;
             if (value) return;
             editNameButton.Visible = false;
+         }
+      }
+
+      public bool NameEditable
+      {
+         set
+         {
+            // This control gets readonly to prevent direct typing of the name
+            // is stays enabled to allow the use of the button
+            btName.ReadOnly = !value;
+            editNameButton.Visible = btName.ReadOnly;
          }
       }
 

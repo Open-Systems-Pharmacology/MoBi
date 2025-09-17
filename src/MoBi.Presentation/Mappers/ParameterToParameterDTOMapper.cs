@@ -1,17 +1,20 @@
 ﻿using MoBi.Presentation.DTO;
+using MoBi.Presentation.Presenter;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Core.Domain.Repositories;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.DTO;
+using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface IParameterToParameterDTOMapper : OSPSuite.Presentation.Mappers.IParameterToParameterDTOMapper
+   public interface IParameterToParameterDTOMapper : IMapper<IParameter, ParameterDTO>
    {
+      ParameterDTO MapFrom(IParameter parameter, TrackableSimulation trackableSimulation);
    }
 
-   public class ParameterToParameterDTOMapper : ObjectBaseToObjectBaseDTOMapperBase, IParameterToParameterDTOMapper
+   public class ParameterToParameterDTOMapper : ObjectBaseToObjectBaseDTOMapperBase, IParameterToParameterDTOMapper, OSPSuite.Presentation.Mappers.IParameterToParameterDTOMapper
    {
       private readonly IFormulaToFormulaBuilderDTOMapper _formulaToDTOFormulaBuilderMapper;
       private readonly IGroupRepository _groupRepository;
@@ -32,7 +35,7 @@ namespace MoBi.Presentation.Mappers
          _pathToPathElementsMapper = pathToPathElementsMapper;
       }
 
-      public IParameterDTO MapFrom(IParameter parameter)
+      public ParameterDTO MapFrom(IParameter parameter)
       {
          var dto = new ParameterDTO(parameter);
          MapProperties(parameter, dto);
@@ -51,5 +54,14 @@ namespace MoBi.Presentation.Mappers
 
          return dto;
       }
+
+      public ParameterDTO MapFrom(IParameter parameter, TrackableSimulation trackableSimulation)
+      {
+         var parameterDTO = MapFrom(parameter);
+         parameterDTO.SourceReference = trackableSimulation?.SourceFor(parameter);
+         return parameterDTO;
+      }
+
+      IParameterDTO IMapper<IParameter, IParameterDTO>.MapFrom(IParameter input) => MapFrom(input);
    }
 }

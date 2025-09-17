@@ -14,6 +14,30 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {
+   internal class ContextMenuSpecificationFactoryForObservedDataFolder : IContextMenuSpecificationFactory<IViewItem>
+   {
+      private readonly IContainer _container;
+      private readonly IUserSettings _userSettings;
+
+      public ContextMenuSpecificationFactoryForObservedDataFolder(IContainer container, IUserSettings userSettings)
+      {
+         _container = container;
+         _userSettings = userSettings;
+      }
+
+      public IContextMenu CreateFor(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter)
+      {
+         var explorerPresenter = presenter.DowncastTo<IExplorerPresenter>();
+         return new ContextMenuForObservedDataFolder(_container.Resolve<IMenuBarItemRepository>(),
+            explorerPresenter.NodeByType(RootNodeTypes.ObservedDataFolder), explorerPresenter, _userSettings, _container);
+      }
+
+      public bool IsSatisfiedBy(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter)
+      {
+         return Equals(viewItem, RootNodeTypes.ObservedDataFolder) && presenter.IsAnImplementationOf<IExplorerPresenter>();
+      }
+   }
+
    internal class ContextMenuForObservedDataFolder : ContextMenuBase
    {
       private readonly IMenuBarItemRepository _menuBarItemRepository;
@@ -40,12 +64,12 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          if (_treeNode.AllLeafNodes.OfType<ObservedDataNode>().Any())
             yield return ObservedDataClassificationCommonContextMenuItems.EditMultipleMetaData(_treeNode, _container).AsGroupStarter();
 
-
          yield return ClassificationCommonContextMenuItems.CreateClassificationUnderMenu(_treeNode, _presenter);
 
          var groupMenu = createGroupingSubMenu(_treeNode, _presenter);
          if (groupMenu.AllItems().Any())
             yield return groupMenu;
+
 
          if (_treeNode.HasChildren)
             yield return ObservedDataClassificationCommonContextMenuItems.ColorGroupObservedData(_userSettings);
@@ -63,30 +87,6 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
                   .WithActionCommand(() => presenter.AddToClassificationTree(treeNode, classification.ClassificationName))));
 
          return groupMenu;
-      }
-   }
-
-   internal class ContextMenuSpecificationFactoryForObservedDataFolder : IContextMenuSpecificationFactory<IViewItem>
-   {
-      private readonly IContainer _container;
-      private readonly IUserSettings _userSettings;
-
-      public ContextMenuSpecificationFactoryForObservedDataFolder(IContainer container, IUserSettings userSettings)
-      {
-         _container = container;
-         _userSettings = userSettings;
-      }
-
-      public IContextMenu CreateFor(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter)
-      {
-         var explorerPresenter = presenter.DowncastTo<IExplorerPresenter>();
-         return new ContextMenuForObservedDataFolder(_container.Resolve<IMenuBarItemRepository>(),
-            explorerPresenter.NodeByType(RootNodeTypes.ObservedDataFolder), explorerPresenter, _userSettings, _container);
-      }
-
-      public bool IsSatisfiedBy(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter)
-      {
-         return viewItem == RootNodeTypes.ObservedDataFolder && presenter.IsAnImplementationOf<IExplorerPresenter>();
       }
    }
 }

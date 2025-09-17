@@ -11,10 +11,11 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.UI.Services
 {
-   public class MoBiApplication : WindowsFormsApplicationBase
+   public class MoBiApplication : WindowsFormsApplicationBase, IMessageFilter
    {
       private readonly ApplicationStartup _applicationStartup;
       private readonly StartOptions _startOptions;
+      private IMoBiMainViewPresenter _mainPresenter;
 
       public MoBiApplication(ApplicationStartup applicationStartup, StartOptions startOptions)
       {
@@ -36,10 +37,11 @@ namespace MoBi.UI.Services
 
       protected override void OnCreateMainForm()
       {
-         var mainPresenter = IoC.Resolve<IMainViewPresenter>().DowncastTo<IMoBiMainViewPresenter>();
-         mainPresenter.Initialize();
-         mainPresenter.Run(_startOptions);
-         MainForm = mainPresenter.BaseView.DowncastTo<Form>();
+         _mainPresenter = IoC.Resolve<IMainViewPresenter>().DowncastTo<IMoBiMainViewPresenter>();
+         Application.AddMessageFilter(this);
+         _mainPresenter.Initialize();
+         _mainPresenter.Run(_startOptions);
+         MainForm = _mainPresenter.BaseView.DowncastTo<Form>();
       }
 
       protected override void OnRun()
@@ -55,6 +57,30 @@ namespace MoBi.UI.Services
             HideSplashScreen();
             throw;
          }
+      }
+
+      public bool PreFilterMessage(ref Message m)
+      {
+         if (!isWindowsKeyDownMessage(m))
+            return false;
+
+         switch (keyCodeFrom(m))
+         {
+            case (int)(Keys.Control | Keys.W):
+               _mainPresenter.ActivePresenter?.Close();
+               return true;
+         }
+         return false;
+      }
+
+      private static int keyCodeFrom(Message m)
+      {
+         return (int)m.WParam | (int)Control.ModifierKeys;
+      }
+
+      private static bool isWindowsKeyDownMessage(Message m)
+      {
+         return m.Msg == 256;
       }
    }
 }

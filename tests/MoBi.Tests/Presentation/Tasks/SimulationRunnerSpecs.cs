@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
@@ -14,14 +17,16 @@ using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.SimModel;
 using OSPSuite.Utility.Extensions;
+using static OSPSuite.Core.Domain.Constants;
 using ISimulationPersistableUpdater = MoBi.Core.Services.ISimulationPersistableUpdater;
 
 namespace MoBi.Presentation.Tasks
 {
-   public abstract class concern_for_SimulationRunner : ContextSpecification<ISimulationRunner>
+   public abstract class concern_for_SimulationRunner : ContextSpecificationAsync<ISimulationRunner>
    {
       protected IMoBiContext _context;
       protected IOutputSelectionsRetriever _outputSelectionsRetriever;
@@ -32,7 +37,7 @@ namespace MoBi.Presentation.Tasks
       protected IKeyPathMapper _keyPathMapper;
       protected IEntityValidationTask _eventValidationTask;
 
-      protected override void Context()
+      protected override Task Context()
       {
          _context = A.Fake<IMoBiContext>();
          _outputSelectionsRetriever = A.Fake<IOutputSelectionsRetriever>();
@@ -52,6 +57,9 @@ namespace MoBi.Presentation.Tasks
             _simModelManagerFactory,
             _keyPathMapper,
             _eventValidationTask);
+
+         return Task.CompletedTask;
+
       }
    }
 
@@ -60,9 +68,9 @@ namespace MoBi.Presentation.Tasks
       private IMoBiSimulation _simulation;
       private OutputSelections _settings;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _settings = A.Fake<OutputSelections>();
          A.CallTo(() => _settings.HasSelection).Returns(false);
          _simulation = A.Fake<IMoBiSimulation>();
@@ -75,9 +83,9 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _eventValidationTask.Validate(_simulation)).Returns(false);
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         sut.RunSimulation(_simulation);
+         await sut.SecureAwait(x => x.RunSimulationAsync(_simulation));
       }
 
       [Observation]
@@ -92,9 +100,9 @@ namespace MoBi.Presentation.Tasks
       private IMoBiSimulation _simulation;
       private OutputSelections _settings;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _settings = A.Fake<OutputSelections>();
          A.CallTo(() => _settings.HasSelection).Returns(false);
          _simulation = A.Fake<IMoBiSimulation>();
@@ -102,9 +110,9 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _eventValidationTask.Validate(_simulation)).Returns(true);
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         sut.RunSimulation(_simulation);
+         await sut.SecureAwait(x => x.RunSimulationAsync(_simulation));
       }
 
       [Observation]
@@ -119,9 +127,9 @@ namespace MoBi.Presentation.Tasks
       private IMoBiSimulation _simulation;
       private OutputSelections _outputSelections;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _outputSelections = A.Fake<OutputSelections>();
          A.CallTo(() => _outputSelections.HasSelection).Returns(true);
          _simulation = A.Fake<IMoBiSimulation>();
@@ -130,9 +138,9 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _eventValidationTask.Validate(_simulation)).Returns(true);
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         sut.RunSimulation(_simulation, defineSettings: true);
+         await sut.SecureAwait(x => x.RunSimulationAsync(_simulation, defineSettings: true));
       }
 
       [Observation]
@@ -154,9 +162,9 @@ namespace MoBi.Presentation.Tasks
       private OutputSelections _outputSelections;
       private OutputSelections _newOutputSelection;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _outputSelections = new OutputSelections();
          _outputSelections.AddOutput(new QuantitySelection("A", QuantityType.Drug));
 
@@ -169,9 +177,9 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _eventValidationTask.Validate(_simulation)).Returns(true);
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         sut.RunSimulation(_simulation, defineSettings: true);
+         await sut.SecureAwait(x => x.RunSimulationAsync(_simulation, defineSettings: true));
       }
 
       [Observation]
@@ -217,9 +225,9 @@ namespace MoBi.Presentation.Tasks
       private DataColumn _fractionColumn;
       private Parameter _moleculeWeight;
 
-      protected override void Context()
+      protected override async Task Context()
       {
-         base.Context();
+         await base.Context();
          _simulation = new MoBiSimulation
          {
             Model = new Model
@@ -251,7 +259,8 @@ namespace MoBi.Presentation.Tasks
 
          _newResults = new DataRepository("NEW");
          _simulationResults = new SimulationRunResults(warnings: Enumerable.Empty<SolverWarning>(), results: _newResults);
-         A.CallTo(() => _simModelManager.RunSimulation(_simulation, null)).Returns(_simulationResults);
+         A.CallTo(() => _simModelManager.RunSimulationAsync(_simulation, A<CancellationToken>._, null))
+            .Returns(Task.FromResult(_simulationResults));
          var baseGrid = new BaseGrid("Time", DomainHelperForSpecs.TimeDimension);
          _concentrationColumn = new DataColumn("Drug", DomainHelperForSpecs.ConcentrationDimension, baseGrid);
          _fractionColumn = new DataColumn("Fraction", DomainHelperForSpecs.FractionDimension, baseGrid);
@@ -261,9 +270,9 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _eventValidationTask.Validate(_simulation)).Returns(true);
       }
 
-      protected override void Because()
+      protected override async Task Because()
       {
-         sut.RunSimulation(_simulation);
+         await sut.SecureAwait(x=> x.RunSimulationAsync(_simulation));
       }
 
       [Observation]
@@ -281,7 +290,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_run_the_simulation()
       {
-         A.CallTo(() => _simModelManager.RunSimulation(_simulation, null)).MustHaveHappened();
+         A.CallTo(() => _simModelManager.RunSimulationAsync(_simulation, A<CancellationToken>._, null)).MustHaveHappened();
       }
 
       [Observation]
@@ -313,6 +322,174 @@ namespace MoBi.Presentation.Tasks
       {
          _concentrationColumn.DataInfo.MolWeight.ShouldBeEqualTo(_moleculeWeight.Value);
          _fractionColumn.DataInfo.MolWeight.ShouldBeNull();
+      }
+   }
+   public class When_stopping_a_specific_simulation : concern_for_SimulationRunner
+   {
+      private IMoBiSimulation _simulation;
+      private ISimModelManager _simModelManager;
+      private CancellationToken capturedToken;
+      private bool wasCancelled = false;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+
+         _simulation = A.Fake<IMoBiSimulation>();
+
+         _simModelManager = A.Fake<ISimModelManager>();
+
+         A.CallTo(() => _simModelManagerFactory.Create()).Returns(_simModelManager);
+
+         // Simulate a long-running task that can be cancelled
+         A.CallTo(() => _simModelManager.RunSimulationAsync(_simulation, A<CancellationToken>._,null))
+            .Invokes(call =>
+            {
+               capturedToken = call.GetArgument<CancellationToken>(1);
+            })
+            .ReturnsLazily(async () =>
+            {
+               try
+               {
+                  await Task.Delay(2000, capturedToken);
+               }
+               catch (OperationCanceledException)
+               {
+                  wasCancelled = true;
+                  throw;
+               }
+
+               return new SimulationRunResults(warnings: Enumerable.Empty<SolverWarning>(), results: new DataRepository("NEW"));
+            });
+
+         A.CallTo(() => _eventValidationTask.Validate(_simulation)).Returns(true);
+      }
+
+      protected override async Task Because()
+      {
+         var runTask = sut.RunSimulationAsync(_simulation);
+
+         await Task.Delay(100);
+
+         sut.StopSimulation(_simulation);
+
+         try
+         {
+            runTask.Wait();
+         }
+         catch (AggregateException ex) when (ex.InnerException is TaskCanceledException)
+         {
+            // This is expected since we cancelled the task, no action needed
+            //only for the test not to fail
+         }
+      }
+
+      [Observation]
+      public void should_have_cancelled_the_simulation()
+      {
+         wasCancelled.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_publish_simulation_canceled_event()
+      {
+         A.CallTo(() => _context.PublishEvent(A<SimulationRunCanceledEvent>._)).MustHaveHappened();
+      }
+   }
+
+   public class When_stopping_all_simulations : concern_for_SimulationRunner
+   {
+      private IMoBiSimulation _simulation1;
+      private IMoBiSimulation _simulation2;
+      private ISimModelManager _simModelManager;
+      private CancellationToken token1;
+      private CancellationToken token2;
+      private bool wasCancelled1 = false;
+      private bool wasCancelled2 = false;
+
+      //This test might fail when debugging if more time is taken than the await Task.Delay(10000, tokenx);
+      //So if debug is needed, maybe set it longer before debugging.
+
+      protected override async Task Context()
+      {
+         await base.Context();
+
+         _simulation1 = A.Fake<IMoBiSimulation>();
+         _simulation2 = A.Fake<IMoBiSimulation>();
+         _simModelManager = A.Fake<ISimModelManager>();
+
+         A.CallTo(() => _simModelManagerFactory.Create()).Returns(_simModelManager);
+
+         A.CallTo(() => _simModelManager.RunSimulationAsync(_simulation1, A<CancellationToken>._, null))
+            .Invokes(call => token1 = call.GetArgument<CancellationToken>(1))
+            .ReturnsLazily(async () =>
+            {
+               try
+               {
+                  await Task.Delay(10000, token1);
+               }
+               catch (OperationCanceledException)
+               {
+                  wasCancelled1 = true;
+                  throw;
+               }
+
+               return new SimulationRunResults(warnings: Enumerable.Empty<SolverWarning>(), results: new DataRepository("R1"));
+            });
+
+         A.CallTo(() => _simModelManager.RunSimulationAsync(_simulation2, A<CancellationToken>._, null))
+            .Invokes(call => token2 = call.GetArgument<CancellationToken>(1))
+            .ReturnsLazily(async () =>
+            {
+               try
+               {
+                  await Task.Delay(10000, token2);
+               }
+               catch (OperationCanceledException)
+               {
+                  wasCancelled2 = true;
+                  throw;
+               }
+
+               return new SimulationRunResults(warnings: Enumerable.Empty<SolverWarning>(), results: new DataRepository("R2"));
+            });
+
+         A.CallTo(() => _eventValidationTask.Validate(A<IMoBiSimulation>._)).Returns(true);
+      }
+
+      protected override async Task Because()
+      {
+         var task1 = sut.RunSimulationAsync(_simulation1);
+         var task2 = sut.RunSimulationAsync(_simulation2);
+
+         // Give time for both to register their tokens
+         await Task.Delay(100);
+
+         // Stop all simulations
+         sut.StopAllSimulations(); 
+
+         try { task1.Wait(); } catch (AggregateException ex) when (ex.InnerException is TaskCanceledException) { }
+         try { task2.Wait(); } catch (AggregateException ex) when (ex.InnerException is TaskCanceledException) { }
+      }
+
+      [Observation]
+      public void should_have_cancelled_all_simulations()
+      {
+         wasCancelled1.ShouldBeTrue();
+         wasCancelled2.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_publish_simulation_canceled_event_once()
+      {
+         A.CallTo(() => _context.PublishEvent(A<SimulationRunCanceledEvent>._)).MustHaveHappened();
+      }
+
+
+      [Observation]
+      public void is_any_simulation_running_must_be_false()
+      {
+         sut.IsAnySimulationRunning().ShouldBeFalse();
       }
    }
 }

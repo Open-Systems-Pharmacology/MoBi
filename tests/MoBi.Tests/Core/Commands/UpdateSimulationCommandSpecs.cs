@@ -1,15 +1,14 @@
-﻿using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
+﻿using System.Collections.Generic;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using System.Collections.Generic;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
-using System.Runtime.Remoting.Contexts;
 
 namespace MoBi.Core.Commands
 {
@@ -18,25 +17,26 @@ namespace MoBi.Core.Commands
       protected IMoBiSimulation _simulation;
       protected IModel _model;
       protected SimulationConfiguration _simulationConfiguration;
-      private IBuildingBlock _buildingBlock;
       protected SimulationConfiguration _oldBuildConfiguration;
+      protected List<SimulationEntitySource> _simulationEntitySources;
+      protected SimulationEntitySource _simulationEntitySource;
 
       protected override void Context()
       {
          _simulation = A.Fake<IMoBiSimulation>();
          _model = A.Fake<IModel>();
          _simulationConfiguration = new SimulationConfiguration();
-         _buildingBlock = A.Fake<IBuildingBlock>().WithName("toto");
          _oldBuildConfiguration = _simulation.Configuration;
          _simulation.HasUntraceableChanges = true;
-         sut = new UpdateSimulationCommand(_simulation, _model, _simulationConfiguration, _buildingBlock);
+         _simulationEntitySource = A.Fake<SimulationEntitySource>();
+         _simulationEntitySources = new List<SimulationEntitySource> {_simulationEntitySource};
+         sut = new UpdateSimulationCommand(_simulation, _model, _simulationEntitySources, _simulationConfiguration);
       }
    }
 
    internal class When_reversing_an_update_simulation_command : concern_for_UpdateSimulationCommand
    {
       private IMoBiContext _context;
-      private SimulationUnloadEvent _event;
       private IProject _project;
       private ParameterIdentification _parameterIdentification;
       private ISimulationReferenceUpdater _simulationReferenceUpdater;
@@ -51,16 +51,12 @@ namespace MoBi.Core.Commands
          _simulationReferenceUpdater = A.Fake<ISimulationReferenceUpdater>();
          _simulationParameterOriginIdUpdater = A.Fake<ISimulationParameterOriginIdUpdater>();
 
-         A.CallTo(() => _context.PublishEvent(A<SimulationUnloadEvent>._))
-            .Invokes(x => _event = x.GetArgument<SimulationUnloadEvent>(0));
-
          A.CallTo(() => _context.Project).Returns(_project);
          A.CallTo(() => _context.Resolve<ISimulationReferenceUpdater>()).Returns(_simulationReferenceUpdater);
          A.CallTo(() => _context.Resolve<ISimulationParameterOriginIdUpdater>()).Returns(_simulationParameterOriginIdUpdater);
-         A.CallTo(() => _project.AllParameterIdentifications).Returns(new[] { _parameterIdentification });
+         A.CallTo(() => _project.AllParameterIdentifications).Returns(new[] {_parameterIdentification});
          A.CallTo(() => _context.Get<IMoBiSimulation>(_simulation.Id)).Returns(_simulation);
          _parameterIdentification.AddSimulation(_simulation);
-         
       }
 
       protected override void Because()
@@ -91,7 +87,7 @@ namespace MoBi.Core.Commands
          _parameterIdentification = A.Fake<ParameterIdentification>();
          _context = A.Fake<IMoBiContext>();
          _simulationReferenceUpdater = A.Fake<ISimulationReferenceUpdater>();
-         _simulationParameterOriginIdUpdater= A.Fake<ISimulationParameterOriginIdUpdater>();
+         _simulationParameterOriginIdUpdater = A.Fake<ISimulationParameterOriginIdUpdater>();
 
          A.CallTo(() => _context.PublishEvent(A<SimulationUnloadEvent>._))
             .Invokes(x => _event = x.GetArgument<SimulationUnloadEvent>(0));
@@ -135,7 +131,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void should_call_update_for_simulation()
       {
-         A.CallTo(() => _simulation.Update(_simulationConfiguration, _model)).MustHaveHappened();
+         A.CallTo(() => _simulation.Update(_simulationConfiguration, _model, _simulationEntitySources)).MustHaveHappened();
       }
 
       [Observation]

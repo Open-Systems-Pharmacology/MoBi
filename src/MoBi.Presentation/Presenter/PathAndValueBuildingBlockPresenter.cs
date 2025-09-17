@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using MoBi.Core.Events;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
@@ -28,7 +29,7 @@ namespace MoBi.Presentation.Presenter
       void EditDistributedParameter(TParameterDTO distributedParameter);
    }
 
-   public abstract class PathAndValueBuildingBlockPresenter<TView, TPresenter, TBuildingBlock, TParameter, TParameterDTO> : AbstractEditPresenter<TView, TPresenter, TBuildingBlock>
+   public abstract class PathAndValueBuildingBlockPresenter<TView, TPresenter, TBuildingBlock, TParameter, TParameterDTO> : AbstractEditPresenter<TView, TPresenter, TBuildingBlock>, IListener<EntitySelectedEvent>
       where TBuildingBlock : IBuildingBlock<TParameter>
       where TPresenter : IPresenter
       where TView : IView<TPresenter>, IPathAndValueEntitiesView
@@ -108,7 +109,7 @@ namespace MoBi.Presentation.Presenter
 
       protected void EditFormula(TParameterDTO parameterDTO, TParameter builder)
       {
-         AddCommand(_interactionTask.EditFormulaAtBuildingBlock(_buildingBlock, builder, null));
+         AddCommand(_interactionTask.EditFormulaAtBuildingBlock(_buildingBlock, builder));
          RefreshDTO(parameterDTO, builder.Formula, builder);
       }
 
@@ -141,5 +142,15 @@ namespace MoBi.Presentation.Presenter
       {
          _distributedPathAndValuePresenter.Edit(distributedParameter, _buildingBlock);
       }
+
+      public void Handle(EntitySelectedEvent eventToHandle)
+      {
+         if (eventToHandle.ObjectBase is TParameter builder && _buildingBlock.Contains(builder)) 
+            SelectEntity(DTOForBuilder(builder));
+      }
+
+      protected abstract void SelectEntity(TParameterDTO dto);
+
+      protected abstract TParameterDTO DTOForBuilder(TParameter builder);
    }
 }

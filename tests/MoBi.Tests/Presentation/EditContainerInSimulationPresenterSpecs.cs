@@ -6,7 +6,7 @@ using OSPSuite.Core.Domain;
 
 namespace MoBi.Presentation
 {
-   public abstract class concern_for_EditContainerInSimulationPresenter : ContextSpecification<IEditContainerInSimulationPresenter>
+   public abstract class concern_for_EditContainerInSimulationPresenter : ContextSpecification<EditContainerInSimulationPresenter>
    {
       protected IEditContainerPresenter _editContainerPresenter;
       private IEditContainerInSimulationView _view;
@@ -52,6 +52,34 @@ namespace MoBi.Presentation
       public void should_leverage_the_edit_container_presenter_to_edit_the_given_container()
       {
          A.CallTo(() => _editContainerPresenter.Edit(_container)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_show_the_parameters_tab_on_edit()
+      {
+         A.CallTo(() => _editContainerPresenter.ShowParameters()).MustHaveHappened(1, Times.Exactly);
+      }
+   }
+
+   public class When_reusing_the_edit_container_presenter_for_a_new_container : concern_for_EditContainerInSimulationPresenter
+   {
+      private IContainer _container;
+      private IContainer _secondContainer;
+
+      protected override void Context()
+      {
+         base.Context();
+         _container = new Container();
+         _secondContainer = new Container();
+         sut.Edit(_container);
+      }
+
+      [Observation]
+      public void should_not_reinitialize_the_parameters_view()
+      {
+         A.CallTo(() => _editContainerPresenter.ShowParameters()).MustHaveHappened(1, Times.Exactly);
+         sut.Edit(_secondContainer);
+         A.CallTo(() => _editContainerPresenter.ShowParameters()).MustHaveHappened(1, Times.Exactly);
       }
    }
 }

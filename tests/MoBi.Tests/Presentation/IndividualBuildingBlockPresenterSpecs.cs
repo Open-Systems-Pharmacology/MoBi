@@ -152,7 +152,7 @@ namespace MoBi.Presentation
       [Observation]
       public void the_presenter_uses_the_interaction_task_to_add_the_formula()
       {
-         A.CallTo(() => _interactionTaskForIndividual.EditFormulaAtBuildingBlock(_buildingBlock, _individualParameter1, null)).MustHaveHappened();
+         A.CallTo(() => _interactionTaskForIndividual.EditFormulaAtBuildingBlock(_buildingBlock, _individualParameter1)).MustHaveHappened();
       }
    }
 

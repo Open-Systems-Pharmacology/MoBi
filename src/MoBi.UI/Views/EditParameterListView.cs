@@ -7,6 +7,7 @@ using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Base;
+using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
@@ -41,6 +42,11 @@ namespace MoBi.UI.Views
       private readonly UxRepositoryItemCheckEdit _favoriteRepository;
       private readonly IToolTipCreator _toolTipCreator;
       private readonly ValueOriginBinder<ParameterDTO> _valueOriginBinder;
+      private IGridViewBoundColumn<ParameterDTO, string> _colModule;
+      private IGridViewBoundColumn<ParameterDTO, string> _colBuildingBlock;
+      private IGridViewColumn<ParameterDTO> _colNavigate;
+      private readonly RepositoryItemButtonEdit _navigateButtonRepository = new UxRepositoryItemButtonEdit(ButtonPredefines.Search);
+      private readonly IImageListRetriever _imageListRetriever;
       public BarManager PopupBarManager { get; }
 
       public EditParameterListView(PathElementsBinder<ParameterDTO> pathBinder,
@@ -49,6 +55,7 @@ namespace MoBi.UI.Views
          ValueOriginBinder<ParameterDTO> valueOriginBinder)
       {
          InitializeComponent();
+         _imageListRetriever = imageListRetriever;
          _valueOriginBinder = valueOriginBinder;
          _gridViewBinder = new GridViewBinder<ParameterDTO>(_gridView);
          _unitControl = new UxComboBoxUnit<ParameterDTO>(_gridControl);
@@ -67,6 +74,22 @@ namespace MoBi.UI.Views
          toolTipController.Initialize();
          toolTipController.GetActiveObjectInfo += onToolTipControllerGetActiveObjectInfo;
          _gridControl.ToolTipController = toolTipController;
+      }
+
+      private RepositoryItem buildingBlockRepository(ParameterDTO parameterDTO)
+      {
+         var buildingBlock = parameterDTO.BuildingBlock;
+         var repository = new UxRepositoryItemImageComboBox(_gridView, _imageListRetriever);
+         if (buildingBlock != null)
+            repository.AddItem(buildingBlock.Name, buildingBlock.Icon);
+
+         return repository;
+      }
+
+      public override void InitializeResources()
+      {
+         base.InitializeResources();
+         _navigateButtonRepository.Buttons[0].ToolTip = ToolTips.ParameterList.GoToSource;
       }
 
       private void onToolTipControllerGetActiveObjectInfo(object sender, ToolTipControllerGetActiveObjectInfoEventArgs e)
@@ -97,10 +120,14 @@ namespace MoBi.UI.Views
          _presenter = presenter;
       }
 
-      public void BindTo(IEnumerable<ParameterDTO> parameters)
+      public void BindTo(IReadOnlyList<ParameterDTO> parameters)
       {
          _gridViewBinder.BindToSource(parameters);
          _gridView.RefreshData();
+
+         _colModule.Visible = _presenter.HasModules();
+         _colBuildingBlock.Visible = _presenter.HasBuildingBlocks();
+         _colNavigate.Visible = _colBuildingBlock.Visible;
       }
 
       public void Select(ParameterDTO parameterDTO)
@@ -124,6 +151,15 @@ namespace MoBi.UI.Views
             .WithOnValueUpdating(onParameterValueSet)
             .WithShowButton(ShowButtonModeEnum.ShowAlways);
 
+         _colModule = _gridViewBinder.Bind(dto => dto.ModuleName)
+            .WithCaption(AppConstants.Captions.Module)
+            .AsReadOnly();
+
+         _colBuildingBlock = _gridViewBinder.Bind(dto => dto.BuildingBlockName)
+            .WithRepository(buildingBlockRepository)
+            .WithCaption(AppConstants.Captions.BuildingBlock)
+            .AsReadOnly();
+
          _unitControl.ParameterUnitSet += setParameterUnit;
 
          _gridViewBinder.AutoBind(dto => dto.Dimension)
@@ -145,9 +181,18 @@ namespace MoBi.UI.Views
             .WithToolTip(OSPSuite.Assets.ToolTips.FavoritesToolTip)
             .WithOnValueUpdating((o, e) => onIsFavoriteSet(o, e.NewValue));
 
+         _colNavigate = _gridViewBinder.AddUnboundColumn()
+            .WithCaption(OSPSuite.UI.UIConstants.EMPTY_COLUMN)
+            .WithShowButton(ShowButtonModeEnum.ShowAlways)
+            .WithRepository(dto => _navigateButtonRepository)
+            .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_BUTTON_WIDTH)
+            .AsHidden();
+
          _isFixedParameterEditRepository.ButtonClick += (o, e) => OnEvent(() => onResetValue(_gridViewBinder.FocusedElement));
 
          _pathBinder.SetVisibility(PathElementId.Simulation, visible: false);
+
+         _navigateButtonRepository.ButtonClick += (o, e) => OnEvent(_presenter.NavigateToParameter, _gridViewBinder.FocusedElement);
       }
 
       private void onResetValue(ParameterDTO favoriteParameterDTO)

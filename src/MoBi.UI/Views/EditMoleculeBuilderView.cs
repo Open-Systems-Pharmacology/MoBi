@@ -1,10 +1,4 @@
-﻿using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
-using OSPSuite.UI.Extensions;
-using OSPSuite.UI.RepositoryItems;
-using OSPSuite.Utility.Extensions;
-using DevExpress.Utils;
+﻿using DevExpress.Utils;
 using DevExpress.XtraEditors.Repository;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
@@ -13,10 +7,15 @@ using MoBi.Presentation.Views;
 using MoBi.UI.Extensions;
 using MoBi.UI.Services;
 using OSPSuite.Assets;
-using OSPSuite.Presentation;
-using OSPSuite.UI.Controls;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
+using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
+using OSPSuite.UI.RepositoryItems;
+using OSPSuite.Utility.Extensions;
 using ToolTips = MoBi.Assets.ToolTips;
 
 namespace MoBi.UI.Views
@@ -56,7 +55,7 @@ namespace MoBi.UI.Views
             return;
 
          //An object that uniquely identifies a row cell
-         e.Info = new ToolTipControlInfo(usedCalculationMethodDTO, string.Empty) {SuperTip = superToolTip, ToolTipType = ToolTipType.SuperTip};
+         e.Info = new ToolTipControlInfo(usedCalculationMethodDTO, string.Empty) { SuperTip = superToolTip, ToolTipType = ToolTipType.SuperTip };
       }
 
       public override void InitializeBinding()
@@ -102,7 +101,6 @@ namespace MoBi.UI.Views
          layoutControlItemCalculationMethod.Size = size;
          tabProperties.InitWith(AppConstants.Captions.Properties, ApplicationIcons.Properties);
          tabParameters.InitWith(AppConstants.Captions.Parameters, ApplicationIcons.Parameter);
-
       }
 
       public void UpdateStartAmountDisplay(string amountOrConcentrationText)
@@ -129,7 +127,7 @@ namespace MoBi.UI.Views
 
       private void onIsPresentValueSet(MoleculeBuilderDTO moleculeBuilder, PropertyValueSetEventArgs<bool> value)
       {
-         _presenter.SetStationaryProperty(value.NewValue, value.OldValue);
+         this.DoWithinExceptionHandler(() => _presenter.SetStationaryProperty(value.NewValue, value.OldValue));
       }
 
       private void OnValueUpdating<T>(MoleculeBuilderDTO moleculeBuilder, PropertyValueSetEventArgs<T> value)

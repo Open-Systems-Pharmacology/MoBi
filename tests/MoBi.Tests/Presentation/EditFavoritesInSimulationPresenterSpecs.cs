@@ -48,9 +48,9 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void the_simulation_should_be_cached()
+      public void the_simulation_column_should_be_hidden()
       {
-         A.CallTo(() => _editParameterListPresenter.SetVisibility(PathElementId.Simulation, false)).MustHaveHappened();
+         A.CallTo(() => _editParameterListPresenter.View.SetVisibility(PathElementId.Simulation, false)).MustHaveHappened();
       }
    }
 
@@ -86,6 +86,20 @@ namespace MoBi.Presentation
       public void the_view_should_be_rebound()
       {
          A.CallTo(() => _editParameterListPresenter.Edit(A<IEnumerable<IParameter>>._)).MustHaveHappened();
+      }
+   }
+
+   public class When_enabling_tracking : concern_for_EditFavoritesInSimulationPresenter
+   {
+      protected override void Because()
+      {
+         sut.TrackableSimulation = new TrackableSimulation(null, new SimulationEntitySourceReferenceCache());
+      }
+
+      [Observation]
+      public void the_parameter_presenter_must_also_enable_tracking()
+      {
+         A.CallTo(() => _editParameterListPresenter.EnableSimulationTracking(sut.TrackableSimulation)).MustHaveHappened();
       }
    }
 }

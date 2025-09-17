@@ -6,6 +6,7 @@ using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Helper;
+using MoBi.Core.Services;
 using MoBi.Presentation.Presenter.ModelDiagram;
 using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Views;
@@ -31,7 +32,8 @@ namespace MoBi.Presentation.Presenter
       IListener<SimulationReloadEvent>,
       IListener<FavoritesSelectedEvent>,
       IListener<UserDefinedSelectedEvent>,
-      IListener<ShowSimulationChangesEvent>
+      IListener<ShowSimulationChangesEvent>,
+      IListener<SimulationRunStartedEvent>
    {
       void LoadDiagram();
       string CreateResultTabCaption(string viewCaption);
@@ -49,6 +51,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IEditSolverSettingsPresenter _solverSettingsPresenter;
       private readonly IEditOutputSchemaPresenter _editOutputSchemaPresenter;
       private readonly ISimulationChangesPresenter _simulationChangesPresenter;
+      private readonly ISimulationEntitySourceReferenceFactory _entitySourceReferenceFactory;
       private readonly IEditInSimulationPresenterFactory _showPresenterFactory;
       private readonly ICache<Type, IEditInSimulationPresenter> _cacheShowPresenter;
       private bool _diagramLoaded;
@@ -60,19 +63,34 @@ namespace MoBi.Presentation.Presenter
       protected readonly IMoBiContext _context;
       private readonly ISimulationOutputMappingPresenter _simulationOutputMappingPresenter;
       private readonly IOutputMappingMatchingTask _outputMappingMatchingTask;
+      private TrackableSimulation _trackableSimulation;
+      private readonly ISimulationRunner _simulationRunner;
 
-      public EditSimulationPresenter(IEditSimulationView view, ISimulationChartPresenter chartPresenter,
-         IHierarchicalSimulationPresenter hierarchicalPresenter, ISimulationDiagramPresenter simulationDiagramPresenter,
-         IEditSolverSettingsPresenter solverSettingsPresenter, IEditOutputSchemaPresenter editOutputSchemaPresenter,
-         IEditInSimulationPresenterFactory showPresenterFactory, IHeavyWorkManager heavyWorkManager, IChartFactory chartFactory,
-         IEditFavoritesInSimulationPresenter favoritesPresenter, IChartTasks chartTask,
-         IUserDefinedParametersPresenter userDefinedParametersPresenter, ISimulationOutputMappingPresenter simulationOutputMappingPresenter,
+      public EditSimulationPresenter(
+         IEditSimulationView view,
+         ISimulationChartPresenter chartPresenter,
+         IHierarchicalSimulationPresenter hierarchicalPresenter,
+         ISimulationDiagramPresenter simulationDiagramPresenter,
+         IEditSolverSettingsPresenter solverSettingsPresenter,
+         IEditOutputSchemaPresenter editOutputSchemaPresenter,
+         IEditInSimulationPresenterFactory showPresenterFactory,
+         IHeavyWorkManager heavyWorkManager,
+         IChartFactory chartFactory,
+         IEditFavoritesInSimulationPresenter favoritesPresenter,
+         IChartTasks chartTask,
+         IUserDefinedParametersPresenter userDefinedParametersPresenter,
+         ISimulationOutputMappingPresenter simulationOutputMappingPresenter,
          ISimulationPredictedVsObservedChartPresenter simulationPredictedVsObservedChartPresenter,
-         ISimulationResidualVsTimeChartPresenter simulationResidualVsTimeChartPresenter, IMoBiContext context,
-         IOutputMappingMatchingTask outputMappingMatchingTask, ISimulationChangesPresenter changesPresenter)
+         ISimulationResidualVsTimeChartPresenter simulationResidualVsTimeChartPresenter,
+         IMoBiContext context,
+         IOutputMappingMatchingTask outputMappingMatchingTask,
+         ISimulationChangesPresenter changesPresenter,
+         ISimulationEntitySourceReferenceFactory entitySourceReferenceFactory,
+         ISimulationRunner simulationRunner)
          : base(view)
       {
          _simulationChangesPresenter = changesPresenter;
+         _entitySourceReferenceFactory = entitySourceReferenceFactory;
          _editOutputSchemaPresenter = editOutputSchemaPresenter;
          _showPresenterFactory = showPresenterFactory;
          _heavyWorkManager = heavyWorkManager;
@@ -87,6 +105,8 @@ namespace MoBi.Presentation.Presenter
          _simulationResidualVsTimeChartPresenter = simulationResidualVsTimeChartPresenter;
          _chartPresenter = chartPresenter;
          _simulationOutputMappingPresenter = simulationOutputMappingPresenter;
+         _context = context;
+         _outputMappingMatchingTask = outputMappingMatchingTask;
          _view.SetTreeView(hierarchicalPresenter.BaseView);
          _view.SetModelDiagram(_simulationDiagramPresenter.View);
          _hierarchicalPresenter.ShowOutputSchema = showOutputSchema;
@@ -97,13 +117,12 @@ namespace MoBi.Presentation.Presenter
          _view.SetPredictedVsObservedView(simulationPredictedVsObservedChartPresenter.View);
          _view.SetResidualsVsTimeView(simulationResidualVsTimeChartPresenter.View);
          _view.SetDataView(_simulationOutputMappingPresenter.View);
+         _simulationRunner = simulationRunner;
          AddSubPresenters(_chartPresenter, _hierarchicalPresenter, _simulationDiagramPresenter, _solverSettingsPresenter, _editOutputSchemaPresenter,
             _favoritesPresenter, _userDefinedParametersPresenter, _simulationOutputMappingPresenter, _simulationPredictedVsObservedChartPresenter,
             _simulationResidualVsTimeChartPresenter, _simulationChangesPresenter);
          _cacheShowPresenter = new Cache<Type, IEditInSimulationPresenter> { OnMissingKey = x => null };
          _chartPresenter.OnObservedDataAddedToChart += onObservedDataAddedToChart;
-         _context = context;
-         _outputMappingMatchingTask = outputMappingMatchingTask;
       }
 
       public string CreateResultTabCaption(string chartName) => string.IsNullOrWhiteSpace(chartName) ? AppConstants.Captions.Results : chartName;
@@ -127,7 +146,6 @@ namespace MoBi.Presentation.Presenter
          _hierarchicalPresenter.Edit(simulation);
          _solverSettingsPresenter.Edit(_simulation);
          _editOutputSchemaPresenter.Edit(_simulation);
-         _favoritesPresenter.Edit(_simulation);
          _chartPresenter.UpdateTemplatesFor(_simulation);
          _view.SetEditView(_favoritesPresenter.BaseView);
          _simulationChangesPresenter.Edit(_simulation);
@@ -135,6 +153,11 @@ namespace MoBi.Presentation.Presenter
          UpdateCaption();
          _view.Display();
          loadChart();
+
+         _trackableSimulation = new TrackableSimulation(_simulation, _entitySourceReferenceFactory.CreateFor(simulation));
+         _favoritesPresenter.TrackableSimulation = _trackableSimulation;
+         _favoritesPresenter.Edit(_simulation);
+         _view.SetParametersTabEnabled(_simulationRunner.IsSimulationIdle(simulation));
       }
 
       private void addObservedDataRepositories(IList<DataRepository> data, IEnumerable<Curve> curves)
@@ -198,6 +221,8 @@ namespace MoBi.Presentation.Presenter
          if (!_simulation.Equals(eventToHandle.Simulation))
             return;
 
+         _view.SetParametersTabEnabled(true);
+
          if (!_view.ShowsResults)
             _view.ShowResultsTab();
 
@@ -244,7 +269,7 @@ namespace MoBi.Presentation.Presenter
          }
 
          _view.SetEditView(showPresenter.BaseView);
-         showPresenter.Simulation = _simulation;
+         showPresenter.TrackableSimulation = _trackableSimulation;
          showPresenter.Edit(entity);
          return showPresenter;
       }
@@ -258,9 +283,9 @@ namespace MoBi.Presentation.Presenter
 
       private bool shouldShow(IEntity entity)
       {
-         if (entity == null) 
+         if (entity == null)
             return false;
-         
+
          return _simulation.Model.Root.Equals(entity.RootContainer) || _simulation.Model.Neighborhoods.Equals(entity.RootContainer);
       }
 
@@ -338,6 +363,14 @@ namespace MoBi.Presentation.Presenter
          {
             _view.ShowChangesTab();
          }
+      }
+
+      public void Handle(SimulationRunStartedEvent eventToHandle)
+      {
+         if (!_simulation.Equals(eventToHandle.Simulation))
+            return;
+
+         _view.SetParametersTabEnabled(false);
       }
    }
 }

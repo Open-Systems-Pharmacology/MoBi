@@ -5,6 +5,7 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
+using MoBi.Core.Services;
 using MoBi.Presentation.MenusAndBars;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain.Builder;
@@ -62,10 +63,10 @@ namespace MoBi.Presentation.Presenter.Main
       private bool _sensitivityRunning;
       private readonly List<ParameterIdentification> _runningParameterIdentifications = new List<ParameterIdentification>();
       private readonly IActiveSubjectRetriever _activeSubjectRetriever;
-
+      private readonly ISimulationRunner _simulationRunner;
       public MenuAndToolBarPresenter(IMenuAndToolBarView view, IMenuBarItemRepository menuBarItemRepository,
          IButtonGroupRepository buttonGroupRepository, IMRUProvider mruProvider, ISkinManager skinManager,
-         IMoBiContext context, IActiveSubjectRetriever activeSubjectRetriever)
+         IMoBiContext context, IActiveSubjectRetriever activeSubjectRetriever, ISimulationRunner simulationRunner)
          : base(view, menuBarItemRepository, mruProvider)
       {
          _skinManager = skinManager;
@@ -73,6 +74,7 @@ namespace MoBi.Presentation.Presenter.Main
          _menuBarItemRepository = menuBarItemRepository;
          _buttonGroupRepository = buttonGroupRepository;
          _activeSubjectRetriever = activeSubjectRetriever;
+         _simulationRunner = simulationRunner;
       }
 
       protected override void AddRibbonPages()
@@ -280,7 +282,6 @@ namespace MoBi.Presentation.Presenter.Main
 
       public void Handle(SimulationRunStartedEvent eventToHandle)
       {
-         DisableAll();
          _menuBarItemRepository[MenuBarItemIds.Stop].Enabled = true;
       }
 
@@ -288,7 +289,7 @@ namespace MoBi.Presentation.Presenter.Main
       {
          enableDefaultItems();
          projectItemsAreEnabled = true;
-         _menuBarItemRepository[MenuBarItemIds.Stop].Enabled = false;
+         _menuBarItemRepository[MenuBarItemIds.Stop].Enabled = _simulationRunner.IsAnySimulationRunning();
          _menuBarItemRepository[MenuBarItemIds.Run].Enabled = true;
          _menuBarItemRepository[MenuBarItemIds.RunWithSettings].Enabled = true;
          _menuBarItemRepository[MenuBarItemIds.CalculateScaleFactors].Enabled = true;

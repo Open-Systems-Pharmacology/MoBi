@@ -30,7 +30,6 @@ using System.Drawing;
 using System.Linq;
 using FakeItEasy.Core;
 using TreeNodeFactory = MoBi.Presentation.Nodes.TreeNodeFactory;
-using DevExpress.Utils.Extensions;
 
 namespace MoBi.Presentation
 {
@@ -41,7 +40,7 @@ namespace MoBi.Presentation
       protected IViewItemContextMenuFactory _viewItemContextMenuFactory;
       private IRegionResolver _regionResolver;
       protected TreeNodeFactory _treeNodeFactory;
-      private IClassificationPresenter _classificationPresenter;
+      protected IClassificationPresenter _classificationPresenter;
       private IToolTipPartCreator _toolTipPartCreator;
       protected IObservedDataInExplorerPresenter _observedDataInExplorerPresenter;
       private IMultipleTreeNodeContextMenuFactory _multipleTreeNodeContextMenuFactory;
@@ -49,6 +48,7 @@ namespace MoBi.Presentation
       protected IEditBuildingBlockStarter _editBuildingBlockStarter;
       protected IInteractionTasksForModule _interactionTaskForModule;
       private IObservedDataRepository _observedDataRepository;
+      protected IModulesInExplorerPresenter _modulesInExplorerPresenter;
 
       protected override void Context()
       {
@@ -68,8 +68,9 @@ namespace MoBi.Presentation
          _editBuildingBlockStarter = A.Fake<IEditBuildingBlockStarter>();
          _treeNodeFactory = new TreeNodeFactory(_observedDataRepository, _toolTipPartCreator);
          _interactionTaskForModule = A.Fake<IInteractionTasksForModule>();
+         _modulesInExplorerPresenter = new ModulesInExplorerPresenter(_treeNodeFactory);
          sut = new ModuleExplorerPresenter(_view, _regionResolver, _treeNodeFactory, _viewItemContextMenuFactory, _context,
-            _classificationPresenter, _toolTipPartCreator, _observedDataInExplorerPresenter, _multipleTreeNodeContextMenuFactory, _projectRetriever, _editBuildingBlockStarter, _interactionTaskForModule);
+            _classificationPresenter, _toolTipPartCreator, _observedDataInExplorerPresenter, _multipleTreeNodeContextMenuFactory, _projectRetriever, _editBuildingBlockStarter, _interactionTaskForModule, _modulesInExplorerPresenter);
       }
    }
 
@@ -191,10 +192,16 @@ namespace MoBi.Presentation
          base.Context();
 
          _spatialStructureA = _treeNodeFactory.CreateFor<SpatialStructure>(new SpatialStructure().WithName("A"));
-         _moduleNode = _treeNodeFactory.CreateFor(MoBiRootNodeTypes.ModulesFolder);
+         _moduleNode = _treeNodeFactory.CreateFor(RootNodeTypes.ModulesFolder);
          var module = new Module();
-         _parameterValuesFolderNode = new ParameterValuesFolderNode(module);
-         _initialConditionsFolderNode = new InitialConditionsFolderNode(module);
+         _parameterValuesFolderNode = new ParameterValuesFolderNode(new ClassifiableModule
+         {
+            Subject = module
+         });
+         _initialConditionsFolderNode = new InitialConditionsFolderNode(new ClassifiableModule
+         {
+            Subject = module
+         });
       }
 
       [Observation]
@@ -258,12 +265,6 @@ namespace MoBi.Presentation
          _addedObject = new T();
          _project = DomainHelperForSpecs.NewProject();
       }
-
-      [Observation]
-      public void the_tree_node_should_be_added_to_the_root_node()
-      {
-         A.CallTo(() => _view.AddNode(A<ITreeNode>.That.Matches(x => x.TagAsObject.Equals(_addedObject)))).MustHaveHappened();
-      }
    }
 
    public class When_the_module_explorer_presenter_receives_an_added_individual_event : When_the_module_explorer_presenter_receives_an_added_event<IndividualBuildingBlock>
@@ -271,6 +272,12 @@ namespace MoBi.Presentation
       protected override void Because()
       {
          sut.Handle(new AddedEvent<IndividualBuildingBlock>(_addedObject, _project));
+      }
+
+      [Observation]
+      public void the_tree_node_should_be_added_to_the_root_node()
+      {
+         A.CallTo(() => _view.AddNode(A<ITreeNode>.That.Matches(x => x.TagAsObject.Equals(_addedObject)))).MustHaveHappened();
       }
    }
 
@@ -281,16 +288,19 @@ namespace MoBi.Presentation
       private EventGroupBuildingBlock _eventGroupBuildingBlock;
       private ITreeNode _eventGroupNode;
       private IContextMenu _contextMenu;
+      private ClassifiableModule _classifiableModule;
 
       protected override void Context()
       {
          base.Context();
          _eventGroupBuildingBlock = new EventGroupBuildingBlock().WithId("eventGroupId");
-         _rootNode = new RootNode(MoBiRootNodeTypes.ModulesFolder);
-         _moduleNode = new ModuleNode(_addedObject);
+         _rootNode = new RootNode(RootNodeTypes.ModulesFolder);
+         _classifiableModule = new ClassifiableModule { Subject = _addedObject };
+         _moduleNode = new ModuleNode(_classifiableModule);
          _eventGroupNode = new BuildingBlockNode(_eventGroupBuildingBlock);
          A.CallTo(() => _view.TreeView.NodeById(_rootNode.Id)).Returns(_rootNode);
          A.CallTo(() => _view.TreeView.NodeById(_addedObject.Id)).Returns(_moduleNode);
+         
 
          _addedObject.Add(_eventGroupBuildingBlock);
 
@@ -298,6 +308,13 @@ namespace MoBi.Presentation
 
          _contextMenu = A.Fake<IContextMenu>();
          A.CallTo(() => _viewItemContextMenuFactory.CreateFor(A<BuildingBlockViewItem>.That.Matches(x => x.BuildingBlock.Equals(_eventGroupBuildingBlock)), sut)).Returns(_contextMenu);
+         A.CallTo(() => _projectRetriever.CurrentProject.GetOrCreateClassifiableFor<ClassifiableModule, Module>(_addedObject)).Returns(_classifiableModule);
+      }
+
+      [Observation]
+      public void the_tree_node_should_be_added_to_the_root_node()
+      {
+         A.CallTo(() => _view.AddNode(A<ITreeNode>.That.Matches(x => x.TagAsObject.Equals(_classifiableModule)))).MustHaveHappened();
       }
 
       protected override void Because()
@@ -331,6 +348,12 @@ namespace MoBi.Presentation
          _addedObject.Type = ExpressionTypes.MetabolizingEnzyme;
          sut.Handle(new AddedEvent<ExpressionProfileBuildingBlock>(_addedObject, _project));
       }
+
+      [Observation]
+      public void the_tree_node_should_be_added_to_the_root_node()
+      {
+         A.CallTo(() => _view.AddNode(A<ITreeNode>.That.Matches(x => x.TagAsObject.Equals(_addedObject)))).MustHaveHappened();
+      }
    }
 
    public class When_the_module_explorer_presenter_is_adding_the_project_to_the_tree_without_initial_conditions : concern_for_ModuleExplorerPresenter
@@ -357,12 +380,21 @@ namespace MoBi.Presentation
             flattenAndAdd(treeNode);
          });
 
+         A.CallTo(() => _view.TreeView.NodeById(A<string>._)).ReturnsLazily(x => getNodeForId(x.Arguments.Get<string>(0)));
+
          _project.AddModule(_module1);
+      }
+
+      private ITreeNode getNodeForId(string id)
+      {
+         return _allNodesAdded.First(x => x.Id == id);
       }
 
       private void flattenAndAdd(ITreeNode treeNode)
       {
          treeNode.Children.Each(flattenAndAdd);
+         if (_allNodesAdded.Contains(treeNode))
+            return;
          _allNodesAdded.Add(treeNode);
       }
 
@@ -377,13 +409,10 @@ namespace MoBi.Presentation
          _allNodesAdded.Count(x => Equals(MoBiRootNodeTypes.ExpressionProfilesFolder, x.TagAsObject)).ShouldBeEqualTo(1);
          _allNodesAdded.Count(x => Equals(MoBiRootNodeTypes.IndividualsFolder, x.TagAsObject)).ShouldBeEqualTo(1);
          _allNodesAdded.Count(x => Equals(RootNodeTypes.ObservedDataFolder, x.TagAsObject)).ShouldBeEqualTo(1);
-         _allNodesAdded.Count(x => Equals(_module1, x.TagAsObject)).ShouldBeEqualTo(1);
-         _allNodesAdded.Count(x => Equals(_module1.SpatialStructure, x.TagAsObject)).ShouldBeEqualTo(1);
-         _allNodesAdded.Count(x => Equals(_module1.ParameterValuesCollection.ElementAt(0), x.TagAsObject)).ShouldBeEqualTo(1);
-         _allNodesAdded.Count(x => Equals(_module1.ParameterValuesCollection.ElementAt(1), x.TagAsObject)).ShouldBeEqualTo(1);
+         _allNodesAdded.Count(x => Equals(RootNodeTypes.ModulesFolder, x.TagAsObject)).ShouldBeEqualTo(1);
 
-         // Make sure nodes have not been added for null items
-         _allNodesAdded.Count.ShouldBeEqualTo(9);
+         // The 4 nodes above + Spatial Struct, PSV Folder, 2x PSV
+         _allNodesAdded.Count.ShouldBeEqualTo(8);
       }
    }
 
@@ -405,7 +434,7 @@ namespace MoBi.Presentation
             new ParameterValuesBuildingBlock().WithId("PSV2"),
             new InitialConditionsBuildingBlock().WithId("MSV")
          };
-         _rootNode = new RootNode(MoBiRootNodeTypes.ModulesFolder);
+         _rootNode = new RootNode(RootNodeTypes.ModulesFolder);
 
          _allNodesAdded = new List<ITreeNode>();
          A.CallTo(() => _view.AddNode(A<ITreeNode>._)).Invokes(x =>
@@ -421,6 +450,8 @@ namespace MoBi.Presentation
       private void flattenAndAdd(ITreeNode treeNode)
       {
          treeNode.Children.Each(flattenAndAdd);
+         if (_allNodesAdded.Contains(treeNode))
+            return;
          _allNodesAdded.Add(treeNode);
       }
 
@@ -436,19 +467,15 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_add_a_folder_node_for_all_building_block_types()
+      public void should_add_a_folder_node_for_all_building_block_types_not_in_modules()
       {
          _allNodesAdded.Count(x => Equals(MoBiRootNodeTypes.ExpressionProfilesFolder, x.TagAsObject)).ShouldBeEqualTo(1);
          _allNodesAdded.Count(x => Equals(MoBiRootNodeTypes.IndividualsFolder, x.TagAsObject)).ShouldBeEqualTo(1);
          _allNodesAdded.Count(x => Equals(RootNodeTypes.ObservedDataFolder, x.TagAsObject)).ShouldBeEqualTo(1);
-         _allNodesAdded.Count(x => Equals(_module1, x.TagAsObject)).ShouldBeEqualTo(1);
-         _allNodesAdded.Count(x => Equals(_module1.SpatialStructure, x.TagAsObject)).ShouldBeEqualTo(1);
-         _allNodesAdded.Count(x => Equals(_module1.ParameterValuesCollection.ElementAt(0), x.TagAsObject)).ShouldBeEqualTo(1);
-         _allNodesAdded.Count(x => Equals(_module1.ParameterValuesCollection.ElementAt(1), x.TagAsObject)).ShouldBeEqualTo(1);
-         _allNodesAdded.Count(x => Equals(_module1.InitialConditionsCollection.ElementAt(0), x.TagAsObject)).ShouldBeEqualTo(1);
-
-         // Make sure nodes have not been added for null items
-         _allNodesAdded.Count.ShouldBeEqualTo(11);
+         _allNodesAdded.Count(x => Equals(RootNodeTypes.ModulesFolder, x.TagAsObject)).ShouldBeEqualTo(1);
+         
+         // The 4 nodes above + Spatial Struct, PSV Folder, MSV Folder, 2x PSV and 1x MSV
+         _allNodesAdded.Count.ShouldBeEqualTo(10);
       }
    }
 
@@ -521,7 +548,6 @@ namespace MoBi.Presentation
 
          A.CallTo(() => _view.TreeView.NodeById(A<string>._)).ReturnsLazily(x => getNodeForId(x.Arguments.Get<string>(0)));
          A.CallTo(() => _view.TreeView.DestroyNode(A<ITreeNode>._)).Invokes(x => removeNode(x.Arguments.Get<ITreeNode>(0)));
-
          _project.AddModule(_module1);
          sut.Handle(new ProjectCreatedEvent(_project));
       }
@@ -558,6 +584,7 @@ namespace MoBi.Presentation
       private ITreeNode _moleculeBuildingBlockNode;
       private MoBiProject _project;
       private Module _module;
+      private readonly List<ITreeNode> _allNodesAdded = new List<ITreeNode>();
 
       protected override void Context()
       {
@@ -567,16 +594,38 @@ namespace MoBi.Presentation
          _module = new Module { _buildingBlock };
          _project.AddModule(_module);
 
-         A.CallTo(() => _view.AddNode(A<ITreeNode>._)).Invokes(storeBuildingBlockNode);
-         A.CallTo(() => _view.TreeView.NodeById(_buildingBlock.Id)).ReturnsLazily(x => _moleculeBuildingBlockNode);
+         A.CallTo(() => _view.AddNode(A<ITreeNode>._)).Invokes(x => flattenAndAdd(x.Arguments.Get<ITreeNode>(0)));
+         A.CallTo(() => _view.TreeView.DestroyNode(A<ITreeNode>._)).Invokes(x => removeNode(x.Arguments.Get<ITreeNode>(0)));
+         A.CallTo(() => _view.TreeView.NodeById(A<string>._)).ReturnsLazily(x => getNodeForId(x.Arguments.Get<string>(0)));
+
          sut.Handle(new ProjectCreatedEvent(_project));
       }
 
-      private void storeBuildingBlockNode(IFakeObjectCall x)
+      private void removeNode(ITreeNode treeNode)
       {
-         var node = x.Arguments.Get<ITreeNode>(0);
-         if (Equals(node.TagAsObject, _module))
-            _moleculeBuildingBlockNode = node.Children.First(child => ReferenceEquals(child.TagAsObject, _buildingBlock));
+         _allNodesAdded.Remove(treeNode);
+         treeNode.ParentNode.RemoveChild(treeNode);
+      }
+
+      private ITreeNode getNodeForId(string id)
+      {
+         return _allNodesAdded.First(x => x.Id == id);
+      }
+
+      private void flattenAndAdd(ITreeNode treeNode)
+      {
+         treeNode.Children.Each(flattenAndAdd);
+         _allNodesAdded.Add(treeNode);
+         if (isModuleNode(treeNode))
+            _moleculeBuildingBlockNode = treeNode.Children.First(child => ReferenceEquals(child.TagAsObject, _buildingBlock));
+      }
+
+      private bool isModuleNode(ITreeNode treeNode)
+      {
+         if (treeNode.TagAsObject is ClassifiableModule classifiable)
+            return classifiable.Subject.Equals(_module);
+
+         return false;
       }
 
       protected override void Because()
@@ -606,7 +655,7 @@ namespace MoBi.Presentation
          _dragBuildingBlock = new MoBiSpatialStructure();
          _targetModule = new Module();
          _dragNode = new BuildingBlockNode(_dragBuildingBlock);
-         _targetNode = new ModuleNode(_targetModule);
+         _targetNode = new ModuleNode(new ClassifiableModule { Subject = _targetModule });
          _simulation = A.Fake<IMoBiSimulation>();
       }
    }
@@ -698,6 +747,105 @@ namespace MoBi.Presentation
       public void the_drag_drop_should_not_be_allowed()
       {
          _result.ShouldBeFalse();
+      }
+   }
+
+   public class When_removing_module_classification_nodes_and_data : concern_for_ModuleExplorerPresenter
+   {
+      private ITreeNode<IClassification> _classificationNode;
+      private Module _module;
+
+      protected override void Context()
+      {
+         base.Context();
+         _module = new Module();
+         var classifiableModule = new ClassifiableModule
+         {
+            Subject = _module
+         };
+         var classification = new Classification
+         {
+            ClassificationType = ClassificationType.Module
+         };
+         _classificationNode = new ClassificationNode(classification);
+         _classificationNode.AddChild(new ModuleNode(classifiableModule));
+      }
+
+      protected override void Because()
+      {
+         sut.RemoveChildrenClassifications(_classificationNode, removeParent:true, removeData:true);
+      }
+
+      [Observation]
+      public void the_interaction_task_is_used_to_remove_child_modules()
+      {
+         A.CallTo(() => _interactionTaskForModule.Remove(A<IReadOnlyList<Module>>.That.Contains(_module))).MustHaveHappened();
+      }
+   }
+
+   public class When_removing_module_classification_without_module_children : concern_for_ModuleExplorerPresenter
+   {
+      private ITreeNode<IClassification> _classificationNode;
+
+      protected override void Context()
+      {
+         base.Context();
+
+         var classification = new Classification
+         {
+            ClassificationType = ClassificationType.Module
+         };
+         _classificationNode = new ClassificationNode(classification);
+      }
+
+      protected override void Because()
+      {
+         sut.RemoveChildrenClassifications(_classificationNode, removeParent: true, removeData: true);
+      }
+
+      [Observation]
+      public void the_interaction_task_is_used_to_remove_child_modules()
+      {
+         A.CallTo(() => _interactionTaskForModule.Remove(A<IReadOnlyList<Module>>._)).MustNotHaveHappened();
+      }
+
+      [Observation]
+      public void the_classification_should_be_removed()
+      {
+         A.CallTo(() => _classificationPresenter.RemoveClassification(_classificationNode)).MustHaveHappened();
+      }
+   }
+
+   public class When_removing_module_classification_nodes_and_not_data : concern_for_ModuleExplorerPresenter
+   {
+      private ITreeNode<IClassification> _classificationNode;
+      private Module _module;
+
+      protected override void Context()
+      {
+         base.Context();
+         _module = new Module();
+         var classifiableModule = new ClassifiableModule
+         {
+            Subject = _module
+         };
+         var classification = new Classification
+         {
+            ClassificationType = ClassificationType.Module
+         };
+         _classificationNode = new ClassificationNode(classification);
+         _classificationNode.AddChild(new ModuleNode(classifiableModule));
+      }
+
+      protected override void Because()
+      {
+         sut.RemoveChildrenClassifications(_classificationNode, removeParent:true, removeData:false);
+      }
+
+      [Observation]
+      public void the_interaction_task_is_used_to_remove_child_modules()
+      {
+         A.CallTo(() => _interactionTaskForModule.Remove(A<IReadOnlyList<Module>>.That.Contains(_module))).MustNotHaveHappened();
       }
    }
 }

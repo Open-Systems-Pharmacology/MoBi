@@ -78,7 +78,7 @@ namespace MoBi.Presentation.Presenter
          _view.RefreshData();
       }
 
-      public void SetNegativeValuesAllowed(InitialConditionDTO dto, bool negativeValuesAllowed) => setNegativeValuesAllowed(new[] { dto.InitialCondition }, true);
+      public void SetNegativeValuesAllowed(InitialConditionDTO dto, bool negativeValuesAllowed) => setNegativeValuesAllowed(new[] { dto.InitialCondition }, negativeValuesAllowed);
 
       public void Refresh(IReadOnlyList<InitialConditionDTO> initialConditionDTOs)
       {

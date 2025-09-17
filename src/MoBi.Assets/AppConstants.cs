@@ -28,7 +28,7 @@ namespace MoBi.Assets
       public static readonly string DefaultSkin = "Office 2013 Light Gray";
       public static readonly string NewFormulaDescription = "Create New Formula";
       public static readonly string NewFormulaName = "New Formula";
-      public static readonly string SimulationRun = "Run Simulation";
+      public static readonly string SimulationRun = "Simulation(s) Running";
       public static readonly string ParameterType = "Type";
       public static readonly string NaN = "<NaN>";
       public static readonly string Project = "Project";
@@ -268,6 +268,7 @@ namespace MoBi.Assets
          public static readonly string RemoveTrackedQuantityChanges = "Remove tracked quantity changes";
          public static readonly string RestoreTrackedQuantityChanges = "Restore tracked quantity changes";
          public static readonly string AddedMultipleBuildingBlocksFromFile = "Added multiple building blocks from file";
+         public static readonly string ChangeFormulaUsablePath = "Change formula usable path";
          public static string AddNewParameterValues(string buildingBlockName) => $"Add new Parameter Values to {buildingBlockName}";
 
          public static string ConvertDistributedPathAndValueEntityToConstantValue(string type, string path) => $"Convert distributed {type} '{path}' to constant value";
@@ -913,7 +914,6 @@ namespace MoBi.Assets
          public static readonly string ApplyDefaultNaming = "Apply default renaming";
          public static readonly string RemoveSelectedResultsFromSimulations = "Do you really want to remove the selected results from simulations";
          public static readonly string RemoveSelectedResultsFromProject = "Do you really want to remove the selected result(s) from the project";
-         public static readonly string RemoveMultipleModules = "Do you really want to remove the selected Modules?";
          public static readonly string RemoveMultipleBuildingBlocks = "Do you really want to remove the selected building blocks?";
          public static readonly string BuildingBlocksUsedInSimulation = "The following building blocks could not be removed from the project";
 
@@ -1006,6 +1006,22 @@ namespace MoBi.Assets
          public static string PendingBuildingBlockChangesInfo(string typeName, string name)
          {
             return string.Format("Committed new values To {0}: '{1}'. Changes made at the {0} are still present", typeName, name);
+         }
+
+         public static string RemoveAllModules(IReadOnlyList<string> moduleNames)
+         {
+            var modules = moduleNames.Count > 1 ? "modules" : "module";
+            var areYouSureYouWantToRemoveTheModuleNamed = $"Are you sure you want to remove the {modules} named";
+
+            if (moduleNames.Count == 1)
+               return $"{areYouSureYouWantToRemoveTheModuleNamed} `{moduleNames.First()}`";
+
+            var sb = new StringBuilder();
+            sb.AppendLine(areYouSureYouWantToRemoveTheModuleNamed);
+
+            sb.AppendLine(NamesList(moduleNames));
+
+            return sb.ToString();
          }
       }
 
@@ -1158,7 +1174,7 @@ namespace MoBi.Assets
          public static readonly string ExportToExcel = "Export to Excel®...";
          public static readonly string ImportFromExcel = "Import from Excel®...";
          public static readonly string ShowChanges = "Show Changes";
-
+         public static readonly string StopAllRunningSimulations = "Stop all running simulations";
          public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
 
          public static string AddExistingAs(string objectTypeName, string targetTypeName) => $"Load {objectTypeName} as {targetTypeName}...";
@@ -1215,6 +1231,7 @@ namespace MoBi.Assets
 
          public static readonly string CheckDimensionOfAddedParameters = $"The <i>Dimension</i> property of the added parameters will not be automatically set.{Environment.NewLine}Please set the <i>Dimension</i> of all added parameters.";
          public static readonly string ThisItNotATemplateBuildingBlock = "This is not the template building block!";
+         public static string PleaseEditTheParameterInTheIndividualBuildingblock(string buildingBlockName) => $"<b>Please edit the parameter in the Individual Building Block '{buildingBlockName}.'</b>";
       }
 
       public class Exceptions
@@ -1347,6 +1364,9 @@ namespace MoBi.Assets
          }
 
          public static string FileIsReadOnly(string fileFullPath) => $"The project cannot be saved:\nThe file '{fileFullPath}' is read-only.";
+
+         public static string CannotFindReactionForParameter(string parameterName) => $"Cannot find reaction for parameter {parameterName}";
+         public static string CannotFindTransportForParameter(string parameterName) => $"Cannot find transport for parameter {parameterName}";
       }
 
       public static class Captions
@@ -1387,7 +1407,6 @@ namespace MoBi.Assets
          public static readonly string Event = "Event";
          public static readonly string Observers = "Observers";
          public static readonly string Simulations = "Simulations";
-         public static readonly string Observer = "Observer";
          public static readonly string ObservedData = "Observed Data";
          public static readonly string PassiveTransports = "Passive Transports";
          public static readonly string Reactions = "Reactions";
@@ -1437,7 +1456,7 @@ namespace MoBi.Assets
          public static readonly string Educts = "Educts";
          public static readonly string ApplicationMoleculeBuilder = "Application Molecule Builder";
          public static readonly string AdministeredMolecule = "Administered Molecule";
-         public static readonly string ContainingBuildingBlock = "Building Block";
+         public static readonly string BuildingBlock = "Building Block";
          public static readonly string DependentRename = "Dependent Renaming";
          public static readonly string Error = "Error";
          public static readonly string Errors = "Errors";
@@ -1558,6 +1577,7 @@ namespace MoBi.Assets
          public static readonly string Tree = "Tree";
          public static readonly string MessageOrigin = "Origin";
          public static readonly string CanBeVariedInPopulation = "Can be varied in population";
+         public static readonly string CanBeVaried = "Can be varied";
          public static readonly string ImportObservedData = "Import Observed Data";
          public static readonly string AddUnitMap = "Add Unit";
          public static readonly string DisplayUnit = "Display Unit";
@@ -1656,6 +1676,12 @@ namespace MoBi.Assets
          public static readonly string CurrentValue = "Current Value";
          public static readonly string CreateProcessRateParameters = "Create a process rate parameter for each process in the simulation";
          public static readonly string AddAndEditPathsDescription = "You can add paths by selecting the entity from the left and using the 'Add' button, or by manually entering and editing paths in the text area below.";
+         public static readonly string None = "None";
+         public static readonly string ConvertToFormula = "Convert to Formula";
+         public static readonly string FindParameter = "Find Parameter";
+         public static readonly string ShowParametersFromIndividual = "Show parameters from Individual";
+         public static readonly string ConvertToConstantValue = "Convert to constant value";
+         public static readonly string GoToSource = "Go to Source";
          public static string SelectTheBuildingBlockWhereEntitiesWillBeAddedOrUpdated(string typeBeingAdded) => $"Select the building block where {typeBeingAdded} will be added or updated";
          public static readonly string SelectBuildingBlock = "Select Building Block";
          public static readonly string MakeDefault = "Make defaults";
@@ -1969,7 +1995,7 @@ namespace MoBi.Assets
             else
                sb.AppendLine("Some modules could not be deleted");
 
-            sb.AppendLine(namesList(modulesNotRemoved));
+            sb.AppendLine(NamesList(modulesNotRemoved));
 
             if (numberOfModules == 1)
                sb.AppendLine("It is used in one ore move simulations");
@@ -1994,7 +2020,7 @@ namespace MoBi.Assets
             {
                sb.Append($"Also import {expression}");
                sb.AppendLine();
-               sb.Append(namesList(expressionNames));
+               sb.Append(NamesList(expressionNames));
                return sb.ToString();
             }
 
@@ -2002,9 +2028,9 @@ namespace MoBi.Assets
             sb.AppendLine();
 
             sb.Append("<b>Individual</b>");
-            sb.AppendLine(namesList(new[] { individualName }));
+            sb.AppendLine(NamesList(new[] { individualName }));
             sb.Append($"<b>{expression}</b>");
-            sb.AppendLine(namesList(expressionNames));
+            sb.AppendLine(NamesList(expressionNames));
 
             return sb.ToString();
          }
@@ -2014,21 +2040,12 @@ namespace MoBi.Assets
             var sb = new StringBuilder();
             sb.Append($"Expression profiles cannot be added for");
             sb.AppendLine();
-            sb.Append(namesList(proteinNames));
+            sb.Append(NamesList(proteinNames));
             sb.AppendLine();
             if (proteinNames.Count > 1)
                sb.Append("because an expression profile is already selected for those proteins");
             else
                sb.Append("because an expression profile is already selected for that protein");
-            return sb.ToString();
-         }
-
-         private static string namesList(IReadOnlyList<string> allNames)
-         {
-            var sb = new StringBuilder();
-            sb.AppendLine();
-            sb.Append(" - ");
-            sb.AppendLine(allNames.ToString("\n - "));
             return sb.ToString();
          }
 
@@ -2042,7 +2059,7 @@ namespace MoBi.Assets
             else
                sb.AppendLine("Some parameter values could not be added");
 
-            sb.AppendLine(namesList(paths));
+            sb.AppendLine(NamesList(paths));
 
             if (pathsNotAdded == 1)
                sb.AppendLine("It already exists in the building block");
@@ -2074,7 +2091,7 @@ namespace MoBi.Assets
             sb.AppendLine("You can reconfigure the simulations from their building blocks in this version.");
             sb.AppendLine();
             sb.AppendLine("The following simulations are affected:");
-            sb.Append(namesList(simulationNames));
+            sb.Append(NamesList(simulationNames));
             sb.AppendLine();
             return sb.ToString();
          }
@@ -2408,6 +2425,15 @@ namespace MoBi.Assets
       public class MoBiObjectTypes
       {
          public static readonly string Data = "Data";
+      }
+
+      public static string NamesList(IReadOnlyList<string> allNames)
+      {
+         var sb = new StringBuilder();
+         sb.AppendLine();
+         sb.Append(" - ");
+         sb.AppendLine(allNames.ToString("\n - "));
+         return sb.ToString();
       }
    }
 }

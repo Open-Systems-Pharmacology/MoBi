@@ -14,6 +14,7 @@ using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Extensions;
 using ITreeNodeFactory = MoBi.Presentation.Nodes.ITreeNodeFactory;
+using IBuildingBlockRepository = MoBi.Core.Domain.Repository.IBuildingBlockRepository;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -140,6 +141,9 @@ namespace MoBi.Presentation.Presenter
 
       public int CompareSelectedNodes(ITreeNode node1, ITreeNode node2)
       {
+         if (node1 == null || node2 == null)
+            return 0;
+
          var expression1 = node1.TagAsObject as ExpressionProfileBuildingBlock;
          var expression2 = node2.TagAsObject as ExpressionProfileBuildingBlock;
 

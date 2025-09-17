@@ -1,19 +1,15 @@
 ﻿using System.Linq;
-using OSPSuite.Utility.Container;
-using FakeItEasy;
-
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 using MoBi.IntegrationTests;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-
+using OSPSuite.Utility.Container;
 
 namespace MoBi.Core.Mapper
 {
- 
    public abstract class concern_for_ApplicationBuilderToDTOApplicationBuilderMapperIntegrationTests : ContextForIntegration<IApplicationBuilderToApplicationBuilderDTOMapper>
    {
       protected override void Context()
@@ -40,10 +36,9 @@ namespace MoBi.Core.Mapper
          _applicationBuilder.Add(new ApplicationBuilder().WithName("App2"));
       }
 
-
       protected override void Because()
       {
-        _resultEventGroupBuilderDTO = sut.MapFrom(_applicationBuilder);
+         _resultEventGroupBuilderDTO = sut.MapFrom(_applicationBuilder);
       }
 
       [Observation]
@@ -64,4 +59,4 @@ namespace MoBi.Core.Mapper
          _resultEventGroupBuilderDTO.Parameters.Count().ShouldBeEqualTo(1);
       }
    }
-}	
+}

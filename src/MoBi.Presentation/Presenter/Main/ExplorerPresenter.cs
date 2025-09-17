@@ -22,7 +22,6 @@ namespace MoBi.Presentation.Presenter.Main
    public interface IExplorerPresenter : IMainViewItemPresenter,
       IPresenterWithContextMenu<IViewItem>,
       OSPSuite.Presentation.Presenters.IExplorerPresenter,
-      IListener<SimulationRunStartedEvent>,
       IListener<SimulationRunFinishedEvent>
 
    {
@@ -101,11 +100,6 @@ namespace MoBi.Presentation.Presenter.Main
       {
          var contextMenu = _multipleTreeNodeContextMenuFactory.CreateFor(treeNodes, this);
          showContextMenu(contextMenu, popupLocation);
-      }
-
-      public virtual void Handle(SimulationRunStartedEvent eventToHandle)
-      {
-         _view.Enabled = false;
       }
 
       public virtual void Handle(SimulationRunFinishedEvent eventToHandle)

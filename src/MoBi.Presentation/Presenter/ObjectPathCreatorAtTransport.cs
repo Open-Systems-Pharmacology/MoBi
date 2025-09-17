@@ -1,5 +1,7 @@
 ﻿using MoBi.Assets;
+using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Exceptions;
 using MoBi.Presentation.DTO;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -9,13 +11,11 @@ namespace MoBi.Presentation.Presenter
 {
    public interface IObjectPathCreatorAtTransport : IObjectPathCreator
    {
-      TransportBuilder Transport { set; }
+      TransportBuilder ProcessBuilder { set; }
    }
 
-   internal class ObjectPathCreatorAtTransport : ObjectPathCreatorBase, IObjectPathCreatorAtTransport
+   internal class ObjectPathCreatorAtTransport : ObjectPathCreatorAtProcessBuilder<TransportBuilder>, IObjectPathCreatorAtTransport
    {
-      public TransportBuilder Transport { private get; set; }
-
       public ObjectPathCreatorAtTransport(IObjectPathFactory objectPathFactory, IAliasCreator aliasCreator, IMoBiContext context) : base(objectPathFactory, aliasCreator, context)
       {
       }
@@ -56,8 +56,8 @@ namespace MoBi.Presentation.Presenter
       {
          var moleculeProperties = _context.Get<IContainer>(dtoObjectBase.MoleculePropertiesContainer.Id);
          var parentContainer = moleculeProperties.ParentContainer;
-         var firstPathElemnt = getPathKeywordForContainer(parentContainer);
-         if (firstPathElemnt.IsNullOrEmpty() || shouldCreateAbsolutePaths)
+         var firstPathElement = getPathKeywordForContainer(parentContainer);
+         if (firstPathElement.IsNullOrEmpty() || shouldCreateAbsolutePaths)
          {
             var dto = base.CreateMoleculePath(dtoObjectBase, shouldCreateAbsolutePaths, refObject);
             if (!shouldCreateAbsolutePaths)
@@ -67,16 +67,21 @@ namespace MoBi.Presentation.Presenter
 
          return new ReferenceDTO
          {
-            Path = CreateFormulaUsablePathFrom(new[] { firstPathElemnt, ObjectPathKeywords.MOLECULE }, AppConstants.AmountAlias, Constants.Dimension.MOLAR_AMOUNT)
+            Path = CreateFormulaUsablePathFrom(new[] { firstPathElement, ObjectPathKeywords.MOLECULE }, AppConstants.AmountAlias, Constants.Dimension.MOLAR_AMOUNT)
          };
       }
 
       public override ReferenceDTO CreatePathsFromEntity(IObjectBase objectBase, bool shouldCreateAbsolutePaths, IEntity refObject, IUsingFormula editedObject)
       {
-         var parameter = objectBase as IParameter;
-         //Isolated parameter without parent container
-         if (parameter != null && parameter.ParentContainer == null)
-            return isolatedParameterReferenceFor(parameter);
+         if (objectBase is IParameter parameter)
+         {
+            //Isolated parameter without parent container
+            if (parameter.ParentContainer == null)
+               return isolatedParameterReferenceFor(parameter);
+
+            if (parameter.IsAtTransport())
+               return new ReferenceDTO { Path = CreatePathToProcessProperty(parameter) };
+         }
 
          return base.CreatePathsFromEntity(objectBase, shouldCreateAbsolutePaths, refObject, editedObject);
       }
@@ -123,13 +128,21 @@ namespace MoBi.Presentation.Presenter
          if (container == null)
             return string.Empty;
 
-         if (Transport.TargetCriteria.IsSatisfiedBy(container))
+         if (ProcessBuilder.TargetCriteria.IsSatisfiedBy(container))
             return ObjectPathKeywords.TARGET;
 
-         if (Transport.SourceCriteria.IsSatisfiedBy(container))
+         if (ProcessBuilder.SourceCriteria.IsSatisfiedBy(container))
             return ObjectPathKeywords.SOURCE;
 
          return string.Empty;
+      }
+
+      protected override TransportBuilder GetProcessBuilderFor(IParameter parameter)
+      {
+         if (parameter.IsAtTransport())
+            return parameter.RootContainer as TransportBuilder;
+
+         throw new MoBiException(AppConstants.Exceptions.CannotFindTransportForParameter(parameter.Name));
       }
    }
 }

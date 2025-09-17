@@ -11,6 +11,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
@@ -23,14 +24,19 @@ namespace MoBi.Presentation.Tasks
       protected IEditTasksForIndividualBuildingBlock _editTasksForIndividualBuildingBlock;
       protected IMoBiFormulaTask _moBiFormulaTask;
       protected IParameterFactory _parameterFactory;
-
+      private ICloneManagerForBuildingBlock _cloneManager;
+      private IPathAndValueEntityToDistributedParameterMapper _pathAndValueEntityToDistributedParameterMapper;
+      
       protected override void Context()
       {
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
          _editTasksForIndividualBuildingBlock = A.Fake<IEditTasksForIndividualBuildingBlock>();
          _moBiFormulaTask = A.Fake<IMoBiFormulaTask>();
          _parameterFactory = A.Fake<IParameterFactory>();
-         sut = new InteractionTasksForIndividualBuildingBlock(_interactionTaskContext, _editTasksForIndividualBuildingBlock, _moBiFormulaTask, _parameterFactory, A.Fake<IExportDataTableToExcelTask>(), A.Fake<IIndividualParametersToIndividualParametersDataTableMapper>());
+         _cloneManager = A.Fake<ICloneManagerForBuildingBlock>();
+         _pathAndValueEntityToDistributedParameterMapper = A.Fake<IPathAndValueEntityToDistributedParameterMapper>();
+         
+         sut = new InteractionTasksForIndividualBuildingBlock(_interactionTaskContext, _editTasksForIndividualBuildingBlock, _moBiFormulaTask, A.Fake<IExportDataTableToExcelTask>(), _cloneManager, _pathAndValueEntityToDistributedParameterMapper, A.Fake<IIndividualParametersToIndividualParametersDataTableMapper>());
          A.CallTo(() => _parameterFactory.CreateDistributedParameter(A<string>._, A<DistributionType>._, A<double?>._, A<IDimension>._, A<string>._, A<Unit>._)).ReturnsLazily(newDistributedParameterFrom);
          A.CallTo(() => _parameterFactory.CreateParameter(A<string>._,A<double?>._, A<IDimension>._, A<string>._, A<IFormula>._, A<Unit>._)).ReturnsLazily(newParameterFrom);
       }

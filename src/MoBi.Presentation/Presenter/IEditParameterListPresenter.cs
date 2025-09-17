@@ -14,5 +14,9 @@ namespace MoBi.Presentation.Presenter
       void SetVisibility(PathElementId pathElement, bool isVisible);
       IEnumerable<IParameter> EditedParameters { get; }
       IReadOnlyList<IParameter> SelectedParameters { get; set; }
+      void EnableSimulationTracking(TrackableSimulation simulation);
+      bool HasModules();
+      bool HasBuildingBlocks();
+      void NavigateToParameter(ParameterDTO parameterDTO);
    }
 }

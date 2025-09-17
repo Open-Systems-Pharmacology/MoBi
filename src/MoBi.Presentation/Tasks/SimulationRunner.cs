@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Extensions;
@@ -14,6 +17,7 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Events;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Events;
@@ -28,12 +32,12 @@ namespace MoBi.Presentation.Tasks
       private readonly IMoBiApplicationController _applicationController;
       private ISimModelManager _simModelManager;
       private readonly IOutputSelectionsRetriever _outputSelectionsRetriever;
-      private IMoBiSimulation _simulation;
       private readonly ISimulationPersistableUpdater _simulationPersistableUpdater;
       private readonly IDisplayUnitUpdater _displayUnitUpdater;
       private readonly ISimModelManagerFactory _simModelManagerFactory;
       private readonly IKeyPathMapper _keyPathMapper;
       private readonly IEntityValidationTask _entityValidationTask;
+      private readonly ConcurrentDictionary<IMoBiSimulation, CancellationTokenSource> _cancellationTokenSources = new ConcurrentDictionary<IMoBiSimulation, CancellationTokenSource>();
 
       public SimulationRunner(IMoBiContext context,
          IMoBiApplicationController applicationController,
@@ -54,7 +58,25 @@ namespace MoBi.Presentation.Tasks
          _entityValidationTask = entityValidationTask;
       }
 
-      public void RunSimulation(IMoBiSimulation simulation, bool defineSettings = false)
+      public bool IsSimulationRunning(IMoBiSimulation simulation)
+      {
+         return _cancellationTokenSources.TryGetValue(simulation, out var cts) &&
+                !cts.IsCancellationRequested;
+      }
+
+      public bool IsSimulationIdle(IMoBiSimulation simulation)
+      {
+         return !_cancellationTokenSources.TryGetValue(simulation, out var cts)
+                || cts.IsCancellationRequested;
+      }
+
+
+      public Task RunSimulationAsync(IMoBiSimulation simulation, bool defineSettings = false)
+      {
+         return runSimulationAsync(simulation, defineSettings);
+      }
+
+      private async Task runSimulationAsync(IMoBiSimulation simulation, bool defineSettings)
       {
          addPersitableParametersToOutputSelection(simulation);
          if (!_entityValidationTask.Validate(simulation))
@@ -69,7 +91,7 @@ namespace MoBi.Presentation.Tasks
             updateOutputSelectionInSimulation(simulation, outputSelections);
          }
 
-         startSimulationRun(simulation);
+         await startSimulationRunAsync(simulation);
       }
 
       private void addPersitableParametersToOutputSelection(IMoBiSimulation simulation)
@@ -97,15 +119,37 @@ namespace MoBi.Presentation.Tasks
          return !simulation.OutputSelections.HasSelection;
       }
 
-      public void StopSimulation()
+      public void StopSimulation(IMoBiSimulation simulation)
       {
-         _simModelManager?.StopSimulation();
+         if (_cancellationTokenSources.TryRemove(simulation, out var cts))
+         {
+            cts.Cancel();
+            cts.Dispose();
+            _context.PublishEvent(new SimulationRunCanceledEvent());
+         }
       }
 
-      private void startSimulationRun(IMoBiSimulation simulation)
+      public void StopAllSimulations()
       {
-         _simulation = simulation;
-         _context.PublishEvent(new SimulationRunStartedEvent());
+         foreach (var simulation in _cancellationTokenSources.Keys.ToList())
+         {
+            if (_cancellationTokenSources.TryRemove(simulation, out var cts))
+            {
+               cts.Cancel();
+               cts.Dispose();
+            }
+         }
+
+         _context.PublishEvent(new SimulationRunCanceledEvent());
+      }
+
+      private async Task startSimulationRunAsync(IMoBiSimulation simulation)
+      {
+         var cts = new CancellationTokenSource();
+         if (!_cancellationTokenSources.TryAdd(simulation, cts)) //this will prevent from running one that is already running
+            return;
+
+         _context.PublishEvent(new SimulationRunStartedEvent(simulation));
          _context.PublishEvent(new ProgressInitEvent(100, AppConstants.SimulationRun));
          _simModelManager = _simModelManagerFactory.Create();
 
@@ -113,8 +157,10 @@ namespace MoBi.Presentation.Tasks
          {
             addEvents();
             updatePersistableFor(simulation);
-            var simulationRunResults = _simModelManager.RunSimulation(_simulation);
-            _simulation.HasChanged = true;
+
+            var simulationRunResults = await _simModelManager.RunSimulationAsync(simulation, cts.Token);
+
+            simulation.HasChanged = true;
             showWarningsIfAny(simulationRunResults);
 
             if (simulationRunResults.Success)
@@ -122,16 +168,24 @@ namespace MoBi.Presentation.Tasks
                var results = simulationRunResults.Results;
                results.Name = getNewRepositoryName();
                _displayUnitUpdater.UpdateDisplayUnitsIn(results);
-               copyResultsToSimulation(simulationRunResults, _simulation);
+               copyResultsToSimulation(simulationRunResults, simulation);
             }
 
             addCommand(getSimulationResultLabel(simulationRunResults));
          }
          finally
          {
+            if (_cancellationTokenSources.ContainsKey(simulation))
+            {
+               _cancellationTokenSources[simulation].Dispose();
+               if (_cancellationTokenSources.TryRemove(simulation, out var ctsToDispose))
+               {
+                  ctsToDispose.Dispose();
+               }
+            }
+
             removeEvents();
-            _context.PublishEvent(new SimulationRunFinishedEvent(_simulation));
-            _simulation = null;
+            _context.PublishEvent(new SimulationRunFinishedEvent(simulation));
          }
       }
 
@@ -192,7 +246,7 @@ namespace MoBi.Presentation.Tasks
 
       private IInfoCommand getSimulationResultLabel(SimulationRunResults results)
       {
-         var command = new OSPSuiteInfoCommand {Description = simulationLabelDescription(results)};
+         var command = new OSPSuiteInfoCommand { Description = simulationLabelDescription(results) };
          if (results.Warnings.Any())
             command.Comment = AppConstants.Commands.SimulationLabelComment(results.Warnings.Count());
 
@@ -212,7 +266,7 @@ namespace MoBi.Presentation.Tasks
 
       private void onSimulationFinished(object sender, EventArgs eventArgs)
       {
-         _context.PublishEvent(new ProgressDoneEvent());
+         _context.PublishEvent(new ProgressDoneWithMessageEvent(AppConstants.SimulationRun));
       }
 
       private void onSimulationProgress(object sender, SimulationProgressEventArgs args)
@@ -232,6 +286,11 @@ namespace MoBi.Presentation.Tasks
          if (_simModelManager == null) return;
          _simModelManager.SimulationProgress += onSimulationProgress;
          _simModelManager.Terminated += onSimulationFinished;
+      }
+
+      public bool IsAnySimulationRunning()
+      {
+         return _cancellationTokenSources.Values.Any(cts => !cts.IsCancellationRequested);
       }
    }
 }

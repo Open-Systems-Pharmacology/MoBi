@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
@@ -15,10 +16,10 @@ namespace MoBi.Core.Domain.Services
    public interface ISimulationFactory
    {
       /// <summary>
-      ///    Creates and returns a new <see cref="IMoBiSimulation" /> using the <paramref name="simulationConfiguration" /> and
-      ///    <paramref name="model" />
+      ///    Creates and returns a new <see cref="IMoBiSimulation" /> using the <paramref name="simulationConfiguration" />
+      ///    <paramref name="model" /> and <paramref name="entitySources" />
       /// </summary>
-      IMoBiSimulation CreateFrom(SimulationConfiguration simulationConfiguration, IModel model);
+      IMoBiSimulation CreateFrom(SimulationConfiguration simulationConfiguration, IModel model, IEnumerable<SimulationEntitySource> entitySources);
 
       /// <summary>
       ///    Creates and returns a new <see cref="IMoBiSimulation" />
@@ -27,7 +28,7 @@ namespace MoBi.Core.Domain.Services
 
       IMoBiSimulation CreateSimulationAndValidate(SimulationConfiguration configurationReferencingBuildingBlocks, string simulationName);
 
-      IModel CreateModelAndValidate(SimulationConfiguration simulationConfiguration, string modelName, string message = AppConstants.Captions.ConfiguringSimulation);
+      CreationResult CreateModelAndValidate(SimulationConfiguration simulationConfiguration, string modelName, string message = AppConstants.Captions.ConfiguringSimulation);
    }
 
    public class SimulationFactory : ISimulationFactory
@@ -66,7 +67,7 @@ namespace MoBi.Core.Domain.Services
          _cloneManager = cloneManager;
       }
 
-      public IMoBiSimulation CreateFrom(SimulationConfiguration simulationConfiguration, IModel model)
+      public IMoBiSimulation CreateFrom(SimulationConfiguration simulationConfiguration, IModel model, IEnumerable<SimulationEntitySource> entitySources)
       {
          var moBiSimulation = new MoBiSimulation
          {
@@ -78,6 +79,8 @@ namespace MoBi.Core.Domain.Services
             Id = _idGenerator.NewId(),
          };
 
+         moBiSimulation.AddEntitySources(entitySources);
+
          _simulationParameterOriginIdUpdater.UpdateSimulationId(moBiSimulation);
 
          return moBiSimulation;
@@ -85,7 +88,7 @@ namespace MoBi.Core.Domain.Services
 
       public IMoBiSimulation Create()
       {
-         return CreateFrom(_simulationConfigurationFactory.Create(), null);
+         return CreateFrom(_simulationConfigurationFactory.Create(), null, null);
       }
 
       private void validateDimensions(IModel model, SimulationBuilder simulationBuilder)
@@ -94,25 +97,25 @@ namespace MoBi.Core.Domain.Services
             .SecureContinueWith(t => showWarnings(t.Result));
       }
 
-      public IModel CreateModelAndValidate(SimulationConfiguration simulationConfiguration, string modelName, string message = AppConstants.Captions.ConfiguringSimulation)
+      public CreationResult CreateModelAndValidate(SimulationConfiguration simulationConfiguration, string modelName, string message = AppConstants.Captions.ConfiguringSimulation)
       {
          CreationResult results = null;
 
-         _heavyWorkManager.Start(() => { results = createModel(simulationConfiguration, modelName); }, message);
+         _heavyWorkManager.Start(() => results = createModel(simulationConfiguration, modelName), message);
 
          if (results == null || results.IsInvalid)
             throw new MoBiException(AppConstants.Exceptions.CouldNotCreateSimulation);
 
          validateDimensions(results.Model, results.SimulationBuilder);
 
-         return results.Model;
+         return results;
       }
 
       public IMoBiSimulation CreateSimulationAndValidate(SimulationConfiguration configurationReferencingBuildingBlocks, string simulationName)
       {
-         var model = CreateModelAndValidate(configurationReferencingBuildingBlocks, simulationName, AppConstants.Captions.CreatingSimulation);
+         var results = CreateModelAndValidate(configurationReferencingBuildingBlocks, simulationName, AppConstants.Captions.CreatingSimulation);
          var clonedConfiguration = _cloneManager.Clone(configurationReferencingBuildingBlocks);
-         return CreateFrom(clonedConfiguration, model).WithName(simulationName);
+         return CreateFrom(clonedConfiguration, results.Model, results.SimulationBuilder.EntitySources).WithName(simulationName);
       }
 
       private CreationResult createModel(SimulationConfiguration simulationConfiguration, string name)

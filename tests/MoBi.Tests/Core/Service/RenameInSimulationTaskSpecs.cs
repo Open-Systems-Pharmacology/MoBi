@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
@@ -14,13 +15,15 @@ namespace MoBi.Core.Service
    {
       private IMoBiProjectRetriever _projectRetriever;
       protected MoBiProject _project;
+      private ISimulationEntitySourceUpdater _simulationEntitySourceUpdater;
 
       protected override void Context()
       {
          _project = new MoBiProject();
          _projectRetriever = A.Fake<IMoBiProjectRetriever>();
+         _simulationEntitySourceUpdater = new SimulationEntitySourceUpdater(_projectRetriever);
          A.CallTo(() => _projectRetriever.Current).Returns(_project);
-         sut = new RenameInSimulationTask(_projectRetriever);
+         sut = new RenameInSimulationTask(_projectRetriever, _simulationEntitySourceUpdater);
       }
    }
 
@@ -48,6 +51,8 @@ namespace MoBi.Core.Service
          _project.AddSimulation(_simulation2);
          _templateBuildingBlock = new SpatialStructure().WithName("SpatialStructure");
          _templateBuildingBlock.Module = new Module().WithName("moduleName");
+
+         _simulation1.AddEntitySources(new List<SimulationEntitySource> { new SimulationEntitySource("", "buildingBlock", nameof(SpatialStructure), "moduleName", "") });
       }
 
       private static ModuleConfiguration createModuleConfiguration()
@@ -65,6 +70,12 @@ namespace MoBi.Core.Service
       protected override void Because()
       {
          sut.RenameInSimulationUsingTemplateBuildingBlock("buildingBlock", _templateBuildingBlock);
+      }
+
+      [Observation]
+      public void the_entity_source_is_renamed()
+      {
+         _simulation1.EntitySources.First().BuildingBlockName.ShouldBeEqualTo("SpatialStructure");
       }
 
       [Observation]
@@ -107,6 +118,8 @@ namespace MoBi.Core.Service
          _project.AddSimulation(_simulation1);
          _project.AddSimulation(_simulation2);
          _templateBuildingBlock = new IndividualBuildingBlock().WithName("Individual");
+
+         _simulation1.AddEntitySources(new List<SimulationEntitySource> { new SimulationEntitySource("", "buildingBlock", simulation1Configuration.Individual.GetType().Name, null, "") });
       }
 
       private static ModuleConfiguration createModuleConfiguration()
@@ -141,6 +154,12 @@ namespace MoBi.Core.Service
          _simulation1.Configuration.Individual.Name.ShouldBeEqualTo("Individual");
          _simulation2.Configuration.Individual.Name.ShouldBeEqualTo("Individual");
       }
+
+      [Observation]
+      public void the_entity_source_is_renamed()
+      {
+         _simulation1.EntitySources.First().BuildingBlockName.ShouldBeEqualTo("Individual");
+      }
    }
 
    public class When_renaming_a_module_that_was_used_in_multiple_simulation : concern_for_RenameInSimulationTask
@@ -172,11 +191,23 @@ namespace MoBi.Core.Service
          _project.AddSimulation(_simulation1);
          _project.AddSimulation(_simulation2);
          _templateModule = new Module { Name = "newName" };
+
+         var entitySources = new List<SimulationEntitySource>
+         {
+            new SimulationEntitySource("", "bb", "atype", "oldName", "")
+         };
+         _simulation1.AddEntitySources(entitySources);
       }
 
       protected override void Because()
       {
          sut.RenameInSimulationUsingTemplateModule("oldName", _templateModule);
+      }
+
+      [Observation]
+      public void the_entity_source_is_renamed()
+      {
+         _simulation1.EntitySources.First().ModuleName.ShouldBeEqualTo("newName");
       }
 
       [Observation]

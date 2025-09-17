@@ -13,7 +13,6 @@ namespace MoBi.Core
 {
    public abstract class concern_for_DeserializedReferenceResolver : ContextSpecification<IDeserializedReferenceResolver>
    {
-      protected IBuildingBlockReferenceUpdater _buildingBlockReferenceUpdater;
       protected IReferencesResolver _referenceResolver;
       protected ISimulationParameterOriginIdUpdater _simulationParameterOriginUpdater;
 
@@ -22,10 +21,9 @@ namespace MoBi.Core
 
       protected override void Context()
       {
-         _buildingBlockReferenceUpdater = A.Fake<IBuildingBlockReferenceUpdater>();
          _referenceResolver = A.Fake<IReferencesResolver>();
          _simulationParameterOriginUpdater = A.Fake<ISimulationParameterOriginIdUpdater>();
-         sut = new DeserializedReferenceResolver(_buildingBlockReferenceUpdater,_referenceResolver,_simulationParameterOriginUpdater);
+         sut = new DeserializedReferenceResolver(_referenceResolver,_simulationParameterOriginUpdater);
 
          _project= A.Fake<MoBiProject>();
          _simulation= A.Fake<IMoBiSimulation>();

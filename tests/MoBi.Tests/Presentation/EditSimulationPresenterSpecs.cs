@@ -2,6 +2,7 @@
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
+using MoBi.Core.Services;
 using MoBi.Helpers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Presenter.ModelDiagram;
@@ -11,6 +12,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
@@ -37,6 +39,8 @@ namespace MoBi.Presentation
       protected IMoBiContext _context;
       protected IOutputMappingMatchingTask _outputMappingMatchingTask;
       private ISimulationChangesPresenter _simulationChangesPresenter;
+      private ISimulationEntitySourceReferenceFactory _entitySourceReferenceFactory;
+      private ISimulationRunner _simulationRunner;
 
       protected override void Context()
       {
@@ -56,13 +60,14 @@ namespace MoBi.Presentation
          _context = A.Fake<IMoBiContext>();
          _simulationChangesPresenter = A.Fake<ISimulationChangesPresenter>();
          _outputMappingMatchingTask = A.Fake<IOutputMappingMatchingTask>();
+         _entitySourceReferenceFactory = A.Fake<ISimulationEntitySourceReferenceFactory>();
+         _simulationRunner = A.Fake<ISimulationRunner>();
 
          sut = new EditSimulationPresenter(_view, _chartPresenter, _hierarchicalSimulationPresenter, _diagramPresenter,
             _solverSettings, _outputSchemaPresenter, _presenterFactory, new HeavyWorkManagerForSpecs(),
             A.Fake<IChartFactory>(), _editFavoritePresenter, _chartTasks, _userDefinedParametersPresenter, _simulationOutputMappingPresenter,
-            _simulationPredictedVsObservedChartPresenter, _simulationResidualVsTimeChartPresenter, _context, _outputMappingMatchingTask, _simulationChangesPresenter);
+            _simulationPredictedVsObservedChartPresenter, _simulationResidualVsTimeChartPresenter, _context, _outputMappingMatchingTask, _simulationChangesPresenter, _entitySourceReferenceFactory, _simulationRunner);
       }
-
 
       protected Curve createObservedCurve(DataRepository observedDataRepository)
       {
@@ -86,6 +91,29 @@ namespace MoBi.Presentation
          curve.SetxData(baseGrid, dimensionFactory);
          curve.SetyData(ydata, dimensionFactory);
          return curve;
+      }
+   }
+
+   public class When_editing_a_simulation_in_the_simulation_presenter : concern_for_EditSimulationPresenter
+   {
+      private IMoBiSimulation _simulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = new MoBiSimulation();
+         _simulation.Configuration = new SimulationConfiguration { SimulationSettings = new SimulationSettings() };
+      }
+
+      protected override void Because()
+      {
+         sut.Edit(_simulation);
+      }
+
+      [Observation]
+      public void the_favorites_presenter_has_tracking_enabled()
+      {
+         _editFavoritePresenter.TrackableSimulation.Simulation.ShouldBeEqualTo(_simulation);
       }
    }
 
@@ -179,7 +207,7 @@ namespace MoBi.Presentation
 
    public class
       When_the_simulation_simulation_presenter_is_notified_that_a_simulation_run_is_finished_for_the_edited_simulation :
-         concern_for_EditSimulationPresenter
+      concern_for_EditSimulationPresenter
    {
       private IMoBiSimulation _simulation;
       private CurveChart _chart;
@@ -290,7 +318,7 @@ namespace MoBi.Presentation
 
    public class
       When_the_edit_simulation_presenter_is_notified_that_a_parameter_should_be_selected_for_the_edited_simulation :
-         concern_for_EditSimulationPresenter
+      concern_for_EditSimulationPresenter
    {
       private IParameter _parameter;
       private IMoBiSimulation _simulation;
@@ -334,7 +362,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_set_the_edited_simulation_as_simulation_in_the_parameter_container_presenter()
       {
-         _.Simulation.ShouldBeEqualTo(_simulation);
+         _.TrackableSimulation.Simulation.ShouldBeEqualTo(_simulation);
       }
 
       [Observation]
@@ -344,13 +372,12 @@ namespace MoBi.Presentation
       }
    }
 
-
    public class When_adding_observed_data_to_the_simulation : concern_for_EditSimulationPresenter
    {
       private IMoBiSimulation _simulation;
       private DataRepository _firstObservedDataRepository;
       private DataRepository _secondObservedDataRepository;
-      private List<DataRepository> _repositoryList = new List<DataRepository>();
+      private readonly List<DataRepository> _repositoryList = new List<DataRepository>();
       private OutputMapping _firstOutputMapping;
 
       protected override void Context()
@@ -365,8 +392,12 @@ namespace MoBi.Presentation
          _repositoryList.Add(_secondObservedDataRepository);
          _simulation.Chart = chart;
          _firstOutputMapping = A.Fake<OutputMapping>();
+
+         // A.CallTo(() => _firstOutputMapping.UsesObservedData(A<DataRepository>._)).ReturnsLazily((DataRepository x) => ReferenceEquals(_firstObservedDataRepository, x));
+
          A.CallTo(() => _firstOutputMapping.UsesObservedData(_firstObservedDataRepository)).Returns(true);
          A.CallTo(() => _firstOutputMapping.UsesObservedData(_secondObservedDataRepository)).Returns(false);
+
          _simulation.OutputMappings.Add(_firstOutputMapping);
          sut.Edit(_simulation);
       }
@@ -376,17 +407,16 @@ namespace MoBi.Presentation
          _chartPresenter.OnObservedDataAddedToChart += Raise.With(new ObservedDataAddedToChartEventArgs { AddedDataRepositories = _repositoryList });
       }
 
-
       [Observation]
       public void should_add_missing_mapping()
       {
-         A.CallTo(() => _outputMappingMatchingTask.AddMatchingOutputMapping(_secondObservedDataRepository, _simulation)).MustHaveHappened();
+         A.CallTo(() => _outputMappingMatchingTask.AddMatchingOutputMapping(_secondObservedDataRepository, A<ISimulation>._)).MustHaveHappened();
       }
 
       [Observation]
       public void should_not_add_duplicate_mapping()
       {
-         A.CallTo(() => _outputMappingMatchingTask.AddMatchingOutputMapping(_firstObservedDataRepository, _simulation)).MustNotHaveHappened();
+         A.CallTo(() => _outputMappingMatchingTask.AddMatchingOutputMapping(_firstObservedDataRepository, A<ISimulation>._)).MustNotHaveHappened();
       }
    }
 }

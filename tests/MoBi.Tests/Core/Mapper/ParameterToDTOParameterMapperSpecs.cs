@@ -1,7 +1,6 @@
 ﻿using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Descriptors;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Repositories;
 using OSPSuite.Core.Domain.Services;
@@ -11,7 +10,6 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain.Mappers;
 using OSPSuite.Utility.Extensions;
-using IParameterToParameterDTOMapper = MoBi.Presentation.Mappers.IParameterToParameterDTOMapper;
 
 namespace MoBi.Core.Mapper
 {

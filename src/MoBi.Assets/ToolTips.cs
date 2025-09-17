@@ -41,6 +41,7 @@ namespace MoBi.Assets
          public static readonly string NewTopContainer = "Create a new Top Container";
          public static readonly string NewNeighborhood = "Create a new neighborhood";
          public static readonly string LoadTopContainer = $"Load Top Container from Spatial Structures Building Block file (*{Constants.Filter.PKML_FILE_FILTER})";
+         public static readonly string PreviewSpatialStructureWithIndividualSelection = "Select an individual building block to display parameters that are defined in the individual and not in the spatial structure directly.\nThese parameters will be added during simulation creation.";
       }
 
       public static class BuildingBlockPassiveTransport
@@ -160,6 +161,7 @@ namespace MoBi.Assets
          public static readonly string NewParameterName = "Define a new name for the Parameter";
          public static readonly string MoveUp = "Move Up";
          public static readonly string MoveDown = "Move Down";
+         public static readonly string GoToSource = "Go to source";
       }
 
       public static class FormulaList

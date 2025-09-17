@@ -6,6 +6,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using IBuildingBlockRepository = MoBi.Core.Domain.Repository.IBuildingBlockRepository;
 
 namespace MoBi.Core
 {
@@ -57,7 +58,7 @@ namespace MoBi.Core
 
       private Module createNewModuleWithBuildingBlocks(string name)
       {
-         return new Module { new MoBiSpatialStructure().WithName("name"), new MoBiReactionBuildingBlock().WithName("name") }.WithName(name);
+         return new Module {new MoBiSpatialStructure().WithName("name"), new MoBiReactionBuildingBlock().WithName("name")}.WithName(name);
       }
 
       protected override void Because()

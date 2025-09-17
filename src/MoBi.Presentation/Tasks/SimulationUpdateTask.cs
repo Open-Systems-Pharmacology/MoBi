@@ -77,8 +77,7 @@ namespace MoBi.Presentation.Tasks
             CommandType = AppConstants.Commands.AddCommand,
             Description = AppConstants.Commands.AddToProjectDescription(ObjectTypes.Simulation, clonedSimulation.Name)
          };
-
-         macroCommand.Add(ConfigureSimulation(clonedSimulation));
+         ConfigureSimulation(clonedSimulation);
          macroCommand.Add(new AddSimulationCommand(clonedSimulation).RunCommand(_context));
 
          return macroCommand;
@@ -110,20 +109,16 @@ namespace MoBi.Presentation.Tasks
       {
          _context.PublishEvent(new ClearNotificationsEvent(MessageOrigin.Simulation));
          //create model using referencing templates
-         var model = _simulationFactory.CreateModelAndValidate(simulationConfigurationReferencingTemplates, simulationToUpdate.Model.Name, message);
+         var results = _simulationFactory.CreateModelAndValidate(simulationConfigurationReferencingTemplates, simulationToUpdate.Model.Name, message);
 
-         var simulationBuildConfiguration = createSimulationConfigurationToUseInSimulation(simulationConfigurationReferencingTemplates);
+         //create a clone then that will be saved in the simulation
+         var simulationBuildConfiguration = _cloneManager.Clone(simulationConfigurationReferencingTemplates);
 
-         var updateSimulationCommand = new UpdateSimulationCommand(simulationToUpdate, model, simulationBuildConfiguration);
+         var updateSimulationCommand = new UpdateSimulationCommand(simulationToUpdate, results.Model, results.SimulationBuilder.EntitySources, simulationBuildConfiguration);
 
          updateSimulationCommand.RunCommand(_context);
 
          return updateSimulationCommand;
-      }
-
-      private SimulationConfiguration createSimulationConfigurationToUseInSimulation(SimulationConfiguration simulationConfiguration)
-      {
-         return _cloneManager.Clone(simulationConfiguration);
       }
    }
 }

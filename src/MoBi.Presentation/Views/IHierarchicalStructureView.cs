@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using OSPSuite.Presentation.Nodes;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using OSPSuite.Core.Domain;
+using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Views;
 
 namespace MoBi.Presentation.Views
@@ -18,6 +18,6 @@ namespace MoBi.Presentation.Views
       void AddNode(ITreeNode newNode);
       void Select(IWithId withId);
       void CopyToClipBoard(string text);
-        void Clear();
+      void Clear();
    }
 }

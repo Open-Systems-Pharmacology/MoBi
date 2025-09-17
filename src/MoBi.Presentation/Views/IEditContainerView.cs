@@ -9,6 +9,7 @@ namespace MoBi.Presentation.Views
       void BindTo(ContainerDTO dto);
       void AddTagsView(IView view);
       bool ReadOnly { get; set; }
-      bool ContainerPropertiesEditable { get; set; }
+      bool ContainerPropertiesEditable { set; }
+      bool NameEditable { set; }
    }
 }

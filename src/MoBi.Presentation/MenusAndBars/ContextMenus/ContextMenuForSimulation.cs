@@ -2,6 +2,7 @@
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.UICommand;
@@ -23,12 +24,14 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       private readonly IContainer _container;
       private readonly IInteractionTasksForSimulation _interactionTask;
       private List<IMenuBarItem> _allMenuItems;
+      private readonly ISimulationRunner _simulationRunner;
 
       public ContextMenuForSimulation(IMoBiContext context, IContainer container, IInteractionTasksForSimulation interactionTask)
       {
          _context = context;
          _container = container;
          _interactionTask = interactionTask;
+         _simulationRunner = _container.Resolve<ISimulationRunner>();
       }
 
       public override IEnumerable<IMenuBarItem> AllMenuItems()
@@ -39,7 +42,6 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       public IContextMenu InitializeWith(ObjectBaseDTO dto, IPresenter presenter)
       {
          var simulation = dto.DowncastTo<SimulationViewItem>().Simulation;
-
          //a simulation might not be registered yet which is required to execute some of the action
          _context.Register(simulation);
          _allMenuItems = new List<IMenuBarItem>
@@ -55,6 +57,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          {
             _allMenuItems.Add(createCommit(simulation));
          }
+
          if (simulation.OriginalQuantityValues.Any())
          {
             _allMenuItems.Add(createShowDifferences(simulation));
@@ -63,6 +66,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          _allMenuItems.AddRange(new[]
          {
             createRunItem(simulation).AsGroupStarter(),
+            createStopItem(simulation),
             createParameterIdentificationItem(simulation),
             createSensitivityAnalysisItem(simulation),
 
@@ -99,6 +103,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       private IMenuBarItem createImportReactionParameters(IMoBiSimulation simulation)
       {
          return CreateMenuButton.WithCaption(AppConstants.Captions.ImportSimulationParameters.WithEllipsis())
+            .WithEnabled(_simulationRunner.IsSimulationIdle(simulation))
             .WithIcon(ApplicationIcons.ParameterValuesImport)
             .WithCommandFor<ImportSimulationParameterValuesUICommand, IMoBiSimulation>(simulation, _container);
       }
@@ -121,8 +126,18 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          return
             CreateMenuButton.WithCaption(AppConstants.MenuNames.Run)
+               .WithEnabled(_simulationRunner.IsSimulationIdle(simulation))
                .WithIcon(ApplicationIcons.Run)
                .WithCommandFor<RunSimulationCommand, IMoBiSimulation>(simulation, _container);
+      }
+
+      private IMenuBarItem createStopItem(IMoBiSimulation simulation)
+      {
+         return
+            CreateMenuButton.WithCaption(AppConstants.MenuNames.Stop)
+               .WithEnabled(_simulationRunner.IsSimulationRunning(simulation))
+               .WithIcon(ApplicationIcons.Stop)
+               .WithCommandFor<StopSimulationCommand, IMoBiSimulation>(simulation, _container);
       }
 
       private IMenuBarItem createExportODEForMatlabItem(IMoBiSimulation simulation)
@@ -184,18 +199,21 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
             .WithCommandFor<RemoveSimulationUICommand, IMoBiSimulation>(simulation, _container)
+            .WithEnabled(_simulationRunner.IsSimulationIdle(simulation))
             .WithIcon(ApplicationIcons.Delete);
       }
 
       private IMenuBarItem createDeleteAllResultsItem(IMoBiSimulation simulation)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.DeleteAllResults)
+            .WithEnabled(_simulationRunner.IsSimulationIdle(simulation))
             .WithCommandFor<DeleteAllResultsInSimulationUICommand, IMoBiSimulation>(simulation, _container);
       }
 
       private IMenuBarItem createRenameItem(IMoBiSimulation simulation)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Rename)
+            .WithEnabled(_simulationRunner.IsSimulationIdle(simulation))
             .WithCommandFor<RenameSimulationUICommand, IMoBiSimulation>(simulation, _container).WithIcon(ApplicationIcons.Rename);
       }
 
@@ -223,6 +241,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       private IMenuBarItem createUpdate(IMoBiSimulation simulation)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.UpdateFromBuildingBlocks)
+            .WithEnabled(_simulationRunner.IsSimulationIdle(simulation))
             .WithIcon(ApplicationIcons.Update)
             .WithCommandFor<UpdateSimulationUICommand, IMoBiSimulation>(simulation, _container);
       }
@@ -230,15 +249,16 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       private IMenuBarItem createConfigure(IMoBiSimulation simulation)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.Configure)
+            .WithEnabled(_simulationRunner.IsSimulationIdle(simulation))
             .WithIcon(ApplicationIcons.SimulationConfigure)
             .WithCommandFor<ConfigureSimulationUICommand, IMoBiSimulation>(simulation, _container);
       }
-
 
       private IMenuBarItem exportSimulationResultsToExcel(IMoBiSimulation simulation)
       {
          //create sub menu containing all compounds
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.ExportSimulationResultsToExcel)
+            .WithEnabled(_simulationRunner.IsSimulationIdle(simulation))
             .WithCommandFor<ExportSimulationResultsToExcelCommand, IMoBiSimulation>(simulation, _container)
             .WithIcon(ApplicationIcons.ObservedData);
       }

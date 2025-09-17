@@ -56,7 +56,7 @@ namespace MoBi.Core.Services
          simulationConfiguration.CopyPropertiesFrom(configuration);
          simulationConfiguration.SimulationSettings = _cloneManager.Clone(configuration.SimulationSettings);
 
-         configuration.ModuleConfigurations.Each(moduleConfiguration => { simulationConfiguration.AddModuleConfiguration(templateModuleConfigurationFor(moduleConfiguration)); });
+         configuration.ModuleConfigurations.Each(moduleConfiguration => simulationConfiguration.AddModuleConfiguration(templateModuleConfigurationFor(moduleConfiguration)));
 
          if (configuration.Individual != null)
             simulationConfiguration.Individual = templateBuildingBlockFor(configuration.Individual);
@@ -75,7 +75,7 @@ namespace MoBi.Core.Services
 
       private TBuildingBlock templateBuildingBlockFor<TBuildingBlock>(TBuildingBlock buildingBlock) where TBuildingBlock : class, IBuildingBlock
       {
-         return _templateResolverTask.TemplateBuildingBlockFor(buildingBlock) as TBuildingBlock;
+         return _templateResolverTask.TemplateBuildingBlockFor(buildingBlock);
       }
    }
 }

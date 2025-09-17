@@ -85,7 +85,6 @@ namespace MoBi.Presentation.Tasks.Interaction
       public override IParameter CreateNewEntity(IContainer parent)
       {
          var parameter = base.CreateNewEntity(parent)
-            .WithParentContainer(parent)
             .WithDimension(_dimensionFactory.TryGetDimension(_interactionTaskContext.UserSettings.ParameterDefaultDimension, fallBackDimension: _dimensionFactory.NoDimension))
             .WithMode(parent.DefaultParameterBuildMode())
             .WithGroup(Constants.Groups.MOBI);

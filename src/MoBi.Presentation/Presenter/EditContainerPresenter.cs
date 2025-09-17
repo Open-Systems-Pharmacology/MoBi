@@ -10,6 +10,7 @@ using MoBi.Core.Helper;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.BasePresenter;
+using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Views;
 using OSPSuite.Assets;
@@ -34,6 +35,10 @@ namespace MoBi.Presentation.Presenter
       IReadOnlyList<ContainerMode> AllContainerModes { get; }
       ContainerMode ConfirmAndSetContainerMode(ContainerMode newContainerMode);
       IReadOnlyList<ContainerType> AllContainerTypes { get; }
+      void ShowParameters();
+      void EnableIndividualPreview();
+      void EnableSimulationTracking(TrackableSimulation trackableSimulation);
+      void NavigateToSource();
    }
 
    public class EditContainerPresenter : AbstractContainerEditPresenterWithParameters<IEditContainerView, IEditContainerPresenter, IContainer>, IEditContainerPresenter
@@ -46,7 +51,9 @@ namespace MoBi.Presentation.Presenter
       private readonly IApplicationController _applicationController;
       private readonly IObjectPathFactory _objectPathFactory;
       private readonly IDialogCreator _dialogCreator;
+      private readonly ISourceReferenceNavigator _referenceNavigator;
       private bool _isNewEntity;
+      private TrackableSimulation _trackableSimulation;
 
       public EditContainerPresenter(
          IEditContainerView view,
@@ -57,17 +64,19 @@ namespace MoBi.Presentation.Presenter
          ITagsPresenter tagsPresenter,
          IApplicationController applicationController,
          IObjectPathFactory objectPathFactory,
-         IDialogCreator dialogCreator)
+         IDialogCreator dialogCreator,
+         ISourceReferenceNavigator referenceNavigator)
          : base(view, editParametersInContainerPresenter, context, editTasks)
       {
          _dialogCreator = dialogCreator;
+         _referenceNavigator = referenceNavigator;
          _containerMapper = containerMapper;
          _tagsPresenter = tagsPresenter;
          _applicationController = applicationController;
          _editTasks = editTasks;
          _objectPathFactory = objectPathFactory;
-         _view.AddParameterView(editParametersInContainerPresenter.BaseView);
          _view.AddTagsView(_tagsPresenter.BaseView);
+         _editParametersInContainerPresenter.ChangeLocalisationAllowed = true;
          AddSubPresenters(_tagsPresenter);
       }
 
@@ -109,10 +118,15 @@ namespace MoBi.Presentation.Presenter
       public ContainerMode ConfirmAndSetContainerMode(ContainerMode newContainerMode)
       {
          var oldContainerMode = _container.Mode;
-
          if (_isNewEntity)
          {
             _container.Mode = newContainerMode;
+
+            if(newContainerMode == ContainerMode.Physical && !hasMoleculeProperties(_container))
+               _container.Add(createMoleculePropertiesContainer());
+            else if (newContainerMode == ContainerMode.Logical && hasMoleculeProperties(_container))
+               _container.RemoveChild(_editTasks.GetMoleculeProperties(_container));
+              
             return newContainerMode;
          }
 
@@ -136,21 +150,24 @@ namespace MoBi.Presentation.Presenter
          {
             var moleculeProperties = _editTasks.GetMoleculeProperties(_container);
 
-            if (moleculeProperties!= null)
+            if (hasMoleculeProperties(_container))
                macroCommand.Add(new RemoveContainerFromSpatialStructureCommand(_container, moleculeProperties, (MoBiSpatialStructure)BuildingBlock).RunCommand(_context));
          }
-         else
+         else if(!hasMoleculeProperties(_container))
          {
-            var moleculeProperties = _context.Create<IContainer>()
-               .WithName(Constants.MOLECULE_PROPERTIES)
-               .WithMode(ContainerMode.Logical);
-
-            macroCommand.Add(new AddContainerToSpatialStructureCommand(_container, moleculeProperties, (MoBiSpatialStructure)BuildingBlock).RunCommand(_context));
+            macroCommand.Add(new AddContainerToSpatialStructureCommand(_container, createMoleculePropertiesContainer(), (MoBiSpatialStructure)BuildingBlock).RunCommand(_context));
          }
 
          AddCommand(macroCommand);
          return newContainerMode;
       }
+
+      private bool hasMoleculeProperties(IContainer container) => _editTasks.GetMoleculeProperties(container) != null;
+
+      private IContainer createMoleculePropertiesContainer() =>
+         _context.Create<IContainer>()
+            .WithName(Constants.MOLECULE_PROPERTIES)
+            .WithMode(ContainerMode.Logical);
 
       public IReadOnlyList<ContainerType> AllContainerTypes { get; } = new[]
       {
@@ -164,6 +181,18 @@ namespace MoBi.Presentation.Presenter
          ContainerType.Other,
          ContainerType.Organism,
       };
+
+      public void ShowParameters() => _view.ShowParameters();
+
+      public void EnableIndividualPreview() => _editParametersInContainerPresenter.ShowIndividualSelection();
+
+      public void EnableSimulationTracking(TrackableSimulation trackableSimulation)
+      {
+         _trackableSimulation = trackableSimulation;
+         _editParametersInContainerPresenter.EnableSimulationTracking(trackableSimulation);
+      }
+
+      public void NavigateToSource() => _referenceNavigator.GoTo(_containerDTO.SourceReference);
 
       public override IBuildingBlock BuildingBlock
       {
@@ -182,11 +211,12 @@ namespace MoBi.Presentation.Presenter
          //an unnamed container means it is being created now, since the name is mandatory over the creation.
          _isNewEntity = string.IsNullOrEmpty(_container.Name);
          base.Edit(container, existingObjectsInParent);
-         _containerDTO = _containerMapper.MapFrom(_container);
+         _containerDTO = _containerMapper.MapFrom(_container, _trackableSimulation);
          _containerDTO.AddUsedNames(_editTasks.GetForbiddenNamesWithoutSelf(container, existingObjectsInParent));
          _view.BindTo(_containerDTO);
          _tagsPresenter.Edit(container);
          _view.ContainerPropertiesEditable = !container.IsMoleculeProperties();
+         _view.NameEditable = _isNewEntity;
       }
 
       public override object Subject => _container;

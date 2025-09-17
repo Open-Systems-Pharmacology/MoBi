@@ -56,21 +56,12 @@ namespace MoBi.Presentation.Presenter
          _entityPathResolver = entityPathResolver;
       }
 
-      protected override void RaiseFavoritesSelectedEvent()
-      {
-         _context.PublishEvent(new FavoritesSelectedEvent(_simulation));
-      }
+      protected override void RaiseFavoritesSelectedEvent() => _context.PublishEvent(new FavoritesSelectedEvent(_simulation));
 
-      protected override void RaiseUserDefinedSelectedEvent()
-      {
-         _context.PublishEvent(new UserDefinedSelectedEvent(_simulation));
-      }
+      protected override void RaiseUserDefinedSelectedEvent() => _context.PublishEvent(new UserDefinedSelectedEvent(_simulation));
 
       public override void ShowContextMenu(IViewItem objectRequestingPopup, Point popupLocation)
       {
-         if (!SimulationFavorites().Any())
-            return;
-
          var contextMenu = _contextMenuFactory.CreateFor(objectRequestingPopup, this);
          contextMenu.Show(_view, popupLocation);
       }
@@ -88,17 +79,11 @@ namespace MoBi.Presentation.Presenter
          ShowOutputSchema();
       }
 
-      private IEnumerable<ObjectBaseDTO> rootContainers()
-      {
-         return GetChildrenSorted(_simulation.Model.Root, x => true);
-      }
+      private IEnumerable<ObjectBaseDTO> rootContainers() => GetChildrenSorted(_simulation.Model.Root, x => true);
 
       public object Subject => _simulation;
 
-      public void Edit(object objectToEdit)
-      {
-         Edit(objectToEdit.DowncastTo<IMoBiSimulation>());
-      }
+      public void Edit(object objectToEdit) => Edit(objectToEdit.DowncastTo<IMoBiSimulation>());
 
       public override IReadOnlyList<ObjectBaseDTO> GetChildObjects(ObjectBaseDTO dto, Func<IEntity, bool> predicate)
       {
@@ -147,11 +132,9 @@ namespace MoBi.Presentation.Presenter
          _view.Select(entityToSelect);
       }
 
-      private bool selectedEntityIsInSimulation(IEntity entity)
-      {
-         return _simulation.Model.Root.Equals(entity.RootContainer) ||
-                _simulation.Model.Neighborhoods.Equals(entity.RootContainer);
-      }
+      private bool selectedEntityIsInSimulation(IEntity entity) =>
+         _simulation.Model.Root.Equals(entity.RootContainer) ||
+         _simulation.Model.Neighborhoods.Equals(entity.RootContainer);
 
       protected override IReadOnlyList<ObjectBaseDTO> GetChildrenSorted(IContainer container, Func<IEntity, bool> predicate)
       {
@@ -174,14 +157,8 @@ namespace MoBi.Presentation.Presenter
          return neighbors;
       }
 
-      protected override IEntity GetEntityForNeighbor(NeighborDTO neighborDTO)
-      {
-         return neighborDTO.Path.Resolve<IEntity>(_simulation.Model.Root);
-      }
+      protected override IEntity GetEntityForNeighbor(NeighborDTO neighborDTO) => neighborDTO.Path.Resolve<IEntity>(_simulation.Model.Root);
 
-      public void CopyCurrentPathToClipBoard(IEntity entity)
-      {
-         _view.CopyToClipBoard(_entityPathResolver.FullPathFor(entity));
-      }
+      public void CopyCurrentPathToClipBoard(IEntity entity) => _view.CopyToClipBoard(_entityPathResolver.PathFor(entity));
    }
 }

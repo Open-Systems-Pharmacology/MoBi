@@ -1,9 +1,11 @@
 ﻿using MoBi.Assets;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Services;
 using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
 
 namespace MoBi.Core.Commands
@@ -39,9 +41,17 @@ namespace MoBi.Core.Commands
       protected override void ExecuteWith(IMoBiContext context)
       {
          base.ExecuteWith(context);
+         var entityPathResolver = context.Resolve<IEntityPathResolver>();
+         var entitySourceUpdater = context.Resolve<ISimulationEntitySourceUpdater>();
+
          //perform the rename
+         var originalContainerPath = entityPathResolver.ObjectPathFor(_container);
          _oldName = _container.Name;
          _container.Name = _newName;
+         var newContainerPath = entityPathResolver.ObjectPathFor(_container);
+
+         // update entity sources
+         entitySourceUpdater.UpdateEntitySourcesForContainerRename(newContainerPath, originalContainerPath, _buildingBlock);
 
          context.PublishEvent(new RenamedEvent(_container));
       }

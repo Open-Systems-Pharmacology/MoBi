@@ -53,7 +53,7 @@ namespace MoBi.Presentation.Presenter
          IFormulaToFormulaInfoDTOMapper formulaDTOMapper, FormulaTypeCaptionRepository formulaTypeCaptionRepository,
          IMoBiFormulaTask formulaTask, ICircularReferenceChecker circularReferenceChecker) : base(view, formulaPresenterCache, context, formulaDTOMapper, formulaTask, formulaTypeCaptionRepository, circularReferenceChecker)
       {
-         
+
       }
 
       public void Init<TObjectWithFormula>(TObjectWithFormula formulaOwner, IBuildingBlock buildingBlock, FormulaDecoder<TObjectWithFormula> formulaDecoder)
@@ -61,8 +61,6 @@ namespace MoBi.Presentation.Presenter
       {
          Initialize(formulaOwner, buildingBlock, formulaDecoder);
       }
-
-
 
       public void Init(IParameter parameter, IBuildingBlock buildingBlock)
       {
@@ -103,7 +101,7 @@ namespace MoBi.Presentation.Presenter
 
       protected override ConstantFormula CreateNewConstantFormula()
       {
-         var newFormula =  _formulaTask.CreateNewFormula<ConstantFormula>(FormulaDimension);
+         var newFormula = _formulaTask.CreateNewFormula<ConstantFormula>(FormulaDimension);
          //it is important to register the constant formula in the repository here otherwise it won't be found
          //when rolling back commands
          _context.ObjectRepository.Register(newFormula);

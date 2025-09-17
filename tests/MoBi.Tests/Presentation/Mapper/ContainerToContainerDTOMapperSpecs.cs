@@ -3,6 +3,7 @@ using MoBi.Core.Repositories;
 using MoBi.Helpers;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
+using MoBi.Presentation.Presenter;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -88,6 +89,34 @@ namespace MoBi.Presentation.Mapper
       public void should_set_the_parent_to_the_string_representation_of_the_parent_path()
       {
          _containerDTO.ParentPath.ShouldBeEqualTo("GP|P");
+      }
+   }
+
+   public class When_mapping_a_container_with_a_source : concern_for_ContainerToContainerDTOMapper
+   {
+      private TrackableSimulation _trackableSimulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         var parent = new Container().WithName("P");
+         var grandParent = new Container().WithName("GP");
+         grandParent.Add(parent);
+         _container.ParentPath = new ObjectPath("A", "B", "C");
+         parent.Add(_container);
+         _trackableSimulation = new TrackableSimulation(null, new SimulationEntitySourceReferenceCache());
+         _trackableSimulation.ReferenceCache.Add(_container, new SimulationEntitySourceReference(null, null, null, _container));
+      }
+
+      protected override void Because()
+      {
+         _containerDTO = sut.MapFrom(_container, _trackableSimulation);
+      }
+
+      [Observation]
+      public void the_source_entity_reference_should_be_set()
+      {
+         _containerDTO.SourceReference.ShouldNotBeNull();
       }
    }
 

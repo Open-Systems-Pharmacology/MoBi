@@ -20,8 +20,6 @@ using IProjectTask = MoBi.Presentation.Tasks.IProjectTask;
 namespace MoBi.Presentation.Presenter
 {
    public interface IMoBiMainViewPresenter : IMainViewPresenter,
-      IListener<SimulationRunStartedEvent>,
-      IListener<SimulationRunFinishedEvent>,
       IListener<ReportCreationStartedEvent>,
       IListener<ReportCreationFinishedEvent>,
       IListener<ProjectLoadedEvent>,
@@ -72,8 +70,6 @@ namespace MoBi.Presentation.Presenter
       {
          _view.Initialize();
          updateWindowTitle();
-
-         Thread.Sleep(10000);
          _allMainViewItemPresenters.All().Each(x => x.Initialize());
          _skinManager.ActivateSkin(_userSettings, _userSettings.ActiveSkin);
       }
@@ -136,16 +132,6 @@ namespace MoBi.Presentation.Presenter
       public void RestoreLayout()
       {
          _userSettings.RestoreLayout();
-      }
-
-      public void Handle(SimulationRunStartedEvent eventToHandle)
-      {
-         View.AllowChildActivation = false;
-      }
-
-      public void Handle(SimulationRunFinishedEvent eventToHandle)
-      {
-         View.AllowChildActivation = true;
       }
 
       private void updateWindowTitle(string projectName = null)

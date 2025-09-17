@@ -1,19 +1,19 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using OSPSuite.Core.Services;
-using OSPSuite.Presentation.Services;
 
 namespace MoBi.Presentation
 {
    public class HeavyWorkManagerForSpecs : IHeavyWorkManager
    {
-      public bool Start(Action heavyWorkAction)
+      public bool Start(Action heavyWorkAction, CancellationTokenSource cts = null)
       {
          heavyWorkAction.Invoke();
          return true;
       }
 
-      public bool Start(Action heavyWorkAction, string caption)
+      public bool Start(Action heavyWorkAction, string caption, CancellationTokenSource cts = null)
       {
          return Start(heavyWorkAction);
       }
