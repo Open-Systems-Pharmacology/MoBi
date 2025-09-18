@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using MoBi.Assets;
 using MoBi.Core.Exceptions;
@@ -9,10 +7,10 @@ using MoBi.Core.Serialization.Xml.Services;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Qualification;
-using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
+using Module = OSPSuite.Core.Domain.Module;
 
 namespace MoBi.Core.Services
 {
@@ -23,11 +21,10 @@ namespace MoBi.Core.Services
       IBuildingBlock CreateProfileExpression(ExpressionType expressionType);
       IBuildingBlock CreateIndividual();
       IReadOnlyList<ExpressionParameterValueUpdate> UpdateExpressionProfileFromDatabase(ExpressionProfileBuildingBlock expressionProfile);
-      SimulationTransfer LoadSimulationTransferFromSnapshot(string serializedSnapshot);
+      Module LoadModuleFromSnapshot(string serializedSnapshot);
 
       /// <summary>
-      ///    Loads the project from the snapshot. If there are any PK-Sim modules, they are rebuilt through a local installation
-      ///    of PK-Sim.
+      ///    Recreates the PKSim module from the snapshot.
       ///    If any of the PK-Sim building blocks should have markdown exported it will be done during the module rebuild.
       /// </summary>
       /// <param name="serializedSnapshot">The PK-Sim project snapshot</param>
@@ -35,8 +32,20 @@ namespace MoBi.Core.Services
       ///    The configuration containing any building block inputs that should have report
       ///    markdown exported while the module is rebuilt in PK-Sim
       /// </param>
-      /// <returns>A SimulationTransfer containing the module and any input mappings that were exported</returns>
-      (SimulationTransfer simulationTransfer, InputMapping[] inputMappings) LoadSimulationTransferFromSnapshotAndExportInputs(string serializedSnapshot, QualificationConfiguration qualificationConfiguration);
+      /// <returns>A module and any input mappings that were exported</returns>
+      (Module module, InputMapping[] inputMappings) LoadModuleFromSnapshotAndExportInputs(string serializedSnapshot, QualificationConfiguration qualificationConfiguration);
+
+      /// <summary>
+      ///    Recreates a PK-Sim expression profile from the base64 encoded <paramref name="serializedSnapshot" />.
+      /// </summary>
+      /// <returns>The expression profile building block, as created in Pk-Sim</returns>
+      ExpressionProfileBuildingBlock LoadExpressionProfileFromSnapshot(string serializedSnapshot);
+
+      /// <summary>
+      ///    Recreates a PK-Sim individual from the base64 encoded <paramref name="serializedSnapshot" />.
+      /// </summary>
+      /// <returns>The individual building block, as created in Pk-Sim</returns>
+      IndividualBuildingBlock LoadIndividualFromSnapshot(string serializedSnapshot);
    }
 
    public class PKSimStarter : IPKSimStarter
@@ -45,13 +54,15 @@ namespace MoBi.Core.Services
       private const string CREATE_BINDING_PARTNER_EXPRESSION_PROFILE = "CreateBindingPartnerExpressionProfile";
       private const string CREATE_TRANSPORTER_EXPRESSION_PROFILE = "CreateTransporterExpressionProfile";
       private const string CREATE_INDIVIDUAL = "CreateIndividual";
-      private const string CREATE_SIMULATION_TRANSFER = "CreateSimulationTransfer";
-      private const string CREATE_SIMULATION_TRANSFER_AND_EXPORT_INPUTS = "CreateSimulationTransferAndExportInputs";
+      private const string CREATE_MODULE = "CreateModule";
+      private const string CREATE_MODULE_AND_EXPORT_INPUTS = "CreateModuleAndExportInputs";
+      private const string CREATE_INDIVIDUAL_BUILDING_BLOCK = "CreateIndividualBuildingBlock";
+      private const string CREATE_EXPRESSION_PROFILE_BUILDING_BLOCK = "CreateExpressionProfileBuildingBlock";
       private const string GET_EXPRESSION_DATABASE_QUERY = "GetExpressionDatabaseQuery";
-      private const string PKSIM_UI_STARTER_EXPRESSION_PROFILE_CREATOR = "PKSim.UI.Starter.ExpressionProfileCreator";
-      private const string PKSIM_UI_STARTER_INDIVIDUAL_CREATOR = "PKSim.UI.Starter.IndividualCreator";
-      private const string PKSIM_UI_STARTER_DLL = "PKSim.UI.Starter.dll";
-      private const string PKSIM_UI_STARTER_SIMULATION_TRANSFER_CONSTRUCTOR = "PKSim.UI.Starter.SimulationTransferConstructor";
+      private const string PKSIM_UI_STARTER_EXPRESSION_PROFILE_CREATOR = "PKSim.Starter.ExpressionProfileCreator";
+      private const string PKSIM_UI_STARTER_INDIVIDUAL_CREATOR = "PKSim.Starter.IndividualCreator";
+      private const string PKSIM_UI_STARTER_DLL = "PKSim.Starter.dll";
+      private const string PKSIM_UI_STARTER_SNAPSHOT_EXCHANGE = "PKSim.Starter.SnapshotExchange";
 
       private readonly IMoBiConfiguration _configuration;
       private readonly IApplicationSettings _applicationSettings;
@@ -126,30 +137,40 @@ namespace MoBi.Core.Services
          return executeMethod(getMethod(PKSIM_UI_STARTER_EXPRESSION_PROFILE_CREATOR, GET_EXPRESSION_DATABASE_QUERY), [expressionProfile]) as List<ExpressionParameterValueUpdate>;
       }
 
-      public SimulationTransfer LoadSimulationTransferFromSnapshot(string serializedSnapshot)
+      public Module LoadModuleFromSnapshot(string serializedSnapshot)
       {
-         var transfer = executeMethod(getMethod(PKSIM_UI_STARTER_SIMULATION_TRANSFER_CONSTRUCTOR, CREATE_SIMULATION_TRANSFER), [serializedSnapshot]) as SimulationTransfer;
+         var element = executeMethod(getMethod(PKSIM_UI_STARTER_SNAPSHOT_EXCHANGE, CREATE_MODULE), [serializedSnapshot]) as string;
 
-         setModuleOriginId(transfer.Simulation.Configuration);
-
-         return transfer;
+         // all object exchanges should be done using serialization to ensure that objects are recreated in MoBi.
+         return _serializationService.Deserialize<Module>(element, _projectRetriever.Current);
       }
 
-      public (SimulationTransfer simulationTransfer, InputMapping[] inputMappings) LoadSimulationTransferFromSnapshotAndExportInputs(string serializedSnapshot, QualificationConfiguration qualificationConfiguration)
+      public (Module module, InputMapping[] inputMappings) LoadModuleFromSnapshotAndExportInputs(string serializedSnapshot, QualificationConfiguration qualificationConfiguration)
       {
-         var obj = executeMethod(getMethod(PKSIM_UI_STARTER_SIMULATION_TRANSFER_CONSTRUCTOR, CREATE_SIMULATION_TRANSFER_AND_EXPORT_INPUTS), [serializedSnapshot, qualificationConfiguration]);
-         
-         var (transfer, mappings) = obj as (SimulationTransfer transfer, InputMapping[] mappings)? ?? (null, null);
+         var tuple = executeMethod(getMethod(PKSIM_UI_STARTER_SNAPSHOT_EXCHANGE, CREATE_MODULE_AND_EXPORT_INPUTS), [serializedSnapshot, qualificationConfiguration]);
 
-         setModuleOriginId(transfer.Simulation.Configuration);
-         return (transfer, mappings);
+         var (element, mappings) = tuple as (string element, InputMapping[] mappings)? ?? (null, null);
+
+         // all object exchanges should be done using serialization to ensure that objects are recreated in MoBi.
+         var module = _serializationService.Deserialize<Module>(element, _projectRetriever.Current);
+
+         return (module, mappings);
       }
 
-      private static void setModuleOriginId(SimulationConfiguration simulationConfiguration)
+      public ExpressionProfileBuildingBlock LoadExpressionProfileFromSnapshot(string serializedSnapshot)
       {
-         var module = simulationConfiguration.ModuleConfigurations.Single().Module;
-         simulationConfiguration.ExpressionProfiles.Each(x => x.SnapshotOriginModuleId = module.Id);
-         simulationConfiguration.Individual.SnapshotOriginModuleId = module.Id;
+         var pkml = executeMethod(getMethod(PKSIM_UI_STARTER_SNAPSHOT_EXCHANGE, CREATE_EXPRESSION_PROFILE_BUILDING_BLOCK), [serializedSnapshot]) as string;
+
+         // all object exchanges should be done using serialization to ensure that objects are recreated in MoBi.
+         return _serializationService.Deserialize<ExpressionProfileBuildingBlock>(pkml, _projectRetriever.Current);
+      }
+
+      public IndividualBuildingBlock LoadIndividualFromSnapshot(string serializedSnapshot)
+      {
+         var pkml = executeMethod(getMethod(PKSIM_UI_STARTER_SNAPSHOT_EXCHANGE, CREATE_INDIVIDUAL_BUILDING_BLOCK), [serializedSnapshot]) as string;
+
+         // all object exchanges should be done using serialization to ensure that objects are recreated in MoBi.
+         return _serializationService.Deserialize<IndividualBuildingBlock>(pkml, _projectRetriever.Current);
       }
 
       private object executeMethod(MethodInfo method, object[] parameters = null)

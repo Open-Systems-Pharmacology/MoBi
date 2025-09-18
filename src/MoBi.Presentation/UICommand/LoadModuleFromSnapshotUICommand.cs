@@ -1,43 +1,29 @@
-using MoBi.Assets;
+using MoBi.Core.Commands;
+using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
-using MoBi.Presentation.Tasks;
+using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Extensions;
-using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Services;
-using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.UICommand
 {
-   public class LoadModuleFromSnapshotUICommand : ObjectUICommand<Module>
+   public class LoadModuleFromSnapshotUICommand : PKSimStarterSnapshotUICommand<Module>
    {
-      private readonly IPKSimStarter _pkSimStarter;
-      private readonly IModuleLoader _moduleLoader;
-      private readonly IMoBiProjectRetriever _projectRetriever;
-      private readonly IHeavyWorkManager _heavyWorkManager;
+      private readonly IInteractionTasksForModule _interactionTasksForModule;
 
-      public LoadModuleFromSnapshotUICommand(IPKSimStarter pkSimStarter, 
-         IModuleLoader moduleLoader, 
-         IMoBiProjectRetriever projectRetriever, 
-         IHeavyWorkManager heavyWorkManager)
+      public LoadModuleFromSnapshotUICommand(
+         IInteractionTasksForModule interactionTasksForModule,
+         IMoBiProjectRetriever projectRetriever,
+         IHeavyWorkManager heavyWorkManager,
+         IMoBiContext context) : base(projectRetriever, heavyWorkManager, context)
       {
-         _pkSimStarter = pkSimStarter;
-         _moduleLoader = moduleLoader;
-         _projectRetriever = projectRetriever;
-         _heavyWorkManager = heavyWorkManager;
+         _interactionTasksForModule = interactionTasksForModule;
       }
 
-      protected override void PerformExecute()
-      {
-         SimulationTransfer transfer = null;
-         _heavyWorkManager.Start(() =>
-            {
-               transfer = _pkSimStarter.LoadSimulationTransferFromSnapshot(Subject.Snapshot);
-            }, AppConstants.Captions.Loading.WithEllipsis()
-         );
-         
-         if(transfer != null)
-            _moduleLoader.LoadProjectContentFromSimulationTransfer(_projectRetriever.Current, transfer);
-      }
+      protected override IMoBiCommand AddToProject(Module transfer) => 
+         _interactionTasksForModule.AddTo(transfer, _projectRetriever.Current, null);
+
+      protected override Module LoadFromSnapshot() => 
+         _interactionTasksForModule.LoadFromSnapshot(Subject.Snapshot);
    }
 }

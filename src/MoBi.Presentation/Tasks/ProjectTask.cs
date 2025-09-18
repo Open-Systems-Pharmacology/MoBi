@@ -162,7 +162,7 @@ namespace MoBi.Presentation.Tasks
          if (exitIf(anySimulationInChangedState, Captions.SnapshotOfProjectWithChangedSimulation))
             return Task.CompletedTask;
 
-         if(exitIf(pkSimModulesWithoutSnapshots.Any(), PKSimModulesWithoutSnapshots(pkSimModulesWithoutSnapshots)))
+         if (exitIf(pkSimModulesWithoutSnapshots.Any(), PKSimModulesWithoutSnapshots(pkSimModulesWithoutSnapshots)))
             return Task.CompletedTask;
 
          return _snapshotTask.ExportModelToSnapshotAsync(project);
@@ -180,6 +180,7 @@ namespace MoBi.Presentation.Tasks
             if (project == null)
                return;
 
+            _context.Register(project);
             notifyProjectLoaded();
          }
       }
