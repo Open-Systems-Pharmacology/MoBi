@@ -144,7 +144,8 @@ namespace MoBi.Presentation.Tasks.Interaction
             //and to initialize it with the correct data so that the initial state of the OK button is correct
             modalPresenter.Encapsulate(referenceAtParamValuePresenter);
             referenceAtParamValuePresenter.Init(null, new List<IObjectBase>(), null);
-
+            referenceAtParamValuePresenter.SetLayoutItemLocalisationVisible(false);
+            referenceAtParamValuePresenter.SetRelativePathRadioButtonEnabled(false);
             return !modalPresenter.Show(referenceAtParamValuePresenter.ModalSize) ? Enumerable.Empty<ObjectPath>().ToList() : referenceAtParamValuePresenter.GetAllSelections();
          }
       }

@@ -14,6 +14,9 @@ namespace MoBi.Presentation.Presenter
       IReadOnlyList<ObjectPath> GetAllSelections();
       void AddSelection();
       Size? ModalSize { get; }
+      void SetLayoutItemLocalisationVisible(bool visible);
+      void SetRelativePathRadioButtonEnabled(bool enabled);
+
    }
 
 
@@ -28,7 +31,7 @@ namespace MoBi.Presentation.Presenter
          view.AddReferenceSelectionView(_selectReferencePresenter.View);
          _selectReferencePresenter.SelectionChangedEvent += enableDisableButtons;
       }
-
+      
       private void enableDisableButtons() => _view.CanAdd(_selectReferencePresenter.CanClose);
 
       public void Init(IEntity localReferencePoint, IReadOnlyList<IObjectBase> contextSpecificEntitiesToAddToReferenceTree, IUsingFormula editedObject) => 
@@ -42,5 +45,8 @@ namespace MoBi.Presentation.Presenter
       private IReadOnlyList<ObjectPath> convertTextToObjectPaths(IReadOnlyList<string> pathsAsString) => pathsAsString.Select(x => new ObjectPath(x.ToPathArray())).ToList();
 
       public override bool CanClose => true;
+
+      public void SetLayoutItemLocalisationVisible(bool visible) => _selectReferencePresenter.View.SetLayoutItemLocalisationVisible(visible);
+      public void SetRelativePathRadioButtonEnabled(bool enabled) => _selectReferencePresenter.View.SetRelativePathRadioButtonEnabled(enabled);
    }
 }

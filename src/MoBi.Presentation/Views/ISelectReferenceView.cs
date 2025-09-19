@@ -21,6 +21,8 @@ namespace MoBi.Presentation.Views
       bool ChangeLocalisationAllowed { get; set; }
       bool EnableMultiSelect { set; get; }
       IReadOnlyList<ObjectBaseDTO> AllSelectedDTOs { get; }
+      void SetLayoutItemLocalisationVisible(bool visible);
+      void SetRelativePathRadioButtonEnabled(bool enabled);
 
       /// <summary>
       ///    Add nodes to the view
