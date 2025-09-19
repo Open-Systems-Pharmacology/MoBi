@@ -42,7 +42,6 @@ namespace MoBi.IntegrationTests.Snapshots
       private ParameterIdentificationMapper _parameterIdentificationMapper;
       private IPKSimStarter _pkSimStarter;
       private ISimulationSettingsFactory _simulationSettingsFactory;
-      protected SimulationTransfer _simulationTransfer;
       private SimulationMapper _simulationMapper;
 
       protected override void Context()
@@ -72,32 +71,21 @@ namespace MoBi.IntegrationTests.Snapshots
 
          var snapshotIndividualBuildingBlock = new IndividualBuildingBlock
          {
-            SnapshotOriginModuleId = pksimModule.Id,
+            Snapshot = "dummy",
             Id = "pksimInd"
          };
 
          var snapshotExpressionProfile = new ExpressionProfileBuildingBlock
          {
             Type = ExpressionTypes.MetabolizingEnzyme,
-            SnapshotOriginModuleId = pksimModule.Id,
+            Snapshot = "dummy",
             Id = "pksimexpression"
          };
 
-         _simulationTransfer = new SimulationTransfer();
-         var moduleConfiguration = new ModuleConfiguration(new Module { IsPKSimModule = true }, new InitialConditionsBuildingBlock(), new ParameterValuesBuildingBlock());
-         _simulationTransfer.Simulation = new MoBiSimulation
-         {
-            Configuration = new SimulationConfiguration
-            {
-               Individual = snapshotIndividualBuildingBlock
-            }
-         };
+         var transferModule = new Module { IsPKSimModule = true };
 
-         _simulationTransfer.Simulation.Configuration.AddExpressionProfile(snapshotExpressionProfile);
-         _simulationTransfer.Simulation.Configuration.AddModuleConfiguration(moduleConfiguration);
-
-         A.CallTo(() => _pkSimStarter.LoadSimulationTransferFromSnapshot(pksimModule.Snapshot)).Returns(_simulationTransfer);
-         A.CallTo(() => _pkSimStarter.LoadSimulationTransferFromSnapshotAndExportInputs(pksimModule.Snapshot, A<QualificationConfiguration>._)).Returns((_simulationTransfer, Array.Empty<InputMapping>()));
+         A.CallTo(() => _pkSimStarter.LoadModuleFromSnapshot(pksimModule.Snapshot)).Returns(transferModule);
+         A.CallTo(() => _pkSimStarter.LoadModuleFromSnapshotAndExportInputs(pksimModule.Snapshot, A<QualificationConfiguration>._)).Returns((transferModule, Array.Empty<InputMapping>()));
 
          var dataRepository = DomainHelperForSpecs.ObservedData();
          _project.AddObservedData(dataRepository);
@@ -175,13 +163,13 @@ namespace MoBi.IntegrationTests.Snapshots
       [Observation]
       public void the_project_should_contain_expression_snapshots_for_each_expression()
       {
-         _result.ExpressionProfileCollection.Count.ShouldBeEqualTo(_snapshot.ExpressionProfileBuildingBlocks.Length + _simulationTransfer.Simulation.Configuration.ExpressionProfiles.Count);
+         _result.ExpressionProfileCollection.Count.ShouldBeEqualTo(_snapshot.ExpressionProfileBuildingBlocks.Length + _snapshot.ExpressionProfileSnapshots.Length);
       }
 
       [Observation]
       public void the_project_should_contain_individual_snapshots_for_each_individual()
       {
-         _result.IndividualsCollection.Count.ShouldBeEqualTo(_snapshot.IndividualBuildingBlocks.Length + (_simulationTransfer.Simulation.Configuration.Individual == null ? 0 : 1));
+         _result.IndividualsCollection.Count.ShouldBeEqualTo(_snapshot.IndividualBuildingBlocks.Length + _snapshot.IndividualBuildingBlockSnapshots.Length);
       }
 
       [Observation]
@@ -233,15 +221,15 @@ namespace MoBi.IntegrationTests.Snapshots
       }
 
       [Observation]
-      public void the_project_should_contain_expression_snapshots_for_each_expression()
+      public void the_project_should_contain_expression_snapshots_for_each_expression_in_the_project()
       {
-         _result.ExpressionProfileCollection.Count.ShouldBeEqualTo(_snapshot.ExpressionProfileBuildingBlocks.Length + _simulationTransfer.Simulation.Configuration.ExpressionProfiles.Count);
+         _result.ExpressionProfileCollection.Count.ShouldBeEqualTo(_snapshot.ExpressionProfileSnapshots.Length + _snapshot.ExpressionProfileBuildingBlocks.Length);
       }
 
       [Observation]
-      public void the_project_should_contain_individual_snapshots_for_each_individual()
+      public void the_project_should_contain_individual_snapshots_for_each_individual_in_the_project()
       {
-         _result.IndividualsCollection.Count.ShouldBeEqualTo(_snapshot.IndividualBuildingBlocks.Length + (_simulationTransfer.Simulation.Configuration.Individual == null ? 0 : 1));
+         _result.IndividualsCollection.Count.ShouldBeEqualTo(_snapshot.IndividualBuildingBlockSnapshots.Length + _snapshot.IndividualBuildingBlocks.Length);
       }
 
       [Observation]

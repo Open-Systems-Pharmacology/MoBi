@@ -8,6 +8,7 @@ using MoBi.Core.Mappers;
 using MoBi.Core.Services;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Assets;
+using OSPSuite.Assets.Extensions;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -38,12 +39,12 @@ namespace MoBi.Presentation.Tasks.Interaction
          IExportDataTableToExcelTask exportDataTableToExcelTask,
          ICloneManagerForBuildingBlock cloneManager,
          IExpressionProfileBuildingBlockToDataTableMapper mapper) :
-         base(interactionTaskContext, 
-            editTask, 
-            formulaTask,  
-            exportDataTableToExcelTask, 
-            cloneManager, 
-            pathAndValueEntityToDistributedParameterMapper, 
+         base(interactionTaskContext,
+            editTask,
+            formulaTask,
+            exportDataTableToExcelTask,
+            cloneManager,
+            pathAndValueEntityToDistributedParameterMapper,
             mapper)
       {
          _editTaskForExpressionProfileBuildingBlock = editTask;
@@ -68,6 +69,12 @@ namespace MoBi.Presentation.Tasks.Interaction
          macroCommand.AddRange(expressionProfileUpdate.Select(parameter => updateCommandFor(buildingBlock, parameter.Path, parameter.UpdatedValue)));
 
          return macroCommand.RunCommand(Context);
+      }
+
+      public ExpressionProfileBuildingBlock LoadFromSnapshot(string snapshot)
+      {
+         // Cloning required to reset object ids
+         return _cloneManagerForBuildingBlock.Clone(_pkSimStarter.LoadExpressionProfileFromSnapshot(snapshot));
       }
 
       private static ICommand updateCommandFor(ExpressionProfileBuildingBlock buildingBlock, ObjectPath path, double? value)
@@ -119,6 +126,11 @@ namespace MoBi.Presentation.Tasks.Interaction
       public override IMoBiCommand GetAddCommand(ExpressionProfileBuildingBlock expressionProfileToAdd, MoBiProject parent, IBuildingBlock buildingBlock)
       {
          return new AddExpressionProfileBuildingBlockToProjectCommand(expressionProfileToAdd);
+      }
+
+      protected override string SnapshotFrom(ExpressionProfileBuildingBlock buildingBlock)
+      {
+         return buildingBlock.Snapshot.FromBase64String();
       }
    }
 }

@@ -29,54 +29,6 @@ namespace MoBi.Core
       }
    }
 
-   internal class When_the_expression_is_updated_and_it_was_imported_from_snapshot : concern_for_BuildingBlockVersionUpdater
-   {
-      private ExpressionProfileBuildingBlock _expression;
-      protected override void Context()
-      {
-         base.Context();
-         _expression = new ExpressionProfileBuildingBlock
-         {
-            SnapshotOriginModuleId = "5"
-         };
-      }
-
-      protected override void Because()
-      {
-         sut.UpdateBuildingBlockVersion(_expression, true, PKSimModuleConversion.SetAsExtensionModule);
-      }
-
-      [Observation]
-      public void the_snapshot_origin_should_be_removed()
-      {
-         _expression.SnapshotOriginModuleId.ShouldBeNull();
-      }
-   }
-
-   internal class When_the_individual_is_updated_and_it_was_imported_from_snapshot : concern_for_BuildingBlockVersionUpdater
-   {
-      private IndividualBuildingBlock _individual;
-      protected override void Context()
-      {
-         base.Context();
-         _individual = new IndividualBuildingBlock
-         {
-            SnapshotOriginModuleId = "5"
-         };
-      }
-
-      protected override void Because()
-      {
-         sut.UpdateBuildingBlockVersion(_individual, true, PKSimModuleConversion.SetAsExtensionModule);
-      }
-
-      [Observation]
-      public void the_snapshot_origin_should_be_removed()
-      {
-         _individual.SnapshotOriginModuleId.ShouldBeNull();
-      }
-   }
-
    internal class When_the_building_block_version_updater_is_updating_the_building_block_version_used_in_a_building_block : concern_for_BuildingBlockVersionUpdater
    {
       private IBuildingBlock _changeBuildingBlock;

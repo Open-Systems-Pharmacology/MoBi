@@ -5,40 +5,25 @@ using MoBi.Core.Services;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Utility.Container;
 
 namespace MoBi.IntegrationTests.Snapshots
 {
    public class When_loading_a_snapshot : ContextWithLoadedSnapshot
    {
-      private SimulationTransfer _simulationTransfer;
-
       public override void GlobalContext()
       {
          base.GlobalContext();
          var starter = IoC.Resolve<IPKSimStarter>();
-         _simulationTransfer = new SimulationTransfer
-         {
-            Simulation = new MoBiSimulation
-            {
-               Configuration = new SimulationConfiguration
-               {
-                  Individual = new IndividualBuildingBlock().WithName("pksim Individual"),
-                  SimulationSettings = new SimulationSettings()
-               }
-            }
-         };
 
-         _simulationTransfer.Simulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(new Module
+         var module = new Module
          {
             IsPKSimModule = true,
             Name = "Henrist oral Hot stage extrusion as table"
-         }, new InitialConditionsBuildingBlock(), new ParameterValuesBuildingBlock()));
+         };
 
-         A.CallTo(() => starter.LoadSimulationTransferFromSnapshot(A<string>._)).Returns(_simulationTransfer);
+         A.CallTo(() => starter.LoadModuleFromSnapshot(A<string>._)).Returns(module);
 
          // EntityValidationTask is a fake
          var validationTask = IoC.Resolve<IEntityValidationTask>();
@@ -86,7 +71,7 @@ namespace MoBi.IntegrationTests.Snapshots
       [Observation]
       public void the_individual_building_blocks_are_loaded()
       {
-         _project.IndividualsCollection.Count.ShouldBeEqualTo(2);
+         _project.IndividualsCollection.Count.ShouldBeEqualTo(1);
       }
    }
 }
