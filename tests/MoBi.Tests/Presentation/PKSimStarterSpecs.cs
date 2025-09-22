@@ -30,6 +30,44 @@ namespace MoBi.Presentation
       }
    }
 
+   public class When_exporting_a_simulation_file_to_PKSim_and_the_application_was_installed_using_the_setup_but_overridden : concern_for_PKSimStarter
+   {
+      private readonly string _pkSimConfigPath = "PKSimConfigPath";
+      private Func<string, bool> _oldFileHelper;
+      private readonly string _pkSimUserSettingsPath = "PKSimUserSettingsPath";
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _oldFileHelper = FileHelper.FileExists;
+         FileHelper.FileExists = s => s == _pkSimConfigPath || s == _pkSimUserSettingsPath;
+      }
+
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _configuration.PKSimPath).Returns(_pkSimConfigPath);
+         A.CallTo(() => _applicationSettings.PKSimPath).Returns(_pkSimUserSettingsPath);
+      }
+
+      protected override void Because()
+      {
+         sut.StartPopulationSimulationWithSimulationFile(_simulationFile);
+      }
+
+      [Observation]
+      public void should_start_override_PKSim_with_the_simulation_file()
+      {
+         A.CallTo(() => _startableProcessFactory.CreateStartableProcess(_pkSimUserSettingsPath, A<string[]>._)).MustHaveHappened();
+      }
+
+      public override void GlobalCleanup()
+      {
+         base.GlobalCleanup();
+         FileHelper.FileExists = _oldFileHelper;
+      }
+   }
+
    public class When_exporting_a_simulation_file_to_PKSim_and_the_application_was_installed_using_the_setup : concern_for_PKSimStarter
    {
       private readonly string _pkSimConfigPath = "PKSimConfigPath";
