@@ -142,12 +142,13 @@ namespace MoBi.Presentation.Tasks
 
       private string retrievePKSimExecutablePath()
       {
-         //Installed properly via Setup? return standard path
-         if (FileHelper.FileExists(_configuration.PKSimPath))
-            return _configuration.PKSimPath;
-
+         // Specified explicitly via user settings? Use overridden path
          if (FileHelper.FileExists(_applicationSettings.PKSimPath))
             return _applicationSettings.PKSimPath;
+
+         // Installed properly via Setup? Use standard path
+         if (FileHelper.FileExists(_configuration.PKSimPath))
+            return _configuration.PKSimPath;
 
          throw new MoBiException(AppConstants.PKSim.NotInstalled);
       }
