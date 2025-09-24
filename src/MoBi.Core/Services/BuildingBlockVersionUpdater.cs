@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using MoBi.Assets;
 using MoBi.Core.Domain;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
@@ -41,11 +40,6 @@ namespace MoBi.Core.Services
 
          if (shouldConvertToPKSimModule(buildingBlock, conversionOption))
             buildingBlock.Module.IsPKSimModule = true;
-
-         if (buildingBlock is IndividualBuildingBlock individual)
-            individual.SnapshotOriginModuleId = null;
-         else if (buildingBlock is ExpressionProfileBuildingBlock expressionProfileBuildingBlock)
-            expressionProfileBuildingBlock.SnapshotOriginModuleId = null;
 
          buildingBlock.Version = newVersion;
 

@@ -35,11 +35,12 @@ namespace MoBi.IntegrationTests
       protected IMoBiContext _moBiContext;
       protected IInitialConditionsTask<InitialConditionsBuildingBlock> _initialConditionsTask;
       protected IParameterValuesTask _parameterValuesTask;
+      protected IPKSimStarter _pkSimStarter;
 
       protected override void Context()
       {
          _dialogCreator = A.Fake<IDialogCreator>();
-
+         _pkSimStarter = A.Fake<IPKSimStarter>();
          var interactionTask = new InteractionTask(IoC.Resolve<ISerializationTask>(), _dialogCreator, A.Fake<IIconRepository>(),
             A.Fake<INameCorrector>(), new CloneManagerForBuildingBlockForSpecs(),
             A.Fake<IAdjustFormulasVisitor>(), A.Fake<IObjectTypeResolver>(), A.Fake<IForbiddenNamesRetriever>()
@@ -61,7 +62,7 @@ namespace MoBi.IntegrationTests
          A.CallTo(() => _dialogCreator.AskForFileToOpen(A<string>._, A<string>._, A<string>._, A<string>._, A<string>._)).Returns(DomainHelperForSpecs.TestFileFullPath("Sim_V12.pkml"));
          _module = new Module();
 
-         sut = new InteractionTasksForModule(_context, new EditTaskForModule(_context), _parameterValuesTask, _initialConditionsTask);
+         sut = new InteractionTasksForModule(_context, new EditTaskForModule(_context), _parameterValuesTask, _initialConditionsTask, _pkSimStarter);
       }
    }
 
@@ -213,6 +214,26 @@ namespace MoBi.IntegrationTests
          A.CallTo(() => _selectTypePresenter.GetBuildingBlockType(A<Module>._)).Returns(type);
          sut.LoadBuildingBlocksToModule(_module);
          _module.BuildingBlocks.Count.ShouldBeEqualTo(0);
+      }
+   }
+
+   public class When_loading_from_snapshot : concern_for_InteractionTasksForModule
+   {
+      protected override void Because()
+      {
+         sut.LoadFromSnapshot("");
+      }
+
+      [Observation]
+      public void the_starter_is_used_to_create_the_module()
+      {
+         A.CallTo(() => _pkSimStarter.LoadModuleFromSnapshot("")).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_module_is_cloned()
+      {
+         A.CallTo(() => _context.Context.Clone(A<Module>._)).MustHaveHappened();
       }
    }
 }

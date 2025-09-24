@@ -8,6 +8,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
+using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
@@ -34,22 +35,25 @@ namespace MoBi.Presentation.Tasks.Interaction
       void CopyBuildingBlock(IBuildingBlock buildingBlockToCopy, Module destinationModule);
       bool Remove(IReadOnlyList<Module> modulesToRemove);
       void ExportModuleSnapshot(Module module);
+      Module LoadFromSnapshot(string snapshot);
    }
 
    public class InteractionTasksForModule : InteractionTasksForChildren<MoBiProject, Module>, IInteractionTasksForModule
    {
       private readonly IParameterValuesTask _parameterValuesTask;
       private readonly IInitialConditionsTask<InitialConditionsBuildingBlock> _initialConditionsTask;
+      private readonly IPKSimStarter _pkSimStarter;
       private IMoBiContext context => _interactionTaskContext.Context;
 
       public InteractionTasksForModule(
          IInteractionTaskContext interactionTaskContext,
          IEditTaskForModule editTask,
          IParameterValuesTask parameterValuesTask,
-         IInitialConditionsTask<InitialConditionsBuildingBlock> initialConditionsTask) : base(interactionTaskContext, editTask)
+         IInitialConditionsTask<InitialConditionsBuildingBlock> initialConditionsTask, IPKSimStarter pkSimStarter) : base(interactionTaskContext, editTask)
       {
          _parameterValuesTask = parameterValuesTask;
          _initialConditionsTask = initialConditionsTask;
+         _pkSimStarter = pkSimStarter;
       }
 
       public override IMoBiCommand GetRemoveCommand(Module objectToRemove, MoBiProject parent, IBuildingBlock buildingBlock) => new RemoveModuleCommand(objectToRemove);
@@ -207,6 +211,11 @@ namespace MoBi.Presentation.Tasks.Interaction
          {
             writer.Write(module.Snapshot.FromBase64String());
          }
+      }
+
+      public Module LoadFromSnapshot(string snapshot)
+      {
+         return _interactionTaskContext.Context.Clone(_pkSimStarter.LoadModuleFromSnapshot(snapshot));
       }
 
       private void showCouldNotRemoveMessage(IReadOnlyList<Module> modulesNotRemoved)

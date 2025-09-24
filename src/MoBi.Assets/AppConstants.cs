@@ -1179,6 +1179,8 @@ namespace MoBi.Assets
          public static readonly string ReloadModule = "Reload module";
          public static readonly string Snapshot = "Snapshot";
          public static readonly string Export = "Export";
+         public static readonly string ReloadExpressionProfile = "Reload Expression Profile";
+         public static readonly string ReloadIndividual = "Reload Individual";
 
          public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
 

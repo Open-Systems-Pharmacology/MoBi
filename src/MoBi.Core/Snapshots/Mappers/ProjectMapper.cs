@@ -11,7 +11,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Qualification;
-using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Services;
 using OSPSuite.Core.Snapshots;
 using OSPSuite.Core.Snapshots.Mappers;
@@ -62,7 +61,7 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
    {
       InputMapping[] inputMappings = [];
 
-      return (await mapToModel(snapshot, projectContext, (module, project) => inputMappings = loadProjectContentAndExportInputsFromPKSimSnapshot(module, project, qualificationConfiguration)), inputMappings);
+      return (await mapToModel(snapshot, projectContext, (module, project) => inputMappings = loadModulesAndExportInputsFromPKSimSnapshot(module, project, qualificationConfiguration)), inputMappings);
    }
 
    private async Task<ModelProject> mapToModel(SnapshotProject projectSnapshot, ProjectContext context, Action<string, ModelProject> rebuildAction)
@@ -87,6 +86,10 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       projectSnapshot.ExpressionProfileBuildingBlocks?.Each(x => project.AddExpressionProfileBuildingBlock(deserializeFromBase64PKML<ExpressionProfileBuildingBlock>(x, project)));
 
       projectSnapshot.IndividualBuildingBlocks?.Each(x => project.AddIndividualBuildingBlock(deserializeFromBase64PKML<IndividualBuildingBlock>(x, project)));
+
+      projectSnapshot.IndividualBuildingBlockSnapshots?.Each(x => project.AddIndividualBuildingBlock(_pkSimStarter.LoadIndividualFromSnapshot(x)));
+
+      projectSnapshot.ExpressionProfileSnapshots?.Each(x => project.AddExpressionProfileBuildingBlock(_pkSimStarter.LoadExpressionProfileFromSnapshot(x)));
 
       var snapshotContext = new SnapshotContext(project, SnapshotVersions.FindByMoBiProjectVersion(projectSnapshot.Version));
 
@@ -123,7 +126,7 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
 
    public override async Task<ModelProject> MapToModel(SnapshotProject projectSnapshot, ProjectContext context)
    {
-      return await mapToModel(projectSnapshot, context, loadProjectContentFromPKSimSnapshot);
+      return await mapToModel(projectSnapshot, context, loadModulesFromPKSimSnapshot);
    }
 
    private void addSimulations(ModelProject project, MoBiSimulation x)
@@ -131,27 +134,23 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       AddClassifiableToProject<ClassifiableSimulation, IMoBiSimulation>(project, x, project.AddSimulation, project.Simulations);
    }
 
-   private void loadProjectContentFromPKSimSnapshot(string snapshot, ModelProject project)
+   private void loadModulesFromPKSimSnapshot(string snapshot, ModelProject project)
    {
-      var simulationTransfer = _pkSimStarter.LoadSimulationTransferFromSnapshot(snapshot);
+      var module = _pkSimStarter.LoadModuleFromSnapshot(snapshot);
 
-      loadSimulationTransferContentToProject(project, simulationTransfer);
+      loadModuleToProject(project, module);
    }
 
-   private static void loadSimulationTransferContentToProject(ModelProject project, SimulationTransfer simulationTransfer)
+   private static void loadModuleToProject(ModelProject project, Module module)
    {
-      var simulationConfiguration = simulationTransfer.Simulation.Configuration;
-
-      simulationConfiguration.ModuleConfigurations.Each(x => project.AddModule(x.Module));
-      simulationConfiguration.ExpressionProfiles.Each(project.AddExpressionProfileBuildingBlock);
-      project.AddIndividualBuildingBlock(simulationConfiguration.Individual);
+      project.AddModule(module);
    }
 
-   private InputMapping[] loadProjectContentAndExportInputsFromPKSimSnapshot(string snapshot, ModelProject project, QualificationConfiguration config)
+   private InputMapping[] loadModulesAndExportInputsFromPKSimSnapshot(string snapshot, ModelProject project, QualificationConfiguration config)
    {
-      var (simulationTransfer, inputMappings) = _pkSimStarter.LoadSimulationTransferFromSnapshotAndExportInputs(snapshot, config);
+      var (module, inputMappings) = _pkSimStarter.LoadModuleFromSnapshotAndExportInputs(snapshot, config);
 
-      loadSimulationTransferContentToProject(project, simulationTransfer);
+      loadModuleToProject(project, module);
 
       return inputMappings;
    }
@@ -189,6 +188,8 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       snapshot.ExtensionModules = mapExtensionModules(project);
       snapshot.ExpressionProfileBuildingBlocks = mapExpressionProfilesBuildingBlocks(project);
       snapshot.IndividualBuildingBlocks = mapIndividualBuildingBlocks(project);
+      snapshot.ExpressionProfileSnapshots = mapExpressionProfileSnapshots(project);
+      snapshot.IndividualBuildingBlockSnapshots = mapIndividualSnapshots(project);
       snapshot.ObservedData = await MapObservedDataToSnapshots(project.AllObservedData);
       snapshot.ParameterIdentifications = await MapParameterIdentificationToSnapshots(project.AllParameterIdentifications);
 
@@ -208,29 +209,18 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
 
    private string[] mapPKSimModules(ModelProject project) => project.Modules.Where(shouldUsePKSimSnapshot).Select(x => x.Snapshot).ToArray();
    private string[] mapExtensionModules(ModelProject project) => project.Modules.Where(x => !shouldUsePKSimSnapshot(x)).Select(serializeToBase64PKML).ToArray();
-   private string[] mapExpressionProfilesBuildingBlocks(ModelProject project) => project.ExpressionProfileCollection.Where(x => !isFromSnapshot(x, project)).Select(serializeToBase64PKML).ToArray();
-   private string[] mapIndividualBuildingBlocks(ModelProject project) => project.IndividualsCollection.Where(x => !isFromSnapshot(x, project)).Select(serializeToBase64PKML).ToArray();
 
-   private static bool isFromSnapshot(ExpressionProfileBuildingBlock expressionProfileBuildingBlock, ModelProject project) =>
-      projectHasPKSimModule(expressionProfileBuildingBlock.SnapshotOriginModuleId, project);
+   private string[] mapExpressionProfilesBuildingBlocks(ModelProject project) => project.ExpressionProfileCollection.Where(x => !x.HasSnapshot).Select(serializeToBase64PKML).ToArray();
+   private string[] mapIndividualBuildingBlocks(ModelProject project) => project.IndividualsCollection.Where(x => !x.HasSnapshot).Select(serializeToBase64PKML).ToArray();
 
-   private static bool projectHasPKSimModule(string snapshotOriginModuleId, ModelProject project)
-   {
-      if (snapshotOriginModuleId == null)
-         return false;
-
-      var module = project.Modules.FindById(snapshotOriginModuleId);
-
-      return shouldUsePKSimSnapshot(module);
-   }
+   // TODO snapshot needs to be augmented with the changed parameters after https://github.com/Open-Systems-Pharmacology/MoBi/issues/1560
+   private string[] mapExpressionProfileSnapshots(ModelProject project) => project.ExpressionProfileCollection.Where(x => x.HasSnapshot).Select(x => x.Snapshot).ToArray();
+   private string[] mapIndividualSnapshots(ModelProject project) => project.IndividualsCollection.Where(x => x.HasSnapshot).Select(x => x.Snapshot).ToArray();
 
    private static bool shouldUsePKSimSnapshot(Module module)
    {
       return module.IsPKSimModule && module.HasSnapshot;
    }
-
-   private static bool isFromSnapshot(IndividualBuildingBlock individualBuildingBlock, ModelProject project) =>
-      projectHasPKSimModule(individualBuildingBlock.SnapshotOriginModuleId, project);
 
    private T deserializeFromBase64PKML<T>(string encodedModule, ModelProject project) => _xmlSerializationService.Deserialize<T>(encodedModule.FromBase64String(), project);
 

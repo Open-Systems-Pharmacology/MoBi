@@ -4,6 +4,7 @@ using FakeItEasy.Core;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Mappers;
+using MoBi.Core.Services;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.BDDHelper;
@@ -24,9 +25,10 @@ namespace MoBi.Presentation.Tasks
       protected IEditTasksForIndividualBuildingBlock _editTasksForIndividualBuildingBlock;
       protected IMoBiFormulaTask _moBiFormulaTask;
       protected IParameterFactory _parameterFactory;
-      private ICloneManagerForBuildingBlock _cloneManager;
+      protected ICloneManagerForBuildingBlock _cloneManager;
       private IPathAndValueEntityToDistributedParameterMapper _pathAndValueEntityToDistributedParameterMapper;
-      
+      protected IPKSimStarter _pkSimStarter;
+
       protected override void Context()
       {
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
@@ -35,8 +37,17 @@ namespace MoBi.Presentation.Tasks
          _parameterFactory = A.Fake<IParameterFactory>();
          _cloneManager = A.Fake<ICloneManagerForBuildingBlock>();
          _pathAndValueEntityToDistributedParameterMapper = A.Fake<IPathAndValueEntityToDistributedParameterMapper>();
-         
-         sut = new InteractionTasksForIndividualBuildingBlock(_interactionTaskContext, _editTasksForIndividualBuildingBlock, _moBiFormulaTask, A.Fake<IExportDataTableToExcelTask>(), _cloneManager, _pathAndValueEntityToDistributedParameterMapper, A.Fake<IIndividualParametersToIndividualParametersDataTableMapper>());
+
+         _pkSimStarter = A.Fake<IPKSimStarter>();
+         sut = new InteractionTasksForIndividualBuildingBlock(
+            _interactionTaskContext, 
+            _editTasksForIndividualBuildingBlock, 
+            _moBiFormulaTask, 
+            A.Fake<IExportDataTableToExcelTask>(), 
+            _cloneManager, 
+            _pathAndValueEntityToDistributedParameterMapper, 
+            A.Fake<IIndividualParametersToIndividualParametersDataTableMapper>(),
+            _pkSimStarter);
          A.CallTo(() => _parameterFactory.CreateDistributedParameter(A<string>._, A<DistributionType>._, A<double?>._, A<IDimension>._, A<string>._, A<Unit>._)).ReturnsLazily(newDistributedParameterFrom);
          A.CallTo(() => _parameterFactory.CreateParameter(A<string>._,A<double?>._, A<IDimension>._, A<string>._, A<IFormula>._, A<Unit>._)).ReturnsLazily(newParameterFrom);
       }
@@ -88,6 +99,26 @@ namespace MoBi.Presentation.Tasks
       public void sub_parameters_should_be_removed_from_the_building_block()
       {
          _subParameters.Each(x => _individualBuildingBlock.ShouldNotContain(x));
+      }
+   }
+
+   internal class When_loading_from_snapshot_string : concern_for_InteractionTasksForIndividualBuildingBlock
+   {
+      protected override void Because()
+      {
+         sut.LoadFromSnapshot("");
+      }
+
+      [Observation]
+      public void the_starter_creates_the_individual()
+      {
+         A.CallTo(() => _pkSimStarter.LoadIndividualFromSnapshot("")).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_object_is_cloned_before_returning()
+      {
+         A.CallTo(() => _cloneManager.Clone(A<IndividualBuildingBlock>._)).MustHaveHappened();
       }
    }
 }
