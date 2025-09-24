@@ -22,6 +22,12 @@ namespace MoBi.Core.Events
 
    public class SimulationRunCanceledEvent
    {
+      public IMoBiSimulation Simulation { get; set; }
+
+      public SimulationRunCanceledEvent(IMoBiSimulation simulation)
+      {
+         Simulation = simulation;
+      }
    }
 
    public class SimulationRunStartedEvent

@@ -41,10 +41,10 @@ namespace MoBi.Presentation.Presenter.Main
       private readonly IMoBiConfiguration _moBiConfiguration;
       public event EventHandler StatusChanged = delegate { };
       private int _numberOfReportsBeingCreated;
-      private readonly ConcurrentDictionary<string, bool> _simulations = new ConcurrentDictionary<string, bool>(); 
+      private readonly ConcurrentDictionary<string, bool> _simulations = new ConcurrentDictionary<string, bool>();
 
       private int activeSimulations => _simulations.Count(x => x.Value);
-      
+
       public StatusBarPresenter(IStatusBarView view, IMoBiConfiguration moBiConfiguration)
       {
          _view = view;
@@ -165,7 +165,11 @@ namespace MoBi.Presentation.Presenter.Main
 
       public void Handle(SimulationRunCanceledEvent eventToHandle)
       {
-         resetCountersAndHideBar();
+         _simulations[eventToHandle.Simulation.Id] = false;
+         if (activeSimulations == 0)
+         {
+            resetCountersAndHideBar();
+         }
       }
 
       private void hideProgressBar()

@@ -41,7 +41,8 @@ public class CoreSimulationRunner : ICoreSimulationRunner
    protected readonly ConcurrentDictionary<IMoBiSimulation, CancellationTokenSource> _cancellationTokenSources = new();
    private readonly IEntityValidationTask _entityValidationTask;
    private readonly IQuantitySelectionsRetriever _quantitySelectionsRetriever;
-   private ISimModelManager _simModelManager;
+   private readonly SemaphoreSlim _parallelismGate;
+   public int MaxParallelism { get; private set; }
 
    public CoreSimulationRunner(
       IMoBiContext context,
@@ -59,6 +60,10 @@ public class CoreSimulationRunner : ICoreSimulationRunner
       _simModelManagerFactory = simModelManagerFactory;
       _keyPathMapper = keyPathMapper;
       _entityValidationTask = entityValidationTask;
+
+      MaxParallelism = Environment.ProcessorCount;
+      _parallelismGate = new SemaphoreSlim(MaxParallelism, MaxParallelism);
+
    }
 
    public bool IsSimulationRunning(IMoBiSimulation simulation)
@@ -91,7 +96,7 @@ public class CoreSimulationRunner : ICoreSimulationRunner
       {
          cts.Cancel();
          cts.Dispose();
-         _context.PublishEvent(new SimulationRunCanceledEvent());
+         _context.PublishEvent(new SimulationRunCanceledEvent(simulation));
       }
    }
 
@@ -104,9 +109,8 @@ public class CoreSimulationRunner : ICoreSimulationRunner
             cts.Cancel();
             cts.Dispose();
          }
+         _context.PublishEvent(new SimulationRunCanceledEvent(simulation));
       }
-
-      _context.PublishEvent(new SimulationRunCanceledEvent());
    }
 
    private string getNewRepositoryName()
@@ -183,20 +187,6 @@ public class CoreSimulationRunner : ICoreSimulationRunner
       _context.PublishEvent(new ProgressingEvent(args.Progress, args.Progress, AppConstants.SimulationRun));
    }
 
-   private void removeEvents()
-   {
-      if (_simModelManager == null) return;
-      _simModelManager.SimulationProgress -= onSimulationProgress;
-      _simModelManager.Terminated -= onSimulationFinished;
-   }
-
-   private void addEvents()
-   {
-      if (_simModelManager == null) return;
-      _simModelManager.SimulationProgress += onSimulationProgress;
-      _simModelManager.Terminated += onSimulationFinished;
-   }
-
    private void addPersistableParametersToOutputSelection(IMoBiSimulation simulation)
    {
       _quantitySelectionsRetriever.UpdatePersistableOutputsIn(simulation);
@@ -205,19 +195,31 @@ public class CoreSimulationRunner : ICoreSimulationRunner
    private async Task startSimulationRunAsync(IMoBiSimulation simulation, Action<SimulationRunResults> resultsAction = null)
    {
       var cts = new CancellationTokenSource();
-      if (!_cancellationTokenSources.TryAdd(simulation, cts)) //this will prevent from running one that is already running
+      if (!_cancellationTokenSources.TryAdd(simulation, cts)) 
          return;
 
+      await _parallelismGate.WaitAsync(cts.Token);
       _context.PublishEvent(new SimulationRunStartedEvent(simulation));
       _context.PublishEvent(new ProgressInitEvent(100, AppConstants.SimulationRun));
-      _simModelManager = _simModelManagerFactory.Create();
+      var simModelManager = _simModelManagerFactory.Create();
+
+      void onProgress(object sender, SimulationProgressEventArgs args)
+      {
+         _context.PublishEvent(new ProgressingEvent(args.Progress, args.Progress, AppConstants.SimulationRun));
+      }
+
+      void onFinished(object sender, EventArgs eventArgs)
+      {
+         _context.PublishEvent(new ProgressDoneWithMessageEvent(AppConstants.SimulationRun));
+      }
+
+      simModelManager.SimulationProgress += onProgress;
+      simModelManager.Terminated += onFinished;
 
       try
       {
-         addEvents();
          updatePersistableFor(simulation);
-
-         var simulationRunResults = await _simModelManager.RunSimulationAsync(simulation, cts.Token);
+         var simulationRunResults = await simModelManager.RunSimulationAsync(simulation, cts.Token);
 
          simulation.HasChanged = true;
          resultsAction?.Invoke(simulationRunResults);
@@ -242,9 +244,8 @@ public class CoreSimulationRunner : ICoreSimulationRunner
                ctsToDispose.Dispose();
             }
          }
-
-         removeEvents();
          _context.PublishEvent(new SimulationRunFinishedEvent(simulation));
+         _parallelismGate.Release();
       }
    }
 
