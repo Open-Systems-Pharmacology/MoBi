@@ -16,7 +16,6 @@ namespace MoBi.Presentation.Presenter
       Size? ModalSize { get; }
       void SetLayoutItemLocalisationVisible(bool visible);
       void SetRelativePathRadioButtonEnabled(bool enabled);
-
    }
 
 
