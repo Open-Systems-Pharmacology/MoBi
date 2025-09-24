@@ -63,7 +63,6 @@ public class CoreSimulationRunner : ICoreSimulationRunner
 
       MaxParallelism = Environment.ProcessorCount;
       _parallelismGate = new SemaphoreSlim(MaxParallelism, MaxParallelism);
-
    }
 
    public bool IsSimulationRunning(IMoBiSimulation simulation)
@@ -109,6 +108,7 @@ public class CoreSimulationRunner : ICoreSimulationRunner
             cts.Cancel();
             cts.Dispose();
          }
+
          _context.PublishEvent(new SimulationRunCanceledEvent(simulation));
       }
    }
@@ -195,7 +195,7 @@ public class CoreSimulationRunner : ICoreSimulationRunner
    private async Task startSimulationRunAsync(IMoBiSimulation simulation, Action<SimulationRunResults> resultsAction = null)
    {
       var cts = new CancellationTokenSource();
-      if (!_cancellationTokenSources.TryAdd(simulation, cts)) 
+      if (!_cancellationTokenSources.TryAdd(simulation, cts))
          return;
 
       await _parallelismGate.WaitAsync(cts.Token);
@@ -244,6 +244,7 @@ public class CoreSimulationRunner : ICoreSimulationRunner
                ctsToDispose.Dispose();
             }
          }
+
          _context.PublishEvent(new SimulationRunFinishedEvent(simulation));
          _parallelismGate.Release();
       }
