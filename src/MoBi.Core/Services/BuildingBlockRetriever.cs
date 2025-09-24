@@ -79,10 +79,7 @@ namespace MoBi.Core.Services
          return null;
       }
 
-      private static IBuildingBlock typeAndNameMatchedBuildingBlockFor(IBuildingBlock buildingBlock, IReadOnlyList<IBuildingBlock> allBuildingBlocks)
-      {
-         return allBuildingBlocks.Where(x => x.IsAnImplementationOf(buildingBlock.GetType())).FirstOrDefault(x => x.IsNamed(buildingBlock.Name));
-      }
+      private static IBuildingBlock typeAndNameMatchedBuildingBlockFor(IBuildingBlock buildingBlock, IReadOnlyList<IBuildingBlock> allBuildingBlocks) => allBuildingBlocks.Where(x => x.IsAnImplementationOf(buildingBlock.GetType())).FirstOrDefault(x => x.IsNamed(buildingBlock.Name));
 
       private bool containsEntity(IBuildingBlock buildingBlock)
       {
