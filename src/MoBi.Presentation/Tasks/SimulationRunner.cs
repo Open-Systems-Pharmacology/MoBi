@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
@@ -16,7 +14,7 @@ namespace MoBi.Presentation.Tasks
    {
       private readonly IMoBiApplicationController _applicationController;
       private readonly IOutputSelectionsRetriever _outputSelectionsRetriever;
-   
+
       public SimulationRunner(IMoBiContext context,
          IMoBiApplicationController applicationController,
          IOutputSelectionsRetriever outputSelectionsRetriever,
