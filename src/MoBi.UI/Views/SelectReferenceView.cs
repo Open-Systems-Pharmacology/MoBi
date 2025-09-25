@@ -65,7 +65,7 @@ namespace MoBi.UI.Views
       }
 
       public void SetLayoutItemLocalisationVisible(bool visible) 
-         => layoutItemLocalisation.Visibility = visible ? LayoutVisibility.Always : LayoutVisibility.Never;
+         => layoutItemLocalisation.Visibility = LayoutVisibilityConvertor.FromBoolean(visible);
 
       public void SetRelativePathRadioButtonEnabled(bool enabled)
          => radioGroupReferenceType.Properties.Items.GetItemByValue(ObjectPathType.Relative).Enabled = enabled;
