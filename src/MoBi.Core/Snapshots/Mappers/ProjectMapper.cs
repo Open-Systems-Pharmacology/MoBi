@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using MoBi.Core.Domain.Builder;
+﻿using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
@@ -14,7 +10,12 @@ using OSPSuite.Core.Qualification;
 using OSPSuite.Core.Services;
 using OSPSuite.Core.Snapshots;
 using OSPSuite.Core.Snapshots.Mappers;
+using OSPSuite.SimModel;
 using OSPSuite.Utility.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using ModelDataRepository = OSPSuite.Core.Domain.Data.DataRepository;
 using ModelParameterIdentification = OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentification;
 using ModelProject = MoBi.Core.Domain.Model.MoBiProject;
@@ -105,12 +106,13 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
          NumberOfSimulationsLoaded = 0
       };
 
+      List<Task<MoBiSimulation>> tasks = [];
       foreach (var simulationSnapshot in projectSnapshot.Simulations)
       {
          try
          {
-            var simulation = await _simulationMapper.MapToModel(simulationSnapshot, simulationContext);
-            addSimulations(project, simulation);
+            tasks.Add(_simulationMapper.MapToModel(simulationSnapshot, simulationContext));
+            
             simulationContext.NumberOfSimulationsLoaded++;
          }
          catch (Exception e)
@@ -119,6 +121,10 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
          }
       }
 
+      Task.WaitAll(tasks.ToArray());
+      
+      tasks.Each(x => addSimulations(project, x.Result));
+      
       await updateProjectClassifications(projectSnapshot, snapshotContext);
 
       return project;
