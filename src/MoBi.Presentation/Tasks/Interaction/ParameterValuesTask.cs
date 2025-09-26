@@ -2,7 +2,6 @@
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
-using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
@@ -44,16 +43,16 @@ namespace MoBi.Presentation.Tasks.Interaction
          IExportDataTableToExcelTask exportDataTableToExcelTask,
          IParameterValuesToParameterValuesDataTableMapper dataTableMapper,
          IPathAndValueEntityToDistributedParameterMapper pathAndValueEntityToDistributedParameterMapper)
-         : base(interactionTaskContext, 
-            editTask, 
-            parameterValuesExtendManager, 
-            cloneManagerForBuildingBlock, 
-            moBiFormulaTask, 
-            dtoToQuantityToParameterValueMapper, 
-            parameterValuePathTask, 
-            objectTypeResolver, 
-            exportDataTableToExcelTask, 
-            dataTableMapper, 
+         : base(interactionTaskContext,
+            editTask,
+            parameterValuesExtendManager,
+            cloneManagerForBuildingBlock,
+            moBiFormulaTask,
+            dtoToQuantityToParameterValueMapper,
+            parameterValuePathTask,
+            objectTypeResolver,
+            exportDataTableToExcelTask,
+            dataTableMapper,
             pathAndValueEntityToDistributedParameterMapper)
       {
          _parameterValuesCreator = parameterValuesCreator;
@@ -144,8 +143,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             //and to initialize it with the correct data so that the initial state of the OK button is correct
             modalPresenter.Encapsulate(referenceAtParamValuePresenter);
             referenceAtParamValuePresenter.Init(null, new List<IObjectBase>(), null);
-            referenceAtParamValuePresenter.SetLayoutItemLocalisationVisible(false);
-            referenceAtParamValuePresenter.SetRelativePathRadioButtonEnabled(false);
+            referenceAtParamValuePresenter.SetRelativePathSelectorVisible(false);
             return !modalPresenter.Show(referenceAtParamValuePresenter.ModalSize) ? Enumerable.Empty<ObjectPath>().ToList() : referenceAtParamValuePresenter.GetAllSelections();
          }
       }

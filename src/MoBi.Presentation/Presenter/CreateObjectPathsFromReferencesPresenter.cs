@@ -14,8 +14,7 @@ namespace MoBi.Presentation.Presenter
       IReadOnlyList<ObjectPath> GetAllSelections();
       void AddSelection();
       Size? ModalSize { get; }
-      void SetLayoutItemLocalisationVisible(bool visible);
-      void SetRelativePathRadioButtonEnabled(bool enabled);
+      void SetRelativePathSelectorVisible(bool visible);
    }
 
 
@@ -45,7 +44,10 @@ namespace MoBi.Presentation.Presenter
 
       public override bool CanClose => true;
 
-      public void SetLayoutItemLocalisationVisible(bool visible) => _selectReferencePresenter.View.SetLayoutItemLocalisationVisible(visible);
-      public void SetRelativePathRadioButtonEnabled(bool enabled) => _selectReferencePresenter.View.SetRelativePathRadioButtonEnabled(enabled);
+      public void SetRelativePathSelectorVisible(bool visible)
+      {
+         _selectReferencePresenter.View.SetLayoutItemLocalisationVisible(visible);
+         _selectReferencePresenter.View.SetRelativePathRadioButtonEnabled(visible);
+      }  
    }
 }
