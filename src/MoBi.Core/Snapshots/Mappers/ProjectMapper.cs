@@ -15,6 +15,7 @@ using OSPSuite.Utility.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using ModelDataRepository = OSPSuite.Core.Domain.Data.DataRepository;
 using ModelParameterIdentification = OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentification;
@@ -29,6 +30,8 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
    private readonly SimulationMapper _simulationMapper;
    private readonly IPKSimStarter _pkSimStarter;
    private readonly ISimulationSettingsFactory _simulationSettingsFactory;
+   private readonly ICoreSimulationRunner _simulationRunner;
+   private readonly ICoreUserSettings _userSettings;
 
    public ProjectMapper(IXmlSerializationService xmlSerializationService,
       ICreationMetaDataFactory creationMetaDataFactory,
@@ -38,12 +41,16 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       ParameterIdentificationMapper parameterIdentificationMapper,
       SimulationMapper simulationMapper,
       IPKSimStarter pkSimStarter,
-      ISimulationSettingsFactory simulationSettingsFactory) : base(creationMetaDataFactory, logger, context, classificationSnapshotTask, parameterIdentificationMapper)
+      ISimulationSettingsFactory simulationSettingsFactory,
+      ICoreSimulationRunner simulationRunner,
+      ICoreUserSettings userSettings) : base(creationMetaDataFactory, logger, context, classificationSnapshotTask, parameterIdentificationMapper)
    {
       _xmlSerializationService = xmlSerializationService;
       _simulationMapper = simulationMapper;
       _pkSimStarter = pkSimStarter;
       _simulationSettingsFactory = simulationSettingsFactory;
+      _simulationRunner = simulationRunner;
+      _userSettings = userSettings;
    }
 
    /// <summary>
@@ -121,10 +128,40 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
          }
       }
 
-      Task.WaitAll(tasks.ToArray());
+      MoBiSimulation[] sims;
+      try
+      {
+         sims = await Task.WhenAll(tasks).ConfigureAwait(false);
+      }
+      catch (Exception ex)
+      {
+         // If any mapping failed, log and keep the successful ones
+         _logger.AddException(ex);
+         sims = tasks
+            .Where(t => t.Status == TaskStatus.RanToCompletion)
+            .Select(t => t.Result)
+            .ToArray();
+      }
+
+      sims.Each(x => addSimulations(project, x));
       
-      tasks.Each(x => addSimulations(project, x.Result));
-      
+
+      if (simulationContext.Run && sims.Any())
+      {
+         var maxParallel = Math.Max(1, _userSettings.MaximumNumberOfCoresToUse);
+         using var gate = new SemaphoreSlim(maxParallel);
+
+         var runTasks = sims.Select(async sim =>
+         {
+            await gate.WaitAsync();
+            try { await _simulationRunner.RunSimulationAsync(sim); }
+            catch (Exception ex) { _logger.AddException(ex); }
+            finally { gate.Release(); }
+         });
+
+         await Task.WhenAll(runTasks);
+      }
+
       await updateProjectClassifications(projectSnapshot, snapshotContext);
 
       return project;

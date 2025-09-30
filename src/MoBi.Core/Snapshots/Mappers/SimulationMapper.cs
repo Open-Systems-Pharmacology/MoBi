@@ -28,7 +28,6 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
    private readonly SimulationResidualVsTimeChartMapper _residualsVsTimeChartMapper;
    private readonly IOSPSuiteLogger _logger;
    private readonly ParameterMapper _parameterMapper;
-   private readonly ICoreSimulationRunner _simulationRunner;
    private readonly IMoBiDimensionFactory _dimensionFactory;
    private readonly IQuantityValueInSimulationChangeTracker _quantityChangeTracker;
    private readonly ValueOriginMapper _valueOriginMapper;
@@ -43,7 +42,6 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
       SimulationResidualVsTimeChartMapper residualsVsTimeChartMapper,
       IOSPSuiteLogger logger,
       ParameterMapper parameterMapper,
-      ICoreSimulationRunner simulationRunner,
       IMoBiDimensionFactory dimensionFactory,
       IQuantityValueInSimulationChangeTracker quantityChangeTracker,
       ValueOriginMapper valueOriginMapper)
@@ -57,7 +55,6 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
       _residualsVsTimeChartMapper = residualsVsTimeChartMapper;
       _logger = logger;
       _parameterMapper = parameterMapper;
-      _simulationRunner = simulationRunner;
       _dimensionFactory = dimensionFactory;
       _quantityChangeTracker = quantityChangeTracker;
       _valueOriginMapper = valueOriginMapper;
@@ -88,9 +85,6 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
       updateParameters(simulation, snapshot.Parameters);
 
       updateScaleDivisors(simulation, snapshot.ScaleDivisors);
-
-      if (context.Run)
-         await _simulationRunner.RunSimulationAsync(simulation);
 
       return simulation;
    }
