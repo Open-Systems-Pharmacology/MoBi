@@ -143,7 +143,6 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
 
       sims.Each(x => addSimulations(project, x));
 
-
       if (simulationContext.Run && sims.Any())
       {
          var maxParallel = Math.Max(1, _userSettings.MaximumNumberOfCoresToUse);
