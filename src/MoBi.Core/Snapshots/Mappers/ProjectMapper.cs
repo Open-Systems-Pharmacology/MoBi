@@ -112,13 +112,15 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
          NumberOfSimulationsLoaded = 0
       };
 
-      List<Task<MoBiSimulation>> tasks = [];
+      var sims = new List<MoBiSimulation>();
       foreach (var simulationSnapshot in projectSnapshot.Simulations)
       {
          try
          {
-            tasks.Add(_simulationMapper.MapToModel(simulationSnapshot, simulationContext));
+            var simulation = await _simulationMapper.MapToModel(simulationSnapshot, simulationContext);
+            addSimulations(project, simulation);
 
+            sims.Add(simulation);
             simulationContext.NumberOfSimulationsLoaded++;
          }
          catch (Exception e)
@@ -126,22 +128,6 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
             _logger.AddException(e);
          }
       }
-
-      MoBiSimulation[] sims;
-      try
-      {
-         sims = await Task.WhenAll(tasks).ConfigureAwait(false);
-      }
-      catch (Exception ex)
-      {
-         _logger.AddException(ex);
-         sims = tasks
-            .Where(t => t.Status == TaskStatus.RanToCompletion)
-            .Select(t => t.Result)
-            .ToArray();
-      }
-
-      sims.Each(x => addSimulations(project, x));
 
       if (simulationContext.Run && sims.Any())
       {
