@@ -1,4 +1,9 @@
-﻿using MoBi.Core.Domain.Builder;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
@@ -10,13 +15,7 @@ using OSPSuite.Core.Qualification;
 using OSPSuite.Core.Services;
 using OSPSuite.Core.Snapshots;
 using OSPSuite.Core.Snapshots.Mappers;
-using OSPSuite.SimModel;
 using OSPSuite.Utility.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using ModelDataRepository = OSPSuite.Core.Domain.Data.DataRepository;
 using ModelParameterIdentification = OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentification;
 using ModelProject = MoBi.Core.Domain.Model.MoBiProject;
@@ -119,7 +118,7 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
          try
          {
             tasks.Add(_simulationMapper.MapToModel(simulationSnapshot, simulationContext));
-            
+
             simulationContext.NumberOfSimulationsLoaded++;
          }
          catch (Exception e)
@@ -135,7 +134,6 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       }
       catch (Exception ex)
       {
-         // If any mapping failed, log and keep the successful ones
          _logger.AddException(ex);
          sims = tasks
             .Where(t => t.Status == TaskStatus.RanToCompletion)
@@ -144,7 +142,7 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       }
 
       sims.Each(x => addSimulations(project, x));
-      
+
 
       if (simulationContext.Run && sims.Any())
       {
@@ -154,9 +152,18 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
          var runTasks = sims.Select(async sim =>
          {
             await gate.WaitAsync();
-            try { await _simulationRunner.RunSimulationAsync(sim); }
-            catch (Exception ex) { _logger.AddException(ex); }
-            finally { gate.Release(); }
+            try
+            {
+               await _simulationRunner.RunSimulationAsync(sim);
+            }
+            catch (Exception ex)
+            {
+               _logger.AddException(ex);
+            }
+            finally
+            {
+               gate.Release();
+            }
          });
 
          await Task.WhenAll(runTasks);
