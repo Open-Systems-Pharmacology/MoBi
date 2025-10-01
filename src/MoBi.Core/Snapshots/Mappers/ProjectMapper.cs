@@ -131,12 +131,13 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
 
       if (simulationContext.Run && sims.Any())
       {
-         var maxParallel = Math.Max(1, _userSettings.MaximumNumberOfCoresToUse);
-         using var gate = new SemaphoreSlim(maxParallel);
-
-         var runTasks = sims.Select(async sim =>
+         var options = new ParallelOptions
          {
-            await gate.WaitAsync();
+            MaxDegreeOfParallelism = Math.Max(1, _userSettings.MaximumNumberOfCoresToUse)
+         };
+
+         await Parallel.ForEachAsync(sims, options, async (sim, ct) =>
+         {
             try
             {
                await _simulationRunner.RunSimulationAsync(sim);
@@ -145,14 +146,9 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
             {
                _logger.AddException(ex);
             }
-            finally
-            {
-               gate.Release();
-            }
          });
-
-         await Task.WhenAll(runTasks);
       }
+
 
       await updateProjectClassifications(projectSnapshot, snapshotContext);
 

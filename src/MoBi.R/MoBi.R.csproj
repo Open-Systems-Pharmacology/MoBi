@@ -1,15 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+        <TargetFramework>net8.0-windows</TargetFramework>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Core" Version="13.0.58" />
-    <PackageReference Include="OSPSuite.Infrastructure" Version="13.0.58" />
-    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="13.0.58" />
-    <PackageReference Include="OSPSuite.R" Version="13.0.58" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.0-lRGJM" />
+    <PackageReference Include="OSPSuite.Infrastructure" Version="13.0.0-lRGJM" />
+    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="13.0.0-lRGJM" />
+    <PackageReference Include="OSPSuite.R" Version="13.0.0-lRGJM" />
   </ItemGroup>
 
   <ItemGroup>

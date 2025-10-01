@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+        <TargetFramework>net8.0-windows</TargetFramework>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <PackageTags>open-systems-pharmacology, ospsuite-components</PackageTags>
@@ -30,13 +30,13 @@
     <PackageReference Include="FluentNHibernate" Version="3.4.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="OSPSuite.Utility" Version="4.1.1.4" />
-    <PackageReference Include="OSPSuite.Core" Version="13.0.58" />
-    <PackageReference Include="OSPSuite.Assets" Version="13.0.58" />
-    <PackageReference Include="OSPSuite.Assets.Images" Version="13.0.58" />
-    <PackageReference Include="OSPSuite.Infrastructure.Export" Version="13.0.58" />
-    <PackageReference Include="OSPSuite.Infrastructure.Reporting" Version="13.0.58" />
-    <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="13.0.58" />
-    <PackageReference Include="OSPSuite.Infrastructure.Import" Version="13.0.58" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.0-lRGJM" />
+    <PackageReference Include="OSPSuite.Assets" Version="13.0.0-lRGJM" />
+    <PackageReference Include="OSPSuite.Assets.Images" Version="13.0.0-lRGJM" />
+    <PackageReference Include="OSPSuite.Infrastructure.Export" Version="13.0.0-lRGJM" />
+    <PackageReference Include="OSPSuite.Infrastructure.Reporting" Version="13.0.0-lRGJM" />
+    <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="13.0.0-lRGJM" />
+    <PackageReference Include="OSPSuite.Infrastructure.Import" Version="13.0.0-lRGJM" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\LICENSE">

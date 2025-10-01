@@ -354,7 +354,12 @@ namespace MoBi.Presentation.Tasks
 
       private IEnumerable<IContainer> allMolecules()
       {
-         return _buildingBlockRepository.MoleculeBlockCollection.SelectMany(buildingBlock => { return buildingBlock.Select(builder => builder); }).DistinctBy(builder => builder.Name);
+         return System.Linq.Enumerable.DistinctBy(
+            _buildingBlockRepository.MoleculeBlockCollection.SelectMany(bb => bb),
+            b => b.Name,
+            StringComparer.Ordinal);
+
+
       }
 
       private static void addUndefinedValueTo(MetaDataCategory metaDataCategory)
@@ -415,14 +420,20 @@ namespace MoBi.Presentation.Tasks
 
       private IEnumerable<IContainer> allOrgans()
       {
-         return allTopContainers().SelectMany(allSubContainers).Where(container => container.ContainerType == ContainerType.Organ)
-            .DistinctBy(x => x.Name);
+         var query = allTopContainers()
+            .SelectMany(allSubContainers)
+            .Where(c => c.ContainerType == ContainerType.Organ);
+
+         return MoBi.Core.Helper.EnumerableExtensions.DistinctBy(query, c => c.Name);
       }
 
       private IEnumerable<IContainer> allCompartments()
       {
-         return allTopContainers().SelectMany(allSubContainers).Where(container => container.ContainerType == ContainerType.Compartment)
-            .DistinctBy(x => x.Name);
+         var q = allTopContainers()
+            .SelectMany(allSubContainers)
+            .Where(c => c.ContainerType == ContainerType.Compartment);
+
+         return MoBi.Core.Helper.EnumerableExtensions.DistinctBy(q, c => c.Name);
       }
 
       private IEnumerable<IContainer> allTopContainers()

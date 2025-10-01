@@ -89,7 +89,7 @@ namespace MoBi.Core.Services
       private void correctModuleNames(IReadOnlyList<Module> modulesToRename, string simulationName, IReadOnlyList<Module> existingModules, string originalSimulationName)
       {
          //these names are unique so better creating a HashSet.
-         var takenNames = existingModules.AllNames().ToHashSet();
+         var takenNames = existingModules.AllNames();
 
          modulesToRename
             .Each(module=> renameModulesAfterSimulation(module, simulationName, originalSimulationName));

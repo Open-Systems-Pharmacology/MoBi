@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+        <TargetFramework>net8.0-windows</TargetFramework>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Core" Version="13.0.58" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.0-lRGJM" />
   </ItemGroup>
 
   <ItemGroup>
