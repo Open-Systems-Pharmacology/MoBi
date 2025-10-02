@@ -335,7 +335,7 @@ namespace MoBi.Presentation.Presenter
 
          var repositories = editorPresenter.AllDataColumns.Select(col => col.Repository).Distinct();
          repositoriesToRemove = repositories.Except(dataRepositories).ToList();
-         editorPresenter.RemoveDataRepositories(repositoriesToRemove);
+         editorPresenter.RemoveDataRepositories(repositoriesToRemove, true);
       }
 
       public void Handle(ObservedDataRemovedEvent eventToHandle)
