@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Repository;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -34,13 +34,15 @@ namespace MoBi.Core.Services
       {
          try
          {
-            var formula = objectBase as IFormula;
-
-            if (formula != null)
+            if (objectBase is IFormula formula)
                return buildingBlockForFormula(formula, buildingBlock);
 
-            _entity = objectBase as IEntity;
             var allBuildingBlocks = _buildingBlockRepository.All();
+
+            if (objectBase is IBuildingBlock simulationBuildingBlock)
+               return typeAndNameMatchedBuildingBlockFor(simulationBuildingBlock, allBuildingBlocks);
+            
+            _entity = objectBase as IEntity;
             
             if (_entity == null)
                throw new ArgumentException(AppConstants.Exceptions.BuildingBlockNotFoundFor(objectBase));
@@ -67,7 +69,7 @@ namespace MoBi.Core.Services
             return null;
 
          //try to find template building block according to name and type
-         templateBuildingBlock = allBuildingBlocks.Where(x => x.IsAnImplementationOf(buildingBlock.GetType())).FirstOrDefault(x => x.IsNamed(buildingBlock.Name));
+         templateBuildingBlock = typeAndNameMatchedBuildingBlockFor(buildingBlock, allBuildingBlocks);
          if (templateBuildingBlock == null)
             return null;
 
@@ -76,6 +78,9 @@ namespace MoBi.Core.Services
 
          return null;
       }
+
+      private static IBuildingBlock typeAndNameMatchedBuildingBlockFor(IBuildingBlock buildingBlock, IReadOnlyList<IBuildingBlock> allBuildingBlocks) => 
+         allBuildingBlocks.Where(x => x.IsAnImplementationOf(buildingBlock.GetType())).FirstOrDefault(x => x.IsNamed(buildingBlock.Name));
 
       private bool containsEntity(IBuildingBlock buildingBlock)
       {
