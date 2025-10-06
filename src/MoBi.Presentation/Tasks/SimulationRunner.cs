@@ -292,5 +292,10 @@ namespace MoBi.Presentation.Tasks
       {
          return _cancellationTokenSources.Values.Any(cts => !cts.IsCancellationRequested);
       }
+
+      public IEnumerable<IMoBiSimulation> RunningSimulations()
+      {
+         return _cancellationTokenSources.Where(kvp => !kvp.Value.IsCancellationRequested).Select(kvp => kvp.Key);
+      }
    }
 }
