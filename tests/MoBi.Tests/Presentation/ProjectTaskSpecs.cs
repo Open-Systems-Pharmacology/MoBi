@@ -16,6 +16,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Services;
@@ -39,6 +40,8 @@ namespace MoBi.Presentation
       private IHeavyWorkManager _heavyWorkManager;
       private ISbmlTask _sbmlTask;
       protected IReactionBuildingBlockFactory _reactionBuildingBlockFactory;
+      protected IParameterIdentificationRunner _parameterIdentificationRunner;
+      protected ISimulationRunner _simulationRunner;
 
       protected override void Context()
       {
@@ -53,8 +56,11 @@ namespace MoBi.Presentation
          _spatialStructureFactory = A.Fake<IMoBiSpatialStructureFactory>();
          _sbmlTask = A.Fake<ISbmlTask>();
          _reactionBuildingBlockFactory = A.Fake<IReactionBuildingBlockFactory>();
+         _parameterIdentificationRunner = A.Fake<IParameterIdentificationRunner>();
+         _simulationRunner = A.Fake<ISimulationRunner>();
+
          sut = new ProjectTask(_context, _serializationTask, _dialogCreator, _mruProvider, _heavyWorkManager,
-            new SimulationLoader(_cloneManager, _nameCorrector, _context), _sbmlTask);
+            new SimulationLoader(_cloneManager, _nameCorrector, _context), _sbmlTask, _parameterIdentificationRunner, _simulationRunner);
       }
    }
 
