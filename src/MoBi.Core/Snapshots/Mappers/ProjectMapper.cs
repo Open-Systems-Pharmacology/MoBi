@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
@@ -112,7 +111,6 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
          NumberOfSimulationsLoaded = 0
       };
 
-      var sims = new List<MoBiSimulation>();
       foreach (var simulationSnapshot in projectSnapshot.Simulations)
       {
          try
@@ -120,7 +118,6 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
             var simulation = await _simulationMapper.MapToModel(simulationSnapshot, simulationContext);
             addSimulations(project, simulation);
 
-            sims.Add(simulation);
             simulationContext.NumberOfSimulationsLoaded++;
          }
          catch (Exception e)
@@ -129,14 +126,14 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
          }
       }
 
-      if (simulationContext.Run && sims.Any())
+      if (simulationContext.Run && project.Simulations.Any())
       {
          var options = new ParallelOptions
          {
             MaxDegreeOfParallelism = Math.Max(1, _userSettings.MaximumNumberOfCoresToUse)
          };
 
-         await Parallel.ForEachAsync(sims, options, async (sim, ct) =>
+         await Parallel.ForEachAsync(project.Simulations, options, async (sim, ct) =>
          {
             try
             {
@@ -148,7 +145,6 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
             }
          });
       }
-
 
       await updateProjectClassifications(projectSnapshot, snapshotContext);
 
