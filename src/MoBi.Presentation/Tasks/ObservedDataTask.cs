@@ -40,6 +40,8 @@ namespace MoBi.Presentation.Tasks
       void RemoveResultsFromSimulations(IReadOnlyList<DataRepository> resultsToRemove);
 
       void AddAndReplaceObservedDataFromConfigurationToProject(ImporterConfiguration configuration, IReadOnlyList<DataRepository> observedDataFromSameFile);
+
+      void DeleteResultsFromSimulationCommand(IMoBiSimulation simulation, DataRepository dataRepository);
    }
 
    public class ObservedDataTask : OSPSuite.Core.Domain.Services.ObservedDataTask, IObservedDataTask
@@ -163,6 +165,15 @@ namespace MoBi.Presentation.Tasks
 
          simulation.HistoricResults.Each(x => macroCommand.Add(new RemoveHistoricResultFromSimulationCommand(simulation, x)));
          return macroCommand;
+      }
+
+      public void DeleteResultsFromSimulationCommand(IMoBiSimulation simulation, DataRepository dataRepository)
+      {
+         var viewResult = _dialogCreator.MessageBoxYesNo(AppConstants.Dialog.RemoveSimulationResultsFromSimulation(dataRepository.Name, simulation.Name));
+         if (viewResult == ViewResult.No)
+            return;
+
+         _context.AddToHistory(new RemoveHistoricResultFromSimulationCommand(simulation, dataRepository).RunCommand(_context));
       }
 
       private (IReadOnlyList<MetaDataCategory>, DataImporterSettings) initializeSettings()
