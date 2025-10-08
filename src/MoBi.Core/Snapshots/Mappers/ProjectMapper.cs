@@ -117,7 +117,6 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
          {
             var simulation = await _simulationMapper.MapToModel(simulationSnapshot, simulationContext);
             addSimulations(project, simulation);
-
             simulationContext.NumberOfSimulationsLoaded++;
          }
          catch (Exception e)
@@ -128,27 +127,32 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
 
       if (simulationContext.Run && project.Simulations.Any())
       {
-         var options = new ParallelOptions
-         {
-            MaxDegreeOfParallelism = Math.Max(1, _userSettings.MaximumNumberOfCoresToUse)
-         };
-
-         await Parallel.ForEachAsync(project.Simulations, options, async (sim, ct) =>
-         {
-            try
-            {
-               await _simulationRunner.RunSimulationAsync(sim);
-            }
-            catch (Exception ex)
-            {
-               _logger.AddException(ex);
-            }
-         });
+         await runParallelSimulations(project);
       }
 
       await updateProjectClassifications(projectSnapshot, snapshotContext);
 
       return project;
+   }
+
+   private async Task runParallelSimulations(MoBiProject project)
+   {
+      var options = new ParallelOptions
+      {
+         MaxDegreeOfParallelism = Math.Max(1, _userSettings.MaximumNumberOfCoresToUse)
+      };
+
+      await Parallel.ForEachAsync(project.Simulations, options, async (sim, ct) =>
+      {
+         try
+         {
+            await _simulationRunner.RunSimulationAsync(sim);
+         }
+         catch (Exception ex)
+         {
+            _logger.AddException(ex);
+         }
+      });
    }
 
    public override async Task<ModelProject> MapToModel(SnapshotProject projectSnapshot, ProjectContext context)
