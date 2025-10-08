@@ -420,20 +420,14 @@ namespace MoBi.Presentation.Tasks
 
       private IEnumerable<IContainer> allOrgans()
       {
-         var query = allTopContainers()
-            .SelectMany(allSubContainers)
-            .Where(c => c.ContainerType == ContainerType.Organ);
-
-         return MoBi.Core.Helper.EnumerableExtensions.DistinctBy(query, c => c.Name);
+         return allTopContainers().SelectMany(allSubContainers).Where(container => container.ContainerType == ContainerType.Organ)
+            .DistinctBy(x => x.Name);
       }
 
       private IEnumerable<IContainer> allCompartments()
       {
-         var q = allTopContainers()
-            .SelectMany(allSubContainers)
-            .Where(c => c.ContainerType == ContainerType.Compartment);
-
-         return MoBi.Core.Helper.EnumerableExtensions.DistinctBy(q, c => c.Name);
+         return allTopContainers().SelectMany(allSubContainers).Where(container => container.ContainerType == ContainerType.Compartment)
+            .DistinctBy(x => x.Name);
       }
 
       private IEnumerable<IContainer> allTopContainers()
