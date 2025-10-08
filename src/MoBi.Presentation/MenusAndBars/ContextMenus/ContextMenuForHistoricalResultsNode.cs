@@ -59,7 +59,8 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithIcon(ApplicationIcons.Rename)
             .WithCommand(command));
 
-         var removeResultsCommand = _container.Resolve<RemoveSimulationResultCommand>();
+
+         var removeResultsCommand = _container.Resolve<RemoveSimulationResultUICommand>().InitializeWith(simulation, dataRepository);
          removeResultsCommand.Subject = dataRepository;
          removeResultsCommand.Simulation = simulation;
 

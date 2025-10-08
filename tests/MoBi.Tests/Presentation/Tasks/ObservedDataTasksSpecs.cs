@@ -2,7 +2,6 @@
 using System.Linq;
 using FakeItEasy;
 using MoBi.Assets;
-using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
 using MoBi.Core.Services;
@@ -20,7 +19,6 @@ using OSPSuite.Core.Import;
 using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Import.Core;
 using OSPSuite.Infrastructure.Import.Services;
-using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Extensions;
 using ImporterConfiguration = OSPSuite.Core.Import.ImporterConfiguration;
 
@@ -42,6 +40,7 @@ namespace MoBi.Presentation.Tasks
       protected IObjectBaseNamingTask _namingTask;
       private IConfirmationManager _confirmationManager;
       protected IParameterIdentificationTask _parameterIdentificationTask;
+
       protected override void Context()
       {
          _dataImporter = A.Fake<IDataImporter>();
@@ -393,7 +392,7 @@ namespace MoBi.Presentation.Tasks
          _matchingRepository.BaseGrid.Values = new[] { 10.0f };
          _matchingRepository.AllButBaseGrid().Each(x => x.Values = new[] { 11.0f });
          _matchingRepository.BaseGrid.Name = "Time";
-         _matchingRepository.AllButBaseGrid().ToList().Each((x,i) => x.Name = $"name{i}");
+         _matchingRepository.AllButBaseGrid().ToList().Each((x, i) => x.Name = $"name{i}");
       }
 
       protected override void Because()
@@ -470,6 +469,43 @@ namespace MoBi.Presentation.Tasks
       {
          _dataRepository.BaseGrid.Values.First().ShouldBeEqualTo(0.0f);
          _dataRepository.AllButBaseGrid().All(x => x.Values.First() == 1.0f).ShouldBeTrue();
+      }
+   }
+
+   internal class When_removing_single_result_from_a_simulation : concern_for_ObservedDataTask
+   {
+      private DataRepository _currentResult;
+      private DataRepository _historicResult;
+      private MoBiSimulation _moBiSimulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _currentResult = new DataRepository("id1");
+         _historicResult = new DataRepository("id2");
+         _moBiSimulation = new MoBiSimulation { ResultsDataRepository = _currentResult };
+         _moBiSimulation.HistoricResults.Add(_historicResult);
+
+         _project.AddSimulation(_moBiSimulation);
+
+         A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
+      }
+
+      protected override void Because()
+      {
+         sut.DeleteResultsFromSimulation(_moBiSimulation, _currentResult);
+      }
+
+      [Observation]
+      public void the_dialog_must_been_shown_to_the_user()
+      {
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(AppConstants.Dialog.RemoveSimulationResultsFromSimulation(_currentResult.Name, _moBiSimulation.Name), ViewResult.Yes)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_result_must_be_removed_from_the_simulation()
+      {
+         _moBiSimulation.HistoricResults.Contains(_currentResult).ShouldBeFalse();
       }
    }
 }

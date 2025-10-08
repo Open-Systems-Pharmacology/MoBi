@@ -41,7 +41,7 @@ namespace MoBi.Presentation.Tasks
 
       void AddAndReplaceObservedDataFromConfigurationToProject(ImporterConfiguration configuration, IReadOnlyList<DataRepository> observedDataFromSameFile);
 
-      void DeleteResultsFromSimulationCommand(IMoBiSimulation simulation, DataRepository dataRepository);
+      void DeleteResultsFromSimulation(IMoBiSimulation simulation, DataRepository dataRepository);
    }
 
    public class ObservedDataTask : OSPSuite.Core.Domain.Services.ObservedDataTask, IObservedDataTask
@@ -167,7 +167,7 @@ namespace MoBi.Presentation.Tasks
          return macroCommand;
       }
 
-      public void DeleteResultsFromSimulationCommand(IMoBiSimulation simulation, DataRepository dataRepository)
+      public void DeleteResultsFromSimulation(IMoBiSimulation simulation, DataRepository dataRepository)
       {
          var viewResult = _dialogCreator.MessageBoxYesNo(AppConstants.Dialog.RemoveSimulationResultsFromSimulation(dataRepository.Name, simulation.Name));
          if (viewResult == ViewResult.No)

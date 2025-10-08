@@ -37,19 +37,26 @@ namespace MoBi.Presentation.UICommand
       }
    }
 
-   internal class RemoveSimulationResultCommand : ObjectUICommand<DataRepository>
+   public class RemoveSimulationResultUICommand : ObjectUICommand<DataRepository>
    {
       private readonly IObservedDataTask _dataTask;
       public IMoBiSimulation Simulation { get; set; }
 
-      public RemoveSimulationResultCommand(IObservedDataTask dataTask)
+      public RemoveSimulationResultUICommand(IObservedDataTask dataTask)
       {
          _dataTask = dataTask;
       }
 
+      public RemoveSimulationResultUICommand InitializeWith(IMoBiSimulation simulation, DataRepository dataRepository)
+      {
+         Simulation = simulation;
+         Subject = dataRepository;
+         return this;
+      }
+
       protected override void PerformExecute()
       {
-         _dataTask.DeleteResultsFromSimulationCommand(Simulation, Subject);
+         _dataTask.DeleteResultsFromSimulation(Simulation, Subject);
       }
    }
 
