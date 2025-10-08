@@ -2,6 +2,7 @@
 using System.Linq;
 using FakeItEasy;
 using MoBi.Assets;
+using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
 using MoBi.Core.Services;
@@ -472,40 +473,64 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   internal class When_removing_single_result_from_a_simulation : concern_for_ObservedDataTask
+   internal abstract class RemovingSingleResultFromASimulationBase : concern_for_ObservedDataTask
    {
-      private DataRepository _currentResult;
-      private DataRepository _historicResult;
-      private MoBiSimulation _moBiSimulation;
+      protected DataRepository _currentResult;
+      protected DataRepository _historicResult;
+      protected MoBiSimulation _simulation;
+
+      protected abstract ViewResult Confirmation { get; }
 
       protected override void Context()
       {
          base.Context();
+
          _currentResult = new DataRepository("id1");
          _historicResult = new DataRepository("id2");
-         _moBiSimulation = new MoBiSimulation { ResultsDataRepository = _currentResult };
-         _moBiSimulation.HistoricResults.Add(_historicResult);
 
-         _project.AddSimulation(_moBiSimulation);
+         _simulation = new MoBiSimulation { ResultsDataRepository = _currentResult };
+         _simulation.HistoricResults.Add(_historicResult);
 
-         A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
+         _project.AddSimulation(_simulation);
+
+         A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(Confirmation);
       }
 
       protected override void Because()
       {
-         sut.DeleteResultsFromSimulation(_moBiSimulation, _currentResult);
+         sut.DeleteResultsFromSimulation(_simulation, _currentResult);
       }
 
       [Observation]
-      public void the_dialog_must_been_shown_to_the_user()
+      public void should_prompt_the_user()
       {
-         A.CallTo(() => _dialogCreator.MessageBoxYesNo(AppConstants.Dialog.RemoveSimulationResultsFromSimulation(_currentResult.Name, _moBiSimulation.Name), ViewResult.Yes)).MustHaveHappened();
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(
+               AppConstants.Dialog.RemoveSimulationResultsFromSimulation(_currentResult.Name, _simulation.Name),
+               ViewResult.Yes))
+            .MustHaveHappened();
       }
+   }
+
+   internal class When_removing_single_result_and_user_confirms : RemovingSingleResultFromASimulationBase
+   {
+      protected override ViewResult Confirmation => ViewResult.Yes;
 
       [Observation]
-      public void the_result_must_be_removed_from_the_simulation()
+      public void removes_the_result_from_the_simulation()
       {
-         _moBiSimulation.HistoricResults.Contains(_currentResult).ShouldBeFalse();
+         _simulation.HistoricResults.Contains(_currentResult).ShouldBeFalse();
+      }
+   }
+
+   internal class When_removing_single_result_and_user_cancels : RemovingSingleResultFromASimulationBase
+   {
+      protected override ViewResult Confirmation => ViewResult.No;
+
+      [Observation]
+      public void should_not_execute_the_remove_command()
+      {
+         A.CallTo(() => _context.AddToHistory(A<RemoveHistoricResultFromSimulationCommand>.Ignored))
+            .MustNotHaveHappened();
       }
    }
 }

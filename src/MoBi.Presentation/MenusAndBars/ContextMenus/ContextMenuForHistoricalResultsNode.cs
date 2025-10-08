@@ -61,8 +61,6 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
 
          var removeResultsCommand = _container.Resolve<RemoveSimulationResultUICommand>().InitializeWith(simulation, dataRepository);
-         removeResultsCommand.Subject = dataRepository;
-         removeResultsCommand.Simulation = simulation;
 
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
             .WithCommand(removeResultsCommand)
