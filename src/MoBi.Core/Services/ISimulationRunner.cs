@@ -1,4 +1,5 @@
-﻿using MoBi.Core.Domain.Model;
+﻿using System.Collections.Generic;
+using MoBi.Core.Domain.Model;
 
 namespace MoBi.Core.Services
 {
@@ -6,5 +7,6 @@ namespace MoBi.Core.Services
    {
       bool IsAnySimulationRunning();
       bool IsSimulationIdle(IMoBiSimulation simulation);
+      IEnumerable<IMoBiSimulation> RunningSimulations();
    }
 }

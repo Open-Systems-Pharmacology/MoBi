@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
@@ -64,6 +65,11 @@ namespace MoBi.Presentation.Tasks
       public bool IsAnySimulationRunning()
       {
          return _cancellationTokenSources.Values.Any(cts => !cts.IsCancellationRequested);
+      }
+
+      public IEnumerable<IMoBiSimulation> RunningSimulations()
+      {
+         return _cancellationTokenSources.Where(kvp => !kvp.Value.IsCancellationRequested).Select(kvp => kvp.Key);
       }
    }
 }
