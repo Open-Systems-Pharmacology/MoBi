@@ -146,7 +146,7 @@ public class When_setting_a_new_formula_for_an_event_assignment : concern_for_Ed
       [Observation]
       public void should_retrieve_domain_objects()
       {
-         A.CallTo(() => _context.Get<ExplicitFormula>(_formulaDTO.Id)).MustHaveHappened();
+         A.CallTo(() => _context.Get<Formula>(_formulaDTO.Id)).MustHaveHappened();
          A.CallTo(() => _context.Get<EventAssignmentBuilder>(_assignmentDTO.Id)).MustHaveHappened();
       }
    }
