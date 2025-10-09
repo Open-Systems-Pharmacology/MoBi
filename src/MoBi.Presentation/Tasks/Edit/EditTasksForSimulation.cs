@@ -79,9 +79,12 @@ namespace MoBi.Presentation.Tasks.Edit
 
       public override void Edit(IMoBiSimulation simulation)
       {
+         var hasChanged = _context.CurrentProject.HasChanged;
+
          //simulation are not registered in repository anymore. We need to do it
          _interactionTaskContext.Context.Register(simulation);
          base.Edit(simulation);
+         _context.CurrentProject.HasChanged = hasChanged;
       }
 
       public void ExportResultsToExcel(IMoBiSimulation simulation)
