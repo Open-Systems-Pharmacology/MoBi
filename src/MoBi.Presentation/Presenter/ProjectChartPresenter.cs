@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using MoBi.Core.Services;
 using MoBi.Presentation.Views;
@@ -9,7 +10,7 @@ namespace MoBi.Presentation.Presenter
 {
    public interface IProjectChartPresenter : ISingleStartPresenter<CurveChart>
    {
-      void Show(CurveChart chart, IReadOnlyList<DataRepository> data);
+      void Show(CurveChart chart, IReadOnlyList<DataRepository> plottedData);
    }
 
    public class ProjectChartPresenter : SubjectPresenter<IProjectChartView, IProjectChartPresenter, CurveChart>, IProjectChartPresenter
@@ -30,14 +31,11 @@ namespace MoBi.Presentation.Presenter
          Show(chart, new List<DataRepository>());
       }
 
-      public override object Subject
-      {
-         get { return _chartPresenter.Chart; }
-      }
+      public override object Subject => _chartPresenter.Chart;
 
-      public void Show(CurveChart chart, IReadOnlyList<DataRepository> data)
+      public void Show(CurveChart chart, IReadOnlyList<DataRepository> plottedData)
       {
-         _chartPresenter.Show(chart, data);
+         _chartPresenter.Show(chart, plottedData, notPlottedData: Array.Empty<DataRepository>());
          _chartPresenter.UpdateTemplatesFor(_projectRetriever.Current);
          UpdateCaption();
          View.Display();
