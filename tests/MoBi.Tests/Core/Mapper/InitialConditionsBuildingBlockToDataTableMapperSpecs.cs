@@ -32,20 +32,17 @@ namespace MoBi.Core.Mapper
          var unit = new Unit("Dimensionless", 1.0, 0.0);
 
          var containerPath = new ObjectPath("the", "container", "path");
-         var entity1 = new InitialCondition { Value = 0.1, ContainerPath = containerPath.Clone<ObjectPath>(), Name = "Initial Condition 1", DisplayUnit = unit, IsPresent = true, ScaleDivisor = 1, NegativeValuesAllowed = true };
-         var entity2 = new InitialCondition { Value =null, ContainerPath = containerPath.Clone<ObjectPath>(), Name = "Initial Condition 2", DisplayUnit = unit, IsPresent = false, ScaleDivisor = 2, NegativeValuesAllowed = false };
-         var entity3 = new InitialCondition { Value = 0.1, ContainerPath = containerPath.Clone<ObjectPath>(), Name = "Initial Condition 3", DisplayUnit = unit, IsPresent = true, ScaleDivisor = 3, NegativeValuesAllowed = false };
-
-         yield return entity1;
-         yield return entity2;
-         yield return entity3;
+         yield return new InitialCondition { Value = 0.1, ContainerPath = containerPath.Clone<ObjectPath>(), Name = "Initial Condition 1", DisplayUnit = unit, IsPresent = true, ScaleDivisor = 1, NegativeValuesAllowed = true };
+         yield return new InitialCondition { Value = null, ContainerPath = containerPath.Clone<ObjectPath>(), Name = "Initial Condition 2", DisplayUnit = unit, IsPresent = false, ScaleDivisor = 2, NegativeValuesAllowed = false };
+         yield return new InitialCondition { Value = 0.1, ContainerPath = containerPath.Clone<ObjectPath>(), Name = "Initial Condition 3", DisplayUnit = unit, IsPresent = true, ScaleDivisor = 3, NegativeValuesAllowed = false };
+         yield return new InitialCondition { Value = double.NaN, ContainerPath = containerPath.Clone<ObjectPath>(), Name = "Initial Condition 4", DisplayUnit = unit, IsPresent = true, ScaleDivisor = 3, NegativeValuesAllowed = false };
       }
    }
 
    public class When_mapping_initial_conditions_to_data_table : concern_for_InitialConditionsBuildingBlockToDataTableMapper
    {
       [Observation]
-      public void yields_correct_number_of_data_rows_excluding_null_values()
+      public void yields_correct_number_of_data_rows_excluding_null_and_nan_values()
       {
          _result.First().Rows.Count.ShouldBeEqualTo(2);
       }
