@@ -12,6 +12,10 @@ env:
   MINOR: 0
   RUN: ${{ github.run_number }}
 
+permissions:
+  contents: read
+  packages: read
+
 jobs:
   get-latest-commit-timespan:
     runs-on: ubuntu-latest

@@ -1,14 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
+using MoBi.Core.Domain.Model;
+using MoBi.Core.Services;
+using MoBi.Presentation.UICommand;
+using OSPSuite.Assets;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Nodes;
-using MoBi.Core.Domain.Model;
-using MoBi.Presentation.UICommand;
-using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
-using OSPSuite.Assets;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
@@ -47,6 +48,11 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          if (simulations.Count == 2)
             yield return ComparisonCommonContextMenuItems.CompareObjectsMenu(simulations, context, _container);
 
+         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.Run)
+            .WithEnabled(allSimulationsAreIdle(simulations))
+            .WithCommandFor<RunSimulationsCommand, IReadOnlyList<IMoBiSimulation>>(simulations, _container)
+            .WithIcon(ApplicationIcons.Run);
+
          yield return ObjectBaseCommonContextMenuItems.AddToJournal(simulations, _container);
 
          yield return createStartParameterIdentificationMenuBarItem(simulations);
@@ -56,5 +62,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithIcon(ApplicationIcons.Delete)
             .AsGroupStarter();
       }
+
+      private bool allSimulationsAreIdle(IReadOnlyList<IMoBiSimulation> simulations) => simulations.All(x => _container.Resolve<ISimulationRunner>().IsSimulationIdle(x));
    }
 }

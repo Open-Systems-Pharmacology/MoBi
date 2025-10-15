@@ -129,7 +129,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             CreateMenuButton.WithCaption(AppConstants.MenuNames.Run)
                .WithEnabled(_simulationRunner.IsSimulationIdle(simulation))
                .WithIcon(ApplicationIcons.Run)
-               .WithCommandFor<RunSimulationCommand, IMoBiSimulation>(simulation, _container);
+               .WithCommandFor<RunSimulationsCommand, IReadOnlyList<IMoBiSimulation>>(new [] { simulation }, _container);
       }
 
       private IMenuBarItem createStopItem(IMoBiSimulation simulation)

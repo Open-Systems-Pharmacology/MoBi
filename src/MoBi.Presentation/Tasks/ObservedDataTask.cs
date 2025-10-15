@@ -80,7 +80,7 @@ namespace MoBi.Presentation.Tasks
             metaDataCategories,
             _dataImporter.ColumnInfosForObservedData(),
             settings,
-            _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, DirectoryKey.OBSERVED_DATA)
+            _dialogCreator.AskForFileToOpen(Captions.Importer.SelectFileToImport, Captions.Importer.ImportFileFilter, DirectoryKey.OBSERVED_DATA)
          );
 
          if (dataRepositories == null || configuration == null)
@@ -314,7 +314,7 @@ namespace MoBi.Presentation.Tasks
             metaDataCategories,
             _dataImporter.ColumnInfosForObservedData(),
             dataImporterSettings,
-            _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, DirectoryKey.OBSERVED_DATA)
+            _dialogCreator.AskForFileToOpen(Captions.Importer.SelectFileToImport, Captions.Importer.ImportFileFilter, DirectoryKey.OBSERVED_DATA)
          );
          return importedObservedData;
       }
