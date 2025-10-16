@@ -59,18 +59,18 @@ namespace MoBi.Presentation.DTO
 
       private static class AllRules
       {
-         private static bool elementDoesNotContainWildcardCharacters(string element)
+         private static bool elementDoesNotContainIllegalCharacters(string element)
          {
             if (string.IsNullOrEmpty(element))
                return true;
 
-            return !element.Contains(Constants.WILD_CARD);
+            return !Constants.ILLEGAL_CHARACTERS.Any(element.Contains);
          }
 
          private static IBusinessRule elementCannotContainIllegalCharacters(Expression<Func<BreadCrumbsDTO<T>, string>> expression) => CreateRule.For<BreadCrumbsDTO<T>>()
             .Property(expression)
-            .WithRule((dto, element) => elementDoesNotContainWildcardCharacters(element))
-            .WithError(AppConstants.PathCannotContainWildcardCharacters());
+            .WithRule((dto, element) => elementDoesNotContainIllegalCharacters(element))
+            .WithError(AppConstants.PathCannotContainIllegalCharacters(Constants.ILLEGAL_CHARACTERS));
 
          public static IReadOnlyList<IBusinessRule> All { get; } = new[]
          {

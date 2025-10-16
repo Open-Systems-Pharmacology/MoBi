@@ -2049,7 +2049,7 @@ namespace MoBi.Assets
             return sb.ToString();
          }
 
-         public static string PathsContainWildcard(IReadOnlyList<string> paths)
+         public static string PathsContainIllegalCharacters(IReadOnlyList<string> paths, IReadOnlyList<string> illegalCharacters)
          {
             var pathsNotAdded = paths.Count;
             var sb = new StringBuilder();
@@ -2061,10 +2061,8 @@ namespace MoBi.Assets
 
             sb.AppendLine(NamesList(paths));
 
-            if (pathsNotAdded == 1)
-               sb.AppendLine($"It contains wildcard ({Constants.WILD_CARD}) characters");
-            else
-               sb.AppendLine($"They contain wildcard ({Constants.WILD_CARD}) characters");
+            sb.AppendLine("Paths cannot contain:");
+            sb.AppendLine(illegalCharacters.ToString<string>(", ", "'"));
 
             return sb.ToString();
          }
@@ -2456,9 +2454,6 @@ namespace MoBi.Assets
          return sb.ToString();
       }
 
-      public static string PathCannotContainWildcardCharacters()
-      {
-         return $"Path cannot contain wildcard ({Constants.WILD_CARD}) characters";
-      }
+      public static string PathCannotContainIllegalCharacters(IEnumerable<string> illegalCharacters) => "Path cannot contain any of the following characters:\n" + illegalCharacters.ToString<string>(", ", "'");
    }
 }
