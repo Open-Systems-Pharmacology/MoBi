@@ -20,7 +20,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_validating_molecule_start_value_with_path_elements_empty : concern_for_InitialConditionDTO
+   public class When_validating_initial_condition_with_path_elements_empty : concern_for_InitialConditionDTO
    {
       protected override void Context()
       {
@@ -40,7 +40,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_validating_a_molecule_start_value_with_non_unique_path : concern_for_InitialConditionDTO
+   public class When_validating_an_initial_condition_with_non_unique_path : concern_for_InitialConditionDTO
    {
       protected override void Context()
       {
@@ -55,26 +55,41 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void molecule_start_value_is_invalid()
+      public void initial_condition_is_invalid()
       {
          sut.IsValid().ShouldBeFalse();
       }
    }
 
-   public class When_validating_a_molecule_start_value_with_a_scale_factor : concern_for_InitialConditionDTO
+   public class When_validating_an_initial_condition_with_a_scale_factor : concern_for_InitialConditionDTO
    {
       [Observation]
       public void should_return_a_valid_state_it_the_scale_factor_is_bigger_than_0()
       {
-         sut.ScaleDivisor = 3;
+         sut.InitialCondition.ScaleDivisor = 3;
          sut.IsValid().ShouldBeTrue();
       }
 
       [Observation]
-      public void should_return_an_invalid_state_it_the_scale_factor_is_smaller_than_or_equal_to_0()
+      public void should_return_an_invalid_state_if_the_scale_factor_is_smaller_than_or_equal_to_0()
       {
-         sut.ScaleDivisor = 0;
-         sut.IsValid().ShouldBeTrue();
+         sut.InitialCondition.ScaleDivisor = 0;
+         sut.IsValid().ShouldBeFalse();
+      }
+   }
+
+   public class When_validating_an_initial_condition_with_wildcard_in_path : concern_for_InitialConditionDTO
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _initialCondition.ContainerPath = new ObjectPath("invalid*", "path");
+      }
+
+      [Observation]
+      public void the_initial_condition_is_not_valid_with_wildcard()
+      {
+         sut.IsValid().ShouldBeFalse();
       }
    }
 }

@@ -16,6 +16,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
@@ -144,9 +145,22 @@ namespace MoBi.Presentation.Tasks.Interaction
             modalPresenter.Encapsulate(referenceAtParamValuePresenter);
             referenceAtParamValuePresenter.Init(null, new List<IObjectBase>(), null);
             referenceAtParamValuePresenter.SetRelativePathSelectorVisible(false);
-            return !modalPresenter.Show(referenceAtParamValuePresenter.ModalSize) ? Enumerable.Empty<ObjectPath>().ToList() : referenceAtParamValuePresenter.GetAllSelections();
+            
+            if (!modalPresenter.Show(referenceAtParamValuePresenter.ModalSize))
+               return Enumerable.Empty<ObjectPath>().ToList();
+            
+            var selections = referenceAtParamValuePresenter.GetAllSelections();
+            var invalidSelections = selections.Where(pathContainsIllegalCharacters).ToList();
+            var validSelections = selections.Except(invalidSelections).ToList();
+               
+            if(invalidSelections.Any())
+               _interactionTaskContext.DialogCreator.MessageBoxInfo(AppConstants.Captions.PathsContainIllegalCharacters(invalidSelections.Select(x => x.PathAsString).ToList(), Constants.ILLEGAL_CHARACTERS));
+
+            return validSelections;
          }
       }
+
+      private bool pathContainsIllegalCharacters(ObjectPath objectPath) => objectPath.Any(element => Constants.ILLEGAL_CHARACTERS.Any(element.Contains));
 
       private IReadOnlyList<ParameterValue> createExpressionBasedOn(IReadOnlyList<IContainer> organs, IReadOnlyList<MoleculeBuilder> molecules) => organs.SelectMany(x => _parameterValuesCreator.CreateExpressionFrom(x, molecules)).ToList();
 
