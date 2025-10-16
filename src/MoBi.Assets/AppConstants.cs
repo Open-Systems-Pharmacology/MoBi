@@ -2055,7 +2055,7 @@ namespace MoBi.Assets
             var sb = new StringBuilder();
 
             if (pathsNotAdded == 1)
-               sb.AppendLine("A Parameter Value could not be added");
+               sb.AppendLine("A parameter value could not be added");
             else
                sb.AppendLine("Some parameter values could not be added");
 
@@ -2075,7 +2075,7 @@ namespace MoBi.Assets
             var sb = new StringBuilder();
 
             if (pathsNotAdded == 1)
-               sb.AppendLine("A Parameter Value could not be added");
+               sb.AppendLine("A parameter value could not be added");
             else
                sb.AppendLine("Some parameter values could not be added");
 
@@ -2456,9 +2456,9 @@ namespace MoBi.Assets
          return sb.ToString();
       }
 
-      public static string PathCannotContainWildcardCharacters(IEnumerable<string> illegalCharacters)
+      public static string PathCannotContainWildcardCharacters()
       {
-         return "Path cannot contain wildcard (*) characters";
+         return $"Path cannot contain wildcard ({Constants.WILD_CARD}) characters";
       }
    }
 }

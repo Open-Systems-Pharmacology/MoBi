@@ -70,7 +70,7 @@ namespace MoBi.Presentation.DTO
          private static IBusinessRule elementCannotContainIllegalCharacters(Expression<Func<BreadCrumbsDTO<T>, string>> expression) => CreateRule.For<BreadCrumbsDTO<T>>()
             .Property(expression)
             .WithRule((dto, element) => elementDoesNotContainWildcardCharacters(element))
-            .WithError(AppConstants.PathCannotContainWildcardCharacters(new[] { Constants.WILD_CARD }));
+            .WithError(AppConstants.PathCannotContainWildcardCharacters());
 
          public static IReadOnlyList<IBusinessRule> All { get; } = new[]
          {
