@@ -2049,6 +2049,26 @@ namespace MoBi.Assets
             return sb.ToString();
          }
 
+         public static string PathsContainWildcard(IReadOnlyList<string> paths)
+         {
+            var pathsNotAdded = paths.Count;
+            var sb = new StringBuilder();
+
+            if (pathsNotAdded == 1)
+               sb.AppendLine("A Parameter Value could not be added");
+            else
+               sb.AppendLine("Some parameter values could not be added");
+
+            sb.AppendLine(NamesList(paths));
+
+            if (pathsNotAdded == 1)
+               sb.AppendLine($"It contains wildcard ({Constants.WILD_CARD}) characters");
+            else
+               sb.AppendLine($"They contain wildcard ({Constants.WILD_CARD}) characters");
+
+            return sb.ToString();
+         }
+
          public static string BuildingBlockAlreadyContains(IReadOnlyList<string> paths)
          {
             var pathsNotAdded = paths.Count;
@@ -2434,6 +2454,11 @@ namespace MoBi.Assets
          sb.Append(" - ");
          sb.AppendLine(allNames.ToString("\n - "));
          return sb.ToString();
+      }
+
+      public static string PathCannotContainWildcardCharacters(IEnumerable<string> illegalCharacters)
+      {
+         return "Path cannot contain wildcard (*) characters";
       }
    }
 }

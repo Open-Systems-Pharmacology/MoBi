@@ -4,11 +4,9 @@ using System.Linq;
 using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Commands;
-using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Mappers;
-using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -34,7 +32,6 @@ namespace MoBi.Presentation.Tasks
       protected ParameterValuesBuildingBlock _parameterValueBuildingBlock;
       protected IInteractionTaskContext _context;
       private IEditTasksForBuildingBlock<ParameterValuesBuildingBlock> _editTasks;
-      protected IParameterResolver _parameterResolver;
       private IObjectTypeResolver _objectTypeResolver;
       private IPathAndValueEntityToDistributedParameterMapper _mapper;
 
@@ -45,7 +42,6 @@ namespace MoBi.Presentation.Tasks
          _parameterValuesCreator = A.Fake<IParameterValuesCreator>();
          _cloneManagerForBuildingBlock = A.Fake<ICloneManagerForBuildingBlock>();
          _parameterValueBuildingBlock = new ParameterValuesBuildingBlock();
-         _parameterResolver = A.Fake<IParameterResolver>();
          _objectTypeResolver = A.Fake<IObjectTypeResolver>();
          _mapper = A.Fake<IPathAndValueEntityToDistributedParameterMapper>();
 
@@ -440,6 +436,44 @@ namespace MoBi.Presentation.Tasks
       public void the_task_should_add_a_new_building_block_to_the_module()
       {
          _parameterValueBuildingBlock.Count().ShouldBeEqualTo(1);
+      }
+   }
+
+   public class When_selecting_new_paths_to_add : concern_for_ParameterValuesTask
+   {
+      private IReadOnlyList<ObjectPath> _results;
+      private ICreateObjectPathsFromReferencesPresenter _createObjectPathsPresenter;
+      private IReadOnlyList<ObjectPath> _paths;
+      private IModalPresenter _modalPresenter;
+
+      protected override void Context()
+      {
+         base.Context();
+         _paths = new[]
+         {
+            new ObjectPath("valid", "path"),
+            new ObjectPath("invalid*", "path"),
+            new ObjectPath("invalid", "*", "path")
+         };
+         _modalPresenter = A.Fake<IModalPresenter>();
+         _createObjectPathsPresenter = A.Fake<ICreateObjectPathsFromReferencesPresenter>();
+
+         A.CallTo(() => _context.ApplicationController.Start<ICreateObjectPathsFromReferencesPresenter>()).Returns(_createObjectPathsPresenter);
+         A.CallTo(() => _context.ApplicationController.Start<IModalPresenter>()).Returns(_modalPresenter);
+         A.CallTo(() => _createObjectPathsPresenter.GetAllSelections()).Returns(_paths);
+         A.CallTo(() => _modalPresenter.Show(_createObjectPathsPresenter.ModalSize)).Returns(true);
+      }
+
+      protected override void Because()
+      {
+         _results = sut.GetNewPaths();
+      }
+
+      [Observation]
+      public void the_results_should_not_contain_any_wildcard_paths()
+      {
+         _results.Count.ShouldBeEqualTo(1);
+         _results.All(x => !x.PathAsString.Contains(Constants.WILD_CARD)).ShouldBeTrue();
       }
    }
 }

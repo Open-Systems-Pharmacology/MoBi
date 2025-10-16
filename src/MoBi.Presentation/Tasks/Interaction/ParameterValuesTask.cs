@@ -144,7 +144,18 @@ namespace MoBi.Presentation.Tasks.Interaction
             modalPresenter.Encapsulate(referenceAtParamValuePresenter);
             referenceAtParamValuePresenter.Init(null, new List<IObjectBase>(), null);
             referenceAtParamValuePresenter.SetRelativePathSelectorVisible(false);
-            return !modalPresenter.Show(referenceAtParamValuePresenter.ModalSize) ? Enumerable.Empty<ObjectPath>().ToList() : referenceAtParamValuePresenter.GetAllSelections();
+            
+            if (!modalPresenter.Show(referenceAtParamValuePresenter.ModalSize))
+               return Enumerable.Empty<ObjectPath>().ToList();
+            
+            var selections = referenceAtParamValuePresenter.GetAllSelections();
+            var invalidSelections = selections.Where(x => x.PathAsString.Contains(Constants.WILD_CARD)).ToList();
+            var validSelections = selections.Except(invalidSelections).ToList();
+               
+            if(invalidSelections.Any())
+               _interactionTaskContext.DialogCreator.MessageBoxInfo(AppConstants.Captions.PathsContainWildcard(invalidSelections.Select(x => x.PathAsString).ToList()));
+
+            return validSelections;
          }
       }
 
