@@ -1,7 +1,6 @@
 ﻿using DevExpress.XtraTreeList;
 using DevExpress.XtraTreeList.Nodes;
 using MoBi.Presentation.Nodes;
-using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Presenter.Main;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
@@ -28,13 +27,6 @@ namespace MoBi.UI.Views
       {
          base.AttachPresenter(presenter);
       }
-
-
-      public override ITreeNode AddNode(ITreeNode nodeToAdd)
-      {
-         return base.AddNode(nodeToAdd);
-      }
-
 
       private void compareNodeValues(object sender, CompareNodeValuesEventArgs e)
       {
