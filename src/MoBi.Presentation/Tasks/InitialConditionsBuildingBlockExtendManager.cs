@@ -1,7 +1,4 @@
-﻿using MoBi.Core.Domain.Model;
-using MoBi.Presentation.Mappers;
-using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Presentation.Core;
+﻿using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -11,12 +8,5 @@ namespace MoBi.Presentation.Tasks
 
    public class InitialConditionsBuildingBlockExtendManager : ExtendPathAndValuesManager<InitialCondition>, IInitialConditionsBuildingBlockExtendManager
    {
-      public InitialConditionsBuildingBlockExtendManager(
-         IApplicationController applicationController,
-         IInitialConditionToObjectBaseSummaryDTOMapper dtoMapper,
-         IMoBiContext context)
-         : base(applicationController, dtoMapper, context)
-      {
-      }
    }
 }
