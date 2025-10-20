@@ -2049,13 +2049,31 @@ namespace MoBi.Assets
             return sb.ToString();
          }
 
+         public static string PathsContainIllegalCharacters(IReadOnlyList<string> paths, IReadOnlyList<string> illegalCharacters)
+         {
+            var pathsNotAdded = paths.Count;
+            var sb = new StringBuilder();
+
+            if (pathsNotAdded == 1)
+               sb.AppendLine("A parameter value could not be added");
+            else
+               sb.AppendLine("Some parameter values could not be added");
+
+            sb.AppendLine(NamesList(paths));
+
+            sb.AppendLine("Paths cannot contain:");
+            sb.AppendLine(illegalCharacters.ToString<string>(", ", "'"));
+
+            return sb.ToString();
+         }
+
          public static string BuildingBlockAlreadyContains(IReadOnlyList<string> paths)
          {
             var pathsNotAdded = paths.Count;
             var sb = new StringBuilder();
 
             if (pathsNotAdded == 1)
-               sb.AppendLine("A Parameter Value could not be added");
+               sb.AppendLine("A parameter value could not be added");
             else
                sb.AppendLine("Some parameter values could not be added");
 
@@ -2435,5 +2453,7 @@ namespace MoBi.Assets
          sb.AppendLine(allNames.ToString("\n - "));
          return sb.ToString();
       }
+
+      public static string PathCannotContainIllegalCharacters(IEnumerable<string> illegalCharacters) => "Path cannot contain any of the following characters:\n" + illegalCharacters.ToString<string>(", ", "'");
    }
 }
