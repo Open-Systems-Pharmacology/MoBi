@@ -13,7 +13,7 @@ namespace MoBi.UI.Views
 {
    public partial class SimulationExplorerView : BaseExplorerView, ISimulationExplorerView
    {
-      private IExplorerPresenter _explorerPresenter;
+      private ISimulationExplorerPresenter _simulationExplorerPresenter;
 
       public SimulationExplorerView(IImageListRetriever imageListRetriever) : base(imageListRetriever)
       {
@@ -23,8 +23,8 @@ namespace MoBi.UI.Views
 
       public void AttachPresenter(ISimulationExplorerPresenter presenter)
       {
+         _simulationExplorerPresenter = presenter;
          base.AttachPresenter(presenter);
-         _explorerPresenter = presenter;
       }
 
       private void compareNodeValues(object sender, CompareNodeValuesEventArgs e)
@@ -42,7 +42,7 @@ namespace MoBi.UI.Views
             e.Result = 0;
          
          if(nodeIsModuleConfigurationNode(e.Node1.ParentNode))
-            e.Result = _explorerPresenter.OrderingComparisonForModules(e.Node1.Tag as ITreeNode<IWithName>, e.Node2.Tag as ITreeNode<IWithName>); 
+            e.Result = _simulationExplorerPresenter.OrderingComparisonForModules(e.Node1.Tag as ITreeNode<IWithName>, e.Node2.Tag as ITreeNode<IWithName>); 
       }
 
       private bool nodeIsModuleConfigurationNode(TreeListNode node) => node != null && node.Tag.IsAnImplementationOf<ModuleConfigurationNode>();
