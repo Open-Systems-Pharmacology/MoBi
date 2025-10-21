@@ -29,7 +29,7 @@ namespace MoBi.Presentation.Presenter.Main
       IListener<SimulationRunFinishedEvent>
 
    {
-      int OrderingComparisonFor(ITreeNode<IWithName> node1, ITreeNode<IWithName> node2);
+      int OrderingComparisonForModules(ITreeNode<IWithName> node1, ITreeNode<IWithName> node2);
    }
 
    public abstract class ExplorerPresenter<TView, TPresenter> : AbstractExplorerPresenter<TView, TPresenter>, IExplorerPresenter
@@ -113,7 +113,7 @@ namespace MoBi.Presentation.Presenter.Main
          _view.Enabled = true;
       }
 
-      public virtual int OrderingComparisonFor(ITreeNode<IWithName> node1, ITreeNode<IWithName> node2)
+      public virtual int OrderingComparisonForModules(ITreeNode<IWithName> node1, ITreeNode<IWithName> node2)
       {
          if (nodeIsStartValueFolderNode(node1) && nodeIsStartValueFolderNode(node2))
             return nodeIsInitialConditionsNode(node1) ? -1 : 1;

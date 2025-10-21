@@ -207,20 +207,20 @@ namespace MoBi.Presentation
       [Observation]
       public void module_nodes_are_superior()
       {
-         sut.OrderingComparisonFor(_moduleNode, _spatialStructureA).ShouldBeEqualTo(-1);
+         sut.OrderingComparisonForModules(_moduleNode, _spatialStructureA).ShouldBeEqualTo(-1);
       }
 
       [Observation]
       public void the_start_values_folders_are_inferior_to_other_node_types()
       {
-         sut.OrderingComparisonFor(_parameterValuesFolderNode, _spatialStructureA).ShouldBeEqualTo(1);
-         sut.OrderingComparisonFor(_initialConditionsFolderNode, _spatialStructureA).ShouldBeEqualTo(1);
-         sut.OrderingComparisonFor(_parameterValuesFolderNode, _moduleNode).ShouldBeEqualTo(1);
-         sut.OrderingComparisonFor(_initialConditionsFolderNode, _moduleNode).ShouldBeEqualTo(1);
-         sut.OrderingComparisonFor(_moduleNode, _parameterValuesFolderNode).ShouldBeEqualTo(-1);
-         sut.OrderingComparisonFor(_moduleNode, _initialConditionsFolderNode).ShouldBeEqualTo(-1);
-         sut.OrderingComparisonFor(_initialConditionsFolderNode, _parameterValuesFolderNode).ShouldBeEqualTo(-1);
-         sut.OrderingComparisonFor(_parameterValuesFolderNode, _initialConditionsFolderNode).ShouldBeEqualTo(1);
+         sut.OrderingComparisonForModules(_parameterValuesFolderNode, _spatialStructureA).ShouldBeEqualTo(1);
+         sut.OrderingComparisonForModules(_initialConditionsFolderNode, _spatialStructureA).ShouldBeEqualTo(1);
+         sut.OrderingComparisonForModules(_parameterValuesFolderNode, _moduleNode).ShouldBeEqualTo(1);
+         sut.OrderingComparisonForModules(_initialConditionsFolderNode, _moduleNode).ShouldBeEqualTo(1);
+         sut.OrderingComparisonForModules(_moduleNode, _parameterValuesFolderNode).ShouldBeEqualTo(-1);
+         sut.OrderingComparisonForModules(_moduleNode, _initialConditionsFolderNode).ShouldBeEqualTo(-1);
+         sut.OrderingComparisonForModules(_initialConditionsFolderNode, _parameterValuesFolderNode).ShouldBeEqualTo(-1);
+         sut.OrderingComparisonForModules(_parameterValuesFolderNode, _initialConditionsFolderNode).ShouldBeEqualTo(1);
       }
    }
 
@@ -244,13 +244,13 @@ namespace MoBi.Presentation
       [Observation]
       public void should_not_compare_for_building_block_nodes()
       {
-         sut.OrderingComparisonFor(_spatialStructureA, _spatialStructureZ).ShouldBeEqualTo(0);
+         sut.OrderingComparisonForModules(_spatialStructureA, _spatialStructureZ).ShouldBeEqualTo(0);
       }
 
       [Observation]
       public void should_compare_names_for_module_nodes()
       {
-         sut.OrderingComparisonFor(_moduleNodeA, _moduleNodeZ).ShouldBeEqualTo(-1);
+         sut.OrderingComparisonForModules(_moduleNodeA, _moduleNodeZ).ShouldBeEqualTo(-1);
       }
    }
 

@@ -29,17 +29,20 @@ namespace MoBi.UI.Views
 
       private void compareNodeValues(object sender, CompareNodeValuesEventArgs e)
       {
+         //we only want to sort for the top nodes (level 0)
          if (e.Node1 == null)
             return;
 
+         //we do not want to sort the root nodes
          if (e.Node1.Level == 0)
             e.Result = 0;
 
+         //we do not want to sort the items under the simulation node (i.e. no children). Otherwise, Nodes are sorted alphabetically
          if (nodeIsSimulationNode(e.Node1.ParentNode))
             e.Result = 0;
          
          if(nodeIsModuleConfigurationNode(e.Node1.ParentNode))
-            e.Result = _explorerPresenter.OrderingComparisonFor(e.Node1.Tag as ITreeNode<IWithName>, e.Node2.Tag as ITreeNode<IWithName>); 
+            e.Result = _explorerPresenter.OrderingComparisonForModules(e.Node1.Tag as ITreeNode<IWithName>, e.Node2.Tag as ITreeNode<IWithName>); 
       }
 
       private bool nodeIsModuleConfigurationNode(TreeListNode node) => node != null && node.Tag.IsAnImplementationOf<ModuleConfigurationNode>();
