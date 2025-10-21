@@ -134,7 +134,7 @@ namespace MoBi.Presentation.Presenter.Main
       public void Handle(ChartAddedEvent eventToHandle) => addChartTreeNode(eventToHandle.Chart);
 
       public void Handle(ChartDeletedEvent eventToHandle) => RemoveNodeFor(eventToHandle.Chart);
-      
+
       public void Handle(SimulationStatusChangedEvent eventToHandle) => refreshDisplayedSimulation(eventToHandle.Simulation);
 
       protected override IContextMenu ContextMenuFor(ITreeNode treeNode)
@@ -143,7 +143,7 @@ namespace MoBi.Presentation.Presenter.Main
             return ContextMenuFor(new SimulationViewItem(simulation.Simulation));
 
          // Order is important here because SimulationSettings is also an IBuildingBlock
-         if(treeNode.TagAsObject is SimulationSettingsDTO settingsDTO)
+         if (treeNode.TagAsObject is SimulationSettingsDTO settingsDTO)
             return ContextMenuFor(settingsDTO);
 
          if (treeNode.TagAsObject is IBuildingBlock buildingBlock)
@@ -232,6 +232,20 @@ namespace MoBi.Presentation.Presenter.Main
          }
 
          return _parameterAnalysablesInExplorerPresenter.RemoveDataUnderClassification(classificationNode);
+      }
+
+      public override int TryGetOrderingComparison(
+         object parentTag,
+         ITreeNode<IWithName> node1,
+         ITreeNode<IWithName> node2)
+      {
+         if (parentTag is SimulationNode)
+            return 0;
+
+         if (parentTag is ModuleConfigurationNode)
+            return OrderingComparisonFor(node1, node2);
+
+         return 0;
       }
    }
 }

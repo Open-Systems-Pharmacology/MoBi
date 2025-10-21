@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Core.Domain.Model;
@@ -8,7 +7,6 @@ using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using OSPSuite.Assets;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
@@ -33,7 +31,6 @@ namespace MoBi.Presentation.Presenter.Main
       IListener<AddedEvent>,
       IListener<RemovedEvent>
    {
-      int OrderingComparisonFor(ITreeNode<IWithName> node1, ITreeNode<IWithName> node2);
    }
 
    public class ModuleExplorerPresenter : ExplorerPresenter<IModuleExplorerView, IModuleExplorerPresenter>, IModuleExplorerPresenter,
@@ -263,68 +260,6 @@ namespace MoBi.Presentation.Presenter.Main
          return _observedDataInExplorerPresenter;
       }
 
-      public int OrderingComparisonFor(ITreeNode<IWithName> node1, ITreeNode<IWithName> node2)
-      {
-         if (nodeIsStartValueFolderNode(node1) && nodeIsStartValueFolderNode(node2))
-            return nodeIsInitialConditionsNode(node1) ? -1 : 1;
-
-         if (nodeIsStartValueFolderNode(node1))
-            return 1;
-
-         if (nodeIsStartValueFolderNode(node2))
-            return -1;
-
-         if (nodeTagIsModuleRootNode(node1) && nodeTagIsModuleRootNode(node2))
-            return rootNodeTypeComparison(node1);
-
-         if (nodeTagIsModuleRootNode(node1) && !nodeTagIsModuleRootNode(node2))
-            return -1;
-
-         if (!nodeTagIsModuleRootNode(node1) && nodeTagIsModuleRootNode(node2))
-            return 1;
-
-         if (nodeTagIsBuildingBlock(node1) && nodeTagIsBuildingBlock(node2))
-            return 0;
-
-         return nameComparison(node1, node2);
-      }
-
-      private bool nodeIsStartValueFolderNode(ITreeNode<IWithName> node1)
-      {
-         return nodeIsParameterValuesNode(node1) || nodeIsInitialConditionsNode(node1);
-      }
-
-      private static bool nodeIsInitialConditionsNode(ITreeNode<IWithName> node1)
-      {
-         return node1 is InitialConditionsFolderNode;
-      }
-
-      private static bool nodeIsParameterValuesNode(ITreeNode<IWithName> node1)
-      {
-         return node1 is ParameterValuesFolderNode;
-      }
-
-      private int rootNodeTypeComparison(ITreeNode<IWithName> node1)
-      {
-         if (node1.Tag.Equals(RootNodeTypes.ModulesFolder))
-            return 1;
-
-         return -1;
-      }
-
-      private bool nodeTagIsBuildingBlock(ITreeNode<IWithName> node1)
-      {
-         return node1?.Tag is BuildingBlock;
-      }
-
-      private int nameComparison(ITreeNode<IWithName> node1, ITreeNode<IWithName> node2)
-      {
-         if (node1 != null && node2 != null)
-            return string.Compare(node1.Tag.Name, node2.Tag.Name, StringComparison.InvariantCultureIgnoreCase);
-
-         return 0;
-      }
-
       private static bool nodeTagIsModuleRootNode(ITreeNode<IWithName> node)
       {
          return Equals(node?.Tag, RootNodeTypes.ModulesFolder);
@@ -493,6 +428,17 @@ namespace MoBi.Presentation.Presenter.Main
       public void Handle(AddedEvent<MoleculeBuilder> eventToHandle)
       {
          addMoleculeBuilder(eventToHandle.AddedObject, eventToHandle.Parent.DowncastTo<MoleculeBuildingBlock>());
+      }
+
+      public override int TryGetOrderingComparison(
+         object parentTag,
+         ITreeNode<IWithName> node1,
+         ITreeNode<IWithName> node2)
+      {
+         if (parentTag is ModuleConfigurationNode)
+            return OrderingComparisonFor(node1, node2);
+
+         return 0;
       }
    }
 }
