@@ -233,19 +233,5 @@ namespace MoBi.Presentation.Presenter.Main
 
          return _parameterAnalysablesInExplorerPresenter.RemoveDataUnderClassification(classificationNode);
       }
-
-      public override int TryGetOrderingComparison(
-         object parentTag,
-         ITreeNode<IWithName> node1,
-         ITreeNode<IWithName> node2)
-      {
-         if (parentTag is SimulationNode)
-            return 0;
-
-         if (parentTag is ModuleConfigurationNode)
-            return OrderingComparisonFor(node1, node2);
-
-         return 0;
-      }
    }
 }

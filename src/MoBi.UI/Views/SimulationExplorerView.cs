@@ -35,7 +35,16 @@ namespace MoBi.UI.Views
          if (e.Node1.Level == 0)
             e.Result = 0;
 
-         e.Result = _explorerPresenter.TryGetOrderingComparison(e.Node1.ParentNode?.Tag, e.Node1.Tag as ITreeNode<IWithName>, e.Node2.Tag as ITreeNode<IWithName>); 
+         if (nodeIsSimulationNode(e.Node1.ParentNode))
+            e.Result = 0;
+         
+         if(nodeIsModuleConfigurationNode(e.Node1.ParentNode))
+            e.Result = _explorerPresenter.OrderingComparisonFor(e.Node1.Tag as ITreeNode<IWithName>, e.Node2.Tag as ITreeNode<IWithName>); 
       }
-    }
+
+      private bool nodeIsModuleConfigurationNode(TreeListNode node) => node != null && node.Tag.IsAnImplementationOf<ModuleConfigurationNode>();
+
+      private bool nodeIsSimulationNode(TreeListNode node) => node != null && node.Tag.IsAnImplementationOf<SimulationNode>();
+      
+   }
 }

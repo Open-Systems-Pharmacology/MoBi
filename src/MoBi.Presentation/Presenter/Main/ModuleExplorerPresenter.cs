@@ -429,16 +429,5 @@ namespace MoBi.Presentation.Presenter.Main
       {
          addMoleculeBuilder(eventToHandle.AddedObject, eventToHandle.Parent.DowncastTo<MoleculeBuildingBlock>());
       }
-
-      public override int TryGetOrderingComparison(
-         object parentTag,
-         ITreeNode<IWithName> node1,
-         ITreeNode<IWithName> node2)
-      {
-         if (parentTag is ModuleConfigurationNode)
-            return OrderingComparisonFor(node1, node2);
-
-         return 0;
-      }
    }
 }

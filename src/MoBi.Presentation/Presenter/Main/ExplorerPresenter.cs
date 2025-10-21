@@ -30,7 +30,6 @@ namespace MoBi.Presentation.Presenter.Main
 
    {
       int OrderingComparisonFor(ITreeNode<IWithName> node1, ITreeNode<IWithName> node2);
-      int TryGetOrderingComparison(object parentTag, ITreeNode<IWithName> node1, ITreeNode<IWithName> node2);
    }
 
    public abstract class ExplorerPresenter<TView, TPresenter> : AbstractExplorerPresenter<TView, TPresenter>, IExplorerPresenter
@@ -166,11 +165,6 @@ namespace MoBi.Presentation.Presenter.Main
       {
          if (a != null && b != null)
             return string.Compare(a.Tag.Name, b.Tag.Name, StringComparison.InvariantCultureIgnoreCase);
-         return 0;
-      }
-
-      public virtual int TryGetOrderingComparison(object parentTag, ITreeNode<IWithName> node1, ITreeNode<IWithName> node2)
-      {
          return 0;
       }
    }
