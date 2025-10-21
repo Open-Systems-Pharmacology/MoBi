@@ -1,3 +1,4 @@
+using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Tasks;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain.Data;
@@ -33,6 +34,29 @@ namespace MoBi.Presentation.UICommand
       public void Execute()
       {
          _observedDataTask.AddObservedDataToProject();
+      }
+   }
+
+   public class RemoveSimulationResultUICommand : ObjectUICommand<DataRepository>
+   {
+      private readonly IObservedDataTask _dataTask;
+      public IMoBiSimulation Simulation { get; set; }
+
+      public RemoveSimulationResultUICommand(IObservedDataTask dataTask)
+      {
+         _dataTask = dataTask;
+      }
+
+      public RemoveSimulationResultUICommand InitializeWith(IMoBiSimulation simulation, DataRepository dataRepository)
+      {
+         Simulation = simulation;
+         Subject = dataRepository;
+         return this;
+      }
+
+      protected override void PerformExecute()
+      {
+         _dataTask.DeleteResultsFromSimulation(Simulation, Subject);
       }
    }
 
