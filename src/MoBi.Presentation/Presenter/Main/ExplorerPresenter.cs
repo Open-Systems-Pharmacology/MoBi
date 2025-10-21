@@ -41,6 +41,18 @@ namespace MoBi.Presentation.Presenter.Main
       protected readonly IMoBiContext _context;
       private readonly IMultipleTreeNodeContextMenuFactory _multipleTreeNodeContextMenuFactory;
 
+      private static readonly IReadOnlyDictionary<Type, int> _buildingBlockOrder = new Dictionary<Type, int>
+      {
+         { typeof(MoBiSpatialStructure), 0 }, // Organism
+         { typeof(MoleculeBuildingBlock), 1 }, // Molecules
+         { typeof(MoBiReactionBuildingBlock), 2 }, // Reactions
+         { typeof(PassiveTransportBuildingBlock), 3 }, // Passive Transports
+         { typeof(ObserverBuildingBlock), 4 }, // Observers
+         { typeof(EventGroupBuildingBlock), 5 }, // Events
+         { typeof(InitialConditionsBuildingBlock), 6 }, // Initial Conditions
+         { typeof(ParameterValuesBuildingBlock), 7 }, // Parameter Values
+      };
+
       protected ExplorerPresenter(TView view, IRegionResolver regionResolver, ITreeNodeFactory treeNodeFactory, IViewItemContextMenuFactory viewItemContextMenuFactory, IMoBiContext context, RegionName regionName, IClassificationPresenter classificationPresenter, IToolTipPartCreator toolTipPartCreator, IMultipleTreeNodeContextMenuFactory multipleTreeNodeContextMenuFactory, IProjectRetriever projectRetriever)
          : base(view, regionResolver, classificationPresenter, toolTipPartCreator, regionName, projectRetriever)
       {
@@ -134,7 +146,13 @@ namespace MoBi.Presentation.Presenter.Main
             return 1;
 
          if (nodeTagIsBuildingBlock(node1) && nodeTagIsBuildingBlock(node2))
-            return 0;
+         {
+            var o1 = orderFor(node1.Tag as BuildingBlock);
+            var o2 = orderFor(node2.Tag as BuildingBlock);
+
+            var byRank = o1.CompareTo(o2);
+            if (byRank != 0) return byRank;
+         }
 
          return nameComparison(node1, node2);
       }
@@ -166,6 +184,17 @@ namespace MoBi.Presentation.Presenter.Main
          if (a != null && b != null)
             return string.Compare(a.Tag.Name, b.Tag.Name, StringComparison.InvariantCultureIgnoreCase);
          return 0;
+      }
+
+      private static int orderFor(BuildingBlock buildingBlock)
+      {
+         if (buildingBlock == null)
+            return int.MaxValue;
+
+         if (_buildingBlockOrder.TryGetValue(buildingBlock.GetType(), out var order))
+            return order;
+
+         return int.MaxValue;
       }
    }
 }

@@ -40,8 +40,7 @@ namespace MoBi.UI.Views
          //we do not want to sort the items under the simulation node (i.e. no children). Otherwise, Nodes are sorted alphabetically
          if (nodeIsSimulationNode(e.Node1.ParentNode))
             e.Result = 0;
-         
-         if(nodeIsModuleConfigurationNode(e.Node1.ParentNode))
+         else if(nodeIsModuleConfigurationNode(e.Node1.ParentNode))
             e.Result = _simulationExplorerPresenter.OrderingComparisonForModules(e.Node1.Tag as ITreeNode<IWithName>, e.Node2.Tag as ITreeNode<IWithName>); 
       }
 
