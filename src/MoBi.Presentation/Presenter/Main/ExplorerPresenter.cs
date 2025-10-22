@@ -152,8 +152,7 @@ namespace MoBi.Presentation.Presenter.Main
             var o1 = orderFor(node1.Tag as BuildingBlock);
             var o2 = orderFor(node2.Tag as BuildingBlock);
 
-            var byRank = o1.CompareTo(o2);
-            if (byRank != 0) return byRank;
+            return o1.CompareTo(o2);
          }
 
          return nameComparison(node1, node2);
