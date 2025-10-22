@@ -17,6 +17,7 @@ using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Presentation.Regions;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
+using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using ITreeNodeFactory = MoBi.Presentation.Nodes.ITreeNodeFactory;
@@ -41,16 +42,17 @@ namespace MoBi.Presentation.Presenter.Main
       protected readonly IMoBiContext _context;
       private readonly IMultipleTreeNodeContextMenuFactory _multipleTreeNodeContextMenuFactory;
 
-      private static readonly IReadOnlyDictionary<Type, int> _buildingBlockOrder = new Dictionary<Type, int>
+      private static readonly Cache<Type, int> _buildingBlockOrder = new Cache<Type, int>(
+         onMissingKey: _ => int.MaxValue)
       {
-         { typeof(MoBiSpatialStructure), 0 }, // Organism
-         { typeof(MoleculeBuildingBlock), 1 }, // Molecules
-         { typeof(MoBiReactionBuildingBlock), 2 }, // Reactions
+         { typeof(MoBiSpatialStructure), 0 },          // Organism
+         { typeof(MoleculeBuildingBlock), 1 },         // Molecules
+         { typeof(MoBiReactionBuildingBlock), 2 },     // Reactions
          { typeof(PassiveTransportBuildingBlock), 3 }, // Passive Transports
-         { typeof(ObserverBuildingBlock), 4 }, // Observers
-         { typeof(EventGroupBuildingBlock), 5 }, // Events
-         { typeof(InitialConditionsBuildingBlock), 6 }, // Initial Conditions
-         { typeof(ParameterValuesBuildingBlock), 7 }, // Parameter Values
+         { typeof(ObserverBuildingBlock), 4 },         // Observers
+         { typeof(EventGroupBuildingBlock), 5 },       // Events
+         { typeof(InitialConditionsBuildingBlock), 6 },// Initial Conditions
+         { typeof(ParameterValuesBuildingBlock), 7 },  // Parameter Values
       };
 
       protected ExplorerPresenter(TView view, IRegionResolver regionResolver, ITreeNodeFactory treeNodeFactory, IViewItemContextMenuFactory viewItemContextMenuFactory, IMoBiContext context, RegionName regionName, IClassificationPresenter classificationPresenter, IToolTipPartCreator toolTipPartCreator, IMultipleTreeNodeContextMenuFactory multipleTreeNodeContextMenuFactory, IProjectRetriever projectRetriever)
@@ -191,10 +193,7 @@ namespace MoBi.Presentation.Presenter.Main
          if (buildingBlock == null)
             return int.MaxValue;
 
-         if (_buildingBlockOrder.TryGetValue(buildingBlock.GetType(), out var order))
-            return order;
-
-         return int.MaxValue;
+         return _buildingBlockOrder[buildingBlock.GetType()];
       }
    }
 }
