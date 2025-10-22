@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Presenter;
@@ -11,6 +12,7 @@ using OSPSuite.Core.Chart;
 using OSPSuite.Core.Chart.Mappers;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Nodes;
@@ -81,8 +83,7 @@ namespace MoBi.Presentation
             observedDataNode
          };
 
-         _chartDisplayPresenter = new ChartDisplayPresenter(_chartDisplayView, _curveBinderFactory, _contextMenuFactoryForProjectItem, _axisBinderFactory, _dataModeMapper, _chartExportTask, _applicationSettings, _applicationController, _dialogCreator);
-
+         _chartDisplayPresenter = CreateDisplayPresenter();
 
          A.CallTo(() => _chartPresenterContext.DisplayPresenter).Returns(_chartDisplayPresenter);
 
@@ -90,6 +91,11 @@ namespace MoBi.Presentation
          _chartDisplayPresenter.Edit(new CurveChart());
 
          A.CallTo(() => _dragEvent.Data<IEnumerable<ITreeNode>>()).Returns(_treeNodes);
+      }
+
+      protected virtual IChartDisplayPresenter CreateDisplayPresenter()
+      {
+         return new ChartDisplayPresenter(_chartDisplayView, _curveBinderFactory, _contextMenuFactoryForProjectItem, _axisBinderFactory, _dataModeMapper, _chartExportTask, _applicationSettings, _applicationController, _dialogCreator);
       }
    }
 
@@ -114,6 +120,73 @@ namespace MoBi.Presentation
       public void the_event_must_have_been_called_once()
       {
          _observedDataAddedEventCounter.ShouldBeEqualTo(1);
+      }
+   }
+
+   public class When_handling_observed_data_removed_event_and_the_data_is_in_the_chart : concern_for_SimulationChartPresenter
+   {
+      private DataRepository _dataRepository;
+      private IProject _project;
+
+      protected override void Context()
+      {
+         base.Context();
+         _dataRepository = new DataRepository("id")
+         {
+            new DataColumn(),
+            new DataColumn()
+         };
+         _project = new MoBiProject();
+         A.CallTo(() => _chartPresenterContext.EditorPresenter.AllDataColumns).Returns(_dataRepository.Columns.ToList());
+      }
+
+      protected override IChartDisplayPresenter CreateDisplayPresenter()
+      {
+         return A.Fake<IChartDisplayPresenter>();
+      }
+
+      protected override void Because()
+      {
+         sut.Handle(new ObservedDataRemovedEvent(new[] { _dataRepository }, _project));
+      }
+
+      [Observation]
+      public void the_display_is_not_refreshed()
+      {
+         A.CallTo(() => _chartDisplayPresenter.Refresh()).MustHaveHappened();
+      }
+   }
+
+   public class When_handling_observed_data_removed_event_and_the_data_is_not_in_the_chart : concern_for_SimulationChartPresenter
+   {
+      private DataRepository _dataRepository;
+      private IProject _project;
+
+      protected override void Context()
+      {
+         base.Context();
+         _dataRepository = new DataRepository("id")
+         {
+            new DataColumn(),
+            new DataColumn()
+         };
+         _project = new MoBiProject();
+      }
+
+      protected override IChartDisplayPresenter CreateDisplayPresenter()
+      {
+         return A.Fake<IChartDisplayPresenter>();
+      }
+
+      protected override void Because()
+      {
+         sut.Handle(new ObservedDataRemovedEvent(new[] { _dataRepository }, _project));
+      }
+
+      [Observation]
+      public void the_display_is_not_refreshed()
+      {
+         A.CallTo(() => _chartDisplayPresenter.Refresh()).MustNotHaveHappened();
       }
    }
 
