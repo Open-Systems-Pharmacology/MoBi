@@ -3,7 +3,6 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Repository;
 using MoBi.Core.Events;
 using MoBi.Core.Extensions;
 using MoBi.Presentation.Tasks.Edit;
@@ -228,9 +227,12 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public virtual IMoBiCommand AddTo(TChild childToAdd, TParent parent, IBuildingBlock buildingBlockWithFormulaCache)
       {
+         var oldName = childToAdd.Name;
          var nameIsValid = CorrectName(childToAdd, parent);
          if (!nameIsValid)
             return new MoBiEmptyCommand();
+
+         correctTagsForRename(oldName, childToAdd.Name, childToAdd);
 
          var macroCommand = new MoBiMacroCommand
          {
@@ -248,6 +250,19 @@ namespace MoBi.Presentation.Tasks.Interaction
          throwAddedEvent(childToAdd, parent);
 
          return macroCommand;
+      }
+
+      private void correctTagsForRename(string oldName, string newName, IObjectBase objectBase)
+      {
+         if (string.Equals(oldName, newName))
+            return;
+
+         if (objectBase is IEntity entity)
+            entity.Tags.Replace(oldName, newName);
+
+         // Recurse containers to check their tags and their children tags
+         if (objectBase is IContainer container)
+            container.GetAllChildren<IEntity>().Each(x => correctTagsForRename(oldName, newName, x));
       }
 
       private bool adjustFormula(TChild childToAdd, IBuildingBlock buildingBlockWithFormulaCache, IMoBiMacroCommand macroCommand)
