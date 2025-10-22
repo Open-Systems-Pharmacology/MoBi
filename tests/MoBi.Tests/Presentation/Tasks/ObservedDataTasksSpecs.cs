@@ -235,7 +235,7 @@ namespace MoBi.Presentation.Tasks
       }
 
       [Observation]
-      public void should_add_data_repositroy_to_current_project()
+      public void should_add_data_repository_to_current_project()
       {
          _project.AllObservedData.Contains(_dataRepository).ShouldBeTrue();
       }
@@ -245,7 +245,7 @@ namespace MoBi.Presentation.Tasks
       {
          A.CallTo(() => _context.PublishEvent(A<ObservedDataAddedEvent>._)).MustHaveHappened();
          _event.ShouldNotBeNull();
-         _event.DataRepository.ShouldBeEqualTo(_dataRepository);
+         _event.DataRepositories.ShouldOnlyContain(_dataRepository);
       }
    }
 
