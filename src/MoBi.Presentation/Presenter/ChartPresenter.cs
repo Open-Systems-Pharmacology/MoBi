@@ -349,15 +349,9 @@ namespace MoBi.Presentation.Presenter
          displayPresenter.Refresh();
       }
 
-      private bool canHandle(ObservedDataRemovedEvent eventToHandle)
-      {
-         return eventToHandle.DataRepositories.Any(isEditing);
-      }
+      private bool canHandle(ObservedDataRemovedEvent eventToHandle) => eventToHandle.DataRepositories.Any(isEditing);
 
-      private bool isEditing(DataRepository dataRepository)
-      {
-         return dataRepository.Columns.Any(x => editorPresenter.AllDataColumns.Contains(x));
-      }
+      private bool isEditing(DataRepository dataRepository) => dataRepository.Columns.Any(x => editorPresenter.AllDataColumns.Contains(x));
 
       public override void ReleaseFrom(IEventPublisher eventPublisher)
       {
