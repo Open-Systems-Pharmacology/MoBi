@@ -28,6 +28,8 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
    private readonly SimulationMapper _simulationMapper;
    private readonly IPKSimStarter _pkSimStarter;
    private readonly ISimulationSettingsFactory _simulationSettingsFactory;
+   private readonly ICoreSimulationRunner _simulationRunner;
+   private readonly ICoreUserSettings _userSettings;
 
    public ProjectMapper(IXmlSerializationService xmlSerializationService,
       ICreationMetaDataFactory creationMetaDataFactory,
@@ -37,12 +39,16 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       ParameterIdentificationMapper parameterIdentificationMapper,
       SimulationMapper simulationMapper,
       IPKSimStarter pkSimStarter,
-      ISimulationSettingsFactory simulationSettingsFactory) : base(creationMetaDataFactory, logger, context, classificationSnapshotTask, parameterIdentificationMapper)
+      ISimulationSettingsFactory simulationSettingsFactory,
+      ICoreSimulationRunner simulationRunner,
+      ICoreUserSettings userSettings) : base(creationMetaDataFactory, logger, context, classificationSnapshotTask, parameterIdentificationMapper)
    {
       _xmlSerializationService = xmlSerializationService;
       _simulationMapper = simulationMapper;
       _pkSimStarter = pkSimStarter;
       _simulationSettingsFactory = simulationSettingsFactory;
+      _simulationRunner = simulationRunner;
+      _userSettings = userSettings;
    }
 
    /// <summary>
@@ -119,9 +125,34 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
          }
       }
 
+      if (simulationContext.Run && project.Simulations.Any())
+      {
+         await runParallelSimulations(project);
+      }
+
       await updateProjectClassifications(projectSnapshot, snapshotContext);
 
       return project;
+   }
+
+   private async Task runParallelSimulations(MoBiProject project)
+   {
+      var options = new ParallelOptions
+      {
+         MaxDegreeOfParallelism = Math.Max(1, _userSettings.MaximumNumberOfCoresToUse)
+      };
+
+      await Parallel.ForEachAsync(project.Simulations, options, async (sim, ct) =>
+      {
+         try
+         {
+            await _simulationRunner.RunSimulationAsync(sim);
+         }
+         catch (Exception ex)
+         {
+            _logger.AddException(ex);
+         }
+      });
    }
 
    public override async Task<ModelProject> MapToModel(SnapshotProject projectSnapshot, ProjectContext context)

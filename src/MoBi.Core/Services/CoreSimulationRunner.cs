@@ -41,7 +41,6 @@ public class CoreSimulationRunner : ICoreSimulationRunner
    protected readonly ConcurrentDictionary<IMoBiSimulation, CancellationTokenSource> _cancellationTokenSources = new();
    private readonly IEntityValidationTask _entityValidationTask;
    private readonly IQuantitySelectionsRetriever _quantitySelectionsRetriever;
-   private ISimModelManager _simModelManager;
 
    public CoreSimulationRunner(
       IMoBiContext context,
@@ -183,18 +182,18 @@ public class CoreSimulationRunner : ICoreSimulationRunner
       _context.PublishEvent(new ProgressingEvent(args.Progress, args.Progress, AppConstants.SimulationRun));
    }
 
-   private void removeEvents()
+   private void removeEvents(ISimModelManager simModelManager)
    {
-      if (_simModelManager == null) return;
-      _simModelManager.SimulationProgress -= onSimulationProgress;
-      _simModelManager.Terminated -= onSimulationFinished;
+      if (simModelManager == null) return;
+      simModelManager.SimulationProgress -= onSimulationProgress;
+      simModelManager.Terminated -= onSimulationFinished;
    }
 
-   private void addEvents()
+   private void addEvents(ISimModelManager simModelManager)
    {
-      if (_simModelManager == null) return;
-      _simModelManager.SimulationProgress += onSimulationProgress;
-      _simModelManager.Terminated += onSimulationFinished;
+      if (simModelManager == null) return;
+      simModelManager.SimulationProgress += onSimulationProgress;
+      simModelManager.Terminated += onSimulationFinished;
    }
 
    private void addPersistableParametersToOutputSelection(IMoBiSimulation simulation)
@@ -210,14 +209,14 @@ public class CoreSimulationRunner : ICoreSimulationRunner
 
       _context.PublishEvent(new SimulationRunStartedEvent(simulation));
       _context.PublishEvent(new ProgressInitEvent(100, AppConstants.SimulationRun));
-      _simModelManager = _simModelManagerFactory.Create();
+      var simModelManager = _simModelManagerFactory.Create();
 
       try
       {
-         addEvents();
+         addEvents(simModelManager);
          updatePersistableFor(simulation);
 
-         var simulationRunResults = await _simModelManager.RunSimulationAsync(simulation, cts.Token);
+         var simulationRunResults = await simModelManager.RunSimulationAsync(simulation, cts.Token);
 
          simulation.HasChanged = true;
          resultsAction?.Invoke(simulationRunResults);
@@ -243,7 +242,7 @@ public class CoreSimulationRunner : ICoreSimulationRunner
             }
          }
 
-         removeEvents();
+         removeEvents(simModelManager);
          _context.PublishEvent(new SimulationRunFinishedEvent(simulation));
       }
    }

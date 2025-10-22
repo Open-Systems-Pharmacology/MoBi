@@ -354,7 +354,8 @@ namespace MoBi.Presentation.Tasks
 
       private IEnumerable<IContainer> allMolecules()
       {
-         return _buildingBlockRepository.MoleculeBlockCollection.SelectMany(buildingBlock => { return buildingBlock.Select(builder => builder); }).DistinctBy(builder => builder.Name);
+         return _buildingBlockRepository.MoleculeBlockCollection.SelectMany(buildingBlock => { return buildingBlock.Select(builder => builder); })
+            .DistinctBy(builder => builder.Name);
       }
 
       private static void addUndefinedValueTo(MetaDataCategory metaDataCategory)

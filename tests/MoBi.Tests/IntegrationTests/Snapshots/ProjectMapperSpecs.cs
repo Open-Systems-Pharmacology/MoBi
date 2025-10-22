@@ -10,6 +10,7 @@ using MoBi.Core.Snapshots.Mappers;
 using MoBi.HelpersForTests;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core;
 using OSPSuite.Core.Chart.ParameterIdentifications;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -21,6 +22,7 @@ using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
 using Classification = OSPSuite.Core.Domain.Classification;
+using ICoreUserSettings = MoBi.Core.ICoreUserSettings;
 using OutputMapping = OSPSuite.Core.Domain.OutputMapping;
 using ParameterIdentification = OSPSuite.Core.Domain.ParameterIdentifications.ParameterIdentification;
 using SnapshotProject = MoBi.Core.Snapshots.Project;
@@ -43,6 +45,8 @@ namespace MoBi.IntegrationTests.Snapshots
       private IPKSimStarter _pkSimStarter;
       private ISimulationSettingsFactory _simulationSettingsFactory;
       private SimulationMapper _simulationMapper;
+      private ICoreSimulationRunner _coreSimulationRunner;
+      private ICoreUserSettings _coreUserSettings;
 
       protected override void Context()
       {
@@ -56,12 +60,13 @@ namespace MoBi.IntegrationTests.Snapshots
          _ospSuiteLogger = A.Fake<IOSPSuiteLogger>();
          _pkSimStarter = A.Fake<IPKSimStarter>();
          _simulationMapper = IoC.Resolve<SimulationMapper>();
+         _coreSimulationRunner = A.Fake<ICoreSimulationRunner>();
+         _coreUserSettings = A.Fake<ICoreUserSettings>();
 
          A.CallTo(() => _context.Resolve<ISnapshotMapper>()).ReturnsLazily(x => IoC.Resolve<ISnapshotMapper>());
 
-
          _project = new MoBiProject();
-         sut = new ProjectMapper(_xmlSerializationService, _creationMetaDataFactory, _classificationSnapshotTask, _context, _ospSuiteLogger, _parameterIdentificationMapper, _simulationMapper, _pkSimStarter, _simulationSettingsFactory);
+         sut = new ProjectMapper(_xmlSerializationService, _creationMetaDataFactory, _classificationSnapshotTask, _context, _ospSuiteLogger, _parameterIdentificationMapper, _simulationMapper, _pkSimStarter, _simulationSettingsFactory, _coreSimulationRunner, _coreUserSettings);
 
          var module = new Module().WithId("module").WithName("module");
          _project.AddModule(module);
