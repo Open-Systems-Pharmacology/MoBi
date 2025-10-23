@@ -44,6 +44,11 @@ jobs:
     needs: get-latest-commit-timespan
     if: needs.get-latest-commit-timespan.outputs.LATEST_COMMIT_TIMESPAN < 86400
     runs-on: windows-latest
+    env:
+      ES_USERNAME: ${{ secrets.ES_USERNAME }}
+      ES_PASSWORD: ${{ secrets.ES_PASSWORD }}
+      ES_CREDENTIAL_ID: ${{ secrets.ES_CREDENTIAL_ID }}
+      ES_TOTP_SECRET: ${{ secrets.ES_TOTP_SECRET }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -67,11 +72,21 @@ jobs:
       - name : Test
         run: dotnet test .\tests\**\bin\Debug\net472\MoBi*Tests.dll -v normal --no-build  --logger:"html;LogFileName=../testLog_Windows.html"
 
+      - name: Sign MoBi.exe with CodeSignTool
+        uses: Open-Systems-Pharmacology/Workflows/.github/actions/codesigner-SSL@main
+        with:
+          file_path: ./src/MoBi/bin/Debug/net472/MoBi.exe
+
       - name: Create Setup
         run: |
           rake "create_setup[${{env.APP_VERSION}}, Debug]"
           rake "create_portable_setup[${{env.APP_VERSION}}, Debug, mobi-portable-setup.zip]"
-          
+
+      - name: Sign MoBi setup with CodeSignTool
+        uses: Open-Systems-Pharmacology/Workflows/.github/actions/codesigner-SSL@main
+        with:
+          file_path: ./setup/deploy/MoBi.${{ env.APP_VERSION }}.msi
+
       - name: Push test log as artifact
         uses: actions/upload-artifact@v4
         with:
