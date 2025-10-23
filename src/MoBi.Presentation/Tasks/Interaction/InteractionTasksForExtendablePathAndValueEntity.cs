@@ -50,12 +50,12 @@ namespace MoBi.Presentation.Tasks.Interaction
          IExportDataTableToExcelTask exportDataTableToExcelTask,
          IMapper<IEnumerable<TPathAndValueEntity>, List<DataTable>> dataTableMapper,
          IPathAndValueEntityToDistributedParameterMapper pathAndValueEntityToDistributedParameterMapper)
-         : base(interactionTaskContext, 
-            editTask, 
-            moBiFormulaTask, 
-            exportDataTableToExcelTask, 
-            dataTableMapper, 
-            pathAndValueEntityToDistributedParameterMapper, 
+         : base(interactionTaskContext,
+            editTask,
+            moBiFormulaTask,
+            exportDataTableToExcelTask,
+            dataTableMapper,
+            pathAndValueEntityToDistributedParameterMapper,
             cloneManagerForBuildingBlock)
       {
          _extendManager = extendManager;
@@ -191,21 +191,19 @@ namespace MoBi.Presentation.Tasks.Interaction
          var cacheToExtend = pathAndValueEntities.ToCache();
          var targetCache = buildingBlockToExtend.ToCache();
 
-         _extendManager.Merge(cacheToExtend, targetCache, defaultOption: retainConflictingEntities ? MergeConflictOptions.SkipAll : MergeConflictOptions.ReplaceAll);
-
-         macro.RunCommand(Context);
+         _extendManager.Merge(cacheToExtend, targetCache, mergeConflictOption: retainConflictingEntities ? MergeConflictOptions.SkipAll : MergeConflictOptions.ReplaceAll);
 
          return macro;
       }
 
       private void prepareExtendActions(ILookupBuildingBlock<TPathAndValueEntity> targetBuildingBlock, MoBiMacroCommand macro)
       {
-         _extendManager.AddAction = entityToMerge => macro.Add(GenerateAddCommandAndUpdateFormulaReferences(entityToMerge, targetBuildingBlock));
-         _extendManager.RemoveAction = entityToMerge => macro.Add(GenerateRemoveCommand(targetBuildingBlock, entityToMerge));
-         _extendManager.CancelAction = macro.Clear;
+         // Perform extend commands per-entity. That allows the formula references to be managed on up-to-date formula cache enabling consolidation of equivalent formulas
+         _extendManager.AddAction = entityToMerge => macro.Add(generateAddCommandAndUpdateFormulaReferences(entityToMerge, targetBuildingBlock).RunCommand(Context));
+         _extendManager.RemoveAction = entityToMerge => macro.Add(GenerateRemoveCommand(targetBuildingBlock, entityToMerge).RunCommand(Context));
       }
 
-      protected IMoBiMacroCommand GenerateAddCommandAndUpdateFormulaReferences(TPathAndValueEntity entityToMerge, ILookupBuildingBlock<TPathAndValueEntity> targetBuildingBlock, string originalBuilderName = null)
+      private IMoBiMacroCommand generateAddCommandAndUpdateFormulaReferences(TPathAndValueEntity entityToMerge, ILookupBuildingBlock<TPathAndValueEntity> targetBuildingBlock)
       {
          var macroCommand = CreateAddBuilderMacroCommand(entityToMerge, targetBuildingBlock);
 
