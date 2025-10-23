@@ -38,11 +38,11 @@ namespace MoBi.Core.Serialization.ORM
          var configuration = new Configuration();
          var path = dataSource.ToUNCPath();
          configuration.SetProperty("connection.provider", "NHibernate.Connection.DriverConnectionProvider");
-         configuration.SetProperty("connection.driver_class", "NHibernate.Driver.SQLite20Driver");
+         configuration.SetProperty("connection.driver_class", "NHibernate.Driver.MicrosoftDataSqliteDriver");
          configuration.SetProperty("dialect", "NHibernate.Dialect.SQLiteDialect");
          configuration.SetProperty("query.substitutions", "true=1;false=0");
          configuration.SetProperty("show_sql", "false");
-         configuration.SetProperty("connection.connection_string", $"Data Source={path};Version=3;New=False;Compress=True;");
+         configuration.SetProperty("connection.connection_string", $"Data Source={path}");
 
          return Fluently.Configure(configuration)
             .Mappings(cfg => cfg.FluentMappings.AddFromAssemblyOf<SessionFactoryProvider>()).BuildConfiguration();
