@@ -22,10 +22,10 @@
 
   <ItemGroup>
     <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.1.3" />
-    <PackageReference Include="OSPSuite.Utility" Version="4.1.1.4" />
-    <PackageReference Include="OSPSuite.Presentation" Version="13.0.63" />
-    <PackageReference Include="OSPSuite.Presentation.Serialization" Version="13.0.63" />
-    <PackageReference Include="OSPSuite.Core" Version="13.0.63" />  
+    <PackageReference Include="OSPSuite.Utility" Version="4.1.1.5" />
+    <PackageReference Include="OSPSuite.Presentation" Version="13.0.65" />
+    <PackageReference Include="OSPSuite.Presentation.Serialization" Version="13.0.65" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.65" />  
    </ItemGroup>
   <ItemGroup>
     <None Include="..\..\LICENSE">
