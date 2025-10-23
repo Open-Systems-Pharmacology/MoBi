@@ -207,20 +207,20 @@ namespace MoBi.Presentation
       [Observation]
       public void module_nodes_are_superior()
       {
-         sut.OrderingComparisonFor(_moduleNode, _spatialStructureA).ShouldBeEqualTo(-1);
+         sut.OrderingComparisonForModules(_moduleNode, _spatialStructureA).ShouldBeEqualTo(-1);
       }
 
       [Observation]
       public void the_start_values_folders_are_inferior_to_other_node_types()
       {
-         sut.OrderingComparisonFor(_parameterValuesFolderNode, _spatialStructureA).ShouldBeEqualTo(1);
-         sut.OrderingComparisonFor(_initialConditionsFolderNode, _spatialStructureA).ShouldBeEqualTo(1);
-         sut.OrderingComparisonFor(_parameterValuesFolderNode, _moduleNode).ShouldBeEqualTo(1);
-         sut.OrderingComparisonFor(_initialConditionsFolderNode, _moduleNode).ShouldBeEqualTo(1);
-         sut.OrderingComparisonFor(_moduleNode, _parameterValuesFolderNode).ShouldBeEqualTo(-1);
-         sut.OrderingComparisonFor(_moduleNode, _initialConditionsFolderNode).ShouldBeEqualTo(-1);
-         sut.OrderingComparisonFor(_initialConditionsFolderNode, _parameterValuesFolderNode).ShouldBeEqualTo(-1);
-         sut.OrderingComparisonFor(_parameterValuesFolderNode, _initialConditionsFolderNode).ShouldBeEqualTo(1);
+         sut.OrderingComparisonForModules(_parameterValuesFolderNode, _spatialStructureA).ShouldBeEqualTo(1);
+         sut.OrderingComparisonForModules(_initialConditionsFolderNode, _spatialStructureA).ShouldBeEqualTo(1);
+         sut.OrderingComparisonForModules(_parameterValuesFolderNode, _moduleNode).ShouldBeEqualTo(1);
+         sut.OrderingComparisonForModules(_initialConditionsFolderNode, _moduleNode).ShouldBeEqualTo(1);
+         sut.OrderingComparisonForModules(_moduleNode, _parameterValuesFolderNode).ShouldBeEqualTo(-1);
+         sut.OrderingComparisonForModules(_moduleNode, _initialConditionsFolderNode).ShouldBeEqualTo(-1);
+         sut.OrderingComparisonForModules(_initialConditionsFolderNode, _parameterValuesFolderNode).ShouldBeEqualTo(-1);
+         sut.OrderingComparisonForModules(_parameterValuesFolderNode, _initialConditionsFolderNode).ShouldBeEqualTo(1);
       }
    }
 
@@ -243,13 +243,13 @@ namespace MoBi.Presentation
       [Observation]
       public void should_not_compare_for_building_block_nodes()
       {
-         sut.OrderingComparisonFor(_spatialStructureA, _spatialStructureZ).ShouldBeEqualTo(0);
+         sut.OrderingComparisonForModules(_spatialStructureA, _spatialStructureZ).ShouldBeEqualTo(0);
       }
 
       [Observation]
       public void should_compare_names_for_module_nodes()
       {
-         sut.OrderingComparisonFor(_moduleNodeA, _moduleNodeZ).ShouldBeEqualTo(-1);
+         sut.OrderingComparisonForModules(_moduleNodeA, _moduleNodeZ).ShouldBeEqualTo(-1);
       }
    }
 
@@ -845,6 +845,118 @@ namespace MoBi.Presentation
       public void the_interaction_task_is_used_to_remove_child_modules()
       {
          A.CallTo(() => _interactionTaskForModule.Remove(A<IReadOnlyList<Module>>.That.Contains(_module))).MustNotHaveHappened();
+      }
+   }
+
+   public class When_ordering_building_block_nodes_by_configured_order : concern_for_ModuleExplorerPresenter
+   {
+      private ITreeNode<IWithName> _molecules;
+      private ITreeNode<IWithName> _reactions;
+      private ITreeNode<IWithName> _passiveTransports;
+      private ITreeNode<IWithName> _observers;
+      private ITreeNode<IWithName> _events;
+      private ITreeNode<IWithName> _initialConditions;
+      private ITreeNode<IWithName> _parameterValues;
+
+      protected override void Context()
+      {
+         base.Context();
+
+         _molecules = new BuildingBlockNode(new MoleculeBuildingBlock().WithName("Mols"));
+         _reactions = new BuildingBlockNode(new MoBiReactionBuildingBlock().WithName("Reacs"));
+         _passiveTransports = new BuildingBlockNode(new PassiveTransportBuildingBlock().WithName("PT"));
+         _observers = new BuildingBlockNode(new ObserverBuildingBlock().WithName("Obs"));
+         _events = new BuildingBlockNode(new EventGroupBuildingBlock().WithName("Events"));
+         _initialConditions = new BuildingBlockNode(new InitialConditionsBuildingBlock().WithName("IC"));
+         _parameterValues = new BuildingBlockNode(new ParameterValuesBuildingBlock().WithName("PV"));
+      }
+
+      [Observation]
+      public void molecules_should_come_before_reactions()
+      {
+         sut.OrderingComparisonForModules(_molecules, _reactions).ShouldBeEqualTo(-1);
+         sut.OrderingComparisonForModules(_reactions, _molecules).ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void reactions_should_come_before_passive_transports()
+      {
+         sut.OrderingComparisonForModules(_reactions, _passiveTransports).ShouldBeEqualTo(-1);
+      }
+
+      [Observation]
+      public void passive_transports_should_come_before_observers()
+      {
+         sut.OrderingComparisonForModules(_passiveTransports, _observers).ShouldBeEqualTo(-1);
+      }
+
+      [Observation]
+      public void observers_should_come_before_events()
+      {
+         sut.OrderingComparisonForModules(_observers, _events).ShouldBeEqualTo(-1);
+      }
+
+      [Observation]
+      public void events_should_come_before_initial_conditions()
+      {
+         sut.OrderingComparisonForModules(_events, _initialConditions).ShouldBeEqualTo(-1);
+      }
+
+      [Observation]
+      public void initial_conditions_should_come_before_parameter_values()
+      {
+         sut.OrderingComparisonForModules(_initialConditions, _parameterValues).ShouldBeEqualTo(-1);
+      }
+   }
+
+   public class When_ordering_two_building_blocks_of_the_same_type : concern_for_ModuleExplorerPresenter
+   {
+      private ITreeNode<IWithName> _molA;
+      private ITreeNode<IWithName> _molZ;
+
+      protected override void Context()
+      {
+         base.Context();
+         _molA = new BuildingBlockNode(new MoleculeBuildingBlock().WithName("A"));
+         _molZ = new BuildingBlockNode(new MoleculeBuildingBlock().WithName("Z"));
+      }
+
+      [Observation]
+      public void same_rank_should_compare_equal()
+      {
+         sut.OrderingComparisonForModules(_molA, _molZ).ShouldBeEqualTo(0);
+         sut.OrderingComparisonForModules(_molZ, _molA).ShouldBeEqualTo(0);
+      }
+   }
+
+   public class When_mixing_building_blocks_with_special_nodes : concern_for_ModuleExplorerPresenter
+   {
+      private ITreeNode<IWithName> _buildingBlock;
+      private ParameterValuesFolderNode _pvFolderNode;
+      private ITreeNode<RootNodeType> _modulesRoot;
+
+      protected override void Context()
+      {
+         base.Context();
+
+         _buildingBlock = new BuildingBlockNode(new MoleculeBuildingBlock().WithName("Mols"));
+
+         var module = new Module();
+         _pvFolderNode = new ParameterValuesFolderNode(new ClassifiableModule { Subject = module });
+
+         _modulesRoot = _treeNodeFactory.CreateFor(RootNodeTypes.ModulesFolder);
+      }
+
+      [Observation]
+      public void start_value_folders_are_inferior_to_other_node_types()
+      {
+         sut.OrderingComparisonForModules(_pvFolderNode, _buildingBlock).ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void modules_root_is_superior_to_other_nodes()
+      {
+         sut.OrderingComparisonForModules(_modulesRoot, _buildingBlock).ShouldBeEqualTo(-1);
       }
    }
 }

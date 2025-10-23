@@ -2,6 +2,7 @@
 using System.Linq;
 using FakeItEasy;
 using MoBi.Assets;
+using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
 using MoBi.Core.Services;
@@ -234,7 +235,7 @@ namespace MoBi.Presentation.Tasks
       }
 
       [Observation]
-      public void should_add_data_repositroy_to_current_project()
+      public void should_add_data_repository_to_current_project()
       {
          _project.AllObservedData.Contains(_dataRepository).ShouldBeTrue();
       }
@@ -244,7 +245,7 @@ namespace MoBi.Presentation.Tasks
       {
          A.CallTo(() => _context.PublishEvent(A<ObservedDataAddedEvent>._)).MustHaveHappened();
          _event.ShouldNotBeNull();
-         _event.DataRepository.ShouldBeEqualTo(_dataRepository);
+         _event.DataRepositories.ShouldOnlyContain(_dataRepository);
       }
    }
 
@@ -469,6 +470,67 @@ namespace MoBi.Presentation.Tasks
       {
          _dataRepository.BaseGrid.Values.First().ShouldBeEqualTo(0.0f);
          _dataRepository.AllButBaseGrid().All(x => x.Values.First() == 1.0f).ShouldBeTrue();
+      }
+   }
+
+   internal abstract class RemovingSingleResultFromASimulationBase : concern_for_ObservedDataTask
+   {
+      protected DataRepository _currentResult;
+      protected DataRepository _historicResult;
+      protected MoBiSimulation _simulation;
+
+      protected abstract ViewResult Confirmation { get; }
+
+      protected override void Context()
+      {
+         base.Context();
+
+         _currentResult = new DataRepository("id1");
+         _historicResult = new DataRepository("id2");
+
+         _simulation = new MoBiSimulation { ResultsDataRepository = _currentResult };
+         _simulation.HistoricResults.Add(_historicResult);
+
+         _project.AddSimulation(_simulation);
+
+         A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(Confirmation);
+      }
+
+      protected override void Because()
+      {
+         sut.DeleteResultsFromSimulation(_simulation, _currentResult);
+      }
+
+      [Observation]
+      public void should_prompt_the_user()
+      {
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(
+               AppConstants.Dialog.RemoveSimulationResultsFromSimulation(_currentResult.Name, _simulation.Name),
+               ViewResult.Yes))
+            .MustHaveHappened();
+      }
+   }
+
+   internal class When_removing_single_result_and_user_confirms : RemovingSingleResultFromASimulationBase
+   {
+      protected override ViewResult Confirmation => ViewResult.Yes;
+
+      [Observation]
+      public void removes_the_result_from_the_simulation()
+      {
+         _simulation.HistoricResults.Contains(_currentResult).ShouldBeFalse();
+      }
+   }
+
+   internal class When_removing_single_result_and_user_cancels : RemovingSingleResultFromASimulationBase
+   {
+      protected override ViewResult Confirmation => ViewResult.No;
+
+      [Observation]
+      public void should_not_execute_the_remove_command()
+      {
+         A.CallTo(() => _context.AddToHistory(A<RemoveHistoricResultFromSimulationCommand>.Ignored))
+            .MustNotHaveHappened();
       }
    }
 }

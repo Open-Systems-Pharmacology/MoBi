@@ -342,10 +342,16 @@ namespace MoBi.Presentation.Presenter
 
       public void Handle(ObservedDataRemovedEvent eventToHandle)
       {
-         var dataRepository = eventToHandle.DataRepository;
-         editorPresenter.RemoveDataRepositories(new[] { dataRepository });
+         if (!canHandle(eventToHandle))
+            return;
+            
+         editorPresenter.RemoveDataRepositories(eventToHandle.DataRepositories);
          displayPresenter.Refresh();
       }
+
+      private bool canHandle(ObservedDataRemovedEvent eventToHandle) => eventToHandle.DataRepositories.Any(isEditing);
+
+      private bool isEditing(DataRepository dataRepository) => dataRepository.Columns.Any(x => editorPresenter.AllDataColumns.Contains(x));
 
       public override void ReleaseFrom(IEventPublisher eventPublisher)
       {

@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using OSPSuite.Utility.Reflection;
-using OSPSuite.Utility.Validation;
+﻿using System;
+using MoBi.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.DTO;
+using OSPSuite.Utility.Reflection;
+using OSPSuite.Utility.Validation;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace MoBi.Presentation.DTO
 {
@@ -16,7 +19,7 @@ namespace MoBi.Presentation.DTO
 
       protected BreadCrumbsDTO(T underlyingObject) : base(underlyingObject)
       {
-         
+         Rules.AddRange(AllRules.All);
       }
 
       public ObjectPath ContainerPath
@@ -52,6 +55,37 @@ namespace MoBi.Presentation.DTO
       public string PathElementByIndex(int index)
       {
          return _elementList.Count > index ? _elementList[index] : string.Empty;
+      }
+
+      private static class AllRules
+      {
+         private static bool elementDoesNotContainIllegalCharacters(string element)
+         {
+            if (string.IsNullOrEmpty(element))
+               return true;
+
+            return !Constants.ILLEGAL_CHARACTERS.Any(element.Contains);
+         }
+
+         private static IBusinessRule elementCannotContainIllegalCharacters(Expression<Func<BreadCrumbsDTO<T>, string>> expression) => CreateRule.For<BreadCrumbsDTO<T>>()
+            .Property(expression)
+            .WithRule((dto, element) => elementDoesNotContainIllegalCharacters(element))
+            .WithError(AppConstants.PathCannotContainIllegalCharacters(Constants.ILLEGAL_CHARACTERS));
+
+         public static IReadOnlyList<IBusinessRule> All { get; } = new[]
+         {
+            elementCannotContainIllegalCharacters(x => x.PathElement0),
+            elementCannotContainIllegalCharacters(x => x.PathElement1),
+            elementCannotContainIllegalCharacters(x => x.PathElement2),
+            elementCannotContainIllegalCharacters(x => x.PathElement3),
+            elementCannotContainIllegalCharacters(x => x.PathElement4),
+            elementCannotContainIllegalCharacters(x => x.PathElement5),
+            elementCannotContainIllegalCharacters(x => x.PathElement6),
+            elementCannotContainIllegalCharacters(x => x.PathElement7),
+            elementCannotContainIllegalCharacters(x => x.PathElement8),
+            elementCannotContainIllegalCharacters(x => x.PathElement9)
+         };
+
       }
    }
 }

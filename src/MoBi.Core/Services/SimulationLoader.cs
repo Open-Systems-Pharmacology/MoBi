@@ -130,7 +130,7 @@ namespace MoBi.Core.Services
          var project = _context.CurrentProject;
 
          allObservedData.Where(observedData => !project.AllObservedData.ExistsById(observedData.Id))
-            .Each(x => loadCommand.AddCommand(new AddObservedDataToProjectCommand(x)));
+            .Each(x => loadCommand.AddCommand(new AddObservedDataToProjectCommand(new[] { x })));
       }
 
       private IMoBiSimulation cloneSimulation(IMoBiSimulation simulation)
