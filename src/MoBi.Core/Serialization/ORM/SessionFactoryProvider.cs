@@ -38,7 +38,7 @@ namespace MoBi.Core.Serialization.ORM
          var configuration = new Configuration();
          var path = dataSource.ToUNCPath();
          configuration.SetProperty("connection.provider", "NHibernate.Connection.DriverConnectionProvider");
-         configuration.SetProperty("connection.driver_class", "NHibernate.Driver.MicrosoftDataSqliteDriver");
+         configuration.SetProperty("connection.driver_class", "NHibernate.Driver.SQLite20Driver");
          configuration.SetProperty("dialect", "NHibernate.Dialect.SQLiteDialect");
          configuration.SetProperty("query.substitutions", "true=1;false=0");
          configuration.SetProperty("show_sql", "false");
