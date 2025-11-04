@@ -182,17 +182,21 @@ namespace MoBi.Core.Service
    {
       private IMoBiSimulation _simulationToConfigure;
       private IModel _model;
+      private IContainerMergeTask _containerMergeTask;
+      private ICloneManagerForModel _cloneManagerForModel;
 
       protected override void Context()
       {
          base.Context();
+         _containerMergeTask = new ContainerMergeTask();
+         _cloneManagerForModel = A.Fake<ICloneManagerForModel>();
          _simulationToConfigure = new MoBiSimulation { Model = new Model { Root = new Container() }.WithName("OLD_MODEL") };
          _simulationToConfigure.AddOriginalQuantityValue(new OriginalQuantityValue { Path = "a path" });
          _simulationToConfigure.Configuration = new SimulationConfiguration();
          _model = new Model().WithName("NEW MODEL");
          _model.Root = new Container();
 
-         var simulationBuilder = new SimulationBuilder(_simulationToConfigure.Configuration);
+         var simulationBuilder = new SimulationBuilder(_cloneManagerForModel, _containerMergeTask);
          var creationResults = new CreationResult(_model, simulationBuilder);
          A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._, A<string>._)).Returns(creationResults);
       }
