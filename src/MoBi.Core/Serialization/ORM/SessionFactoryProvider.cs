@@ -42,7 +42,7 @@ namespace MoBi.Core.Serialization.ORM
          configuration.SetProperty("dialect", "NHibernate.Dialect.SQLiteDialect");
          configuration.SetProperty("query.substitutions", "true=1;false=0");
          configuration.SetProperty("show_sql", "false");
-         configuration.SetProperty("connection.connection_string", $"Data Source={path};Version=3;New=False;Compress=True;");
+         configuration.SetProperty("connection.connection_string", $"Data Source={path}");
 
          return Fluently.Configure(configuration)
             .Mappings(cfg => cfg.FluentMappings.AddFromAssemblyOf<SessionFactoryProvider>()).BuildConfiguration();
