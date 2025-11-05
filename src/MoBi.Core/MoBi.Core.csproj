@@ -37,7 +37,6 @@
     <PackageReference Include="OSPSuite.Infrastructure.Reporting" Version="13.0.68" />
     <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="13.0.68" />
     <PackageReference Include="OSPSuite.Infrastructure.Import" Version="13.0.68" />
-    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0" />
   </ItemGroup>
   <ItemGroup>
