@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using Microsoft.Data.Sqlite;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Builder;
@@ -88,6 +89,7 @@ namespace MoBi.Core.Serialization.ORM
             // Exception occurs while opening the project! 
             // close the file and rethrow the exception
             _sessionManager.CloseFactory();
+            SqliteConnection.ClearAllPools();
             context.Clear();
             throw;
          }
@@ -133,6 +135,7 @@ namespace MoBi.Core.Serialization.ORM
       public MoBiProject NewProject(IMoBiContext context)
       {
          _sessionManager.CloseFactory();
+         SqliteConnection.ClearAllPools();
          context.NewProject();
          var project = context.CurrentProject;
          project.SimulationSettings = _simulationSettingsFactory.CreateDefault();
@@ -142,6 +145,7 @@ namespace MoBi.Core.Serialization.ORM
       public void CloseProject(IMoBiContext context)
       {
          _sessionManager.CloseFactory();
+         SqliteConnection.ClearAllPools();
          context.Clear();
       }
 
