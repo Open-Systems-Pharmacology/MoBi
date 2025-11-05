@@ -14,7 +14,7 @@ namespace MoBi.Core.Services
       public void Compress(string projectFile)
       {
          var path = projectFile.ToUNCPath();
-         using (var sqlLite = new SqliteConnection(string.Format("Data Source={0}", path)))
+         using (var sqlLite = new SqliteConnection($"Data Source={path}"))
          {
             sqlLite.Open();
             vacuum(sqlLite);
