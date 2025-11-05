@@ -1,50 +1,46 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using FakeItEasy;
 using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Events;
 using MoBi.Core.Services;
-using MoBi.Helpers;
 using MoBi.Presentation;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks;
-using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Services;
 
 namespace MoBi.Core.Service
 {
    public abstract class concern_for_SimulationUpdateTask : ContextSpecification<SimulationUpdateTask>
    {
-      protected IObjectPathFactory _objectPathFactory;
       protected IMoBiContext _context;
       private IMoBiApplicationController _applicationController;
 
-      protected IEntityPathResolver _entityPathResolver;
       protected ICreateSimulationConfigurationPresenter _configurePresenter;
       protected ISimulationFactory _simulationFactory;
       protected ICloneManagerForBuildingBlock _cloneManager;
-      protected IInteractionTasksForSimulation _interactionTasksForSimulation;
       protected ISimulationConfigurationFactory _simulationConfigurationFactory;
+      private IHeavyWorkManager _heavyWorkManager;
 
       protected override void Context()
       {
-         _objectPathFactory = A.Fake<IObjectPathFactory>();
          _context = A.Fake<IMoBiContext>();
          _applicationController = A.Fake<IMoBiApplicationController>();
-         _entityPathResolver = new EntityPathResolverForSpecs();
          _configurePresenter = A.Fake<ICreateSimulationConfigurationPresenter>();
          _simulationFactory = A.Fake<ISimulationFactory>();
          A.CallTo(() => _applicationController.Start<ICreateSimulationConfigurationPresenter>()).Returns(_configurePresenter);
          _cloneManager = A.Fake<ICloneManagerForBuildingBlock>();
-         _interactionTasksForSimulation = A.Fake<IInteractionTasksForSimulation>();
          _simulationConfigurationFactory = A.Fake<ISimulationConfigurationFactory>();
+         _heavyWorkManager = new HeavyWorkManagerForSpecs();
 
-         sut = new SimulationUpdateTask(_context, _applicationController, _simulationFactory, _cloneManager, _simulationConfigurationFactory);
+         sut = new SimulationUpdateTask(_context, _applicationController, _simulationFactory, _cloneManager, _simulationConfigurationFactory, _heavyWorkManager);
       }
    }
 
@@ -93,7 +89,7 @@ namespace MoBi.Core.Service
       protected override void Context()
       {
          base.Context();
-         _moBiSimulation = new MoBiSimulation {Model = new Model {Root = new Container()}.WithName("OLD_MODEL")};
+         _moBiSimulation = new MoBiSimulation { Model = new Model { Root = new Container() }.WithName("OLD_MODEL") };
          _simulationConfiguration = new SimulationConfiguration();
          _moBiSimulation.Configuration = _simulationConfiguration;
       }
@@ -127,13 +123,13 @@ namespace MoBi.Core.Service
       {
          base.Context();
          _moBiProject = new MoBiProject();
-         _simulationToConfigure = new MoBiSimulation {Model = new Model {Root = new Container()}.WithName("OLD_MODEL")};
-         _simulationToConfigure.AddOriginalQuantityValue(new OriginalQuantityValue {Path = "a path"});
+         _simulationToConfigure = new MoBiSimulation { Model = new Model { Root = new Container() }.WithName("OLD_MODEL") };
+         _simulationToConfigure.AddOriginalQuantityValue(new OriginalQuantityValue { Path = "a path" });
          _simulationToConfigure.Configuration = new SimulationConfiguration();
          _model = new Model().WithName("NEW MODEL");
          var simulationBuilder = A.Fake<SimulationBuilder>();
-         _entitySource =new SimulationEntitySource("SimPath", "BBName", "bbType", "moduleName", "sourcePath");
-         A.CallTo(() => simulationBuilder.EntitySources).Returns(new List<SimulationEntitySource> {_entitySource});
+         _entitySource = new SimulationEntitySource("SimPath", "BBName", "bbType", "moduleName", "sourcePath");
+         A.CallTo(() => simulationBuilder.EntitySources).Returns(new List<SimulationEntitySource> { _entitySource });
          var creationResults = new CreationResult(_model, simulationBuilder);
          _model.Root = new Container();
          A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._, A<string>._)).Returns(creationResults);
@@ -186,17 +182,21 @@ namespace MoBi.Core.Service
    {
       private IMoBiSimulation _simulationToConfigure;
       private IModel _model;
+      private IContainerMergeTask _containerMergeTask;
+      private ICloneManagerForModel _cloneManagerForModel;
 
       protected override void Context()
       {
          base.Context();
-         _simulationToConfigure = new MoBiSimulation {Model = new Model {Root = new Container()}.WithName("OLD_MODEL")};
-         _simulationToConfigure.AddOriginalQuantityValue(new OriginalQuantityValue {Path = "a path"});
+         _containerMergeTask = new ContainerMergeTask();
+         _cloneManagerForModel = A.Fake<ICloneManagerForModel>();
+         _simulationToConfigure = new MoBiSimulation { Model = new Model { Root = new Container() }.WithName("OLD_MODEL") };
+         _simulationToConfigure.AddOriginalQuantityValue(new OriginalQuantityValue { Path = "a path" });
          _simulationToConfigure.Configuration = new SimulationConfiguration();
          _model = new Model().WithName("NEW MODEL");
          _model.Root = new Container();
 
-         var simulationBuilder = new SimulationBuilder(_simulationToConfigure.Configuration);
+         var simulationBuilder = new SimulationBuilder(_cloneManagerForModel, _containerMergeTask);
          var creationResults = new CreationResult(_model, simulationBuilder);
          A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._, A<string>._)).Returns(creationResults);
       }

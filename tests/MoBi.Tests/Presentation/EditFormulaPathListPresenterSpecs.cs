@@ -2,7 +2,7 @@
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -189,12 +189,12 @@ namespace MoBi.Presentation
          base.Context();
          _commandCollector = A.Fake<ICommandCollector>();
          _formula = new ExplicitFormula();
-         _formulaUsablePath = new FormulaUsablePath("path") {Alias = "alias", Dimension = DimensionFactoryForSpecs.MassDimension};
+         _formulaUsablePath = new FormulaUsablePath("path") { Alias = "alias", Dimension = DimensionFactoryForSpecs.MassDimension };
          _formula.AddObjectPath(_formulaUsablePath);
 
-         var formulaUsablePath = new FormulaUsablePath("path") {Alias = "alias"};
+         var formulaUsablePath = new FormulaUsablePath("path") { Alias = "alias" };
          _formulaUsablePathDTO = new FormulaUsablePathDTO(formulaUsablePath, _formula);
-         A.CallTo(() => _formulaUsablePathDTOMapper.MapFrom(_formula, A<IUsingFormula>._)).Returns(new[] {_formulaUsablePathDTO});
+         A.CallTo(() => _formulaUsablePathDTOMapper.MapFrom(_formula, A<IUsingFormula>._)).Returns(new[] { _formulaUsablePathDTO });
          sut.Edit(_formula, null);
          sut.InitializeWith(_commandCollector);
 
@@ -227,7 +227,7 @@ namespace MoBi.Presentation
       {
          base.Context();
          _formula = new ExplicitFormula().WithName("Test");
-         _pathToRemove = new FormulaUsablePath("..", "ToRemove") {Alias = "ToRemove"};
+         _pathToRemove = new FormulaUsablePath("..", "ToRemove") { Alias = "ToRemove" };
          _formulaUsablePathDTO = new FormulaUsablePathDTO(_pathToRemove, _formula);
          _formula.AddObjectPath(_pathToRemove);
          sut.InitializeWith(A.Fake<ICommandCollector>());

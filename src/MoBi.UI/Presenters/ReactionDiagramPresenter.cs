@@ -4,7 +4,6 @@ using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
-using MoBi.Core.Domain.Repository;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Extensions;
 using MoBi.Core.Services;
@@ -40,15 +39,15 @@ namespace MoBi.UI.Presenters
       private readonly IBuildingBlockRepository _buildingBlockRepository;
 
       public ReactionDiagramPresenter(
-         IReactionDiagramView view, 
-         IContainerBaseLayouter layouter, 
-         IMoBiContext context, 
-         IUserSettings userSettings, 
-         IDialogCreator dialogCreator, 
-         IMoBiApplicationController applicationController, 
-         IDiagramTask diagramTask, 
+         IReactionDiagramView view,
+         IContainerBaseLayouter layouter,
+         IMoBiContext context,
+         IUserSettings userSettings,
+         IDialogCreator dialogCreator,
+         IMoBiApplicationController applicationController,
+         IDiagramTask diagramTask,
          IDiagramLayoutTask diagramLayoutTask,
-         IStartOptions runOptions, 
+         IStartOptions runOptions,
          IDiagramModelFactory diagramModelFactory,
          IBuildingBlockRepository buildingBlockRepository) :
          base(view, layouter, dialogCreator, diagramModelFactory, userSettings, context, diagramTask, runOptions)
@@ -193,10 +192,10 @@ namespace MoBi.UI.Presenters
       private void removeItem(GoObject itemToDelete)
       {
          if (itemToDelete.IsAnImplementationOf<MoleculeNode>())
-            RemoveMoleculeNode((MoleculeNode) itemToDelete);
+            RemoveMoleculeNode((MoleculeNode)itemToDelete);
 
          else if (itemToDelete.IsAnImplementationOf<ReactionNode>())
-            RemoveReactionNode((ReactionNode) itemToDelete);
+            RemoveReactionNode((ReactionNode)itemToDelete);
       }
 
       private bool anyLinkedNodes(MoleculeNode moleculeNode)
@@ -232,7 +231,7 @@ namespace MoBi.UI.Presenters
          DiagramModel.ClearUndoStack();
       }
 
-      protected override void Unlink(IBaseNode node1, IBaseNode node2, object portObject1, object portObject2)
+      public override void Unlink(IBaseNode node1, IBaseNode node2, object portObject1, object portObject2)
       {
          ReactionNode reactionNode;
          MoleculeNode moleculeNode;
@@ -268,13 +267,13 @@ namespace MoBi.UI.Presenters
          {
             reactionNode = rNode1;
             moleculeNode = mNode2;
-            reactionLinkType = (ReactionLinkType) portObject1;
+            reactionLinkType = (ReactionLinkType)portObject1;
          }
          else
          {
             reactionNode = rNode2;
             moleculeNode = mNode1;
-            reactionLinkType = (ReactionLinkType) portObject2;
+            reactionLinkType = (ReactionLinkType)portObject2;
          }
       }
 

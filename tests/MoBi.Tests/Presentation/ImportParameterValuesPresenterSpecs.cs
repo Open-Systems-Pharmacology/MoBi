@@ -1,22 +1,22 @@
 ﻿using System.Collections.Generic;
 using System.Data;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Services;
-using OSPSuite.Utility.Extensions;
 using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
-using OSPSuite.Infrastructure.Import.Services;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Services;
+using OSPSuite.Infrastructure.Import.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation
 {
@@ -46,7 +46,6 @@ namespace MoBi.Presentation
 
          A.CallTo(() => _view.BindTo(A<ImportExcelSheetSelectionDTO>._))
             .Invokes(x => _importExcelSheetDTO = x.GetArgument<ImportExcelSheetSelectionDTO>(0));
-
       }
    }
 
@@ -58,7 +57,7 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         _allSheets = new List<string> {"Sheet1", "Sheet2"};
+         _allSheets = new List<string> { "Sheet1", "Sheet2" };
          _path = DomainHelperForSpecs.TestFileFullPath("psv.xlsx");
          A.CallTo(_dialogCreator).WithReturnType<string>().Returns(_path);
          A.CallTo(() => _excelTask.RetrieveExcelSheets(_path, true)).Returns(_allSheets);
@@ -82,7 +81,6 @@ namespace MoBi.Presentation
          _importExcelSheetDTO.SelectedSheet.ShouldBeEqualTo("Sheet1");
       }
    }
-
 
    public class the_import_value_presenter_is_importing_values_for_a_given_building_block : concern_for_ImportParameterValuesPresenter
    {
@@ -120,16 +118,15 @@ namespace MoBi.Presentation
    {
       protected QuantityImporterDTO _quantityImporterDTO;
 
-
       protected override void Context()
       {
          base.Context();
          _quantityImporterDTO = new QuantityImporterDTO();
          new List<ImportedQuantityDTO>
          {
-            new ImportedQuantityDTO{ContainerPath=new ObjectPath(new[] { "Path1" })}, 
-            new ImportedQuantityDTO{ContainerPath=new ObjectPath(new[] { "Path2" })},
-            new ImportedQuantityDTO{ContainerPath=new ObjectPath(new[] { "Path3" }),QuantityInBaseUnit = 0.0}
+            new ImportedQuantityDTO { ContainerPath = new ObjectPath(new[] { "Path1" }) },
+            new ImportedQuantityDTO { ContainerPath = new ObjectPath(new[] { "Path2" }) },
+            new ImportedQuantityDTO { ContainerPath = new ObjectPath(new[] { "Path3" }), QuantityInBaseUnit = 0.0 }
          }.Each(_quantityImporterDTO.QuantityDTOs.Add);
 
          A.CallTo(() => _dataTableToImportParameterQuantityDTOMapperForMolecules.MapFrom(A<DataTable>._, A<ParameterValuesBuildingBlock>.Ignored)).Returns(_quantityImporterDTO);

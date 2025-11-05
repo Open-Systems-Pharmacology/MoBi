@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
@@ -7,10 +8,11 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
+using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
-using OSPSuite.Core.Commands.Core;
+using OSPSuite.Assets.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
@@ -32,29 +34,33 @@ namespace MoBi.Presentation.Tasks.Interaction
       void MoveBuildingBlock(IBuildingBlock buildingBlockToMove, Module destinationModule);
       void CopyBuildingBlock(IBuildingBlock buildingBlockToCopy, Module destinationModule);
       bool Remove(IReadOnlyList<Module> modulesToRemove);
+      void ExportModuleSnapshot(Module module);
+      Module LoadFromSnapshot(string snapshot);
    }
 
    public class InteractionTasksForModule : InteractionTasksForChildren<MoBiProject, Module>, IInteractionTasksForModule
    {
       private readonly IParameterValuesTask _parameterValuesTask;
       private readonly IInitialConditionsTask<InitialConditionsBuildingBlock> _initialConditionsTask;
+      private readonly IPKSimStarter _pkSimStarter;
       private IMoBiContext context => _interactionTaskContext.Context;
 
       public InteractionTasksForModule(
-         IInteractionTaskContext interactionTaskContext, 
+         IInteractionTaskContext interactionTaskContext,
          IEditTaskForModule editTask,
          IParameterValuesTask parameterValuesTask,
-         IInitialConditionsTask<InitialConditionsBuildingBlock> initialConditionsTask) : base(interactionTaskContext, editTask)
+         IInitialConditionsTask<InitialConditionsBuildingBlock> initialConditionsTask, IPKSimStarter pkSimStarter) : base(interactionTaskContext, editTask)
       {
          _parameterValuesTask = parameterValuesTask;
          _initialConditionsTask = initialConditionsTask;
+         _pkSimStarter = pkSimStarter;
       }
 
       public override IMoBiCommand GetRemoveCommand(Module objectToRemove, MoBiProject parent, IBuildingBlock buildingBlock) => new RemoveModuleCommand(objectToRemove);
 
       public override IMoBiCommand GetAddCommand(Module itemToAdd, MoBiProject parent, IBuildingBlock buildingBlock) => new AddModuleCommand(itemToAdd);
 
-      public IMoBiCommand GetAddBuildingBlocksToModuleCommand(Module existingModule, IReadOnlyList<IBuildingBlock> listOfNewBuildingBlocks) 
+      public IMoBiCommand GetAddBuildingBlocksToModuleCommand(Module existingModule, IReadOnlyList<IBuildingBlock> listOfNewBuildingBlocks)
          => new AddMultipleBuildingBlocksToModuleCommand(existingModule, listOfNewBuildingBlocks);
 
       /// <summary>
@@ -72,7 +78,7 @@ namespace MoBi.Presentation.Tasks.Interaction
                case InitialConditionsBuildingBlock initialConditionsBuildingBlock when _initialConditionsTask.CorrectName(initialConditionsBuildingBlock, existingModule) == false:
                   return false;
             }
-         };
+         }
 
          return true;
       }
@@ -195,9 +201,25 @@ namespace MoBi.Presentation.Tasks.Interaction
          return true;
       }
 
+      public void ExportModuleSnapshot(Module module)
+      {
+         var filePath = InteractionTask.AskForFileToSave(AppConstants.Captions.SaveModuleSnapshot, Constants.Filter.JSON_FILE_FILTER, Constants.DirectoryKey.MODEL_PART, module.Name);
+         if (string.IsNullOrEmpty(filePath))
+            return;
+
+         using (var writer = new StreamWriter(filePath))
+         {
+            writer.Write(module.Snapshot.FromBase64String());
+         }
+      }
+
+      public Module LoadFromSnapshot(string snapshot)
+      {
+         return _interactionTaskContext.Context.Clone(_pkSimStarter.LoadModuleFromSnapshot(snapshot));
+      }
+
       private void showCouldNotRemoveMessage(IReadOnlyList<Module> modulesNotRemoved)
       {
-
          _interactionTaskContext.DialogCreator.MessageBoxInfo(AppConstants.Captions.CouldNotRemoveModules(modulesNotRemoved.AllNames().ToList()));
       }
 

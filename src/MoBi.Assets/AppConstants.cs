@@ -28,6 +28,7 @@ namespace MoBi.Assets
       public static readonly string DefaultSkin = "Office 2013 Light Gray";
       public static readonly string NewFormulaDescription = "Create New Formula";
       public static readonly string NewFormulaName = "New Formula";
+      public static readonly string TableFormula = "Table Formula";
       public static readonly string SimulationRun = "Simulation(s) Running";
       public static readonly string ParameterType = "Type";
       public static readonly string NaN = "<NaN>";
@@ -1175,6 +1176,12 @@ namespace MoBi.Assets
          public static readonly string ImportFromExcel = "Import from Excel®...";
          public static readonly string ShowChanges = "Show Changes";
          public static readonly string StopAllRunningSimulations = "Stop all running simulations";
+         public static readonly string ReloadModule = "Reload module";
+         public static readonly string Snapshot = "Snapshot";
+         public static readonly string Export = "Export";
+         public static readonly string ReloadExpressionProfile = "Reload Expression Profile";
+         public static readonly string ReloadIndividual = "Reload Individual";
+
          public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
 
          public static string AddExistingAs(string objectTypeName, string targetTypeName) => $"Load {objectTypeName} as {targetTypeName}...";
@@ -1367,6 +1374,17 @@ namespace MoBi.Assets
 
          public static string CannotFindReactionForParameter(string parameterName) => $"Cannot find reaction for parameter {parameterName}";
          public static string CannotFindTransportForParameter(string parameterName) => $"Cannot find transport for parameter {parameterName}";
+
+         public static string CannotFindObjectWithName(string namedObjectToSelect, IReadOnlyList<string> allNames, string objectType)
+         {
+            var sb = new StringBuilder();
+            sb.AppendLine();
+            sb.Append($"Could not find '{objectType}' named '{namedObjectToSelect}' among:");
+            sb.AppendLine();
+            sb.Append(NamesList(allNames));
+
+            return sb.ToString();
+         }
       }
 
       public static class Captions
@@ -1682,6 +1700,9 @@ namespace MoBi.Assets
          public static readonly string ShowParametersFromIndividual = "Show parameters from Individual";
          public static readonly string ConvertToConstantValue = "Convert to constant value";
          public static readonly string GoToSource = "Go to Source";
+         public static readonly string Loading = "Loading";
+         public static readonly string SaveModuleSnapshot = "Save module snapshot";
+
          public static string SelectTheBuildingBlockWhereEntitiesWillBeAddedOrUpdated(string typeBeingAdded) => $"Select the building block where {typeBeingAdded} will be added or updated";
          public static readonly string SelectBuildingBlock = "Select Building Block";
          public static readonly string MakeDefault = "Make defaults";
@@ -2035,6 +2056,16 @@ namespace MoBi.Assets
             return sb.ToString();
          }
 
+         public static string PKSimModulesWithoutSnapshots(IReadOnlyList<string> moduleNames)
+         {
+            var sb = new StringBuilder();
+            sb.AppendLine();
+            sb.Append($"The following PK-Sim modules will be exported as extension modules (PKML) and not PK-Sim modules (snapshots) because they are too old");
+            sb.AppendLine();
+            sb.Append(NamesList(moduleNames));
+            return OSPSuite.Assets.Captions.DoYouWantToProceed(sb.ToString());
+         }
+
          public static string CouldNotAddExpressionProfilesDuplicatingProtein(IReadOnlyList<string> proteinNames)
          {
             var sb = new StringBuilder();
@@ -2145,6 +2176,9 @@ namespace MoBi.Assets
          public static readonly string ExtendingRequiresSpatialStructure = "Extending requires a spatial structure";
          public static readonly string CannotAssignAFormulaThatReferencesTheAssignmentTarget = "Cannot assign a formula that references the assignment target";
          public static readonly string CannotCreateANeighborhoodThatConnectsAContainerToItself = "Cannot create a neighborhood that connects a container to itself";
+         public static readonly string InputsAreNotSupportedInMoBiQualification = "Inputs are not supported in a MoBi qualification";
+         public static readonly string CannotCreateANeighborhoodFromLogicalContainers = "Cannot create a neighborhood with logical containers";
+         
          public static string AnotherMoleculeNamedIsSelected(string moleculeName) => $"Another molecule named {moleculeName} is selected";
 
          public static string XDimensionColumnMustNotHaveRepeatedValues(string dimensionName)

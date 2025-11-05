@@ -18,6 +18,7 @@ namespace MoBi.Presentation.Tasks
    public interface IModuleLoader
    {
       IMoBiCommand LoadModule(MoBiProject project);
+      IMoBiCommand LoadProjectContentFromSimulationTransfer(MoBiProject project, SimulationTransfer simulationTransfer);
    }
 
    public class ModuleLoader : IModuleLoader
@@ -60,9 +61,12 @@ namespace MoBi.Presentation.Tasks
          }
       }
 
-      private IMoBiCommand addFromSimulationTransfer(MoBiProject project, string filename)
+      private IMoBiCommand addFromSimulationTransfer(MoBiProject project, string filename) => 
+         LoadProjectContentFromSimulationTransfer(project, _interactionTaskContext.InteractionTask.LoadTransfer<SimulationTransfer>(filename));
+
+      public IMoBiCommand LoadProjectContentFromSimulationTransfer(MoBiProject project, SimulationTransfer simulationTransfer)
       {
-         var simulation = _interactionTaskContext.InteractionTask.LoadTransfer<SimulationTransfer>(filename).Simulation;
+         var simulation = simulationTransfer.Simulation;
 
          // Clone the simulation configuration so that any loaded objects will have unique Ids.
          var configuration = _cloneManager.CloneSimulationConfiguration(simulation.Configuration);

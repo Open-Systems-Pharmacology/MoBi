@@ -39,7 +39,6 @@ namespace MoBi.Core.Domain.Services
       private readonly IDiagramManagerFactory _diagramManagerFactory;
       private readonly ISimulationConfigurationFactory _simulationConfigurationFactory;
       private readonly IDimensionValidator _dimensionValidator;
-      private readonly IHeavyWorkManager _heavyWorkManager;
       private readonly IModelConstructor _modelConstructor;
       private readonly IMoBiContext _context;
       private readonly ICloneManagerForBuildingBlock _cloneManager;
@@ -50,7 +49,6 @@ namespace MoBi.Core.Domain.Services
          IDiagramManagerFactory diagramManagerFactory,
          ISimulationConfigurationFactory simulationConfigurationFactory,
          IDimensionValidator dimensionValidator,
-         IHeavyWorkManager heavyWorkManager,
          IModelConstructor modelConstructor,
          IMoBiContext context,
          ICloneManagerForBuildingBlock cloneManager)
@@ -61,7 +59,6 @@ namespace MoBi.Core.Domain.Services
          _diagramManagerFactory = diagramManagerFactory;
          _simulationConfigurationFactory = simulationConfigurationFactory;
          _dimensionValidator = dimensionValidator;
-         _heavyWorkManager = heavyWorkManager;
          _modelConstructor = modelConstructor;
          _context = context;
          _cloneManager = cloneManager;
@@ -101,7 +98,7 @@ namespace MoBi.Core.Domain.Services
       {
          CreationResult results = null;
 
-         _heavyWorkManager.Start(() => results = createModel(simulationConfiguration, modelName), message);
+         results = createModel(simulationConfiguration, modelName);
 
          if (results == null || results.IsInvalid)
             throw new MoBiException(AppConstants.Exceptions.CouldNotCreateSimulation);

@@ -1,20 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Globalization;
 using System.IO;
-using System.Linq;
-using DevExpress.Utils;
 using DevExpress.XtraBars.Docking;
 using DevExpress.XtraBars.Ribbon;
 using MoBi.Assets;
 using MoBi.Core;
 using MoBi.Core.Domain;
-using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Presentation.Settings;
 using OSPSuite.Assets;
-using OSPSuite.Core;
 using OSPSuite.Core.Comparison;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
@@ -29,6 +24,7 @@ using OSPSuite.UI.Diagram.Elements;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Format;
 using OSPSuite.Utility.Validation;
+using ICoreUserSettings = OSPSuite.Core.ICoreUserSettings;
 
 namespace MoBi.UI.Settings
 {

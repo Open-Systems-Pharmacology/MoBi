@@ -3,7 +3,7 @@ using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;

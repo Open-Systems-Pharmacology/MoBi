@@ -2,7 +2,7 @@
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
@@ -45,7 +45,7 @@ namespace MoBi.Presentation
          sut = new EditAssignmentBuilderPresenter(_view, _mapper, _editTasksForAssignment, _formulaMapper, _editFormulaPresenter, _context, _referencePresenter, _contextReferenceRetriever, _applicationController);
 
          _parentContainer = new Container().WithName("ROOT");
-         _eventAssignmentBuilder = new EventAssignmentBuilder {ParentContainer = _parentContainer};
+         _eventAssignmentBuilder = new EventAssignmentBuilder { ParentContainer = _parentContainer };
          _macroCommand = new MoBiMacroCommand();
 
          sut.InitializeWith(_macroCommand);
@@ -61,7 +61,7 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         _selectedObjectPath = new FormulaUsablePath("A", "B", "C") {Dimension = DomainHelperForSpecs.AmountDimension};
+         _selectedObjectPath = new FormulaUsablePath("A", "B", "C") { Dimension = DomainHelperForSpecs.AmountDimension };
 
          _selectionTargetPresenter = A.Fake<ISelectEventAssignmentTargetPresenter>();
          A.CallTo(() => _applicationController.Start<ISelectEventAssignmentTargetPresenter>()).Returns(_selectionTargetPresenter);
@@ -104,7 +104,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_ensure_that_the_path_does_not_changed()
       {
-         _eventAssignmentBuilder.ObjectPath.ToString().ShouldBeEqualTo(new ObjectPath("A","B", "C"));
+         _eventAssignmentBuilder.ObjectPath.ToString().ShouldBeEqualTo(new ObjectPath("A", "B", "C"));
       }
 
       [Observation]

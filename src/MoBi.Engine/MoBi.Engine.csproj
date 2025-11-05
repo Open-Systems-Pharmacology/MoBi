@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>NET8.0</TargetFramework>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <PackageTags>open-systems-pharmacology, ospsuite-components</PackageTags>
@@ -11,7 +11,8 @@
     <OutputPath>bin\$(Configuration)</OutputPath>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\PKSim.Core.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
-    <Version Condition="'$(Version)' == ''">12.2.0</Version>
+    <Version Condition="'$(Version)' == ''">13.0.0</Version>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -27,8 +28,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Core" Version="12.2.19" />
-    <PackageReference Include="OSPSuite.Assets" Version="12.2.19" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.68" />
+    <PackageReference Include="OSPSuite.Assets" Version="13.0.68" />
   </ItemGroup>
 
   <ItemGroup>

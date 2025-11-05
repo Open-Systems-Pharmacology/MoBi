@@ -3,6 +3,7 @@ using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Exceptions;
+using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
@@ -20,13 +21,15 @@ namespace MoBi.Presentation.Tasks
       protected IInteractionTaskContext _context;
       private IInitialConditionsTask<InitialConditionsBuildingBlock> _initialConditionsTask;
       private IParameterValuesTask _parameterValuesTask;
+      private IPKSimStarter _pkSimStarter;
 
       protected override void Context()
       {
+         _pkSimStarter = A.Fake<IPKSimStarter>();
          _context = A.Fake<IInteractionTaskContext>();
          _initialConditionsTask = A.Fake<IInitialConditionsTask<InitialConditionsBuildingBlock>>();
          _parameterValuesTask = A.Fake<IParameterValuesTask>();
-         sut = new InteractionTasksForModule(_context, new EditTaskForModule(_context), _parameterValuesTask, _initialConditionsTask);
+         sut = new InteractionTasksForModule(_context, new EditTaskForModule(_context), _parameterValuesTask, _initialConditionsTask, _pkSimStarter);
       }
    }
 

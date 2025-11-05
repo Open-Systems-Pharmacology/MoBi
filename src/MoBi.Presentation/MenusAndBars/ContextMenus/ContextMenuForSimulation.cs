@@ -4,6 +4,7 @@ using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
+using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.UICommand;
 using OSPSuite.Assets;

@@ -11,7 +11,7 @@ using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Utility.Container;
 using IContainer = OSPSuite.Core.Domain.IContainer;
 
-namespace MoBi.Helpers
+namespace MoBi.HelpersForTests
 {
    public static class DomainFactoryForSpecs
    {

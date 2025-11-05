@@ -22,6 +22,11 @@ namespace MoBi.Presentation.Serialization
          coreSerializerRepository.AddPresentationSerializers();
          _register.PerformMappingForSerializerIn(container);
 
+         PerformMappingForMoBiSerializerRepository(container);
+      }
+
+      public void PerformMappingForMoBiSerializerRepository(IContainer container)
+      {
          var mobiSerializerRepository = container.Resolve<IMoBiXmlSerializerRepository>();
          mobiSerializerRepository.PerformMapping();
       }

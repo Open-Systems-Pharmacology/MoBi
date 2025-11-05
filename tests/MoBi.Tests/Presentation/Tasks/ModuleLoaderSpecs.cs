@@ -24,7 +24,7 @@ namespace MoBi.Presentation.Tasks
       protected IInteractionTasksForModule _moduleTask;
       protected IInteractionTaskContext _interactionTaskContext;
       protected Module _addedModule;
-      private ICloneManagerForSimulation _cloneManager;
+      protected ICloneManagerForSimulation _cloneManager;
       protected SimulationConfiguration _clonedConfiguration;
 
       protected override void Context()

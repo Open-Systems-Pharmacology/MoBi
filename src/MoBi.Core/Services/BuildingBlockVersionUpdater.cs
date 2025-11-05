@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using MoBi.Assets;
 using MoBi.Core.Domain;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
@@ -36,7 +35,7 @@ namespace MoBi.Core.Services
          if (buildingBlock == null)
             return;
 
-         if (shouldConvertToExtensionModule(buildingBlock, conversionOption)) 
+         if (shouldConvertToExtensionModule(buildingBlock, conversionOption))
             buildingBlock.Module.IsPKSimModule = false;
 
          if (shouldConvertToPKSimModule(buildingBlock, conversionOption))

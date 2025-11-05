@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Services;
-using OSPSuite.Utility;
 using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
@@ -13,12 +9,15 @@ using MoBi.Core.Serialization.Converter;
 using MoBi.Core.Serialization.ORM;
 using MoBi.Core.Serialization.Services;
 using MoBi.Core.Serialization.Xml.Services;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using MoBi.Presentation;
 using MoBi.Presentation.Tasks;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Presentation.Services;
+using OSPSuite.Core.Services;
+using OSPSuite.Utility;
 
 namespace MoBi.Core.Service
 {

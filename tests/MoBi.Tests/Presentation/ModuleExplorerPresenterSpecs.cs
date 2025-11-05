@@ -4,7 +4,7 @@ using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Presenter;

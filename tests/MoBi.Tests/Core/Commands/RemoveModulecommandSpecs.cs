@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
-using OSPSuite.BDDHelper;
-using OSPSuite.Core.Domain.Builder;
-using System.Linq;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Domain;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Events;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
@@ -74,7 +74,7 @@ namespace MoBi.Core.Commands
 
          A.CallTo(() => _context.Register(_module)).Invokes(() => _registrationTask.RegisterAllIn(_module));
          A.CallTo(() => _context.CurrentProject).Returns(_project);
-         
+
          _project.AddModule(_module);
       }
 

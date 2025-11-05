@@ -78,6 +78,17 @@ namespace MoBi.Presentation.Repositories
             .WithIcon(ApplicationIcons.CloseProject)
             .WithCommand<CloseProjectCommand>(_container);
 
+         yield return CreateMenuButton.WithCaption(MenuNames.ExportProjectToSnapshot)
+            .WithId(MenuBarItemIds.ExportProjectToSnapshot)
+            .WithCommand<ExportProjectToSnapshotUICommand>(_container)
+            .WithDescription(Captions.ExportProjectToSnapshotDescription)
+            .WithIcon(ApplicationIcons.SnapshotExport);
+
+         yield return CreateMenuButton.WithCaption(MenuNames.LoadProjectFromSnapshot)
+            .WithId(MenuBarItemIds.LoadProjectFromSnahpshot)
+            .WithCommand<LoadProjectFromSnapshotUICommand>(_container)
+            .WithDescription(Captions.LoadProjectFromSnapshotDescription)
+            .WithIcon(ApplicationIcons.SnapshotImport);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.GarbageCollection)
             .WithId(MenuBarItemIds.GarbageCollection)

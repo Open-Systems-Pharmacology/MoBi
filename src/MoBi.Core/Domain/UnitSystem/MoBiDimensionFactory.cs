@@ -28,7 +28,7 @@ namespace MoBi.Core.Domain.UnitSystem
 
          if (converter == null)
             return null;
-
+         
          var usedConverter = Activator.CreateInstance(converter.GetType(), dimension, dimensionToMerge) as IMoBiDimensionConverter<T>;
          if (usedConverter != null)
          {

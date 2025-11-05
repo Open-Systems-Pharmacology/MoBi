@@ -5,7 +5,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
 using MoBi.Core.Repositories;
 using MoBi.Core.Services;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -73,7 +73,7 @@ namespace MoBi.Presentation
          _reactionBB = new MoBiReactionBuildingBlock() { _reaction };
          _moleculeBB = new MoleculeBuildingBlock { _moleculeBuilder };
 
-         _mobiProject.AddModule(new Module {_reactionBB,  _moleculeBB});
+         _mobiProject.AddModule(new Module { _reactionBB, _moleculeBB });
 
          var forbiddenAssignees = new Cache<IObjectBase, string> { { _localParameter, "a reason" } };
          sut.Init(_rootContainer, forbiddenAssignees);
@@ -93,7 +93,6 @@ namespace MoBi.Presentation
          A.CallTo(() => _selectEntityInTreePresenter.CanClose).Returns(true);
          A.CallTo(() => _context.Get<IObjectBase>(_localParameter.Id)).Returns(_localParameter);
       }
-
 
       [Observation]
       public void should_not_be_able_to_complete_the_selection()
@@ -164,7 +163,7 @@ namespace MoBi.Presentation
          _spatialStructure.AddTopContainer(_topContainer);
          _spatialStructure.AddNeighborhood(_neighborhoodBuilder);
          _spatialStructureDTO = _spatialStructureDTOMapper.MapFrom(_spatialStructure);
-         
+
          A.CallTo(() => _context.Get<IObjectBase>(id)).Returns(_spatialStructure);
          A.CallTo(() => _objectBaseDTOMapper.MapFrom(A<IObjectBase>._)).ReturnsLazily(x => new ObjectBaseDTO(x.Arguments.Get<IObjectBase>(0)));
       }
@@ -195,7 +194,7 @@ namespace MoBi.Presentation
          var id = "DIST";
          _distributedParameterDTO = A.Fake<ObjectBaseDTO>().WithId(id);
          var distributeParameter = A.Fake<IDistributedParameter>();
-         A.CallTo(() => distributeParameter.Children).Returns(new[] {A.Fake<IParameter>().WithName("Mean")});
+         A.CallTo(() => distributeParameter.Children).Returns(new[] { A.Fake<IParameter>().WithName("Mean") });
          A.CallTo(() => _context.Get<IObjectBase>(id)).Returns(distributeParameter);
       }
 

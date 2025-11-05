@@ -1,0 +1,194 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using MoBi.Assets;
+using MoBi.Core.Domain.Model;
+using MoBi.Core.Serialization.ORM;
+using MoBi.Core.Snapshots.Services;
+using OSPSuite.Assets.Extensions;
+using OSPSuite.CLI.Core.RunOptions;
+using OSPSuite.CLI.Core.Services;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Services;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Exceptions;
+using OSPSuite.Utility.Extensions;
+
+namespace MoBi.CLI.Core.Services
+{
+   public class SnapshotRunner : IBatchRunner<SnapshotRunOptions>
+   {
+      private readonly IMoBiContext _moBiContext;
+      private readonly ISnapshotTask _snapshotTask;
+      private readonly IOSPSuiteLogger _logger;
+      private readonly IProjectTask _projectTask;
+      private readonly IContextPersistor _contextPersistor;
+
+      //For testing purposes only
+      public Func<string, string, FileInfo[]> AllFilesFrom { get; set; }
+
+      public SnapshotRunner(
+         ISnapshotTask snapshotTask,
+         IOSPSuiteLogger logger,
+         IMoBiContext moBiMoBiContext,
+         IProjectTask projectTask,
+         IContextPersistor contextPersistor)
+      {
+         _snapshotTask = snapshotTask;
+         _moBiContext = moBiMoBiContext;
+         _projectTask = projectTask;
+         _contextPersistor = contextPersistor;
+         _logger = logger;
+         AllFilesFrom = allFilesFrom;
+      }
+
+      public async Task RunBatchAsync(SnapshotRunOptions runOptions)
+      {
+         _logger.AddInfo($"Starting snapshot run: {DateTime.Now.ToIsoFormat()}");
+
+         var allFilesToExports = allFilesToExportFrom(runOptions).ToList();
+
+         await Task.Run(() => startSnapshotRun(allFilesToExports, runOptions.ExportMode, runOptions.RunSimulations));
+
+         _logger.AddInfo($"Snapshot run finished: {DateTime.Now.ToIsoFormat()}");
+      }
+
+      private Task startSnapshotRun(IReadOnlyList<FileMap> fileMaps, SnapshotExportMode exportMode, bool runSimulations)
+      {
+         if (exportMode == SnapshotExportMode.Snapshot)
+            return startSnapshotRun(fileMaps, createSnapshotFromProjectFile);
+
+         return startSnapshotRun(fileMaps, file => createProjectFromSnapshotFile(file, runSimulations));
+      }
+
+      private async Task startSnapshotRun(IReadOnlyList<FileMap> fileMaps, Func<FileMap, Task> exportFunc)
+      {
+         var begin = DateTime.UtcNow;
+         foreach (var fileMap in fileMaps)
+         {
+            try
+            {
+               await exportFunc(fileMap);
+            }
+            catch (Exception e)
+            {
+               _logger.AddException(e);
+            }
+            finally
+            {
+               //Ensure that we reset the project to avoid any leaks
+               _projectTask.CloseProject();
+            }
+         }
+
+         var end = DateTime.UtcNow;
+         var timeSpent = end - begin;
+
+         _logger.AddInfo($"{fileMaps.Count} {"project".PluralizeIf(fileMaps)} loaded and exported in {timeSpent.ToDisplay()}");
+      }
+
+      private async Task createProjectFromSnapshotFile(FileMap file, bool runSimulations)
+      {
+         _logger.AddInfo($"Starting project export for '{file.SnapshotFile}'");
+         var project = await _snapshotTask.LoadProjectFromSnapshotFileAsync(file.SnapshotFile, runSimulations);
+         if (project == null)
+            return;
+
+         _logger.AddDebug($"Snapshot loaded successfully from '{file.SnapshotFile}'");
+         _moBiContext.Project.FilePath = file.ProjectFile;
+         _contextPersistor.Save(_moBiContext);
+         _logger.AddInfo($"Project saved to '{file.ProjectFile}';");
+      }
+
+      private async Task createSnapshotFromProjectFile(FileMap file)
+      {
+         _logger.AddInfo($"Starting snapshot export for '{file.ProjectFile}'");
+         _projectTask.LoadProject(file.ProjectFile);
+         _logger.AddDebug($"Project loaded successfully from '{file.ProjectFile}'");
+
+         await _snapshotTask.ExportModelToSnapshotAsync(_moBiContext.Project, file.SnapshotFile);
+         _logger.AddInfo($"Snapshot saved to '{file.SnapshotFile}'");
+      }
+
+      private IEnumerable<FileMap> allFilesToExportFrom(SnapshotRunOptions runOptions)
+      {
+         if (runOptions.Folders.Any())
+            return allFilesFromFolderList(runOptions);
+
+         return allFilesFromInputFolder(runOptions);
+      }
+
+      private IEnumerable<FileMap> allFilesFromFolderList(SnapshotRunOptions runOptions)
+      {
+         var (inputFilter, outputExtension) = inputFileFilterAndOutputFileExtensionFrom(runOptions);
+         var allFiles = new List<FileMap>();
+         runOptions.Folders.Each(f => { allFiles.AddRange(allFilesFrom(f, f, inputFilter, outputExtension, runOptions.ExportMode)); });
+
+         return allFiles;
+      }
+
+      private IEnumerable<FileMap> allFilesFromInputFolder(SnapshotRunOptions runOptions)
+      {
+         var (inputFilter, outputExtension) = inputFileFilterAndOutputFileExtensionFrom(runOptions);
+
+         var inputFolder = runOptions.InputFolder;
+         var outputFolder = runOptions.OutputFolder;
+         return allFilesFrom(inputFolder, outputFolder, inputFilter, outputExtension, runOptions.ExportMode);
+      }
+
+      private IEnumerable<FileMap> allFilesFrom(string inputFolder, string outputFolder, string inputFilter, string outputExtension, SnapshotExportMode exportMode)
+      {
+         var allInputFiles = AllFilesFrom(inputFolder, inputFilter);
+         if (allInputFiles.Length == 0)
+         {
+            _logger.AddDebug($"No file found in '{inputFolder}'");
+            yield break;
+         }
+
+         DirectoryHelper.CreateDirectory(outputFolder);
+
+         foreach (var inputFile in allInputFiles)
+         {
+            var inputFileFullPath = inputFile.FullName;
+            var projectName = FileHelper.FileNameFromFileFullPath(inputFileFullPath);
+            var outputFileFullPath = Path.Combine(outputFolder, $"{projectName}{outputExtension}");
+
+            yield return fileMapFor(inputFileFullPath, outputFileFullPath, exportMode);
+         }
+      }
+
+      private FileInfo[] allFilesFrom(string folder, string filter)
+      {
+         var directory = new DirectoryInfo(folder);
+         if (!directory.Exists)
+            throw new OSPSuiteException($"Folder '{folder}' does not exist!");
+
+         return directory.GetFiles(filter);
+      }
+
+      private static (string inputFilter, string outputExtension) inputFileFilterAndOutputFileExtensionFrom(SnapshotRunOptions runOptions)
+      {
+         return runOptions.ExportMode == SnapshotExportMode.Project ? (Constants.Filter.JSON_FILTER, AppConstants.Filter.MOBI_PROJECT_EXTENSION) : (AppConstants.Filter.MOBI_PROJECT_FILTER, Constants.Filter.JSON_EXTENSION);
+      }
+
+      private FileMap fileMapFor(string inputFileFullPath, string outputFileFullPath, SnapshotExportMode runOptionsExportMode)
+      {
+         return runOptionsExportMode == SnapshotExportMode.Project ? new FileMap(outputFileFullPath, inputFileFullPath) : new FileMap(inputFileFullPath, outputFileFullPath);
+      }
+
+      private class FileMap
+      {
+         public string ProjectFile { get; }
+         public string SnapshotFile { get; }
+
+         public FileMap(string projectFile, string snapshotFile)
+         {
+            ProjectFile = projectFile;
+            SnapshotFile = snapshotFile;
+         }
+      }
+   }
+}

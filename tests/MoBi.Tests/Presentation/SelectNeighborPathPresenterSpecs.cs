@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using FakeItEasy;
-using FluentNHibernate.Utils;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Repository;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;

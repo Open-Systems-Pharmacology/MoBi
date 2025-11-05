@@ -44,6 +44,7 @@ namespace MoBi.Presentation.Presenter
       {
          if (entity is IContainer container)
          {
+            _selectedPathDTO.Mode = container.Mode;
             _selectedPathDTO.Path = _objectPathFactory.CreateAbsoluteObjectPath(container).PathAsString;
          }
 

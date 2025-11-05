@@ -1,7 +1,8 @@
 ﻿using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Services;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
+using MoBi.Presentation.Tasks;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;

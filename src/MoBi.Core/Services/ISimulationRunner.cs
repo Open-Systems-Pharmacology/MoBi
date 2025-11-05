@@ -1,15 +1,10 @@
-﻿using MoBi.Core.Domain.Model;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using MoBi.Core.Domain.Model;
 
 namespace MoBi.Core.Services
 {
-   public interface ISimulationRunner
+   public interface ISimulationRunner : ICoreSimulationRunner
    {
-      Task RunSimulationAsync(IMoBiSimulation simulation, bool defineSettings = false);
-      void StopSimulation(IMoBiSimulation simulation);
-      void StopAllSimulations();
-      bool IsSimulationRunning(IMoBiSimulation simulation);
       bool IsAnySimulationRunning();
       bool IsSimulationIdle(IMoBiSimulation simulation);
       IEnumerable<IMoBiSimulation> RunningSimulations();

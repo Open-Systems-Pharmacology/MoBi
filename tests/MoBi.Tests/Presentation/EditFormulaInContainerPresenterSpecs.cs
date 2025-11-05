@@ -1,22 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Commands.Core;
 using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Helper;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation
@@ -142,7 +141,7 @@ namespace MoBi.Presentation
 
          _oldFormula = new ExplicitFormula("1+2").WithId("OLD_FORMULA");
          _parameter.Formula = _oldFormula;
-         _explicitFormula = new ExplicitFormula {Id = "Formula", Name = "toto"};
+         _explicitFormula = new ExplicitFormula { Id = "Formula", Name = "toto" };
          A.CallTo(() => _context.ObjectRepository.ContainsObjectWithId(_oldFormula.Id)).Returns(true);
          A.CallTo(() => _formulaTask.CreateNewFormula(typeof(ExplicitFormula), _parameter.Dimension)).Returns(_explicitFormula);
 
@@ -163,7 +162,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_Add_a_formula_to_formula_cache()
       {
-         A.CallTo(() => _formulaTask.CreateNewFormulaInBuildingBlock(typeof (ExplicitFormula), A<IDimension>._, A<IEnumerable<string>>._, _buildingBlockWithFormulaCache, null))
+         A.CallTo(() => _formulaTask.CreateNewFormulaInBuildingBlock(typeof(ExplicitFormula), A<IDimension>._, A<IEnumerable<string>>._, _buildingBlockWithFormulaCache, null))
             .MustHaveHappened();
       }
 

@@ -101,7 +101,7 @@ def copy_templates_files(source_dir)
 end
 
 def relative_src_dir_for(configuration)
-   File.join('src', 'MoBi', 'bin', configuration, 'net472')
+   File.join('src', 'MoBi', 'bin', configuration, 'net8.0-windows')
 end
 
 def src_dir_for(configuration)
@@ -112,7 +112,7 @@ task :postclean do |t, args|
    packages_dir =  src_dir_for("Debug")
    
    all_users_dir = ENV['ALLUSERSPROFILE']
-   all_users_application_dir = File.join(all_users_dir, manufacturer, product_name, '12.2')
+   all_users_application_dir = File.join(all_users_dir, manufacturer, product_name, '13.0')
    
    copy_dependencies solution_dir,  all_users_application_dir do
       copy_files 'Data', ['xml', 'mbdt']

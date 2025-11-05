@@ -3,7 +3,7 @@ using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Services;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Presenter.ModelDiagram;
 using MoBi.Presentation.Tasks;

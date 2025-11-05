@@ -1,7 +1,7 @@
 ﻿using System;
 using FakeItEasy;
 using MoBi.Core.Extensions;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using MoBi.Presentation.Mappers;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;

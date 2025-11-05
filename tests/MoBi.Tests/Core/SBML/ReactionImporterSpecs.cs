@@ -12,7 +12,7 @@ using Reaction = libsbmlcs.Reaction;
 using MoBi.Core.Exceptions;
 using NUnit.Framework;
 using OSPSuite.Core.Domain.Formulas;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 
 namespace MoBi.Core.SBML
 {
@@ -255,7 +255,7 @@ namespace MoBi.Core.SBML
       public void should_translate_constants_into_base_units()
       {
          var atpprodReaction = SBMLModule.Reactions.ElementAt(1);
-         atpprodReaction.Formula.ToString().ShouldBeEqualTo("Vmax_ATPASE * ((ADP) / ((Km_adp + ADP))) * cos(((((Time) / (0.0166666666666667))) / (10)))");
+         atpprodReaction.Formula.ToString().ShouldBeEqualTo("Vmax_ATPASE * ((ADP) / ((Km_adp + ADP))) * cos(((((Time) / (0.016666666666666666))) / (10)))");
       }
    }
 }

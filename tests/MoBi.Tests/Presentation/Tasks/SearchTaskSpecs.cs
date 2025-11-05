@@ -4,7 +4,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
 using MoBi.Core.Repositories;
 using MoBi.Core.Services;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -123,7 +123,7 @@ namespace MoBi.Presentation.Tasks
             _buildingBlock,
             _otherBuildingBlock
          };
-         
+
          _project.AddModule(module);
       }
 

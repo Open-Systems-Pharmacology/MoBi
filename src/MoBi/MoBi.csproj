@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <OutputType>WinExe</OutputType>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
@@ -11,7 +11,9 @@
     <NoWarn>1591, 3246</NoWarn>
     <ApplicationIcon>MoBi.ico</ApplicationIcon>
 	 <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
-    <Version Condition="'$(Version)' == ''">12.2.0</Version>
+    <Version Condition="'$(Version)' == ''">13.0.0</Version>
+    <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -65,18 +67,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Core" Version="12.2.19" />
-    <PackageReference Include="OSPSuite.DevExpress" Version="21.2.15" />
-    <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.73" GeneratePathProperty="true" />
-    <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.75" GeneratePathProperty="true" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.68" />
+    <PackageReference Include="OSPSuite.DevExpress" Version="21.2.15.1" />
+    <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.75" GeneratePathProperty="true" />
+    <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.77" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModelSolver_CVODES" Version="4.1.0.19" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0" />
-    <PackageReference Include="OSPSuite.Presentation" Version="12.2.19" GeneratePathProperty="true" />
-    <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.1.1" GeneratePathProperty="true" />
-
+    <PackageReference Include="OSPSuite.Presentation" Version="13.0.68" GeneratePathProperty="true" />
+    <PackageReference Include="OSPSuite.TeXReporting" Version="3.0.1.3" GeneratePathProperty="true" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MoBi.CLI\MoBi.CLI.csproj" />
     <ProjectReference Include="..\MoBi.Engine\MoBi.Engine.csproj" />
     <ProjectReference Include="..\MoBi.UI\MoBi.UI.csproj" />
   </ItemGroup>
@@ -85,5 +87,4 @@
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
-
 </Project>

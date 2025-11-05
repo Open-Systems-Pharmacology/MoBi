@@ -91,6 +91,8 @@ namespace MoBi.Presentation.Repositories
                .AsGroupStarter()
          )
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.SelectJournal)))
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ExportProjectToSnapshot)).AsGroupStarter())
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.LoadProjectFromSnahpshot)))
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.About)).AsGroupStarter())
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.Exit)).AsGroupStarter())
          .WithId(ButtonGroupIds.File);

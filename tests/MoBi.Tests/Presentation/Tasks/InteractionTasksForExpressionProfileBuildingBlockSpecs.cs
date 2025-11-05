@@ -275,5 +275,25 @@ namespace MoBi.Presentation.Tasks
             A.CallTo(() => _editFormulaPresenter.Init(_clonedParameter, _clonedBuildingBlock, A<UsingFormulaDecoder>._)).MustHaveHappened();
          }
       }
+
+      public class When_loading_from_snapshot_string: concern_for_InteractionTasksForExpressionProfileBuildingBlock
+      {
+         protected override void Because()
+         {
+            sut.LoadFromSnapshot("");
+         }
+
+         [Observation]
+         public void the_starter_creates_the_expression_profile()
+         {
+            A.CallTo(() => _pkSimStarter.LoadExpressionProfileFromSnapshot("")).MustHaveHappened();
+         }
+
+         [Observation]
+         public void the_object_is_cloned_before_returning()
+         {
+            A.CallTo(() => _cloneManager.Clone(A<ExpressionProfileBuildingBlock>._)).MustHaveHappened();
+         }
+      }
    }
 }

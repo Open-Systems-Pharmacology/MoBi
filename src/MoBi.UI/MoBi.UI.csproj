@@ -1,15 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <OutputPath>bin\$(Configuration)</OutputPath>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
-    <Version Condition="'$(Version)' == ''">12.2.0</Version>
-     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+    <Version Condition="'$(Version)' == ''">13.0.0</Version>
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,18 +18,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Northwoods.GoWin" Version="5.2.0" />
+    <PackageReference Include="DevExpress.Win.Design" Version="21.2.15" Condition="'$(ExcludeDesigner)' != 'true'" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.2" />
-    <PackageReference Include="OSPSuite.DataBinding" Version="3.0.1.1" />
-    <PackageReference Include="OSPSuite.DataBinding.DevExpress" Version="6.0.1.2" />
-    <PackageReference Include="OSPSuite.DevExpress" Version="21.2.15" />
-    <PackageReference Include="OSPSuite.Utility" Version="4.1.1.1" />
-    <PackageReference Include="OSPSuite.Infrastructure" Version="12.2.19" />
-    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="12.2.19" />
-    <PackageReference Include="OSPSuite.Presentation" Version="12.2.19" />
-    <PackageReference Include="OSPSuite.UI" Version="12.2.19" />
-    <PackageReference Include="OSPSuite.Core" Version="12.2.19" />
-    <PackageReference Include="System.Resources.Extensions" Version="9.0.5" />
+    <PackageReference Include="OSPSuite.DataBinding" Version="3.0.1.4" />
+    <PackageReference Include="OSPSuite.DataBinding.DevExpress" Version="6.0.1.5" />
+    <PackageReference Include="OSPSuite.DevExpress" Version="21.2.15.1" />
+    <PackageReference Include="OSPSuite.Utility" Version="4.1.1.5" />
+    <PackageReference Include="OSPSuite.Infrastructure" Version="13.0.68" />
+    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="13.0.68" />
+    <PackageReference Include="OSPSuite.Presentation" Version="13.0.68" />
+    <PackageReference Include="OSPSuite.UI" Version="13.0.68" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.68" />
    </ItemGroup>
   <ItemGroup>
     <None Include="..\..\LICENSE">
@@ -41,11 +43,6 @@
     <ProjectReference Include="..\MoBi.Assets\MoBi.Assets.csproj" />
     <ProjectReference Include="..\MoBi.Core\MoBi.Core.csproj" />
     <ProjectReference Include="..\MoBi.Presentation\MoBi.Presentation.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="System.Windows.Forms" />
   </ItemGroup>
 
   <ItemGroup>

@@ -4,7 +4,7 @@ using FakeItEasy;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Serialization.Exchange;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Interaction;
