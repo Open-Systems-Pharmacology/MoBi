@@ -17,6 +17,10 @@ namespace MoBi.HelpersForTests
       private static Dimension _concentrationDimension;
       private static Dimension _timeDimension;
 
+      private static readonly string PATH_TO_DOCS = "..\\..\\..\\..\\..\\docs\\";
+      
+      public static string ProjectSchemaDumpFilePath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PATH_TO_DOCS, "project_schema.sql");
+
       public static string TestFileFullPath(string fileName)
       {
          return Path.Combine(TestFileDirectory, fileName);
