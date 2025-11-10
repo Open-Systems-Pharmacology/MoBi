@@ -23,8 +23,6 @@ namespace MoBi.IntegrationTests
       private readonly string _projectFileName = "snapshot_no_pksim_modules.mbp3";
       private string _jsonPath;
       private string _projectPath;
-      private IContextPersistor _contextPersistor;
-      private IMoBiContext _context;
 
       protected override void Context()
       {
@@ -70,9 +68,9 @@ namespace MoBi.IntegrationTests
 
       private void loadProject(string projectFile)
       {
-         _contextPersistor = IoC.Resolve<IContextPersistor>();
-         _context = IoC.Resolve<IMoBiContext>();
-         _contextPersistor.Load(_context, projectFile);
+         var contextPersistor = IoC.Resolve<IContextPersistor>();
+         var context = IoC.Resolve<IMoBiContext>();
+         contextPersistor.Load(context, projectFile);
       }
 
       protected override void Because()
@@ -88,10 +86,6 @@ namespace MoBi.IntegrationTests
 
       public override void Cleanup()
       {
-         // Close the project to release file handles before attempting to delete directories
-         if (_context != null)
-            _contextPersistor?.CloseProject(_context);
-
          base.Cleanup();
          if (Directory.Exists(_projectDirectory))
             Directory.Delete(_projectDirectory, true);
@@ -149,16 +143,6 @@ namespace MoBi.IntegrationTests
 
       public override void Cleanup()
       {
-         // Close the project to release file handles before attempting to delete directories
-         // The batch runner loads the project into the shared singleton context and should close it,
-         // but ensure it's closed and connection pools are cleared in case of timing issues
-         var context = IoC.Resolve<IMoBiContext>();
-         if (context?.CurrentProject != null)
-         {
-            var contextPersistor = IoC.Resolve<IContextPersistor>();
-            contextPersistor?.CloseProject(context);
-         }
-
          base.Cleanup();
          if (Directory.Exists(_projectDirectory))
             Directory.Delete(_projectDirectory, true);
