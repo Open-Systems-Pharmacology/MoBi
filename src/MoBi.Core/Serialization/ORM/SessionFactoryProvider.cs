@@ -3,6 +3,7 @@ using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Tool.hbm2ddl;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Infrastructure.Serialization.Extensions;
 using OSPSuite.Infrastructure.Serialization.Services;
 
 namespace MoBi.Core.Serialization.ORM
@@ -39,7 +40,7 @@ namespace MoBi.Core.Serialization.ORM
          configuration.SetProperty("dialect", typeof(NHibernate.Extensions.Sqlite.SqliteDialect).AssemblyQualifiedName);
          configuration.SetProperty("query.substitutions", "true=1;false=0");
          configuration.SetProperty("show_sql", "false");
-         configuration.SetProperty("connection.connection_string", $"Data Source={path};Cache=Shared");
+         configuration.SetProperty("connection.connection_string", ConnectionStringHelper.ConnectionStringFor(path));
 
          return Fluently.Configure(configuration)
             .Mappings(cfg => cfg.FluentMappings.AddFromAssemblyOf<SessionFactoryProvider>()).BuildConfiguration();
