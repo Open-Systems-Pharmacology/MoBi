@@ -13,21 +13,21 @@ and whole-body architecture on the other hand.
 De novo model establishment and simulation is supported by graphical tools and building blocks to support expert users. 
 MoBi® uses building blocks that are grouped into Molecules, Reactions, Spatial Structures, Passive Transports, 
 Observers, Events, Initial Conditions, Parameter Values, and Observed Data. 
-The different building blocks are described in detail in Part IV, “Working with MoBi®”. 
+The different building blocks are described in detail in the documentation chapter [“Working with MoBi®”](https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation).
 Building blocks out of the above-mentioned groups can be combined to generate models. 
 The advantage of building blocks is that they can be reused. For example, a different set of starting values 
 may define a new scenario, situation, or individual. Refine a Reaction(s) network and update it in all tissues 
 where it should be considered.
 
 ## Code Status
-[![Build status](https://img.shields.io/github/actions/workflow/status/Open-Systems-Pharmacology/MoBi/build-and-test.yml?logo=nuget&label=Build%20status)](https://github.com/Open-Systems-Pharmacology/MoBi/actions/workflows/build-and-test.yml)
+[![Build status](https://img.shields.io/github/actions/workflow/status/Open-Systems-Pharmacology/MoBi/nightly-badge.yml?logo=GitHub&label=Build%20status)](https://github.com/Open-Systems-Pharmacology/MoBi/actions/workflows/build-nightly_12.2.yml)
 [![Coverage status](https://codecov.io/gh/Open-Systems-Pharmacology/MoBi/branch/develop/graph/badge.svg)](https://codecov.io/gh/Open-Systems-Pharmacology/MoBi)
 
 ## Code of conduct
 Everyone interacting in the Open Systems Pharmacology community (codebases, issue trackers, chat rooms, mailing lists etc...) is expected to follow the Open Systems Pharmacology [code of conduct](https://github.com/Open-Systems-Pharmacology/Suite/blob/master/CODE_OF_CONDUCT.md).
 
 ## Contribution
-We encourage contribution to the Open Systems Pharmacology community. Before getting started please read the [contribution guidelines](https://github.com/Open-Systems-Pharmacology/Suite/blob/master/CONTRIBUTING.md). If you are contributing code, please be familiar with the [coding standard](https://github.com/Open-Systems-Pharmacology/Suite/blob/master/CODING_STANDARDS.md).
+We encourage contribution to the Open Systems Pharmacology community. Before getting started please read the [contribution guidelines](https://github.com/Open-Systems-Pharmacology/Suite/blob/master/CONTRIBUTING.md). If you are contributing code, please be familiar with the [coding standard](https://dev.open-systems-pharmacology.org/setup/coding_standards).
 
 ## License
 MoBi® is released under the [GPLv2 License](https://github.com/Open-Systems-Pharmacology/Suite/blob/master/LICENSE).
