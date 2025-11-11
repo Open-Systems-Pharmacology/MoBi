@@ -277,7 +277,7 @@ namespace MoBi.Presentation
       {
          sut.ConfirmAndSetContainerMode(ContainerMode.Physical);
       }
-      
+
       [Observation]
       public void should_change_mode()
       {
