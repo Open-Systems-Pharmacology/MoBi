@@ -110,7 +110,7 @@ namespace MoBi.Presentation.Presenter
          _view.Select(entity);
       }
 
-      public ObjectPath SelectedPath => _selection.ObjectBase is IEntity entity ? _entityPathResolver.ObjectPathFor(entity) : null;
+      public ObjectPath SelectedPath => _selection?.ObjectBase is IEntity entity ? _entityPathResolver.ObjectPathFor(entity) : null;
 
       public object Subject => _simulations;
 
