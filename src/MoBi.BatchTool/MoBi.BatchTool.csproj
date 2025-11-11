@@ -49,23 +49,16 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="DevExpress.Win.Design" Version="21.2.15" Condition="'$(ExcludeDesigner)' != 'true'" />
-    <PackageReference Include="OSPSuite.Core" Version="13.0.68" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.70" />
     <PackageReference Include="OSPSuite.DevExpress" Version="21.2.15.1" />
     <PackageReference Include="OSPSuite.FuncParser" Version="4.0.0.75" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModel" Version="4.0.0.77" GeneratePathProperty="true" />
     <PackageReference Include="OSPSuite.SimModelSolver_CVODES" Version="4.1.0.19" GeneratePathProperty="true" />
-    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.119" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MoBi.Core\MoBi.Core.csproj" />
     <ProjectReference Include="..\MoBi.Engine\MoBi.Engine.csproj" />
     <ProjectReference Include="..\MoBi.UI\MoBi.UI.csproj" />
   </ItemGroup>
-  <!-- Content comes from Stub.system.data.sqlite.core. Basically, implements the same task as if you added this binary as content and copy to output folder -->
-  <PropertyGroup>
-    <ContentSQLiteInteropFiles>true</ContentSQLiteInteropFiles>
-    <CopySQLiteInteropFiles>false</CopySQLiteInteropFiles>
-    <CleanSQLiteInteropFiles>false</CleanSQLiteInteropFiles>
-    <CollectSQLiteInteropFiles>false</CollectSQLiteInteropFiles>
-  </PropertyGroup>
 </Project>

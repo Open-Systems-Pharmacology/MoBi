@@ -7,7 +7,7 @@ namespace MoBi.Core
 {
    public abstract class ContextSpecificationWithSerializationDatabase<T> : ContextSpecification<T>
    {
-      private SessionFactoryProvider _sessionFactoryProvider;
+      protected SessionFactoryProvider _sessionFactoryProvider;
       protected ISessionFactory _sessionFactory;
       protected string _dataBaseFile;
 
@@ -17,7 +17,7 @@ namespace MoBi.Core
          _sessionFactoryProvider = new SessionFactoryProvider();
 
          _dataBaseFile = FileHelper.GenerateTemporaryFileName();
-         _sessionFactory = _sessionFactoryProvider.InitalizeSessionFactoryFor(_dataBaseFile);
+         _sessionFactory = _sessionFactoryProvider.InitializeSessionFactoryFor(_dataBaseFile);
       }
 
       public override void GlobalCleanup()

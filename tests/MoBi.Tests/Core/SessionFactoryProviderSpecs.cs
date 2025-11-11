@@ -1,10 +1,12 @@
-using OSPSuite.BDDHelper;
+using MoBi.Core.Serialization.ORM;
 using MoBi.Core.Serialization.ORM.MetaData;
+using MoBi.HelpersForTests;
+using OSPSuite.BDDHelper;
 using OSPSuite.Infrastructure.Serialization.Services;
+using System.IO;
 
 namespace MoBi.Core
 {
-
    public class When_creating_a_session_factory_for_an_existing_given_data_source : ContextSpecificationWithSerializationDatabase<ISessionFactoryProvider>
    {
       [Observation]
@@ -28,4 +30,20 @@ namespace MoBi.Core
       }
    }
 
-}	
+   // Dumps the schema of the project database. This makes changes in the schema trackable through version control
+   public class Comparing_schema_files_for_tracking_purpose : ContextSpecificationWithSerializationDatabase<ISessionFactoryProvider>
+   {
+      [Observation]
+      public void should_create_the_database_schema()
+      {
+
+         var schemaExport = _sessionFactoryProvider.GetSchemaExport(_dataBaseFile);
+         var directoryName = Path.GetDirectoryName(DomainHelperForSpecs.ProjectSchemaDumpFilePath);
+         if (!Directory.Exists(directoryName))
+            Directory.CreateDirectory(directoryName);
+
+         schemaExport.SetOutputFile(DomainHelperForSpecs.ProjectSchemaDumpFilePath);
+         schemaExport.Create(true, true);
+      }
+   }
+}
