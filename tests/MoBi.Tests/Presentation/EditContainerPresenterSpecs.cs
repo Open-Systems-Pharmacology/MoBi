@@ -268,7 +268,7 @@ namespace MoBi.Presentation
          };
          _spatialStructure.AddTopContainer(_muscle);
          _muscle.Mode = ContainerMode.Logical;
-
+         A.CallTo(() => _context.Get(_muscle.Id)).Returns(null);
          sut.Edit(_muscle);
          sut.BuildingBlock = _spatialStructure;
       }
@@ -277,7 +277,7 @@ namespace MoBi.Presentation
       {
          sut.ConfirmAndSetContainerMode(ContainerMode.Physical);
       }
-
+      
       [Observation]
       public void should_change_mode()
       {
@@ -311,6 +311,7 @@ namespace MoBi.Presentation
             .WithName(Constants.MOLECULE_PROPERTIES)
             .WithMode(ContainerMode.Logical);
          _muscle.Add(moleculeProperties);
+         A.CallTo(() => _context.Get(_muscle.Id)).Returns(null);
          sut.Edit(_muscle);
          sut.BuildingBlock = _spatialStructure;
       }

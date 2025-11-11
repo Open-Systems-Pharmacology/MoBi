@@ -208,15 +208,16 @@ namespace MoBi.Presentation.Presenter
       public override void Edit(IContainer container, IReadOnlyList<IObjectBase> existingObjectsInParent)
       {
          _container = container;
-         //an unnamed container means it is being created now, since the name is mandatory over the creation.
-         _isNewEntity = string.IsNullOrEmpty(_container.Name);
+         // containers that have already been registered are not considered new and must use commands
+         // for adding and removing subcontainers
+         _isNewEntity = _context.Get(container.Id) == null;
          base.Edit(container, existingObjectsInParent);
          _containerDTO = _containerMapper.MapFrom(_container, _trackableSimulation);
          _containerDTO.AddUsedNames(_editTasks.GetForbiddenNamesWithoutSelf(container, existingObjectsInParent));
          _view.BindTo(_containerDTO);
          _tagsPresenter.Edit(container);
          _view.ContainerPropertiesEditable = !container.IsMoleculeProperties();
-         _view.NameEditable = _isNewEntity;
+         _view.NameEditable = string.IsNullOrEmpty(_container.Name);
       }
 
       public override object Subject => _container;
