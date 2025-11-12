@@ -3,7 +3,6 @@ using MoBi.Core.Domain.Repository;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
-using System.Linq;
 
 namespace MoBi.Presentation.Presenter
 {
