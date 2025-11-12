@@ -20,10 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Domain\" />
-  </ItemGroup>
-
-  <ItemGroup>
      <None Include="..\..\LICENSE">
         <Pack>True</Pack>
         <PackagePath></PackagePath>
