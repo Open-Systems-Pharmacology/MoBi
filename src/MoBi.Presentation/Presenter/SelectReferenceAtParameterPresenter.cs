@@ -3,6 +3,7 @@ using MoBi.Core.Domain.Repository;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
+using System.Linq;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -36,7 +37,10 @@ namespace MoBi.Presentation.Presenter
          if(_addTime)
             AddTimeReference();
          AddSpatialStructures();
+         AddReactions();
       }
+
+
 
       public bool ChangeLocalisationAllowed
       {
