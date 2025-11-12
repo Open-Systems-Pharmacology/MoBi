@@ -4,7 +4,6 @@ using System.Linq;
 using MoBi.Core.Services;
 using MoBi.R.Domain;
 using OSPSuite.Core.Domain;
-using OSPSuite.R.Domain;
 using OSPSuite.Utility.Extensions;
 using ModuleConfiguration = OSPSuite.Core.Domain.ModuleConfiguration;
 
@@ -12,7 +11,7 @@ namespace MoBi.R.Services
 {
    public interface ISimulationFactory
    {
-      Simulation CreateSimulation(SimulationConfiguration configuration, string simulationName);
+      MoBiSimulation CreateSimulation(SimulationConfiguration configuration, string simulationName);
    }
 
    public class SimulationFactory : ISimulationFactory
@@ -30,7 +29,7 @@ namespace MoBi.R.Services
          _forbiddenNamesRetriever = forbiddenNamesRetriever;
       }
 
-      public Simulation CreateSimulation(SimulationConfiguration configuration, string simulationName)
+      public MoBiSimulation CreateSimulation(SimulationConfiguration configuration, string simulationName)
       {
          if (string.IsNullOrWhiteSpace(simulationName))
             throw new InvalidOperationException("Simulation name is required");
@@ -57,7 +56,7 @@ namespace MoBi.R.Services
          if (_forbiddenNamesRetriever.For(simulation).Contains(simulationName))
             throw new InvalidOperationException("Simulation name is forbidden");
 
-         return new Simulation(simulation);
+         return new MoBiSimulation(simulation);
       }
    }
 }

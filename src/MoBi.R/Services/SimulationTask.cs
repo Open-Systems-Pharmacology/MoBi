@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using MoBi.Assets;
 using System.Linq;
+using MoBi.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
-using OSPSuite.R.Domain;
+using MoBiSimulation = MoBi.R.Domain.MoBiSimulation;
 using ModuleConfiguration = MoBi.R.Domain.ModuleConfiguration;
 using SimulationConfiguration = MoBi.R.Domain.SimulationConfiguration;
 
@@ -13,7 +13,7 @@ namespace MoBi.R.Services
 {
    public interface ISimulationTask
    {
-      Simulation CreateSimulationFrom(SimulationConfiguration simulationConfiguration, string simulationName);
+      MoBiSimulation CreateSimulationFrom(SimulationConfiguration simulationConfiguration, string simulationName);
 
       SimulationConfiguration CreateConfiguration(IReadOnlyList<ModuleConfiguration> moduleConfigurations = null,
          IReadOnlyList<ExpressionProfileBuildingBlock> expressionProfiles = null,
@@ -29,8 +29,7 @@ namespace MoBi.R.Services
       private readonly ISimulationFactory _simulationFactory;
       private readonly IObjectTypeResolver _objectTypeResolver;
 
-      public SimulationTask(ISimulationFactory simulationFactory, 
-         IObjectTypeResolver objectTypeResolver)
+      public SimulationTask(ISimulationFactory simulationFactory, IObjectTypeResolver objectTypeResolver)
       {
          _simulationFactory = simulationFactory;
          _objectTypeResolver = objectTypeResolver;
@@ -68,7 +67,7 @@ namespace MoBi.R.Services
          return allNamedObjects.FindByName(namedObjectToSelect);
       }
 
-      public Simulation CreateSimulationFrom(SimulationConfiguration simulationConfiguration, string simulationName) => 
+      public MoBiSimulation CreateSimulationFrom(SimulationConfiguration simulationConfiguration, string simulationName) =>
          _simulationFactory.CreateSimulation(simulationConfiguration, simulationName);
    }
 }

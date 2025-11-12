@@ -1,4 +1,4 @@
 @echo off
 cls
-rake create_local_nuget[o] 
+rake create_local_nuget
 pause

@@ -11,6 +11,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.R.Domain;
 using ModuleConfiguration = MoBi.R.Domain.ModuleConfiguration;
 using static MoBi.R.Tests.HelperForSpecs;
+using IProjectTask = MoBi.R.Services.IProjectTask;
 using SimulationConfiguration = MoBi.R.Domain.SimulationConfiguration;
 
 namespace MoBi.R.Tests.Services;
@@ -60,6 +61,7 @@ internal class when_creating_from_mobi_project : concern_for_SimulationTask
       _moduleConfiguration = sut.CreateModuleConfiguration(_moduleForSimulation, "Parameter Values", "Initial Conditions");
       _moduleConfigurations = [_moduleConfiguration];
 
+      _projectTask.CloseProject();
       _simulationConfig = sut.CreateConfiguration(_moduleConfigurations, _expressionProfilesForSimulation, _individualForSimulation);
    }
 }

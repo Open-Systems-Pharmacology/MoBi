@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using IProjectTask = MoBi.CLI.Core.Services.IProjectTask;
 using ISerializationTask = MoBi.Presentation.Tasks.ISerializationTask;
 
 namespace MoBi.R.Services
