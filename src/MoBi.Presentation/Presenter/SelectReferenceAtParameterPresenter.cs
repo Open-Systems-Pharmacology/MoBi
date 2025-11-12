@@ -39,8 +39,6 @@ namespace MoBi.Presentation.Presenter
          AddReactions();
       }
 
-
-
       public bool ChangeLocalisationAllowed
       {
          get => _view.ChangeLocalisationAllowed;
