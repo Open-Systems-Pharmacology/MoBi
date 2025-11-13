@@ -5,7 +5,6 @@ using MoBi.Assets;
 using MoBi.Core.Domain;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Repository;
 using MoBi.Core.Events;
 using MoBi.Core.Helper;
 using MoBi.Presentation.DTO;
@@ -120,7 +119,7 @@ namespace MoBi.Presentation.Presenter
       public virtual IEnumerable<ObjectBaseDTO> GetChildObjects(ObjectBaseDTO dto)
       {
          var children = new List<ObjectBaseDTO>();
-         
+
          if (_context.ObjectRepository.ContainsObjectWithId(dto.Id))
          {
             var objectBase = _context.Get<IObjectBase>(dto.Id);
@@ -133,6 +132,7 @@ namespace MoBi.Presentation.Presenter
             addChildrenFromContainer(children, objectBase as IContainer);
             addChildrenFromNeighborhood(children, objectBase as NeighborhoodBuilder);
             addParametersFromParameterContainer(children, objectBase as IContainsParameters);
+            addChildrenFromReaction(children, objectBase as MoBiReactionBuildingBlock);
          }
 
          else if (dto.IsAnImplementationOf<DummyMoleculeContainerDTO>())
@@ -412,6 +412,18 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
+      private void addChildrenFromReaction(List<ObjectBaseDTO> children, MoBiReactionBuildingBlock reactionBuildingBlock)
+      {
+         if (reactionBuildingBlock == null)
+            return;
+
+         var reactionDtos = reactionBuildingBlock
+            .OrderBy(r => r.Name)
+            .MapAllUsing(_objectBaseDTOMapper);
+
+         children.AddRange(reactionDtos);
+      }
+
       private void addChildrenFromSpatialStructure(List<ObjectBaseDTO> children, SpatialStructure spatialStructure)
       {
          if (spatialStructure == null)
@@ -453,6 +465,12 @@ namespace MoBi.Presentation.Presenter
       private IEnumerable<ReactionBuilder> getReactions
       {
          get { return _buildingBlockRepository.ReactionBlockCollection.SelectMany(x => x).OrderBy(x => x.Name); }
+      }
+
+      protected void AddReactionsGroupedByModule()
+      {
+         var nodes = _buildingBlockRepository.ReactionBlockCollection.Select(x => _referenceMapper.MapFrom(x).WithText(x.DisplayName));
+         _view.AddNodes(nodes);
       }
 
       protected void AddMolecule()

@@ -61,7 +61,7 @@ namespace MoBi.Presentation
          _parameterDTO1 = new ObjectBaseDTO(new Parameter().WithId("1"));
          _parameterDTO2 = new ObjectBaseDTO(new Parameter().WithId("2"));
          A.CallTo(() => _context.Get<IObjectBase>(A<string>._)).ReturnsLazily(objectBaseForId);
-         A.CallTo(() => _view.AllSelectedDTOs).Returns(new[] {_parameterDTO1, _parameterDTO2});
+         A.CallTo(() => _view.AllSelectedDTOs).Returns(new[] { _parameterDTO1, _parameterDTO2 });
       }
 
       private IObjectBase objectBaseForId(IFakeObjectCall x)
@@ -108,7 +108,7 @@ namespace MoBi.Presentation
          _dtoMoleculeParameter.Id = _moleculeParameterId;
          _dtoMoleculeParameter.ModelParentName = _modelParentName;
          A.CallTo(() => _context.Get<IEntity>(A<string>._)).ReturnsLazily(objectBaseForId);
-         A.CallTo(() => _view.AllSelectedDTOs).Returns(new[] {_parameter1, _parameter2, _dtoMoleculeParameter});
+         A.CallTo(() => _view.AllSelectedDTOs).Returns(new[] { _parameter1, _parameter2, _dtoMoleculeParameter });
          int callCount = 0;
          A.CallTo(() => _objectPathFactory.CreateAbsoluteObjectPath(A<IEntity>.Ignored))
             .ReturnsLazily(() =>
@@ -187,7 +187,7 @@ namespace MoBi.Presentation
          _dtoLocalMoleculeParameter.Parent = new Container().WithName(_parentContainer).WithId("Mol1");
 
          A.CallTo(() => _context.Get<IEntity>(A<string>._)).ReturnsLazily(objectBaseForId);
-         A.CallTo(() => _view.AllSelectedDTOs).Returns(new[] {_dtoLocalMoleculeParameter, _dtoGlobalMoleculeParameter});
+         A.CallTo(() => _view.AllSelectedDTOs).Returns(new[] { _dtoLocalMoleculeParameter, _dtoGlobalMoleculeParameter });
          int callCount = 0;
          A.CallTo(() => _objectPathFactory.CreateAbsoluteObjectPath(A<IEntity>.Ignored))
             .ReturnsLazily(() =>
@@ -256,7 +256,7 @@ namespace MoBi.Presentation
          _reactionDTO1 = new ObjectBaseDTO(new Reaction().WithId("1"));
          _parameterDTO2 = new ObjectBaseDTO(new Parameter().WithId("2"));
          A.CallTo(() => _context.Get<IObjectBase>(A<string>._)).ReturnsLazily(objectBaseForId);
-         A.CallTo(() => _view.AllSelectedDTOs).Returns(new[] {_reactionDTO1, _parameterDTO2});
+         A.CallTo(() => _view.AllSelectedDTOs).Returns(new[] { _reactionDTO1, _parameterDTO2 });
       }
 
       private IObjectBase objectBaseForId(IFakeObjectCall x)
@@ -475,6 +475,105 @@ namespace MoBi.Presentation
             var distributedParameterContainer = container.Single() as IndividualParameter;
             distributedParameterContainer.Name.ShouldBeEqualTo("distributed parameter");
          }
+      }
+   }
+
+   // ⬇️ NEW CLASSES START HERE, OUTSIDE OF THE PREVIOUS TEST CLASS ⬇️
+
+   internal class TestableSelectReferenceAtParameterValuePresenter
+      : SelectReferenceAtParameterValuePresenter
+   {
+      public TestableSelectReferenceAtParameterValuePresenter(
+         ISelectReferenceView view,
+         IObjectBaseToObjectBaseDTOMapper objectBaseDTOMapper,
+         IMoBiContext context,
+         IUserSettings userSettings,
+         IObjectBaseToDummyMoleculeDTOMapper moleculeMapper,
+         IParameterToDummyParameterDTOMapper parameterMapper,
+         IObjectBaseDTOToReferenceNodeMapper referenceMapper,
+         IObjectPathCreatorAtParameter objectPathCreator,
+         IBuildingBlockRepository buildingBlockRepository)
+         : base(view, objectBaseDTOMapper, context, userSettings,
+            moleculeMapper, parameterMapper, referenceMapper,
+            objectPathCreator, buildingBlockRepository)
+      {
+      }
+
+      public void InvokeAddReactionsGroupedByModule() => AddReactionsGroupedByModule();
+   }
+
+   internal class When_adding_reactions_grouped_by_module
+      : ContextSpecification<TestableSelectReferenceAtParameterValuePresenter>
+   {
+      private ISelectReferenceView _view;
+      private IObjectBaseToObjectBaseDTOMapper _objectBaseDTOMapper;
+      private IMoBiContext _context;
+      private IUserSettings _userSettings;
+      private IObjectBaseToDummyMoleculeDTOMapper _moleculeMapper;
+      private IParameterToDummyParameterDTOMapper _parameterMapper;
+      private IObjectBaseDTOToReferenceNodeMapper _referenceMapper;
+      private IObjectPathCreatorAtParameter _objectPathCreator;
+      private IBuildingBlockRepository _buildingBlockRepository;
+
+      private MoBiReactionBuildingBlock _reactionBlock1;
+      private MoBiReactionBuildingBlock _reactionBlock2;
+
+      protected override void Context()
+      {
+         _view = A.Fake<ISelectReferenceView>();
+         _objectBaseDTOMapper = A.Fake<IObjectBaseToObjectBaseDTOMapper>();
+         _context = A.Fake<IMoBiContext>();
+         _userSettings = A.Fake<IUserSettings>();
+         _moleculeMapper = A.Fake<IObjectBaseToDummyMoleculeDTOMapper>();
+         _parameterMapper = A.Fake<IParameterToDummyParameterDTOMapper>();
+         _referenceMapper = A.Fake<IObjectBaseDTOToReferenceNodeMapper>();
+         _objectPathCreator = A.Fake<IObjectPathCreatorAtParameter>();
+         _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
+
+         sut = new TestableSelectReferenceAtParameterValuePresenter(
+            _view,
+            _objectBaseDTOMapper,
+            _context,
+            _userSettings,
+            _moleculeMapper,
+            _parameterMapper,
+            _referenceMapper,
+            _objectPathCreator,
+            _buildingBlockRepository);
+
+         _reactionBlock1 = new MoBiReactionBuildingBlock().WithName("RB1");
+         _reactionBlock2 = new MoBiReactionBuildingBlock().WithName("RB2");
+
+         A.CallTo(() => _buildingBlockRepository.ReactionBlockCollection)
+            .Returns(new[] { _reactionBlock1, _reactionBlock2 });
+
+         A.CallTo(() => _referenceMapper.MapFrom(_reactionBlock1))
+            .Returns(A.Fake<ITreeNode>());
+
+         A.CallTo(() => _referenceMapper.MapFrom(_reactionBlock2))
+            .Returns(A.Fake<ITreeNode>());
+      }
+
+      protected override void Because()
+      {
+         sut.InvokeAddReactionsGroupedByModule();
+      }
+
+      [Observation]
+      public void should_add_nodes_to_the_view()
+      {
+         A.CallTo(() => _view.AddNodes(A<IEnumerable<ITreeNode>>._))
+            .MustHaveHappenedOnceExactly();
+      }
+
+      [Observation]
+      public void should_map_each_reaction_block_to_a_node()
+      {
+         A.CallTo(() => _referenceMapper.MapFrom(_reactionBlock1))
+            .MustHaveHappenedOnceExactly();
+
+         A.CallTo(() => _referenceMapper.MapFrom(_reactionBlock2))
+            .MustHaveHappenedOnceExactly();
       }
    }
 }
