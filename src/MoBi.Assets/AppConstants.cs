@@ -1682,6 +1682,7 @@ namespace MoBi.Assets
          public static readonly string ShowParametersFromIndividual = "Show parameters from Individual";
          public static readonly string ConvertToConstantValue = "Convert to constant value";
          public static readonly string GoToSource = "Go to Source";
+         public static readonly string AddOutputSelection = "Add Output";
          public static string SelectTheBuildingBlockWhereEntitiesWillBeAddedOrUpdated(string typeBeingAdded) => $"Select the building block where {typeBeingAdded} will be added or updated";
          public static readonly string SelectBuildingBlock = "Select Building Block";
          public static readonly string MakeDefault = "Make defaults";

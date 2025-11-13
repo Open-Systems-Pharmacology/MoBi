@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Services;
 using MoBi.Presentation.Presenter;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;

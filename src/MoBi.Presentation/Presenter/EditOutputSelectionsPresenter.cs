@@ -43,27 +43,25 @@ namespace MoBi.Presentation.Presenter
       public void Edit(SimulationSettings simulationSettings)
       {
          _simulationSettings = simulationSettings;
-         _view.BindTo(_simulationSettings.OutputSelections.AllOutputs);
+         refresh();
       }
+
+      private void refresh() => _view.BindTo(_simulationSettings.OutputSelections.AllOutputs);
 
       public void RemoveOutputSelection(QuantitySelection selection)
       {
          _outputSelectionsTask.RemoveOutputSelection(_simulationSettings, selection);
+         refresh();
       }
 
-      public void EditOutputSelection(QuantitySelection selection)
-      {
-         _outputSelectionsTask.EditOutputSelection(_simulationSettings, selection);
-      }
+      public void EditOutputSelection(QuantitySelection selection) => _outputSelectionsTask.EditOutputSelection(_simulationSettings, selection);
 
       public void AddOutputSelection(QuantitySelection preSelectedQuantitySelection)
       {
          _outputSelectionsTask.AddOutputSelection(_simulationSettings, preSelectedQuantitySelection);
+         refresh();
       }
 
-      public void UpdateOutputSelection(QuantitySelection selection, string newSelectionPath)
-      {
-         _outputSelectionsTask.UpdateOutputSelection(_simulationSettings, selection, newSelectionPath);
-      }
+      public void UpdateOutputSelection(QuantitySelection selection, string newSelectionPath) => _outputSelectionsTask.UpdateOutputSelection(_simulationSettings, selection, newSelectionPath);
    }
 }
