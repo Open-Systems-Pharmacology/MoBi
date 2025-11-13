@@ -478,8 +478,6 @@ namespace MoBi.Presentation
       }
    }
 
-   // ⬇️ NEW CLASSES START HERE, OUTSIDE OF THE PREVIOUS TEST CLASS ⬇️
-
    internal class TestableSelectReferenceAtParameterValuePresenter
       : SelectReferenceAtParameterValuePresenter
    {
