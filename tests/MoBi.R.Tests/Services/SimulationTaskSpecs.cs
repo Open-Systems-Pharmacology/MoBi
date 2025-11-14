@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MoBi.CLI.Core.Services;
 using MoBi.Core.Domain.Model;
 using MoBi.R.Services;
 using OSPSuite.BDDHelper;
@@ -12,16 +11,20 @@ using OSPSuite.R.Domain;
 using ModuleConfiguration = MoBi.R.Domain.ModuleConfiguration;
 using static MoBi.R.Tests.HelperForSpecs;
 using IProjectTask = MoBi.R.Services.IProjectTask;
-using SimulationConfiguration = MoBi.R.Domain.SimulationConfiguration;
 
 namespace MoBi.R.Tests.Services;
 
 internal abstract class concern_for_SimulationTask : ContextForIntegration<ISimulationTask>
 {
-   protected IModuleTask _moduleTask; 
+   protected IModuleTask _moduleTask;
    protected string _simulationName = "Sim1";
    protected IProjectTask _projectTask;
    protected MoBiProject _project;
+   protected IndividualBuildingBlock _individualForSimulation;
+   protected IReadOnlyList<ExpressionProfileBuildingBlock> _expressionProfilesForSimulation;
+   protected Module _moduleForSimulation;
+   protected ModuleConfiguration _moduleConfiguration;
+   protected List<ModuleConfiguration> _moduleConfigurations;
 
    public override void GlobalContext()
    {
@@ -34,7 +37,6 @@ internal abstract class concern_for_SimulationTask : ContextForIntegration<ISimu
       _project = _projectTask.LoadProject(projectFile);
 
       sut = Api.GetSimulationTask();
-      
    }
 }
 
@@ -42,27 +44,18 @@ internal class when_creating_from_mobi_project : concern_for_SimulationTask
 {
    protected Simulation _simulation;
 
-   protected IndividualBuildingBlock _individualForSimulation;
-   protected IReadOnlyList<ExpressionProfileBuildingBlock> _expressionProfilesForSimulation;
-   protected Module _moduleForSimulation;
-   protected ModuleConfiguration _moduleConfiguration;
-   protected List<ModuleConfiguration> _moduleConfigurations;
-   protected SimulationConfiguration _simulationConfig;
-
    protected override void Context()
    {
       base.Context();
 
-
       _moduleForSimulation = _projectTask.ModuleByName(_project, "Module1");
       _individualForSimulation = _projectTask.IndividualBuildingBlockByName(_project, "European (P-gp modified, CYP3A4 36 h)");
-      _expressionProfilesForSimulation = _projectTask.ExpressionProfileBuildingBlocksByName(_project, new string[] {"UDPGT1|Human|Healthy"});
+      _expressionProfilesForSimulation = _projectTask.ExpressionProfileBuildingBlocksByName(_project, new string[] { "UDPGT1|Human|Healthy" });
 
       _moduleConfiguration = sut.CreateModuleConfiguration(_moduleForSimulation, "Parameter Values", "Initial Conditions");
       _moduleConfigurations = [_moduleConfiguration];
 
       _projectTask.CloseProject();
-      _simulationConfig = sut.CreateConfiguration(_moduleConfigurations, _expressionProfilesForSimulation, _individualForSimulation);
    }
 }
 
@@ -70,7 +63,7 @@ internal class when_creating_simulation : when_creating_from_mobi_project
 {
    protected override void Because()
    {
-      _simulation = sut.CreateSimulationFrom(_simulationConfig, _simulationName);
+      _simulation = sut.CreateSimulationFrom(_simulationName, _moduleConfigurations, _expressionProfilesForSimulation, _individualForSimulation);
    }
 
    [Observation]
@@ -94,7 +87,7 @@ internal abstract class when_creating_an_invalid_configuration : when_creating_f
    [Observation]
    public void should_throw_expected_exception()
    {
-      The.Action(() => sut.CreateSimulationFrom(_simulationConfig, _simulationName)).ShouldThrowAn<InvalidOperationException>();
+      The.Action(() => sut.CreateSimulationFrom(_simulationName, _moduleConfigurations, _expressionProfilesForSimulation, _individualForSimulation)).ShouldThrowAn<InvalidOperationException>();
    }
 }
 
@@ -149,24 +142,19 @@ internal class when_creating_simulation_from_pkml_module : concern_for_Simulatio
 {
    private Simulation _simulation;
    private List<ModuleConfiguration> _moduleConfigurations;
-   
-   private IndividualBuildingBlock _individual;
-   private ExpressionProfileBuildingBlock[] _expressionProfiles;
 
    protected override void Context()
    {
       base.Context();
       var module = _moduleTask.LoadModulesFromFile(DataTestFileFullPath("Second module.pkml")).First();
       _simulationName = "SimFromPKML";
-      _individual = _projectTask.IndividualBuildingBlockByName(_project, "European (P-gp modified, CYP3A4 36 h)");
-      _expressionProfiles = _projectTask.ExpressionProfileBuildingBlocksByName(_project, "UDPGT1|Human|Healthy");
       var moduleConfig = sut.CreateModuleConfiguration(module);
       _moduleConfigurations = [moduleConfig];
    }
 
    protected override void Because()
    {
-      _simulation = sut.CreateSimulationFrom(sut.CreateConfiguration(_moduleConfigurations, _expressionProfiles, _individual), _simulationName);
+      _simulation = sut.CreateSimulationFrom(_simulationName, _moduleConfigurations, _expressionProfilesForSimulation, _individualForSimulation);
    }
 
    [Observation]
@@ -177,4 +165,3 @@ internal class when_creating_simulation_from_pkml_module : concern_for_Simulatio
    public void should_contain_loaded_module() =>
       _simulation.Configuration.ModuleConfigurations.Any().ShouldBeTrue();
 }
-

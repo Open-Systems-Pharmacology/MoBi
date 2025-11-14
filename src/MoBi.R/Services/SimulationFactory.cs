@@ -1,60 +1,69 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MoBi.Core.Domain.Builder;
 using MoBi.Core.Services;
 using MoBi.R.Domain;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility.Extensions;
-using ModuleConfiguration = OSPSuite.Core.Domain.ModuleConfiguration;
+using RModuleConfiguration = MoBi.R.Domain.ModuleConfiguration;
+using CoreModuleConfiguration = OSPSuite.Core.Domain.ModuleConfiguration;
 
 namespace MoBi.R.Services
 {
    public interface ISimulationFactory
    {
-      MoBiSimulation CreateSimulation(SimulationConfiguration configuration, string simulationName);
+      MoBiSimulation CreateSimulation(string simulationName, IReadOnlyList<RModuleConfiguration> moduleConfigurations,
+         IReadOnlyList<ExpressionProfileBuildingBlock> expressionProfiles,
+         IndividualBuildingBlock individual);
    }
 
    public class SimulationFactory : ISimulationFactory
    {
+      private readonly ISimulationSettingsFactory _simulationSettingsFactory;
       private readonly ISimulationConfigurationFactory _configurationFactory;
       private readonly Core.Domain.Services.ISimulationFactory _simulationFactory;
-      private readonly IForbiddenNamesRetriever _forbiddenNamesRetriever;
-      private readonly List<string> _usedNames = new List<string>();
 
-      public SimulationFactory(ISimulationConfigurationFactory configurationFactory, Core.Domain.Services.ISimulationFactory simulationFactory,
-         IForbiddenNamesRetriever forbiddenNamesRetriever)
+      public SimulationFactory(
+         ISimulationConfigurationFactory configurationFactory, 
+         Core.Domain.Services.ISimulationFactory simulationFactory,
+         ISimulationSettingsFactory simulationSettingsFactory)
       {
          _configurationFactory = configurationFactory;
          _simulationFactory = simulationFactory;
-         _forbiddenNamesRetriever = forbiddenNamesRetriever;
+         _simulationSettingsFactory = simulationSettingsFactory;
       }
 
-      public MoBiSimulation CreateSimulation(SimulationConfiguration configuration, string simulationName)
+      public MoBiSimulation CreateSimulation(string simulationName, IReadOnlyList<RModuleConfiguration> moduleConfigurations,
+         IReadOnlyList<ExpressionProfileBuildingBlock> expressionProfiles,
+         IndividualBuildingBlock individual)
       {
          if (string.IsNullOrWhiteSpace(simulationName))
             throw new InvalidOperationException("Simulation name is required");
 
          if (Constants.ILLEGAL_CHARACTERS.Any(simulationName.Contains))
             throw new InvalidOperationException("Simulation name contains illegal characters");
+         
+         var simulationSettings = _simulationSettingsFactory.CreateDefault();
 
-         var simulationConfiguration = _configurationFactory.Create();
+         var simulationConfiguration = _configurationFactory.Create(simulationSettings);
 
-         configuration.ModuleConfigurations.Each(x =>
+//         simulationConfiguration.ModuleConfigurations = moduleConfigurations?.ToList() ?? new List<ModuleConfiguration>();
+
+         moduleConfigurations.Each(x =>
          {
             simulationConfiguration.AddModuleConfiguration(
-               new ModuleConfiguration(x.Module, x.SelectedInitialCondition, x.SelectedParameterValue));
+               new CoreModuleConfiguration(x.Module , x.SelectedInitialCondition, x.SelectedParameterValue));
          });
 
-         configuration.ExpressionProfiles.Each(simulationConfiguration.AddExpressionProfile);
+         expressionProfiles?.Each(simulationConfiguration.AddExpressionProfile);
 
-         simulationConfiguration.Individual = configuration.Individual;
+         simulationConfiguration.Individual = individual;
 
          simulationConfiguration.ShouldValidate = true;
 
          var simulation = _simulationFactory.CreateSimulationAndValidate(simulationConfiguration, simulationName);
-
-         if (_forbiddenNamesRetriever.For(simulation).Contains(simulationName))
-            throw new InvalidOperationException("Simulation name is forbidden");
 
          return new MoBiSimulation(simulation);
       }

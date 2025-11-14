@@ -7,15 +7,12 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
 using MoBiSimulation = MoBi.R.Domain.MoBiSimulation;
 using ModuleConfiguration = MoBi.R.Domain.ModuleConfiguration;
-using SimulationConfiguration = MoBi.R.Domain.SimulationConfiguration;
 
 namespace MoBi.R.Services
 {
    public interface ISimulationTask
    {
-      MoBiSimulation CreateSimulationFrom(SimulationConfiguration simulationConfiguration, string simulationName);
-
-      SimulationConfiguration CreateConfiguration(IReadOnlyList<ModuleConfiguration> moduleConfigurations = null,
+      MoBiSimulation CreateSimulationFrom(string simulationName, IReadOnlyList<ModuleConfiguration> moduleConfigurations,
          IReadOnlyList<ExpressionProfileBuildingBlock> expressionProfiles = null,
          IndividualBuildingBlock individual = null);
 
@@ -27,6 +24,7 @@ namespace MoBi.R.Services
    public class SimulationTask : ISimulationTask
    {
       private readonly ISimulationFactory _simulationFactory;
+
       private readonly IObjectTypeResolver _objectTypeResolver;
 
       public SimulationTask(ISimulationFactory simulationFactory, IObjectTypeResolver objectTypeResolver)
@@ -34,17 +32,7 @@ namespace MoBi.R.Services
          _simulationFactory = simulationFactory;
          _objectTypeResolver = objectTypeResolver;
       }
-
-      public SimulationConfiguration CreateConfiguration(IReadOnlyList<ModuleConfiguration> moduleConfigurations = null,
-         IReadOnlyList<ExpressionProfileBuildingBlock> expressionProfiles = null,
-         IndividualBuildingBlock individual = null) =>
-         new SimulationConfiguration
-         {
-            ModuleConfigurations = (moduleConfigurations ?? Enumerable.Empty<ModuleConfiguration>()).ToArray(),
-            ExpressionProfiles = (expressionProfiles ?? Enumerable.Empty<ExpressionProfileBuildingBlock>()).ToArray(),
-            Individual = individual
-         };
-
+       
       public ModuleConfiguration CreateModuleConfiguration(Module module,
          string selectedParameterValues = null,
          string selectedInitialConditions = null) =>
@@ -67,7 +55,11 @@ namespace MoBi.R.Services
          return allNamedObjects.FindByName(namedObjectToSelect);
       }
 
-      public MoBiSimulation CreateSimulationFrom(SimulationConfiguration simulationConfiguration, string simulationName) =>
-         _simulationFactory.CreateSimulation(simulationConfiguration, simulationName);
+      public MoBiSimulation CreateSimulationFrom(string simulationName, IReadOnlyList<ModuleConfiguration> moduleConfigurations,
+         IReadOnlyList<ExpressionProfileBuildingBlock> expressionProfiles = null,
+         IndividualBuildingBlock individual = null)
+      {
+         return _simulationFactory.CreateSimulation(simulationName, moduleConfigurations, expressionProfiles, individual);
+      }
    }
 }
