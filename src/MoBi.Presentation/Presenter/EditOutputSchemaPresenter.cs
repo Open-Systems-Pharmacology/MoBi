@@ -83,6 +83,8 @@ namespace MoBi.Presentation.Presenter
 
       public void SetParameterUnit(IParameterDTO parameterDTO, Unit newUnit, OutputIntervalDTO outputIntervalDTO)
       {
+         // The UI validation of interval start and end does not evaluate for unit changes.
+         // This is a programmatic validation of the proposed new unit
          if (!intervalIsValidInNewUnit(parameterDTO, newUnit, outputIntervalDTO))
          {
             displayIntervalErrorMessage();
