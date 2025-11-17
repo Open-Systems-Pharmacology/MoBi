@@ -124,7 +124,7 @@ namespace MoBi.Presentation
       [Observation]
       public void the_quantity_task_is_not_used_to_change_the_unit()
       {
-         A.CallTo(() => _quantityTask.SetQuantityDisplayUnit(_outputInterval.StartTimeParameter.Parameter, _newUnit, _simulationSettings)).MustNotHaveHappened();
+         A.CallTo(() => _quantityTask.SetQuantityDisplayUnit(_outputInterval.EndTimeParameter.Parameter, _newUnit, _simulationSettings)).MustNotHaveHappened();
       }
    }
 
