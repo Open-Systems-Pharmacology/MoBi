@@ -12,11 +12,13 @@ namespace MoBi.Core.Events
 {
    public class SimulationRunFinishedEvent
    {
-      public IMoBiSimulation Simulation { get; set; }
+      public IMoBiSimulation Simulation { get; }
+      public bool Success { get; }
 
-      public SimulationRunFinishedEvent(IMoBiSimulation simulation)
+      public SimulationRunFinishedEvent(IMoBiSimulation simulation, bool success)
       {
          Simulation = simulation;
+         Success = success;
       }
    }
 

@@ -230,7 +230,7 @@ namespace MoBi.Presentation.Presenter
 
          _view.SetParametersTabEnabled(true);
 
-         if (!_view.ShowsResults)
+         if (!_view.ShowsResults && eventToHandle.Success)
             _view.ShowResultsTab();
 
          _chartTask.SetOriginText(_simulation.Name, _simulation.Chart);

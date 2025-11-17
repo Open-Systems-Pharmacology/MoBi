@@ -1244,6 +1244,8 @@ namespace MoBi.Assets
          public static readonly string MergeBuildingBlocksCountError = "Building blocks to merge and target building blocks do not have the same length";
          public static readonly string MissingName = "Name missing";
          public static readonly string DeserializationFailed = "Deserialization failed";
+         public static readonly string TheStartTimeMustBeEarlierThanTheEndTimeOfTheInterval = "The start time must be earlier than the end time of the interval";
+
          public static string SourceBuildingBlockNotInProject(string entityType) => $"Building Block used to create {entityType} is not present in project";
          public static readonly string ShouldNeverHappen = "Should never happen";
          public static readonly string ErrorInFormula = "Error in Formula";
