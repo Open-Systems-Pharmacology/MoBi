@@ -51,8 +51,9 @@ namespace MoBi.Core.Reporting
          addRowFor(dt, OSPSuite.Core.Domain.Constants.Parameters.H_MAX, solver.HMax.ToString(CultureInfo.InvariantCulture));
          addRowFor(dt, OSPSuite.Core.Domain.Constants.Parameters.MX_STEP, solver.MxStep.ToString(CultureInfo.InvariantCulture));
          addRowFor(dt, OSPSuite.Core.Domain.Constants.Parameters.USE_JACOBIAN, solver.UseJacobian.ToString());
+         addRowFor(dt, OSPSuite.Core.Domain.Constants.Parameters.CHECK_FOR_NEGATIVE_VALUES, solver.CheckForNegativeValues.ToString());
 
-         
+
          dt.EndLoadData();
          dt.AcceptChanges();
 

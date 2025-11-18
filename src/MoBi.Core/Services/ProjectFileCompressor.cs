@@ -1,6 +1,7 @@
-﻿using System.Data.Common;
-using System.Data.SQLite;
+﻿using Microsoft.Data.Sqlite;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Infrastructure.Serialization.Extensions;
+using System.Data.Common;
 
 namespace MoBi.Core.Services
 {
@@ -14,14 +15,14 @@ namespace MoBi.Core.Services
       public void Compress(string projectFile)
       {
          var path = projectFile.ToUNCPath();
-         using (var sqlLite = new SQLiteConnection(string.Format("Data Source={0}", path)))
+         using (var sqlLite = new SqliteConnection(ConnectionStringHelper.ConnectionStringFor(path)))
          {
             sqlLite.Open();
             vacuum(sqlLite);
          }
       }
 
-      private void vacuum(SQLiteConnection sqlLite)
+      private void vacuum(SqliteConnection sqlLite)
       {
          ExecuteNonQuery(sqlLite, "vacuum;");
       }
