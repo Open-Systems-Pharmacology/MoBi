@@ -457,11 +457,6 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      private IEnumerable<ReactionBuilder> getReactions
-      {
-         get { return _buildingBlockRepository.ReactionBlockCollection.SelectMany(x => x).OrderBy(x => x.Name); }
-      }
-
       protected void AddReactions()
       {
          var nodes = _buildingBlockRepository.ReactionBlockCollection.Select(x => _referenceMapper.MapFrom(x).WithText(x.DisplayName));
