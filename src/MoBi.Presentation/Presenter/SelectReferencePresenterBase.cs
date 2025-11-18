@@ -457,17 +457,12 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      protected void AddReactions()
-      {
-         _view.AddNodes(getReactions.MapAllUsing(_referenceMapper));
-      }
-
       private IEnumerable<ReactionBuilder> getReactions
       {
          get { return _buildingBlockRepository.ReactionBlockCollection.SelectMany(x => x).OrderBy(x => x.Name); }
       }
 
-      protected void AddReactionsGroupedByModule()
+      protected void AddReactions()
       {
          var nodes = _buildingBlockRepository.ReactionBlockCollection.Select(x => _referenceMapper.MapFrom(x).WithText(x.DisplayName));
          _view.AddNodes(nodes);

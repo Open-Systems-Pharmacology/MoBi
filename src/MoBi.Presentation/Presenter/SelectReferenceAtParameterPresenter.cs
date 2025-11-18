@@ -36,7 +36,7 @@ namespace MoBi.Presentation.Presenter
          if(_addTime)
             AddTimeReference();
          AddSpatialStructures();
-         AddReactionsGroupedByModule();
+         AddReactions();
       }
 
       public bool ChangeLocalisationAllowed
