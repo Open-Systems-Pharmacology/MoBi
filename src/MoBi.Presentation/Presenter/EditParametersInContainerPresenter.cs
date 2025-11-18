@@ -65,7 +65,7 @@ namespace MoBi.Presentation.Presenter
       void ShowIndividualSelection();
       void UpdatePreview();
       void EnableSimulationTracking(TrackableSimulation trackableSimulation);
-      
+
       bool HasModules();
       bool HasBuildingBlocks();
       void NavigateToParameter(ParameterDTO parameterDTO);
@@ -136,7 +136,7 @@ namespace MoBi.Presentation.Presenter
          _noIndividualSelected = new IndividualBuildingBlock().WithName(AppConstants.Captions.None);
          SelectedIndividual = _noIndividualSelected;
          _view.ShowIndividualSelection(false);
-         AllIndividuals = new List<IndividualBuildingBlock> {_noIndividualSelected}.Concat(_interactionTaskContext.Context.CurrentProject.IndividualsCollection).ToList();
+         AllIndividuals = new List<IndividualBuildingBlock> { _noIndividualSelected }.Concat(_interactionTaskContext.Context.CurrentProject.IndividualsCollection).ToList();
       }
 
       public IReadOnlyList<IndividualBuildingBlock> AllIndividuals { get; }
@@ -181,7 +181,7 @@ namespace MoBi.Presentation.Presenter
 
       public void CopyPathForParameter(ParameterDTO parameter)
       {
-         if(!parameter.IsIndividualPreview)
+         if (!parameter.IsIndividualPreview)
             _view.CopyToClipBoard(_entityPathResolver.PathFor(parameter.Parameter));
          else
             _view.CopyToClipBoard(_individualParameterCache[parameter].Path.PathAsString);
@@ -314,6 +314,12 @@ namespace MoBi.Presentation.Presenter
 
       public void PasteFromClipBoard()
       {
+         if (_container.RootContainer.ContainerType == ContainerType.Simulation)
+         {
+            _interactionTaskContext.DialogCreator.MessageBoxInfo(AppConstants.Captions.AddingParametersToASimulationIsNotSupported);
+            return;
+         }
+         
          _ignoreAddEvents = true;
          try
          {
@@ -442,7 +448,7 @@ namespace MoBi.Presentation.Presenter
 
          if (parameter.IsAnImplementationOf<IDistributedParameter>())
          {
-            _editDistributedParameterPresenter.Edit((IDistributedParameter) parameter);
+            _editDistributedParameterPresenter.Edit((IDistributedParameter)parameter);
             _view.SetEditParameterView(_editDistributedParameterPresenter.View);
          }
          else
