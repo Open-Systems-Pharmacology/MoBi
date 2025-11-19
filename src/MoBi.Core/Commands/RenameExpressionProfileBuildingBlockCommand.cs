@@ -54,4 +54,4 @@ namespace MoBi.Core.Commands
          });
       }
    }
-}
+}  
