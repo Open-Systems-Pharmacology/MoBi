@@ -17,6 +17,7 @@ using OSPSuite.UI.Services;
 using OSPSuite.Utility;
 using System.Collections.Generic;
 using System.Linq;
+using MoBi.Presentation.Nodes;
 using IBuildingBlockRepository = MoBi.Core.Domain.Repository.IBuildingBlockRepository;
 
 namespace MoBi.Presentation
@@ -303,4 +304,40 @@ namespace MoBi.Presentation
          unselectedSpatialStructureNode.Text.ShouldBeEqualTo(_unselectedSpatialStructure.DisplayName);
       }
    }
+   internal class When_mapping_ObjectBaseDTO_to_ReferenceNode :
+      concern_for_SelectReferencePresenter_with_node_text
+   {
+      private ReferenceNode _node;
+      private MoleculeBuildingBlock _buildingBlock;
+      private ObjectBaseDTO _dto;
+
+      protected override void Context()
+      {
+         base.Context();
+         _buildingBlock = new MoleculeBuildingBlock { Name = "BlockName" };
+         _dto = new ObjectBaseDTO(_buildingBlock);
+         _dto.Name = "DTOName";
+      }
+
+      protected override void Because()
+      {
+         _node = (ReferenceNode)_referenceMapper.MapFrom(_dto);
+      }
+
+      [Observation]
+      public void should_set_node_text_to_display_name_when_objectbase_is_building_block()
+      {
+         _node.Text.ShouldBeEqualTo(_buildingBlock.DisplayName);
+      }
+
+      [Observation]
+      public void should_set_node_text_to_dto_name_when_objectbase_is_not_building_block()
+      {
+         var dto = new ObjectBaseDTO(new Parameter());
+         dto.Name = "DTOName";
+         var node = (ReferenceNode)_referenceMapper.MapFrom(dto);
+         node.Text.ShouldBeEqualTo(dto.Name);
+      }
+   }
+
 }
