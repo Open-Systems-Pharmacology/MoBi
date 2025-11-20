@@ -1,10 +1,13 @@
-﻿using FakeItEasy;
+﻿using System.Collections.Generic;
+using System.Linq;
+using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
 using MoBi.Core.Services;
 using MoBi.Helpers;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
+using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
@@ -15,9 +18,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.UI.Services;
 using OSPSuite.Utility;
-using System.Collections.Generic;
-using System.Linq;
-using MoBi.Presentation.Nodes;
 using IBuildingBlockRepository = MoBi.Core.Domain.Repository.IBuildingBlockRepository;
 
 namespace MoBi.Presentation
@@ -151,9 +151,9 @@ namespace MoBi.Presentation
          var moleculeName = "Drug";
          _moleculePropertiesDTO =
             new DummyMoleculeContainerDTO(new MoleculeAmount { Name = moleculeName })
-            {
-               MoleculePropertiesContainer = new ObjectBaseDTO().WithId(id)
-            }.WithId("ANY")
+               {
+                  MoleculePropertiesContainer = new ObjectBaseDTO().WithId(id)
+               }.WithId("ANY")
                .WithName(moleculeName);
 
          A.CallTo(() => _context.Get<IContainer>(id)).Returns(moleculeProperties);
@@ -259,7 +259,6 @@ namespace MoBi.Presentation
 
       protected override void Context()
       {
-
          base.Context();
          _moBiSpatialStructure = new MoBiSpatialStructure
          {
@@ -304,6 +303,7 @@ namespace MoBi.Presentation
          unselectedSpatialStructureNode.Text.ShouldBeEqualTo(_unselectedSpatialStructure.DisplayName);
       }
    }
+
    internal class When_mapping_ObjectBaseDTO_to_ReferenceNode :
       concern_for_SelectReferencePresenter_with_node_text
    {
@@ -339,5 +339,4 @@ namespace MoBi.Presentation
          node.Text.ShouldBeEqualTo(dto.Name);
       }
    }
-
 }
