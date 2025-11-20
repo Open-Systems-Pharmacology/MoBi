@@ -210,7 +210,7 @@ public class CoreSimulationRunner : ICoreSimulationRunner
       _context.PublishEvent(new SimulationRunStartedEvent(simulation));
       _context.PublishEvent(new ProgressInitEvent(100, AppConstants.SimulationRun));
       var simModelManager = _simModelManagerFactory.Create();
-
+      var succeeded = false;
       try
       {
          addEvents(simModelManager);
@@ -223,6 +223,7 @@ public class CoreSimulationRunner : ICoreSimulationRunner
 
          if (simulationRunResults.Success)
          {
+            succeeded = true;
             var results = simulationRunResults.Results;
             results.Name = getNewRepositoryName();
             _displayUnitUpdater.UpdateDisplayUnitsIn(results);
@@ -243,7 +244,8 @@ public class CoreSimulationRunner : ICoreSimulationRunner
          }
 
          removeEvents(simModelManager);
-         _context.PublishEvent(new SimulationRunFinishedEvent(simulation));
+         
+         _context.PublishEvent(new SimulationRunFinishedEvent(simulation, succeeded));
       }
    }
 

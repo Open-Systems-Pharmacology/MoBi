@@ -77,7 +77,7 @@ namespace MoBi.UI.Views
          toolTipController.Initialize();
          _unitControl = new UxComboBoxUnit<ParameterDTO>(gridControl);
          gridView.HiddenEditor += (o, e) => hideEditor();
-         gridControl.KeyDown += gridViewKeyDown;
+         gridControl.KeyDown += (o, e) => OnEvent(() => gridViewKeyDown(o,e));
          gridControl.ToolTipController = toolTipController;
          //specific grid settings for parameter
          gridView.ShowRowIndicator = true;
