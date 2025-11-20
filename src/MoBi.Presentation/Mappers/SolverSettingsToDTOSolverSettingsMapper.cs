@@ -33,7 +33,7 @@ namespace MoBi.Presentation.Mappers
             new SolverOptionDTO<double>("HMax", input.HMax, ToolTips.SolverOptions.HMax),
             new SolverOptionDTO<int>("MxStep", input.MxStep, ToolTips.SolverOptions.MxStep),
             new SolverOptionDTO<bool>("UseJacobian", input.UseJacobian, ToolTips.SolverOptions.UseJacobian),
-            new SolverOptionDTO<bool>("CheckForNegativeValues", input.CheckForNegativeValues, ToolTips.SolverOptions.CheckToNegativeValues)
+            new SolverOptionDTO<bool>("CheckForNegativeValues", input.CheckForNegativeValues, ToolTips.SolverOptions.CheckForNegativeValues)
          };
       }
    }
