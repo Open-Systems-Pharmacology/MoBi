@@ -72,4 +72,49 @@ namespace MoBi.Core.Commands
          _buildingBlock.All<ExpressionParameter>(x => x.Path.Contains("NewMolecule")).ShouldBeTrue();
       }
    }
+
+   public class When_executing_the_rename_command_for_initial_conditions : concern_for_RenameExpressionProfileBuildingBlockCommand
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _buildingBlock.AddInitialCondition(new InitialCondition { Path = new ObjectPath("A", "OldMolecule", "IC1") });
+         _buildingBlock.AddInitialCondition(new InitialCondition { Path = new ObjectPath("A", "OldMolecule", "IC2") });
+      }
+
+      protected override void Because()
+      {
+         sut.Execute(_context);
+      }
+
+      [Observation]
+      public void the_initial_conditions_should_have_renamed_molecule()
+      {
+         _buildingBlock.Any<InitialCondition>(x => x.Path.Contains("OldMolecule")).ShouldBeFalse();
+         _buildingBlock.All<InitialCondition>(x => x.Path.Contains("NewMolecule")).ShouldBeTrue();
+      }
+   }
+
+   public class When_reversing_the_rename_command_for_initial_conditions : concern_for_RenameExpressionProfileBuildingBlockCommand
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _buildingBlock.AddInitialCondition(new InitialCondition { Path = new ObjectPath("A", "OldMolecule", "IC1") });
+         _buildingBlock.AddInitialCondition(new InitialCondition { Path = new ObjectPath("A", "OldMolecule", "IC2") });
+      }
+
+      protected override void Because()
+      {
+         sut.ExecuteAndInvokeInverse(_context);
+      }
+
+      [Observation]
+      public void the_initial_conditions_should_revert_to_old_molecule()
+      {
+         _buildingBlock.Any<InitialCondition>(x => x.Path.Contains("NewMolecule")).ShouldBeFalse();
+         _buildingBlock.All<InitialCondition>(x => x.Path.Contains("OldMolecule")).ShouldBeTrue();
+      }
+   }
+
 }
