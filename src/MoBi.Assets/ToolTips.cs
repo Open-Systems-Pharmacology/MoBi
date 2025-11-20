@@ -263,7 +263,7 @@ namespace MoBi.Assets
          public static readonly string HMax = "Maximum step size";
          public static readonly string MxStep = "Maximum number of solver steps";
          public static readonly string UseJacobian = "Use jacobian matrix for solving ode";
-         public static readonly string CheckToNegativeValues = "Check for Negative Values";
+         public static readonly string CheckForNegativeValues = "Check for Negative Values";
       }
 
       public static class DisplayUnits
