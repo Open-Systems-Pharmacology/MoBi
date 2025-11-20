@@ -14,7 +14,6 @@ using MoBi.Presentation.Views;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
@@ -264,7 +263,7 @@ namespace MoBi.Presentation.Presenter
       protected void AddSpatialStructures()
       {
          var spatialStructures = _buildingBlockRepository.SpatialStructureCollection;
-         var nodes = spatialStructures.Select(x => _referenceMapper.MapFrom(x).WithText(x.DisplayName));
+         var nodes = spatialStructures.Select(x => _referenceMapper.MapFrom(x));
 
          _view.AddNodes(nodes);
       }
@@ -459,7 +458,7 @@ namespace MoBi.Presentation.Presenter
 
       protected void AddReactions()
       {
-         var nodes = _buildingBlockRepository.ReactionBlockCollection.Select(x => _referenceMapper.MapFrom(x).WithText(x.DisplayName));
+         var nodes = _buildingBlockRepository.ReactionBlockCollection.Select(x => _referenceMapper.MapFrom(x));
          _view.AddNodes(nodes);
       }
 

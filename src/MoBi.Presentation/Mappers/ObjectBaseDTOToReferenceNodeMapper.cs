@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Presentation.Nodes;
-using OSPSuite.Utility;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Nodes;
 using OSPSuite.Core.Domain;
-using OSPSuite.Assets;
+using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Presentation.Nodes;
+using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface IObjectBaseDTOToReferenceNodeMapper :IMapper<IObjectBase, ITreeNode>
+   public interface IObjectBaseDTOToReferenceNodeMapper : IMapper<IObjectBase, ITreeNode>
    {
       ITreeNode MapFrom(ObjectBaseDTO objectBaseDTO);
-  
+
       void Initialize(Func<ObjectBaseDTO, IEnumerable<ObjectBaseDTO>> getChildren);
    }
 
@@ -34,10 +34,15 @@ namespace MoBi.Presentation.Mappers
 
       public ITreeNode MapFrom(ObjectBaseDTO objectBaseDTO)
       {
+         var nodeText = objectBaseDTO.ObjectBase is BuildingBlock buildingBlock
+            ? buildingBlock.DisplayName
+            : objectBaseDTO.Name;
+
          return new ReferenceNode(objectBaseDTO)
          {
             Icon = objectBaseDTO.Icon,
-            GetChildren = x => _getChildren(x).Select(MapFrom).ToList()
+            GetChildren = x => _getChildren(x).Select(MapFrom).ToList(),
+            Text = nodeText
          };
       }
 
