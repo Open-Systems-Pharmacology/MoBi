@@ -41,10 +41,12 @@ namespace MoBi.Presentation.Presenter
       event Action SelectionChangedEvent;
       IReadOnlyList<ObjectPath> GetAllSelections();
       IEnumerable<T> GetAllSelected<T>() where T : class, IObjectBase;
+      void DisableTimeSelection();
    }
 
    public abstract class SelectReferencePresenterBase : AbstractCommandCollectorPresenter<ISelectReferenceView, ISelectReferencePresenter>, ISelectReferencePresenter
    {
+      private bool _addTime = true;
       protected readonly IParameterToDummyParameterDTOMapper _dummyParameterDTOMapper;
       protected readonly IObjectBaseDTOToReferenceNodeMapper _referenceMapper;
       protected readonly IObjectBaseToObjectBaseDTOMapper _objectBaseDTOMapper;
@@ -115,6 +117,19 @@ namespace MoBi.Presentation.Presenter
       private void addInitialObjects()
       {
          AddSpecificInitialObjects();
+         if (_addTime)
+            addTimeReference();
+      }
+
+      private void addTimeReference()
+      {
+         var timeDTO = new ObjectBaseDTO
+         {
+            Id = AppConstants.Time,
+            Name = AppConstants.Time,
+            Icon = ApplicationIcons.Time
+         };
+         _view.AddNode(_referenceMapper.MapFrom(timeDTO));
       }
 
       public virtual IEnumerable<ObjectBaseDTO> GetChildObjects(ObjectBaseDTO dto)
@@ -220,6 +235,11 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
+      public void DisableTimeSelection()
+      {
+         _addTime = false;
+      }
+
       public bool LegalObjectSelected
       {
          get
@@ -270,17 +290,6 @@ namespace MoBi.Presentation.Presenter
       }
 
       private bool shouldCreateAbsolutePath => _view.ObjectPathType.Equals(ObjectPathType.Absolute);
-
-      protected void AddTimeReference()
-      {
-         var timeDTO = new ObjectBaseDTO
-         {
-            Id = AppConstants.Time,
-            Name = AppConstants.Time,
-            Icon = ApplicationIcons.Time
-         };
-         _view.AddNode(_referenceMapper.MapFrom(timeDTO));
-      }
 
       private IEnumerable<T> getAllMoleculeChildren<T>(DummyMoleculeContainerDTO dummyMolecule) where T : class, IEntity
       {
