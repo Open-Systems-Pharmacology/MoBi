@@ -6,7 +6,6 @@ using OSPSuite.Utility;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Nodes;
 using OSPSuite.Core.Domain;
-using OSPSuite.Assets;
 
 namespace MoBi.Presentation.Mappers
 {

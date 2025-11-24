@@ -105,7 +105,7 @@ namespace MoBi.Presentation.Presenter
             _view.SetSelectReferenceView(_selectReferencePresenter.View);
          }
 
-         ((ISelectReferencePresenter)_selectReferencePresenter).Init(_eventBuilder, new[] { _eventBuilder.RootContainer }, _eventBuilder);
+         _selectReferencePresenter.Init(_eventBuilder, new[] { _eventBuilder.RootContainer }, _eventBuilder);
          var dto = _eventToEventBuilderMapper.MapFrom(eventBuilder);
          dto.AddUsedNames(_editTasks.GetForbiddenNamesWithoutSelf(eventBuilder, existingObjectsInParent));
          _view.Show(dto);
