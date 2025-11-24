@@ -5,7 +5,6 @@ using MoBi.Assets;
 using MoBi.Core.Domain;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Repository;
 using MoBi.Core.Events;
 using MoBi.Core.Helper;
 using MoBi.Presentation.DTO;
@@ -235,10 +234,7 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      public void DisableTimeSelection()
-      {
-         _addTime = false;
-      }
+      public void DisableTimeSelection() => _addTime = false;
 
       public bool LegalObjectSelected
       {
