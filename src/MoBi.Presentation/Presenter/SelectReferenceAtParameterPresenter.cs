@@ -9,13 +9,10 @@ namespace MoBi.Presentation.Presenter
    public interface ISelectReferenceAtParameterPresenter : ISelectReferencePresenter
    {
       bool ChangeLocalisationAllowed { get; set; }
-      void DisableTimeSelection();
    }
 
    public class SelectReferenceAtParameterPresenter : SelectReferencePresenterBase, ISelectReferenceAtParameterPresenter
    {
-      private bool _addTime = true;
-
       public SelectReferenceAtParameterPresenter(ISelectReferenceView view,
          IObjectBaseToObjectBaseDTOMapper objectBaseDTOMapper,
          IMoBiContext context,
@@ -33,8 +30,6 @@ namespace MoBi.Presentation.Presenter
 
       protected override void AddSpecificInitialObjects()
       {
-         if(_addTime)
-            AddTimeReference();
          AddSpatialStructures();
          AddReactions();
       }
@@ -43,11 +38,6 @@ namespace MoBi.Presentation.Presenter
       {
          get => _view.ChangeLocalisationAllowed;
          set => _view.ChangeLocalisationAllowed = value;
-      }
-
-      public void DisableTimeSelection()
-      {
-         _addTime = false;
       }
    }
 }

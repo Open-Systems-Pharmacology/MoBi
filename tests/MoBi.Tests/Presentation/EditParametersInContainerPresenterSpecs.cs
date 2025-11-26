@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using FakeItEasy;
+using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
@@ -20,6 +20,8 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.DTO;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MoBi.Presentation
 {
@@ -112,6 +114,43 @@ namespace MoBi.Presentation
       {
          // This test ensures that the edit is called twice 
          A.CallTo(() => _selectReferencePresenterFactory.ReferenceAtParameterFor(_container)).MustHaveHappenedANumberOfTimesMatching(x => x == 4);
+      }
+
+      [Observation]
+      public void the_clipboard_manager_is_used()
+      {
+         A.CallTo(() => _clipboardManager.PasteFromClipBoard(A<Action<IParameter>>._)).MustHaveHappened();
+      }
+   }
+
+   public class When_pasting_from_clipboard_to_a_container_in_a_simulation : concern_for_EditParametersInContainerPresenter
+   {
+      private IContainer _container;
+
+      protected override void Context()
+      {
+         base.Context();
+         _container = new Container();
+         var simulationContainer = new Container().WithContainerType(ContainerType.Simulation);
+         simulationContainer.Add(_container);
+         sut.Edit(_container);
+      }
+
+      protected override void Because()
+      {
+         sut.PasteFromClipBoard();
+      }
+
+      [Observation]
+      public void the_dialog_informs_user_that_the_parameter_cannot_be_added()
+      {
+         A.CallTo(() => _interactionTaskContext.DialogCreator.MessageBoxInfo(AppConstants.Captions.AddingParametersToASimulationIsNotSupported)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_clipboard_manager_is_not_used()
+      {
+         A.CallTo(() => _clipboardManager.PasteFromClipBoard(A<Action<IParameter>>._)).MustNotHaveHappened();
       }
    }
 
