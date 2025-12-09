@@ -8,15 +8,14 @@ using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
 using MoBi.Core.Snapshots.Mappers;
 using MoBi.HelpersForTests;
+using OSPSuite.Assets.Extensions;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core;
 using OSPSuite.Core.Chart.ParameterIdentifications;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Qualification;
-using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Services;
 using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Container;
@@ -71,7 +70,7 @@ namespace MoBi.IntegrationTests.Snapshots
          var module = new Module().WithId("module").WithName("module");
          _project.AddModule(module);
 
-         var pksimModule = new Module { IsPKSimModule = true, Snapshot = "snapshot", Id = "pksimmodule" };
+         var pksimModule = new Module { IsPKSimModule = true, Snapshot = "{ \"JSON\":true }".ToBase64String(), Id = "pksimmodule" };
          _project.AddModule(pksimModule);
 
          var snapshotIndividualBuildingBlock = new IndividualBuildingBlock
@@ -89,8 +88,8 @@ namespace MoBi.IntegrationTests.Snapshots
 
          var transferModule = new Module { IsPKSimModule = true };
 
-         A.CallTo(() => _pkSimStarter.LoadModuleFromSnapshot(pksimModule.Snapshot)).Returns(transferModule);
-         A.CallTo(() => _pkSimStarter.LoadModuleFromSnapshotAndExportInputs(pksimModule.Snapshot, A<QualificationConfiguration>._)).Returns((transferModule, Array.Empty<InputMapping>()));
+         A.CallTo(() => _pkSimStarter.LoadModuleFromSnapshot(A<string>._)).Returns(transferModule);
+         A.CallTo(() => _pkSimStarter.LoadModuleFromSnapshotAndExportInputs(A<string>._, A<QualificationConfiguration>._)).Returns((transferModule, Array.Empty<InputMapping>()));
 
          var dataRepository = DomainHelperForSpecs.ObservedData();
          _project.AddObservedData(dataRepository);
