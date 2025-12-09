@@ -65,8 +65,8 @@ internal class when_creating_simulation : when_creating_from_mobi_project
    {
       _simulation = sut.CreateSimulationFrom(
          _simulationName,
-         (_moduleConfigurations?.Cast<object>().ToArray())!,
-         (_expressionProfilesForSimulation?.Cast<object>().ToArray())!,
+         (_moduleConfigurations?.Cast<object>().ToArray() ?? Array.Empty<object>()),
+         (_expressionProfilesForSimulation?.Cast<object>().ToArray() ?? Array.Empty<object>()),
          _individualForSimulation);
    }
 
