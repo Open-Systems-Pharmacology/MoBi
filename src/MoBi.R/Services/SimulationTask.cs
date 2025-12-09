@@ -12,8 +12,8 @@ namespace MoBi.R.Services
 {
    public interface ISimulationTask
    {
-      MoBiSimulation CreateSimulationFrom(string simulationName, IReadOnlyList<ModuleConfiguration> moduleConfigurations,
-         IReadOnlyList<ExpressionProfileBuildingBlock> expressionProfiles = null,
+      MoBiSimulation CreateSimulationFrom(string simulationName, object[] moduleConfigurations,
+         object[] expressionProfiles = null,
          IndividualBuildingBlock individual = null);
 
       ModuleConfiguration CreateModuleConfiguration(Module module,
@@ -55,8 +55,8 @@ namespace MoBi.R.Services
          return allNamedObjects.FindByName(namedObjectToSelect);
       }
 
-      public MoBiSimulation CreateSimulationFrom(string simulationName, IReadOnlyList<ModuleConfiguration> moduleConfigurations,
-         IReadOnlyList<ExpressionProfileBuildingBlock> expressionProfiles = null,
+      public MoBiSimulation CreateSimulationFrom(string simulationName, object[] moduleConfigurations,
+         object[] expressionProfiles = null,
          IndividualBuildingBlock individual = null)
       {
          return _simulationFactory.CreateSimulation(simulationName, moduleConfigurations, expressionProfiles, individual);

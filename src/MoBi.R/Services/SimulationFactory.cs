@@ -14,8 +14,8 @@ namespace MoBi.R.Services
 {
    public interface ISimulationFactory
    {
-      MoBiSimulation CreateSimulation(string simulationName, IReadOnlyList<RModuleConfiguration> moduleConfigurations,
-         IReadOnlyList<ExpressionProfileBuildingBlock> expressionProfiles,
+      MoBiSimulation CreateSimulation(string simulationName, object[] moduleConfigurations,
+         object[] expressionProfiles,
          IndividualBuildingBlock individual);
    }
 
@@ -35,8 +35,8 @@ namespace MoBi.R.Services
          _simulationSettingsFactory = simulationSettingsFactory;
       }
 
-      public MoBiSimulation CreateSimulation(string simulationName, IReadOnlyList<RModuleConfiguration> moduleConfigurations,
-         IReadOnlyList<ExpressionProfileBuildingBlock> expressionProfiles,
+      public MoBiSimulation CreateSimulation(string simulationName, object[] moduleConfigurations,
+         object[] expressionProfiles,
          IndividualBuildingBlock individual)
       {
          if (string.IsNullOrWhiteSpace(simulationName))
@@ -44,23 +44,28 @@ namespace MoBi.R.Services
 
          if (Constants.ILLEGAL_CHARACTERS.Any(simulationName.Contains))
             throw new InvalidOperationException("Simulation name contains illegal characters");
-         
-         var simulationSettings = _simulationSettingsFactory.CreateDefault();
 
+         var simulationSettings = _simulationSettingsFactory.CreateDefault();
          var simulationConfiguration = _configurationFactory.Create(simulationSettings);
 
-//         simulationConfiguration.ModuleConfigurations = moduleConfigurations?.ToList() ?? new List<ModuleConfiguration>();
+         // Convert object[] to strongly typed lists
+         var typedModuleConfigurations = moduleConfigurations?
+            .OfType<RModuleConfiguration>()
+            .ToList() ?? new List<RModuleConfiguration>();
 
-         moduleConfigurations.Each(x =>
+         var typedExpressionProfiles = expressionProfiles?
+            .OfType<ExpressionProfileBuildingBlock>()
+            .ToList() ?? new List<ExpressionProfileBuildingBlock>();
+
+         typedModuleConfigurations.ForEach(x =>
          {
             simulationConfiguration.AddModuleConfiguration(
-               new CoreModuleConfiguration(x.Module , x.SelectedInitialCondition, x.SelectedParameterValue));
+               new CoreModuleConfiguration(x.Module, x.SelectedInitialCondition, x.SelectedParameterValue));
          });
 
-         expressionProfiles?.Each(simulationConfiguration.AddExpressionProfile);
+         typedExpressionProfiles.ForEach(simulationConfiguration.AddExpressionProfile);
 
          simulationConfiguration.Individual = individual;
-
          simulationConfiguration.ShouldValidate = true;
 
          var simulation = _simulationFactory.CreateSimulationAndValidate(simulationConfiguration, simulationName);

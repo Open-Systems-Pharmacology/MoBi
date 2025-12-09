@@ -63,7 +63,11 @@ internal class when_creating_simulation : when_creating_from_mobi_project
 {
    protected override void Because()
    {
-      _simulation = sut.CreateSimulationFrom(_simulationName, _moduleConfigurations, _expressionProfilesForSimulation, _individualForSimulation);
+      _simulation = sut.CreateSimulationFrom(
+         _simulationName,
+         (_moduleConfigurations?.Cast<object>().ToArray())!,
+         (_expressionProfilesForSimulation?.Cast<object>().ToArray())!,
+         _individualForSimulation);
    }
 
    [Observation]
@@ -87,7 +91,10 @@ internal abstract class when_creating_an_invalid_configuration : when_creating_f
    [Observation]
    public void should_throw_expected_exception()
    {
-      The.Action(() => sut.CreateSimulationFrom(_simulationName, _moduleConfigurations, _expressionProfilesForSimulation, _individualForSimulation)).ShouldThrowAn<InvalidOperationException>();
+      The.Action(() => sut.CreateSimulationFrom(_simulationName,
+         (_moduleConfigurations?.Cast<object>().ToArray())!,
+         (_expressionProfilesForSimulation?.Cast<object>().ToArray())!,
+         _individualForSimulation)).ShouldThrowAn<InvalidOperationException>();
    }
 }
 
@@ -152,10 +159,13 @@ internal class when_creating_simulation_from_pkml_module : concern_for_Simulatio
       _moduleConfigurations = [moduleConfig];
    }
 
-   protected override void Because()
-   {
-      _simulation = sut.CreateSimulationFrom(_simulationName, _moduleConfigurations, _expressionProfilesForSimulation, _individualForSimulation);
-   }
+            protected override void Because()
+            {
+               _simulation = sut.CreateSimulationFrom(_simulationName, 
+                  (_moduleConfigurations?.Cast<object>().ToArray())!,
+                  (_expressionProfilesForSimulation?.Cast<object>().ToArray())!,
+                   _individualForSimulation);
+            }
 
    [Observation]
    public void should_return_simulation_name() =>
