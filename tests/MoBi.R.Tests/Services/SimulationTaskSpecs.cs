@@ -92,8 +92,8 @@ internal abstract class when_creating_an_invalid_configuration : when_creating_f
    public void should_throw_expected_exception()
    {
       The.Action(() => sut.CreateSimulationFrom(_simulationName,
-         (_moduleConfigurations?.Cast<object>().ToArray())!,
-         (_expressionProfilesForSimulation?.Cast<object>().ToArray())!,
+         (_moduleConfigurations?.Cast<object>().ToArray() ?? Array.Empty<object>()),
+         (_expressionProfilesForSimulation?.Cast<object>().ToArray() ?? Array.Empty<object>()),
          _individualForSimulation)).ShouldThrowAn<InvalidOperationException>();
    }
 }
