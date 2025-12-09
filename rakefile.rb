@@ -3,14 +3,6 @@ require_relative 'scripts/copy-dependencies'
 require_relative 'scripts/utils'
 require_relative 'scripts/coverage'
 
-task :create_local_nuget do
-  FileUtils.rm_f Dir.glob("./nuget_repo/*.nupkg")
-  versionId = "13.0.0-" + generate_code(5)
-  puts("Your version is " + versionId.red)
-  system("dotnet", "pack", "-p:PackageVersion="+ versionId, "--configuration", "Debug", "--output", "nuget_repo", "--no-build") 
-  update_ospsuite_r(versionId)
-end
-
 task :cover do
    filter = []
    filter << "+[MoBi.Core]*"
@@ -166,35 +158,4 @@ end
 
 def setup_temp_dir
    File.join(setup_dir, 'temp')
-end
-
-
-def generate_code(number)
-  charset = Array('A'..'Z') + Array('a'..'z')
-  Array.new(number) { charset.sample }.join
-end
-
-
-def update_ospsuite_r(versionId)
-  puts("updating OSPSuite-R")
-  token = find_token("../OSPSuite-R/shared/DependencyManager/src/DependencyManager.csproj", /<PackageReference Include="MoBi.R" Version="(.*)"/)
-  if(token.nil?)
-    return
-  end
-
-  glob = Dir.glob('../OSPSuite-R/**/*.csproj')
-  glob.each do |file|
-    Utils.replace_tokens({token => versionId}, file)
-  end
-
-end
-
-def find_token(file, regex)
-  file_content = str = File.read(file)
-  matches = file_content.match(regex)
-
-  if(matches.nil?)
-    return nil
-  end
-  return matches[1]
 end
