@@ -6,6 +6,7 @@ using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
+using Newtonsoft.Json;
 using OSPSuite.Assets.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -84,7 +85,7 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       projectSnapshot.PKSimModules?.Each((x, i) =>
       {
          _logger.AddInfo($"Loading PK-Sim module from project snapshot ({i + 1}/{projectSnapshot.PKSimModules.Length})...", projectSnapshot.Name);
-         rebuildAction(x, project);
+         rebuildAction(JsonConvert.SerializeObject(x).ToBase64String(), project);
       });
 
       projectSnapshot.ExtensionModules?.Each(x => project.AddModule(deserializeFromBase64PKML<Module>(x, project)));
@@ -238,7 +239,8 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
 
    private Simulation[] mapSimulations(IReadOnlyList<MoBiSimulation> projectSimulations, ModelProject project) => _simulationMapper.MapToSnapshots(projectSimulations, project).Result;
 
-   private string[] mapPKSimModules(ModelProject project) => project.Modules.Where(shouldUsePKSimSnapshot).Select(x => x.Snapshot).ToArray();
+   private object[] mapPKSimModules(ModelProject project) => project.Modules.Where(shouldUsePKSimSnapshot).Select(x => JsonConvert.DeserializeObject<object>(x.Snapshot.FromBase64String())).ToArray();
+   
    private string[] mapExtensionModules(ModelProject project) => project.Modules.Where(x => !shouldUsePKSimSnapshot(x)).Select(serializeToBase64PKML).ToArray();
 
    private string[] mapExpressionProfilesBuildingBlocks(ModelProject project) => project.ExpressionProfileCollection.Where(x => !x.HasSnapshot).Select(serializeToBase64PKML).ToArray();
