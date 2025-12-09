@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System.Collections.Generic;
+using FakeItEasy;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Views;
@@ -116,6 +117,12 @@ namespace MoBi.Presentation
       {
          A.CallTo(() => _outputSelectionsTask.AddOutputSelection(_simulationSettings, null)).MustHaveHappened();
       }
+
+      [Observation]
+      public void the_view_should_be_refreshed()
+      {
+         A.CallTo(() => _view.BindTo(A<IEnumerable<QuantitySelection>>._)).MustHaveHappened(2, Times.Exactly);
+      }
    }
 
    public class When_removing_output_selections_from_simulation_settings : concern_for_EditOutputSelectionsPresenter
@@ -140,6 +147,12 @@ namespace MoBi.Presentation
       public void should_remove_output_selection_from_simulation_settings()
       {
          A.CallTo(() => _outputSelectionsTask.RemoveOutputSelection(_simulationSettings, _selection)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_view_should_be_refreshed()
+      {
+         A.CallTo(() => _view.BindTo(A<IEnumerable<QuantitySelection>>._)).MustHaveHappened(2, Times.Exactly);
       }
    }
 }

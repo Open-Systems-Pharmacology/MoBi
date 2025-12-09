@@ -1,6 +1,8 @@
 ﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
+using MoBi.Core.Domain.Services;
+using MoBi.Core.Extensions;
 using MoBi.HelpersForTests;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -16,10 +18,11 @@ namespace MoBi.Core.Commands
       protected MoBiSpatialStructure _spatialStructure;
       protected IContainer _otherContainer;
       protected NeighborhoodBuilder _neighborhood;
-      protected string _parentId = "parent";
+      protected readonly string _parentId = "parent";
       private ISpatialStructureDiagramManager _spatialStructureDiagramManager;
       protected IMoBiContext _context;
       private ObjectPathFactory _objectPathFactory;
+      protected IUnregisterTask _unregisterTask;
 
       protected override void Context()
       {
@@ -39,8 +42,32 @@ namespace MoBi.Core.Commands
          };
          _spatialStructure.AddNeighborhood(_neighborhood);
          _context = A.Fake<IMoBiContext>();
+         _unregisterTask = A.Fake<IUnregisterTask>();
+
          A.CallTo(() => _context.ObjectPathFactory).Returns(_objectPathFactory);
+         A.CallTo(() => _context.Resolve<IUnregisterTask>()).Returns(_unregisterTask);
+
          sut = new RemoveContainerFromSpatialStructureCommand(_parent, _containerToRemove, _spatialStructure);
+      }
+   }
+
+   internal class When_removing_a_container_from_a_spatial_structure : concern_for_RemoveContainerFromSpatialStructureCommand
+   {
+      protected override void Because()
+      {
+         sut.RunCommand(_context);
+      }
+
+      [Observation]
+      public void the_container_should_be_unregistered()
+      {
+         A.CallTo(() => _unregisterTask.UnregisterAllIn(_containerToRemove)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_remove_the_container()
+      {
+         _parent.Children.ShouldNotContain(_containerToRemove);
       }
    }
 

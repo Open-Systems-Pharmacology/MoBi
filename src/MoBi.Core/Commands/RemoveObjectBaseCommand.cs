@@ -1,5 +1,6 @@
 ﻿using MoBi.Assets;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Services;
 using MoBi.Core.Events;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -20,16 +21,18 @@ namespace MoBi.Core.Commands
          base.ExecuteWith(context);
          Description = AppConstants.Commands.RemoveFromDescription(ObjectType, _itemToRemove.Name, _parent.Name, context.TypeFor(_buildingBlock), _buildingBlock.Name);
          RemoveFrom(_itemToRemove, _parent, context);
-         context.Unregister(_itemToRemove);
+         unRegister(_itemToRemove, context);
          context.PublishEvent(new RemovedEvent(_itemToRemove, _parent));
       }
+
+      private void unRegister(TChild itemToRemove, IMoBiContext context) => context.Resolve<IUnregisterTask>().UnregisterAllIn(itemToRemove);
 
       protected abstract void RemoveFrom(TChild childToRemove, TParent parent, IMoBiContext context);
 
       protected override void ClearReferences()
       {
          base.ClearReferences();
-         _parent = default(TParent);
+         _parent = null;
       }
    }
 }

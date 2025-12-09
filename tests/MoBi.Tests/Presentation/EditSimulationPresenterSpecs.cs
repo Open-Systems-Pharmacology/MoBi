@@ -21,7 +21,7 @@ using OSPSuite.Presentation.Views;
 
 namespace MoBi.Presentation
 {
-   public abstract class concern_for_EditSimulationPresenter : ContextSpecification<IEditSimulationPresenter>
+   public abstract class concern_for_EditSimulationPresenter : ContextSpecification<EditSimulationPresenter>
    {
       protected IEditSimulationView _view;
       protected ISimulationChartPresenter _chartPresenter;
@@ -152,7 +152,7 @@ namespace MoBi.Presentation
       {
          base.Context();
          _simulation = A.Fake<IMoBiSimulation>();
-         _simulationRunFinishedEvent = new SimulationRunFinishedEvent(_simulation);
+         _simulationRunFinishedEvent = new SimulationRunFinishedEvent(_simulation, true);
          sut.Edit(_simulation);
          A.CallTo(() => _view.ShowsResults).Returns(false);
       }
@@ -206,6 +206,35 @@ namespace MoBi.Presentation
    }
 
    public class
+      When_the_simulation_presenter_is_notified_that_a_simulation_run_is_finished_for_the_edited_simulation_but_failed :
+      concern_for_EditSimulationPresenter
+   {
+      private IMoBiSimulation _simulation;
+      private CurveChart _chart;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = A.Fake<IMoBiSimulation>();
+         sut.Edit(_simulation);
+         _chart = A.Fake<CurveChart>();
+         A.CallTo(() => _simulation.Chart).Returns(_chart);
+         A.CallTo(() => _view.ShowsResults).Returns(true);
+      }
+
+      protected override void Because()
+      {
+         sut.Handle(new SimulationRunFinishedEvent(_simulation, false));
+      }
+
+      [Observation]
+      public void should_not_show_results_tab()
+      {
+         A.CallTo(() => _view.ShowResultsTab()).MustNotHaveHappened();
+      }
+   }
+
+   public class
       When_the_simulation_presenter_is_notified_that_a_simulation_run_is_finished_for_the_edited_simulation :
       concern_for_EditSimulationPresenter
    {
@@ -224,7 +253,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.Handle(new SimulationRunFinishedEvent(_simulation));
+         sut.Handle(new SimulationRunFinishedEvent(_simulation, true));
       }
 
       [Observation]
@@ -237,6 +266,12 @@ namespace MoBi.Presentation
       public void should_show_simulation_chart()
       {
          A.CallTo(() => _chartPresenter.Show(_chart, A<IReadOnlyList<DataRepository>>._, A<IReadOnlyList<DataRepository>>._, A<CurveChartTemplate>._)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_show_results_tab()
+      {
+         A.CallTo(() => _view.ShowResultsTab()).MustNotHaveHappened();
       }
    }
 
