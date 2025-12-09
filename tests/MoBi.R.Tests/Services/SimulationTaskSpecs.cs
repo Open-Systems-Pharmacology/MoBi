@@ -157,13 +157,15 @@ internal class when_creating_simulation_from_pkml_module : concern_for_Simulatio
       _simulationName = "SimFromPKML";
       var moduleConfig = sut.CreateModuleConfiguration(module);
       _moduleConfigurations = [moduleConfig];
+      _expressionProfilesForSimulation = null;
+      _individualForSimulation = null;
    }
 
             protected override void Because()
             {
                _simulation = sut.CreateSimulationFrom(_simulationName, 
-                  (_moduleConfigurations?.Cast<object>().ToArray())!,
-                  (_expressionProfilesForSimulation?.Cast<object>().ToArray())!,
+                  (_moduleConfigurations?.Cast<object>().ToArray() ?? Array.Empty<object>()),
+                  (_expressionProfilesForSimulation?.Cast<object>().ToArray() ?? Array.Empty<object>()),
                    _individualForSimulation);
             }
 
