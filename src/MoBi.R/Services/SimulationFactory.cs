@@ -49,13 +49,9 @@ namespace MoBi.R.Services
          var simulationConfiguration = _configurationFactory.Create(simulationSettings);
 
          // Convert object[] to strongly typed lists
-         var typedModuleConfigurations = moduleConfigurations?
-            .OfType<RModuleConfiguration>()
-            .ToList() ?? new List<RModuleConfiguration>();
+         var typedModuleConfigurations = (moduleConfigurations ?? Array.Empty<object>()).OfType<RModuleConfiguration>().ToList();
 
-         var typedExpressionProfiles = expressionProfiles?
-            .OfType<ExpressionProfileBuildingBlock>()
-            .ToList() ?? new List<ExpressionProfileBuildingBlock>();
+         var typedExpressionProfiles = (expressionProfiles ?? Array.Empty<object>()).OfType<ExpressionProfileBuildingBlock>().ToList();
 
          typedModuleConfigurations.ForEach(x =>
          {
