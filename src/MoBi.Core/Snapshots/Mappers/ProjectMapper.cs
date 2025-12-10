@@ -136,7 +136,7 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       return project;
    }
    private static object base64StringToPKSimSnapshot(string base64String) => JsonConvert.DeserializeObject<object>(base64String.FromBase64String());
-   private static string pkSimSnapshotToBase64String(object x) => JsonConvert.SerializeObject(x).ToBase64String();
+   private static string pkSimSnapshotToBase64String(object pkSimSnapshot) => JsonConvert.SerializeObject(pkSimSnapshot).ToBase64String();
 
    private async Task runParallelSimulations(MoBiProject project)
    {
