@@ -34,7 +34,7 @@ public class Project : SnapshotBase
 
    public ReactionDimensionMode ReactionDimensionMode { get; set; }
 
-   public string[] ExpressionProfileSnapshots { get; set; }
+   public object[] ExpressionProfileSnapshots { get; set; }
 
-   public string[] IndividualBuildingBlockSnapshots { get; set; }
+   public object[] IndividualBuildingBlockSnapshots { get; set; }
 }

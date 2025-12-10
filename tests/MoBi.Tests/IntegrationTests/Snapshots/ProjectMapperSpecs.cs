@@ -75,14 +75,14 @@ namespace MoBi.IntegrationTests.Snapshots
 
          var snapshotIndividualBuildingBlock = new IndividualBuildingBlock
          {
-            Snapshot = "dummy",
+            Snapshot = "{ \"JSON\":true }".ToBase64String(),
             Id = "pksimInd"
          };
 
          var snapshotExpressionProfile = new ExpressionProfileBuildingBlock
          {
             Type = ExpressionTypes.MetabolizingEnzyme,
-            Snapshot = "dummy",
+            Snapshot = "{ \"JSON\":true }".ToBase64String(),
             Id = "pksimexpression"
          };
 

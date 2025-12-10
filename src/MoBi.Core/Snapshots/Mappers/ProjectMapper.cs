@@ -85,7 +85,7 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       projectSnapshot.PKSimModules?.Each((x, i) =>
       {
          _logger.AddInfo($"Loading PK-Sim module from project snapshot ({i + 1}/{projectSnapshot.PKSimModules.Length})...", projectSnapshot.Name);
-         rebuildAction(JsonConvert.SerializeObject(x).ToBase64String(), project);
+         rebuildAction(pkSimSnapshotToBase64String(x), project);
       });
 
       projectSnapshot.ExtensionModules?.Each(x => project.AddModule(deserializeFromBase64PKML<Module>(x, project)));
@@ -94,9 +94,9 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
 
       projectSnapshot.IndividualBuildingBlocks?.Each(x => project.AddIndividualBuildingBlock(deserializeFromBase64PKML<IndividualBuildingBlock>(x, project)));
 
-      projectSnapshot.IndividualBuildingBlockSnapshots?.Each(x => project.AddIndividualBuildingBlock(_pkSimStarter.LoadIndividualFromSnapshot(x)));
+      projectSnapshot.IndividualBuildingBlockSnapshots?.Each(x => project.AddIndividualBuildingBlock(_pkSimStarter.LoadIndividualFromSnapshot(pkSimSnapshotToBase64String(x))));
 
-      projectSnapshot.ExpressionProfileSnapshots?.Each(x => project.AddExpressionProfileBuildingBlock(_pkSimStarter.LoadExpressionProfileFromSnapshot(x)));
+      projectSnapshot.ExpressionProfileSnapshots?.Each(x => project.AddExpressionProfileBuildingBlock(_pkSimStarter.LoadExpressionProfileFromSnapshot(pkSimSnapshotToBase64String(x))));
 
       var snapshotContext = new SnapshotContext(project, SnapshotVersions.FindByMoBiProjectVersion(projectSnapshot.Version));
 
@@ -135,6 +135,8 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
 
       return project;
    }
+   private static object base64StringToPKSimSnapshot(string argSnapshot) => JsonConvert.DeserializeObject<object>(argSnapshot.FromBase64String());
+   private static string pkSimSnapshotToBase64String(object x) => JsonConvert.SerializeObject(x).ToBase64String();
 
    private async Task runParallelSimulations(MoBiProject project)
    {
@@ -239,16 +241,16 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
 
    private Simulation[] mapSimulations(IReadOnlyList<MoBiSimulation> projectSimulations, ModelProject project) => _simulationMapper.MapToSnapshots(projectSimulations, project).Result;
 
-   private object[] mapPKSimModules(ModelProject project) => project.Modules.Where(shouldUsePKSimSnapshot).Select(x => JsonConvert.DeserializeObject<object>(x.Snapshot.FromBase64String())).ToArray();
-   
+   private object[] mapPKSimModules(ModelProject project) => project.Modules.Where(shouldUsePKSimSnapshot).Select(x => base64StringToPKSimSnapshot(x.Snapshot)).ToArray();
+
    private string[] mapExtensionModules(ModelProject project) => project.Modules.Where(x => !shouldUsePKSimSnapshot(x)).Select(serializeToBase64PKML).ToArray();
 
    private string[] mapExpressionProfilesBuildingBlocks(ModelProject project) => project.ExpressionProfileCollection.Where(x => !x.HasSnapshot).Select(serializeToBase64PKML).ToArray();
    private string[] mapIndividualBuildingBlocks(ModelProject project) => project.IndividualsCollection.Where(x => !x.HasSnapshot).Select(serializeToBase64PKML).ToArray();
 
    // TODO snapshot needs to be augmented with the changed parameters after https://github.com/Open-Systems-Pharmacology/MoBi/issues/1560
-   private string[] mapExpressionProfileSnapshots(ModelProject project) => project.ExpressionProfileCollection.Where(x => x.HasSnapshot).Select(x => x.Snapshot).ToArray();
-   private string[] mapIndividualSnapshots(ModelProject project) => project.IndividualsCollection.Where(x => x.HasSnapshot).Select(x => x.Snapshot).ToArray();
+   private object[] mapExpressionProfileSnapshots(ModelProject project) => project.ExpressionProfileCollection.Where(x => x.HasSnapshot).Select(x => base64StringToPKSimSnapshot(x.Snapshot)).ToArray();
+   private object[] mapIndividualSnapshots(ModelProject project) => project.IndividualsCollection.Where(x => x.HasSnapshot).Select(x => base64StringToPKSimSnapshot(x.Snapshot)).ToArray();
 
    private static bool shouldUsePKSimSnapshot(Module module)
    {
