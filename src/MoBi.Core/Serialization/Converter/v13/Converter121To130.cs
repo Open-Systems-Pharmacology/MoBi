@@ -32,6 +32,7 @@ public class Converter121To130 : IMoBiObjectConverter, IVisitor<MoBiProject>
 
    public void Visit(MoBiProject moBiProject)
    {
-      _coreConverter.Visit(moBiProject.SimulationSettings);
+      if(moBiProject.SimulationSettings != null)
+         _coreConverter.Visit(moBiProject.SimulationSettings);
    }
 }
