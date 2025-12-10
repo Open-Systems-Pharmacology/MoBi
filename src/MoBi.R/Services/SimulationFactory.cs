@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Services;
@@ -26,7 +25,7 @@ namespace MoBi.R.Services
       private readonly Core.Domain.Services.ISimulationFactory _simulationFactory;
 
       public SimulationFactory(
-         ISimulationConfigurationFactory configurationFactory, 
+         ISimulationConfigurationFactory configurationFactory,
          Core.Domain.Services.ISimulationFactory simulationFactory,
          ISimulationSettingsFactory simulationSettingsFactory)
       {
@@ -53,13 +52,13 @@ namespace MoBi.R.Services
 
          var typedExpressionProfiles = (expressionProfiles ?? Array.Empty<object>()).OfType<ExpressionProfileBuildingBlock>().ToList();
 
-         typedModuleConfigurations.ForEach(x =>
+         typedModuleConfigurations.Each(x =>
          {
             simulationConfiguration.AddModuleConfiguration(
                new CoreModuleConfiguration(x.Module, x.SelectedInitialCondition, x.SelectedParameterValue));
          });
 
-         typedExpressionProfiles.ForEach(simulationConfiguration.AddExpressionProfile);
+         typedExpressionProfiles.Each(simulationConfiguration.AddExpressionProfile);
 
          simulationConfiguration.Individual = individual;
          simulationConfiguration.ShouldValidate = true;
