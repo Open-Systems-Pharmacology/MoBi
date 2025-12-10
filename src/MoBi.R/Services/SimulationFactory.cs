@@ -13,8 +13,8 @@ namespace MoBi.R.Services
 {
    public interface ISimulationFactory
    {
-      MoBiSimulation CreateSimulation(string simulationName, object[] moduleConfigurations,
-         object[] expressionProfiles,
+      MoBiSimulation CreateSimulation(string simulationName, RModuleConfiguration[] moduleConfigurations,
+         ExpressionProfileBuildingBlock[] expressionProfiles,
          IndividualBuildingBlock individual);
    }
 
@@ -34,8 +34,8 @@ namespace MoBi.R.Services
          _simulationSettingsFactory = simulationSettingsFactory;
       }
 
-      public MoBiSimulation CreateSimulation(string simulationName, object[] moduleConfigurations,
-         object[] expressionProfiles,
+      public MoBiSimulation CreateSimulation(string simulationName, RModuleConfiguration[] moduleConfigurations,
+         ExpressionProfileBuildingBlock[] expressionProfiles,
          IndividualBuildingBlock individual)
       {
          if (string.IsNullOrWhiteSpace(simulationName))
@@ -48,9 +48,9 @@ namespace MoBi.R.Services
          var simulationConfiguration = _configurationFactory.Create(simulationSettings);
 
          // Convert object[] to strongly typed lists
-         var typedModuleConfigurations = (moduleConfigurations ?? Array.Empty<object>()).OfType<RModuleConfiguration>().ToList();
+         var typedModuleConfigurations = (moduleConfigurations ?? Array.Empty<RModuleConfiguration>()).ToList();
 
-         var typedExpressionProfiles = (expressionProfiles ?? Array.Empty<object>()).OfType<ExpressionProfileBuildingBlock>().ToList();
+         var typedExpressionProfiles = (expressionProfiles ?? Array.Empty<ExpressionProfileBuildingBlock>()).ToList();
 
          typedModuleConfigurations.Each(x =>
          {
