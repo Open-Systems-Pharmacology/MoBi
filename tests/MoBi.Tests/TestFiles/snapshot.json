@@ -3104,9 +3104,35 @@
       ]
     }
   ],
-  "ExtensionModules": [],
+  "ExtensionModules": [
+    "PE1vZHVsZSBpZD0iSFBxZS1IQjVDRXlsYmtEaUJYY0xjdyIgbmFtZT0iZXh0ZW5zaW9uIiBpY29uPSJNb2R1bGUiIG1vZHVsZUltcG9ydFZlcnNpb249IjEyMDc3NTY4MDQiIG1lcmdlQmVoYXZpb3I9IkV4dGVuZCIgaXNQS1NpbU1vZHVsZT0iMCIgdmVyc2lvbj0iMTkiPjxTbmFwc2hvdD48L1NuYXBzaG90PjwvTW9kdWxlPg=="
+  ],
   "ExpressionProfileBuildingBlocks": [],
   "IndividualBuildingBlocks": [],
+  "ObservedDataClassifications": [
+    {
+      "Name": "observed data folder",
+      "Classifiables": [
+        "Hot stage extrusion"
+      ]
+    }
+  ],
+  "ParameterIdentificationClassifications": [
+    {
+      "Name": "pi folder",
+      "Classifiables": [
+        "Parameter Identification 1"
+      ]
+    }
+  ],
+  "ModuleClassifications": [
+    {
+      "Name": "module folder",
+      "Classifiables": [
+        "extension"
+      ]
+    }
+  ],
   "ObservedData": [
     {
       "Name": "Hot stage extrusion",
@@ -3203,797 +3229,58 @@
         "Dimension": "Time",
         "Unit": "h"
       }
-    },
+    }
+  ],
+  "ParameterIdentifications": [
     {
-      "Name": "Henrist 1999.Hot stage extrusion oral.Subj 1",
-      "ExtendedProperties": [
-        {
-          "Name": "Source",
-          "Value": "Z:\\HOST_C\\Users\\ztcok\\Projekte\\GI tract\\TestSubstances\\Theophylline\\XML files\\Data.xlsx.Henrist1999 Exp 300mg ",
-          "Type": "String"
-        },
-        {
-          "Name": "File",
-          "Value": "Data",
-          "Type": "String"
-        },
-        {
-          "Name": "Sheet",
-          "Value": "Henrist1999 Exp 300mg ",
-          "Type": "String"
-        },
-        {
-          "Name": "Molecule",
-          "Value": "Theophylline",
-          "Type": "String"
-        },
-        {
-          "Name": "Species",
-          "Value": "Human",
-          "Type": "String"
-        },
-        {
-          "Name": "Organ",
-          "Value": "Peripheral Venous Blood",
-          "Type": "String"
-        },
-        {
-          "Name": "Compartment",
-          "Value": "Plasma",
-          "Type": "String"
-        },
-        {
-          "Name": "Study Id",
-          "Value": "Henrist 1999",
-          "Type": "String"
-        },
-        {
-          "Name": "Dose",
-          "Value": "300 mg",
-          "Type": "String"
-        },
-        {
-          "Name": "Route",
-          "Value": "Hot stage extrusion oral",
-          "Type": "String"
-        },
-        {
-          "Name": "Patient Id",
-          "Value": "Subj 1",
-          "Type": "String"
-        }
+      "Name": "Parameter Identification 1",
+      "Simulations": [
+        "Henrist oral Hot stage extrusion as table"
       ],
-      "Columns": [
-        {
-          "Name": "conc ",
-          "QuantityInfo": {
-            "Path": "Henrist 1999.Hot stage extrusion oral.Subj 1|ObservedData|Peripheral Venous Blood|Plasma|Theophylline|conc "
-          },
-          "DataInfo": {
-            "Origin": "Observation",
-            "AuxiliaryType": "Undefined",
-            "MolWeight": 180.17
-          },
-          "Values": [
-            1.762712,
-            2.59887,
-            3.8870063,
-            4.745763,
-            6.666667,
-            7.073446,
-            6.305085,
-            5.378531,
-            4.79096,
-            4.248588,
-            2.621469
-          ],
-          "Dimension": "Concentration (mass)",
-          "Unit": "mg/l"
+      "Configuration": {
+        "LLOQMode": "SimulationOutputAsObservedDataLLOQ",
+        "RemoveLLOQMode": "Never",
+        "CalculateJacobian": false,
+        "Algorithm": {
+          "Name": "Levenberg - Marquardt (MPFit)",
+          "Properties": [
+            {
+              "Name": "ftol",
+              "Value": 0.001,
+              "Type": "Double"
+            },
+            {
+              "Name": "xtol",
+              "Value": 1E-06,
+              "Type": "Double"
+            },
+            {
+              "Name": "gtol",
+              "Value": 1E-10,
+              "Type": "Double"
+            },
+            {
+              "Name": "stepfactor",
+              "Value": 100.0,
+              "Type": "Double"
+            },
+            {
+              "Name": "maxiter",
+              "Value": 200,
+              "Type": "Integer"
+            },
+            {
+              "Name": "maxfev",
+              "Value": 0,
+              "Type": "Integer"
+            },
+            {
+              "Name": "epsfcn",
+              "Value": 1E-09,
+              "Type": "Double"
+            }
+          ]
         }
-      ],
-      "BaseGrid": {
-        "Name": "Time ",
-        "QuantityInfo": {
-          "Path": "Henrist 1999.Hot stage extrusion oral.Subj 1|Time ",
-          "Type": "Time"
-        },
-        "DataInfo": {
-          "Origin": "BaseGrid",
-          "AuxiliaryType": "Undefined"
-        },
-        "Values": [
-          1.0,
-          2.0,
-          3.0,
-          4.0,
-          5.0,
-          6.0,
-          8.0,
-          10.0,
-          12.0,
-          14.0,
-          24.0
-        ],
-        "Dimension": "Time",
-        "Unit": "h"
-      }
-    },
-    {
-      "Name": "Henrist 1999.Hot stage extrusion oral.Subj 2",
-      "ExtendedProperties": [
-        {
-          "Name": "Source",
-          "Value": "Z:\\HOST_C\\Users\\ztcok\\Projekte\\GI tract\\TestSubstances\\Theophylline\\XML files\\Data.xlsx.Henrist1999 Exp 300mg ",
-          "Type": "String"
-        },
-        {
-          "Name": "File",
-          "Value": "Data",
-          "Type": "String"
-        },
-        {
-          "Name": "Sheet",
-          "Value": "Henrist1999 Exp 300mg ",
-          "Type": "String"
-        },
-        {
-          "Name": "Molecule",
-          "Value": "Theophylline",
-          "Type": "String"
-        },
-        {
-          "Name": "Species",
-          "Value": "Human",
-          "Type": "String"
-        },
-        {
-          "Name": "Organ",
-          "Value": "Peripheral Venous Blood",
-          "Type": "String"
-        },
-        {
-          "Name": "Compartment",
-          "Value": "Plasma",
-          "Type": "String"
-        },
-        {
-          "Name": "Study Id",
-          "Value": "Henrist 1999",
-          "Type": "String"
-        },
-        {
-          "Name": "Dose",
-          "Value": "300 mg",
-          "Type": "String"
-        },
-        {
-          "Name": "Route",
-          "Value": "Hot stage extrusion oral",
-          "Type": "String"
-        },
-        {
-          "Name": "Patient Id",
-          "Value": "Subj 2",
-          "Type": "String"
-        }
-      ],
-      "Columns": [
-        {
-          "Name": "conc (1)",
-          "QuantityInfo": {
-            "Path": "Henrist 1999.Hot stage extrusion oral.Subj 2|ObservedData|Peripheral Venous Blood|Plasma|Theophylline|conc (1)"
-          },
-          "DataInfo": {
-            "Origin": "Observation",
-            "AuxiliaryType": "Undefined",
-            "MolWeight": 180.17
-          },
-          "Values": [
-            0.38418078,
-            1.514124,
-            3.502825,
-            4.81356,
-            6.711864,
-            6.711864,
-            6.282486,
-            5.468926,
-            4.4971747,
-            4.022599,
-            1.9435031
-          ],
-          "Dimension": "Concentration (mass)",
-          "Unit": "mg/l"
-        }
-      ],
-      "BaseGrid": {
-        "Name": "Time ",
-        "QuantityInfo": {
-          "Path": "Henrist 1999.Hot stage extrusion oral.Subj 2|Time ",
-          "Type": "Time"
-        },
-        "DataInfo": {
-          "Origin": "BaseGrid",
-          "AuxiliaryType": "Undefined"
-        },
-        "Values": [
-          1.0,
-          2.0,
-          3.0,
-          4.0,
-          5.0,
-          6.0,
-          8.0,
-          10.0,
-          12.0,
-          14.0,
-          24.0
-        ],
-        "Dimension": "Time",
-        "Unit": "h"
-      }
-    },
-    {
-      "Name": "Henrist 1999.Hot stage extrusion oral.Subj 3",
-      "ExtendedProperties": [
-        {
-          "Name": "Source",
-          "Value": "Z:\\HOST_C\\Users\\ztcok\\Projekte\\GI tract\\TestSubstances\\Theophylline\\XML files\\Data.xlsx.Henrist1999 Exp 300mg ",
-          "Type": "String"
-        },
-        {
-          "Name": "File",
-          "Value": "Data",
-          "Type": "String"
-        },
-        {
-          "Name": "Sheet",
-          "Value": "Henrist1999 Exp 300mg ",
-          "Type": "String"
-        },
-        {
-          "Name": "Molecule",
-          "Value": "Theophylline",
-          "Type": "String"
-        },
-        {
-          "Name": "Species",
-          "Value": "Human",
-          "Type": "String"
-        },
-        {
-          "Name": "Organ",
-          "Value": "Peripheral Venous Blood",
-          "Type": "String"
-        },
-        {
-          "Name": "Compartment",
-          "Value": "Plasma",
-          "Type": "String"
-        },
-        {
-          "Name": "Study Id",
-          "Value": "Henrist 1999",
-          "Type": "String"
-        },
-        {
-          "Name": "Dose",
-          "Value": "300 mg",
-          "Type": "String"
-        },
-        {
-          "Name": "Route",
-          "Value": "Hot stage extrusion oral",
-          "Type": "String"
-        },
-        {
-          "Name": "Patient Id",
-          "Value": "Subj 3",
-          "Type": "String"
-        }
-      ],
-      "Columns": [
-        {
-          "Name": "conc (2)",
-          "QuantityInfo": {
-            "Path": "Henrist 1999.Hot stage extrusion oral.Subj 3|ObservedData|Peripheral Venous Blood|Plasma|Theophylline|conc (2)"
-          },
-          "DataInfo": {
-            "Origin": "Observation",
-            "AuxiliaryType": "Undefined",
-            "MolWeight": 180.17
-          },
-          "Values": [
-            2.124294,
-            4.429379,
-            5.853107,
-            6.870057,
-            7.322034,
-            6.644068,
-            5.672317,
-            4.926554,
-            4.2033896,
-            3.59322,
-            1.694915
-          ],
-          "Dimension": "Concentration (mass)",
-          "Unit": "mg/l"
-        }
-      ],
-      "BaseGrid": {
-        "Name": "Time ",
-        "QuantityInfo": {
-          "Path": "Henrist 1999.Hot stage extrusion oral.Subj 3|Time ",
-          "Type": "Time"
-        },
-        "DataInfo": {
-          "Origin": "BaseGrid",
-          "AuxiliaryType": "Undefined"
-        },
-        "Values": [
-          1.0,
-          2.0,
-          3.0,
-          4.0,
-          5.0,
-          6.0,
-          8.0,
-          10.0,
-          12.0,
-          14.0,
-          24.0
-        ],
-        "Dimension": "Time",
-        "Unit": "h"
-      }
-    },
-    {
-      "Name": "Henrist 1999.Hot stage extrusion oral.Subj 4",
-      "ExtendedProperties": [
-        {
-          "Name": "Source",
-          "Value": "Z:\\HOST_C\\Users\\ztcok\\Projekte\\GI tract\\TestSubstances\\Theophylline\\XML files\\Data.xlsx.Henrist1999 Exp 300mg ",
-          "Type": "String"
-        },
-        {
-          "Name": "File",
-          "Value": "Data",
-          "Type": "String"
-        },
-        {
-          "Name": "Sheet",
-          "Value": "Henrist1999 Exp 300mg ",
-          "Type": "String"
-        },
-        {
-          "Name": "Molecule",
-          "Value": "Theophylline",
-          "Type": "String"
-        },
-        {
-          "Name": "Species",
-          "Value": "Human",
-          "Type": "String"
-        },
-        {
-          "Name": "Organ",
-          "Value": "Peripheral Venous Blood",
-          "Type": "String"
-        },
-        {
-          "Name": "Compartment",
-          "Value": "Plasma",
-          "Type": "String"
-        },
-        {
-          "Name": "Study Id",
-          "Value": "Henrist 1999",
-          "Type": "String"
-        },
-        {
-          "Name": "Dose",
-          "Value": "300 mg",
-          "Type": "String"
-        },
-        {
-          "Name": "Route",
-          "Value": "Hot stage extrusion oral",
-          "Type": "String"
-        },
-        {
-          "Name": "Patient Id",
-          "Value": "Subj 4",
-          "Type": "String"
-        }
-      ],
-      "Columns": [
-        {
-          "Name": "conc (3)",
-          "QuantityInfo": {
-            "Path": "Henrist 1999.Hot stage extrusion oral.Subj 4|ObservedData|Peripheral Venous Blood|Plasma|Theophylline|conc (3)"
-          },
-          "DataInfo": {
-            "Origin": "Observation",
-            "AuxiliaryType": "Undefined",
-            "MolWeight": 180.17
-          },
-          "Values": [
-            2.508475,
-            4.0677967,
-            5.920904,
-            6.6892657,
-            6.531074,
-            6.033898,
-            4.745763,
-            3.9774008,
-            3.0056498,
-            1.19774
-          ],
-          "Dimension": "Concentration (mass)",
-          "Unit": "mg/l"
-        }
-      ],
-      "BaseGrid": {
-        "Name": "Time ",
-        "QuantityInfo": {
-          "Path": "Henrist 1999.Hot stage extrusion oral.Subj 4|Time ",
-          "Type": "Time"
-        },
-        "DataInfo": {
-          "Origin": "BaseGrid",
-          "AuxiliaryType": "Undefined"
-        },
-        "Values": [
-          1.0,
-          2.0,
-          3.0,
-          4.0,
-          5.0,
-          6.0,
-          8.0,
-          10.0,
-          12.0,
-          24.0
-        ],
-        "Dimension": "Time",
-        "Unit": "h"
-      }
-    },
-    {
-      "Name": "Henrist 1999.Hot stage extrusion oral.Subj 5",
-      "ExtendedProperties": [
-        {
-          "Name": "Source",
-          "Value": "Z:\\HOST_C\\Users\\ztcok\\Projekte\\GI tract\\TestSubstances\\Theophylline\\XML files\\Data.xlsx.Henrist1999 Exp 300mg ",
-          "Type": "String"
-        },
-        {
-          "Name": "File",
-          "Value": "Data",
-          "Type": "String"
-        },
-        {
-          "Name": "Sheet",
-          "Value": "Henrist1999 Exp 300mg ",
-          "Type": "String"
-        },
-        {
-          "Name": "Molecule",
-          "Value": "Theophylline",
-          "Type": "String"
-        },
-        {
-          "Name": "Species",
-          "Value": "Human",
-          "Type": "String"
-        },
-        {
-          "Name": "Organ",
-          "Value": "Peripheral Venous Blood",
-          "Type": "String"
-        },
-        {
-          "Name": "Compartment",
-          "Value": "Plasma",
-          "Type": "String"
-        },
-        {
-          "Name": "Study Id",
-          "Value": "Henrist 1999",
-          "Type": "String"
-        },
-        {
-          "Name": "Dose",
-          "Value": "300 mg",
-          "Type": "String"
-        },
-        {
-          "Name": "Route",
-          "Value": "Hot stage extrusion oral",
-          "Type": "String"
-        },
-        {
-          "Name": "Patient Id",
-          "Value": "Subj 5",
-          "Type": "String"
-        }
-      ],
-      "Columns": [
-        {
-          "Name": "conc (4)",
-          "QuantityInfo": {
-            "Path": "Henrist 1999.Hot stage extrusion oral.Subj 5|ObservedData|Peripheral Venous Blood|Plasma|Theophylline|conc (4)"
-          },
-          "DataInfo": {
-            "Origin": "Observation",
-            "AuxiliaryType": "Undefined",
-            "MolWeight": 180.17
-          },
-          "Values": [
-            0.7457627,
-            1.966102,
-            3.706215,
-            3.096045,
-            5.0847464,
-            5.3559318,
-            4.3163843,
-            3.7740111,
-            3.050848,
-            1.107345
-          ],
-          "Dimension": "Concentration (mass)",
-          "Unit": "mg/l"
-        }
-      ],
-      "BaseGrid": {
-        "Name": "Time ",
-        "QuantityInfo": {
-          "Path": "Henrist 1999.Hot stage extrusion oral.Subj 5|Time ",
-          "Type": "Time"
-        },
-        "DataInfo": {
-          "Origin": "BaseGrid",
-          "AuxiliaryType": "Undefined"
-        },
-        "Values": [
-          1.0,
-          2.0,
-          3.0,
-          4.0,
-          5.0,
-          6.0,
-          8.0,
-          10.0,
-          12.0,
-          24.0
-        ],
-        "Dimension": "Time",
-        "Unit": "h"
-      }
-    },
-    {
-      "Name": "Henrist 1999.Hot stage extrusion oral.Subj 6",
-      "ExtendedProperties": [
-        {
-          "Name": "Source",
-          "Value": "Z:\\HOST_C\\Users\\ztcok\\Projekte\\GI tract\\TestSubstances\\Theophylline\\XML files\\Data.xlsx.Henrist1999 Exp 300mg ",
-          "Type": "String"
-        },
-        {
-          "Name": "File",
-          "Value": "Data",
-          "Type": "String"
-        },
-        {
-          "Name": "Sheet",
-          "Value": "Henrist1999 Exp 300mg ",
-          "Type": "String"
-        },
-        {
-          "Name": "Molecule",
-          "Value": "Theophylline",
-          "Type": "String"
-        },
-        {
-          "Name": "Species",
-          "Value": "Human",
-          "Type": "String"
-        },
-        {
-          "Name": "Organ",
-          "Value": "Peripheral Venous Blood",
-          "Type": "String"
-        },
-        {
-          "Name": "Compartment",
-          "Value": "Plasma",
-          "Type": "String"
-        },
-        {
-          "Name": "Study Id",
-          "Value": "Henrist 1999",
-          "Type": "String"
-        },
-        {
-          "Name": "Dose",
-          "Value": "300 mg",
-          "Type": "String"
-        },
-        {
-          "Name": "Route",
-          "Value": "Hot stage extrusion oral",
-          "Type": "String"
-        },
-        {
-          "Name": "Patient Id",
-          "Value": "Subj 6",
-          "Type": "String"
-        }
-      ],
-      "Columns": [
-        {
-          "Name": "conc (5)",
-          "QuantityInfo": {
-            "Path": "Henrist 1999.Hot stage extrusion oral.Subj 6|ObservedData|Peripheral Venous Blood|Plasma|Theophylline|conc (5)"
-          },
-          "DataInfo": {
-            "Origin": "Observation",
-            "AuxiliaryType": "Undefined",
-            "MolWeight": 180.17
-          },
-          "Values": [
-            3.141243,
-            4.1807914,
-            5.7853107,
-            6.124294,
-            5.423729,
-            4.903955,
-            3.9548023,
-            3.3898308,
-            2.621469,
-            2.214689,
-            0.8813559
-          ],
-          "Dimension": "Concentration (mass)",
-          "Unit": "mg/l"
-        }
-      ],
-      "BaseGrid": {
-        "Name": "Time ",
-        "QuantityInfo": {
-          "Path": "Henrist 1999.Hot stage extrusion oral.Subj 6|Time ",
-          "Type": "Time"
-        },
-        "DataInfo": {
-          "Origin": "BaseGrid",
-          "AuxiliaryType": "Undefined"
-        },
-        "Values": [
-          1.0,
-          2.0,
-          3.0,
-          4.0,
-          5.0,
-          6.0,
-          8.0,
-          10.0,
-          12.0,
-          14.0,
-          24.0
-        ],
-        "Dimension": "Time",
-        "Unit": "h"
-      }
-    },
-    {
-      "Name": "Henrist 1999.Hot stage extrusion oral.Subj 7",
-      "ExtendedProperties": [
-        {
-          "Name": "Source",
-          "Value": "Z:\\HOST_C\\Users\\ztcok\\Projekte\\GI tract\\TestSubstances\\Theophylline\\XML files\\Data.xlsx.Henrist1999 Exp 300mg ",
-          "Type": "String"
-        },
-        {
-          "Name": "File",
-          "Value": "Data",
-          "Type": "String"
-        },
-        {
-          "Name": "Sheet",
-          "Value": "Henrist1999 Exp 300mg ",
-          "Type": "String"
-        },
-        {
-          "Name": "Molecule",
-          "Value": "Theophylline",
-          "Type": "String"
-        },
-        {
-          "Name": "Species",
-          "Value": "Human",
-          "Type": "String"
-        },
-        {
-          "Name": "Organ",
-          "Value": "Peripheral Venous Blood",
-          "Type": "String"
-        },
-        {
-          "Name": "Compartment",
-          "Value": "Plasma",
-          "Type": "String"
-        },
-        {
-          "Name": "Study Id",
-          "Value": "Henrist 1999",
-          "Type": "String"
-        },
-        {
-          "Name": "Dose",
-          "Value": "300 mg",
-          "Type": "String"
-        },
-        {
-          "Name": "Route",
-          "Value": "Hot stage extrusion oral",
-          "Type": "String"
-        },
-        {
-          "Name": "Patient Id",
-          "Value": "Subj 7",
-          "Type": "String"
-        }
-      ],
-      "Columns": [
-        {
-          "Name": "conc (6)",
-          "QuantityInfo": {
-            "Path": "Henrist 1999.Hot stage extrusion oral.Subj 7|ObservedData|Peripheral Venous Blood|Plasma|Theophylline|conc (6)"
-          },
-          "DataInfo": {
-            "Origin": "Observation",
-            "AuxiliaryType": "Undefined",
-            "MolWeight": 180.17
-          },
-          "Values": [
-            2.2824862,
-            3.9548023,
-            5.7853107,
-            6.101695,
-            5.242938,
-            3.7740111,
-            3.209039,
-            2.508475,
-            2.033898,
-            0.7457627
-          ],
-          "Dimension": "Concentration (mass)",
-          "Unit": "mg/l"
-        }
-      ],
-      "BaseGrid": {
-        "Name": "Time ",
-        "QuantityInfo": {
-          "Path": "Henrist 1999.Hot stage extrusion oral.Subj 7|Time ",
-          "Type": "Time"
-        },
-        "DataInfo": {
-          "Origin": "BaseGrid",
-          "AuxiliaryType": "Undefined"
-        },
-        "Values": [
-          1.0,
-          2.0,
-          3.0,
-          4.0,
-          5.0,
-          8.0,
-          10.0,
-          12.0,
-          14.0,
-          24.0
-        ],
-        "Dimension": "Time",
-        "Unit": "h"
       }
     }
   ],
@@ -4033,7 +3320,7 @@
               ]
             }
           ],
-          "RandomSeed": 53562296.0
+          "RandomSeed": 54771906.0
         },
         "IndividualBuildingBlock": "Man",
         "ExpressionProfiles": [
@@ -4056,6 +3343,156 @@
   ],
   "ReactionDimensionMode": "AmountBased",
   "ExpressionProfileSnapshots": [
+    {
+      "Type": "Enzyme",
+      "Species": "Human",
+      "Molecule": "CYP1A2",
+      "Category": "Man",
+      "Parameters": [
+        {
+          "Path": "CYP1A2|Reference concentration",
+          "Value": 1.8,
+          "Unit": "µmol/l",
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "CYP1A2|t1/2 (intestine)",
+          "Value": 1380.0,
+          "Unit": "min",
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "CYP1A2|t1/2 (liver)",
+          "Value": 2340.0,
+          "Unit": "min",
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Organism|Bone|Intracellular|CYP1A2|Relative expression",
+          "Value": 0.2035575247,
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Organism|Brain|Intracellular|CYP1A2|Relative expression",
+          "Value": 0.1089700115,
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Organism|Gonads|Intracellular|CYP1A2|Relative expression",
+          "Value": 0.1025641122,
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Organism|Heart|Intracellular|CYP1A2|Relative expression",
+          "Value": 0.1612521561,
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Organism|Kidney|Intracellular|CYP1A2|Relative expression",
+          "Value": 0.1853778279,
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Organism|LargeIntestine|Intracellular|CYP1A2|Relative expression",
+          "Value": 0.1047213424,
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Organism|LargeIntestine|Mucosa|ColonAscendens|Intracellular|CYP1A2|Relative expression",
+          "Value": 0.1047213424,
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Organism|LargeIntestine|Mucosa|ColonDescendens|Intracellular|CYP1A2|Relative expression",
+          "Value": 0.1047213424,
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Organism|LargeIntestine|Mucosa|ColonSigmoid|Intracellular|CYP1A2|Relative expression",
+          "Value": 0.1047213424,
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Organism|LargeIntestine|Mucosa|ColonTransversum|Intracellular|CYP1A2|Relative expression",
+          "Value": 0.1047213424,
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Organism|Liver|Pericentral|Intracellular|CYP1A2|Relative expression",
+          "Value": 1.0,
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Organism|Liver|Periportal|Intracellular|CYP1A2|Relative expression",
+          "Value": 1.0,
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Organism|Lung|Intracellular|CYP1A2|Relative expression",
+          "Value": 0.1242615711,
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Organism|Muscle|Intracellular|CYP1A2|Relative expression",
+          "Value": 0.0623084644,
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Organism|Pancreas|Intracellular|CYP1A2|Relative expression",
+          "Value": 0.1434071905,
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Organism|Skin|Intracellular|CYP1A2|Relative expression",
+          "Value": 0.1167268851,
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Organism|SmallIntestine|Intracellular|CYP1A2|Relative expression",
+          "Value": 0.1699264566,
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Organism|SmallIntestine|Mucosa|Duodenum|Intracellular|CYP1A2|Relative expression",
+          "Value": 0.1699264566,
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Organism|SmallIntestine|Mucosa|LowerIleum|Intracellular|CYP1A2|Relative expression",
+          "Value": 0.1699264566,
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Organism|SmallIntestine|Mucosa|LowerJejunum|Intracellular|CYP1A2|Relative expression",
+          "Value": 0.1699264566,
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Organism|SmallIntestine|Mucosa|UpperIleum|Intracellular|CYP1A2|Relative expression",
+          "Value": 0.1699264566,
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Organism|SmallIntestine|Mucosa|UpperJejunum|Intracellular|CYP1A2|Relative expression",
+          "Value": 0.1699264566,
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Organism|Spleen|Intracellular|CYP1A2|Relative expression",
+          "Value": 0.1164106218,
+          "ValueOrigin": {}
+        },
+        {
+          "Path": "Organism|Stomach|Intracellular|CYP1A2|Relative expression",
+          "Value": 0.0931195743,
+          "ValueOrigin": {}
+        }
+      ],
+      "Localization": "Intracellular, BloodCellsIntracellular, VascEndosome",
+      "Ontogeny": {
+        "Name": "CYP1A2"
+      }
+    },
     {
       "Type": "Enzyme",
       "Species": "Human",
