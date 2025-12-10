@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
+using MoBi.Core.Domain.Repository;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -31,8 +32,7 @@ namespace MoBi.R.Tests.Services
       }
    }
 
-   public class
-      When_performing_a_population_simulation_run_with_a_file_containing_only_a_subset_of_the_individual : concern_for_SimulationRunnerIntegration
+   public class When_performing_a_population_simulation_run_with_a_file_containing_only_a_subset_of_the_individual : concern_for_SimulationRunnerIntegration
    {
       private string _outputFolder;
       private string _subPopulationFile;
@@ -81,6 +81,12 @@ namespace MoBi.R.Tests.Services
       public void should_create_results_matching_the_individual_ids_in_the_population()
       {
          _results.AllIndividualIds().ShouldOnlyContain(Enumerable.Range(0, _population.Count));
+      }
+
+      [Observation]
+      public void the_group_repository_is_registered_correctly()
+      {
+         OSPSuite.R.Api.Container.Resolve<IGroupRepository>().ShouldBeAnInstanceOf<GroupRepository>();
       }
    }
 }

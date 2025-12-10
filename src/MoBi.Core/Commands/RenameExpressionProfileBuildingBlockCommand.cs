@@ -45,6 +45,13 @@ namespace MoBi.Core.Commands
             objectPath.Replace(_oldMoleculeName, _expressionProfileBuildingBlock.MoleculeName);
             x.Path = objectPath;
          });
+
+         _expressionProfileBuildingBlock.InitialConditions.Each(x =>
+         {
+            var objectPath = x.Path;
+            objectPath.Replace(_oldMoleculeName, _expressionProfileBuildingBlock.MoleculeName);
+            x.Path = objectPath;
+         });
       }
    }
-}
+}  

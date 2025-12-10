@@ -33,7 +33,7 @@ namespace MoBi.UI.Views
 
       public override void InitializeBinding()
       {
-         _gridViewBinder = new GridViewBinder<OutputIntervalDTO>(gridViewIntervals) { BindingMode = BindingMode.OneWay, ValidationMode = ValidationMode.LeavingRow };
+         _gridViewBinder = new GridViewBinder<OutputIntervalDTO>(gridViewIntervals) { BindingMode = BindingMode.OneWay };
 
          _gridViewBinder.Bind(dto => dto.StartTime)
             .WithFormat(x => x.StartTimeParameter.ParameterFormatter())
@@ -74,7 +74,7 @@ namespace MoBi.UI.Views
          this.DoWithinExceptionHandler(() =>
          {
             gridViewIntervals.CloseEditor();
-            _presenter.SetParameterUnit(parameterDTO, newUnit);
+            _presenter.SetParameterUnit(parameterDTO, newUnit, _gridViewBinder.FocusedElement);
          });
       }
 
