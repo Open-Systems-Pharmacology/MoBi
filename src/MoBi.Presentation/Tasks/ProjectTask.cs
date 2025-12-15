@@ -247,26 +247,22 @@ namespace MoBi.Presentation.Tasks
 
       public bool CloseProject()
       {
-         var shouldClose = true;
          if (_context.CurrentProject == null)
             return true;
 
          if (_parameterIdentificationRunner.IsRunning)
          {
             showRunningParameterIdentificationWarnings();
-            shouldClose = false;
+            return false;
          }
 
          if (_simulationRunner.IsAnySimulationRunning())
          {
             showRunningSimulationsWarnings();
-            shouldClose = false;
+            return false;
          }
 
-         if (_context.CurrentProject.HasChanged)
-            shouldClose = askForSaveProject();
-
-         if (!shouldClose)
+         if (_context.CurrentProject.HasChanged && !askForSaveProject())
             return false;
 
          _context.PublishEvent(new ProjectClosingEvent());
