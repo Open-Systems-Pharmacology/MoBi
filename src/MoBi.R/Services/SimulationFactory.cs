@@ -44,6 +44,14 @@ namespace MoBi.R.Services
          if (Constants.ILLEGAL_CHARACTERS.Any(simulationName.Contains))
             throw new InvalidOperationException("Simulation name contains illegal characters");
 
+         if (moduleConfigurations != null && moduleConfigurations.Any() &&
+             moduleConfigurations.Any(x => x is not RModuleConfiguration))
+            throw new ArgumentException("All elements in moduleConfigurations must be of type RModuleConfiguration.");
+
+         if (expressionProfiles != null && expressionProfiles.Any() &&
+             expressionProfiles.Any(x => x is not ExpressionProfileBuildingBlock))
+            throw new ArgumentException("All elements in expressionProfiles must be of type ExpressionProfileBuildingBlock.");
+
          var simulationSettings = _simulationSettingsFactory.CreateDefault();
          var simulationConfiguration = _configurationFactory.Create(simulationSettings);
 
