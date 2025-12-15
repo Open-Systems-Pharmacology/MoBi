@@ -719,4 +719,49 @@ namespace MoBi.Presentation
          _context.CurrentProject.ReactionDimensionMode.ShouldBeEqualTo(ReactionDimensionMode.AmountBased);
       }
    }
+
+   public class When_told_to_close_project_and_simulation_is_running : concern_for_ProjectTask
+   {
+      private bool _result;
+      private MoBiProject _project;
+
+      protected override void Context()
+      {
+         base.Context();
+         _project = A.Fake<MoBiProject>();
+         _project.HasChanged = true; // Would normally trigger save dialog
+         A.CallTo(() => _context.CurrentProject).Returns(_project);
+         A.CallTo(() => _simulationRunner.IsAnySimulationRunning()).Returns(true); // This sets shouldClose = false
+      }
+
+      protected override void Because()
+      {
+         _result = sut.CloseProject();
+      }
+
+      [Observation]
+      public void should_not_ask_for_save_dialog()
+      {
+         A.CallTo(
+            () => _dialogCreator.AskForFileToSave(
+               AppConstants.Dialog.AskForSaveProject,
+               AppConstants.Filter.MOBI_PROJECT_FILE_FILTER,
+               Constants.DirectoryKey.PROJECT,
+               A<string>._,
+               null)).MustNotHaveHappened();
+      }
+
+      [Observation]
+      public void should_not_ask_for_message_box_yes_no_cancel()
+      {
+         A.CallTo(() => _dialogCreator.MessageBoxYesNoCancel(A<string>._, A<ViewResult>._))
+            .MustNotHaveHappened();
+      }
+
+      [Observation]
+      public void should_return_false()
+      {
+         _result.ShouldBeFalse();
+      }
+   }
 }
