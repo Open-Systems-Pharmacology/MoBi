@@ -263,7 +263,7 @@ namespace MoBi.Presentation.Tasks
             shouldClose = false;
          }
 
-         if (_context.CurrentProject.HasChanged)
+         if (_context.CurrentProject.HasChanged && shouldClose)
             shouldClose = askForSaveProject();
 
          if (!shouldClose)
