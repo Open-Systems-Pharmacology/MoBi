@@ -233,7 +233,7 @@ namespace MoBi.Presentation.Presenter
       private void addEvents()
       {
          var events = _buildingBlockRepository.EventBlockCollection;
-         var nodes = events.Select(x => _referenceMapper.MapFrom(x).WithText(x.DisplayName));
+         var nodes = events.Select(x => _referenceMapper.MapFrom(x));
 
          View.AddNodes(nodes);
       }

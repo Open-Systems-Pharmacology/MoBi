@@ -40,7 +40,7 @@ namespace MoBi.Presentation.Presenter
       }
    }
 
-   internal interface IObjectPathCreatorAtReactionParameter : IObjectPathCreatorAtParameter
+   public interface IObjectPathCreatorAtReactionParameter : IObjectPathCreatorAtParameter
    {
    }
 
@@ -83,7 +83,7 @@ namespace MoBi.Presentation.Presenter
       }
    }
 
-   internal interface IObjectPathCreatorAtMoleculeParameter : IObjectPathCreatorAtParameter
+   public interface IObjectPathCreatorAtMoleculeParameter : IObjectPathCreatorAtParameter
    {
    }
 

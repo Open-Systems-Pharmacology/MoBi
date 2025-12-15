@@ -496,7 +496,7 @@ namespace MoBi.Presentation
             IsIndividualPreview = true
          };
 
-         _individualParameter = new IndividualParameter {Path = new ObjectPath("Organism", "Container", "Organ", "ADC")};
+         _individualParameter = new IndividualParameter { Path = new ObjectPath("Organism", "Container", "Organ", "ADC") };
          var individualBuildingBlock = new IndividualBuildingBlock { _individualParameter };
          var organism = new Container().WithName("Organism");
          var container = new Container().WithName("Container");
@@ -558,7 +558,7 @@ namespace MoBi.Presentation
          sut.SelectedIndividual = new IndividualBuildingBlock { _individualParameter };
          _dto = new ParameterDTO(new Parameter().WithName(_individualParameter.Name)) { IsIndividualPreview = true };
          A.CallTo(() => _individualParameterToParameterDTOMapper.MapFrom(sut.SelectedIndividual, _individualParameter)).Returns(_dto);
-         
+
          sut.Edit(new Container());
          sut.UpdatePreview();
       }
