@@ -254,16 +254,16 @@ namespace MoBi.Presentation.Tasks
          if (_parameterIdentificationRunner.IsRunning)
          {
             showRunningParameterIdentificationWarnings();
-            shouldClose = false;
+            return false;
          }
 
          if (_simulationRunner.IsAnySimulationRunning())
          {
             showRunningSimulationsWarnings();
-            shouldClose = false;
+            return false;
          }
 
-         if (_context.CurrentProject.HasChanged && shouldClose)
+         if (_context.CurrentProject.HasChanged)
             shouldClose = askForSaveProject();
 
          if (!shouldClose)
