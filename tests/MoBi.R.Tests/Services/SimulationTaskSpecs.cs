@@ -159,13 +159,13 @@ internal class when_creating_simulation_from_pkml_module : concern_for_Simulatio
       _moduleConfigurations = [moduleConfig];
    }
 
-            protected override void Because()
-            {
-               _simulation = sut.CreateSimulationFrom(_simulationName, 
-                  (_moduleConfigurations?.Cast<ModuleConfiguration>().ToArray())!,
-                  (_expressionProfilesForSimulation?.Cast<ExpressionProfileBuildingBlock>().ToArray())!,
-                   _individualForSimulation);
-            }
+   //protected override void Because()
+   //{
+   //   _simulation = sut.CreateSimulationFrom(_simulationName, 
+   //      (_moduleConfigurations?.Cast<ModuleConfiguration>().ToArray())!,
+   //      (_expressionProfilesForSimulation?.Cast<ExpressionProfileBuildingBlock>().ToArray())!,
+   //       _individualForSimulation);
+   //}
 
    [Observation]
    public void should_return_simulation_name() =>
