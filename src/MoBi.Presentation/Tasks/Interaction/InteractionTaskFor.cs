@@ -259,10 +259,36 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          if (objectBase is IEntity entity)
             entity.Tags.Replace(oldName, newName);
+         
+         if (!(objectBase is IContainer container)) 
+            return;
 
          // Recurse containers to check their tags and their children tags
-         if (objectBase is IContainer container)
-            container.GetAllChildren<IEntity>().Each(x => correctTagsForRename(oldName, newName, x));
+         container.GetAllChildren<IEntity>().Each(x => correctTagsForRename(oldName, newName, x));
+         switch (container)
+         {
+            case TransportBuilder transportBuilder:
+               correctTransportBuilderTags(oldName, newName, transportBuilder);
+               break;
+            case ApplicationBuilder applicationBuilder:
+               correctApplicationBuilderMolecules(oldName, newName, applicationBuilder);
+               break;
+         }
+      }
+
+      private void correctApplicationBuilderMolecules(string oldName, string newName, ApplicationBuilder applicationBuilder)
+      {
+         applicationBuilder.Molecules.Each(x =>
+         {
+            x.Name = x.Name.Replace(oldName, newName);
+            x.RelativeContainerPath.Replace(oldName, newName);
+         });
+      }
+
+      private void correctTransportBuilderTags(string oldName, string newName, TransportBuilder transportBuilder)
+      {
+         transportBuilder.SourceCriteria.Each(x => x.Replace(oldName, newName));
+         transportBuilder.TargetCriteria.Each(x => x.Replace(oldName, newName));
       }
 
       private bool adjustFormula(TChild childToAdd, IBuildingBlock buildingBlockWithFormulaCache, IMoBiMacroCommand macroCommand)
