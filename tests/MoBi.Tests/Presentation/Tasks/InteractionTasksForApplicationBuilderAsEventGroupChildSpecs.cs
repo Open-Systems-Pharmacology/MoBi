@@ -33,12 +33,19 @@ namespace MoBi.Presentation.Tasks
       private EventGroupBuildingBlock _buildingBlock;
       private IContainer _container;
       private ApplicationBuilder _existingApplicationBuilder;
+      private TransportBuilder _newTransport;
+      private ApplicationMoleculeBuilder _applicationMoleculeBuilder;
 
       protected override void Context()
       {
          base.Context();
 
          _addedApplicationBuilder = new ApplicationBuilder().WithName("application_1");
+
+         _applicationMoleculeBuilder = new ApplicationMoleculeBuilder().WithName("application_1");
+         _applicationMoleculeBuilder.RelativeContainerPath = new ObjectPath("..", "application_1");
+
+         _addedApplicationBuilder.AddMolecule(_applicationMoleculeBuilder);
          _addedApplicationBuilder.Tags.Add(new Tag("application_1"));
 
          _existingApplicationBuilder = new ApplicationBuilder().WithName("application_1");
@@ -47,6 +54,11 @@ namespace MoBi.Presentation.Tasks
          _container = new Container();
          _container.Tags.Add(new Tag("application_1"));
          _addedApplicationBuilder.Add(_container);
+
+         _newTransport = new TransportBuilder().WithName("transport_1");
+         _newTransport.SourceCriteria.Add(new MatchTagCondition("application_1"));
+         _newTransport.TargetCriteria.Add(new MatchTagCondition("application_1"));
+         _addedApplicationBuilder.AddTransport(_newTransport);
 
          _parentEventGroupBuilder = new EventGroupBuilder { _existingApplicationBuilder };
          _buildingBlock = new EventGroupBuildingBlock { _parentEventGroupBuilder };
@@ -78,6 +90,25 @@ namespace MoBi.Presentation.Tasks
          _addedApplicationBuilder.Tags.Contains("application_1").ShouldBeFalse();
          _container.Tags.Contains("application_2").ShouldBeTrue();
          _container.Tags.Contains("application_1").ShouldBeFalse();
+      }
+
+      [Observation]
+      public void transport_builders_with_container_criteria_matching_tags_are_renamed()
+      {
+         _newTransport.SourceCriteria.Single().Tag.ShouldBeEqualTo("application_2");
+         _newTransport.TargetCriteria.Single().Tag.ShouldBeEqualTo("application_2");
+      }
+
+      [Observation]
+      public void application_molecule_builder_name_is_changed()
+      {
+         _applicationMoleculeBuilder.Name.ShouldBeEqualTo("application_2");
+      }
+
+      [Observation]
+      public void application_molecule_builder_relative_path_is_updated()
+      {
+         _applicationMoleculeBuilder.RelativeContainerPath.PathAsString.ShouldBeEqualTo(new ObjectPath("..", "application_2").PathAsString);
       }
 
       [Observation]
