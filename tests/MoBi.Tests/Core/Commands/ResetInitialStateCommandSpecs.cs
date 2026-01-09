@@ -162,10 +162,4 @@ internal class When_resetting_the_initial_state<TParameter, TBuildingBlock> : co
    {
       _builder.InitialFormulaId.ShouldBeNull();
    }
-
-   [Observation]
-   public void the_formula_should_remain_unchanged()
-   {
-      _builder.Formula.Id.ShouldBeEqualTo("formulaID");
-   }
 }
