@@ -94,7 +94,6 @@ namespace MoBi.UI.Views
          _isFixedParameterEditRepository.Buttons[0].IsLeft = true;
       }
 
-
       private void initializeValueOriginBinding()
       {
          _valueOriginBinder.InitializeBinding(_gridViewBinder, (o, e) => OnEvent(() => _presenter.SetValueOrigin(o, e)));
