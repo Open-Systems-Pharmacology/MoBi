@@ -242,7 +242,7 @@ namespace MoBi.UI.Views
          if (parameterDTO.IsDistributed)
             return _repositoryItemPopupContainerEdit;
 
-         if(parameterDTO.HasInitialState)
+         if (parameterDTO.HasInitialState)
             return _isFixedParameterEditRepository;
 
          return _valueColumn.DefaultRepository();
