@@ -14,7 +14,6 @@ public class ResetInitialStateCommand<TBuilder, TBuildingBlock> : PathAndValueEn
    private readonly double? _newInitialValue;
    private readonly Unit _newInitialUnit;
    private readonly string _newInitialFormulaId;
-   private readonly string _originalFormulaId;
    private readonly string _newFormulaId;
    private readonly string _oldFormulaId;
 
