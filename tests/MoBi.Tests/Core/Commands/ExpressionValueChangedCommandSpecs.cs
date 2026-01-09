@@ -4,6 +4,8 @@ using MoBi.Core.Extensions;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.UnitSystem;
 
 namespace MoBi.Core.Commands
 {
@@ -14,12 +16,14 @@ namespace MoBi.Core.Commands
       protected ExpressionParameter _expressionParameter;
       protected double? _oldValue;
       protected IMoBiContext _context;
+      protected IFormula _oldFormula;
 
       protected override void Context()
       {
          _newValue = 3.0;
-         _oldValue = null;
-         _expressionParameter = new ExpressionParameter { Value = _oldValue };
+         _oldValue = 2.0;
+         _oldFormula = new ExplicitFormula {Id = "formulaId"};
+         _expressionParameter = new ExpressionParameter { Value = _oldValue, Formula = _oldFormula, DisplayUnit = new Unit("unit", 1, 0)};
          _context = A.Fake<IMoBiContext>();
          _buildingBlock = new ExpressionProfileBuildingBlock
          {
@@ -43,6 +47,14 @@ namespace MoBi.Core.Commands
       {
          _expressionParameter.Value.ShouldBeEqualTo(_newValue);
       }
+
+      [Observation]
+      public void the_initial_state_should_be_set()
+      {
+         _expressionParameter.InitialValue.ShouldBeEqualTo(_oldValue);
+         _expressionParameter.InitialFormulaId.ShouldBeEqualTo(_oldFormula.Id);
+         _expressionParameter.InitialUnit.ShouldNotBeNull();
+      }
    }
 
    public class When_the_command_has_been_reversed : concern_for_ExpressionValueChangedCommand
@@ -64,6 +76,15 @@ namespace MoBi.Core.Commands
       public void the_expression_parameter_value_should_be_updated()
       {
          _expressionParameter.Value.ShouldBeEqualTo(_oldValue);
+      }
+
+      [Observation]
+      public void the_initial_state_should_be_reset()
+      {
+         _expressionParameter.InitialValue.ShouldBeNull();
+         _expressionParameter.InitialFormulaId.ShouldBeNull();
+         _expressionParameter.InitialUnit.ShouldBeNull();
+         _expressionParameter.HasInitialState.ShouldBeFalse();
       }
    }
 }

@@ -1,6 +1,7 @@
 ﻿using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
+using MoBi.Core.Extensions;
 using MoBi.Core.Mappers;
 using MoBi.Core.Services;
 using MoBi.Presentation.Tasks.Edit;
@@ -15,6 +16,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       IInteractionTasksForProjectPathAndValueEntityBuildingBlocks<IndividualBuildingBlock, IndividualParameter>,
       IInteractionTasksForProjectBuildingBlock
    {
+      IMoBiCommand ResetToInitialState(IndividualParameter individualParameter, IndividualBuildingBlock buildingBlock);
    }
 
    public class InteractionTasksForIndividualBuildingBlock : InteractionTasksForProjectPathAndValueEntityBuildingBlocks<IndividualBuildingBlock, IndividualParameter>, IInteractionTasksForIndividualBuildingBlock
@@ -46,20 +48,16 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new RemoveIndividualBuildingBlockFromProjectCommand(individualBuildingBlockToRemove);
       }
 
-      public IndividualBuildingBlock LoadFromSnapshot(string snapshot)
-      {
+      public IndividualBuildingBlock LoadFromSnapshot(string snapshot) =>
          // Cloning required to reset object ids
-         return _cloneManagerForBuildingBlock.Clone(_pkSimStarter.LoadIndividualFromSnapshot(snapshot));
-      }
+         _cloneManagerForBuildingBlock.Clone(_pkSimStarter.LoadIndividualFromSnapshot(snapshot));
 
-      public override IMoBiCommand GetAddCommand(IndividualBuildingBlock individualBuildingBlockToAdd, MoBiProject parent, IBuildingBlock buildingBlock)
-      {
-         return new AddIndividualBuildingBlockToProjectCommand(individualBuildingBlockToAdd);
-      }
+      public IMoBiCommand ResetToInitialState(IndividualParameter individualParameter, IndividualBuildingBlock buildingBlock) => 
+         new ResetInitialStateCommand<IndividualParameter, IndividualBuildingBlock>(individualParameter, buildingBlock).RunCommand(Context);
 
-      protected override string SnapshotFrom(IndividualBuildingBlock buildingBlock)
-      {
-         return buildingBlock.Snapshot.FromBase64String();
-      }
+      public override IMoBiCommand GetAddCommand(IndividualBuildingBlock individualBuildingBlockToAdd, MoBiProject parent, IBuildingBlock buildingBlock) => 
+         new AddIndividualBuildingBlockToProjectCommand(individualBuildingBlockToAdd);
+
+      protected override string SnapshotFrom(IndividualBuildingBlock buildingBlock) => buildingBlock.Snapshot.FromBase64String();
    }
 }
