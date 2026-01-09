@@ -56,6 +56,7 @@ internal class when_creating_from_mobi_project : concern_for_SimulationTask
       _request.AddModuleConfiguration(_moduleConfiguration);
       foreach (var ep in _expressionProfilesForSimulation ?? Array.Empty<ExpressionProfileBuildingBlock>())
          _request.AddExpressionProfile(ep);
+      _request.SetIndividual(_individualForSimulation);
 
       _projectTask.CloseProject();
    }
@@ -65,7 +66,7 @@ internal class when_creating_simulation : when_creating_from_mobi_project
 {
    protected override void Because()
    {
-      _simulation = sut.CreateSimulationFrom(_simulationName, _request, _individualForSimulation);
+      _simulation = sut.CreateSimulationFrom(_simulationName, _request);
    }
 
    [Observation]
@@ -89,7 +90,7 @@ internal abstract class when_creating_an_invalid_configuration : when_creating_f
    [Observation]
    public void should_throw_expected_exception()
    {
-      The.Action(() => sut.CreateSimulationFrom(_simulationName, _request, _individualForSimulation))
+      The.Action(() => sut.CreateSimulationFrom(_simulationName, _request))
          .ShouldThrowAn<InvalidOperationException>();
    }
 }
@@ -107,11 +108,12 @@ internal class when_creating_simulation_from_pkml_module : concern_for_Simulatio
 
       _request = new SimulationRequest();
       _request.AddModuleConfiguration(moduleConfig);
+      // No individual set here (matches previous null behavior)
    }
 
    protected override void Because()
    {
-      _simulation = sut.CreateSimulationFrom(_simulationName, _request, _individualForSimulation);
+      _simulation = sut.CreateSimulationFrom(_simulationName, _request);
    }
 
    [Observation]
