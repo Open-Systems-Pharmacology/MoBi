@@ -41,7 +41,9 @@ public class ResetInitialStateCommand<TBuilder, TBuildingBlock> : PathAndValueEn
    {
       base.ExecuteWith(context);
 
-      _builder.Formula = _buildingBlock.FormulaCache.Contains(_newFormulaId) ? _buildingBlock.FormulaCache[_newFormulaId] : null;
+      _builder.Formula = !string.IsNullOrEmpty(_newFormulaId) && _buildingBlock.FormulaCache.Contains(_newFormulaId)
+         ? _buildingBlock.FormulaCache[_newFormulaId]
+         : null;
 
       _builder.InitialValue = _newInitialValue;
       _builder.InitialFormulaId = _newInitialFormulaId;
