@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using MoBi.Assets;
+﻿using MoBi.Assets;
+using MoBi.R.Domain;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
+using System.Collections.Generic;
+using System.Linq;
 using MoBiSimulation = MoBi.R.Domain.MoBiSimulation;
 using ModuleConfiguration = MoBi.R.Domain.ModuleConfiguration;
 
@@ -12,10 +12,7 @@ namespace MoBi.R.Services
 {
    public interface ISimulationTask
    {
-      void AddModuleConfiguration(ModuleConfiguration moduleConfiguration);
-      void AddExpressionProfile(ExpressionProfileBuildingBlock expressionProfile);
-
-      MoBiSimulation CreateSimulationFrom(string simulationName, IndividualBuildingBlock individual = null);
+      MoBiSimulation CreateSimulationFrom(string simulationName, SimulationRequest request);
 
       ModuleConfiguration CreateModuleConfiguration(Module module,
          string selectedParameterValues = null,
@@ -27,25 +24,10 @@ namespace MoBi.R.Services
       private readonly ISimulationFactory _simulationFactory;
       private readonly IObjectTypeResolver _objectTypeResolver;
 
-      private readonly List<ModuleConfiguration> _moduleConfigurations = new();
-      private readonly List<ExpressionProfileBuildingBlock> _expressionProfiles = new();
-
       public SimulationTask(ISimulationFactory simulationFactory, IObjectTypeResolver objectTypeResolver)
       {
          _simulationFactory = simulationFactory;
          _objectTypeResolver = objectTypeResolver;
-      }
-
-      public void AddModuleConfiguration(ModuleConfiguration moduleConfiguration)
-      {
-         if (moduleConfiguration != null)
-            _moduleConfigurations.Add(moduleConfiguration);
-      }
-
-      public void AddExpressionProfile(ExpressionProfileBuildingBlock expressionProfile)
-      {
-         if (expressionProfile != null)
-            _expressionProfiles.Add(expressionProfile);
       }
 
       public ModuleConfiguration CreateModuleConfiguration(Module module,
@@ -70,18 +52,14 @@ namespace MoBi.R.Services
          return allNamedObjects.FindByName(namedObjectToSelect);
       }
 
-      
-      public MoBiSimulation CreateSimulationFrom(string simulationName, IndividualBuildingBlock individual = null)
+      public MoBiSimulation CreateSimulationFrom(string simulationName, SimulationRequest request)
       {
-         var modulesArray = _moduleConfigurations.ToArray();
-         var expressionsArray = _expressionProfiles.Any() ? _expressionProfiles.ToArray() : null;
+         var modulesArray = (request?.ModuleConfigurations ?? new List<ModuleConfiguration>()).ToArray();
+         var expressionsArray = (request != null && request.ExpressionProfiles.Any())
+            ? request.ExpressionProfiles.ToArray()
+            : null;
 
-         var simulation = _simulationFactory.CreateSimulation(simulationName, modulesArray, expressionsArray, individual);
-
-         _moduleConfigurations.Clear();
-         _expressionProfiles.Clear();
-
-         return simulation;
+         return _simulationFactory.CreateSimulation(simulationName, modulesArray, expressionsArray, request?.Individual);
       }
    }
 }
