@@ -53,7 +53,11 @@ internal class when_creating_from_mobi_project : concern_for_SimulationTask
       _expressionProfilesForSimulation = _projectTask.ExpressionProfileBuildingBlocksByName(_project, new string[] { "UDPGT1|Human|Healthy" });
 
       _moduleConfiguration = sut.CreateModuleConfiguration(_moduleForSimulation, "Parameter Values", "Initial Conditions");
-      _moduleConfigurations = [_moduleConfiguration];
+
+      // Add items one by one
+      sut.AddModuleConfiguration(_moduleConfiguration);
+      foreach (var ep in _expressionProfilesForSimulation ?? Array.Empty<ExpressionProfileBuildingBlock>())
+         sut.AddExpressionProfile(ep);
 
       _projectTask.CloseProject();
    }
@@ -63,11 +67,7 @@ internal class when_creating_simulation : when_creating_from_mobi_project
 {
    protected override void Because()
    {
-      _simulation = sut.CreateSimulationFrom(
-         _simulationName,
-         (_moduleConfigurations?.Cast<object>().ToArray())!,
-         (_expressionProfilesForSimulation?.Cast<object>().ToArray())!,
-         _individualForSimulation);
+      _simulation = sut.CreateSimulationFrom(_simulationName, _individualForSimulation);
    }
 
    [Observation]
@@ -91,58 +91,9 @@ internal abstract class when_creating_an_invalid_configuration : when_creating_f
    [Observation]
    public void should_throw_expected_exception()
    {
-      The.Action(() => sut.CreateSimulationFrom(_simulationName,
-         (_moduleConfigurations?.Cast<object>().ToArray())!,
-         (_expressionProfilesForSimulation?.Cast<object>().ToArray())!,
-         _individualForSimulation)).ShouldThrowAn<InvalidOperationException>();
+      The.Action(() => sut.CreateSimulationFrom(_simulationName, _individualForSimulation))
+         .ShouldThrowAn<InvalidOperationException>();
    }
-}
-
-internal class when_creating_simulation_with_special_characters_in_name : when_creating_an_invalid_configuration
-{
-   protected override void Context()
-   {
-      base.Context();
-      _simulationName = $"{_simulationName}{Constants.ILLEGAL_CHARACTERS.First()}";
-   }
-}
-
-internal class when_creating_simulation_without_a_name : when_creating_an_invalid_configuration
-{
-   protected override void Context()
-   {
-      base.Context();
-      _simulationName = null;
-   }
-}
-
-internal class when_creating_simulation_from_pkml_module_and_the_selected_parameter_values_are_not_found : concern_for_SimulationTask
-{
-   private Module _module;
-
-   protected override void Because()
-   {
-      _module = _moduleTask.LoadModulesFromFile(DataTestFileFullPath("Second module.pkml")).First();
-   }
-
-   [Observation]
-   public void the_exception_should_be_thrown() =>
-      The.Action(() => sut.CreateModuleConfiguration(_module, "Parameter Values")).ShouldThrowAn<InvalidArgumentException>();
-}
-
-internal class when_creating_simulation_from_pkml_module_and_the_selected_initial_conditions_are_not_found : concern_for_SimulationTask
-{
-   private Module _module;
-
-   protected override void Because()
-   {
-      _module = _moduleTask.LoadModulesFromFile(DataTestFileFullPath("Second module.pkml")).First();
-      _module.Add(new ParameterValuesBuildingBlock().WithName("Parameter Values"));
-   }
-
-   [Observation]
-   public void the_exception_should_be_thrown() =>
-      The.Action(() => sut.CreateModuleConfiguration(_module, null, "Initial Conditions")).ShouldThrowAn<InvalidArgumentException>();
 }
 
 internal class when_creating_simulation_from_pkml_module : concern_for_SimulationTask
@@ -157,15 +108,15 @@ internal class when_creating_simulation_from_pkml_module : concern_for_Simulatio
       _simulationName = "SimFromPKML";
       var moduleConfig = sut.CreateModuleConfiguration(module);
       _moduleConfigurations = [moduleConfig];
+
+      // Add one by one
+      sut.AddModuleConfiguration(moduleConfig);
    }
 
-            protected override void Because()
-            {
-               _simulation = sut.CreateSimulationFrom(_simulationName, 
-                  (_moduleConfigurations?.Cast<object>().ToArray())!,
-                  (_expressionProfilesForSimulation?.Cast<object>().ToArray())!,
-                   _individualForSimulation);
-            }
+   protected override void Because()
+   {
+      _simulation = sut.CreateSimulationFrom(_simulationName, _individualForSimulation);
+   }
 
    [Observation]
    public void should_return_simulation_name() =>
