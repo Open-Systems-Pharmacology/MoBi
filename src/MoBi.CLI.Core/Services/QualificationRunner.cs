@@ -186,6 +186,7 @@ namespace MoBi.CLI.Core.Services
          using var session = _sessionManager.OpenSession();
          using var transaction = session.BeginTransaction();
          _projectPersistor.Save(_context.CurrentProject, _context);
+         transaction.Commit();
       }
    }
 }
