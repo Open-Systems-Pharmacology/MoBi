@@ -15,12 +15,13 @@ namespace MoBi.Core.Commands
       where TBuilder : PathAndValueEntity, IObjectBase, IUsingFormula, IWithDisplayUnit
    {
       protected TBuilder _builder;
-      protected Unit _newDisplayUnit;
-      protected Unit _oldDisplayUnit;
+      protected readonly Unit _newDisplayUnit;
+      protected readonly Unit _oldDisplayUnit;
       protected double? _newBaseValue;
       protected double? _oldBaseValue;
       protected readonly ObjectPath _valuePath;
       private readonly DistributionType? _oldDistributionType;
+      private readonly bool _shouldResetInitialStateOnUndo;
 
       public PathAndValueEntityValueOrUnitChangedCommand(TBuilder builder, double? newBaseValue, Unit newDisplayUnit, TBuildingBlock buildingBlock) : base(buildingBlock)
       {
@@ -41,11 +42,13 @@ namespace MoBi.Core.Commands
             builder.ConvertToDisplayUnit(_oldBaseValue.GetValueOrDefault(double.NaN)),
             _oldDisplayUnit.Name,
             builder.Path.PathAsString, _buildingBlock.Name);
+
+         _shouldResetInitialStateOnUndo = builder is ParameterValueWithInitialState { HasInitialState: false };
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return new PathAndValueEntityValueOrUnitChangedCommandWithDistribution(_builder, _oldBaseValue, _oldDisplayUnit, _buildingBlock, _oldDistributionType).AsInverseFor(this);
+         return new PathAndValueEntityValueOrUnitChangedCommandWithDistribution(_builder, _oldBaseValue, _oldDisplayUnit, _buildingBlock, _oldDistributionType, _shouldResetInitialStateOnUndo).AsInverseFor(this);
       }
 
       protected override void ClearReferences()
@@ -63,26 +66,44 @@ namespace MoBi.Core.Commands
       protected override void ExecuteWith(IMoBiContext context)
       {
          base.ExecuteWith(context);
+
+         // We can set an initial state when the parameter does not already have one, and it is not distributed
+         if (_builder is ParameterValueWithInitialState { HasInitialState: false, DistributionType: null } parameterValue)
+         {
+            parameterValue.InitialValue = _oldBaseValue;
+            parameterValue.InitialFormulaId = parameterValue.Formula?.Id;
+            parameterValue.InitialUnit = _oldDisplayUnit;
+         }
+
          _builder.Value = _newBaseValue;
          _builder.DisplayUnit = _newDisplayUnit;
          _builder.DistributionType = null;
       }
 
       // This command is used to restore a distribution when a distributed parameter is changed to non-distributed, and then the command is reversed.
-      // There is no general way to change between distribution types, so this class is private, so it can only be used with restore functionality
+      // There is no general way to change between distribution types, so this class is private, so it can only be used as an inverse command.
       private class PathAndValueEntityValueOrUnitChangedCommandWithDistribution : PathAndValueEntityValueOrUnitChangedCommand<TBuilder, TBuildingBlock>
       {
          private readonly DistributionType? _newDistributionType;
+         private readonly bool _shouldResetInitialState;
 
-         public PathAndValueEntityValueOrUnitChangedCommandWithDistribution(TBuilder builder, double? newBaseValue, Unit newDisplayUnit, TBuildingBlock buildingBlock, DistributionType? newDistributionType) : base(builder, newBaseValue, newDisplayUnit, buildingBlock)
+         public PathAndValueEntityValueOrUnitChangedCommandWithDistribution(TBuilder builder, double? newBaseValue, Unit newDisplayUnit, TBuildingBlock buildingBlock, DistributionType? newDistributionType, bool shouldResetInitialState) : base(builder, newBaseValue, newDisplayUnit, buildingBlock)
          {
             _newDistributionType = newDistributionType;
+            _shouldResetInitialState = shouldResetInitialState;
          }
 
          protected override void ExecuteWith(IMoBiContext context)
          {
             base.ExecuteWith(context);
             _builder.DistributionType = _newDistributionType;
+
+            if (!_shouldResetInitialState || _builder is not ParameterValueWithInitialState parameterValue)
+               return;
+
+            parameterValue.InitialValue = null;
+            parameterValue.InitialFormulaId = null;
+            parameterValue.InitialUnit = null;
          }
       }
    }

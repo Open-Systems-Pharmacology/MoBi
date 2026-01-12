@@ -155,6 +155,12 @@ namespace MoBi.Presentation.Tasks
          {
             A.CallTo(() => _pkSimStarter.UpdateExpressionProfileFromDatabase(_buildingBlock)).MustHaveHappened();
          }
+
+         [Observation]
+         public void the_initial_state_should_not_be_set()
+         {
+            _expressionParameter.HasInitialState.ShouldBeFalse();
+         }
       }
 
       public class When_cloning_an_expression_profile : concern_for_InteractionTasksForExpressionProfileBuildingBlock
@@ -261,7 +267,6 @@ namespace MoBi.Presentation.Tasks
             _clonedBuildingBlock.Add(_clonedParameter);
             A.CallTo(() => _interactionTaskContext.Context.Resolve<IEditFormulaInPathAndValuesPresenter>()).Returns(_editFormulaPresenter);
             A.CallTo(() => _cloneManager.Clone(_buildingBlock)).Returns(_clonedBuildingBlock);
-
          }
 
          protected override void Because()

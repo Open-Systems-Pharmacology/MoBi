@@ -8,7 +8,7 @@ using OSPSuite.Core.Domain.Formulas;
 
 namespace MoBi.Core.Commands
 {
-   public abstract class concern_for_ChangeValueFormulaCommand<TCommand, TBuildingBlock, T> : ContextSpecification<TCommand> where T : PathAndValueEntity, IObjectBase, IUsingFormula where TCommand : ChangeValueFormulaCommand<T> where TBuildingBlock : IBuildingBlock<T>, new()
+   public abstract class concern_for_ChangeValueFormulaCommand<TCommand, TBuildingBlock, T> : ContextSpecification<TCommand> where T : PathAndValueEntity, IObjectBase, IUsingFormula, new() where TCommand : ChangeValueFormulaCommand<T> where TBuildingBlock : IBuildingBlock<T>, new()
    {
       protected IFormula _newFormula;
       protected IFormula _oldFormula;
@@ -19,10 +19,11 @@ namespace MoBi.Core.Commands
 
       protected override void Context()
       {
-         _changedBuilder = A.Fake<T>();
+         _changedBuilder = new T();
          _newFormula = new ExplicitFormula { Id = "newFormulaId" };
          _oldFormula = new ExplicitFormula { Id = "oldFormulaId" };
          _buildingBlock = GetBuildingBlock();
+         _changedBuilder.Formula = _oldFormula;
          sut = GetCommand();
 
          _context = A.Fake<IMoBiContext>();
@@ -52,10 +53,16 @@ namespace MoBi.Core.Commands
       {
          return new ChangeValueFormulaCommand<ExpressionParameter>(_buildingBlock, _changedBuilder, _newFormula, _oldFormula);
       }
+
+      [Observation]
+      public void the_initial_state_is_reset()
+      {
+         _changedBuilder.InitialFormulaId.ShouldBeNull();
+      }
    }
 
    abstract class When_inverting_a_formula_change_command<TCommand, TBuildingBlock, TBuilder> : concern_for_ChangeValueFormulaCommand<TCommand, TBuildingBlock, TBuilder> 
-      where TCommand : ChangeValueFormulaCommand<TBuilder> where TBuildingBlock : IBuildingBlock<TBuilder>, new() where TBuilder : PathAndValueEntity, IUsingFormula
+      where TCommand : ChangeValueFormulaCommand<TBuilder> where TBuildingBlock : IBuildingBlock<TBuilder>, new() where TBuilder : PathAndValueEntity, IUsingFormula, new()
    {
       protected override void Because()
       {
@@ -76,6 +83,12 @@ namespace MoBi.Core.Commands
       {
          return new ChangeValueFormulaCommand<ExpressionParameter>(_buildingBlock, _changedBuilder, _newFormula, _oldFormula);
       }
+
+      [Observation]
+      public void the_initial_state_is_captured()
+      {
+         _changedBuilder.InitialFormulaId.ShouldNotBeNull();
+      }
    }
 
    class executing_change_start_value_formula_command : executing_change_formula_command<ChangeValueFormulaCommand<InitialCondition>, InitialConditionsBuildingBlock, InitialCondition>
@@ -87,7 +100,7 @@ namespace MoBi.Core.Commands
    }
 
    abstract class executing_change_formula_command<TCommand, TBuildingBlock, TBuilder> : concern_for_ChangeValueFormulaCommand<TCommand, TBuildingBlock, TBuilder>
-      where TCommand : ChangeValueFormulaCommand<TBuilder> where TBuildingBlock : IBuildingBlock<TBuilder>, new() where TBuilder : PathAndValueEntity, IUsingFormula
+      where TCommand : ChangeValueFormulaCommand<TBuilder> where TBuildingBlock : IBuildingBlock<TBuilder>, new() where TBuilder : PathAndValueEntity, IUsingFormula, new()
    {
       private const string _newFormulaId = "new";
    

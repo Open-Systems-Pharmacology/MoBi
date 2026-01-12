@@ -17,6 +17,7 @@ namespace MoBi.Presentation.Presenter
       IPathAndValueBuildingBlockPresenter<IndividualParameterDTO>
    {
       void Edit(IndividualBuildingBlock individualBuildingBlock);
+      void ResetInitialState(IndividualParameterDTO dto);
    }
 
    public class IndividualBuildingBlockPresenter : 
@@ -26,7 +27,7 @@ namespace MoBi.Presentation.Presenter
    {
       private readonly IIndividualBuildingBlockToIndividualBuildingBlockDTOMapper _individualToDTOMapper;
       private IndividualBuildingBlockDTO _individualBuildingBlockDTO;
-      
+      private readonly IInteractionTasksForIndividualBuildingBlock _interactionTasksForIndividualBuildingBlock;
 
       public IndividualBuildingBlockPresenter(IIndividualBuildingBlockView view, 
          IIndividualBuildingBlockToIndividualBuildingBlockDTOMapper individualToDTOMapper,
@@ -36,6 +37,7 @@ namespace MoBi.Presentation.Presenter
          IIndividualDistributedPathAndValueEntityPresenter distributedPathAndValuePresenter) : base(view, interactionTask, formulaToValueFormulaDTOMapper, dimensionFactory, distributedPathAndValuePresenter)
       {
          _individualToDTOMapper = individualToDTOMapper;
+         _interactionTasksForIndividualBuildingBlock = interactionTask;
       }
 
       public override void Edit(IndividualBuildingBlock individualBuildingBlock)
@@ -43,6 +45,17 @@ namespace MoBi.Presentation.Presenter
          base.Edit(individualBuildingBlock);
          _individualBuildingBlockDTO = _individualToDTOMapper.MapFrom(individualBuildingBlock);
          _view.BindTo(_individualBuildingBlockDTO);
+      }
+
+      public void ResetInitialState(IndividualParameterDTO dto)
+      {
+         AddCommand(_interactionTasksForIndividualBuildingBlock.ResetToInitialState(dto.PathWithValueObject, _buildingBlock));
+         refreshDTO(dto);
+      }
+
+      private void refreshDTO(IndividualParameterDTO parameterDTO)
+      {
+         RefreshDTO(parameterDTO, parameterDTO.PathWithValueObject.Formula, parameterDTO.PathWithValueObject);
       }
 
       public bool HasAtLeastOneValue(int pathElementIndex) => _individualBuildingBlockDTO.Parameters.HasAtLeastOneValue(pathElementIndex);
