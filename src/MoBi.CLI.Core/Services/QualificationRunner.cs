@@ -17,6 +17,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Qualification;
 using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Services;
+using OSPSuite.Infrastructure.Serialization.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using static OSPSuite.Assets.Error;
@@ -30,6 +31,7 @@ namespace MoBi.CLI.Core.Services
       private readonly IMoBiContext _context;
       private readonly IProjectPersistor _projectPersistor;
       private readonly ISimulationPersistor _simulationPersistor;
+      private readonly ISessionManager _sessionManager;
       private readonly IApplicationSettings _applicationSettings;
       private readonly ISnapshotTask _moBiSnapshotTask;
 
@@ -40,11 +42,13 @@ namespace MoBi.CLI.Core.Services
          IJsonSerializer jsonSerializer,
          ISnapshotTask snapshotTask,
          ISimulationPersistor simulationPersistor,
+         ISessionManager sessionManager,
          IApplicationSettings applicationSettings) : base(logger, dataRepositoryExportTask, jsonSerializer, snapshotTask)
       {
          _context = context;
          _projectPersistor = projectPersistor;
          _simulationPersistor = simulationPersistor;
+         _sessionManager = sessionManager;
          _applicationSettings = applicationSettings;
          _moBiSnapshotTask = snapshotTask;
       }
@@ -57,9 +61,9 @@ namespace MoBi.CLI.Core.Services
       public override Task RunBatchAsync(MoBiQualificationRunOptions runOptions)
       {
          // For any process that will access PK-Sim services, use the path from the command line if specified
-         if (!string.IsNullOrEmpty(runOptions.PKSimPath)) 
+         if (!string.IsNullOrEmpty(runOptions.PKSimPath))
             _applicationSettings.PKSimPath = runOptions.PKSimPath;
-         
+
          return base.RunBatchAsync(runOptions);
       }
 
@@ -178,6 +182,9 @@ namespace MoBi.CLI.Core.Services
 
       protected override void SaveProjectContext(string projectFile)
       {
+         _sessionManager.CreateFactoryFor(projectFile);
+         using var session = _sessionManager.OpenSession();
+         using var transaction = session.BeginTransaction();
          _projectPersistor.Save(_context.CurrentProject, _context);
       }
    }

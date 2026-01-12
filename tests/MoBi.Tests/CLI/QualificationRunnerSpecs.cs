@@ -11,6 +11,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Serialization.ORM;
 using MoBi.Core.Snapshots.Services;
 using MoBi.HelpersForTests;
+using NHibernate;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -20,6 +21,7 @@ using OSPSuite.Core.Qualification;
 using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Services;
 using OSPSuite.Core.Snapshots;
+using OSPSuite.Infrastructure.Serialization.Services;
 using OSPSuite.Utility;
 using DataRepository = OSPSuite.Core.Domain.Data.DataRepository;
 using SnapshotProject = MoBi.Core.Snapshots.Project;
@@ -29,8 +31,8 @@ namespace MoBi.CLI
 {
    public abstract class concern_for_QualificationRunner : ContextSpecificationAsync<QualificationRunner>
    {
-      private IMoBiContext _context;
-      private IProjectPersistor _projectPersistor;
+      protected IMoBiContext _context;
+      protected IProjectPersistor _projectPersistor;
       private IOSPSuiteLogger _logger;
       protected IDataRepositoryExportTask _dataRepositoryTask;
       protected IJsonSerializer _jsonSerializer;
@@ -44,6 +46,7 @@ namespace MoBi.CLI
       protected MoBiQualificationRunOptions _runOptions;
       protected QualificationConfiguration _qualificationConfiguration;
       protected IApplicationSettings _applicationSettings;
+      protected ISessionManager _sessionManager;
 
       public override async Task GlobalContext()
       {
@@ -69,15 +72,17 @@ namespace MoBi.CLI
          _jsonSerializer = A.Fake<IJsonSerializer>();
          _snapshotTask = A.Fake<ISnapshotTask>();
          _simulationPersistor = A.Fake<ISimulationPersistor>();
+         _sessionManager = A.Fake<ISessionManager>();
 
          _runOptions = new MoBiQualificationRunOptions
          {
-            PKSimPath = "C:/Test.exe"
+            PKSimPath = "C:/Test.exe",
+            ExportProjectFiles = true
          };
-         
+
          _qualificationConfiguration = new QualificationConfiguration();
 
-         sut = new QualificationRunner(_context, _projectPersistor, _logger, _dataRepositoryTask, _jsonSerializer, _snapshotTask, _simulationPersistor, _applicationSettings);
+         sut = new QualificationRunner(_context, _projectPersistor, _logger, _dataRepositoryTask, _jsonSerializer, _snapshotTask, _simulationPersistor, _sessionManager, _applicationSettings);
 
          return _completed;
       }
@@ -149,6 +154,7 @@ namespace MoBi.CLI
       private string _expectedObservedDataCsvFullPath;
       private Simulation _simulation;
       private MoBiSimulation _moBiSimulation;
+      private ISession _session;
 
       protected override async Task Context()
       {
@@ -188,6 +194,9 @@ namespace MoBi.CLI
          A.CallTo(() => _jsonSerializer.Serialize(A<QualificationMapping>._, _qualificationConfiguration.MappingFile))
             .Invokes(x => _mapping = x.GetArgument<QualificationMapping>(0));
 
+         _session = A.Fake<ISession>();
+         A.CallTo(() => _sessionManager.OpenSession()).Returns(_session);
+
          _project.AddSimulation(_moBiSimulation);
          _qualificationConfiguration.Simulations = [_simulationName];
          _runOptions.Run = true;
@@ -196,6 +205,15 @@ namespace MoBi.CLI
       protected override Task Because()
       {
          return sut.RunBatchAsync(_runOptions);
+      }
+
+      [Observation]
+      public void the_project_should_be_exported()
+      {
+         A.CallTo(() => _sessionManager.CreateFactoryFor(A<string>._)).MustHaveHappened();
+         A.CallTo(() => _sessionManager.OpenSession()).MustHaveHappened();
+         A.CallTo(() => _session.BeginTransaction()).MustHaveHappened();
+         A.CallTo(() => _projectPersistor.Save(_context.CurrentProject, _context)).MustHaveHappened();
       }
 
       [Observation]
