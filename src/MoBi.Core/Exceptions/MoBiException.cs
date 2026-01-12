@@ -1,8 +1,10 @@
-﻿using System;
-using MoBi.Assets;
+﻿using MoBi.Assets;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Utility.Exceptions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MoBi.Core.Exceptions
 {
@@ -55,6 +57,16 @@ namespace MoBi.Core.Exceptions
                ProjectVersions.Current.Version,
                Constants.PRODUCT_SITE_DOWNLOAD))
       {
+      }
+   }
+
+   public class ValidationFailedMoBiException : MoBiException
+   {
+      public ValidationResult ValidationResult { get; }
+      public ValidationFailedMoBiException(string message, ValidationResult validationResult)
+         : base(message)
+      {
+         ValidationResult = validationResult;
       }
    }
 }

@@ -142,8 +142,8 @@ namespace MoBi.Presentation.Tasks.Interaction
             if (simulationConfiguration == null)
                return null;
 
-
-            return _simulationFactory.CreateSimulationAndValidate(simulationConfiguration, presenter.SimulationName);
+            var (simulation, _) = _simulationFactory.CreateSimulationAndValidationResult(simulationConfiguration, presenter.SimulationName);
+            return simulation;
          }
       }
 

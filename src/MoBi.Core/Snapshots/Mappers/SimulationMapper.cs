@@ -65,28 +65,29 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
       _logger.AddInfo(Captions.LoadingSimulation(snapshot.Name, context.NumberOfSimulationsLoaded + 1, context.NumberOfSimulationsToLoad), context.Project.Name);
       var configuration = await _simulationConfigurationMapper.MapToModel(snapshot.Configuration, context);
 
-      var simulation = _simulationFactory.CreateSimulationAndValidate(configuration, snapshot.Name) as MoBiSimulation;
+      var (simulation, _) = _simulationFactory.CreateSimulationAndValidationResult(configuration, snapshot.Name);
+      var mobiSimulation = simulation as MoBiSimulation;
 
-      var snapshotContextWithSimulation = new SnapshotContextWithSimulation(simulation, context);
-      simulation.Settings.OutputSelections = await _outputSelectionsMapper.MapToModel(snapshot.OutputSelections, snapshotContextWithSimulation);
+      var snapshotContextWithSimulation = new SnapshotContextWithSimulation(mobiSimulation, context);
+      mobiSimulation.Settings.OutputSelections = await _outputSelectionsMapper.MapToModel(snapshot.OutputSelections, snapshotContextWithSimulation);
 
       var simulationAnalysisContext = new SimulationAnalysisContext(context.Project.AllObservedData, context);
       if (snapshot.Chart != null)
-         simulation.Chart = await _curveChartMapper.MapToModel(snapshot.Chart, simulationAnalysisContext);
+         mobiSimulation.Chart = await _curveChartMapper.MapToModel(snapshot.Chart, simulationAnalysisContext);
 
       if (snapshot.SimulationPredictedVsObservedChart != null)
-         simulation.PredictedVsObservedChart = await _predictedVsObservedChartMapper.MapToModel(snapshot.SimulationPredictedVsObservedChart, simulationAnalysisContext);
+         mobiSimulation.PredictedVsObservedChart = await _predictedVsObservedChartMapper.MapToModel(snapshot.SimulationPredictedVsObservedChart, simulationAnalysisContext);
 
       if (snapshot.SimulationResidualVsTimeChart != null)
-         simulation.ResidualVsTimeChart = await _residualsVsTimeChartMapper.MapToModel(snapshot.SimulationResidualVsTimeChart, simulationAnalysisContext);
+         mobiSimulation.ResidualVsTimeChart = await _residualsVsTimeChartMapper.MapToModel(snapshot.SimulationResidualVsTimeChart, simulationAnalysisContext);
 
-      snapshot.OutputMappings?.Each(x => simulation.OutputMappings.Add(_outputMappingMapper.MapToModel(x, snapshotContextWithSimulation).Result));
+      snapshot.OutputMappings?.Each(x => mobiSimulation.OutputMappings.Add(_outputMappingMapper.MapToModel(x, snapshotContextWithSimulation).Result));
 
-      updateParameters(simulation, snapshot.Parameters);
+      updateParameters(mobiSimulation, snapshot.Parameters);
 
-      updateScaleDivisors(simulation, snapshot.ScaleDivisors);
+      updateScaleDivisors(mobiSimulation, snapshot.ScaleDivisors);
 
-      return simulation;
+      return mobiSimulation;
    }
 
    public override async Task<Simulation> MapToSnapshot(MoBiSimulation simulation, MoBiProject project)

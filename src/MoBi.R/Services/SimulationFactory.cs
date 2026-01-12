@@ -1,19 +1,21 @@
 ﻿using System;
 using System.Linq;
 using MoBi.Core.Domain.Builder;
+using MoBi.Core.Exceptions;
 using MoBi.Core.Services;
 using MoBi.R.Domain;
+using NHibernate.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility.Extensions;
-using RModuleConfiguration = MoBi.R.Domain.ModuleConfiguration;
 using CoreModuleConfiguration = OSPSuite.Core.Domain.ModuleConfiguration;
+using RModuleConfiguration = MoBi.R.Domain.ModuleConfiguration;
 
 namespace MoBi.R.Services
 {
    public interface ISimulationFactory
    {
-      MoBiSimulation CreateSimulation(string simulationName, RModuleConfiguration[] moduleConfigurations,
+      CreateSimulationResult CreateSimulation(string simulationName, RModuleConfiguration[] moduleConfigurations,
          ExpressionProfileBuildingBlock[] expressionProfiles,
          IndividualBuildingBlock individual);
    }
@@ -34,7 +36,7 @@ namespace MoBi.R.Services
          _simulationSettingsFactory = simulationSettingsFactory;
       }
 
-      public MoBiSimulation CreateSimulation(string simulationName, RModuleConfiguration[] moduleConfigurations,
+      public CreateSimulationResult CreateSimulation(string simulationName, RModuleConfiguration[] moduleConfigurations,
          ExpressionProfileBuildingBlock[] expressionProfiles,
          IndividualBuildingBlock individual)
       {
@@ -70,10 +72,33 @@ namespace MoBi.R.Services
 
          simulationConfiguration.Individual = individual;
          simulationConfiguration.ShouldValidate = true;
+         try
+         {
+            var simulationAndCreationResult = _simulationFactory.CreateSimulationAndValidationResult(simulationConfiguration, simulationName);
+            var warnings = simulationAndCreationResult.ValidationResult.Messages.Where(x => x.NotificationType == NotificationType.Warning).Select(x=>x.Text);
+            return new CreateSimulationResult(simulationAndCreationResult.Simulation, warnings);
+         }
+         catch (ValidationFailedMoBiException e)
+         {
+            return createResultWithMessages(e);
+         }
+      }
 
-         var simulation = _simulationFactory.CreateSimulationAndValidate(simulationConfiguration, simulationName);
+      private static CreateSimulationResult createResultWithMessages(ValidationFailedMoBiException e)
+      {
+         var messages = e.ValidationResult?.Messages;
 
-         return new MoBiSimulation(simulation);
+         var warnings = messages
+            .Where(m => m.NotificationType == NotificationType.Warning)
+            .Select(m => m.Text)
+            .ToList();
+
+         var errors = messages
+            .Where(m => m.NotificationType == NotificationType.Error)
+            .Select(m => m.Text)
+            .ToList();
+
+         return new CreateSimulationResult(null, warnings, errors);
       }
    }
 }

@@ -1,17 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.R.Domain;
 using MoBi.R.Services;
+using NHibernate.Util;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.R.Domain;
-using ModuleConfiguration = MoBi.R.Domain.ModuleConfiguration;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using static MoBi.R.Tests.HelperForSpecs;
 using IProjectTask = MoBi.R.Services.IProjectTask;
+using ModuleConfiguration = MoBi.R.Domain.ModuleConfiguration;
 
 namespace MoBi.R.Tests.Services;
 
@@ -40,7 +43,7 @@ internal abstract class concern_for_SimulationTask : ContextForIntegration<ISimu
 
 internal class when_creating_from_mobi_project : concern_for_SimulationTask
 {
-   protected Simulation _simulation;
+   protected CreateSimulationResult _result;
 
    protected override void Context()
    {
@@ -66,20 +69,21 @@ internal class when_creating_simulation : when_creating_from_mobi_project
 {
    protected override void Because()
    {
-      _simulation = sut.CreateSimulationFrom(_simulationName, _request);
+      _result = sut.CreateSimulationResultsFrom(_simulationName, _request);
    }
 
    [Observation]
    public void should_return_simulation_name()
    {
-      _simulation.ShouldNotBeNull();
-      _simulation.Name.ShouldBeEqualTo(_simulationName);
+      _result.ShouldNotBeNull();
+      _result.Simulation.ShouldNotBeNull();
+      _result.Simulation.Name.ShouldBeEqualTo(_simulationName);
    }
 
    [Observation]
    public void should_contain_module()
    {
-      var module = _simulation.Configuration.ModuleConfigurations
+      var module = _result.Simulation.Configuration.ModuleConfigurations
          .FirstOrDefault(x => x.Module.Name == "Module1")?.Module;
       module.ShouldNotBeNull();
    }
@@ -90,14 +94,14 @@ internal abstract class when_creating_an_invalid_configuration : when_creating_f
    [Observation]
    public void should_throw_expected_exception()
    {
-      The.Action(() => sut.CreateSimulationFrom(_simulationName, _request))
+      The.Action(() => sut.CreateSimulationResultsFrom(_simulationName, _request))
          .ShouldThrowAn<InvalidOperationException>();
    }
 }
 
 internal class when_creating_simulation_from_pkml_module : concern_for_SimulationTask
 {
-   private Simulation _simulation;
+   private CreateSimulationResult _result;
 
    protected override void Context()
    {
@@ -108,19 +112,77 @@ internal class when_creating_simulation_from_pkml_module : concern_for_Simulatio
 
       _request = new SimulationRequest();
       _request.AddModuleConfiguration(moduleConfig);
-      // No individual set here (matches previous null behavior)
    }
 
    protected override void Because()
    {
-      _simulation = sut.CreateSimulationFrom(_simulationName, _request);
+      _result = sut.CreateSimulationResultsFrom(_simulationName, _request);
    }
 
    [Observation]
    public void should_return_simulation_name() =>
-      _simulation.Name.ShouldBeEqualTo(_simulationName);
+      _result.Simulation.Name.ShouldBeEqualTo(_simulationName);
 
    [Observation]
    public void should_contain_loaded_module() =>
-      _simulation.Configuration.ModuleConfigurations.Any().ShouldBeTrue();
+      _result.Simulation.Configuration.ModuleConfigurations.Any().ShouldBeTrue();
+}
+
+internal class when_creating_simulation_with_warnings_only : concern_for_SimulationTask
+{
+   private CreateSimulationResult _result;
+
+   protected override void Context()
+   {
+      base.Context();
+      _moduleForSimulation = _projectTask.ModuleByName(_project, "Module1");
+      _simulationName = "SimWithWarningsOnly";
+      var moduleConfig = sut.CreateModuleConfiguration(_moduleForSimulation, "Parameter Values", "Initial Conditions");
+
+      _request = new SimulationRequest();
+      _request.AddModuleConfiguration(moduleConfig);
+      _request.SetIndividual(_projectTask.IndividualBuildingBlockByName(_project, "European (P-gp modified, CYP3A4 36 h)"));
+
+      _projectTask.CloseProject();
+   }
+
+   protected override void Because()
+   {
+      _result = sut.CreateSimulationResultsFrom(_simulationName, _request);
+   }
+
+   [Observation]
+   public void should_create_simulation_despite_warnings()
+   {
+      _result.ShouldNotBeNull();
+      _result.Simulation.ShouldNotBeNull();
+      _result.Simulation.Name.ShouldBeEqualTo(_simulationName);
+      _result.Simulation.Configuration.ModuleConfigurations.Any().ShouldBeTrue();
+      _result.Warnings.ShouldNotBeNull();
+   }
+}
+
+internal class when_creating_simulation_with_errors : concern_for_SimulationTask
+{
+   protected override void Context()
+   {
+      base.Context();
+      _simulationName = $"Invalid{Constants.ILLEGAL_CHARACTERS.First()}Name";
+
+      var module = _projectTask.ModuleByName(_project, "Module1");
+      var moduleConfig = sut.CreateModuleConfiguration(module);
+
+      _request = new SimulationRequest();
+      _request.AddModuleConfiguration(moduleConfig);
+      _request.SetIndividual(_projectTask.IndividualBuildingBlockByName(_project, "European (P-gp modified, CYP3A4 36 h)"));
+
+      _projectTask.CloseProject();
+   }
+
+   [Observation]
+   public void should_throw_expected_exception()
+   {
+      The.Action(() => sut.CreateSimulationResultsFrom(_simulationName, _request))
+         .ShouldThrowAn<InvalidOperationException>();
+   }
 }

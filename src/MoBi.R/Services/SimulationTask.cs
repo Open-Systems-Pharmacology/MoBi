@@ -1,4 +1,5 @@
-﻿using MoBi.Assets;
+﻿using System;
+using MoBi.Assets;
 using MoBi.R.Domain;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
@@ -12,7 +13,7 @@ namespace MoBi.R.Services
 {
    public interface ISimulationTask
    {
-      MoBiSimulation CreateSimulationFrom(string simulationName, SimulationRequest request);
+      CreateSimulationResult CreateSimulationResultsFrom(string simulationName, SimulationRequest request);
 
       ModuleConfiguration CreateModuleConfiguration(Module module,
          string selectedParameterValues = null,
@@ -52,7 +53,7 @@ namespace MoBi.R.Services
          return allNamedObjects.FindByName(namedObjectToSelect);
       }
 
-      public MoBiSimulation CreateSimulationFrom(string simulationName, SimulationRequest request)
+      public CreateSimulationResult CreateSimulationResultsFrom(string simulationName, SimulationRequest request)
       {
          var modulesArray = (request?.ModuleConfigurations ?? new List<ModuleConfiguration>()).ToArray();
          var expressionsArray = (request != null && request.ExpressionProfiles.Any())
