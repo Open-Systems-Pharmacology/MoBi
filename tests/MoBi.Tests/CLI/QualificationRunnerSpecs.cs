@@ -155,6 +155,7 @@ namespace MoBi.CLI
       private Simulation _simulation;
       private MoBiSimulation _moBiSimulation;
       private ISession _session;
+      private ITransaction _transaction;
 
       protected override async Task Context()
       {
@@ -195,8 +196,8 @@ namespace MoBi.CLI
             .Invokes(x => _mapping = x.GetArgument<QualificationMapping>(0));
 
          _session = A.Fake<ISession>();
-         var transaction = A.Fake<ITransaction>();
-         A.CallTo(() => _session.BeginTransaction()).Returns(transaction);
+         _transaction = A.Fake<ITransaction>();
+         A.CallTo(() => _session.BeginTransaction()).Returns(_transaction);
          A.CallTo(() => _sessionManager.OpenSession()).Returns(_session);
 
          _project.AddSimulation(_moBiSimulation);
@@ -215,6 +216,7 @@ namespace MoBi.CLI
          A.CallTo(() => _sessionManager.CreateFactoryFor(A<string>._)).MustHaveHappened();
          A.CallTo(() => _sessionManager.OpenSession()).MustHaveHappened();
          A.CallTo(() => _session.BeginTransaction()).MustHaveHappened();
+         A.CallTo(() => _transaction.Commit()).MustHaveHappened();
          A.CallTo(() => _projectPersistor.Save(_context.CurrentProject, _context)).MustHaveHappened();
       }
 
