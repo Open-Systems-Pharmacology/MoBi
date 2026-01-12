@@ -65,7 +65,7 @@ namespace MoBi.IntegrationTests.Snapshots
       [Observation]
       public void the_expression_building_blocks_are_loaded()
       {
-         _project.ExpressionProfileCollection.Count.ShouldBeEqualTo(2);
+         _project.ExpressionProfileCollection.Count.ShouldBeEqualTo(1);
       }
 
       [Observation]
