@@ -195,6 +195,8 @@ namespace MoBi.CLI
             .Invokes(x => _mapping = x.GetArgument<QualificationMapping>(0));
 
          _session = A.Fake<ISession>();
+         var transaction = A.Fake<ITransaction>();
+         A.CallTo(() => _session.BeginTransaction()).Returns(transaction);
          A.CallTo(() => _sessionManager.OpenSession()).Returns(_session);
 
          _project.AddSimulation(_moBiSimulation);
