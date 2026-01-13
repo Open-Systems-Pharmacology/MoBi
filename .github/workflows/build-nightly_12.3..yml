@@ -9,7 +9,7 @@ on:
 
 env:
   MAJOR: 12
-  MINOR: 2
+  MINOR: 3
   RUN: ${{ github.run_number }}
 
 permissions:
