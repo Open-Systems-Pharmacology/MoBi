@@ -177,9 +177,9 @@ namespace MoBi.Presentation.Presenter
       {
          CurveChartTemplate defaultTemplate = null;
 
-         var data = new List<DataRepository>();
+         var plottedData = new List<DataRepository>();
          if (_simulation.ResultsDataRepository != null)
-            data.Add(_simulation.ResultsDataRepository);
+            plottedData.Add(_simulation.ResultsDataRepository);
 
 
          //This whole initialization of Chart in presenter is really ugly.
@@ -212,8 +212,15 @@ namespace MoBi.Presentation.Presenter
          if (_simulation.Chart.Curves.Count == 0)
             defaultTemplate = _simulation.DefaultChartTemplate;
 
-         addObservedDataRepositories(data, _simulation.Chart.Curves);
-         _chartPresenter.Show(_simulation.Chart, data, defaultTemplate);
+         addObservedDataRepositories(plottedData, _simulation.Chart.Curves);
+         var notPlottedData = mappedObservedDataExcept(plottedData, _simulation.OutputMappings);
+         
+         _chartPresenter.Show(_simulation.Chart, plottedData, notPlottedData, defaultTemplate);
+      }
+
+      private IReadOnlyList<DataRepository> mappedObservedDataExcept(IReadOnlyList<DataRepository> plottedData, OutputMappings outputMappings)
+      {
+         return outputMappings.AllDataRepositoryMappedFor(_simulation).Except(plottedData).ToList();
       }
 
       public void Handle(SimulationRunFinishedEvent eventToHandle)
@@ -223,7 +230,7 @@ namespace MoBi.Presentation.Presenter
 
          _view.SetParametersTabEnabled(true);
 
-         if (!_view.ShowsResults)
+         if (!_view.ShowsResults && eventToHandle.Success)
             _view.ShowResultsTab();
 
          _chartTask.SetOriginText(_simulation.Name, _simulation.Chart);

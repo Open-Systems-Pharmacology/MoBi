@@ -5,7 +5,6 @@ using MoBi.Assets;
 using MoBi.Core.Domain;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Repository;
 using MoBi.Core.Events;
 using MoBi.Core.Helper;
 using MoBi.Presentation.DTO;
@@ -15,7 +14,6 @@ using MoBi.Presentation.Views;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
@@ -41,10 +39,12 @@ namespace MoBi.Presentation.Presenter
       event Action SelectionChangedEvent;
       IReadOnlyList<ObjectPath> GetAllSelections();
       IEnumerable<T> GetAllSelected<T>() where T : class, IObjectBase;
+      void DisableTimeSelection();
    }
 
    public abstract class SelectReferencePresenterBase : AbstractCommandCollectorPresenter<ISelectReferenceView, ISelectReferencePresenter>, ISelectReferencePresenter
    {
+      private bool _addTime = true;
       protected readonly IParameterToDummyParameterDTOMapper _dummyParameterDTOMapper;
       protected readonly IObjectBaseDTOToReferenceNodeMapper _referenceMapper;
       protected readonly IObjectBaseToObjectBaseDTOMapper _objectBaseDTOMapper;
@@ -115,12 +115,25 @@ namespace MoBi.Presentation.Presenter
       private void addInitialObjects()
       {
          AddSpecificInitialObjects();
+         if (_addTime)
+            addTimeReference();
+      }
+
+      private void addTimeReference()
+      {
+         var timeDTO = new ObjectBaseDTO
+         {
+            Id = AppConstants.Time,
+            Name = AppConstants.Time,
+            Icon = ApplicationIcons.Time
+         };
+         _view.AddNode(_referenceMapper.MapFrom(timeDTO));
       }
 
       public virtual IEnumerable<ObjectBaseDTO> GetChildObjects(ObjectBaseDTO dto)
       {
          var children = new List<ObjectBaseDTO>();
-         
+
          if (_context.ObjectRepository.ContainsObjectWithId(dto.Id))
          {
             var objectBase = _context.Get<IObjectBase>(dto.Id);
@@ -133,6 +146,7 @@ namespace MoBi.Presentation.Presenter
             addChildrenFromContainer(children, objectBase as IContainer);
             addChildrenFromNeighborhood(children, objectBase as NeighborhoodBuilder);
             addParametersFromParameterContainer(children, objectBase as IContainsParameters);
+            addChildrenFromReaction(children, objectBase as MoBiReactionBuildingBlock);
          }
 
          else if (dto.IsAnImplementationOf<DummyMoleculeContainerDTO>())
@@ -220,6 +234,8 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
+      public void DisableTimeSelection() => _addTime = false;
+
       public bool LegalObjectSelected
       {
          get
@@ -264,23 +280,12 @@ namespace MoBi.Presentation.Presenter
       protected void AddSpatialStructures()
       {
          var spatialStructures = _buildingBlockRepository.SpatialStructureCollection;
-         var nodes = spatialStructures.Select(x => _referenceMapper.MapFrom(x).WithText(x.DisplayName));
+         var nodes = spatialStructures.Select(x => _referenceMapper.MapFrom(x));
 
          _view.AddNodes(nodes);
       }
 
       private bool shouldCreateAbsolutePath => _view.ObjectPathType.Equals(ObjectPathType.Absolute);
-
-      protected void AddTimeReference()
-      {
-         var timeDTO = new ObjectBaseDTO
-         {
-            Id = AppConstants.Time,
-            Name = AppConstants.Time,
-            Icon = ApplicationIcons.Time
-         };
-         _view.AddNode(_referenceMapper.MapFrom(timeDTO));
-      }
 
       private IEnumerable<T> getAllMoleculeChildren<T>(DummyMoleculeContainerDTO dummyMolecule) where T : class, IEntity
       {
@@ -412,6 +417,18 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
+      private void addChildrenFromReaction(List<ObjectBaseDTO> children, MoBiReactionBuildingBlock reactionBuildingBlock)
+      {
+         if (reactionBuildingBlock == null)
+            return;
+
+         var reactionDtos = reactionBuildingBlock
+            .OrderBy(r => r.Name)
+            .MapAllUsing(_objectBaseDTOMapper);
+
+         children.AddRange(reactionDtos);
+      }
+
       private void addChildrenFromSpatialStructure(List<ObjectBaseDTO> children, SpatialStructure spatialStructure)
       {
          if (spatialStructure == null)
@@ -447,12 +464,8 @@ namespace MoBi.Presentation.Presenter
 
       protected void AddReactions()
       {
-         _view.AddNodes(getReactions.MapAllUsing(_referenceMapper));
-      }
-
-      private IEnumerable<ReactionBuilder> getReactions
-      {
-         get { return _buildingBlockRepository.ReactionBlockCollection.SelectMany(x => x).OrderBy(x => x.Name); }
+         var nodes = _buildingBlockRepository.ReactionBlockCollection.Select(x => _referenceMapper.MapFrom(x));
+         _view.AddNodes(nodes);
       }
 
       protected void AddMolecule()

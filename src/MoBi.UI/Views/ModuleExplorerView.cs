@@ -26,7 +26,7 @@ namespace MoBi.UI.Views
 
       private void compareNodeValues(object sender, CompareNodeValuesEventArgs e)
       {
-         e.Result = _moduleExplorerPresenter.OrderingComparisonFor(e.Node1.Tag as ITreeNode<IWithName>, e.Node2.Tag as ITreeNode<IWithName>);
+         e.Result = _moduleExplorerPresenter.OrderingComparisonForModules(e.Node1.Tag as ITreeNode<IWithName>, e.Node2.Tag as ITreeNode<IWithName>);
       }
    }
 }

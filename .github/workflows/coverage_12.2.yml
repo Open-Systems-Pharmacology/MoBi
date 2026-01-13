@@ -1,8 +1,12 @@
-name: Code Coverage
+name: Code Coverage 12.2
 
 on:
     schedule:
       - cron: '0 1 * * 5'
+
+permissions:
+  contents: read
+  packages: read
 
 jobs:
   cover:
@@ -19,7 +23,7 @@ jobs:
           dotnet restore
 
       - name: Build
-        run: dotnet build MoBi.sln /p:Version=12.1.999
+        run: dotnet build MoBi.sln /p:Version=12.2.9999
 
         
       - name: Cover and report

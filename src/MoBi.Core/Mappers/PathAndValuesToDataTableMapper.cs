@@ -25,10 +25,12 @@ namespace MoBi.Core.Mappers
          _dt = new DataTable();
          _dt.TableName = TableName;
          AddColumnsToDataTable();
-         builders.Where(x => x.Value != null).Each(AddDataFromBuildingBlockToDataTable);
+         builders.Where(hasValue).Each(AddDataFromBuildingBlockToDataTable);
          SetColumnOrdinals();
          return new List<DataTable> { _dt };
       }
+
+      private static bool hasValue(TBuilder x) => x.Value != null && !double.IsNaN(x.Value.Value);
 
       protected virtual void AddColumnsToDataTable()
       {

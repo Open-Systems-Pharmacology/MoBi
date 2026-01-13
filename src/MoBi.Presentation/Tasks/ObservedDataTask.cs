@@ -40,6 +40,8 @@ namespace MoBi.Presentation.Tasks
       void RemoveResultsFromSimulations(IReadOnlyList<DataRepository> resultsToRemove);
 
       void AddAndReplaceObservedDataFromConfigurationToProject(ImporterConfiguration configuration, IReadOnlyList<DataRepository> observedDataFromSameFile);
+
+      void DeleteResultsFromSimulation(IMoBiSimulation simulation, DataRepository dataRepository);
    }
 
    public class ObservedDataTask : OSPSuite.Core.Domain.Services.ObservedDataTask, IObservedDataTask
@@ -80,7 +82,7 @@ namespace MoBi.Presentation.Tasks
             metaDataCategories,
             _dataImporter.ColumnInfosForObservedData(),
             settings,
-            _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, DirectoryKey.OBSERVED_DATA)
+            _dialogCreator.AskForFileToOpen(Captions.Importer.SelectFileToImport, Captions.Importer.ImportFileFilter, DirectoryKey.OBSERVED_DATA)
          );
 
          if (dataRepositories == null || configuration == null)
@@ -163,6 +165,15 @@ namespace MoBi.Presentation.Tasks
 
          simulation.HistoricResults.Each(x => macroCommand.Add(new RemoveHistoricResultFromSimulationCommand(simulation, x)));
          return macroCommand;
+      }
+
+      public void DeleteResultsFromSimulation(IMoBiSimulation simulation, DataRepository dataRepository)
+      {
+         var viewResult = _dialogCreator.MessageBoxYesNo(AppConstants.Dialog.RemoveSimulationResultsFromSimulation(dataRepository.Name, simulation.Name));
+         if (viewResult == ViewResult.No)
+            return;
+
+         _context.AddToHistory(new RemoveHistoricResultFromSimulationCommand(simulation, dataRepository).RunCommand(_context));
       }
 
       private (IReadOnlyList<MetaDataCategory>, DataImporterSettings) initializeSettings()
@@ -314,7 +325,7 @@ namespace MoBi.Presentation.Tasks
             metaDataCategories,
             _dataImporter.ColumnInfosForObservedData(),
             dataImporterSettings,
-            _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, DirectoryKey.OBSERVED_DATA)
+            _dialogCreator.AskForFileToOpen(Captions.Importer.SelectFileToImport, Captions.Importer.ImportFileFilter, DirectoryKey.OBSERVED_DATA)
          );
          return importedObservedData;
       }

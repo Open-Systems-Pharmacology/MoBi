@@ -1244,6 +1244,8 @@ namespace MoBi.Assets
          public static readonly string MergeBuildingBlocksCountError = "Building blocks to merge and target building blocks do not have the same length";
          public static readonly string MissingName = "Name missing";
          public static readonly string DeserializationFailed = "Deserialization failed";
+         public static readonly string TheStartTimeMustBeEarlierThanTheEndTimeOfTheInterval = "The start time must be earlier than the end time of the interval";
+
          public static string SourceBuildingBlockNotInProject(string entityType) => $"Building Block used to create {entityType} is not present in project";
          public static readonly string ShouldNeverHappen = "Should never happen";
          public static readonly string ErrorInFormula = "Error in Formula";
@@ -1682,12 +1684,14 @@ namespace MoBi.Assets
          public static readonly string ShowParametersFromIndividual = "Show parameters from Individual";
          public static readonly string ConvertToConstantValue = "Convert to constant value";
          public static readonly string GoToSource = "Go to Source";
+         public static readonly string AddOutputSelection = "Add Output";
+         public static readonly string AddingParametersToASimulationIsNotSupported = "Adding parameters to a simulation is not supported";
          public static string SelectTheBuildingBlockWhereEntitiesWillBeAddedOrUpdated(string typeBeingAdded) => $"Select the building block where {typeBeingAdded} will be added or updated";
          public static readonly string SelectBuildingBlock = "Select Building Block";
          public static readonly string MakeDefault = "Make defaults";
          public static readonly string LoadFromDefaults = "Load from defaults";
          public static readonly string MergeBehavior = "Merge Behavior";
-         private static readonly string mergelink = "See <a href='https://github.com/Open-Systems-Pharmacology/OSMOSES/blob/develop/Documentation/Modularization-concept.md#combination-rules'>description of merge behaviours</a>.";
+         private static readonly string mergelink = "See <a href='https://docs.open-systems-pharmacology.org/working-with-mobi/mobi-documentation/modularization-concept#spatial-structure'>description of merge behaviours</a>.";
          public static readonly string ExtendMergeBehaviorDescription = $"The module containers will be merged recursively using add and update behavior.{Environment.NewLine}{mergelink}";
          public static readonly string OverwriteMergeBehaviorDescription = $"The module containers will be replaced by path.{Environment.NewLine}{mergelink}";
          public static readonly string ExportToExcel = "Export to Excel®";
@@ -2049,13 +2053,31 @@ namespace MoBi.Assets
             return sb.ToString();
          }
 
+         public static string PathsContainIllegalCharacters(IReadOnlyList<string> paths, IReadOnlyList<string> illegalCharacters)
+         {
+            var pathsNotAdded = paths.Count;
+            var sb = new StringBuilder();
+
+            if (pathsNotAdded == 1)
+               sb.AppendLine("A parameter value could not be added");
+            else
+               sb.AppendLine("Some parameter values could not be added");
+
+            sb.AppendLine(NamesList(paths));
+
+            sb.AppendLine("Paths cannot contain:");
+            sb.AppendLine(illegalCharacters.ToString<string>(", ", "'"));
+
+            return sb.ToString();
+         }
+
          public static string BuildingBlockAlreadyContains(IReadOnlyList<string> paths)
          {
             var pathsNotAdded = paths.Count;
             var sb = new StringBuilder();
 
             if (pathsNotAdded == 1)
-               sb.AppendLine("A Parameter Value could not be added");
+               sb.AppendLine("A parameter value could not be added");
             else
                sb.AppendLine("Some parameter values could not be added");
 
@@ -2435,5 +2457,7 @@ namespace MoBi.Assets
          sb.AppendLine(allNames.ToString("\n - "));
          return sb.ToString();
       }
+
+      public static string PathCannotContainIllegalCharacters(IEnumerable<string> illegalCharacters) => "Path cannot contain any of the following characters:\n" + illegalCharacters.ToString<string>(", ", "'");
    }
 }

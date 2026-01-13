@@ -1,17 +1,19 @@
 ﻿using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
+using DevExpress.XtraGrid.Views.Base;
+using MoBi.Assets;
+using MoBi.Presentation.Presenter;
+using MoBi.Presentation.Views;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.UI.Controls;
 using OSPSuite.Utility.Exceptions;
 using System.Collections.Generic;
-using MoBi.Presentation.Presenter;
-using MoBi.Presentation.Views;
-using OSPSuite.Assets;
-using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.UI.Extensions;
 using static OSPSuite.UI.UIConstants;
-using DevExpress.XtraGrid.Views.Base;
-using OSPSuite.DataBinding;
 using static OSPSuite.UI.UIConstants.Size;
 
 namespace MoBi.UI.Views
@@ -45,6 +47,8 @@ namespace MoBi.UI.Views
             .WithFixedWidth(EMBEDDED_BUTTON_WIDTH * 3);
 
          _buttonRepository.ButtonClick += (o, e) => OnEvent(() => onButtonClick(e));
+
+         btnAddOutputSelection.Click += (o, e) => OnEvent(() => _presenter.AddOutputSelection(_gridViewBinder.FocusedElement));
       }
 
       private void updateOutputSelectionPath(PropertyValueSetEventArgs<string> e)
@@ -81,6 +85,8 @@ namespace MoBi.UI.Views
       {
          base.InitializeResources();
          Caption = Captions.OutputSelections;
+         btnAddOutputSelection.InitWithImage(ApplicationIcons.Add, AppConstants.Captions.AddOutputSelection);
+         layoutControlItemAddOutput.AdjustButtonSize(layoutControl);
       }
    }
 }

@@ -7,7 +7,12 @@ namespace MoBi.Presentation.DTO
 {
    public class FormulaBuilderDTO : ObjectBaseDTO
    {
-      public static FormulaBuilderDTO NULL = new FormulaBuilderDTO {Description = AppConstants.NullFormulaDescription, Name = AppConstants.Captions.FormulaNotAvailable};
+      public static FormulaBuilderDTO NULL = new FormulaBuilderDTO
+      {
+         Description = AppConstants.NullFormulaDescription, 
+         Name = AppConstants.Captions.FormulaNotAvailable,
+         ObjectPaths = new List<FormulaUsablePathDTO>()
+      };
 
       private FormulaBuilderDTO()
       {

@@ -105,7 +105,7 @@ namespace MoBi.Presentation.Presenter
             _view.SetSelectReferenceView(_selectReferencePresenter.View);
          }
 
-         ((ISelectReferencePresenter)_selectReferencePresenter).Init(_eventBuilder, new[] { _eventBuilder.RootContainer }, _eventBuilder);
+         _selectReferencePresenter.Init(_eventBuilder, new[] { _eventBuilder.RootContainer }, _eventBuilder);
          var dto = _eventToEventBuilderMapper.MapFrom(eventBuilder);
          dto.AddUsedNames(_editTasks.GetForbiddenNamesWithoutSelf(eventBuilder, existingObjectsInParent));
          _view.Show(dto);
@@ -239,7 +239,7 @@ namespace MoBi.Presentation.Presenter
 
       public void SetFormulaFor(EventAssignmentBuilderDTO eventAssignmentBuilderDTO, FormulaBuilderDTO formulaBuilderDTO)
       {
-         var newFormula = _context.Get<ExplicitFormula>(formulaBuilderDTO.Id);
+         var newFormula = _context.Get<Formula>(formulaBuilderDTO.Id);
          var eventAssignmentBuilder = _context.Get<EventAssignmentBuilder>(eventAssignmentBuilderDTO.Id);
          AddCommand(
             new EditObjectBasePropertyInBuildingBlockCommand(eventAssignmentBuilder.PropertyName(b => b.Formula), newFormula, eventAssignmentBuilder.Formula, eventAssignmentBuilder, BuildingBlock).RunCommand(_context));

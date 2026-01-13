@@ -21,7 +21,7 @@ using OSPSuite.Presentation.Views;
 
 namespace MoBi.Presentation
 {
-   public abstract class concern_for_EditSimulationPresenter : ContextSpecification<IEditSimulationPresenter>
+   public abstract class concern_for_EditSimulationPresenter : ContextSpecification<EditSimulationPresenter>
    {
       protected IEditSimulationView _view;
       protected ISimulationChartPresenter _chartPresenter;
@@ -117,7 +117,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_the_simulation_simulation_presenter_is_handling_a_favorite_selected_event : concern_for_EditSimulationPresenter
+   public class When_the_simulation_presenter_is_handling_a_favorite_selected_event : concern_for_EditSimulationPresenter
    {
       private IMoBiSimulation _simulation;
       private IView _favoritesView;
@@ -143,7 +143,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_the_simulation_simulation_presenter_is_handling_a_simulation_completed_event : concern_for_EditSimulationPresenter
+   public class When_the_simulation_presenter_is_handling_a_simulation_completed_event : concern_for_EditSimulationPresenter
    {
       private SimulationRunFinishedEvent _simulationRunFinishedEvent;
       private IMoBiSimulation _simulation;
@@ -152,7 +152,7 @@ namespace MoBi.Presentation
       {
          base.Context();
          _simulation = A.Fake<IMoBiSimulation>();
-         _simulationRunFinishedEvent = new SimulationRunFinishedEvent(_simulation);
+         _simulationRunFinishedEvent = new SimulationRunFinishedEvent(_simulation, true);
          sut.Edit(_simulation);
          A.CallTo(() => _view.ShowsResults).Returns(false);
       }
@@ -175,7 +175,7 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_the_simulation_simulation_presenter_is_notified_that_the_edit_simulation_was_reloaded : concern_for_EditSimulationPresenter
+   public class When_the_simulation_presenter_is_notified_that_the_edit_simulation_was_reloaded : concern_for_EditSimulationPresenter
    {
       private IMoBiSimulation _simulation;
 
@@ -206,7 +206,7 @@ namespace MoBi.Presentation
    }
 
    public class
-      When_the_simulation_simulation_presenter_is_notified_that_a_simulation_run_is_finished_for_the_edited_simulation :
+      When_the_simulation_presenter_is_notified_that_a_simulation_run_is_finished_for_the_edited_simulation_but_failed :
       concern_for_EditSimulationPresenter
    {
       private IMoBiSimulation _simulation;
@@ -224,7 +224,36 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.Handle(new SimulationRunFinishedEvent(_simulation));
+         sut.Handle(new SimulationRunFinishedEvent(_simulation, false));
+      }
+
+      [Observation]
+      public void should_not_show_results_tab()
+      {
+         A.CallTo(() => _view.ShowResultsTab()).MustNotHaveHappened();
+      }
+   }
+
+   public class
+      When_the_simulation_presenter_is_notified_that_a_simulation_run_is_finished_for_the_edited_simulation :
+      concern_for_EditSimulationPresenter
+   {
+      private IMoBiSimulation _simulation;
+      private CurveChart _chart;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = A.Fake<IMoBiSimulation>();
+         sut.Edit(_simulation);
+         _chart = A.Fake<CurveChart>();
+         A.CallTo(() => _simulation.Chart).Returns(_chart);
+         A.CallTo(() => _view.ShowsResults).Returns(true);
+      }
+
+      protected override void Because()
+      {
+         sut.Handle(new SimulationRunFinishedEvent(_simulation, true));
       }
 
       [Observation]
@@ -236,11 +265,17 @@ namespace MoBi.Presentation
       [Observation]
       public void should_show_simulation_chart()
       {
-         A.CallTo(() => _chartPresenter.Show(_chart, A<IReadOnlyList<DataRepository>>._, A<CurveChartTemplate>._)).MustHaveHappened();
+         A.CallTo(() => _chartPresenter.Show(_chart, A<IReadOnlyList<DataRepository>>._, A<IReadOnlyList<DataRepository>>._, A<CurveChartTemplate>._)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_show_results_tab()
+      {
+         A.CallTo(() => _view.ShowResultsTab()).MustNotHaveHappened();
       }
    }
 
-   public class When_the_simulation_simulation_presenter_is_loading_the_diagram : concern_for_EditSimulationPresenter
+   public class When_the_simulation_presenter_is_loading_the_diagram : concern_for_EditSimulationPresenter
    {
       private IMoBiSimulation _simulation;
 
@@ -263,11 +298,13 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_the_simulation_simulation_presenter_is_editing_a_simulation_with_data : concern_for_EditSimulationPresenter
+   public class When_the_simulation_presenter_is_editing_a_simulation_with_data : concern_for_EditSimulationPresenter
    {
       private IMoBiSimulation _simulation;
       private DataRepository _observedDataRepository;
-      private IEnumerable<DataRepository> _data;
+      private IEnumerable<DataRepository> _plottedData;
+      private IEnumerable<DataRepository> _notPlottedData;
+      private DataRepository _mappedData;
 
       protected override void Context()
       {
@@ -277,12 +314,25 @@ namespace MoBi.Presentation
          var chart = new CurveChart();
 
          _observedDataRepository = new DataRepository();
+
          chart.AddCurve(createObservedCurve(_observedDataRepository));
+
+         _mappedData = new DataRepository();
+         _mappedData.Add(new BaseGrid("basegrid", DimensionFactoryForSpecs.TimeDimension));
+         _simulation.OutputMappings.Add(new OutputMapping
+         {
+            WeightedObservedData = new WeightedObservedData(_mappedData),
+            OutputSelection = new SimulationQuantitySelection(_simulation, new QuantitySelection())
+         });
 
          _simulation.Chart = chart;
 
-         A.CallTo(() => _chartPresenter.Show(chart, A<IReadOnlyList<DataRepository>>._, null))
-            .Invokes(x => _data = x.GetArgument<IEnumerable<DataRepository>>(1));
+         A.CallTo(() => _chartPresenter.Show(chart, A<IReadOnlyList<DataRepository>>._, A<IReadOnlyList<DataRepository>>._, null))
+            .Invokes(x =>
+            {
+               _notPlottedData = x.GetArgument<IEnumerable<DataRepository>>(2);
+               _plottedData = x.GetArgument<IEnumerable<DataRepository>>(1);
+            });
       }
 
       protected override void Because()
@@ -299,14 +349,20 @@ namespace MoBi.Presentation
       [Observation]
       public void should_display_result_data()
       {
-         A.CallTo(() => _chartPresenter.Show(A<CurveChart>._, A<IReadOnlyList<DataRepository>>._, A<CurveChartTemplate>._))
+         A.CallTo(() => _chartPresenter.Show(A<CurveChart>._, A<IReadOnlyList<DataRepository>>._, A<IReadOnlyList<DataRepository>>._, A<CurveChartTemplate>._))
             .MustHaveHappened();
       }
 
       [Observation]
-      public void should_Add_Observer_Data_repository()
+      public void should_plot_observed_data_repository()
       {
-         _data.ShouldContain(_observedDataRepository);
+         _plottedData.ShouldContain(_observedDataRepository);
+      }
+
+      [Observation]
+      public void should_add_observed_data_to_editor()
+      {
+         _notPlottedData.ShouldContain(_mappedData);
       }
 
       [Observation]

@@ -7,7 +7,7 @@ using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Presentation.Presenter
 {
-   internal interface IObjectPathCreatorAtEvent : IObjectPathCreator
+   public interface IObjectPathCreatorAtEvent : IObjectPathCreator
    {
    }
 

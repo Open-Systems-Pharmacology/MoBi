@@ -5,9 +5,11 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Services;
 using MoBi.Presentation.Tasks.Interaction;
+using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Services;
@@ -40,6 +42,8 @@ namespace MoBi.Presentation.Tasks
       private readonly IHeavyWorkManager _heavyWorkManager;
       private readonly ISimulationLoader _simulationLoader;
       private readonly ISbmlTask _sbmlTask;
+      private readonly IParameterIdentificationRunner _parameterIdentificationRunner;
+      private readonly ISimulationRunner _simulationRunner;
 
       public ProjectTask(
          IMoBiContext context,
@@ -48,8 +52,9 @@ namespace MoBi.Presentation.Tasks
          IMRUProvider mruProvider,
          IHeavyWorkManager heavyWorkManager,
          ISimulationLoader simulationLoader,
-         ISbmlTask sbmlTask
-      )
+         ISbmlTask sbmlTask,
+         IParameterIdentificationRunner parameterIdentificationRunner,
+         ISimulationRunner simulationRunner)
       {
          _context = context;
          _simulationLoader = simulationLoader;
@@ -58,6 +63,8 @@ namespace MoBi.Presentation.Tasks
          _mruProvider = mruProvider;
          _serializationTask = serializationTask;
          _dialogCreator = dialogCreator;
+         _parameterIdentificationRunner = parameterIdentificationRunner;
+         _simulationRunner = simulationRunner;
       }
 
       public void OpenProjectFrom(string path)
@@ -240,14 +247,22 @@ namespace MoBi.Presentation.Tasks
 
       public bool CloseProject()
       {
-         var shouldClose = true;
          if (_context.CurrentProject == null)
             return true;
 
-         if (_context.CurrentProject.HasChanged)
-            shouldClose = askForSaveProject();
+         if (_parameterIdentificationRunner.IsRunning)
+         {
+            showRunningParameterIdentificationWarnings();
+            return false;
+         }
 
-         if (!shouldClose)
+         if (_simulationRunner.IsAnySimulationRunning())
+         {
+            showRunningSimulationsWarnings();
+            return false;
+         }
+
+         if (_context.CurrentProject.HasChanged && !askForSaveProject())
             return false;
 
          _context.PublishEvent(new ProjectClosingEvent());
@@ -264,6 +279,18 @@ namespace MoBi.Presentation.Tasks
 
       // Check if TemplateBuildingBlock ID is set, and if not set it to th e used Building Block
       // Needed when importing from PK-Sim 
+
+      private void showRunningParameterIdentificationWarnings()
+      {
+         var parameterIdentifications = _parameterIdentificationRunner.RunningParameterIdentifications.ToList();
+         _dialogCreator.MessageBoxInfo(Captions.ParameterIdentification.ParameterIdentificationsAreRunning(parameterIdentifications.AllNames()));
+      }
+
+      private void showRunningSimulationsWarnings()
+      {
+         var simulations = _simulationRunner.RunningSimulations().ToList();
+         _dialogCreator.MessageBoxInfo(Captions.ParameterIdentification.SimulationsAreRunning(simulations.AllNames()));
+      }
 
       private bool askForSaveProject()
       {

@@ -64,6 +64,12 @@ namespace MoBi.UI.Views
          get => _treeView.OptionsSelection.MultiSelect;
       }
 
+      public void SetLayoutItemLocalisationVisible(bool visible) 
+         => layoutItemLocalisation.Visibility = LayoutVisibilityConvertor.FromBoolean(visible);
+
+      public void SetRelativePathRadioButtonEnabled(bool enabled)
+         => radioGroupReferenceType.Properties.Items.GetItemByValue(ObjectPathType.Relative).Enabled = enabled;
+
       public override void InitializeResources()
       {
          base.InitializeResources();

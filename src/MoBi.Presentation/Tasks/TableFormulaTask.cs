@@ -103,7 +103,7 @@ namespace MoBi.Presentation.Tasks
             new List<MetaDataCategory>(),
             getColumnInfos(tableFormula),
             dataImporterSettings,
-            _dialogCreator.AskForFileToOpen(Captions.Importer.OpenFile, Captions.Importer.ImportFileFilter, DirectoryKey.OBSERVED_DATA)
+            _dialogCreator.AskForFileToOpen(Captions.Importer.SelectFileToImport, Captions.Importer.ImportFileFilter, DirectoryKey.OBSERVED_DATA)
          ).DataRepositories.FirstOrDefault();
       }
 

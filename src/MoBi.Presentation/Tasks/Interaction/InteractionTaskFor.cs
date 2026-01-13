@@ -3,7 +3,6 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Repository;
 using MoBi.Core.Events;
 using MoBi.Core.Extensions;
 using MoBi.Presentation.Tasks.Edit;
@@ -228,9 +227,12 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public virtual IMoBiCommand AddTo(TChild childToAdd, TParent parent, IBuildingBlock buildingBlockWithFormulaCache)
       {
+         var oldName = childToAdd.Name;
          var nameIsValid = CorrectName(childToAdd, parent);
          if (!nameIsValid)
             return new MoBiEmptyCommand();
+
+         correctTagsForRename(oldName, childToAdd.Name, childToAdd);
 
          var macroCommand = new MoBiMacroCommand
          {
@@ -248,6 +250,45 @@ namespace MoBi.Presentation.Tasks.Interaction
          throwAddedEvent(childToAdd, parent);
 
          return macroCommand;
+      }
+
+      private void correctTagsForRename(string oldName, string newName, IObjectBase objectBase)
+      {
+         if (string.Equals(oldName, newName))
+            return;
+
+         if (objectBase is IEntity entity)
+            entity.Tags.Replace(oldName, newName);
+         
+         if (!(objectBase is IContainer container)) 
+            return;
+
+         // Recurse containers to check their tags and their children tags
+         container.GetAllChildren<IEntity>().Each(x => correctTagsForRename(oldName, newName, x));
+         switch (container)
+         {
+            case TransportBuilder transportBuilder:
+               correctTransportBuilderTags(oldName, newName, transportBuilder);
+               break;
+            case ApplicationBuilder applicationBuilder:
+               correctApplicationBuilderMolecules(oldName, newName, applicationBuilder);
+               break;
+         }
+      }
+
+      private void correctApplicationBuilderMolecules(string oldName, string newName, ApplicationBuilder applicationBuilder)
+      {
+         applicationBuilder.Molecules.Each(x =>
+         {
+            x.Name = x.Name.Replace(oldName, newName);
+            x.RelativeContainerPath.Replace(oldName, newName);
+         });
+      }
+
+      private void correctTransportBuilderTags(string oldName, string newName, TransportBuilder transportBuilder)
+      {
+         transportBuilder.SourceCriteria.Each(x => x.Replace(oldName, newName));
+         transportBuilder.TargetCriteria.Each(x => x.Replace(oldName, newName));
       }
 
       private bool adjustFormula(TChild childToAdd, IBuildingBlock buildingBlockWithFormulaCache, IMoBiMacroCommand macroCommand)

@@ -2,7 +2,6 @@ using OSPSuite.Presentation.MenuAndBars;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using OSPSuite.Core.Services;
-using OSPSuite.Presentation.UICommands;
 using OSPSuite.Core.Extensions;
 
 namespace MoBi.Presentation.UICommand
@@ -41,21 +40,6 @@ namespace MoBi.Presentation.UICommand
       public RunActiveSimulationCommand(ISimulationRunner simulationRunner, IActiveSubjectRetriever activeSubjectRetriever)
          : base(simulationRunner, activeSubjectRetriever, false)
       {
-      }
-   }
-
-   public class RunSimulationCommand : ObjectUICommand<IMoBiSimulation>
-   {
-      private readonly ISimulationRunner _simulationRunner;
-
-      public RunSimulationCommand(ISimulationRunner simulationRunner)
-      {
-         _simulationRunner = simulationRunner;
-      }
-
-      protected override async void PerformExecute()
-      {
-         await _simulationRunner.SecureAwait(x => x.RunSimulationAsync(Subject));
       }
    }
 }

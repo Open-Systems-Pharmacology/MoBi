@@ -152,7 +152,7 @@ namespace MoBi.Presentation.Tasks
          _context.PublishEvent(new SimulationRunStartedEvent(simulation));
          _context.PublishEvent(new ProgressInitEvent(100, AppConstants.SimulationRun));
          _simModelManager = _simModelManagerFactory.Create();
-
+         var succeeded = false; 
          try
          {
             addEvents();
@@ -165,6 +165,7 @@ namespace MoBi.Presentation.Tasks
 
             if (simulationRunResults.Success)
             {
+               succeeded = true;
                var results = simulationRunResults.Results;
                results.Name = getNewRepositoryName();
                _displayUnitUpdater.UpdateDisplayUnitsIn(results);
@@ -185,7 +186,7 @@ namespace MoBi.Presentation.Tasks
             }
 
             removeEvents();
-            _context.PublishEvent(new SimulationRunFinishedEvent(simulation));
+            _context.PublishEvent(new SimulationRunFinishedEvent(simulation, succeeded));
          }
       }
 
@@ -291,6 +292,11 @@ namespace MoBi.Presentation.Tasks
       public bool IsAnySimulationRunning()
       {
          return _cancellationTokenSources.Values.Any(cts => !cts.IsCancellationRequested);
+      }
+
+      public IEnumerable<IMoBiSimulation> RunningSimulations()
+      {
+         return _cancellationTokenSources.Where(kvp => !kvp.Value.IsCancellationRequested).Select(kvp => kvp.Key);
       }
    }
 }

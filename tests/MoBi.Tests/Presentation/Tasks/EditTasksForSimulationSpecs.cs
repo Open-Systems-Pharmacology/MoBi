@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using DevExpress.DataProcessing.InMemoryDataProcessor;
+using DevExpress.Utils.Extensions;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Helper;
@@ -29,9 +31,11 @@ namespace MoBi.Presentation.Tasks
       private IDimensionFactory _dimensionFactory;
       protected IParameterIdentificationSimulationPathUpdater _parameterIdentificationSimulationPathUpdater;
       protected IMoBiApplicationController _applicationController;
+      protected MoBiProject _project;
 
       protected override void Context()
       {
+         _project = new MoBiProject();
          _context = A.Fake<IInteractionTaskContext>();
          _simulationPersistor = A.Fake<ISimulationPersistor>();
          _dialogCreator = A.Fake<IDialogCreator>();
@@ -43,6 +47,7 @@ namespace MoBi.Presentation.Tasks
          _applicationController = A.Fake<IMoBiApplicationController>();
 
          A.CallTo(() => _context.ApplicationController).Returns(_applicationController);
+         A.CallTo(() => _context.Context.CurrentProject).Returns(_project);
          
          sut = new EditTasksForSimulation(_context, _simulationPersistor, _dialogCreator, _dataRepositoryTask, _reportCreator, _simulationModelExporter, _dimensionFactory, _parameterIdentificationSimulationPathUpdater);
       }
@@ -67,6 +72,12 @@ namespace MoBi.Presentation.Tasks
       public void should_register_the_simulation()
       {
          A.CallTo(() => _context.Context.Register(_simulation)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void project_should_not_have_changed()
+      {
+         _project.HasChanged.ShouldBeFalse();
       }
    }
 

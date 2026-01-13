@@ -2,7 +2,6 @@
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
-using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
@@ -17,6 +16,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
@@ -44,16 +44,16 @@ namespace MoBi.Presentation.Tasks.Interaction
          IExportDataTableToExcelTask exportDataTableToExcelTask,
          IParameterValuesToParameterValuesDataTableMapper dataTableMapper,
          IPathAndValueEntityToDistributedParameterMapper pathAndValueEntityToDistributedParameterMapper)
-         : base(interactionTaskContext, 
-            editTask, 
-            parameterValuesExtendManager, 
-            cloneManagerForBuildingBlock, 
-            moBiFormulaTask, 
-            dtoToQuantityToParameterValueMapper, 
-            parameterValuePathTask, 
-            objectTypeResolver, 
-            exportDataTableToExcelTask, 
-            dataTableMapper, 
+         : base(interactionTaskContext,
+            editTask,
+            parameterValuesExtendManager,
+            cloneManagerForBuildingBlock,
+            moBiFormulaTask,
+            dtoToQuantityToParameterValueMapper,
+            parameterValuePathTask,
+            objectTypeResolver,
+            exportDataTableToExcelTask,
+            dataTableMapper,
             pathAndValueEntityToDistributedParameterMapper)
       {
          _parameterValuesCreator = parameterValuesCreator;
@@ -144,10 +144,23 @@ namespace MoBi.Presentation.Tasks.Interaction
             //and to initialize it with the correct data so that the initial state of the OK button is correct
             modalPresenter.Encapsulate(referenceAtParamValuePresenter);
             referenceAtParamValuePresenter.Init(null, new List<IObjectBase>(), null);
+            referenceAtParamValuePresenter.SetRelativePathSelectorVisible(false);
+            
+            if (!modalPresenter.Show(referenceAtParamValuePresenter.ModalSize))
+               return Enumerable.Empty<ObjectPath>().ToList();
+            
+            var selections = referenceAtParamValuePresenter.GetAllSelections();
+            var invalidSelections = selections.Where(pathContainsIllegalCharacters).ToList();
+            var validSelections = selections.Except(invalidSelections).ToList();
+               
+            if(invalidSelections.Any())
+               _interactionTaskContext.DialogCreator.MessageBoxInfo(AppConstants.Captions.PathsContainIllegalCharacters(invalidSelections.Select(x => x.PathAsString).ToList(), Constants.ILLEGAL_CHARACTERS));
 
-            return !modalPresenter.Show(referenceAtParamValuePresenter.ModalSize) ? Enumerable.Empty<ObjectPath>().ToList() : referenceAtParamValuePresenter.GetAllSelections();
+            return validSelections;
          }
       }
+
+      private bool pathContainsIllegalCharacters(ObjectPath objectPath) => objectPath.Any(element => Constants.ILLEGAL_CHARACTERS.Any(element.Contains));
 
       private IReadOnlyList<ParameterValue> createExpressionBasedOn(IReadOnlyList<IContainer> organs, IReadOnlyList<MoleculeBuilder> molecules) => organs.SelectMany(x => _parameterValuesCreator.CreateExpressionFrom(x, molecules)).ToList();
 
@@ -172,15 +185,9 @@ namespace MoBi.Presentation.Tasks.Interaction
          return InteractionTask.CorrectName(buildingBlock, forbiddenNames);
       }
 
-      protected override IMoBiCommand GenerateRemoveCommand(ILookupBuildingBlock<ParameterValue> targetBuildingBlock, ParameterValue startValueToRemove)
-      {
-         return new RemoveParameterValueFromBuildingBlockCommand(targetBuildingBlock, startValueToRemove.Path);
-      }
+      protected override IMoBiCommand GenerateRemoveCommand(ILookupBuildingBlock<ParameterValue> targetBuildingBlock, ParameterValue startValueToRemove) => new RemoveParameterValueFromBuildingBlockCommand(targetBuildingBlock, startValueToRemove.Path);
 
-      protected override IMoBiCommand GenerateAddCommand(ILookupBuildingBlock<ParameterValue> targetBuildingBlock, ParameterValue startValueToAdd)
-      {
-         return new AddParameterValueToBuildingBlockCommand(targetBuildingBlock, startValueToAdd);
-      }
+      protected override IMoBiCommand GenerateAddCommand(ILookupBuildingBlock<ParameterValue> targetBuildingBlock, ParameterValue startValueToAdd) => new AddParameterValueToBuildingBlockCommand(targetBuildingBlock, startValueToAdd);
 
       protected override IReadOnlyCollection<IObjectBase> GetNamedObjectsInParent(ParameterValuesBuildingBlock buildingBlockToClone)
       {

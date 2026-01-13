@@ -48,12 +48,13 @@ namespace MoBi.Presentation.Presenter
       ///    Shows the specified chart with underlying data.
       /// </summary>
       /// <param name="chart">The chart to display</param>
-      /// <param name="dataRepositories">The data used in the chart</param>
+      /// <param name="plottedData">The data used in the chart</param>
+      /// <param name="notPlottedData">Data that is added to the data browser, but is not used in the chart</param>
       /// <param name="defaultTemplate">If specified, this template will be used to initialize the chart</param>
       /// <remarks>
       ///    This method ensures the correct order of parameter setting
       /// </remarks>
-      void Show(CurveChart chart, IReadOnlyList<DataRepository> dataRepositories, CurveChartTemplate defaultTemplate = null);
+      void Show(CurveChart chart, IReadOnlyList<DataRepository> plottedData, IReadOnlyList<DataRepository> notPlottedData, CurveChartTemplate defaultTemplate = null);
 
       void UpdateTemplatesFor(IWithChartTemplates withChartTemplates);
       event EventHandler<ObservedDataAddedToChartEventArgs> OnObservedDataAddedToChart;
@@ -271,7 +272,7 @@ namespace MoBi.Presentation.Presenter
          _initialized = true;
       }
 
-      public void Show(CurveChart chart, IReadOnlyList<DataRepository> dataRepositories, CurveChartTemplate defaultTemplate = null)
+      public void Show(CurveChart chart, IReadOnlyList<DataRepository> plottedData, IReadOnlyList<DataRepository> notPlottedData, CurveChartTemplate defaultTemplate = null)
       {
          try
          {
@@ -280,9 +281,10 @@ namespace MoBi.Presentation.Presenter
 
             //do not validate template when showing a chart as the chart might well be without curves when initialized for the first time.
             var currentTemplate = defaultTemplate ?? _chartTemplatingTask.TemplateFrom(chart, validateTemplate: false);
-            replaceSimulationRepositories(dataRepositories);
+            replaceSimulationRepositories(plottedData);
             LoadFromTemplate(currentTemplate, triggeredManually: false, propagateChartChangeEvent: false);
-            addObservedDataIfNeeded(dataRepositories);
+            addObservedDataIfNeeded(plottedData);
+            ChartEditorPresenter.AddDataRepositories(notPlottedData);
          }
          finally
          {
@@ -340,10 +342,16 @@ namespace MoBi.Presentation.Presenter
 
       public void Handle(ObservedDataRemovedEvent eventToHandle)
       {
-         var dataRepository = eventToHandle.DataRepository;
-         editorPresenter.RemoveDataRepositories(new[] { dataRepository });
+         if (!canHandle(eventToHandle))
+            return;
+            
+         editorPresenter.RemoveDataRepositories(eventToHandle.DataRepositories);
          displayPresenter.Refresh();
       }
+
+      private bool canHandle(ObservedDataRemovedEvent eventToHandle) => eventToHandle.DataRepositories.Any(isEditing);
+
+      private bool isEditing(DataRepository dataRepository) => dataRepository.Columns.Any(x => editorPresenter.AllDataColumns.Contains(x));
 
       public override void ReleaseFrom(IEventPublisher eventPublisher)
       {
