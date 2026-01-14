@@ -56,10 +56,10 @@ jobs:
       - name: Build
         run: |
           rake "update_go_license[ApplicationStartup.cs, ${{ secrets.GO_DIAGRAM_KEY }}]"
-          dotnet build MoBi.sln /p:Version=${{env.APP_VERSION}}
+          dotnet build /p:Version=${{env.APP_VERSION}}
 
       - name : Test
-        run: dotnet test .\tests\**\bin\Debug\net472\MoBi*Tests.dll -v normal --no-build  --logger:"html;LogFileName=../testLog_Windows.html"
+        run: dotnet test -v normal --no-build  --logger:"html;LogFileName=../testLog_Windows.html"
 
       - name: Sign MoBi.exe with CodeSignTool
         uses: Open-Systems-Pharmacology/Workflows/.github/actions/codesigner-SSL@main
