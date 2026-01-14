@@ -13,7 +13,7 @@ permissions:
   packages: read
 
 jobs:
-  build-and-test:
+  build:
     uses: Open-Systems-Pharmacology/Workflows/.github/workflows/test-csharp.yml@add_resuable_test_workflow
     secrets: inherit
     with:
