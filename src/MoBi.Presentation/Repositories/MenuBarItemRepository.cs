@@ -264,7 +264,7 @@ namespace MoBi.Presentation.Repositories
             .WithId(MenuBarItemIds.HistoryReportGroup)
             .WithIcon(ApplicationIcons.HistoryExport);
 
-         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.ExportHistoryToExcel)
+         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.ExportHistoryToExcelOrCsv)
             .WithId(MenuBarItemIds.ExportHistoryToExcel)
             .WithDescription(ToolTips.ExportRibbon.CreateReport)
             .WithIcon(ApplicationIcons.Excel)

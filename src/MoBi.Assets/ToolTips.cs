@@ -120,6 +120,7 @@ namespace MoBi.Assets
          public static readonly string CreateReport = "Export History to Excel file";
          public static readonly string ExportToPDF = "Create a PDF report of the project";
          public static readonly string ExportHistoryToPDF = "Create a PDF report of the project history";
+         public static readonly string CreateCsvReport = "Export History to CSV file";
       }
 
       public static class ViewRibbon
