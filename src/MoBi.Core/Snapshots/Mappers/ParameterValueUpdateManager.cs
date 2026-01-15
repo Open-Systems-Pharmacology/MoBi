@@ -35,6 +35,8 @@ public class ParameterValueUpdateManager : IParameterValueUpdateManager
 
       parameterValue.Value = updatedParameterValue.NewValue;
       parameterValue.DisplayUnit = parameterValue.Dimension.Unit(updatedParameterValue.NewUnit);
-      parameterValue.Formula = buildingBlock.FormulaCache.Contains(updatedParameterValue.NewFormulaId) ? buildingBlock.FormulaCache[updatedParameterValue.NewFormulaId] : null;
+      parameterValue.Formula = updatedParameterValue.NewFormulaId != null && buildingBlock.FormulaCache.Contains(updatedParameterValue.NewFormulaId)
+         ? buildingBlock.FormulaCache[updatedParameterValue.NewFormulaId]
+         : null;
    }
 }
