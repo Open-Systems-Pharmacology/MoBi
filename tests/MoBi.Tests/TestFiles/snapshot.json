@@ -1477,7 +1477,7 @@
               ]
             }
           ],
-          "RandomSeed": 14748687.0
+          "RandomSeed": 144540453.0
         },
         "IndividualBuildingBlock": "Man",
         "ExpressionProfiles": [
@@ -1501,53 +1501,86 @@
   "ReactionDimensionMode": "AmountBased",
   "ExpressionProfileSnapshots": [
     {
-      "Type": "Enzyme",
-      "Species": "Human",
-      "Molecule": "CYP3A4",
-      "Category": "Healthy",
-      "Parameters": [
-        {
-          "Path": "CYP3A4|Reference concentration",
-          "Value": 4.32,
-          "Unit": "µmol/l",
-          "ValueOrigin": {}
-        },
-        {
-          "Path": "CYP3A4|t1/2 (intestine)",
-          "Value": 1380.0,
-          "Unit": "min",
-          "ValueOrigin": {}
-        },
-        {
-          "Path": "CYP3A4|t1/2 (liver)",
-          "Value": 2220.0,
-          "Unit": "min",
-          "ValueOrigin": {}
+      "PKSimSnapshot": {
+        "Type": "Enzyme",
+        "Species": "Human",
+        "Molecule": "CYP3A4",
+        "Category": "Healthy",
+        "Parameters": [
+          {
+            "Path": "CYP3A4|Reference concentration",
+            "Value": 4.32,
+            "Unit": "µmol/l",
+            "ValueOrigin": {}
+          },
+          {
+            "Path": "CYP3A4|t1/2 (intestine)",
+            "Value": 1380.0,
+            "Unit": "min",
+            "ValueOrigin": {}
+          },
+          {
+            "Path": "CYP3A4|t1/2 (liver)",
+            "Value": 2220.0,
+            "Unit": "min",
+            "ValueOrigin": {}
+          }
+        ],
+        "Localization": "Intracellular",
+        "Ontogeny": {
+          "Name": "CYP3A4"
         }
-      ],
-      "Localization": "Intracellular",
-      "Ontogeny": {
-        "Name": "CYP3A4"
-      }
+      },
+      "UpdatedValues": [
+        {
+          "Path": "Organism|VenousBlood|Plasma|CYP3A4|Initial concentration",
+          "NewUnit": "µmol/l",
+          "NewFormulaId": "ConcFormula"
+        },
+        {
+          "Path": "Organism|Bone|Intracellular|CYP3A4|Fraction expressed intracellular",
+          "NewValue": 0.9,
+          "NewUnit": ""
+        }
+      ]
     }
   ],
   "IndividualBuildingBlockSnapshots": [
     {
-      "Name": "Man",
-      "Seed": 5217250,
-      "OriginData": {
-        "CalculationMethods": [
-          "SurfaceAreaPlsInt_VAR1",
-          "Body surface area - Mosteller"
-        ],
-        "Species": "Human",
-        "Population": "European_ICRP_2002",
-        "Gender": "MALE",
-        "Age": {
-          "Value": 30.0,
-          "Unit": "year(s)"
+      "PKSimSnapshot": {
+        "Name": "Man",
+        "Seed": 5217250,
+        "OriginData": {
+          "CalculationMethods": [
+            "SurfaceAreaPlsInt_VAR1",
+            "Body surface area - Mosteller"
+          ],
+          "Species": "Human",
+          "Population": "European_ICRP_2002",
+          "Gender": "MALE",
+          "Age": {
+            "Value": 30.0,
+            "Unit": "year(s)"
+          }
         }
-      }
+      },
+      "UpdatedValues": [
+        {
+          "Path": "Organism|Ontogeny factor (albumin)",
+          "NewValue": 1.0,
+          "NewUnit": ""
+        },
+        {
+          "Path": "Organism|pH (blood cells)",
+          "NewValue": 7.0,
+          "NewUnit": ""
+        },
+        {
+          "Path": "Organism|Age",
+          "NewValue": 31.0,
+          "NewUnit": "year(s)"
+        }
+      ]
     }
   ]
 }

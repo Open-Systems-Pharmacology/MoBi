@@ -31,6 +31,7 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
    private readonly ISimulationSettingsFactory _simulationSettingsFactory;
    private readonly ICoreSimulationRunner _simulationRunner;
    private readonly ICoreUserSettings _userSettings;
+   private readonly IParameterValueUpdateManager _parameterValueUpdateManager;
 
    public ProjectMapper(IXmlSerializationService xmlSerializationService,
       ICreationMetaDataFactory creationMetaDataFactory,
@@ -42,7 +43,8 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       IPKSimStarter pkSimStarter,
       ISimulationSettingsFactory simulationSettingsFactory,
       ICoreSimulationRunner simulationRunner,
-      ICoreUserSettings userSettings) : base(creationMetaDataFactory, logger, context, classificationSnapshotTask, parameterIdentificationMapper)
+      ICoreUserSettings userSettings,
+      IParameterValueUpdateManager parameterValueUpdateManager) : base(creationMetaDataFactory, logger, context, classificationSnapshotTask, parameterIdentificationMapper)
    {
       _xmlSerializationService = xmlSerializationService;
       _simulationMapper = simulationMapper;
@@ -50,6 +52,7 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       _simulationSettingsFactory = simulationSettingsFactory;
       _simulationRunner = simulationRunner;
       _userSettings = userSettings;
+      _parameterValueUpdateManager = parameterValueUpdateManager;
    }
 
    /// <summary>
@@ -94,9 +97,9 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
 
       projectSnapshot.IndividualBuildingBlocks?.Each(x => project.AddIndividualBuildingBlock(deserializeFromBase64PKML<IndividualBuildingBlock>(x, project)));
 
-      projectSnapshot.IndividualBuildingBlockSnapshots?.Each(x => project.AddIndividualBuildingBlock(_pkSimStarter.LoadIndividualFromSnapshot(pkSimSnapshotToBase64String(x))));
+      projectSnapshot.IndividualBuildingBlockSnapshots?.Each(x => project.AddIndividualBuildingBlock(loadIndividualFromSnapshotAndUpdateValues(x)));
 
-      projectSnapshot.ExpressionProfileSnapshots?.Each(x => project.AddExpressionProfileBuildingBlock(_pkSimStarter.LoadExpressionProfileFromSnapshot(pkSimSnapshotToBase64String(x))));
+      projectSnapshot.ExpressionProfileSnapshots?.Each(x => project.AddExpressionProfileBuildingBlock(loadExpressionProfileFromSnapshotAndUpdateValues(x)));
 
       var snapshotContext = new SnapshotContext(project, SnapshotVersions.FindByMoBiProjectVersion(projectSnapshot.Version));
 
@@ -135,6 +138,21 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
 
       return project;
    }
+
+   private ExpressionProfileBuildingBlock loadExpressionProfileFromSnapshotAndUpdateValues(ExpressionProfileSnapshot expressionProfileSnapshot)
+   {
+      var buildingBlock = _pkSimStarter.LoadExpressionProfileFromSnapshot(pkSimSnapshotToBase64String(expressionProfileSnapshot.PKSimSnapshot));
+      expressionProfileSnapshot.UpdatedValues.Each(x => _parameterValueUpdateManager.UpdateParameterValueIn<ExpressionProfileBuildingBlock, ExpressionParameter>(buildingBlock, x));
+      return buildingBlock;
+   }
+
+   private IndividualBuildingBlock loadIndividualFromSnapshotAndUpdateValues(IndividualSnapshot individualSnapshot)
+   {
+      var buildingBlock = _pkSimStarter.LoadIndividualFromSnapshot(pkSimSnapshotToBase64String(individualSnapshot.PKSimSnapshot));
+      individualSnapshot.UpdatedValues.Each(x => _parameterValueUpdateManager.UpdateParameterValueIn<IndividualBuildingBlock, IndividualParameter>(buildingBlock, x));
+      return buildingBlock;
+   }
+
    private static object base64StringToPKSimSnapshot(string base64String) => JsonConvert.DeserializeObject<object>(base64String.FromBase64String());
    private static string pkSimSnapshotToBase64String(object pkSimSnapshot) => JsonConvert.SerializeObject(pkSimSnapshot).ToBase64String();
 
@@ -248,14 +266,25 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
    private string[] mapExpressionProfilesBuildingBlocks(ModelProject project) => project.ExpressionProfileCollection.Where(x => !x.HasSnapshot).Select(serializeToBase64PKML).ToArray();
    private string[] mapIndividualBuildingBlocks(ModelProject project) => project.IndividualsCollection.Where(x => !x.HasSnapshot).Select(serializeToBase64PKML).ToArray();
 
-   // TODO snapshot needs to be augmented with the changed parameters after https://github.com/Open-Systems-Pharmacology/MoBi/issues/1560
-   private object[] mapExpressionProfileSnapshots(ModelProject project) => project.ExpressionProfileCollection.Where(x => x.HasSnapshot).Select(x => base64StringToPKSimSnapshot(x.Snapshot)).ToArray();
-   private object[] mapIndividualSnapshots(ModelProject project) => project.IndividualsCollection.Where(x => x.HasSnapshot).Select(x => base64StringToPKSimSnapshot(x.Snapshot)).ToArray();
+   private ExpressionProfileSnapshot[] mapExpressionProfileSnapshots(ModelProject project) => project.ExpressionProfileCollection.Where(x => x.HasSnapshot).Select(expressionProfileSnapshotFor).ToArray();
 
-   private static bool shouldUsePKSimSnapshot(Module module)
-   {
-      return module.IsPKSimModule && module.HasSnapshot;
-   }
+   private ExpressionProfileSnapshot expressionProfileSnapshotFor(ExpressionProfileBuildingBlock buildingBlock) =>
+      new()
+      {
+         PKSimSnapshot = base64StringToPKSimSnapshot(buildingBlock.Snapshot),
+         UpdatedValues = buildingBlock.ExpressionParameters.Where(x => x.HasInitialState).MapAllUsing(_parameterValueUpdateManager).ToArray()
+      };
+
+   private IndividualSnapshot[] mapIndividualSnapshots(ModelProject project) => project.IndividualsCollection.Where(x => x.HasSnapshot).Select(individualSnapshotFor).ToArray();
+
+   private IndividualSnapshot individualSnapshotFor(IndividualBuildingBlock buildingBlock) =>
+      new()
+      {
+         PKSimSnapshot = base64StringToPKSimSnapshot(buildingBlock.Snapshot),
+         UpdatedValues = buildingBlock.Where(x => x.HasInitialState).MapAllUsing(_parameterValueUpdateManager).ToArray()
+      };
+
+   private static bool shouldUsePKSimSnapshot(Module module) => module.IsPKSimModule && module.HasSnapshot;
 
    private T deserializeFromBase64PKML<T>(string encodedModule, ModelProject project) => _xmlSerializationService.Deserialize<T>(encodedModule.FromBase64String(), project);
 

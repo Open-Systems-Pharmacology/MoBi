@@ -7,8 +7,7 @@ namespace MoBi.Core.Snapshots;
 
 public class Project : SnapshotBase
 {
-   [Required] 
-   public int Version { get; set; }
+   [Required] public int Version { get; set; }
 
    public object[] PKSimModules { set; get; }
 
@@ -34,7 +33,7 @@ public class Project : SnapshotBase
 
    public ReactionDimensionMode ReactionDimensionMode { get; set; }
 
-   public object[] ExpressionProfileSnapshots { get; set; }
+   public ExpressionProfileSnapshot[] ExpressionProfileSnapshots { get; set; }
 
-   public object[] IndividualBuildingBlockSnapshots { get; set; }
+   public IndividualSnapshot[] IndividualBuildingBlockSnapshots { get; set; }
 }
