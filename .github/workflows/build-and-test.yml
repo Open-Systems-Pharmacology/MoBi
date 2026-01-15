@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   build:
-    uses: Open-Systems-Pharmacology/Workflows/.github/workflows/test-csharp.yml@add_resuable_test_workflow
+    uses: Open-Systems-Pharmacology/Workflows/.github/workflows/test-csharp.yml@main
     secrets: inherit
     with:
       temp-version: "12.3.9999"
