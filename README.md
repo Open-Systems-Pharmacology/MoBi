@@ -20,7 +20,7 @@ may define a new scenario, situation, or individual. Refine a Reaction(s) networ
 where it should be considered.
 
 ## Code Status
-[![Build status](https://img.shields.io/github/actions/workflow/status/Open-Systems-Pharmacology/MoBi/nightly-badge.yml?logo=GitHub&label=Build%20status)](https://github.com/Open-Systems-Pharmacology/MoBi/actions/workflows/build-nightly_12.2.yml)
+[![Build status](https://img.shields.io/github/actions/workflow/status/Open-Systems-Pharmacology/MoBi/nightly-badge.yml?logo=GitHub&label=Build%20status)](https://github.com/Open-Systems-Pharmacology/MoBi/actions/workflows/build-nightly_13.0.yml)
 [![Coverage status](https://codecov.io/gh/Open-Systems-Pharmacology/MoBi/branch/develop/graph/badge.svg)](https://codecov.io/gh/Open-Systems-Pharmacology/MoBi)
 
 ## Code of conduct
