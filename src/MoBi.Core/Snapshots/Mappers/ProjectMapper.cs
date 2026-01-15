@@ -142,14 +142,14 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
    private ExpressionProfileBuildingBlock loadExpressionProfileFromSnapshotAndUpdateValues(ExpressionProfileSnapshot expressionProfileSnapshot)
    {
       var buildingBlock = _pkSimStarter.LoadExpressionProfileFromSnapshot(pkSimSnapshotToBase64String(expressionProfileSnapshot.PKSimSnapshot));
-      expressionProfileSnapshot.UpdatedValues.Each(x => _parameterValueUpdateManager.UpdateParameterValueIn<ExpressionProfileBuildingBlock, ExpressionParameter>(buildingBlock, x));
+      expressionProfileSnapshot.UpdatedValues?.Each(x => _parameterValueUpdateManager.UpdateParameterValueIn<ExpressionProfileBuildingBlock, ExpressionParameter>(buildingBlock, x));
       return buildingBlock;
    }
 
    private IndividualBuildingBlock loadIndividualFromSnapshotAndUpdateValues(IndividualSnapshot individualSnapshot)
    {
       var buildingBlock = _pkSimStarter.LoadIndividualFromSnapshot(pkSimSnapshotToBase64String(individualSnapshot.PKSimSnapshot));
-      individualSnapshot.UpdatedValues.Each(x => _parameterValueUpdateManager.UpdateParameterValueIn<IndividualBuildingBlock, IndividualParameter>(buildingBlock, x));
+      individualSnapshot.UpdatedValues?.Each(x => _parameterValueUpdateManager.UpdateParameterValueIn<IndividualBuildingBlock, IndividualParameter>(buildingBlock, x));
       return buildingBlock;
    }
 
