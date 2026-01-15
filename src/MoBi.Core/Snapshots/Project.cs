@@ -7,7 +7,8 @@ namespace MoBi.Core.Snapshots;
 
 public class Project : SnapshotBase
 {
-   [Required] public int Version { get; set; }
+   [Required]
+   public int Version { get; set; }
 
    public object[] PKSimModules { set; get; }
 
