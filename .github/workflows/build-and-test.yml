@@ -18,3 +18,4 @@ jobs:
     secrets: inherit
     with:
       temp-version: "12.3.9999"
+      solution-file: "MoBi.sln"
