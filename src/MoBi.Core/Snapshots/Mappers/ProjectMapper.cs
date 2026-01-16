@@ -294,7 +294,8 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
 
       snapshot.UpdatedValues?.Where(x => !string.IsNullOrEmpty(x.NewFormulaId)).Each(x => formulaCache.Add(buildingBlock.FormulaCache[x.NewFormulaId]));
 
-      snapshot.FormulaCache = _xmlSerializationService.SerializeAsString(formulaCache).ToBase64String();
+      if(formulaCache.Any())
+         snapshot.FormulaCache = _xmlSerializationService.SerializeAsString(formulaCache).ToBase64String();
    }
 
    private IndividualSnapshot[] mapIndividualSnapshots(ModelProject project) => project.IndividualsCollection.Where(x => x.HasSnapshot).Select(individualSnapshotFor).ToArray();
