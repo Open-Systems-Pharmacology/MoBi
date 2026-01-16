@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using OSPSuite.Assets.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Qualification;
 using OSPSuite.Core.Services;
@@ -97,9 +98,9 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
 
       projectSnapshot.IndividualBuildingBlocks?.Each(x => project.AddIndividualBuildingBlock(deserializeFromBase64PKML<IndividualBuildingBlock>(x, project)));
 
-      projectSnapshot.IndividualBuildingBlockSnapshots?.Each(x => project.AddIndividualBuildingBlock(loadIndividualFromSnapshotAndUpdateValues(x)));
+      projectSnapshot.IndividualBuildingBlockSnapshots?.Each(x => project.AddIndividualBuildingBlock(loadIndividualFromSnapshotAndUpdateValues(x, project)));
 
-      projectSnapshot.ExpressionProfileSnapshots?.Each(x => project.AddExpressionProfileBuildingBlock(loadExpressionProfileFromSnapshotAndUpdateValues(x)));
+      projectSnapshot.ExpressionProfileSnapshots?.Each(x => project.AddExpressionProfileBuildingBlock(loadExpressionProfileFromSnapshotAndUpdateValues(x, project)));
 
       var snapshotContext = new SnapshotContext(project, SnapshotVersions.FindByMoBiProjectVersion(projectSnapshot.Version));
 
@@ -111,15 +112,15 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
 
       var simulationContext = new SimulationContext(context.RunSimulations, snapshotContext)
       {
-         NumberOfSimulationsToLoad = projectSnapshot.Simulations.Length,
+         NumberOfSimulationsToLoad = projectSnapshot.Simulations?.Length ?? 0,
          NumberOfSimulationsLoaded = 0
       };
 
-      foreach (var simulationSnapshot in projectSnapshot.Simulations)
+      projectSnapshot.Simulations?.Each(async void (x) =>
       {
          try
          {
-            var simulation = await _simulationMapper.MapToModel(simulationSnapshot, simulationContext);
+            var simulation = await _simulationMapper.MapToModel(x, simulationContext);
             addSimulations(project, simulation);
             simulationContext.NumberOfSimulationsLoaded++;
          }
@@ -127,7 +128,7 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
          {
             _logger.AddException(e);
          }
-      }
+      });
 
       if (simulationContext.Run && project.Simulations.Any())
       {
@@ -139,24 +140,27 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       return project;
    }
 
-   private ExpressionProfileBuildingBlock loadExpressionProfileFromSnapshotAndUpdateValues(ExpressionProfileSnapshot expressionProfileSnapshot)
+   private ExpressionProfileBuildingBlock loadExpressionProfileFromSnapshotAndUpdateValues(ExpressionProfileSnapshot expressionProfileSnapshot, ModelProject project)
    {
       var buildingBlock = _pkSimStarter.LoadExpressionProfileFromSnapshot(pkSimSnapshotToBase64String(expressionProfileSnapshot.PKSimSnapshot));
-      expressionProfileSnapshot.UpdatedValues?.Each(x => _parameterValueUpdateManager.UpdateParameterValueIn<ExpressionProfileBuildingBlock, ExpressionParameter>(buildingBlock, x));
+      expressionProfileSnapshot.UpdatedValues?.Each(x => _parameterValueUpdateManager.UpdateParameterValueIn<ExpressionProfileBuildingBlock, ExpressionParameter>(buildingBlock, x, formulaCacheFrom(expressionProfileSnapshot, project)));
       return buildingBlock;
    }
 
-   private IndividualBuildingBlock loadIndividualFromSnapshotAndUpdateValues(IndividualSnapshot individualSnapshot)
+   private IndividualBuildingBlock loadIndividualFromSnapshotAndUpdateValues(IndividualSnapshot individualSnapshot, ModelProject project)
    {
       var buildingBlock = _pkSimStarter.LoadIndividualFromSnapshot(pkSimSnapshotToBase64String(individualSnapshot.PKSimSnapshot));
-      individualSnapshot.UpdatedValues?.Each(x => _parameterValueUpdateManager.UpdateParameterValueIn<IndividualBuildingBlock, IndividualParameter>(buildingBlock, x));
+      individualSnapshot.UpdatedValues?.Each(x => _parameterValueUpdateManager.UpdateParameterValueIn<IndividualBuildingBlock, IndividualParameter>(buildingBlock, x, formulaCacheFrom(individualSnapshot, project)));
       return buildingBlock;
    }
+
+   private FormulaCache formulaCacheFrom(ParameterValueSnapshotWithUpdates snapshot, ModelProject project) =>
+      string.IsNullOrEmpty(snapshot.FormulaCache) ? null : _xmlSerializationService.Deserialize<FormulaCache>(snapshot.FormulaCache.FromBase64String(), project);
 
    private static object base64StringToPKSimSnapshot(string base64String) => JsonConvert.DeserializeObject<object>(base64String.FromBase64String());
    private static string pkSimSnapshotToBase64String(object pkSimSnapshot) => JsonConvert.SerializeObject(pkSimSnapshot).ToBase64String();
 
-   private async Task runParallelSimulations(MoBiProject project)
+   private async Task runParallelSimulations(ModelProject project)
    {
       var options = new ParallelOptions
       {
@@ -268,21 +272,41 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
 
    private ExpressionProfileSnapshot[] mapExpressionProfileSnapshots(ModelProject project) => project.ExpressionProfileCollection.Where(x => x.HasSnapshot).Select(expressionProfileSnapshotFor).ToArray();
 
-   private ExpressionProfileSnapshot expressionProfileSnapshotFor(ExpressionProfileBuildingBlock buildingBlock) =>
-      new()
+   private ExpressionProfileSnapshot expressionProfileSnapshotFor(ExpressionProfileBuildingBlock buildingBlock)
+   {
+      var snapshot = new ExpressionProfileSnapshot
       {
          PKSimSnapshot = base64StringToPKSimSnapshot(buildingBlock.Snapshot),
          UpdatedValues = buildingBlock.ExpressionParameters.Where(x => x.HasInitialState).MapAllUsing(_parameterValueUpdateManager).ToArray()
       };
 
+      cacheFormulas(buildingBlock, snapshot);
+
+      return snapshot;
+   }
+
+   private void cacheFormulas(IBuildingBlock buildingBlock, ParameterValueSnapshotWithUpdates snapshot)
+   {
+      var formulaCache = new FormulaCache();
+      snapshot.UpdatedValues.Where(x => !string.IsNullOrEmpty(x.NewFormulaId)).Each(x => formulaCache.Add(buildingBlock.FormulaCache[x.NewFormulaId]));
+
+      snapshot.FormulaCache = _xmlSerializationService.SerializeAsString(formulaCache).ToBase64String();
+   }
+
    private IndividualSnapshot[] mapIndividualSnapshots(ModelProject project) => project.IndividualsCollection.Where(x => x.HasSnapshot).Select(individualSnapshotFor).ToArray();
 
-   private IndividualSnapshot individualSnapshotFor(IndividualBuildingBlock buildingBlock) =>
-      new()
+   private IndividualSnapshot individualSnapshotFor(IndividualBuildingBlock buildingBlock)
+   {
+      var snapshot = new IndividualSnapshot
       {
          PKSimSnapshot = base64StringToPKSimSnapshot(buildingBlock.Snapshot),
          UpdatedValues = buildingBlock.Where(x => x.HasInitialState).MapAllUsing(_parameterValueUpdateManager).ToArray()
       };
+
+      cacheFormulas(buildingBlock, snapshot);
+
+      return snapshot;
+   }
 
    private static bool shouldUsePKSimSnapshot(Module module) => module.IsPKSimModule && module.HasSnapshot;
 

@@ -16,6 +16,7 @@ namespace MoBi.IntegrationTests.Snapshots
    {
       private ExpressionProfileBuildingBlock _expressionProfileBuildingBlock;
       private IndividualBuildingBlock _individualBuildingBlock;
+      private IndividualParameter _individualParameterWithUserFormula;
 
       public override void GlobalContext()
       {
@@ -40,9 +41,10 @@ namespace MoBi.IntegrationTests.Snapshots
             new ExpressionParameter { Path = "Organism|Bone|Intracellular|CYP3A4|Fraction expressed intracellular".ToObjectPath(), Dimension = A.Fake<IDimension>(), Value = 1 }
          ];
 
+         _individualParameterWithUserFormula = new IndividualParameter { Path = "Organism|Ontogeny factor (albumin)".ToObjectPath(), Dimension = A.Fake<IDimension>(), Value = 1 };
          _individualBuildingBlock =
          [
-            new IndividualParameter { Path = "Organism|Ontogeny factor (albumin)".ToObjectPath(), Dimension = A.Fake<IDimension>(), Value = 1 },
+            _individualParameterWithUserFormula,
             new IndividualParameter { Path = "Organism|pH (blood cells)".ToObjectPath(), Dimension = A.Fake<IDimension>(), Value = 1 },
             new IndividualParameter { Path = "Organism|Age".ToObjectPath(), Dimension = A.Fake<IDimension>(), Value = 1 }
          ];
@@ -100,6 +102,12 @@ namespace MoBi.IntegrationTests.Snapshots
       {
          _project.IndividualsCollection[0].Count(x => x.HasInitialState).ShouldBeEqualTo(3);
          _project.ExpressionProfileCollection[0].ExpressionParameters.Count(x => x.HasInitialState).ShouldBeEqualTo(2);
+      }
+
+      [Observation]
+      public void the_user_created_formula_is_used_from_the_serialized_formula_cache()
+      {
+         _individualParameterWithUserFormula.Formula.Name.ShouldBeEqualTo("ClonedTableFormulaWithXArgument_OntogenyFactorAlbumin");
       }
    }
 }

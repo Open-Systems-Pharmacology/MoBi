@@ -46,7 +46,7 @@ namespace MoBi.IntegrationTests.Snapshots
       private SimulationMapper _simulationMapper;
       private ICoreSimulationRunner _coreSimulationRunner;
       private ICoreUserSettings _coreUserSettings;
-      protected IParameterValueUpdateManager _updatedValueMapper;
+      protected IParameterValueUpdateManager _parameterValueUpdateManager;
       protected IndividualBuildingBlock _snapshotIndividualBuildingBlock;
       protected ExpressionProfileBuildingBlock _snapshotExpressionProfile;
 
@@ -64,12 +64,12 @@ namespace MoBi.IntegrationTests.Snapshots
          _simulationMapper = IoC.Resolve<SimulationMapper>();
          _coreSimulationRunner = A.Fake<ICoreSimulationRunner>();
          _coreUserSettings = A.Fake<ICoreUserSettings>();
-         _updatedValueMapper = A.Fake<IParameterValueUpdateManager>();
+         _parameterValueUpdateManager = A.Fake<IParameterValueUpdateManager>();
 
          A.CallTo(() => _context.Resolve<ISnapshotMapper>()).ReturnsLazily(x => IoC.Resolve<ISnapshotMapper>());
 
          _project = new MoBiProject();
-         sut = new ProjectMapper(_xmlSerializationService, _creationMetaDataFactory, _classificationSnapshotTask, _context, _ospSuiteLogger, _parameterIdentificationMapper, _simulationMapper, _pkSimStarter, _simulationSettingsFactory, _coreSimulationRunner, _coreUserSettings, _updatedValueMapper);
+         sut = new ProjectMapper(_xmlSerializationService, _creationMetaDataFactory, _classificationSnapshotTask, _context, _ospSuiteLogger, _parameterIdentificationMapper, _simulationMapper, _pkSimStarter, _simulationSettingsFactory, _coreSimulationRunner, _coreUserSettings, _parameterValueUpdateManager);
 
          var module = new Module().WithId("module").WithName("module");
          _project.AddModule(module);
@@ -356,8 +356,8 @@ namespace MoBi.IntegrationTests.Snapshots
       [Observation]
       public void the_updated_value_manager_should_be_called_to_update_values_in_building_blocks()
       {
-         A.CallTo(() => _updatedValueMapper.MapFrom(_individualParameter)).MustHaveHappened();
-         A.CallTo(() => _updatedValueMapper.MapFrom(_expressionParameter)).MustHaveHappened();
+         A.CallTo(() => _parameterValueUpdateManager.MapFrom(_individualParameter)).MustHaveHappened();
+         A.CallTo(() => _parameterValueUpdateManager.MapFrom(_expressionParameter)).MustHaveHappened();
       }
    }
 }

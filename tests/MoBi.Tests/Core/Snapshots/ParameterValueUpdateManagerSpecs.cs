@@ -91,7 +91,7 @@ internal class When_updating_a_ParameterValue_in_a_BuildingBlock : concern_for_P
 
    protected override void Because()
    {
-      sut.UpdateParameterValueIn<ExpressionProfileBuildingBlock, ExpressionParameter>(_buildingBlock, _updatedParameterValue);
+      sut.UpdateParameterValueIn<ExpressionProfileBuildingBlock, ExpressionParameter>(_buildingBlock, _updatedParameterValue, new FormulaCache());
    }
 
    [Observation]
