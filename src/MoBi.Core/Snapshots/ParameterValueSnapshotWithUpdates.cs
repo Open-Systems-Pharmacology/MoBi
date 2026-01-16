@@ -7,6 +7,6 @@ public abstract class ParameterValueSnapshotWithUpdates
    public string FormulaCache { get; set; }
 }
 
-public class ExpressionProfileSnapshot : ParameterValueSnapshotWithUpdates
+public class ExpressionProfileSnapshot : ParameterValueSnapshotWithUpdates;
 
 public class IndividualSnapshot : ParameterValueSnapshotWithUpdates;
