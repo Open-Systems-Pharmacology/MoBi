@@ -294,7 +294,7 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
 
       snapshot.UpdatedValues?.Where(x => !string.IsNullOrEmpty(x.NewFormulaId)).Each(x => formulaCache.Add(buildingBlock.FormulaCache[x.NewFormulaId]));
 
-      if(formulaCache.Any())
+      if (formulaCache.Any())
          snapshot.FormulaCache = _xmlSerializationService.SerializeAsString(formulaCache).ToBase64String();
    }
 
