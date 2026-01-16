@@ -1477,7 +1477,7 @@
               ]
             }
           ],
-          "RandomSeed": 14748687.0
+          "RandomSeed": 144540453.0
         },
         "IndividualBuildingBlock": "Man",
         "ExpressionProfiles": [
@@ -1501,53 +1501,88 @@
   "ReactionDimensionMode": "AmountBased",
   "ExpressionProfileSnapshots": [
     {
-      "Type": "Enzyme",
-      "Species": "Human",
-      "Molecule": "CYP3A4",
-      "Category": "Healthy",
-      "Parameters": [
+      "PKSimSnapshot": {
+        "Type": "Enzyme",
+        "Species": "Human",
+        "Molecule": "CYP3A4",
+        "Category": "Healthy",
+        "Parameters": [
+          {
+            "Path": "CYP3A4|Reference concentration",
+            "Value": 4.32,
+            "Unit": "µmol/l",
+            "ValueOrigin": {}
+          },
+          {
+            "Path": "CYP3A4|t1/2 (intestine)",
+            "Value": 1380.0,
+            "Unit": "min",
+            "ValueOrigin": {}
+          },
+          {
+            "Path": "CYP3A4|t1/2 (liver)",
+            "Value": 2220.0,
+            "Unit": "min",
+            "ValueOrigin": {}
+          }
+        ],
+        "Localization": "Intracellular",
+        "Ontogeny": {
+          "Name": "CYP3A4"
+        }
+      },
+      "UpdatedValues": [
         {
-          "Path": "CYP3A4|Reference concentration",
-          "Value": 4.32,
-          "Unit": "µmol/l",
-          "ValueOrigin": {}
+          "Path": "Organism|VenousBlood|Plasma|CYP3A4|Initial concentration",
+          "NewUnit": "µmol/l",
+          "NewFormulaId": "ConcFormula"
         },
         {
-          "Path": "CYP3A4|t1/2 (intestine)",
-          "Value": 1380.0,
-          "Unit": "min",
-          "ValueOrigin": {}
-        },
-        {
-          "Path": "CYP3A4|t1/2 (liver)",
-          "Value": 2220.0,
-          "Unit": "min",
-          "ValueOrigin": {}
+          "Path": "Organism|Bone|Intracellular|CYP3A4|Fraction expressed intracellular",
+          "NewValue": 0.9,
+          "NewUnit": ""
         }
       ],
-      "Localization": "Intracellular",
-      "Ontogeny": {
-        "Name": "CYP3A4"
-      }
+      "FormulaCache": "PEZvcm11bGFDYWNoZSB2ZXJzaW9uPSIxOSI+PEZvcm11bGFzPjxGb3JtdWxhIGlkPSJDb25jRm9ybXVsYSIgbmFtZT0iQ29uY0Zvcm11bGEiIGRpbT0iQ29uY2VudHJhdGlvbiAobW9sYXIpIiBmb3JtdWxhPSJWJmd0OzAgPyBNL1YgOiAwIj48UGF0aHM+PFBhdGggcGF0aD0iMCIgYXM9IjEiIGRpbT0iMiIgLz48UGF0aCBwYXRoPSIzIiBhcz0iNCIgZGltPSI1IiAvPjwvUGF0aHM+PC9Gb3JtdWxhPjwvRm9ybXVsYXM+PFN0cmluZ01hcD48TWFwIHM9Ii4uIiBpZD0iMCIgLz48TWFwIHM9Ik0iIGlkPSIxIiAvPjxNYXAgcz0iQW1vdW50IiBpZD0iMiIgLz48TWFwIHM9Ii4ufC4ufFZvbHVtZSIgaWQ9IjMiIC8+PE1hcCBzPSJWIiBpZD0iNCIgLz48TWFwIHM9IlZvbHVtZSIgaWQ9IjUiIC8+PC9TdHJpbmdNYXA+PC9Gb3JtdWxhQ2FjaGU+"
     }
   ],
   "IndividualBuildingBlockSnapshots": [
     {
-      "Name": "Man",
-      "Seed": 5217250,
-      "OriginData": {
-        "CalculationMethods": [
-          "SurfaceAreaPlsInt_VAR1",
-          "Body surface area - Mosteller"
-        ],
-        "Species": "Human",
-        "Population": "European_ICRP_2002",
-        "Gender": "MALE",
-        "Age": {
-          "Value": 30.0,
-          "Unit": "year(s)"
+      "PKSimSnapshot": {
+        "Name": "Man",
+        "Seed": 5217250,
+        "OriginData": {
+          "CalculationMethods": [
+            "SurfaceAreaPlsInt_VAR1",
+            "Body surface area - Mosteller"
+          ],
+          "Species": "Human",
+          "Population": "European_ICRP_2002",
+          "Gender": "MALE",
+          "Age": {
+            "Value": 30.0,
+            "Unit": "year(s)"
+          }
         }
-      }
+      },
+      "UpdatedValues": [
+        {
+          "Path": "Organism|Ontogeny factor (albumin)",
+          "NewUnit": "",
+          "NewFormulaId": "_SZxHCxS90OL8x2QoHgyWg"
+        },
+        {
+          "Path": "Organism|pH (blood cells)",
+          "NewValue": 7.0,
+          "NewUnit": ""
+        },
+        {
+          "Path": "Organism|Age",
+          "NewValue": 31.0,
+          "NewUnit": "year(s)"
+        }
+      ],
+      "FormulaCache": "PEZvcm11bGFDYWNoZSB2ZXJzaW9uPSIxOSI+PEZvcm11bGFzPjxUYWJsZUZvcm11bGFXaXRoWEFyZ3VtZW50IGlkPSJfU1p4SEN4UzkwT0w4eDJRb0hneVdnIiBuYW1lPSJDbG9uZWRUYWJsZUZvcm11bGFXaXRoWEFyZ3VtZW50X09udG9nZW55RmFjdG9yQWxidW1pbiIgdGFibGVPYmplY3RBbGlhcz0iVGFibGUiIHhBcmd1bWVudEFsaWFzPSJYQXJnIj48UGF0aHM+PFBhdGggcGF0aD0iMCIgYXM9IjEiIC8+PFBhdGggcGF0aD0iMiIgYXM9IjMiIGRpbT0iNCIgLz48L1BhdGhzPjwvVGFibGVGb3JtdWxhV2l0aFhBcmd1bWVudD48L0Zvcm11bGFzPjxTdHJpbmdNYXA+PE1hcCBzPSIuLnxPbnRvZ2VueSBmYWN0b3IgKGFsYnVtaW4pIHRhYmxlIiBpZD0iMCIgLz48TWFwIHM9IlRhYmxlIiBpZD0iMSIgLz48TWFwIHM9Ik9yZ2FuaXNtfFBvc3QgbWVuc3RydWFsIGFnZSIgaWQ9IjIiIC8+PE1hcCBzPSJYQXJnIiBpZD0iMyIgLz48TWFwIHM9IkFnZSBpbiB5ZWFycyIgaWQ9IjQiIC8+PC9TdHJpbmdNYXA+PC9Gb3JtdWxhQ2FjaGU+"
     }
   ]
 }
