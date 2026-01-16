@@ -1,19 +1,24 @@
-﻿using MoBi.Core.Snapshots.Mappers;
+﻿using FakeItEasy;
+using MoBi.Core.Snapshots.Mappers;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Services;
 
 namespace MoBi.Core.Snapshots;
 
 internal class concern_for_ParameterValueUpdateManager : ContextSpecification<ParameterValueUpdateManager>
 {
+   private IOSPSuiteLogger _logger;
+
    protected override void Context()
    {
       base.Context();
-      sut = new ParameterValueUpdateManager();
+      _logger = A.Fake<IOSPSuiteLogger>();
+      sut = new ParameterValueUpdateManager(_logger);
    }
 }
 

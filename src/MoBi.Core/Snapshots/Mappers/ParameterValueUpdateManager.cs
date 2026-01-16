@@ -1,6 +1,8 @@
-﻿using OSPSuite.Core.Domain;
+﻿using OSPSuite.Core.Commands;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 
 namespace MoBi.Core.Snapshots.Mappers;
@@ -12,6 +14,13 @@ public interface IParameterValueUpdateManager : IMapper<ParameterValueWithInitia
 
 public class ParameterValueUpdateManager : IParameterValueUpdateManager
 {
+   private readonly IOSPSuiteLogger _logger;
+
+   public ParameterValueUpdateManager(IOSPSuiteLogger logger)
+   {
+      _logger = logger;
+   }
+
    public UpdatedParameterValue MapFrom(ParameterValueWithInitialState source)
    {
       return new UpdatedParameterValue
@@ -28,7 +37,10 @@ public class ParameterValueUpdateManager : IParameterValueUpdateManager
       var parameterValue = buildingBlock.FindByPath(updatedParameterValue.Path);
 
       if (parameterValue == null)
+      {
+         _logger.AddWarning($"Could not find parameter value with path '{updatedParameterValue.Path}' in building block '{buildingBlock.Name}'");
          return;
+      }
 
       parameterValue.InitialValue = parameterValue.Value;
       parameterValue.InitialFormulaId = parameterValue.Formula?.Id;
@@ -44,16 +56,21 @@ public class ParameterValueUpdateManager : IParameterValueUpdateManager
    ///    cache if present. If not present, retrieves it from the <paramref name="formulaCache" />
    ///    and adds it to the building block formula cache. If not found in either, returns null.
    /// </summary>
-   private static IFormula formulaFrom<TBuildingBlock, TParameterValue>(TBuildingBlock buildingBlock, UpdatedParameterValue updatedParameterValue, FormulaCache formulaCache) where TBuildingBlock : PathAndValueEntityBuildingBlock<TParameterValue> where TParameterValue : ParameterValueWithInitialState
+   private IFormula formulaFrom<TBuildingBlock, TParameterValue>(TBuildingBlock buildingBlock, UpdatedParameterValue updatedParameterValue, FormulaCache formulaCache) where TBuildingBlock : PathAndValueEntityBuildingBlock<TParameterValue> where TParameterValue : ParameterValueWithInitialState
    {
       var newFormulaId = updatedParameterValue.NewFormulaId;
 
       if (newFormulaId == null)
          return null;
 
-      if (formulaCache.Contains(newFormulaId) && !buildingBlock.FormulaCache.Contains(newFormulaId))
+      if (formulaCache != null && formulaCache.Contains(newFormulaId) && !buildingBlock.FormulaCache.Contains(newFormulaId))
          buildingBlock.FormulaCache.Add(formulaCache[newFormulaId]);
 
-      return buildingBlock.FormulaCache.Contains(newFormulaId) ? buildingBlock.FormulaCache[newFormulaId] : null;
+      if (!buildingBlock.FormulaCache.Contains(newFormulaId))
+      {
+         _logger.AddWarning($"Could not find formula with Id '{updatedParameterValue.NewFormulaId}' in the building block '{buildingBlock.Name}'");
+         return null;
+      }
+      return  buildingBlock.FormulaCache[newFormulaId];
    }
 }
