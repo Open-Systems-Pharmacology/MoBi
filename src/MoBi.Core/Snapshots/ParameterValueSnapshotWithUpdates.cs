@@ -8,8 +8,5 @@ public abstract class ParameterValueSnapshotWithUpdates
 }
 
 public class ExpressionProfileSnapshot : ParameterValueSnapshotWithUpdates
-{
-   
-}
 
 public class IndividualSnapshot : ParameterValueSnapshotWithUpdates;

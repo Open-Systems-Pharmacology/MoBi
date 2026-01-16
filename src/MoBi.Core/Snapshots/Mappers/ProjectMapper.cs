@@ -116,19 +116,22 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
          NumberOfSimulationsLoaded = 0
       };
 
-      projectSnapshot.Simulations?.Each(async void (x) =>
+      if (projectSnapshot.Simulations != null)
       {
-         try
+         foreach (var x in projectSnapshot.Simulations)
          {
-            var simulation = await _simulationMapper.MapToModel(x, simulationContext);
-            addSimulations(project, simulation);
-            simulationContext.NumberOfSimulationsLoaded++;
+            try
+            {
+               var simulation = await _simulationMapper.MapToModel(x, simulationContext);
+               addSimulations(project, simulation);
+               simulationContext.NumberOfSimulationsLoaded++;
+            }
+            catch (Exception e)
+            {
+               _logger.AddException(e);
+            }
          }
-         catch (Exception e)
-         {
-            _logger.AddException(e);
-         }
-      });
+      }
 
       if (simulationContext.Run && project.Simulations.Any())
       {
@@ -288,7 +291,8 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
    private void cacheFormulas(IBuildingBlock buildingBlock, ParameterValueSnapshotWithUpdates snapshot)
    {
       var formulaCache = new FormulaCache();
-      snapshot.UpdatedValues.Where(x => !string.IsNullOrEmpty(x.NewFormulaId)).Each(x => formulaCache.Add(buildingBlock.FormulaCache[x.NewFormulaId]));
+
+      snapshot.UpdatedValues?.Where(x => !string.IsNullOrEmpty(x.NewFormulaId)).Each(x => formulaCache.Add(buildingBlock.FormulaCache[x.NewFormulaId]));
 
       snapshot.FormulaCache = _xmlSerializationService.SerializeAsString(formulaCache).ToBase64String();
    }

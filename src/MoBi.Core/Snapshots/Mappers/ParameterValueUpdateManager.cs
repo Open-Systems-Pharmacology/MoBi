@@ -52,7 +52,7 @@ public class ParameterValueUpdateManager : IParameterValueUpdateManager
    }
 
    /// <summary>
-   ///    Retrieves the <paramref name="updatedParameterValue" />> formula from the <paramref name="buildingBlock" /> formula
+   ///    Retrieves the <paramref name="updatedParameterValue" /> formula from the <paramref name="buildingBlock" /> formula
    ///    cache if present. If not present, retrieves it from the <paramref name="formulaCache" />
    ///    and adds it to the building block formula cache. If not found in either, returns null.
    /// </summary>
@@ -71,6 +71,6 @@ public class ParameterValueUpdateManager : IParameterValueUpdateManager
          _logger.AddWarning($"Could not find formula with Id '{updatedParameterValue.NewFormulaId}' in the building block '{buildingBlock.Name}'");
          return null;
       }
-      return  buildingBlock.FormulaCache[newFormulaId];
+      return buildingBlock.FormulaCache[newFormulaId];
    }
 }
