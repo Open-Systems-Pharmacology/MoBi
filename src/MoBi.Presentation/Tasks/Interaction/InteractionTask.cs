@@ -1,6 +1,4 @@
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+using FluentNHibernate.Data;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Repositories;
@@ -11,6 +9,10 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
@@ -68,7 +70,8 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (entitiesToSerialize.Count == 1)
          {
             var entityToSerialize = entitiesToSerialize.First();
-            var fileName = _dialogCreator.AskForFileToSave(AppConstants.Captions.Save, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.PROJECT, entityToSerialize.Name);
+            var entityName = entityToSerialize.GetType().Name;
+            var fileName = _dialogCreator.AskForFileToSave(AppConstants.Captions.Save, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.PROJECT, $"{entityName}_{entityToSerialize.Name}");
             if (fileName.IsNullOrEmpty()) return;
 
             _serializationTask.SaveModelPart(entityToSerialize, fileName);
