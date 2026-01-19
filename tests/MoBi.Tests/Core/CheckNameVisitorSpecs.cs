@@ -54,6 +54,120 @@ namespace MoBi.Core
       }
    }
 
+   internal class When_renaming_a_molecule_builder_and_reaction_has_the_name_within : concern_for_CheckNameVisitor
+   {
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
+      private IReadOnlyList<IStringChange> _changes;
+      private ReactionBuilder _reaction;
+      private Module _module;
+
+      protected override void Context()
+      {
+         base.Context();
+         _moleculeBuildingBlock = new MoleculeBuildingBlock();
+         var builder = new MoleculeBuilder();
+         _moleculeBuildingBlock.Add(builder);
+         _changedObject = builder;
+         _changedObject.Name = _changedName;
+         _changedName = _changedObject.Name;
+         _newName = "new";
+         _reaction = new ReactionBuilder().WithName($"{_changedName}_reaction");
+
+         _module = new Module
+         {
+            _moleculeBuildingBlock,
+            new MoBiReactionBuildingBlock { _reaction }
+         };
+      }
+
+      protected override void Because()
+      {
+         _changes = sut.GetPossibleChangesFrom(_changedObject, _newName, _module.Reactions, _changedName);
+      }
+
+      [Observation]
+      public void a_rename_reaction_should_occur()
+      {
+         _changes.OfType<StringChange<ReactionBuilder>>().Count(x => x.EntityToEdit.Equals(_reaction) && x.ChangeCommand.IsAnImplementationOf<RenameObjectBaseCommand>()).ShouldBeEqualTo(1);
+      }
+   }
+
+   internal class When_renaming_a_molecule_builder_and_reaction_has_the_same_name_more_than_once : concern_for_CheckNameVisitor
+   {
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
+      private IReadOnlyList<IStringChange> _changes;
+      private ReactionBuilder _reaction;
+      private Module _module;
+
+      protected override void Context()
+      {
+         base.Context();
+         _moleculeBuildingBlock = new MoleculeBuildingBlock();
+         var builder = new MoleculeBuilder();
+         _moleculeBuildingBlock.Add(builder);
+         _changedObject = builder;
+         _changedObject.Name = _changedName;
+         _changedName = _changedObject.Name;
+         _newName = "new";
+         _reaction = new ReactionBuilder().WithName($"{_changedName}{_changedName}");
+
+         _module = new Module
+         {
+            _moleculeBuildingBlock,
+            new MoBiReactionBuildingBlock { _reaction }
+         };
+      }
+
+      protected override void Because()
+      {
+         _changes = sut.GetPossibleChangesFrom(_changedObject, _newName, _module.Reactions, _changedName);
+      }
+
+      [Observation]
+      public void a_rename_reaction_should_occur()
+      {
+         _changes.OfType<StringChange<ReactionBuilder>>().Count(x => x.EntityToEdit.Equals(_reaction) && x.ChangeCommand.IsAnImplementationOf<RenameObjectBaseCommand>()).ShouldBeEqualTo(1);
+      }
+   }
+
+   internal class When_renaming_a_molecule_builder_and_reaction_has_the_same_name : concern_for_CheckNameVisitor
+   {
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
+      private IReadOnlyList<IStringChange> _changes;
+      private ReactionBuilder _reaction;
+      private Module _module;
+
+      protected override void Context()
+      {
+         base.Context();
+         _moleculeBuildingBlock = new MoleculeBuildingBlock();
+         var builder = new MoleculeBuilder();
+         _moleculeBuildingBlock.Add(builder);
+         _changedObject = builder;
+         _changedObject.Name = _changedName;
+         _changedName = _changedObject.Name;
+         _newName = "new";
+         _reaction = new ReactionBuilder().WithName($"{_changedName}");
+
+         _module = new Module
+         {
+            _moleculeBuildingBlock,
+            new MoBiReactionBuildingBlock { _reaction }
+         };
+      }
+
+      protected override void Because()
+      {
+         _changes = sut.GetPossibleChangesFrom(_changedObject, _newName, _module.Reactions, _changedName);
+      }
+
+      [Observation]
+      public void a_rename_reaction_should_occur()
+      {
+         _changes.OfType<StringChange<ReactionBuilder>>().Count(x => x.EntityToEdit.Equals(_reaction) && x.ChangeCommand.IsAnImplementationOf<RenameObjectBaseCommand>()).ShouldBeEqualTo(1);
+      }
+   }
+
    internal class When_visiting_an_objectBase_with_changed_Name : concern_for_CheckNameVisitor
    {
       private IContainer _objectBase;
@@ -95,7 +209,7 @@ namespace MoBi.Core
          base.Context();
          _formula = new ExplicitFormula();
          _formula.Name = _changedName;
-         _path = new FormulaUsablePath(new[] {"A", "B", _changedName}) {Alias = _changedName};
+         _path = new FormulaUsablePath(new[] { "A", "B", _changedName }) { Alias = _changedName };
          A.CallTo(() => _aliasCreator.CreateAliasFrom(_changedName)).Returns(_changedName);
          A.CallTo(() => _aliasCreator.CreateAliasFrom(_newName)).Returns(_newName);
          _formula.AddObjectPath(_path);
@@ -150,16 +264,16 @@ namespace MoBi.Core
       {
          base.Context();
          _module = new Module();
-         _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock {Name = _changedName};
+         _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock { Name = _changedName };
          _initialCondition = new InitialCondition();
-         _path = new ObjectPath(new[] {"A", "B", _changedName});
+         _path = new ObjectPath(new[] { "A", "B", _changedName });
          _initialCondition.Path = _path;
          _initialConditionsBuildingBlock.Add(_initialCondition);
 
          _module.Add(_initialConditionsBuildingBlock);
 
          _initialCondition2 = new InitialCondition();
-         _path = new ObjectPath(new[] {"A", _changedName, "B"});
+         _path = new ObjectPath(new[] { "A", _changedName, "B" });
          _initialCondition2.Path = _path;
          _initialConditionsBuildingBlock.Add(_initialCondition2);
       }
@@ -216,11 +330,11 @@ namespace MoBi.Core
             Name = _changedName
          };
          _parameterValue = new ParameterValue();
-         _path = new ObjectPath(new[] {"A", "B", _changedName});
+         _path = new ObjectPath(new[] { "A", "B", _changedName });
          _parameterValue.Path = _path;
          _parameterValuesBuildingBlock.Add(_parameterValue);
          _parameterValue2 = new ParameterValue();
-         _path = new ObjectPath(new[] {"A", _changedName, "B"});
+         _path = new ObjectPath(new[] { "A", _changedName, "B" });
          _parameterValue2.Path = _path;
          _parameterValuesBuildingBlock.Add(_parameterValue2);
          _module.Add(_parameterValuesBuildingBlock);
@@ -277,9 +391,9 @@ namespace MoBi.Core
          _changedName = _changedObject.Name;
          _oldAlias = "Name_really_old";
          _theFormula = new ExplicitFormula(String.Format("k_{0}*{0}", _oldAlias));
-         _formulaUsablePathNotToChange = new FormulaUsablePath(new[] {ObjectPath.PARENT_CONTAINER, "BLA", String.Format("k_{0}", _oldAlias)}) {Alias = String.Format("k_{0}", _oldAlias)};
+         _formulaUsablePathNotToChange = new FormulaUsablePath(new[] { ObjectPath.PARENT_CONTAINER, "BLA", String.Format("k_{0}", _oldAlias) }) { Alias = String.Format("k_{0}", _oldAlias) };
          _theFormula.AddObjectPath(_formulaUsablePathNotToChange);
-         _formulaUsablePathToChange = new FormulaUsablePath(new[] {ObjectPath.PARENT_CONTAINER, _changedName}) {Alias = _oldAlias};
+         _formulaUsablePathToChange = new FormulaUsablePath(new[] { ObjectPath.PARENT_CONTAINER, _changedName }) { Alias = _oldAlias };
          _theFormula.AddObjectPath(_formulaUsablePathToChange);
          _theFormula.Name = "F1";
          A.CallTo(() => _aliasCreator.CreateAliasFrom(_changedName)).Returns(_oldAlias);
@@ -486,8 +600,8 @@ namespace MoBi.Core
          _simulationSettings.AddChartTemplate(_curveChartTemplate);
          _curveTemplate = new CurveTemplate
          {
-            xData = {Path = $"A|B|{_oldName}"},
-            yData = {Path = $"C|D|{_oldName}"},
+            xData = { Path = $"A|B|{_oldName}" },
+            yData = { Path = $"C|D|{_oldName}" },
          };
          _curveChartTemplate.Curves.Add(_curveTemplate);
 
@@ -528,8 +642,8 @@ namespace MoBi.Core
          _simulationSettings.AddChartTemplate(_curveChartTemplate);
          _curveChartTemplate.Curves.Add(new CurveTemplate
          {
-            xData = {Path = "A|B|D"},
-            yData = {Path = "C|D|E"}
+            xData = { Path = "A|B|D" },
+            yData = { Path = "C|D|E" }
          });
       }
 
