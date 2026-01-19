@@ -74,6 +74,10 @@ namespace MoBi.R.Services
          {
             return createResultWithMessages(e);
          }
+         catch(Exception e)
+         {
+            return new CreateSimulationResult(null, Enumerable.Empty<string>(), new[] { e.Message });
+         }
       }
 
       private static CreateSimulationResult createResultWithMessages(ValidationFailedMoBiException e)
