@@ -296,10 +296,13 @@ namespace MoBi.Presentation.Tasks
 
       private void renameReactionForMoleculeName(ReactionBuilder reaction)
       {
-         if (!(_objectToRename is MoleculeBuilder) || !reaction.Name.Contains(_oldName))
+         if (!(_objectToRename is MoleculeBuilder))
             return;
 
-         var newName = reaction.Name.Replace(_oldName, _newName);
+         if (!containsWord(reaction.Name, _oldName))
+            return;
+
+         var newName = wordReplace(reaction.Name, _oldName, _newName);
          _changes.Add(reaction, new RenameObjectBaseCommand(reaction, newName, _buildingBlock));
       }
 
