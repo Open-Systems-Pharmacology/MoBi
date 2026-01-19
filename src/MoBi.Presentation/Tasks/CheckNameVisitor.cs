@@ -210,7 +210,7 @@ namespace MoBi.Presentation.Tasks
       private void checkObjectBase<T>(T objectBase) where T : IObjectBase
       {
          if (objectBase.IsAnImplementationOf<IContainer>())
-            checkTagsInContainer((IContainer) objectBase);
+            checkTagsInContainer((IContainer)objectBase);
 
          if (_objectToRename.Equals(objectBase))
             return;
@@ -223,7 +223,7 @@ namespace MoBi.Presentation.Tasks
 
       private string renameDescription(IObjectBase objectBase, string oldName, string newName, string propertyName) =>
         AppConstants.Commands.EditDescription(_objectTypeResolver.TypeFor(objectBase), propertyName, oldName, newName, objectBase.Name);
-      
+
       private void checkTagsInContainer(IContainer container)
       {
          //Check Name Tags!
@@ -251,12 +251,12 @@ namespace MoBi.Presentation.Tasks
          checkObjectBase(transportBuilder);
          if (transportBuilder.MoleculeNames().Contains(_oldName))
          {
-            _changes.Add(transportBuilder, new ChangeMoleculeNameAtMoleculeDependentBuilderCommand(_newName, _oldName, transportBuilder, _buildingBlock) {ObjectType = objectType});
+            _changes.Add(transportBuilder, new ChangeMoleculeNameAtMoleculeDependentBuilderCommand(_newName, _oldName, transportBuilder, _buildingBlock) { ObjectType = objectType });
          }
 
          if (transportBuilder.MoleculeNamesToExclude().Contains(_oldName))
          {
-            _changes.Add(transportBuilder, new ChangeExcludeMoleculeNameAtMoleculeDependentBuilderCommand(_newName, _oldName, transportBuilder, _buildingBlock) {ObjectType = objectType});
+            _changes.Add(transportBuilder, new ChangeExcludeMoleculeNameAtMoleculeDependentBuilderCommand(_newName, _oldName, transportBuilder, _buildingBlock) { ObjectType = objectType });
          }
       }
 
@@ -273,7 +273,7 @@ namespace MoBi.Presentation.Tasks
             if (!string.Equals(tagCondition.Tag, _oldName))
                continue;
 
-            var commandParameters = new TagConditionCommandParameters<T> {TaggedObject = taggedObject, BuildingBlock = _buildingBlock, DescriptorCriteriaRetriever = descriptorCriteriaRetriever};
+            var commandParameters = new TagConditionCommandParameters<T> { TaggedObject = taggedObject, BuildingBlock = _buildingBlock, DescriptorCriteriaRetriever = descriptorCriteriaRetriever };
             _changes.Add(taggedObject, new EditTagCommand<T>(_newName, _oldName, commandParameters));
          }
       }
@@ -296,13 +296,10 @@ namespace MoBi.Presentation.Tasks
 
       private void renameReactionForMoleculeName(ReactionBuilder reaction)
       {
-         if (!(_objectToRename is MoleculeBuilder))
+         if (!(_objectToRename is MoleculeBuilder) || !reaction.Name.Contains(_oldName))
             return;
 
-         if (!containsWord(reaction.Name, _oldName))
-            return;
-
-         var newName = wordReplace(reaction.Name, _oldName, _newName);
+         var newName = reaction.Name.Replace(_oldName, _newName);
          _changes.Add(reaction, new RenameObjectBaseCommand(reaction, newName, _buildingBlock));
       }
 
@@ -435,7 +432,7 @@ namespace MoBi.Presentation.Tasks
       public void Visit(TransporterMoleculeContainer transporterMoleculeContainer)
       {
          checkObjectBase(transporterMoleculeContainer);
-         if (!string.Equals(_oldName, transporterMoleculeContainer.TransportName)) 
+         if (!string.Equals(_oldName, transporterMoleculeContainer.TransportName))
             return;
 
          _changes.Add(transporterMoleculeContainer,
