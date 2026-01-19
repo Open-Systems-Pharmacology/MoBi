@@ -63,16 +63,16 @@ namespace MoBi.Presentation.Tasks
       private readonly string _transportNamePropertyName;
       private string _oldName;
       private readonly IParameterValuePathTask _parameterValuePathTask;
-      private readonly IInitialConditionPathTask _msvPathTask;
+      private readonly IInitialConditionPathTask _initialConditionPathTask;
       private readonly ICloneManager _cloneManager;
       private StringChanges _changes;
 
-      public CheckNameVisitor(IObjectTypeResolver objectTypeResolver, IAliasCreator aliasCreator, IParameterValuePathTask parameterValuePathTask, IInitialConditionPathTask msvPathTask, ICloneManager cloneManager)
+      public CheckNameVisitor(IObjectTypeResolver objectTypeResolver, IAliasCreator aliasCreator, IParameterValuePathTask parameterValuePathTask, IInitialConditionPathTask initialConditionPathTask, ICloneManager cloneManager)
       {
          _objectTypeResolver = objectTypeResolver;
          _aliasCreator = aliasCreator;
          _parameterValuePathTask = parameterValuePathTask;
-         _msvPathTask = msvPathTask;
+         _initialConditionPathTask = initialConditionPathTask;
          _cloneManager = cloneManager;
 
          Expression<Func<IObjectBase, string>> nameString = x => x.Name;
@@ -290,7 +290,17 @@ namespace MoBi.Presentation.Tasks
          checkReactionPartnerIn(reaction.Educts, reaction, educt: true);
          checkReactionPartnerIn(reaction.Products, reaction, educt: false);
          checkModifier(reaction);
+         renameReactionForMoleculeName(reaction);
          checkDescriptorCriteria(reaction, x => x.ContainerCriteria);
+      }
+
+      private void renameReactionForMoleculeName(ReactionBuilder reaction)
+      {
+         if (!(_objectToRename is MoleculeBuilder) || !reaction.Name.Contains(_oldName))
+            return;
+
+         var newName = reaction.Name.Replace(_oldName, _newName);
+         _changes.Add(reaction, new RenameObjectBaseCommand(reaction, newName, _buildingBlock));
       }
 
       private void checkModifier(ReactionBuilder reaction)
@@ -432,7 +442,7 @@ namespace MoBi.Presentation.Tasks
 
       public void Visit(InitialCondition initialCondition)
       {
-         checkPathAndValueEntity(initialCondition, _msvPathTask);
+         checkPathAndValueEntity(initialCondition, _initialConditionPathTask);
       }
 
       public void Visit(ParameterValue parameterValue)
