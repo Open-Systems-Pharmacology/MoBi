@@ -296,7 +296,8 @@ namespace MoBi.Presentation.Tasks
 
       private void renameReactionForMoleculeName(ReactionBuilder reaction)
       {
-         if (!(_objectToRename is MoleculeBuilder) || !reaction.Name.Contains(_oldName))
+         // Only rename if the reaction name contains the old name but is not exactly equal to it. There is a preceding rename for that.
+         if (!(_objectToRename is MoleculeBuilder) || !reaction.Name.Contains(_oldName) || reaction.Name.Equals(_oldName))
             return;
 
          var newName = reaction.Name.Replace(_oldName, _newName);
