@@ -4,9 +4,9 @@ using MoBi.Core.Domain.Builder;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Services;
 using MoBi.R.Domain;
-using NHibernate.Linq;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.R.Domain;
 using OSPSuite.Utility.Extensions;
 using CoreModuleConfiguration = OSPSuite.Core.Domain.ModuleConfiguration;
 using RModuleConfiguration = MoBi.R.Domain.ModuleConfiguration;
@@ -67,8 +67,8 @@ namespace MoBi.R.Services
          try
          {
             var simulationAndCreationResult = _simulationFactory.CreateSimulationAndValidationResult(simulationConfiguration, simulationName);
-            var warnings = simulationAndCreationResult.ValidationResult.Messages.Where(x => x.NotificationType == NotificationType.Warning).Select(x=>x.Text);
-            return new CreateSimulationResult(simulationAndCreationResult.Simulation, warnings);
+            var warnings = simulationAndCreationResult.ValidationResult.Messages.Where(x => x.NotificationType == NotificationType.Warning).Select(x => x.Text);
+            return new CreateSimulationResult(new Simulation(simulationAndCreationResult.Simulation), warnings);
          }
          catch (ValidationFailedMoBiException e)
          {
