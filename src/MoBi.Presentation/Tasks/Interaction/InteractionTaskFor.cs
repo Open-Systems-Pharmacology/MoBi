@@ -255,7 +255,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       }
 
       /// <summary>
-      /// Corrects formula paths in all subcontainers when an object is renamed before it is added to the project.
+      /// Corrects formula paths in all sub-containers when an object is renamed before it is added to the project.
       /// Commands are not used here since the object is not yet part of the project
       /// </summary>
       /// <param name="oldName">The original object name</param>
@@ -287,7 +287,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       }
 
       /// <summary>
-      /// Updates in all subcontainers name tags from the specified old name to the new name before it is added to the project
+      /// Updates name tags in all sub-containers from the specified old name to the new name before it is added to the project
       /// Commands are not used here since the object is not yet part of the project
       /// </summary>
       /// <param name="oldName">The tag name to be replaced</param>
