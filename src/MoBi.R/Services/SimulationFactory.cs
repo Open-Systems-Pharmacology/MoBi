@@ -84,10 +84,9 @@ namespace MoBi.R.Services
       {
          var messages = e.ValidationResult?.Messages;
 
+         var messages = e.ValidationResult?.Messages ?? Enumerable.Empty<NotificationMessage>();
+
          var warnings = messages
-            .Where(m => m.NotificationType == NotificationType.Warning)
-            .Select(m => m.Text)
-            .ToList();
 
          var errors = messages
             .Where(m => m.NotificationType == NotificationType.Error)
