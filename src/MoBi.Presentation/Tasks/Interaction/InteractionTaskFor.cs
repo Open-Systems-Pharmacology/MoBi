@@ -266,22 +266,24 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (string.Equals(oldName, newName))
             return;
 
-         if (objectBase is IUsingFormula usingFormula) 
-            usingFormula.Formula?.ObjectPaths.Each(x => x.Replace(oldName, newName));
+         var objects = objectsToCorrect(objectBase);
 
-         if (!(objectBase is IContainer container))
-            return;
+         objects.Each(x =>
+         {
+            if (x is IUsingFormula usingFormula)
+               usingFormula.Formula?.ObjectPaths.Each(path => path.Replace(oldName, newName));
+         });
+      }
 
+      private static List<IObjectBase> objectsToCorrect(IObjectBase objectBase)
+      {
          var children = new List<IObjectBase>();
 
-         // Correct child parameters of the container
-         children.AddRange(container.GetAllChildren<IParameter>());
-
-         // Recurse containers to check their parameters
-         children.AddRange(container.GetAllChildren<IContainer>());
-
-         // Distinct to remove duplicates (e.g., parameters that are also containers)
-         children.Distinct().Each(x => correctFormulaPathsForRename(oldName, newName, x));
+         if (objectBase is IContainer container)
+            children.AddRange(container.GetAllChildrenAndSelf<IEntity>());
+         else
+            children.Add(objectBase);
+         return children;
       }
 
       /// <summary>
@@ -296,23 +298,23 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (string.Equals(oldName, newName))
             return;
 
-         if (objectBase is IEntity entity)
-            entity.Tags.Replace(oldName, newName);
+         var objects = objectsToCorrect(objectBase);
 
-         if (!(objectBase is IContainer container))
-            return;
-
-         // Recurse containers to check their tags and their children tags
-         container.GetAllChildren<IEntity>().Each(x => correctTagsForRename(oldName, newName, x));
-         switch (container)
+         objects.Each(x =>
          {
-            case TransportBuilder transportBuilder:
-               correctTransportBuilderTags(oldName, newName, transportBuilder);
-               break;
-            case ApplicationBuilder applicationBuilder:
-               correctApplicationBuilderMolecules(oldName, newName, applicationBuilder);
-               break;
-         }
+            if (x is IEntity entity)
+               entity.Tags.Replace(oldName, newName);
+
+            switch (x)
+            {
+               case TransportBuilder transportBuilder:
+                  correctTransportBuilderTags(oldName, newName, transportBuilder);
+                  break;
+               case ApplicationBuilder applicationBuilder:
+                  correctApplicationBuilderMolecules(oldName, newName, applicationBuilder);
+                  break;
+            }
+         });
       }
 
       private void correctApplicationBuilderMolecules(string oldName, string newName, ApplicationBuilder applicationBuilder)
