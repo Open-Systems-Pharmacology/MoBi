@@ -269,7 +269,8 @@ namespace MoBi.Presentation.Tasks.Interaction
          switch (objectBase)
          {
             case IUsingFormula usingFormula:
-               correctFormulaPathsForRename(oldName, newName, usingFormula.Formula);
+               if(usingFormula.Formula != null)
+                  correctFormulaPathsForRename(oldName, newName, usingFormula.Formula);
                break;
             case IFormula formula:
                formula.ObjectPaths.Each(x => x.Replace(oldName, newName));
@@ -279,11 +280,16 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (!(objectBase is IContainer container))
             return;
 
+         var children = new List<IObjectBase>();
+
          // Correct child parameters of the container
-         container.GetAllChildren<IParameter>().Each(x => correctFormulaPathsForRename(oldName, newName, x));
+         children.AddRange(container.GetAllChildren<IParameter>());
 
          // Recurse containers to check their parameters
-         container.GetAllChildren<IContainer>().Each(x => correctFormulaPathsForRename(oldName, newName, x));
+         children.AddRange(container.GetAllChildren<IContainer>());
+
+         // Distinct to remove duplicates (e.g., parameters that are also containers)
+         children.Distinct().Each(x => correctFormulaPathsForRename(oldName, newName, x));
       }
 
       /// <summary>

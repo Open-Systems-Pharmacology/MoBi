@@ -67,9 +67,12 @@ namespace MoBi.Presentation.Tasks
          _parameter.Formula.AddObjectPath(new FormulaUsablePath("oldName"));
          _reactionBuilder.AddParameter(_parameter);
 
+         // add a parameter without a formula
+         _reactionBuilder.AddParameter(new Parameter().WithName("no_formula"));
+
          _itemsToAdd = new List<ReactionBuilder>
          {
-            _reactionBuilder
+            _reactionBuilder,
          };
 
          A.CallTo(() => _interactionTaskContext.InteractionTask.CorrectName(_reactionBuilder, A<IEnumerable<string>>._)).Invokes(x => x.Arguments.Get<ReactionBuilder>(0).Name = "newName").Returns(true);
