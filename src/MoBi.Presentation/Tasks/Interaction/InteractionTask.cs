@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using MoBi.Core.Domain.Model;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
@@ -70,7 +71,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (entitiesToSerialize.Count == 1)
          {
             var entityToSerialize = entitiesToSerialize.First();
-            var entityName = entityToSerialize.GetType().Name;
+            var entityName = getEntityName(entityToSerialize);
             var fileName = _dialogCreator.AskForFileToSave(AppConstants.Captions.Save, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.PROJECT, $"{entityName}_{entityToSerialize.Name}");
             if (fileName.IsNullOrEmpty()) return;
 
@@ -80,6 +81,15 @@ namespace MoBi.Presentation.Tasks.Interaction
          {
             saveMultiple(entitiesToSerialize);
          }
+      }
+
+      private string getEntityName<T>(T entityToSerialize)
+      {
+         var entityName = entityToSerialize.GetType().Name;
+         if (entityName == nameof(MoBiSpatialStructure))
+            entityName = "SpatialStructure";
+
+         return entityName;
       }
 
       public void Save<T>(T entityToSerialize, string fileName) => _serializationTask.SaveModelPart(entityToSerialize, fileName);
