@@ -1,6 +1,9 @@
-using FluentNHibernate.Data;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
+using MoBi.Core.Domain.Model;
 using MoBi.Core.Repositories;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
@@ -9,11 +12,6 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using MoBi.Core.Domain.Model;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
