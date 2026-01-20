@@ -266,16 +266,8 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (string.Equals(oldName, newName))
             return;
 
-         switch (objectBase)
-         {
-            case IUsingFormula usingFormula:
-               if(usingFormula.Formula != null)
-                  correctFormulaPathsForRename(oldName, newName, usingFormula.Formula);
-               break;
-            case IFormula formula:
-               formula.ObjectPaths.Each(x => x.Replace(oldName, newName));
-               break;
-         }
+         if (objectBase is IUsingFormula usingFormula) 
+            usingFormula.Formula?.ObjectPaths.Each(x => x.Replace(oldName, newName));
 
          if (!(objectBase is IContainer container))
             return;
