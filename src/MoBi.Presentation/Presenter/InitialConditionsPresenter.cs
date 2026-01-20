@@ -13,7 +13,6 @@ namespace MoBi.Presentation.Presenter
 {
    public interface IInitialConditionsPresenter : IBuildingBlockWithInitialConditionsPresenter<InitialConditionsBuildingBlock>
    {
-
    }
 
    public class InitialConditionsPresenter : BuildingBlockWithInitialConditionsPresenter<
@@ -43,5 +42,16 @@ namespace MoBi.Presentation.Presenter
       protected override void SelectEntity(InitialConditionDTO dto) => _view.Select(dto);
 
       protected override InitialConditionDTO DTOForBuilder(InitialCondition builder) => _startValueDTOs.FirstOrDefault(x => Equals(x.PathWithValueObject, builder));
+
+      public override InitialConditionDTO AddNewEmptyPathAndValueEntity()
+      {
+         var newParameterValue = _emptyStartValueCreator.CreateEmptyStartValue(_interactionTasksForExtendablePathAndValueEntity.GetDefaultDimension());
+         newParameterValue.Value = 0;
+         var newRecord = _valueMapper.MapFrom(newParameterValue, _buildingBlock);
+         _startValueDTOs.Insert(0, newRecord);
+         bindToView();
+
+         return newRecord;
+      }
    }
 }

@@ -34,9 +34,9 @@ namespace MoBi.Presentation.Presenter
    {
       protected readonly IPathAndValueEntityToPathAndValueEntityDTOMapper<TPathAndValueEntity, TStartValueDTO> _valueMapper;
 
-      private readonly IInteractionTasksForExtendablePathAndValueEntity<TBuildingBlock, TPathAndValueEntity> _interactionTasksForExtendablePathAndValueEntity;
+      protected readonly IInteractionTasksForExtendablePathAndValueEntity<TBuildingBlock, TPathAndValueEntity> _interactionTasksForExtendablePathAndValueEntity;
       protected BindingList<TStartValueDTO> _startValueDTOs;
-      private readonly IEmptyStartValueCreator<TPathAndValueEntity> _emptyStartValueCreator;
+      protected readonly IEmptyStartValueCreator<TPathAndValueEntity> _emptyStartValueCreator;
       protected readonly IMoBiContext _context;
       private bool _handleChangedEvents;
       private TPathAndValueEntity _focusedStartValue;
@@ -134,7 +134,7 @@ namespace MoBi.Presentation.Presenter
 
       protected abstract IReadOnlyList<TStartValueDTO> ValueDTOsFor(TBuildingBlock buildingBlock);
 
-      private void bindToView()
+      protected void bindToView()
       {
          _view.BindTo(_startValueDTOs);
       }
@@ -218,7 +218,7 @@ namespace MoBi.Presentation.Presenter
          _handleChangedEvents = false;
       }
 
-      public TStartValueDTO AddNewEmptyPathAndValueEntity()
+      public virtual TStartValueDTO AddNewEmptyPathAndValueEntity()
       {
          var newParameterValue = _emptyStartValueCreator.CreateEmptyStartValue(_interactionTasksForExtendablePathAndValueEntity.GetDefaultDimension());
          var newRecord = _valueMapper.MapFrom(newParameterValue, _buildingBlock);

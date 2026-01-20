@@ -1,6 +1,7 @@
-﻿using FakeItEasy;
+﻿using System.Collections.Generic;
+using System.Linq;
+using FakeItEasy;
 using MoBi.Assets;
-using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Mappers;
@@ -18,8 +19,6 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace MoBi.Presentation
 {
@@ -53,8 +52,8 @@ namespace MoBi.Presentation
          _buildingBlockMapper = new InitialConditionsBuildingBlockToInitialConditionsBuildingBlockDTOMapper(_dtoMapper, _mapper);
 
          sut = new InitialConditionsPresenter(
-               _view, _dtoMapper, _initialConditionTask,
-               _initialConditionsCreator, _context, _formulaToValueFormulaDTOMapper, _dimensionFactory, _distributedParameterPresenter, _buildingBlockMapper);
+            _view, _dtoMapper, _initialConditionTask,
+            _initialConditionsCreator, _context, _formulaToValueFormulaDTOMapper, _dimensionFactory, _distributedParameterPresenter, _buildingBlockMapper);
          _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock();
 
          sut.InitializeWith(_commandCollector);
@@ -89,10 +88,18 @@ namespace MoBi.Presentation
    public class When_adding_a_new_empty_start_value : concern_for_InitialConditionsPresenter
    {
       private IDimension _defaultDimension;
+      private InitialConditionDTO _initialConditionDTO;
 
       protected override void Context()
       {
          base.Context();
+         //for this test, the real mapper is required, otherwise if I fake it, the test becomes meaningless
+         var realMapper = new InitialConditionToInitialConditionDTOMapper(new FormulaToValueFormulaDTOMapper());
+         A.CallTo(() => _dtoMapper.MapFrom(
+               A<InitialCondition>._,
+               A<IBuildingBlock<InitialCondition>>._))
+            .ReturnsLazily((InitialCondition ic, IBuildingBlock<InitialCondition> bb) =>
+               realMapper.MapFrom(ic, bb));
          sut.Edit(_initialConditionsBuildingBlock);
          _defaultDimension = A.Fake<IDimension>();
          A.CallTo(() => _initialConditionTask.GetDefaultDimension()).Returns(_defaultDimension);
@@ -100,13 +107,19 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.AddNewEmptyPathAndValueEntity();
+         _initialConditionDTO = sut.AddNewEmptyPathAndValueEntity();
       }
 
       [Observation]
       public void the_start_value_creator_should_create_the_empty_start_value()
       {
          A.CallTo(() => _initialConditionsCreator.CreateEmptyStartValue(_initialConditionTask.GetDefaultDimension())).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_value_after_creation_should_be_zero()
+      {
+         _initialConditionDTO.Value.ShouldBeEqualTo(0);
       }
    }
 

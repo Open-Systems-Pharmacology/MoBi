@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Threading;
-using Castle.Facilities.TypedFactory;
+﻿using Castle.Facilities.TypedFactory;
 using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core;
@@ -14,6 +11,7 @@ using MoBi.Core.Services;
 using MoBi.Engine;
 using MoBi.Helpers;
 using MoBi.Presentation;
+using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Serialization;
 using MoBi.Presentation.Settings;
@@ -37,6 +35,9 @@ using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.FileLocker;
+using System;
+using System.IO;
+using System.Threading;
 using CoreRegister = OSPSuite.Core.CoreRegister;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 
