@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using FakeItEasy;
+using MoBi.Assets;
+using MoBi.Core.Domain.Model;
 using MoBi.Core.Repositories;
 using MoBi.Core.Services;
 using MoBi.Presentation.Tasks.Interaction;
@@ -143,6 +145,116 @@ namespace MoBi.Presentation.Tasks
       public void should_call_save_as_many_times_as_modules_with_correct_filePath()
       {
          A.CallTo(() => _serializationTask.SaveModelPart(_module1, A<string>.Ignored)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_saving_a_single_module : concern_for_InteractionTask
+   {
+      private readonly Module _module = new Module().WithName("Module1");
+      private string _fileName;
+
+      protected override void Context()
+      {
+         base.Context();
+         _fileName = $"Module_{_module.Name}{Constants.Filter.PKML_EXTENSION}";
+         A.CallTo(() => _dialogCreator.AskForFileToSave(
+               AppConstants.Captions.Save,
+               Constants.Filter.PKML_FILE_FILTER,
+               Constants.DirectoryKey.PROJECT,
+               $"Module_{_module.Name}"
+               , null))
+            .Returns(_fileName);
+      }
+
+      protected override void Because()
+      {
+         sut.Save(new List<Module> { _module });
+      }
+
+      [Observation]
+      public void should_ask_for_file_name_with_default_entity_prefix()
+      {
+         A.CallTo(() => _dialogCreator.AskForFileToSave(
+               AppConstants.Captions.Save,
+               Constants.Filter.PKML_FILE_FILTER,
+               Constants.DirectoryKey.PROJECT,
+               $"Module_{_module.Name}"
+               , null)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_serialize_the_single_entity_to_selected_file()
+      {
+         A.CallTo(() => _serializationTask.SaveModelPart(_module, _fileName)).MustHaveHappenedOnceExactly();
+      }
+   }
+
+   public class When_saving_a_single_spatial_structure : concern_for_InteractionTask
+   {
+      private readonly MoBiSpatialStructure _spatialStructure = new MoBiSpatialStructure().WithName("SS1");
+      private string _fileName;
+
+      protected override void Context()
+      {
+         base.Context();
+         _fileName = $"SpatialStructure_{_spatialStructure.Name}{Constants.Filter.PKML_EXTENSION}";
+         A.CallTo(() => _dialogCreator.AskForFileToSave(
+               AppConstants.Captions.Save,
+               Constants.Filter.PKML_FILE_FILTER,
+               Constants.DirectoryKey.PROJECT,
+               $"SpatialStructure_{_spatialStructure.Name}"
+               , null)).Returns(_fileName);
+      }
+
+      protected override void Because()
+      {
+         sut.Save(new List<MoBiSpatialStructure> { _spatialStructure });
+      }
+
+      [Observation]
+      public void should_use_spatial_structure_prefix_in_default_name()
+      {
+         A.CallTo(() => _dialogCreator.AskForFileToSave(
+               AppConstants.Captions.Save,
+               Constants.Filter.PKML_FILE_FILTER,
+               Constants.DirectoryKey.PROJECT,
+               $"SpatialStructure_{_spatialStructure.Name}", 
+               null)).MustHaveHappened();
+            
+      }
+
+      [Observation]
+      public void should_serialize_spatial_structure_to_selected_file()
+      {
+         A.CallTo(() => _serializationTask.SaveModelPart(_spatialStructure, _fileName)).MustHaveHappenedOnceExactly();
+      }
+   }
+
+   public class When_saving_a_single_entity_and_canceling : concern_for_InteractionTask
+   {
+      private readonly Module _module = new Module().WithName("Module1");
+
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _dialogCreator.AskForFileToSave(
+               AppConstants.Captions.Save,
+               Constants.Filter.PKML_FILE_FILTER,
+               Constants.DirectoryKey.PROJECT,
+               $"Module_{_module.Name}", 
+               null))
+            .Returns(string.Empty);
+      }
+
+      protected override void Because()
+      {
+         sut.Save(new List<Module> { _module });
+      }
+
+      [Observation]
+      public void should_not_serialize_when_dialog_is_canceled()
+      {
+         A.CallTo(() => _serializationTask.SaveModelPart(_module, A<string>._)).MustNotHaveHappened();
       }
    }
 }
