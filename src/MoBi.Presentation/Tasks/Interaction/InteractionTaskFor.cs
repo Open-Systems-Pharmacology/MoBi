@@ -9,6 +9,7 @@ using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
 using IBuildingBlockRepository = MoBi.Core.Domain.Repository.IBuildingBlockRepository;
@@ -233,6 +234,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             return new MoBiEmptyCommand();
 
          correctTagsForRename(oldName, childToAdd.Name, childToAdd);
+         correctFormulaPathsForRename(oldName, childToAdd.Name, childToAdd);
 
          var macroCommand = new MoBiMacroCommand
          {
@@ -252,6 +254,45 @@ namespace MoBi.Presentation.Tasks.Interaction
          return macroCommand;
       }
 
+      /// <summary>
+      /// Recursively corrects formula paths when an object is renamed before it is added to the project.
+      /// Commands are not used here since the object is not yet part of the project
+      /// </summary>
+      /// <param name="oldName">The original object name</param>
+      /// <param name="newName">The new object name</param>
+      /// <param name="objectBase">The object to recurse</param>
+      private void correctFormulaPathsForRename(string oldName, string newName, IObjectBase objectBase)
+      {
+         if (string.Equals(oldName, newName))
+            return;
+
+         switch (objectBase)
+         {
+            case IUsingFormula usingFormula:
+               correctFormulaPathsForRename(oldName, newName, usingFormula.Formula);
+               break;
+            case IFormula formula:
+               formula.ObjectPaths.Each(x => x.Replace(oldName, newName));
+               break;
+         }
+
+         if (!(objectBase is IContainer container))
+            return;
+
+         // Correct child parameters of the container
+         container.GetAllChildren<IParameter>().Each(x => correctFormulaPathsForRename(oldName, newName, x));
+
+         // Recurse containers to check their parameters
+         container.GetAllChildren<IContainer>().Each(x => correctFormulaPathsForRename(oldName, newName, x));
+      }
+
+      /// <summary>
+      /// Recursively updates name tags from the specified old name to the new name before it is added to the project
+      /// Commands are not used here since the object is not yet part of the project
+      /// </summary>
+      /// <param name="oldName">The tag name to be replaced</param>
+      /// <param name="newName">The new tag name to use as a replacement</param>
+      /// <param name="objectBase">The root object in which to perform the tag renaming</param>
       private void correctTagsForRename(string oldName, string newName, IObjectBase objectBase)
       {
          if (string.Equals(oldName, newName))
@@ -259,8 +300,8 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          if (objectBase is IEntity entity)
             entity.Tags.Replace(oldName, newName);
-         
-         if (!(objectBase is IContainer container)) 
+
+         if (!(objectBase is IContainer container))
             return;
 
          // Recurse containers to check their tags and their children tags
