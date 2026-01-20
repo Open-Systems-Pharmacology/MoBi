@@ -1,4 +1,6 @@
-﻿using MoBi.Assets;
+﻿using DevExpress.XtraBars;
+using DevExpress.XtraGrid.Views.Grid.ViewInfo;
+using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Formatters;
 using MoBi.Presentation.Presenter;
@@ -10,19 +12,23 @@ using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.UI.Binders;
 using OSPSuite.UI.RepositoryItems;
+using OSPSuite.UI.Services;
+using OSPSuite.UI.Views;
 using OSPSuite.Utility.Extensions;
+using System.Windows.Forms;
 
 namespace MoBi.UI.Views
 {
-   public partial class InitialConditionsView : BasePathAndValueEntityView<InitialConditionDTO, InitialCondition>, IInitialConditionsView
+   public partial class InitialConditionsView : BasePathAndValueEntityView<InitialConditionDTO, InitialCondition>, IInitialConditionsView, IViewWithPopup
    {
       private readonly UxRepositoryItemCheckEdit _checkItemRepository;
       private IGridViewBoundColumn<InitialConditionDTO, bool> _isPresentColumn;
 
-      public InitialConditionsView(ValueOriginBinder<InitialConditionDTO> valueOriginBinder) : base(valueOriginBinder)
+      public InitialConditionsView(ValueOriginBinder<InitialConditionDTO> valueOriginBinder, IImageListRetriever imageListRetriever) : base(valueOriginBinder)
       {
          InitializeComponent();
          _checkItemRepository = new UxRepositoryItemCheckEdit(gridView);
+         PopupBarManager = new BarManager { Form = this, Images = imageListRetriever.AllImages16x16 };
       }
 
       protected override void DoInitializeBinding()
@@ -51,10 +57,11 @@ namespace MoBi.UI.Views
             .WithRepository(dto => _checkItemRepository)
             .WithOnValueUpdating((o, e) => OnEvent(() => onSetNegativeValueAllowed(o, e.NewValue)));
 
-
          _gridViewBinder.Bind(x => x.Formula)
             .WithEditRepository(dto => CreateFormulaRepository())
             .WithOnValueUpdating((o, e) => InitialConditionPresenter.SetFormula(o, e.NewValue.Formula));
+
+         gridView.MouseDown += (o, e) => OnEvent(onGridViewMouseDown, e);
       }
 
       public override void InitializeResources()
@@ -98,5 +105,18 @@ namespace MoBi.UI.Views
       public IBuildingBlockWithInitialConditionsPresenter InitialConditionPresenter => _presenter.DowncastTo<IBuildingBlockWithInitialConditionsPresenter>();
 
       public void AttachPresenter(IBuildingBlockWithInitialConditionsPresenter presenter) => _presenter = presenter;
+
+      private void onGridViewMouseDown(MouseEventArgs e)
+      {
+         if (e.Button != MouseButtons.Right)
+            return;
+
+         if (gridView.CalcHitInfo(e.Location).HitTest != GridHitTest.EmptyRow)
+            return;
+
+         ((InitialConditionsPresenter)_presenter).ShowContextMenu(null, this.CalculateRelativeOffset(e.Location, gridControl));
+      }
+
+      public BarManager PopupBarManager { get; }
    }
 }
