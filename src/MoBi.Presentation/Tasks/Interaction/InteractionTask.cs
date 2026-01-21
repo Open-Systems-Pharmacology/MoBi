@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
-using MoBi.Core.Helper;
 using MoBi.Core.Repositories;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
@@ -83,12 +82,8 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       private string getEntityName<T>(T entityToSerialize)
       {
-         var objectType = new ObjectTypeResolver().TypeFor(entityToSerialize as BuildingBlock);
-         objectType = objectType?.Replace(" ", string.Empty);
-         if (objectType == nameof(BuildingBlock))
-            objectType = "Module";
-
-         return objectType;
+         var objectType = _objectTypeResolver.TypeFor<T>();
+         return objectType?.Replace(" ", string.Empty);
       }
 
       public void Save<T>(T entityToSerialize, string fileName) => _serializationTask.SaveModelPart(entityToSerialize, fileName);
