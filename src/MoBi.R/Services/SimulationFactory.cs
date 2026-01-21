@@ -66,9 +66,9 @@ namespace MoBi.R.Services
          simulationConfiguration.ShouldValidate = true;
          try
          {
-            var simulationAndCreationResult = _simulationFactory.CreateSimulationAndValidationResult(simulationConfiguration, simulationName);
-            var warnings = simulationAndCreationResult.ValidationResult.Messages.Where(x => x.NotificationType == NotificationType.Warning).Select(x => x.Text);
-            return new CreateSimulationResult(new Simulation(simulationAndCreationResult.Simulation), warnings);
+            var simulationWithValidation = _simulationFactory.CreateSimulationAndValidationResult(simulationConfiguration, simulationName);
+            var warnings = simulationWithValidation.ValidationResult.Messages.Where(x => x.NotificationType == NotificationType.Warning).Select(x => x.Text);
+            return new CreateSimulationResult(new Simulation(simulationWithValidation.Simulation), warnings);
          }
          catch (ValidationFailedMoBiException e)
          {
