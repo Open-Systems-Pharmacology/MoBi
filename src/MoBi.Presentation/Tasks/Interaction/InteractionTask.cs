@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
-using MoBi.Core.Domain.Model;
+using MoBi.Core.Helper;
 using MoBi.Core.Repositories;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
@@ -83,11 +83,8 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       private string getEntityName<T>(T entityToSerialize)
       {
-         var entityName = entityToSerialize.GetType().Name;
-         if (entityName == nameof(MoBiSpatialStructure))
-            entityName = "SpatialStructure";
-
-         return entityName;
+         var objectType = new ObjectTypeResolver().TypeFor(entityToSerialize as BuildingBlock);
+         return objectType?.Replace(" ", string.Empty);
       }
 
       public void Save<T>(T entityToSerialize, string fileName) => _serializationTask.SaveModelPart(entityToSerialize, fileName);
