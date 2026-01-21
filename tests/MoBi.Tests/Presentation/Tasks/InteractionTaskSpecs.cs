@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using FakeItEasy;
+﻿using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Helper;
 using MoBi.Core.Repositories;
 using MoBi.Core.Services;
 using MoBi.Presentation.Tasks.Interaction;
@@ -13,6 +12,8 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
+using System.Collections.Generic;
+using System.IO;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -157,6 +158,7 @@ namespace MoBi.Presentation.Tasks
       {
          base.Context();
          _fileName = $"Module_{_module.Name}{Constants.Filter.PKML_EXTENSION}";
+         A.CallTo(() => _objectTypeResolver.TypeFor<Module>()).Returns(new ObjectTypeResolver().TypeFor<Module>());
          A.CallTo(() => _dialogCreator.AskForFileToSave(
                AppConstants.Captions.Save,
                Constants.Filter.PKML_FILE_FILTER,
@@ -197,6 +199,7 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
+         A.CallTo(() => _objectTypeResolver.TypeFor<MoBiSpatialStructure>()).Returns(new ObjectTypeResolver().TypeFor<MoBiSpatialStructure>());
          _fileName = $"SpatialStructure_{_spatialStructure.Name}{Constants.Filter.PKML_EXTENSION}";
          A.CallTo(() => _dialogCreator.AskForFileToSave(
                AppConstants.Captions.Save,
