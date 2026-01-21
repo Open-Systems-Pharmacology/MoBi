@@ -1,9 +1,10 @@
-﻿using System;
-using MoBi.Assets;
+﻿using MoBi.Assets;
 using MoBi.R.Domain;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoBiSimulation = MoBi.R.Domain.MoBiSimulation;
@@ -56,10 +57,8 @@ namespace MoBi.R.Services
       public CreateSimulationResult CreateSimulationResultsFrom(string simulationName, SimulationRequest request)
       {
          var modulesArray = (request?.ModuleConfigurations ?? new List<ModuleConfiguration>()).ToArray();
-         var expressionsArray = (request != null && request.ExpressionProfiles.Any())
-            ? request.ExpressionProfiles.ToArray()
-            : null;
-
+         var expressionsArray = (request?.ExpressionProfiles?? new List<ExpressionProfileBuildingBlock>()).ToArray();
+         
          var createSimResults = _simulationFactory.CreateSimulation(simulationName, modulesArray, expressionsArray, request?.Individual);
          return createSimResults;
       }
