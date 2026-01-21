@@ -27,6 +27,7 @@ namespace MoBi.Presentation.Tasks
       {
          get
          {
+            // Hierarchical mode is not supported in Sensitivity Analysis and Parameter Identification
             if (_userSettings.DefaultParameterGroupingModeForPIAndSA == ParameterGroupingModeId.Hierarchical)
                return ParameterGroupingModes.Simple;
 
