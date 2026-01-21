@@ -1,11 +1,11 @@
-﻿using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using MoBi.Assets;
+﻿using MoBi.Assets;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.UICommand;
 using MoBi.Presentation.Views;
-using OSPSuite.Presentation.Extensions;
 using OSPSuite.Assets;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Views;
@@ -30,6 +30,11 @@ namespace MoBi.UI.Views
          _screenBinder.Bind(x => x.MRUListItemCount).To(tbMRUFiles);
          _screenBinder.Bind(x => x.DecimalPlace).To(tbDecimalPlace);
          _screenBinder.Bind(x => x.MaximumNumberOfCoresToUse).To(tbNumberOfProcessors);
+
+         _screenBinder.Bind(x => x.DefaultParameterGroupingModeForPIAndSA)
+            .To(cbDefaultParameterGroupingModePISA)
+            .WithValues(x => _presenter.AllParameterGroupingMode())
+            .AndDisplays(x => _presenter.AllParameterGroupingModeDisplay());
 
          RegisterValidationFor(_screenBinder);
       }
@@ -92,6 +97,7 @@ namespace MoBi.UI.Views
          tabApplicationSettings.Text = AppConstants.Captions.ApplicationSettings;
          ApplicationIcon = ApplicationIcons.Settings;
          layoutItemNumberOfProcessors.Text = Captions.NumberOfProcessors.FormatForLabel();
+         layoutItemParameterLayout.Text = AppConstants.Captions.DefaultParameterLayout.FormatForLabel();
       }
 
       public override bool HasError => _screenBinder.HasError;

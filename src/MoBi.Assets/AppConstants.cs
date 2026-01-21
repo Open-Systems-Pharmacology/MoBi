@@ -1686,6 +1686,7 @@ namespace MoBi.Assets
          public static readonly string GoToSource = "Go to Source";
          public static readonly string AddOutputSelection = "Add Output";
          public static readonly string AddingParametersToASimulationIsNotSupported = "Adding parameters to a simulation is not supported";
+         public static readonly string DefaultParameterLayout = "Default Parameter Layout";
          public static string SelectTheBuildingBlockWhereEntitiesWillBeAddedOrUpdated(string typeBeingAdded) => $"Select the building block where {typeBeingAdded} will be added or updated";
          public static readonly string SelectBuildingBlock = "Select Building Block";
          public static readonly string MakeDefault = "Make defaults";

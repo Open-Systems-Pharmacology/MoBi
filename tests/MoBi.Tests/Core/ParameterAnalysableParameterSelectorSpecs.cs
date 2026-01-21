@@ -1,5 +1,6 @@
 ﻿using FakeItEasy;
-using MoBi.Core.Services;
+using MoBi.Presentation.Settings;
+using MoBi.Presentation.Tasks;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -10,9 +11,12 @@ namespace MoBi.Core
 {
    public abstract class concern_for_ParameterAnalysableParameterSelector : ContextSpecification<IParameterAnalysableParameterSelector>
    {
+      protected IUserSettings _userSettings;
+
       protected override void Context()
       {
-         sut = new ParameterAnalysableParameterSelector();
+         _userSettings = A.Fake<IUserSettings>();
+         sut = new ParameterAnalysableParameterSelector(_userSettings);
       }
    }
 
@@ -42,7 +46,7 @@ namespace MoBi.Core
       }
 
       [Observation]
-      public void should_return_false_if_the_parmaeter_is_a_categorial_parameter()
+      public void should_return_false_if_the_parameter_is_a_categorial_parameter()
       {
          _parameter.CanBeVaried = true;
          _parameter.Name = Constants.Parameters.COMPOUND_TYPE1;
@@ -65,5 +69,15 @@ namespace MoBi.Core
          new DistributedParameter { _parameter };
          sut.CanUseParameter(_parameter).ShouldBeFalse();
       }
+
+      [Observation]
+      public void the_user_setting_for_parameter_layout_is_used()
+      {
+         A.CallTo(() => _userSettings.DefaultParameterGroupingModeForPIAndSA).Returns(ParameterGroupingModeId.Simple);
+         sut.DefaultParameterSelectionMode.ShouldBeEqualTo(ParameterGroupingModes.Simple);
+
+         A.CallTo(() => _userSettings.DefaultParameterGroupingModeForPIAndSA).Returns(ParameterGroupingModeId.Advanced);
+         sut.DefaultParameterSelectionMode.ShouldBeEqualTo(ParameterGroupingModes.Advanced);
+      }
    }
-}	
+}
