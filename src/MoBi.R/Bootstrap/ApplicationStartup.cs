@@ -26,7 +26,7 @@ namespace MoBi.R.Bootstrap
       {
          var calculationMethodsRepositoryPersistor = container.Resolve<ICalculationMethodsRepositoryPersistor>();
          calculationMethodsRepositoryPersistor.Load();
-         //Add Empty CM'S to use in non PK-Sim Models
+         //Add Empty CMs to use in non PK-Sim Models
          var rep = container.Resolve<ICoreCalculationMethodRepository>();
          var objectBaseFactory = container.Resolve<IObjectBaseFactory>();
          rep.GetAllCategoriesDefault().Each(cm => rep.AddCalculationMethod(createDefaultCalculationMethodForCategory(cm.Category, objectBaseFactory)));
