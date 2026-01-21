@@ -84,7 +84,11 @@ namespace MoBi.Presentation.Tasks.Interaction
       private string getEntityName<T>(T entityToSerialize)
       {
          var objectType = new ObjectTypeResolver().TypeFor(entityToSerialize as BuildingBlock);
-         return objectType?.Replace(" ", string.Empty);
+         objectType = objectType?.Replace(" ", string.Empty);
+         if (objectType == nameof(BuildingBlock))
+            objectType = "Module";
+
+         return objectType;
       }
 
       public void Save<T>(T entityToSerialize, string fileName) => _serializationTask.SaveModelPart(entityToSerialize, fileName);
