@@ -1,4 +1,5 @@
-﻿using DevExpress.XtraBars;
+﻿using System.Windows.Forms;
+using DevExpress.XtraBars;
 using DevExpress.XtraGrid.Views.Grid.ViewInfo;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
@@ -15,7 +16,6 @@ using OSPSuite.UI.RepositoryItems;
 using OSPSuite.UI.Services;
 using OSPSuite.UI.Views;
 using OSPSuite.Utility.Extensions;
-using System.Windows.Forms;
 
 namespace MoBi.UI.Views
 {
@@ -67,11 +67,11 @@ namespace MoBi.UI.Views
       public override void InitializeResources()
       {
          base.InitializeResources();
-         btnRefresh.ItemClick += (o,e) => OnEvent(() => InitialConditionPresenter.Refresh(SelectedStartValues));
-         btnPresent.ItemClick += (o,e) => OnEvent(() => InitialConditionPresenter.AsPresent(SelectedStartValues));
-         btnNotPresent.ItemClick += (o,e) => OnEvent(() => InitialConditionPresenter.AsNotPresent(SelectedStartValues));
-         btnAllowNegativeValues.ItemClick += (o,e) => OnEvent(() => InitialConditionPresenter.AllowNegativeValues(SelectedStartValues));
-         btnNotAllowNegativeValues.ItemClick += (o,e) => OnEvent(() => InitialConditionPresenter.DoNotAllowNegativeValues(SelectedStartValues));
+         btnRefresh.ItemClick += (o, e) => OnEvent(() => InitialConditionPresenter.Refresh(SelectedStartValues));
+         btnPresent.ItemClick += (o, e) => OnEvent(() => InitialConditionPresenter.AsPresent(SelectedStartValues));
+         btnNotPresent.ItemClick += (o, e) => OnEvent(() => InitialConditionPresenter.AsNotPresent(SelectedStartValues));
+         btnAllowNegativeValues.ItemClick += (o, e) => OnEvent(() => InitialConditionPresenter.AllowNegativeValues(SelectedStartValues));
+         btnNotAllowNegativeValues.ItemClick += (o, e) => OnEvent(() => InitialConditionPresenter.DoNotAllowNegativeValues(SelectedStartValues));
       }
 
       public override string NameColumnCaption => AppConstants.Captions.MoleculeName;

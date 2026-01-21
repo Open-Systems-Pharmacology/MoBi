@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -9,9 +12,6 @@ using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -48,6 +48,7 @@ namespace MoBi.Presentation.Presenter
       protected override IReadOnlyList<InitialConditionDTO> ValueDTOsFor(InitialConditionsBuildingBlock buildingBlock) => _buildingBlockMapper.MapFrom(buildingBlock).ParameterDTOs;
       protected override void SelectEntity(InitialConditionDTO dto) => _view.Select(dto);
       protected override InitialConditionDTO DTOForBuilder(InitialCondition builder) => _startValueDTOs.FirstOrDefault(x => Equals(x.PathWithValueObject, builder));
+
       public void ShowContextMenu(IViewItem objectRequestingPopup, Point popupLocation) =>
          _viewItemContextMenuFactory.CreateFor(objectRequestingPopup, this).Show(_view, popupLocation);
    }
