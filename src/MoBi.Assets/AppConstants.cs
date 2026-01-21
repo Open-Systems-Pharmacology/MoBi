@@ -1187,7 +1187,6 @@ namespace MoBi.Assets
          public static string EditDefaultSimulationSettings = "Edit Default Simulation Settings";
          public static string SaveProjectSimulationSettings = "Save Default Simulation Settings";
          public static string LoadProjectSimulationSettings = "Load Default Simulation Settings";
-         public static readonly string ExportHistoryToExcelOrCsv = "Export to Excel or CSV...";
       }
 
       public static class DimensionNames
