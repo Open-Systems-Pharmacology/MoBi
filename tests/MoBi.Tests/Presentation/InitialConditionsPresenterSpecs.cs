@@ -1,6 +1,7 @@
-﻿using FakeItEasy;
+﻿using System.Collections.Generic;
+using System.Linq;
+using FakeItEasy;
 using MoBi.Assets;
-using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Mappers;
@@ -18,8 +19,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
-using System.Collections.Generic;
-using System.Linq;
+using OSPSuite.Presentation.Presenters.ContextMenus;
 
 namespace MoBi.Presentation
 {
@@ -37,6 +37,7 @@ namespace MoBi.Presentation
       private IInitialConditionsDistributedPathAndValueEntityPresenter _distributedParameterPresenter;
       private IInitialConditionsBuildingBlockToInitialConditionsBuildingBlockDTOMapper _buildingBlockMapper;
       private IPathAndValueEntityToDistributedParameterMapper _mapper;
+      private IViewItemContextMenuFactory _viewItemContextMenuFactory;
 
       protected override void Context()
       {
@@ -51,10 +52,19 @@ namespace MoBi.Presentation
          _mapper = A.Fake<IPathAndValueEntityToDistributedParameterMapper>();
          _formulaToValueFormulaDTOMapper = new FormulaToValueFormulaDTOMapper();
          _buildingBlockMapper = new InitialConditionsBuildingBlockToInitialConditionsBuildingBlockDTOMapper(_dtoMapper, _mapper);
-
+         _viewItemContextMenuFactory = A.Fake<IViewItemContextMenuFactory>();
          sut = new InitialConditionsPresenter(
-               _view, _dtoMapper, _initialConditionTask,
-               _initialConditionsCreator, _context, _formulaToValueFormulaDTOMapper, _dimensionFactory, _distributedParameterPresenter, _buildingBlockMapper);
+            _view,
+            _dtoMapper,
+            _initialConditionTask,
+            _initialConditionsCreator,
+            _context,
+            _formulaToValueFormulaDTOMapper,
+            _dimensionFactory,
+            _distributedParameterPresenter,
+            _buildingBlockMapper,
+            _viewItemContextMenuFactory);
+
          _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock();
 
          sut.InitializeWith(_commandCollector);

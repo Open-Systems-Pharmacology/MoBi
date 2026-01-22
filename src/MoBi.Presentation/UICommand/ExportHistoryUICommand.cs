@@ -28,7 +28,7 @@ namespace MoBi.Presentation.UICommand
          if (string.IsNullOrEmpty(projectName))
             projectName = AppConstants.Undefined;
 
-         var reportFileName = _dialogCreator.AskForFileToSave(AppConstants.Captions.ExportHistory, Constants.Filter.HISTORY_FILE_FILTER, Constants.DirectoryKey.REPORT,  projectName);
+         var reportFileName = _dialogCreator.AskForFileToSave(AppConstants.Captions.ExportHistory, Constants.Filter.EXPORT_HISTORY_FILE_FILTER, Constants.DirectoryKey.REPORT,  projectName);
          if (reportFileName.IsNullOrEmpty()) return;
 
          var reportOptions = new ReportOptions { ReportFullPath = reportFileName, SheetName = projectName, OpenReport = true };

@@ -27,14 +27,14 @@ namespace MoBi.Presentation.Presenter
          IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper,
          IDimensionFactory dimensionFactory,
          IInitialConditionsDistributedInExpressionProfilePresenter distributedParameterPresenter,
-         IExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper buildingBlockMapper) : 
-         base(view, 
-            dtoMapper, 
-            initialConditionsTask, 
-            msvCreator, 
-            context, 
-            formulaToValueFormulaDTOMapper, 
-            dimensionFactory, 
+         IExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper buildingBlockMapper) :
+         base(view,
+            dtoMapper,
+            initialConditionsTask,
+            msvCreator,
+            context,
+            formulaToValueFormulaDTOMapper,
+            dimensionFactory,
             distributedParameterPresenter)
       {
          _buildingBlockMapper = buildingBlockMapper;
