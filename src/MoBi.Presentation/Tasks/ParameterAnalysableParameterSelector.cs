@@ -23,16 +23,6 @@ namespace MoBi.Presentation.Tasks
 
       private bool parameterIsSubParameter(IParameter parameter) => parameter.ParentContainer is DistributedParameter;
 
-      public override ParameterGroupingMode DefaultParameterSelectionMode
-      {
-         get
-         {
-            // Hierarchical mode is not supported in Sensitivity Analysis and Parameter Identification
-            if (_userSettings.DefaultParameterGroupingModeForPIAndSA == ParameterGroupingModeId.Hierarchical)
-               return ParameterGroupingModes.Simple;
-
-            return ParameterGroupingModes.ById(_userSettings.DefaultParameterGroupingModeForPIAndSA);
-         }
-      }
+      public override ParameterGroupingModeForParameterAnalyzable DefaultParameterSelectionMode => ParameterGroupingModesForParameterAnalyzable.ById(_userSettings.DefaultParameterGroupingModeForPIAndSA);
    }
 }

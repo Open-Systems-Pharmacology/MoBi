@@ -1,8 +1,11 @@
-﻿using MoBi.Assets;
+﻿using System.Collections.Generic;
+using System.Linq;
+using MoBi.Assets;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.UICommand;
 using MoBi.Presentation.Views;
 using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
@@ -33,46 +36,27 @@ namespace MoBi.UI.Views
 
          _screenBinder.Bind(x => x.DefaultParameterGroupingModeForPIAndSA)
             .To(cbDefaultParameterGroupingModePISA)
-            .WithValues(x => _presenter.AllParameterGroupingMode())
-            .AndDisplays(x => _presenter.AllParameterGroupingModeDisplay());
+            .WithValues(x => allModes().Select(mode => mode.Id))
+            .AndDisplays(x => allModes().Select(mode => mode.DisplayName));
 
          RegisterValidationFor(_screenBinder);
       }
 
-      public void BindTo(IUserSettings userSettings)
-      {
-         _screenBinder.BindToSource(userSettings);
-      }
+      private IReadOnlyList<ParameterGroupingModeForParameterAnalyzable> allModes() => _presenter.AllParameterGroupingMode();
 
-      public void SetDiagramOptionsView(IView view)
-      {
-         tabDiagramOptions.FillWith(view);
-      }
+      public void BindTo(IUserSettings userSettings) => _screenBinder.BindToSource(userSettings);
 
-      public void SetLayoutView(IView forceLayoutConfigurationView)
-      {
-         tabFlowLayout.FillWith(forceLayoutConfigurationView);
-      }
+      public void SetDiagramOptionsView(IView view) => tabDiagramOptions.FillWith(view);
 
-      public void SetChartOptionsView(IView view)
-      {
-         tabChartOptions.FillWith(view);
-      }
+      public void SetLayoutView(IView forceLayoutConfigurationView) => tabFlowLayout.FillWith(forceLayoutConfigurationView);
 
-      public void SetValidationOptionsView(IView view)
-      {
-         pnlValidationOptions.FillWith(view);
-      }
+      public void SetChartOptionsView(IView view) => tabChartOptions.FillWith(view);
 
-      public void SetDisplayUnitsView(IView view)
-      {
-         tabDisplayUnits.FillWith(view);
-      }
+      public void SetValidationOptionsView(IView view) => pnlValidationOptions.FillWith(view);
 
-      public void SetApplicationSettingsView(IView view)
-      {
-         tabApplicationSettings.FillWith(view);
-      }
+      public void SetDisplayUnitsView(IView view) => tabDisplayUnits.FillWith(view);
+
+      public void SetApplicationSettingsView(IView view) => tabApplicationSettings.FillWith(view);
 
       public bool LayoutViewVisible
       {
@@ -80,10 +64,7 @@ namespace MoBi.UI.Views
          set => tabFlowLayout.PageVisible = value;
       }
 
-      public void AttachPresenter(IUserSettingsPresenter presenter)
-      {
-         _presenter = presenter;
-      }
+      public void AttachPresenter(IUserSettingsPresenter presenter) => _presenter = presenter;
 
       public override void InitializeResources()
       {
@@ -97,7 +78,7 @@ namespace MoBi.UI.Views
          tabApplicationSettings.Text = AppConstants.Captions.ApplicationSettings;
          ApplicationIcon = ApplicationIcons.Settings;
          layoutItemNumberOfProcessors.Text = Captions.NumberOfProcessors.FormatForLabel();
-         layoutItemParameterLayout.Text = AppConstants.Captions.DefaultParameterLayout.FormatForLabel();
+         layoutItemParameterLayout.Text = AppConstants.Captions.DefaultParameterView.FormatForLabel();
       }
 
       public override bool HasError => _screenBinder.HasError;

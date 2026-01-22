@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Presenter.BaseDiagram;
 using MoBi.Presentation.Presenter.BasePresenter;
@@ -14,8 +13,7 @@ namespace MoBi.Presentation.UICommand
    public interface IUserSettingsPresenter : IDisposablePresenter
    {
       void Edit(IUserSettings userSettings);
-      IReadOnlyList<ParameterGroupingModeId> AllParameterGroupingMode();
-      IReadOnlyList<string> AllParameterGroupingModeDisplay();
+      IReadOnlyList<ParameterGroupingModeForParameterAnalyzable> AllParameterGroupingMode();
    }
 
    public class UserSettingsPresenter : MoBiDisposablePresenter<IUserSettingsView, IUserSettingsPresenter>, IUserSettingsPresenter
@@ -61,8 +59,6 @@ namespace MoBi.Presentation.UICommand
          _view.Display();
       }
 
-      public IReadOnlyList<ParameterGroupingModeId> AllParameterGroupingMode() => ParameterGroupingModes.All().Select(x => x.Id).ToList();
-
-      public IReadOnlyList<string> AllParameterGroupingModeDisplay() => ParameterGroupingModes.All().Select(x => x.DisplayName).ToList();
+      public IReadOnlyList<ParameterGroupingModeForParameterAnalyzable> AllParameterGroupingMode() => ParameterGroupingModesForParameterAnalyzable.All();
    }
 }

@@ -73,11 +73,11 @@ namespace MoBi.Core
       [Observation]
       public void the_user_setting_for_parameter_layout_is_used()
       {
-         A.CallTo(() => _userSettings.DefaultParameterGroupingModeForPIAndSA).Returns(ParameterGroupingModeId.Simple);
-         sut.DefaultParameterSelectionMode.ShouldBeEqualTo(ParameterGroupingModes.Simple);
+         A.CallTo(() => _userSettings.DefaultParameterGroupingModeForPIAndSA).Returns(ParameterGroupingModeIdForParameterAnalyzable.Simple);
+         sut.DefaultParameterSelectionMode.ShouldBeEqualTo(ParameterGroupingModesForParameterAnalyzable.Simple);
 
-         A.CallTo(() => _userSettings.DefaultParameterGroupingModeForPIAndSA).Returns(ParameterGroupingModeId.Advanced);
-         sut.DefaultParameterSelectionMode.ShouldBeEqualTo(ParameterGroupingModes.Advanced);
+         A.CallTo(() => _userSettings.DefaultParameterGroupingModeForPIAndSA).Returns(ParameterGroupingModeIdForParameterAnalyzable.Advanced);
+         sut.DefaultParameterSelectionMode.ShouldBeEqualTo(ParameterGroupingModesForParameterAnalyzable.Advanced);
       }
    }
 }

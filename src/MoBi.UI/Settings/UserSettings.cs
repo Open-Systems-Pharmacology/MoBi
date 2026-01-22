@@ -98,7 +98,7 @@ namespace MoBi.UI.Settings
       public ParameterIdentificationFeedbackEditorSettings ParameterIdentificationFeedbackEditorSettings { get; set; }
       public SensitivityAnalysisFeedbackEditorSettings SensitivityAnalysisFeedbackEditorSettings { get; set; }
       public MergeConflictViewSettings MergeConflictViewSettings { get; set; }
-      public ParameterGroupingModeId DefaultParameterGroupingModeForPIAndSA { get; set; }
+      public ParameterGroupingModeIdForParameterAnalyzable DefaultParameterGroupingModeForPIAndSA { get; set; }
 
       public UserSettings(DockManager dockManager, RibbonBarManager ribbonManager, DirectoryMapSettings directoryMapSettings, IMoBiConfiguration configuration)
       {
@@ -130,7 +130,7 @@ namespace MoBi.UI.Settings
          ParameterIdentificationFeedbackEditorSettings = new ParameterIdentificationFeedbackEditorSettings();
          SensitivityAnalysisFeedbackEditorSettings = new SensitivityAnalysisFeedbackEditorSettings();
          MergeConflictViewSettings = new MergeConflictViewSettings();
-         DefaultParameterGroupingModeForPIAndSA = ParameterGroupingModeId.Simple;
+         DefaultParameterGroupingModeForPIAndSA = ParameterGroupingModeIdForParameterAnalyzable.Simple;
          MaximumNumberOfCoresToUse = Math.Max(Environment.ProcessorCount - 1, 1);
          NumberOfBins = AppConstants.DEFAULT_NUMBER_OF_BINS;
          NumberOfIndividualsPerBin = AppConstants.DEFAULT_NUMBER_OF_INDIVIDUALS_PER_BIN;
