@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Globalization;
 using System.IO;
-using System.Linq;
-using DevExpress.Utils;
 using DevExpress.XtraBars.Docking;
 using DevExpress.XtraBars.Ribbon;
 using MoBi.Assets;
 using MoBi.Core;
 using MoBi.Core.Domain;
-using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Presentation.Settings;
 using OSPSuite.Assets;
@@ -102,6 +98,7 @@ namespace MoBi.UI.Settings
       public ParameterIdentificationFeedbackEditorSettings ParameterIdentificationFeedbackEditorSettings { get; set; }
       public SensitivityAnalysisFeedbackEditorSettings SensitivityAnalysisFeedbackEditorSettings { get; set; }
       public MergeConflictViewSettings MergeConflictViewSettings { get; set; }
+      public ParameterGroupingModeIdForParameterAnalyzable DefaultParameterGroupingModeForPIAndSA { get; set; }
 
       public UserSettings(DockManager dockManager, RibbonBarManager ribbonManager, DirectoryMapSettings directoryMapSettings, IMoBiConfiguration configuration)
       {
@@ -133,6 +130,7 @@ namespace MoBi.UI.Settings
          ParameterIdentificationFeedbackEditorSettings = new ParameterIdentificationFeedbackEditorSettings();
          SensitivityAnalysisFeedbackEditorSettings = new SensitivityAnalysisFeedbackEditorSettings();
          MergeConflictViewSettings = new MergeConflictViewSettings();
+         DefaultParameterGroupingModeForPIAndSA = ParameterGroupingModeIdForParameterAnalyzable.Simple;
          MaximumNumberOfCoresToUse = Math.Max(Environment.ProcessorCount - 1, 1);
          NumberOfBins = AppConstants.DEFAULT_NUMBER_OF_BINS;
          NumberOfIndividualsPerBin = AppConstants.DEFAULT_NUMBER_OF_INDIVIDUALS_PER_BIN;

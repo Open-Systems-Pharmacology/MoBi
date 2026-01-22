@@ -51,6 +51,9 @@ namespace MoBi.UI.Views
          this.tabChartOptions = new DevExpress.XtraTab.XtraTabPage();
          this.tabDisplayUnits = new DevExpress.XtraTab.XtraTabPage();
          this.tabApplicationSettings = new DevExpress.XtraTab.XtraTabPage();
+         this.cbDefaultParameterGroupingModePISA = new OSPSuite.UI.Controls.UxComboBoxEdit();
+         this.layoutItemParameterLayout = new DevExpress.XtraLayout.LayoutControlItem();
+         ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.tabControl)).BeginInit();
          this.tabControl.SuspendLayout();
@@ -69,7 +72,14 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemNumberOfProcessors)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupValidationItems)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemValidationItems)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.cbDefaultParameterGroupingModePISA.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemParameterLayout)).BeginInit();
          this.SuspendLayout();
+         // 
+         // tablePanel
+         // 
+         this.tablePanel.Location = new System.Drawing.Point(0, 454);
+         this.tablePanel.Size = new System.Drawing.Size(797, 43);
          // 
          // tabControl
          // 
@@ -77,7 +87,7 @@ namespace MoBi.UI.Views
          this.tabControl.Location = new System.Drawing.Point(0, 0);
          this.tabControl.Name = "tabControl";
          this.tabControl.SelectedTabPage = this.tabGeneral;
-         this.tabControl.Size = new System.Drawing.Size(797, 451);
+         this.tabControl.Size = new System.Drawing.Size(797, 454);
          this.tabControl.TabIndex = 0;
          this.tabControl.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] {
             this.tabGeneral,
@@ -91,12 +101,13 @@ namespace MoBi.UI.Views
          // 
          this.tabGeneral.Controls.Add(this.layoutControl1);
          this.tabGeneral.Name = "tabGeneral";
-         this.tabGeneral.Size = new System.Drawing.Size(791, 423);
+         this.tabGeneral.Size = new System.Drawing.Size(795, 429);
          this.tabGeneral.Text = "General";
          // 
          // layoutControl1
          // 
          this.layoutControl1.AllowCustomization = false;
+         this.layoutControl1.Controls.Add(this.cbDefaultParameterGroupingModePISA);
          this.layoutControl1.Controls.Add(this.tbNumberOfProcessors);
          this.layoutControl1.Controls.Add(this.pnlValidationOptions);
          this.layoutControl1.Controls.Add(this.tbDecimalPlace);
@@ -106,23 +117,23 @@ namespace MoBi.UI.Views
          this.layoutControl1.Location = new System.Drawing.Point(0, 0);
          this.layoutControl1.Name = "layoutControl1";
          this.layoutControl1.Root = this.layoutControlGroup1;
-         this.layoutControl1.Size = new System.Drawing.Size(791, 423);
+         this.layoutControl1.Size = new System.Drawing.Size(795, 429);
          this.layoutControl1.TabIndex = 8;
          this.layoutControl1.Text = "layoutControl1";
          // 
          // tbNumberOfProcessors
          // 
-         this.tbNumberOfProcessors.Location = new System.Drawing.Point(189, 83);
+         this.tbNumberOfProcessors.Location = new System.Drawing.Point(198, 84);
          this.tbNumberOfProcessors.Name = "tbNumberOfProcessors";
-         this.tbNumberOfProcessors.Size = new System.Drawing.Size(590, 20);
+         this.tbNumberOfProcessors.Size = new System.Drawing.Size(585, 20);
          this.tbNumberOfProcessors.StyleController = this.layoutControl1;
          this.tbNumberOfProcessors.TabIndex = 9;
          // 
          // pnlValidationOptions
          // 
-         this.pnlValidationOptions.Location = new System.Drawing.Point(24, 137);
+         this.pnlValidationOptions.Location = new System.Drawing.Point(24, 165);
          this.pnlValidationOptions.Name = "pnlValidationOptions";
-         this.pnlValidationOptions.Size = new System.Drawing.Size(743, 262);
+         this.pnlValidationOptions.Size = new System.Drawing.Size(747, 240);
          this.pnlValidationOptions.TabIndex = 8;
          // 
          // tbDecimalPlace
@@ -132,9 +143,9 @@ namespace MoBi.UI.Views
             0,
             0,
             0});
-         this.tbDecimalPlace.Location = new System.Drawing.Point(189, 59);
+         this.tbDecimalPlace.Location = new System.Drawing.Point(198, 60);
          this.tbDecimalPlace.Name = "tbDecimalPlace";
-         this.tbDecimalPlace.Size = new System.Drawing.Size(590, 20);
+         this.tbDecimalPlace.Size = new System.Drawing.Size(585, 20);
          this.tbDecimalPlace.StyleController = this.layoutControl1;
          this.tbDecimalPlace.TabIndex = 7;
          // 
@@ -145,9 +156,9 @@ namespace MoBi.UI.Views
             0,
             0,
             0});
-         this.tbMRUFiles.Location = new System.Drawing.Point(189, 35);
+         this.tbMRUFiles.Location = new System.Drawing.Point(198, 36);
          this.tbMRUFiles.Name = "tbMRUFiles";
-         this.tbMRUFiles.Size = new System.Drawing.Size(590, 20);
+         this.tbMRUFiles.Size = new System.Drawing.Size(585, 20);
          this.tbMRUFiles.StyleController = this.layoutControl1;
          this.tbMRUFiles.TabIndex = 3;
          // 
@@ -157,7 +168,7 @@ namespace MoBi.UI.Views
          this.chkRenameDependent.Location = new System.Drawing.Point(12, 12);
          this.chkRenameDependent.Name = "chkRenameDependent";
          this.chkRenameDependent.Properties.Caption = "Rename Dependent Elements";
-         this.chkRenameDependent.Size = new System.Drawing.Size(767, 19);
+         this.chkRenameDependent.Size = new System.Drawing.Size(771, 20);
          this.chkRenameDependent.StyleController = this.layoutControl1;
          this.chkRenameDependent.TabIndex = 0;
          // 
@@ -171,10 +182,10 @@ namespace MoBi.UI.Views
             this.layoutItemDecimalPlace,
             this.layoutItemNumberOfRecentProjects,
             this.layoutItemNumberOfProcessors,
-            this.layoutGroupValidationItems});
-         this.layoutControlGroup1.Location = new System.Drawing.Point(0, 0);
+            this.layoutGroupValidationItems,
+            this.layoutItemParameterLayout});
          this.layoutControlGroup1.Name = "layoutControlGroup1";
-         this.layoutControlGroup1.Size = new System.Drawing.Size(791, 423);
+         this.layoutControlGroup1.Size = new System.Drawing.Size(795, 429);
          this.layoutControlGroup1.TextVisible = false;
          // 
          // layoutControlItemRenameDependent
@@ -183,7 +194,7 @@ namespace MoBi.UI.Views
          this.layoutControlItemRenameDependent.CustomizationFormText = "layoutControlItem1";
          this.layoutControlItemRenameDependent.Location = new System.Drawing.Point(0, 0);
          this.layoutControlItemRenameDependent.Name = "layoutControlItemRenameDependent";
-         this.layoutControlItemRenameDependent.Size = new System.Drawing.Size(771, 23);
+         this.layoutControlItemRenameDependent.Size = new System.Drawing.Size(775, 24);
          this.layoutControlItemRenameDependent.TextSize = new System.Drawing.Size(0, 0);
          this.layoutControlItemRenameDependent.TextVisible = false;
          // 
@@ -191,35 +202,35 @@ namespace MoBi.UI.Views
          // 
          this.layoutItemDecimalPlace.Control = this.tbDecimalPlace;
          this.layoutItemDecimalPlace.CustomizationFormText = "layoutItemDecimalPlace";
-         this.layoutItemDecimalPlace.Location = new System.Drawing.Point(0, 47);
+         this.layoutItemDecimalPlace.Location = new System.Drawing.Point(0, 48);
          this.layoutItemDecimalPlace.Name = "layoutItemDecimalPlace";
-         this.layoutItemDecimalPlace.Size = new System.Drawing.Size(771, 24);
+         this.layoutItemDecimalPlace.Size = new System.Drawing.Size(775, 24);
          this.layoutItemDecimalPlace.TextSize = new System.Drawing.Size(174, 13);
          // 
          // layoutItemNumberOfRecentProjects
          // 
          this.layoutItemNumberOfRecentProjects.Control = this.tbMRUFiles;
          this.layoutItemNumberOfRecentProjects.CustomizationFormText = "layoutItemNumberOfRecentProjects";
-         this.layoutItemNumberOfRecentProjects.Location = new System.Drawing.Point(0, 23);
+         this.layoutItemNumberOfRecentProjects.Location = new System.Drawing.Point(0, 24);
          this.layoutItemNumberOfRecentProjects.Name = "layoutItemNumberOfRecentProjects";
-         this.layoutItemNumberOfRecentProjects.Size = new System.Drawing.Size(771, 24);
+         this.layoutItemNumberOfRecentProjects.Size = new System.Drawing.Size(775, 24);
          this.layoutItemNumberOfRecentProjects.TextSize = new System.Drawing.Size(174, 13);
          // 
          // layoutItemNumberOfProcessors
          // 
          this.layoutItemNumberOfProcessors.Control = this.tbNumberOfProcessors;
-         this.layoutItemNumberOfProcessors.Location = new System.Drawing.Point(0, 71);
+         this.layoutItemNumberOfProcessors.Location = new System.Drawing.Point(0, 72);
          this.layoutItemNumberOfProcessors.Name = "layoutItemNumberOfProcessors";
-         this.layoutItemNumberOfProcessors.Size = new System.Drawing.Size(771, 24);
+         this.layoutItemNumberOfProcessors.Size = new System.Drawing.Size(775, 24);
          this.layoutItemNumberOfProcessors.TextSize = new System.Drawing.Size(174, 13);
          // 
          // layoutGroupValidationItems
          // 
          this.layoutGroupValidationItems.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutItemValidationItems});
-         this.layoutGroupValidationItems.Location = new System.Drawing.Point(0, 95);
+         this.layoutGroupValidationItems.Location = new System.Drawing.Point(0, 120);
          this.layoutGroupValidationItems.Name = "layoutGroupValidationItems";
-         this.layoutGroupValidationItems.Size = new System.Drawing.Size(771, 308);
+         this.layoutGroupValidationItems.Size = new System.Drawing.Size(775, 289);
          // 
          // layoutItemValidationItems
          // 
@@ -227,40 +238,59 @@ namespace MoBi.UI.Views
          this.layoutItemValidationItems.CustomizationFormText = "layoutItemValidationItems";
          this.layoutItemValidationItems.Location = new System.Drawing.Point(0, 0);
          this.layoutItemValidationItems.Name = "layoutItemValidationItems";
-         this.layoutItemValidationItems.Size = new System.Drawing.Size(747, 266);
+         this.layoutItemValidationItems.Size = new System.Drawing.Size(751, 244);
          this.layoutItemValidationItems.TextSize = new System.Drawing.Size(0, 0);
          this.layoutItemValidationItems.TextVisible = false;
          // 
          // tabDiagramOptions
          // 
          this.tabDiagramOptions.Name = "tabDiagramOptions";
-         this.tabDiagramOptions.Size = new System.Drawing.Size(791, 423);
+         this.tabDiagramOptions.Size = new System.Drawing.Size(795, 429);
          this.tabDiagramOptions.Text = "Diagram Options";
          // 
          // tabFlowLayout
          // 
          this.tabFlowLayout.Name = "tabFlowLayout";
-         this.tabFlowLayout.Size = new System.Drawing.Size(791, 423);
+         this.tabFlowLayout.Size = new System.Drawing.Size(795, 429);
          this.tabFlowLayout.Text = "Diagram Auto Layout";
          // 
          // tabChartOptions
          // 
          this.tabChartOptions.Name = "tabChartOptions";
-         this.tabChartOptions.Size = new System.Drawing.Size(791, 423);
+         this.tabChartOptions.Size = new System.Drawing.Size(795, 429);
          this.tabChartOptions.Text = "Chart Options";
          // 
          // tabDisplayUnits
          // 
          this.tabDisplayUnits.Name = "tabDisplayUnits";
          this.tabDisplayUnits.Padding = new System.Windows.Forms.Padding(10);
-         this.tabDisplayUnits.Size = new System.Drawing.Size(791, 423);
+         this.tabDisplayUnits.Size = new System.Drawing.Size(795, 429);
          this.tabDisplayUnits.Text = "tabDisplayUnits";
          // 
          // tabApplicationSettings
          // 
          this.tabApplicationSettings.Name = "tabApplicationSettings";
-         this.tabApplicationSettings.Size = new System.Drawing.Size(791, 423);
+         this.tabApplicationSettings.Size = new System.Drawing.Size(795, 429);
          this.tabApplicationSettings.Text = "tabApplicationSettings";
+         // 
+         // cbDefaultParameterGroupingModePISA
+         // 
+         this.cbDefaultParameterGroupingModePISA.Location = new System.Drawing.Point(198, 108);
+         this.cbDefaultParameterGroupingModePISA.Name = "cbDefaultParameterGroupingModePISA";
+         this.cbDefaultParameterGroupingModePISA.Properties.AllowMouseWheel = false;
+         this.cbDefaultParameterGroupingModePISA.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+         this.cbDefaultParameterGroupingModePISA.Size = new System.Drawing.Size(585, 20);
+         this.cbDefaultParameterGroupingModePISA.StyleController = this.layoutControl1;
+         this.cbDefaultParameterGroupingModePISA.TabIndex = 10;
+         // 
+         // layoutItemParameterLayout
+         // 
+         this.layoutItemParameterLayout.Control = this.cbDefaultParameterGroupingModePISA;
+         this.layoutItemParameterLayout.Location = new System.Drawing.Point(0, 96);
+         this.layoutItemParameterLayout.Name = "layoutItemParameterLayout";
+         this.layoutItemParameterLayout.Size = new System.Drawing.Size(775, 24);
+         this.layoutItemParameterLayout.TextSize = new System.Drawing.Size(174, 13);
          // 
          // UserSettingsView
          // 
@@ -269,7 +299,9 @@ namespace MoBi.UI.Views
          this.ClientSize = new System.Drawing.Size(797, 497);
          this.Controls.Add(this.tabControl);
          this.Name = "UserSettingsView";
+         this.Controls.SetChildIndex(this.tablePanel, 0);
          this.Controls.SetChildIndex(this.tabControl, 0);
+         ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.tabControl)).EndInit();
          this.tabControl.ResumeLayout(false);
@@ -288,6 +320,8 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemNumberOfProcessors)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupValidationItems)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemValidationItems)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.cbDefaultParameterGroupingModePISA.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemParameterLayout)).EndInit();
          this.ResumeLayout(false);
          this.PerformLayout();
 
@@ -315,5 +349,7 @@ namespace MoBi.UI.Views
       private DevExpress.XtraLayout.LayoutControlItem layoutItemNumberOfProcessors;
       private DevExpress.XtraLayout.LayoutControlGroup layoutGroupValidationItems;
       private DevExpress.XtraTab.XtraTabPage tabApplicationSettings;
+      private UxComboBoxEdit cbDefaultParameterGroupingModePISA;
+      private DevExpress.XtraLayout.LayoutControlItem layoutItemParameterLayout;
    }
 }
