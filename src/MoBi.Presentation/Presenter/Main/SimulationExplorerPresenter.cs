@@ -163,8 +163,8 @@ namespace MoBi.Presentation.Presenter.Main
          if (simulationNode == null)
             return;
 
-         var simulationNodeExpanded = _view.IsNodeExpanded(simulationNode);
-         var wasSelected = _view.TreeView.SelectedNode?.Id == simulationNode.Id;
+         bool simulationNodeExpanded = _view.IsNodeExpanded(simulationNode);
+         bool wasSelected = _view.TreeView.SelectedNode?.Id == simulationNode.Id;
 
          var parentNode = simulationNode.ParentNode.DowncastTo<ITreeNode<IClassification>>();
          RemoveNodeFor(simulation);
