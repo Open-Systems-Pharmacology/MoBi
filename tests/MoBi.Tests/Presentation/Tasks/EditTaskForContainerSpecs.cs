@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Commands;
@@ -94,6 +95,83 @@ namespace MoBi.Presentation.Tasks
       public void the_export_task_should_be_used()
       {
          A.CallTo(() => _spatialStructureContentExporter.SaveWithIndividualAndExpression(_container)).MustHaveHappened();
+      }
+   }
+
+   public class When_renaming_a_container_to_events_that_is_a_top_container : concern_for_EditTaskForContainer
+   {
+      private IContainer _container;
+      private SpatialStructure _spatialStructure;
+      private Module _module;
+      private IBuildingBlock _moleculesBuildingBlock;
+
+      protected override void Context()
+      {
+         base.Context();
+         _container = new Container().WithName("OLD");
+         _spatialStructure = new SpatialStructure();
+         _module = new Module().WithName("Module");
+         _moleculesBuildingBlock = new MoleculeBuildingBlock();
+         _module.Add(_spatialStructure);
+         _module.Add(_moleculesBuildingBlock);
+         _spatialStructure.AddTopContainer(_container);
+
+         A.CallTo(() => _interactionTaskContext.Active<SpatialStructure>()).Returns(_spatialStructure);
+      }
+
+      protected override void Because()
+      {
+         sut.Rename(_container, _spatialStructure);
+      }
+
+      [Observation]
+      public void the_forbidden_names_should_not_include_events()
+      {
+         A.CallTo(() => _interactionTaskContext.NamingTask.RenameFor(_container, A<IReadOnlyList<string>>._)).WhenArgumentsMatch(x => !containsEvents(x.Get<IReadOnlyList<string>>(1).ToList())).MustHaveHappened();
+      }
+
+      private bool containsEvents(List<string> prohibitedNames)
+      {
+         return prohibitedNames.Any(x => string.Compare(x, "Events", StringComparison.InvariantCultureIgnoreCase) == 0);
+      }
+   }
+
+   public class When_renaming_a_container_to_events_that_is_not_a_top_container : concern_for_EditTaskForContainer
+   {
+      private IContainer _container;
+      private SpatialStructure _spatialStructure;
+      private Module _module;
+      private IBuildingBlock _moleculesBuildingBlock;
+
+      protected override void Context()
+      {
+         base.Context();
+         _container = new Container().WithName("OLD");
+         _spatialStructure = new SpatialStructure();
+         _module = new Module().WithName("Module");
+         _moleculesBuildingBlock = new MoleculeBuildingBlock();
+         _module.Add(_spatialStructure);
+         _module.Add(_moleculesBuildingBlock);
+         _spatialStructure.Add(new Container { _container });
+
+         A.CallTo(() => _interactionTaskContext.Active<SpatialStructure>()).Returns(_spatialStructure);
+      }
+
+      protected override void Because()
+      {
+         sut.Rename(_container, _spatialStructure);
+      }
+
+      [Observation]
+      public void the_forbidden_names_should_not_include_events()
+      {
+         A.CallTo(() => _interactionTaskContext.NamingTask.RenameFor(_container, A<IReadOnlyList<string>>._)).WhenArgumentsMatch(x => containsEvents(x.Get<IReadOnlyList<string>>(1).ToList())).MustHaveHappened();
+      }
+
+      private bool containsEvents(List<string> prohibitedNames)
+      {
+         // check for instances of "Events" with any case
+         return prohibitedNames.Any(x => string.Compare(x, "Events", StringComparison.InvariantCultureIgnoreCase) == 0);
       }
    }
 

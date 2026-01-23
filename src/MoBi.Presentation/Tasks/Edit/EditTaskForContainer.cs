@@ -38,14 +38,21 @@ namespace MoBi.Presentation.Tasks.Edit
 
       protected override IEnumerable<string> GetUnallowedNames(IContainer container, IEnumerable<IObjectBase> existingObjectsInParent)
       {
-         if (existingObjectsInParent != null)
-            return existingObjectsInParent.AllNames();
-
          var spatialStructure = _interactionTaskContext.Active<SpatialStructure>();
+
+         if (existingObjectsInParent != null)
+            return existingObjectsInParent.AllNames().Union(addEventsForNonTopContainer(container, spatialStructure));
+
          if (spatialStructure == null)
             return Enumerable.Empty<string>();
 
          return spatialStructure.TopContainers.Select(x => x.Name).Union(AppConstants.UnallowedNames);
+      }
+
+      private IEnumerable<string> addEventsForNonTopContainer(IContainer container, SpatialStructure spatialStructure)
+      {
+         if (!spatialStructure.TopContainers.Contains(container))
+            yield return AppConstants.EventsContainerName;
       }
 
       public void SaveWithIndividualAndExpression(IContainer container) => _spatialStructureContentExporter.SaveWithIndividualAndExpression(container);
