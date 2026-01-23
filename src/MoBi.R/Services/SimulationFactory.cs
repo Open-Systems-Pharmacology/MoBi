@@ -49,7 +49,6 @@ namespace MoBi.R.Services
          var simulationSettings = _simulationSettingsFactory.CreateDefault();
          var simulationConfiguration = _configurationFactory.Create(simulationSettings);
 
-         // Handle null parameters by providing empty arrays
          var typedModuleConfigurations = (moduleConfigurations ?? Array.Empty<RModuleConfiguration>()).ToList();
 
          var typedExpressionProfiles = (expressionProfiles ?? Array.Empty<ExpressionProfileBuildingBlock>()).ToList();
