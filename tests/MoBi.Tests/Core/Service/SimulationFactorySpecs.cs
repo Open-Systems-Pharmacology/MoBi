@@ -64,7 +64,7 @@ namespace MoBi.Core.Service
 
       protected override void Because()
       {
-         var (simulation, _) = sut.CreateSimulationAndValidationResult(_simulationConfiguration, "name");
+         var (simulation, _) = sut.CreateSimulationAndValidate(_simulationConfiguration, "name");
          _result = simulation;
       }
 

@@ -39,7 +39,7 @@ internal abstract class concern_for_SimulationTask : ContextForIntegration<ISimu
 
 internal class when_creating_from_mobi_project : concern_for_SimulationTask
 {
-   protected CreateSimulationResult _result;
+   protected SimulationCreationResult _creationResult;
 
    protected override void Context()
    {
@@ -65,21 +65,21 @@ internal class when_creating_simulation : when_creating_from_mobi_project
 {
    protected override void Because()
    {
-      _result = sut.CreateSimulationResultsFrom(_simulationName, _request);
+      _creationResult = sut.CreateSimulationResultsFrom(_simulationName, _request);
    }
 
    [Observation]
    public void should_return_simulation_name()
    {
-      _result.ShouldNotBeNull();
-      _result.Simulation.ShouldNotBeNull();
-      _result.Simulation.Name.ShouldBeEqualTo(_simulationName);
+      _creationResult.ShouldNotBeNull();
+      _creationResult.Simulation.ShouldNotBeNull();
+      _creationResult.Simulation.Name.ShouldBeEqualTo(_simulationName);
    }
 
    [Observation]
    public void should_contain_module()
    {
-      var module = _result.Simulation.Configuration.ModuleConfigurations
+      var module = _creationResult.Simulation.Configuration.ModuleConfigurations
          .FirstOrDefault(x => x.Module.Name == "Module1")?.Module;
       module.ShouldNotBeNull();
    }
@@ -97,7 +97,7 @@ internal abstract class when_creating_an_invalid_configuration : when_creating_f
 
 internal class when_creating_simulation_from_pkml_module : concern_for_SimulationTask
 {
-   private CreateSimulationResult _result;
+   private SimulationCreationResult _creationResult;
 
    protected override void Context()
    {
@@ -112,21 +112,21 @@ internal class when_creating_simulation_from_pkml_module : concern_for_Simulatio
 
    protected override void Because()
    {
-      _result = sut.CreateSimulationResultsFrom(_simulationName, _request);
+      _creationResult = sut.CreateSimulationResultsFrom(_simulationName, _request);
    }
 
    [Observation]
    public void should_return_simulation_name() =>
-      _result.Simulation.Name.ShouldBeEqualTo(_simulationName);
+      _creationResult.Simulation.Name.ShouldBeEqualTo(_simulationName);
 
    [Observation]
    public void should_contain_loaded_module() =>
-      _result.Simulation.Configuration.ModuleConfigurations.Any().ShouldBeTrue();
+      _creationResult.Simulation.Configuration.ModuleConfigurations.Any().ShouldBeTrue();
 }
 
 internal class when_creating_simulation_with_warnings_only : concern_for_SimulationTask
 {
-   private CreateSimulationResult _result;
+   private SimulationCreationResult _creationResult;
 
    protected override void Context()
    {
@@ -144,17 +144,17 @@ internal class when_creating_simulation_with_warnings_only : concern_for_Simulat
 
    protected override void Because()
    {
-      _result = sut.CreateSimulationResultsFrom(_simulationName, _request);
+      _creationResult = sut.CreateSimulationResultsFrom(_simulationName, _request);
    }
 
    [Observation]
    public void should_create_simulation_despite_warnings()
    {
-      _result.ShouldNotBeNull();
-      _result.Simulation.ShouldNotBeNull();
-      _result.Simulation.Name.ShouldBeEqualTo(_simulationName);
-      _result.Simulation.Configuration.ModuleConfigurations.Any().ShouldBeTrue();
-      _result.Warnings.ShouldNotBeNull();
+      _creationResult.ShouldNotBeNull();
+      _creationResult.Simulation.ShouldNotBeNull();
+      _creationResult.Simulation.Name.ShouldBeEqualTo(_simulationName);
+      _creationResult.Simulation.Configuration.ModuleConfigurations.Any().ShouldBeTrue();
+      _creationResult.Warnings.ShouldNotBeNull();
    }
 }
 

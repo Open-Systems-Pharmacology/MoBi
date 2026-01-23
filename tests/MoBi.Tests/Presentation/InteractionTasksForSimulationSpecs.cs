@@ -247,7 +247,7 @@ namespace MoBi.Presentation
          A.CallTo(() => _applicationController.Start<ICreateSimulationConfigurationPresenter>()).Returns(_presenter);
          A.CallTo(() => _applicationController.PresenterFor(_simulation)).Returns(A.Fake<IEditSimulationPresenter>());
          A.CallTo(() => _simulationFactory.Create()).Returns(_simulation);
-         A.CallTo(() => _simulationFactory.CreateSimulationAndValidationResult(_simulationConfiguration, A<string>._)).Returns(new SimulationAndValidationResult(_configuredSimulation, new ValidationResult()));
+         A.CallTo(() => _simulationFactory.CreateSimulationAndValidate(_simulationConfiguration, A<string>._)).Returns(new SimulationAndValidationResult(_configuredSimulation, new ValidationResult()));
       }
 
       protected override void Because()

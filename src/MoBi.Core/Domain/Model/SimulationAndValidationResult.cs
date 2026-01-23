@@ -2,7 +2,7 @@
 
 namespace MoBi.Core.Domain.Model
 {
-   public sealed class SimulationAndValidationResult
+   public class SimulationAndValidationResult
    {
       public IMoBiSimulation Simulation { get; }
       public ValidationResult ValidationResult { get; }

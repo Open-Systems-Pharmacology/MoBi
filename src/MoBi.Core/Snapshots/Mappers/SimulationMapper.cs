@@ -65,7 +65,7 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
       _logger.AddInfo(Captions.LoadingSimulation(snapshot.Name, context.NumberOfSimulationsLoaded + 1, context.NumberOfSimulationsToLoad), context.Project.Name);
       var configuration = await _simulationConfigurationMapper.MapToModel(snapshot.Configuration, context);
 
-      var (simulation, _) = _simulationFactory.CreateSimulationAndValidationResult(configuration, snapshot.Name);
+      var (simulation, _) = _simulationFactory.CreateSimulationAndValidate(configuration, snapshot.Name);
       var mobiSimulation = simulation as MoBiSimulation;
 
       var snapshotContextWithSimulation = new SnapshotContextWithSimulation(mobiSimulation, context);

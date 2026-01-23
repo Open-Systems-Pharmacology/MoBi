@@ -26,7 +26,7 @@ namespace MoBi.Core.Domain.Services
       /// </summary>
       IMoBiSimulation Create();
 
-      SimulationAndValidationResult CreateSimulationAndValidationResult(SimulationConfiguration configurationReferencingBuildingBlocks, string simulationName);
+      SimulationAndValidationResult CreateSimulationAndValidate(SimulationConfiguration configurationReferencingBuildingBlocks, string simulationName);
 
       CreationResult CreateModelAndValidate(SimulationConfiguration simulationConfiguration, string modelName, string message = AppConstants.Captions.ConfiguringSimulation);
    }
@@ -108,7 +108,7 @@ namespace MoBi.Core.Domain.Services
          return results;
       }
 
-      public SimulationAndValidationResult CreateSimulationAndValidationResult(SimulationConfiguration configurationReferencingBuildingBlocks, string simulationName)
+      public SimulationAndValidationResult CreateSimulationAndValidate(SimulationConfiguration configurationReferencingBuildingBlocks, string simulationName)
       {
          var results = CreateModelAndValidate(configurationReferencingBuildingBlocks, simulationName, AppConstants.Captions.CreatingSimulation);
          var clonedConfiguration = _cloneManager.Clone(configurationReferencingBuildingBlocks);

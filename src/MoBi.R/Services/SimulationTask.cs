@@ -13,7 +13,7 @@ namespace MoBi.R.Services
 {
    public interface ISimulationTask
    {
-      CreateSimulationResult CreateSimulationResultsFrom(string simulationName, SimulationRequest request);
+      SimulationCreationResult CreateSimulationResultsFrom(string simulationName, SimulationRequest request);
 
       ModuleConfiguration CreateModuleConfiguration(Module module,
          string selectedParameterValues = null,
@@ -53,12 +53,12 @@ namespace MoBi.R.Services
          return allNamedObjects.FindByName(namedObjectToSelect);
       }
 
-      public CreateSimulationResult CreateSimulationResultsFrom(string simulationName, SimulationRequest request)
+      public SimulationCreationResult CreateSimulationResultsFrom(string simulationName, SimulationRequest request)
       {
          var modulesArray = request?.ModuleConfigurations?.ToArray() ?? Array.Empty<ModuleConfiguration>();
          var expressionsArray = request?.ExpressionProfiles?.ToArray() ?? Array.Empty<ExpressionProfileBuildingBlock>();
 
-         var createSimResults = _simulationFactory.CreateSimulation(simulationName, modulesArray, expressionsArray, request?.Individual);
+         var createSimResults = _simulationFactory.CreateSimulationFrom(simulationName, modulesArray, expressionsArray, request?.Individual);
          return createSimResults;
       }
    }

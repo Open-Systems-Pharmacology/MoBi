@@ -26,10 +26,4 @@
      </None>
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="AllCalculationMethods.pkml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>

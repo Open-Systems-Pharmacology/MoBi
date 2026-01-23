@@ -15,7 +15,7 @@ namespace MoBi.R.Services
 {
    public interface ISimulationFactory
    {
-      CreateSimulationResult CreateSimulation(string simulationName, RModuleConfiguration[] moduleConfigurations,
+      SimulationCreationResult CreateSimulationFrom(string simulationName, RModuleConfiguration[] moduleConfigurations,
          ExpressionProfileBuildingBlock[] expressionProfiles,
          IndividualBuildingBlock individual);
    }
@@ -36,7 +36,7 @@ namespace MoBi.R.Services
          _simulationSettingsFactory = simulationSettingsFactory;
       }
 
-      public CreateSimulationResult CreateSimulation(string simulationName, RModuleConfiguration[] moduleConfigurations,
+      public SimulationCreationResult CreateSimulationFrom(string simulationName, RModuleConfiguration[] moduleConfigurations,
          ExpressionProfileBuildingBlock[] expressionProfiles,
          IndividualBuildingBlock individual)
       {
@@ -66,9 +66,9 @@ namespace MoBi.R.Services
          simulationConfiguration.ShouldValidate = true;
          try
          {
-            var simulationWithValidation = _simulationFactory.CreateSimulationAndValidationResult(simulationConfiguration, simulationName);
-            var warnings = simulationWithValidation.ValidationResult.Messages.Where(x => x.NotificationType == NotificationType.Warning).Select(x => x.Text);
-            return new CreateSimulationResult(new Simulation(simulationWithValidation.Simulation), warnings);
+            var (simulation, validationResult) = _simulationFactory.CreateSimulationAndValidate(simulationConfiguration, simulationName);
+            var warnings = validationResult.Messages.Where(x => x.NotificationType == NotificationType.Warning).Select(x => x.Text);
+            return new SimulationCreationResult(new Simulation(simulation), warnings);
          }
          catch (ValidationFailedMoBiException e)
          {
@@ -76,11 +76,11 @@ namespace MoBi.R.Services
          }
          catch (Exception e)
          {
-            return new CreateSimulationResult(null, Enumerable.Empty<string>(), new[] { e.Message });
+            return new SimulationCreationResult(null, Enumerable.Empty<string>(), new[] { e.Message });
          }
       }
 
-      private static CreateSimulationResult createResultWithMessages(ValidationFailedMoBiException e)
+      private static SimulationCreationResult createResultWithMessages(ValidationFailedMoBiException e)
       {
          var messages = e.ValidationResult?.Messages ?? Enumerable.Empty<ValidationMessage>();
 
@@ -94,7 +94,7 @@ namespace MoBi.R.Services
             .Select(m => m.Text)
             .ToList();
 
-         return new CreateSimulationResult(null, warnings, errors);
+         return new SimulationCreationResult(null, warnings, errors);
       }
    }
 }
