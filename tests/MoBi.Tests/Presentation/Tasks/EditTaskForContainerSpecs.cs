@@ -163,7 +163,7 @@ namespace MoBi.Presentation.Tasks
       }
 
       [Observation]
-      public void the_forbidden_names_should_not_include_events()
+      public void the_forbidden_names_should_include_events()
       {
          A.CallTo(() => _interactionTaskContext.NamingTask.RenameFor(_container, A<IReadOnlyList<string>>._)).WhenArgumentsMatch(x => containsEvents(x.Get<IReadOnlyList<string>>(1).ToList())).MustHaveHappened();
       }
