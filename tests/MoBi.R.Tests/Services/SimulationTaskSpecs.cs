@@ -65,7 +65,7 @@ internal class when_creating_simulation : when_creating_from_mobi_project
 {
    protected override void Because()
    {
-      _creationResult = sut.CreateSimulationResultsFrom(_simulationName, _request);
+      _creationResult = sut.CreateSimulationAndValidateFrom(_simulationName, _request);
    }
 
    [Observation]
@@ -90,7 +90,7 @@ internal abstract class when_creating_an_invalid_configuration : when_creating_f
    [Observation]
    public void should_throw_expected_exception()
    {
-      The.Action(() => sut.CreateSimulationResultsFrom(_simulationName, _request))
+      The.Action(() => sut.CreateSimulationAndValidateFrom(_simulationName, _request))
          .ShouldThrowAn<InvalidOperationException>();
    }
 }
@@ -112,7 +112,7 @@ internal class when_creating_simulation_from_pkml_module : concern_for_Simulatio
 
    protected override void Because()
    {
-      _creationResult = sut.CreateSimulationResultsFrom(_simulationName, _request);
+      _creationResult = sut.CreateSimulationAndValidateFrom(_simulationName, _request);
    }
 
    [Observation]
@@ -144,7 +144,7 @@ internal class when_creating_simulation_with_warnings_only : concern_for_Simulat
 
    protected override void Because()
    {
-      _creationResult = sut.CreateSimulationResultsFrom(_simulationName, _request);
+      _creationResult = sut.CreateSimulationAndValidateFrom(_simulationName, _request);
    }
 
    [Observation]
@@ -178,7 +178,7 @@ internal class when_creating_simulation_with_errors : concern_for_SimulationTask
    [Observation]
    public void should_throw_expected_exception()
    {
-      The.Action(() => sut.CreateSimulationResultsFrom(_simulationName, _request))
+      The.Action(() => sut.CreateSimulationAndValidateFrom(_simulationName, _request))
          .ShouldThrowAn<InvalidOperationException>();
    }
 }
