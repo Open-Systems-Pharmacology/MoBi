@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Exceptions;
@@ -82,17 +83,15 @@ namespace MoBi.R.Services
 
       private static SimulationCreationResult createResultWithMessages(ValidationFailedMoBiException e)
       {
-         var messages = e.ValidationResult?.Messages ?? Enumerable.Empty<ValidationMessage>();
+         var messages = e.ValidationResult?.Messages.ToList() ?? new List<ValidationMessage>();
 
          var warnings = messages
             .Where(m => m.NotificationType == NotificationType.Warning)
-            .Select(m => m.Text)
-            .ToList();
+            .Select(m => m.Text);
 
          var errors = messages
             .Where(m => m.NotificationType == NotificationType.Error)
-            .Select(m => m.Text)
-            .ToList();
+            .Select(m => m.Text);
 
          return new SimulationCreationResult(null, warnings, errors);
       }

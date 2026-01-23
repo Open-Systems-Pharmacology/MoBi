@@ -58,8 +58,7 @@ namespace MoBi.R.Services
          var modulesArray = request?.ModuleConfigurations?.ToArray() ?? Array.Empty<ModuleConfiguration>();
          var expressionsArray = request?.ExpressionProfiles?.ToArray() ?? Array.Empty<ExpressionProfileBuildingBlock>();
 
-         var createSimResults = _simulationFactory.CreateSimulationFrom(simulationName, modulesArray, expressionsArray, request?.Individual);
-         return createSimResults;
+         return _simulationFactory.CreateSimulationFrom(simulationName, modulesArray, expressionsArray, request?.Individual);
       }
    }
 }
