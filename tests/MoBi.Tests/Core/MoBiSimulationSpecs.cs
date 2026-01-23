@@ -184,6 +184,12 @@ namespace MoBi.Core
       }
 
       [Observation]
+      public void the_chart_should_be_cloned()
+      {
+         A.CallTo(() => _cloneManager.Clone(_moBiSimulation.Chart)).MustHaveHappened();
+      }
+
+      [Observation]
       public void should_have_updated_the_references_to_the_simulation_in_the_output_mappings()
       {
          sut.OutputMappings.Count().ShouldBeEqualTo(1);
