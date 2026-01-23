@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using MoBi.Core.Domain.Model;
+﻿using MoBi.Core.Domain.Model;
+using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
@@ -19,12 +19,18 @@ namespace MoBi.Core.Domain.Services
       private readonly ICloneManagerForBuildingBlock _cloneManagerForBuildingBlock;
       private readonly ICloneManagerForModel _cloneManagerForModel;
       private readonly ISimulationFactory _simulationFactory;
+      private readonly IMoBiContext _context;
 
-      public CloneManagerForSimulation(ICloneManagerForBuildingBlock cloneManagerForBuildingBlock, ICloneManagerForModel cloneManagerForModel, ISimulationFactory simulationFactory)
+      public CloneManagerForSimulation(
+         ICloneManagerForBuildingBlock cloneManagerForBuildingBlock,
+         ICloneManagerForModel cloneManagerForModel,
+         ISimulationFactory simulationFactory,
+         IMoBiContext context)
       {
          _cloneManagerForBuildingBlock = cloneManagerForBuildingBlock;
          _cloneManagerForModel = cloneManagerForModel;
          _simulationFactory = simulationFactory;
+         _context = context;
       }
 
       public IMoBiSimulation CloneSimulation(IMoBiSimulation simulationToClone)
@@ -33,6 +39,8 @@ namespace MoBi.Core.Domain.Services
          var entitySources = simulationToClone.EntitySources.Clone();
          var simulation = _simulationFactory.CreateFrom(CloneSimulationConfiguration(simulationToClone.Configuration), model, entitySources);
          simulation.UpdatePropertiesFrom(simulationToClone, _cloneManagerForModel);
+         if (simulationToClone.Chart != null)
+            simulation.Chart = _context.Deserialize<CurveChart>(_context.Serialize(simulationToClone.Chart));
          return simulation;
       }
 
