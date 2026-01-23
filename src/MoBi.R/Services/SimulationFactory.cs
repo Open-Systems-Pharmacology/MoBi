@@ -66,7 +66,8 @@ namespace MoBi.R.Services
          try
          {
             var (simulation, validationResult) = _simulationFactory.CreateSimulationAndValidate(simulationConfiguration, simulationName);
-            var warnings = validationResult.Messages.Where(x => x.NotificationType == NotificationType.Warning).Select(x => x.Text);
+            var messages = validationResult?.Messages ?? Enumerable.Empty<ValidationMessage>();
+            var warnings = messages.Where(x => x.NotificationType == NotificationType.Warning).Select(x => x.Text);
             return new SimulationCreationResult(new Simulation(simulation), warnings);
          }
          catch (ValidationFailedMoBiException e)
