@@ -41,7 +41,12 @@ namespace MoBi.Presentation.Tasks.Edit
          var spatialStructure = _interactionTaskContext.Active<SpatialStructure>();
 
          if (existingObjectsInParent != null)
-            return existingObjectsInParent.AllNames().Union(addEventsForNonTopContainer(container, spatialStructure));
+         {
+            var allNames = existingObjectsInParent.AllNames().ToList();
+            if (shouldAddEventsFor(container, spatialStructure))
+               allNames.Add(AppConstants.EventsContainerName);
+            return allNames;
+         }
 
          if (spatialStructure == null)
             return Enumerable.Empty<string>();
@@ -49,20 +54,19 @@ namespace MoBi.Presentation.Tasks.Edit
          return spatialStructure.TopContainers.Select(x => x.Name).Union(AppConstants.UnallowedNames);
       }
 
-      private IEnumerable<string> addEventsForNonTopContainer(IContainer container, SpatialStructure spatialStructure)
+      private bool shouldAddEventsFor(IContainer container, SpatialStructure spatialStructure)
       {
-         if (!spatialStructure.TopContainers.Contains(container))
-            yield return AppConstants.EventsContainerName;
+         return spatialStructure == null || !spatialStructure.TopContainers.Contains(container);
       }
 
       public void SaveWithIndividualAndExpression(IContainer container) => _spatialStructureContentExporter.SaveWithIndividualAndExpression(container);
 
       public override void Save(IContainer container) => _spatialStructureContentExporter.Save(container);
 
-      public IMoBiCommand SetContainerMode(IBuildingBlock buildingBlock, IContainer container, ContainerMode containerMode) => 
+      public IMoBiCommand SetContainerMode(IBuildingBlock buildingBlock, IContainer container, ContainerMode containerMode) =>
          new SetContainerModeCommand(buildingBlock, container, containerMode).RunCommand(_context);
 
-      public string BrowseSavePathFor(string name) => 
+      public string BrowseSavePathFor(string name) =>
          _interactionTask.AskForFileToSave(AppConstants.Captions.Save, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART, name);
 
       protected override IMoBiCommand GetRenameCommandFor(IContainer container, IBuildingBlock buildingBlock, string newName, string objectType)
