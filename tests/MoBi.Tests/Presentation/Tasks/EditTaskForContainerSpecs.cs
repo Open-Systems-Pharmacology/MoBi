@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using FakeItEasy;
+using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
@@ -28,9 +29,9 @@ namespace MoBi.Presentation.Tasks
          sut = new EditTaskForContainer(_interactionTaskContext, _spatialStructureContentExporter);
       }
 
-      protected bool containsEvents(List<string> prohibitedNames)
+      protected bool ContainsEvents(List<string> prohibitedNames)
       {
-         return prohibitedNames.Any(x => string.Compare(x, "Events", StringComparison.InvariantCultureIgnoreCase) == 0);
+         return prohibitedNames.Any(x => string.Compare(x, AppConstants.EventsContainerName, StringComparison.InvariantCultureIgnoreCase) == 0);
       }
    }
 
@@ -57,7 +58,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void the_forbidden_names_should_include_events()
       {
-         A.CallTo(() => _interactionTaskContext.NamingTask.RenameFor(_container, A<IReadOnlyList<string>>._)).WhenArgumentsMatch(x => containsEvents(x.Get<IReadOnlyList<string>>(1).ToList())).MustHaveHappened();
+         A.CallTo(() => _interactionTaskContext.NamingTask.RenameFor(_container, A<IReadOnlyList<string>>._)).WhenArgumentsMatch(x => ContainsEvents(x.Get<IReadOnlyList<string>>(1).ToList())).MustHaveHappened();
       }
 
       [Observation]
@@ -140,7 +141,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void the_forbidden_names_should_not_include_events()
       {
-         A.CallTo(() => _interactionTaskContext.NamingTask.RenameFor(_container, A<IReadOnlyList<string>>._)).WhenArgumentsMatch(x => !containsEvents(x.Get<IReadOnlyList<string>>(1).ToList())).MustHaveHappened();
+         A.CallTo(() => _interactionTaskContext.NamingTask.RenameFor(_container, A<IReadOnlyList<string>>._)).WhenArgumentsMatch(x => !ContainsEvents(x.Get<IReadOnlyList<string>>(1).ToList())).MustHaveHappened();
       }
    }
 
@@ -178,8 +179,8 @@ namespace MoBi.Presentation.Tasks
 
       private bool containsEvents(List<string> prohibitedNames)
       {
-         // check for instances of "Events" with any case
-         return prohibitedNames.Any(x => string.Compare(x, "Events", StringComparison.InvariantCultureIgnoreCase) == 0);
+         // check for instances of AppConstants.EventsContainerName with any case
+         return prohibitedNames.Any(x => string.Compare(x, AppConstants.EventsContainerName, StringComparison.InvariantCultureIgnoreCase) == 0);
       }
    }
 
