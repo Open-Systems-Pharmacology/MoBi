@@ -174,13 +174,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void the_forbidden_names_should_include_events()
       {
-         A.CallTo(() => _interactionTaskContext.NamingTask.RenameFor(_container, A<IReadOnlyList<string>>._)).WhenArgumentsMatch(x => containsEvents(x.Get<IReadOnlyList<string>>(1).ToList())).MustHaveHappened();
-      }
-
-      private bool containsEvents(List<string> prohibitedNames)
-      {
-         // check for instances of AppConstants.EventsContainerName with any case
-         return prohibitedNames.Any(x => string.Compare(x, AppConstants.EventsContainerName, StringComparison.InvariantCultureIgnoreCase) == 0);
+         A.CallTo(() => _interactionTaskContext.NamingTask.RenameFor(_container, A<IReadOnlyList<string>>._)).WhenArgumentsMatch(x => ContainsEvents(x.Get<IReadOnlyList<string>>(1).ToList())).MustHaveHappened();
       }
    }
 
