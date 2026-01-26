@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MoBi.CLI.Core.Services;
 using MoBi.Core.Domain.Model;
 using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
-using OSPSuite.R.Domain;
 using OSPSuite.R.Services;
 using static MoBi.R.Tests.HelperForSpecs;
+using IProjectTask = MoBi.R.Services.IProjectTask;
+using MoBiSimulation = MoBi.R.Domain.MoBiSimulation;
 
 namespace MoBi.R.Tests.Services
 {
@@ -136,7 +136,7 @@ namespace MoBi.R.Tests.Services
    internal class when_retrieving_a_present_simulation_by_name : concern_for_ProjectTask
    {
       private MoBiProject _project;
-      private Simulation _simulation;
+      private MoBiSimulation _simulation;
 
       protected override void Context()
       {
@@ -161,7 +161,7 @@ namespace MoBi.R.Tests.Services
    internal class when_retrieving_a_not_present_simulation_by_name : concern_for_ProjectTask
    {
       private MoBiProject _project;
-      private Simulation _simulation;
+      private MoBiSimulation _simulation;
 
       protected override void Context()
       {

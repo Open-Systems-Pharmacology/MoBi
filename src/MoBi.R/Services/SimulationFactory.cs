@@ -1,36 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MoBi.Core.Domain.Builder;
+using MoBi.Core.Exceptions;
 using MoBi.Core.Services;
 using MoBi.R.Domain;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.R.Domain;
 using OSPSuite.Utility.Extensions;
-using ModuleConfiguration = OSPSuite.Core.Domain.ModuleConfiguration;
+using CoreModuleConfiguration = OSPSuite.Core.Domain.ModuleConfiguration;
+using RModuleConfiguration = MoBi.R.Domain.ModuleConfiguration;
 
 namespace MoBi.R.Services
 {
    public interface ISimulationFactory
    {
-      Simulation CreateSimulation(SimulationConfiguration configuration, string simulationName);
+      SimulationCreationResult CreateSimulationFrom(string simulationName, RModuleConfiguration[] moduleConfigurations,
+         ExpressionProfileBuildingBlock[] expressionProfiles,
+         IndividualBuildingBlock individual);
    }
 
    public class SimulationFactory : ISimulationFactory
    {
+      private readonly ISimulationSettingsFactory _simulationSettingsFactory;
       private readonly ISimulationConfigurationFactory _configurationFactory;
       private readonly Core.Domain.Services.ISimulationFactory _simulationFactory;
-      private readonly IForbiddenNamesRetriever _forbiddenNamesRetriever;
-      private readonly List<string> _usedNames = new List<string>();
 
-      public SimulationFactory(ISimulationConfigurationFactory configurationFactory, Core.Domain.Services.ISimulationFactory simulationFactory,
-         IForbiddenNamesRetriever forbiddenNamesRetriever)
+      public SimulationFactory(
+         ISimulationConfigurationFactory configurationFactory,
+         Core.Domain.Services.ISimulationFactory simulationFactory,
+         ISimulationSettingsFactory simulationSettingsFactory)
       {
          _configurationFactory = configurationFactory;
          _simulationFactory = simulationFactory;
-         _forbiddenNamesRetriever = forbiddenNamesRetriever;
+         _simulationSettingsFactory = simulationSettingsFactory;
       }
 
-      public Simulation CreateSimulation(SimulationConfiguration configuration, string simulationName)
+      public SimulationCreationResult CreateSimulationFrom(string simulationName, RModuleConfiguration[] moduleConfigurations,
+         ExpressionProfileBuildingBlock[] expressionProfiles,
+         IndividualBuildingBlock individual)
       {
          if (string.IsNullOrWhiteSpace(simulationName))
             throw new InvalidOperationException("Simulation name is required");
@@ -38,26 +47,52 @@ namespace MoBi.R.Services
          if (Constants.ILLEGAL_CHARACTERS.Any(simulationName.Contains))
             throw new InvalidOperationException("Simulation name contains illegal characters");
 
-         var simulationConfiguration = _configurationFactory.Create();
+         var simulationConfiguration = _configurationFactory.Create(_simulationSettingsFactory.CreateDefault());
 
-         configuration.ModuleConfigurations.Each(x =>
+         var typedModuleConfigurations = (moduleConfigurations ?? Array.Empty<RModuleConfiguration>()).ToList();
+
+         var typedExpressionProfiles = (expressionProfiles ?? Array.Empty<ExpressionProfileBuildingBlock>()).ToList();
+
+         typedModuleConfigurations.Each(x =>
          {
             simulationConfiguration.AddModuleConfiguration(
-               new ModuleConfiguration(x.Module, x.SelectedInitialCondition, x.SelectedParameterValue));
+               new CoreModuleConfiguration(x.Module, x.SelectedInitialCondition, x.SelectedParameterValue));
          });
 
-         configuration.ExpressionProfiles.Each(simulationConfiguration.AddExpressionProfile);
+         typedExpressionProfiles.Each(simulationConfiguration.AddExpressionProfile);
 
-         simulationConfiguration.Individual = configuration.Individual;
-
+         simulationConfiguration.Individual = individual;
          simulationConfiguration.ShouldValidate = true;
+         try
+         {
+            var (simulation, validationResult) = _simulationFactory.CreateSimulationAndValidate(simulationConfiguration, simulationName);
+            var messages = validationResult?.Messages ?? Enumerable.Empty<ValidationMessage>();
+            var warnings = messages.Where(x => x.NotificationType == NotificationType.Warning).Select(x => x.Text);
+            return new SimulationCreationResult(new Simulation(simulation), warnings);
+         }
+         catch (ValidationFailedMoBiException e)
+         {
+            return createResultWithMessages(e);
+         }
+         catch (Exception e)
+         {
+            return new SimulationCreationResult(null, Enumerable.Empty<string>(), new[] { e.Message });
+         }
+      }
 
-         var simulation = _simulationFactory.CreateSimulationAndValidate(simulationConfiguration, simulationName);
+      private static SimulationCreationResult createResultWithMessages(ValidationFailedMoBiException e)
+      {
+         var messages = e.ValidationResult?.Messages.ToList() ?? new List<ValidationMessage>();
 
-         if (_forbiddenNamesRetriever.For(simulation).Contains(simulationName))
-            throw new InvalidOperationException("Simulation name is forbidden");
+         var warnings = messages
+            .Where(m => m.NotificationType == NotificationType.Warning)
+            .Select(m => m.Text);
 
-         return new Simulation(simulation);
+         var errors = messages
+            .Where(m => m.NotificationType == NotificationType.Error)
+            .Select(m => m.Text);
+
+         return new SimulationCreationResult(null, warnings, errors);
       }
    }
 }

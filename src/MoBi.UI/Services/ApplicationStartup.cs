@@ -5,17 +5,15 @@ using System.Threading;
 using System.Windows.Forms;
 using Castle.Facilities.TypedFactory;
 using Microsoft.Extensions.Logging;
-using MoBi.Assets;
 using MoBi.Core;
 using MoBi.Core.Domain.UnitSystem;
 using MoBi.Core.Extensions;
-using MoBi.Core.Serialization.Xml.Services;
+using MoBi.Core.Services;
 using MoBi.Presentation;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Serialization;
 using MoBi.Presentation.Serialization.Xml;
 using MoBi.Presentation.Settings;
-using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Views;
 using MoBi.UI.Diagram;
 using MoBi.UI.Settings;
@@ -23,8 +21,6 @@ using MoBi.UI.Views;
 using OSPSuite.Assets;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.PKAnalyses;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Serialization.Xml;
@@ -39,7 +35,6 @@ using OSPSuite.Utility;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Exceptions;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.FileLocker;
 using CoreRegister = OSPSuite.Core.CoreRegister;
 using IApplicationSettings = MoBi.Core.IApplicationSettings;
@@ -173,22 +168,7 @@ namespace MoBi.UI.Services
 
       public static void InitCalculationMethodRepository(IContainer container)
       {
-         var calculationMethodsRepositoryPersistor = container.Resolve<ICalculationMethodsRepositoryPersistor>();
-         calculationMethodsRepositoryPersistor.Load();
-         //Add Empty CM'S to use in non PK-Sim Models
-         var rep = container.Resolve<ICoreCalculationMethodRepository>();
-         var objectBaseFactory = container.Resolve<IObjectBaseFactory>();
-         rep.GetAllCategoriesDefault().Each(cm => rep.AddCalculationMethod(createDefaultCalculationMethodForCategory(cm.Category, objectBaseFactory)));
-      }
-
-      private static CoreCalculationMethod createDefaultCalculationMethodForCategory(string category, IObjectBaseFactory objectBaseFactory)
-      {
-         var cm = objectBaseFactory.Create<CoreCalculationMethod>()
-            .WithName(AppConstants.DefaultNames.EmptyCalculationMethod)
-            .WithDescription(AppConstants.DefaultNames.EmptyCalculationMethodDescription);
-
-         cm.Category = category;
-         return cm;
+         CalculationMethodRepositoryInitialization.Initialize(container);
       }
 
       public void InitializeForStartup(Action<IContainer> registrationAction)

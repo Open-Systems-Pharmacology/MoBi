@@ -20,14 +20,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Domain\" />
-  </ItemGroup>
-
-  <ItemGroup>
      <None Include="..\..\LICENSE">
         <Pack>True</Pack>
         <PackagePath></PackagePath>
      </None>
+     <None Include="..\Data\AllCalculationMethods.pkml" Link="AllCalculationMethods.pkml" />
   </ItemGroup>
 
 </Project>

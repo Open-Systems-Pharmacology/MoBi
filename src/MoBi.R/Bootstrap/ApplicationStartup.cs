@@ -1,8 +1,6 @@
-﻿using MoBi.Presentation.Serialization;
-using OSPSuite.Core;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Serialization.Xml;
+﻿using MoBi.Core.Services;
+using MoBi.Presentation.Serialization;
+using OSPSuite.CLI.Core;
 using OSPSuite.Infrastructure;
 using OSPSuite.R;
 using OSPSuite.Utility.Container;
@@ -16,8 +14,8 @@ namespace MoBi.R.Bootstrap
       public static void Initialize(ApiConfig apiConfig)
       {
          OSPSuite.R.Api.InitializeOnce(apiConfig, registerAction);
-
          new SerializerRegister().PerformMappingForMoBiSerializerRepository(OSPSuite.R.Api.Container);
+         CalculationMethodRepositoryInitialization.Initialize(OSPSuite.R.Api.Container);
       }
 
       private static void registerAction(IContainer container)
@@ -25,7 +23,7 @@ namespace MoBi.R.Bootstrap
          container.AddRegister(x => x.FromType<CoreRegister>());
          container.AddRegister(x => x.FromType<InfrastructureRegister>());
          container.AddRegister(x => x.FromType<RRegister>());
-         container.AddRegister(x => x.FromType<OSPSuite.CLI.Core.CLIRegister>());
+         container.AddRegister(x => x.FromType<CLIRegister>());
       }
    }
 }

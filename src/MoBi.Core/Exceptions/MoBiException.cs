@@ -57,4 +57,15 @@ namespace MoBi.Core.Exceptions
       {
       }
    }
+
+   public class ValidationFailedMoBiException : MoBiException
+   {
+      public ValidationResult ValidationResult { get; }
+
+      public ValidationFailedMoBiException(string message, ValidationResult validationResult)
+         : base(message)
+      {
+         ValidationResult = validationResult;
+      }
+   }
 }
