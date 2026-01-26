@@ -47,8 +47,7 @@ namespace MoBi.R.Services
          if (Constants.ILLEGAL_CHARACTERS.Any(simulationName.Contains))
             throw new InvalidOperationException("Simulation name contains illegal characters");
 
-         var simulationSettings = _simulationSettingsFactory.CreateDefault();
-         var simulationConfiguration = _configurationFactory.Create(simulationSettings);
+         var simulationConfiguration = _configurationFactory.Create(_simulationSettingsFactory.CreateDefault());
 
          var typedModuleConfigurations = (moduleConfigurations ?? Array.Empty<RModuleConfiguration>()).ToList();
 
