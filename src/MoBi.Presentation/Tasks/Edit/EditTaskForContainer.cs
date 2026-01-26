@@ -43,20 +43,25 @@ namespace MoBi.Presentation.Tasks.Edit
          if (existingObjectsInParent != null)
          {
             var allNames = existingObjectsInParent.AllNames().ToList();
-            if (shouldAddEventsFor(container, spatialStructure))
+
+            // We should not explicitly prohibit "Events" for a top container unless it's in 'existingObjectsInParent'
+            // Eg, it should not be allowed as a duplicate named top container, but should be allowed if there isn't 
+            // an "Events" top container
+            if (!containerIsTopContainer(container, spatialStructure))
                allNames.Add(AppConstants.EventsContainerName);
             return allNames;
          }
 
+         // If there isn't an active spatial structure and no other prohibited names, prohibit "Events" anyway.
          if (spatialStructure == null)
-            return new []{AppConstants.EventsContainerName};
+            return new[] { AppConstants.EventsContainerName };
 
          return spatialStructure.TopContainers.Select(x => x.Name).Union(AppConstants.UnallowedNames);
       }
 
-      private bool shouldAddEventsFor(IContainer container, SpatialStructure spatialStructure)
+      private bool containerIsTopContainer(IContainer container, SpatialStructure spatialStructure)
       {
-         return spatialStructure == null || !spatialStructure.TopContainers.Contains(container);
+         return spatialStructure != null && spatialStructure.TopContainers.Contains(container);
       }
 
       public void SaveWithIndividualAndExpression(IContainer container) => _spatialStructureContentExporter.SaveWithIndividualAndExpression(container);
