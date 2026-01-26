@@ -17,6 +17,9 @@
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 	</ItemGroup>
+	<ItemGroup>
+	  <None Include="..\..\src\Data\AllCalculationMethods.pkml" Link="AllCalculationMethods.pkml" />
+	</ItemGroup>
 	
 	<ItemGroup>
 	 <PackageReference Include="coverlet.collector" Version="6.0.0" />
@@ -41,9 +44,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="AllCalculationMethods.pkml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="Data\pop_10.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
