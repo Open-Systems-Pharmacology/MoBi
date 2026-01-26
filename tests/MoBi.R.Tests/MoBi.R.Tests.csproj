@@ -18,7 +18,9 @@
 		</Content>
 	</ItemGroup>
 	<ItemGroup>
-	  <None Include="..\..\src\Data\AllCalculationMethods.pkml" Link="AllCalculationMethods.pkml" />
+	  <None Include="..\..\src\Data\AllCalculationMethods.pkml" Link="AllCalculationMethods.pkml">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 	
 	<ItemGroup>
