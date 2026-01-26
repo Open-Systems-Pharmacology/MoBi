@@ -27,6 +27,11 @@ namespace MoBi.Presentation.Tasks
          _interactionTask = _interactionTaskContext.InteractionTask;
          sut = new EditTaskForContainer(_interactionTaskContext, _spatialStructureContentExporter);
       }
+
+      protected bool containsEvents(List<string> prohibitedNames)
+      {
+         return prohibitedNames.Any(x => string.Compare(x, "Events", StringComparison.InvariantCultureIgnoreCase) == 0);
+      }
    }
 
    public class When_renaming_a_container_that_is_not_in_a_spatial_structure : concern_for_EditTaskForContainer
@@ -40,11 +45,19 @@ namespace MoBi.Presentation.Tasks
          _container = new Container().WithName("OLD");
          _eventBuildingBlock = new EventGroupBuildingBlock();
          A.CallTo(_interactionTaskContext.NamingTask).WithReturnType<string>().Returns("NEW");
+
+         A.CallTo(() => _interactionTaskContext.Active<SpatialStructure>()).Returns(null);
       }
 
       protected override void Because()
       {
          sut.Rename(_container, _eventBuildingBlock);
+      }
+
+      [Observation]
+      public void the_forbidden_names_should_include_events()
+      {
+         A.CallTo(() => _interactionTaskContext.NamingTask.RenameFor(_container, A<IReadOnlyList<string>>._)).WhenArgumentsMatch(x => containsEvents(x.Get<IReadOnlyList<string>>(1).ToList())).MustHaveHappened();
       }
 
       [Observation]
@@ -128,11 +141,6 @@ namespace MoBi.Presentation.Tasks
       public void the_forbidden_names_should_not_include_events()
       {
          A.CallTo(() => _interactionTaskContext.NamingTask.RenameFor(_container, A<IReadOnlyList<string>>._)).WhenArgumentsMatch(x => !containsEvents(x.Get<IReadOnlyList<string>>(1).ToList())).MustHaveHappened();
-      }
-
-      private bool containsEvents(List<string> prohibitedNames)
-      {
-         return prohibitedNames.Any(x => string.Compare(x, "Events", StringComparison.InvariantCultureIgnoreCase) == 0);
       }
    }
 

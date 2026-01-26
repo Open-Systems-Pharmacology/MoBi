@@ -49,7 +49,7 @@ namespace MoBi.Presentation.Tasks.Edit
          }
 
          if (spatialStructure == null)
-            return Enumerable.Empty<string>();
+            return new []{AppConstants.EventsContainerName};
 
          return spatialStructure.TopContainers.Select(x => x.Name).Union(AppConstants.UnallowedNames);
       }
