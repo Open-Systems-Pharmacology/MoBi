@@ -2256,6 +2256,7 @@ namespace MoBi.Assets
       public static readonly IReadOnlyList<string> DefaultObservedDataCategories = new[] { Constants.ObservedData.MOLECULE, Constants.ObservedData.COMPARTMENT, Constants.ObservedData.ORGAN };
       public static readonly string Clone = "Clone";
       public static readonly string Endosome = "Endosome";
+      public static readonly string EventsContainerName = "Events";
 
       public static string PathType(string pathTypeAsString)
       {
