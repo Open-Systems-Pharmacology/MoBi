@@ -9,6 +9,8 @@ namespace MoBi.R.Domain
       private readonly List<ModuleConfiguration> _moduleConfigurations = new();
       private readonly List<ExpressionProfileBuildingBlock> _expressionProfiles = new();
 
+      public SimulationSettings SimulationSettings { get; set; }
+      public bool CreateAllProcessRateParameters { get; set; }
       public IndividualBuildingBlock Individual { get; private set; }
       public IReadOnlyList<ModuleConfiguration> ModuleConfigurations => _moduleConfigurations;
       public IReadOnlyList<ExpressionProfileBuildingBlock> ExpressionProfiles => _expressionProfiles;

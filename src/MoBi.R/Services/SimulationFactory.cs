@@ -18,7 +18,9 @@ namespace MoBi.R.Services
    {
       SimulationCreationResult CreateSimulationFrom(string simulationName, RModuleConfiguration[] moduleConfigurations,
          ExpressionProfileBuildingBlock[] expressionProfiles,
-         IndividualBuildingBlock individual);
+         IndividualBuildingBlock individual,
+         bool createAllProcessRateParameters,
+         SimulationSettings simulationSettings = null);
    }
 
    public class SimulationFactory : ISimulationFactory
@@ -39,7 +41,9 @@ namespace MoBi.R.Services
 
       public SimulationCreationResult CreateSimulationFrom(string simulationName, RModuleConfiguration[] moduleConfigurations,
          ExpressionProfileBuildingBlock[] expressionProfiles,
-         IndividualBuildingBlock individual)
+         IndividualBuildingBlock individual,
+         bool createAllProcessRateParameters,
+         SimulationSettings simulationSettings = null)
       {
          if (string.IsNullOrWhiteSpace(simulationName))
             throw new InvalidOperationException("Simulation name is required");
@@ -47,8 +51,9 @@ namespace MoBi.R.Services
          if (Constants.ILLEGAL_CHARACTERS.Any(simulationName.Contains))
             throw new InvalidOperationException("Simulation name contains illegal characters");
 
-         var simulationConfiguration = _configurationFactory.Create(_simulationSettingsFactory.CreateDefault());
-
+         var simulationConfiguration = _configurationFactory.Create(simulationSettings ?? _simulationSettingsFactory.CreateDefault());
+         simulationConfiguration.CreateAllProcessRateParameters = createAllProcessRateParameters;
+         
          var typedModuleConfigurations = (moduleConfigurations ?? Array.Empty<RModuleConfiguration>()).ToList();
 
          var typedExpressionProfiles = (expressionProfiles ?? Array.Empty<ExpressionProfileBuildingBlock>()).ToList();
