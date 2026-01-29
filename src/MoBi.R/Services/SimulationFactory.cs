@@ -86,11 +86,22 @@ namespace MoBi.R.Services
 
          var warnings = messages
             .Where(m => m.NotificationType == NotificationType.Warning)
-            .Select(m => m.Text);
+            .Select(m => m.Text)
+            .Concat(
+               messages
+                  .Where(m => m.NotificationType == NotificationType.Warning)
+                  .SelectMany(m => m.Details)
+            );
 
          var errors = messages
             .Where(m => m.NotificationType == NotificationType.Error)
-            .Select(m => m.Text);
+            .Select(m => m.Text)
+            .Concat(
+               messages
+                  .Where(m => m.NotificationType == NotificationType.Error)
+                  .SelectMany(m => m.Details)
+            );
+
 
          return new SimulationCreationResult(null, warnings, errors);
       }
