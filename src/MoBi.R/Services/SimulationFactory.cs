@@ -82,26 +82,21 @@ namespace MoBi.R.Services
 
       private static SimulationCreationResult createResultWithMessages(ValidationFailedMoBiException e)
       {
-         var messages = e.ValidationResult?.Messages.ToList() ?? new List<ValidationMessage>();
+         var messages = e.ValidationResult?.Messages ?? Enumerable.Empty<ValidationMessage>();
 
-         var warnings = messages
-            .Where(m => m.NotificationType == NotificationType.Warning)
-            .Select(m => m.Text)
-            .Concat(
-               messages
-                  .Where(m => m.NotificationType == NotificationType.Warning)
-                  .SelectMany(m => m.Details)
-            );
+         var grouped = messages
+            .Where(m => m != null)
+            .GroupBy(m => m.NotificationType)
+            .ToDictionary(g => g.Key, g => g.ToList());
 
-         var errors = messages
-            .Where(m => m.NotificationType == NotificationType.Error)
-            .Select(m => m.Text)
-            .Concat(
-               messages
-                  .Where(m => m.NotificationType == NotificationType.Error)
-                  .SelectMany(m => m.Details)
-            );
+         IEnumerable<string> Flatten(IEnumerable<ValidationMessage> ms) =>
+            ms.SelectMany(m =>
+               new[] { m.Text }
+                  .Concat(m.Details ?? Enumerable.Empty<string>())
+            ).Where(s => !string.IsNullOrWhiteSpace(s));
 
+         var warnings = grouped.TryGetValue(NotificationType.Warning, out var w) ? Flatten(w) : Enumerable.Empty<string>();
+         var errors = grouped.TryGetValue(NotificationType.Error, out var er) ? Flatten(er) : Enumerable.Empty<string>();
 
          return new SimulationCreationResult(null, warnings, errors);
       }
