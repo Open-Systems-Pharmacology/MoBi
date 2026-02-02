@@ -38,7 +38,7 @@ namespace MoBi.Presentation.Tasks
       private readonly ISimModelManagerFactory _simModelManagerFactory;
       private readonly IKeyPathMapper _keyPathMapper;
       private readonly IEntityValidationTask _entityValidationTask;
-      private readonly ISimulationQuantityValueWarningTask _parameterValueWarningTask;
+      private readonly ISimulationQuantityValueWarningTask _simulationQuantityWarningTask;
       private readonly ConcurrentDictionary<IMoBiSimulation, CancellationTokenSource> _cancellationTokenSources = new ConcurrentDictionary<IMoBiSimulation, CancellationTokenSource>();
 
       public SimulationRunner(IMoBiContext context,
@@ -49,7 +49,7 @@ namespace MoBi.Presentation.Tasks
          ISimModelManagerFactory simModelManagerFactory,
          IKeyPathMapper keyPathMapper,
          IEntityValidationTask entityValidationTask,
-         ISimulationQuantityValueWarningTask parameterValueWarningTask)
+         ISimulationQuantityValueWarningTask simulationQuantityWarningTask)
       {
          _context = context;
          _applicationController = applicationController;
@@ -59,7 +59,7 @@ namespace MoBi.Presentation.Tasks
          _simModelManagerFactory = simModelManagerFactory;
          _keyPathMapper = keyPathMapper;
          _entityValidationTask = entityValidationTask;
-         _parameterValueWarningTask = parameterValueWarningTask;
+         _simulationQuantityWarningTask = simulationQuantityWarningTask;
       }
 
       public bool IsSimulationRunning(IMoBiSimulation simulation)
@@ -154,7 +154,7 @@ namespace MoBi.Presentation.Tasks
             return;
 
          var runValidationResult = new RunValidationResult();
-         _parameterValueWarningTask.WarnForNonFiniteQuantities(simulation.Model, runValidationResult);
+         _simulationQuantityWarningTask.WarnForNonFiniteQuantities(simulation.Model, runValidationResult);
 
          _context.PublishEvent(new SimulationRunStartedEvent(simulation));
          _context.PublishEvent(new ProgressInitEvent(100, AppConstants.SimulationRun));

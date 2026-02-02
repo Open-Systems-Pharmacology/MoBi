@@ -35,7 +35,7 @@ namespace MoBi.Presentation.Tasks
       protected ISimModelManagerFactory _simModelManagerFactory;
       protected IKeyPathMapper _keyPathMapper;
       protected IEntityValidationTask _eventValidationTask;
-      private ISimulationQuantityValueWarningTask _parameterValueWarningTask;
+      private ISimulationQuantityValueWarningTask _simulationQuantityWarningTask;
 
       protected override Task Context()
       {
@@ -47,7 +47,7 @@ namespace MoBi.Presentation.Tasks
          _simModelManagerFactory = A.Fake<ISimModelManagerFactory>();
          _keyPathMapper = A.Fake<IKeyPathMapper>();
          _eventValidationTask = A.Fake<IEntityValidationTask>();
-         _parameterValueWarningTask = A.Fake<ISimulationQuantityValueWarningTask>();
+         _simulationQuantityWarningTask = A.Fake<ISimulationQuantityValueWarningTask>();
 
          sut = new SimulationRunner(
             _context,
@@ -58,7 +58,7 @@ namespace MoBi.Presentation.Tasks
             _simModelManagerFactory,
             _keyPathMapper,
             _eventValidationTask,
-            _parameterValueWarningTask);
+            _simulationQuantityWarningTask);
 
          return Task.CompletedTask;
       }
