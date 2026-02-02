@@ -120,6 +120,9 @@ namespace MoBi.Presentation.Tasks
             results = _simulationFactory.CreateModelAndValidate(simulationConfigurationReferencingTemplates, simulationToUpdate.Model.Name, message);
          }, message);
 
+         if (results == null)
+            return new MoBiEmptyCommand();
+
          //create a clone then that will be saved in the simulation
          var simulationBuildConfiguration = _cloneManager.Clone(simulationConfigurationReferencingTemplates);
 

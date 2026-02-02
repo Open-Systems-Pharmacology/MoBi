@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using FakeItEasy;
+using MoBi.Core.Commands;
 using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
@@ -11,6 +11,7 @@ using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
@@ -109,6 +110,37 @@ namespace MoBi.Core.Service
       public void the_notification_area_should_be_cleared()
       {
          A.CallTo(() => _context.PublishEvent(A<ClearNotificationsEvent>.That.Matches(x => x.MessageOrigin.Equals(MessageOrigin.Simulation)))).MustHaveHappened();
+      }
+   }
+
+   public class When_configuring_a_simulation_fails : concern_for_SimulationUpdateTask
+   {
+      private SimulationConfiguration _simulationConfiguration;
+      private MoBiSimulation _simulation;
+      private ICommand _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulationConfiguration = new SimulationConfiguration();
+         _simulation = new MoBiSimulation
+         {
+            Configuration = _simulationConfiguration,
+            Model = new Model()
+         };
+
+         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._, A<string>._)).Returns(null);
+      }
+
+      protected override void Because()
+      {
+         _result = sut.UpdateSimulation(_simulation);
+      }
+
+      [Observation]
+      public void the_command_to_update_should_be_empty()
+      {
+         _result.ShouldBeAnInstanceOf<MoBiEmptyCommand>();
       }
    }
 
