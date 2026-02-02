@@ -94,6 +94,7 @@ namespace MoBi.UI.Settings
       public int MaximumNumberOfCoresToUse { get; set; }
       public int NumberOfBins { get; set; }
       public int NumberOfIndividualsPerBin { get; set; }
+      public bool WarnForNonFiniteQuantities { get; set; }
       public JournalPageEditorSettings JournalPageEditorSettings { get; set; }
       public ParameterIdentificationFeedbackEditorSettings ParameterIdentificationFeedbackEditorSettings { get; set; }
       public SensitivityAnalysisFeedbackEditorSettings SensitivityAnalysisFeedbackEditorSettings { get; set; }

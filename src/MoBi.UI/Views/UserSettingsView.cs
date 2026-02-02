@@ -33,6 +33,7 @@ namespace MoBi.UI.Views
          _screenBinder.Bind(x => x.MRUListItemCount).To(tbMRUFiles);
          _screenBinder.Bind(x => x.DecimalPlace).To(tbDecimalPlace);
          _screenBinder.Bind(x => x.MaximumNumberOfCoresToUse).To(tbNumberOfProcessors);
+         _screenBinder.Bind(x => x.WarnForNonFiniteQuantities).To(chkWarnForNonFiniteQUantities);
 
          _screenBinder.Bind(x => x.DefaultParameterGroupingModeForPIAndSA)
             .To(cbDefaultParameterGroupingModePISA)
@@ -79,6 +80,9 @@ namespace MoBi.UI.Views
          ApplicationIcon = ApplicationIcons.Settings;
          layoutItemNumberOfProcessors.Text = Captions.NumberOfProcessors.FormatForLabel();
          layoutItemParameterLayout.Text = AppConstants.Captions.DefaultParameterView.FormatForLabel();
+
+         chkRenameDependent.Text = AppConstants.Captions.RenameDependentObjects;
+         chkWarnForNonFiniteQUantities.Text = AppConstants.Captions.WarnForNonFiniteQuantities;
       }
 
       public override bool HasError => _screenBinder.HasError;

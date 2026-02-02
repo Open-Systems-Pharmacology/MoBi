@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using MoBi.Assets;
+﻿using MoBi.Assets;
+using MoBi.Core;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
@@ -22,6 +17,12 @@ using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using ISimulationPersistableUpdater = MoBi.Core.Services.ISimulationPersistableUpdater;
 
 namespace MoBi.Presentation.Tasks
@@ -37,6 +38,7 @@ namespace MoBi.Presentation.Tasks
       private readonly ISimModelManagerFactory _simModelManagerFactory;
       private readonly IKeyPathMapper _keyPathMapper;
       private readonly IEntityValidationTask _entityValidationTask;
+      private readonly ISimulationQuantityValueWarningTask _parameterValueWarningTask;
       private readonly ConcurrentDictionary<IMoBiSimulation, CancellationTokenSource> _cancellationTokenSources = new ConcurrentDictionary<IMoBiSimulation, CancellationTokenSource>();
 
       public SimulationRunner(IMoBiContext context,
@@ -46,7 +48,8 @@ namespace MoBi.Presentation.Tasks
          IDisplayUnitUpdater displayUnitUpdater,
          ISimModelManagerFactory simModelManagerFactory,
          IKeyPathMapper keyPathMapper,
-         IEntityValidationTask entityValidationTask)
+         IEntityValidationTask entityValidationTask,
+         ISimulationQuantityValueWarningTask parameterValueWarningTask)
       {
          _context = context;
          _applicationController = applicationController;
@@ -56,6 +59,7 @@ namespace MoBi.Presentation.Tasks
          _simModelManagerFactory = simModelManagerFactory;
          _keyPathMapper = keyPathMapper;
          _entityValidationTask = entityValidationTask;
+         _parameterValueWarningTask = parameterValueWarningTask;
       }
 
       public bool IsSimulationRunning(IMoBiSimulation simulation)
@@ -149,8 +153,14 @@ namespace MoBi.Presentation.Tasks
          if (!_cancellationTokenSources.TryAdd(simulation, cts)) //this will prevent from running one that is already running
             return;
 
+         var runValidationResult = new RunValidationResult();
+         _parameterValueWarningTask.WarnForNonFiniteQuantities(simulation.Model, runValidationResult);
+
          _context.PublishEvent(new SimulationRunStartedEvent(simulation));
          _context.PublishEvent(new ProgressInitEvent(100, AppConstants.SimulationRun));
+
+         _context.PublishEvent(new ClearNotificationsEvent(MessageOrigin.Simulation));
+         _context.PublishEvent(new ShowValidationResultsEvent(runValidationResult.ValidationResult));
          _simModelManager = _simModelManagerFactory.Create();
          var succeeded = false; 
          try

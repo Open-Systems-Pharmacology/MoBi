@@ -47,7 +47,7 @@ namespace MoBi.Presentation.Mappers
          return new NotificationMessage(objectBase, origin, buildingBlock, notificationType)
          {
             ObjectType = _objectTypeResolver.TypeFor(objectBase),
-            BuildingBlockType = _objectTypeResolver.TypeFor(buildingBlock),
+            BuildingBlockType = buildingBlock == null ? string.Empty : _objectTypeResolver.TypeFor(buildingBlock),
          };
       }
    }
