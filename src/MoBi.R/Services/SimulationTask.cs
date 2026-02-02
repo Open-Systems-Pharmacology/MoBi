@@ -62,7 +62,7 @@ namespace MoBi.R.Services
             modulesArray, 
             expressionsArray, 
             request?.Individual, 
-            request.CreateAllProcessRateParameters, 
+            request?.CreateAllProcessRateParameters ?? false, 
             request?.SimulationSettings);
       }
    }
