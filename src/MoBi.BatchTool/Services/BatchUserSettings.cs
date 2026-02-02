@@ -94,6 +94,6 @@ namespace MoBi.BatchTool.Services
       public int MaximumNumberOfCoresToUse { get; set; }
       public int NumberOfBins { get; set; }
       public int NumberOfIndividualsPerBin { get; set; }
-      public bool WarnForNonFiniteParameters { get; set; }
+      public bool WarnForNonFiniteQuantities { get; set; }
    }
 }

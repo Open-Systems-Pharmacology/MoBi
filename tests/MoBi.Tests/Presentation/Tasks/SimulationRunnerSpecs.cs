@@ -35,7 +35,7 @@ namespace MoBi.Presentation.Tasks
       protected ISimModelManagerFactory _simModelManagerFactory;
       protected IKeyPathMapper _keyPathMapper;
       protected IEntityValidationTask _eventValidationTask;
-      private ISimulationQuantityValueWarningTask _simulationQuantityWarningTask;
+      protected ISimulationQuantityValueWarningTask _simulationQuantityWarningTask;
 
       protected override Task Context()
       {
@@ -310,6 +310,12 @@ namespace MoBi.Presentation.Tasks
       public void should_have_updated_the_display_unit_in_the_new_results()
       {
          A.CallTo(() => _displayUnitUpdater.UpdateDisplayUnitsIn(_newResults)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_check_for_non_finite_values()
+      {
+         A.CallTo(() => _simulationQuantityWarningTask.WarnForNonFiniteQuantities(_simulation.Model, A<RunValidationResult>._)).MustHaveHappened();
       }
 
       [Observation]
