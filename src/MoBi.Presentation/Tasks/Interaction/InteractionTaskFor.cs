@@ -9,6 +9,7 @@ using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
 using IBuildingBlockRepository = MoBi.Core.Domain.Repository.IBuildingBlockRepository;
@@ -233,6 +234,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             return new MoBiEmptyCommand();
 
          correctTagsForRename(oldName, childToAdd.Name, childToAdd);
+         correctFormulaPathsForRename(oldName, childToAdd.Name, childToAdd);
 
          var macroCommand = new MoBiMacroCommand
          {
@@ -252,28 +254,67 @@ namespace MoBi.Presentation.Tasks.Interaction
          return macroCommand;
       }
 
+      /// <summary>
+      /// Corrects formula paths in all sub-containers when an object is renamed before it is added to the project.
+      /// Commands are not used here since the object is not yet part of the project
+      /// </summary>
+      /// <param name="oldName">The original object name</param>
+      /// <param name="newName">The new object name</param>
+      /// <param name="objectBase">The object to recurse</param>
+      private void correctFormulaPathsForRename(string oldName, string newName, IObjectBase objectBase)
+      {
+         if (string.Equals(oldName, newName))
+            return;
+
+         var objects = objectsToCorrect(objectBase);
+
+         objects.Each(x =>
+         {
+            if (x is IUsingFormula usingFormula)
+               usingFormula.Formula?.ObjectPaths.Each(path => path.Replace(oldName, newName));
+         });
+      }
+
+      private static List<IObjectBase> objectsToCorrect(IObjectBase objectBase)
+      {
+         var children = new List<IObjectBase>();
+
+         if (objectBase is IContainer container)
+            children.AddRange(container.GetAllChildrenAndSelf<IEntity>());
+         else
+            children.Add(objectBase);
+         return children;
+      }
+
+      /// <summary>
+      /// Updates name tags in all sub-containers from the specified old name to the new name before it is added to the project
+      /// Commands are not used here since the object is not yet part of the project
+      /// </summary>
+      /// <param name="oldName">The tag name to be replaced</param>
+      /// <param name="newName">The new tag name to use as a replacement</param>
+      /// <param name="objectBase">The root object in which to perform the tag renaming</param>
       private void correctTagsForRename(string oldName, string newName, IObjectBase objectBase)
       {
          if (string.Equals(oldName, newName))
             return;
 
-         if (objectBase is IEntity entity)
-            entity.Tags.Replace(oldName, newName);
-         
-         if (!(objectBase is IContainer container)) 
-            return;
+         var objects = objectsToCorrect(objectBase);
 
-         // Recurse containers to check their tags and their children tags
-         container.GetAllChildren<IEntity>().Each(x => correctTagsForRename(oldName, newName, x));
-         switch (container)
+         objects.Each(x =>
          {
-            case TransportBuilder transportBuilder:
-               correctTransportBuilderTags(oldName, newName, transportBuilder);
-               break;
-            case ApplicationBuilder applicationBuilder:
-               correctApplicationBuilderMolecules(oldName, newName, applicationBuilder);
-               break;
-         }
+            if (x is IEntity entity)
+               entity.Tags.Replace(oldName, newName);
+
+            switch (x)
+            {
+               case TransportBuilder transportBuilder:
+                  correctTransportBuilderTags(oldName, newName, transportBuilder);
+                  break;
+               case ApplicationBuilder applicationBuilder:
+                  correctApplicationBuilderMolecules(oldName, newName, applicationBuilder);
+                  break;
+            }
+         });
       }
 
       private void correctApplicationBuilderMolecules(string oldName, string newName, ApplicationBuilder applicationBuilder)

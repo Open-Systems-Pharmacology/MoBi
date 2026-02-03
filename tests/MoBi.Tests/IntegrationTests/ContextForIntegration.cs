@@ -62,7 +62,9 @@ namespace MoBi.IntegrationTests
          {
             container.RegisterImplementationOf(new SynchronizationContext());
             container.Register<IExceptionManager, ExceptionManagerForSpecs>(LifeStyle.Singleton);
-            container.RegisterImplementationOf(A.Fake<IUserSettings>());
+            var userSettings = A.Fake<IUserSettings>();
+            container.RegisterImplementationOf(userSettings);
+            container.RegisterImplementationOf<OSPSuite.Core.ICoreUserSettings>(userSettings);
             container.RegisterImplementationOf(A.Fake<IMoBiCoreUserSettings>());
             container.RegisterImplementationOf(A.Fake<IDialogCreator>());
             container.RegisterImplementationOf(A.Fake<IProgressUpdater>());

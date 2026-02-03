@@ -68,7 +68,8 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (entitiesToSerialize.Count == 1)
          {
             var entityToSerialize = entitiesToSerialize.First();
-            var fileName = _dialogCreator.AskForFileToSave(AppConstants.Captions.Save, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.PROJECT, entityToSerialize.Name);
+            var entityType = getEntityType(entityToSerialize);
+            var fileName = _dialogCreator.AskForFileToSave(AppConstants.Captions.Save, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.PROJECT, $"{entityType}_{entityToSerialize.Name}");
             if (fileName.IsNullOrEmpty()) return;
 
             _serializationTask.SaveModelPart(entityToSerialize, fileName);
@@ -77,6 +78,12 @@ namespace MoBi.Presentation.Tasks.Interaction
          {
             saveMultiple(entitiesToSerialize);
          }
+      }
+
+      private string getEntityType<T>(T entityToSerialize)
+      {
+         var objectType = _objectTypeResolver.TypeFor<T>();
+         return objectType?.Replace(" ", string.Empty);
       }
 
       public void Save<T>(T entityToSerialize, string fileName) => _serializationTask.SaveModelPart(entityToSerialize, fileName);

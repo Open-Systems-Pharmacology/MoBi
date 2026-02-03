@@ -54,6 +54,120 @@ namespace MoBi.Core
       }
    }
 
+   internal class When_renaming_a_molecule_builder_and_reaction_has_the_name_within : concern_for_CheckNameVisitor
+   {
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
+      private IReadOnlyList<IStringChange> _changes;
+      private ReactionBuilder _reaction;
+      private Module _module;
+
+      protected override void Context()
+      {
+         base.Context();
+         _moleculeBuildingBlock = new MoleculeBuildingBlock();
+         var builder = new MoleculeBuilder();
+         _moleculeBuildingBlock.Add(builder);
+         _changedObject = builder;
+         _changedObject.Name = _changedName;
+         _changedName = _changedObject.Name;
+         _newName = "new";
+         _reaction = new ReactionBuilder().WithName($"{_changedName}_reaction");
+
+         _module = new Module
+         {
+            _moleculeBuildingBlock,
+            new MoBiReactionBuildingBlock { _reaction }
+         };
+      }
+
+      protected override void Because()
+      {
+         _changes = sut.GetPossibleChangesFrom(_changedObject, _newName, _module.Reactions, _changedName);
+      }
+
+      [Observation]
+      public void a_rename_reaction_should_occur()
+      {
+         _changes.OfType<StringChange<ReactionBuilder>>().Count(x => x.EntityToEdit.Equals(_reaction) && x.ChangeCommand.IsAnImplementationOf<RenameObjectBaseCommand>()).ShouldBeEqualTo(1);
+      }
+   }
+
+   internal class When_renaming_a_molecule_builder_and_reaction_has_the_same_name_more_than_once : concern_for_CheckNameVisitor
+   {
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
+      private IReadOnlyList<IStringChange> _changes;
+      private ReactionBuilder _reaction;
+      private Module _module;
+
+      protected override void Context()
+      {
+         base.Context();
+         _moleculeBuildingBlock = new MoleculeBuildingBlock();
+         var builder = new MoleculeBuilder();
+         _moleculeBuildingBlock.Add(builder);
+         _changedObject = builder;
+         _changedObject.Name = _changedName;
+         _changedName = _changedObject.Name;
+         _newName = "new";
+         _reaction = new ReactionBuilder().WithName($"{_changedName}{_changedName}");
+
+         _module = new Module
+         {
+            _moleculeBuildingBlock,
+            new MoBiReactionBuildingBlock { _reaction }
+         };
+      }
+
+      protected override void Because()
+      {
+         _changes = sut.GetPossibleChangesFrom(_changedObject, _newName, _module.Reactions, _changedName);
+      }
+
+      [Observation]
+      public void a_rename_reaction_should_occur()
+      {
+         _changes.OfType<StringChange<ReactionBuilder>>().Count(x => x.EntityToEdit.Equals(_reaction) && x.ChangeCommand.IsAnImplementationOf<RenameObjectBaseCommand>()).ShouldBeEqualTo(1);
+      }
+   }
+
+   internal class When_renaming_a_molecule_builder_and_reaction_has_the_same_name : concern_for_CheckNameVisitor
+   {
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
+      private IReadOnlyList<IStringChange> _changes;
+      private ReactionBuilder _reaction;
+      private Module _module;
+
+      protected override void Context()
+      {
+         base.Context();
+         _moleculeBuildingBlock = new MoleculeBuildingBlock();
+         var builder = new MoleculeBuilder();
+         _moleculeBuildingBlock.Add(builder);
+         _changedObject = builder;
+         _changedObject.Name = _changedName;
+         _changedName = _changedObject.Name;
+         _newName = "new";
+         _reaction = new ReactionBuilder().WithName($"{_changedName}");
+
+         _module = new Module
+         {
+            _moleculeBuildingBlock,
+            new MoBiReactionBuildingBlock { _reaction }
+         };
+      }
+
+      protected override void Because()
+      {
+         _changes = sut.GetPossibleChangesFrom(_changedObject, _newName, _module.Reactions, _changedName);
+      }
+
+      [Observation]
+      public void a_rename_reaction_should_occur()
+      {
+         _changes.OfType<StringChange<ReactionBuilder>>().Count(x => x.EntityToEdit.Equals(_reaction) && x.ChangeCommand.IsAnImplementationOf<RenameObjectBaseCommand>()).ShouldBeEqualTo(1);
+      }
+   }
+
    internal class When_visiting_an_objectBase_with_changed_Name : concern_for_CheckNameVisitor
    {
       private IContainer _objectBase;

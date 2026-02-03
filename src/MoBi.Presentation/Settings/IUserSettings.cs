@@ -50,5 +50,6 @@ namespace MoBi.Presentation.Settings
       ValidationSettings ValidationSettings { get; }
       OutputSelections OutputSelections { get; set; }
       MergeConflictViewSettings MergeConflictViewSettings { get; set; }
+      ParameterGroupingModeIdForParameterAnalyzable DefaultParameterGroupingModeForPIAndSA { get; set; }
    }
 }

@@ -39,6 +39,7 @@ namespace MoBi.CLI.Core.MinimalImplementations
       public int MaximumNumberOfCoresToUse { get; set; }
       public int NumberOfBins { get; set; }
       public int NumberOfIndividualsPerBin { get; set; }
+      public bool WarnForNonFiniteQuantities { get; set; }
       public string IconSizeGeneral { get; set; }
       public bool RenameDependentObjectsDefault { get; set; }
       public bool CheckDimensions { get; set; }
@@ -75,5 +76,6 @@ namespace MoBi.CLI.Core.MinimalImplementations
       public ValidationSettings ValidationSettings { get; }
       public OutputSelections OutputSelections { get; set; }
       public MergeConflictViewSettings MergeConflictViewSettings { get; set; }
+      public ParameterGroupingModeIdForParameterAnalyzable DefaultParameterGroupingModeForPIAndSA { get; set; }
    }
 }

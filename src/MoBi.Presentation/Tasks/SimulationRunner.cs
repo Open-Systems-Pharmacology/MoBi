@@ -23,7 +23,15 @@ namespace MoBi.Presentation.Tasks
          IDisplayUnitUpdater displayUnitUpdater,
          ISimModelManagerFactory simModelManagerFactory,
          IKeyPathMapper keyPathMapper,
-         IEntityValidationTask entityValidationTask) : base(context, simulationPersistableUpdater, displayUnitUpdater, simModelManagerFactory, keyPathMapper, entityValidationTask, outputSelectionsRetriever)
+         IEntityValidationTask entityValidationTask, 
+         ISimulationQuantityValueWarningTask simulationQuantityWarningTask) :  base(context, 
+            simulationPersistableUpdater, 
+            displayUnitUpdater, 
+            simModelManagerFactory, 
+            keyPathMapper, 
+            entityValidationTask, 
+            outputSelectionsRetriever, 
+            simulationQuantityWarningTask)
       {
          _outputSelectionsRetriever = outputSelectionsRetriever;
          _applicationController = applicationController;

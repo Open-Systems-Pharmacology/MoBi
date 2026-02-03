@@ -41,18 +41,20 @@ public class CoreSimulationRunner : ICoreSimulationRunner
    protected readonly ConcurrentDictionary<IMoBiSimulation, CancellationTokenSource> _cancellationTokenSources = new();
    private readonly IEntityValidationTask _entityValidationTask;
    private readonly IQuantitySelectionsRetriever _quantitySelectionsRetriever;
+   private readonly ISimulationQuantityValueWarningTask _simulationQuantityWarningTask;
 
-   public CoreSimulationRunner(
-      IMoBiContext context,
+   public CoreSimulationRunner(IMoBiContext context,
       ISimulationPersistableUpdater simulationPersistableUpdater,
       IDisplayUnitUpdater displayUnitUpdater,
       ISimModelManagerFactory simModelManagerFactory,
       IKeyPathMapper keyPathMapper,
       IEntityValidationTask entityValidationTask,
-      IQuantitySelectionsRetriever quantitySelectionsRetriever)
+      IQuantitySelectionsRetriever quantitySelectionsRetriever, 
+      ISimulationQuantityValueWarningTask simulationQuantityWarningTask)
    {
       _context = context;
       _quantitySelectionsRetriever = quantitySelectionsRetriever;
+      _simulationQuantityWarningTask = simulationQuantityWarningTask;
       _simulationPersistableUpdater = simulationPersistableUpdater;
       _displayUnitUpdater = displayUnitUpdater;
       _simModelManagerFactory = simModelManagerFactory;
@@ -207,8 +209,15 @@ public class CoreSimulationRunner : ICoreSimulationRunner
       if (!_cancellationTokenSources.TryAdd(simulation, cts)) //this will prevent from running one that is already running
          return;
 
+      var runValidationResult = new RunValidationResult();
+      _simulationQuantityWarningTask.WarnForNonFiniteQuantities(simulation.Model, runValidationResult);
+
       _context.PublishEvent(new SimulationRunStartedEvent(simulation));
       _context.PublishEvent(new ProgressInitEvent(100, AppConstants.SimulationRun));
+
+      _context.PublishEvent(new ClearNotificationsEvent(MessageOrigin.Simulation));
+      _context.PublishEvent(new ShowValidationResultsEvent(runValidationResult.ValidationResult));
+
       var simModelManager = _simModelManagerFactory.Create();
       var succeeded = false;
       try

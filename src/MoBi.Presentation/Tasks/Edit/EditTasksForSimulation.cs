@@ -178,9 +178,12 @@ namespace MoBi.Presentation.Tasks.Edit
 
       public override void Save(IMoBiSimulation simulation)
       {
-         var fileName = _dialogCreator.AskForFileToSave(AppConstants.Captions.Save, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART, simulation.Name);
-         if (fileName.IsNullOrEmpty()) return;
-         _simulationPersistor.Save(new SimulationTransfer { Simulation = simulation }, fileName);
+         var fileName = $"Simulation_{simulation.Name}";
+         var filePath = _dialogCreator.AskForFileToSave(AppConstants.Captions.Save, Constants.Filter.PKML_FILE_FILTER, Constants.DirectoryKey.MODEL_PART, fileName);
+         if (filePath.IsNullOrEmpty()) 
+            return;
+
+         _simulationPersistor.Save(new SimulationTransfer { Simulation = simulation }, filePath);
       }
 
       public void ExportSimModelXml(IMoBiSimulation simulation)
