@@ -105,7 +105,15 @@ namespace MoBi.R.Services
 
       private static void addValidationMessage(ValidationMessage message, List<string> messageList)
       {
-         messageList.Add($"{message.Text} - {message.Details}");
+         var detailsText = message.Details != null && message.Details.Any()
+            ? string.Join(", ", message.Details)
+            : string.Empty;
+
+         var fullMessage = string.IsNullOrEmpty(detailsText)
+            ? message.Text
+            : $"{message.Text} - {detailsText}";
+
+         messageList.Add(fullMessage);
       }
    }
 }
