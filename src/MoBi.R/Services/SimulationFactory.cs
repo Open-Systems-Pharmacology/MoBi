@@ -82,23 +82,30 @@ namespace MoBi.R.Services
 
       private static SimulationCreationResult createResultWithMessages(ValidationFailedMoBiException e)
       {
-         var messages = e.ValidationResult?.Messages ?? Enumerable.Empty<ValidationMessage>();
+         var messages = e.ValidationResult?.Messages.ToList() ?? new List<ValidationMessage>();
 
-         var grouped = messages
-            .Where(m => m != null)
-            .GroupBy(m => m.NotificationType)
-            .ToDictionary(g => g.Key, g => g.ToList());
+         var warnings = new List<string>();
+         var errors = new List<string>();
 
-         IEnumerable<string> Flatten(IEnumerable<ValidationMessage> ms) =>
-            ms.SelectMany(m =>
-               new[] { m.Text }
-                  .Concat(m.Details ?? Enumerable.Empty<string>())
-            ).Where(s => !string.IsNullOrWhiteSpace(s));
-
-         var warnings = grouped.TryGetValue(NotificationType.Warning, out var w) ? Flatten(w) : Enumerable.Empty<string>();
-         var errors = grouped.TryGetValue(NotificationType.Error, out var er) ? Flatten(er) : Enumerable.Empty<string>();
+         messages.Each(message =>
+         {
+            switch (message.NotificationType)
+            {
+               case NotificationType.Warning:
+                  addValidationMessage(message, warnings);
+                  break;
+               case NotificationType.Error:
+                  addValidationMessage(message, errors);
+                  break;
+            }
+         });
 
          return new SimulationCreationResult(null, warnings, errors);
+      }
+
+      private static void addValidationMessage(ValidationMessage message, List<string> messageList)
+      {
+         messageList.Add($"{message.Text} - {message.Details}");
       }
    }
 }
