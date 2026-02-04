@@ -207,8 +207,9 @@ public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
       HasUntraceableChanges = sourceSimulation.HasUntraceableChanges;
 
       this.UpdateDiagramFrom(sourceSimulation);
+      Chart = cloneManager.Clone(sourceSimulation.Chart);
    }
-
+   
    public void RemoveUsedObservedData(DataRepository dataRepository)
    {
       if (!UsesObservedData(dataRepository))

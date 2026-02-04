@@ -1707,6 +1707,9 @@ namespace MoBi.Assets
 
          public static readonly string AddOutputSelection = "Add Output";
          public static readonly string AddingParametersToASimulationIsNotSupported = "Adding parameters to a simulation is not supported";
+         public static readonly string DefaultParameterView = "Default parameter view";
+         public static readonly string RenameDependentObjects = "Rename dependent objects";
+         public static readonly string WarnForNonFiniteQuantities = "Warn for non-finite quantities";
          public static string SelectTheBuildingBlockWhereEntitiesWillBeAddedOrUpdated(string typeBeingAdded) => $"Select the building block where {typeBeingAdded} will be added or updated";
          public static readonly string SelectBuildingBlock = "Select Building Block";
          public static readonly string MakeDefault = "Make defaults";
@@ -2290,6 +2293,7 @@ namespace MoBi.Assets
       public static readonly IReadOnlyList<string> DefaultObservedDataCategories = new[] { Constants.ObservedData.MOLECULE, Constants.ObservedData.COMPARTMENT, Constants.ObservedData.ORGAN };
       public static readonly string Clone = "Clone";
       public static readonly string Endosome = "Endosome";
+      public static readonly string EventsContainerName = "Events";
 
       public static string PathType(string pathTypeAsString)
       {

@@ -6,10 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Core" Version="13.0.75" />
-    <PackageReference Include="OSPSuite.Infrastructure" Version="13.0.75" />
-    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="13.0.75" />
-    <PackageReference Include="OSPSuite.R" Version="13.0.75" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.82" />
+    <PackageReference Include="OSPSuite.Infrastructure" Version="13.0.82" />
+    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="13.0.82" />
+    <PackageReference Include="OSPSuite.R" Version="13.0.82" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,14 +20,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Domain\" />
-  </ItemGroup>
-
-  <ItemGroup>
      <None Include="..\..\LICENSE">
         <Pack>True</Pack>
         <PackagePath></PackagePath>
      </None>
+     <None Include="..\Data\AllCalculationMethods.pkml" Link="AllCalculationMethods.pkml" />
   </ItemGroup>
 
 </Project>

@@ -7,7 +7,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.ParameterIdentifications;
-using OSPSuite.R.Domain;
 using OSPSuite.Utility;
 
 namespace MoBi.CLI.Core.Services
@@ -24,11 +23,7 @@ namespace MoBi.CLI.Core.Services
 
       string[] AllSimulationNames(MoBiProject moBiProject);
 
-      Simulation SimulationByName(MoBiProject project, string simulationName);
-
       string[] AllBuildingBlocksNamesFromModuleName(MoBiProject moBiProject, string moduleName);
-
-      Simulation[] AllSimulations(MoBiProject moBiProject);
 
       IndividualBuildingBlock[] AllIndividuals(MoBiProject moBiProject);
 
@@ -77,12 +72,6 @@ namespace MoBi.CLI.Core.Services
       public ExpressionProfileBuildingBlock[] ExpressionProfileBuildingBlocksByName(MoBiProject moBiProject, params string[] names) =>
          moBiProject.ExpressionProfileCollection.Where(p => names.Contains(p.Name)).ToArray();
 
-      public Simulation SimulationByName(MoBiProject project, string simulationName)
-      {
-         var simulation = project.Simulations.FindByName(simulationName);
-         return simulation == null ? null : new Simulation(simulation);
-      }
-
       public string[] AllBuildingBlocksNamesFromModuleName(MoBiProject moBiProject, string moduleName) =>
          moBiProject.ModuleByName(moduleName).BuildingBlocks?.AllNames().ToArray();
 
@@ -100,9 +89,6 @@ namespace MoBi.CLI.Core.Services
 
       public string[] AllSimulationNames(MoBiProject moBiProject) =>
          moBiProject.Simulations.Select(x => x.Name).ToArray();
-
-      public Simulation[] AllSimulations(MoBiProject moBiProject) =>
-         moBiProject.Simulations.Select(x => new Simulation(x)).ToArray();
 
       public Module ModuleByName(MoBiProject moBiProject, string name) =>
          moBiProject.Modules.FindByName(name);

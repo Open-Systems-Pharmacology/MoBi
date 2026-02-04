@@ -26,7 +26,7 @@ namespace MoBi.Core.Domain.Services
       /// </summary>
       IMoBiSimulation Create();
 
-      IMoBiSimulation CreateSimulationAndValidate(SimulationConfiguration configurationReferencingBuildingBlocks, string simulationName);
+      SimulationAndValidationResult CreateSimulationAndValidate(SimulationConfiguration configurationReferencingBuildingBlocks, string simulationName);
 
       CreationResult CreateModelAndValidate(SimulationConfiguration simulationConfiguration, string modelName, string message = AppConstants.Captions.ConfiguringSimulation);
    }
@@ -101,18 +101,19 @@ namespace MoBi.Core.Domain.Services
          results = createModel(simulationConfiguration, modelName);
 
          if (results == null || results.IsInvalid)
-            throw new MoBiException(AppConstants.Exceptions.CouldNotCreateSimulation);
+            throw new ValidationFailedMoBiException(AppConstants.Exceptions.CouldNotCreateSimulation, results?.ValidationResult);
 
          validateDimensions(results.Model, results.SimulationBuilder);
 
          return results;
       }
 
-      public IMoBiSimulation CreateSimulationAndValidate(SimulationConfiguration configurationReferencingBuildingBlocks, string simulationName)
+      public SimulationAndValidationResult CreateSimulationAndValidate(SimulationConfiguration configurationReferencingBuildingBlocks, string simulationName)
       {
          var results = CreateModelAndValidate(configurationReferencingBuildingBlocks, simulationName, AppConstants.Captions.CreatingSimulation);
          var clonedConfiguration = _cloneManager.Clone(configurationReferencingBuildingBlocks);
-         return CreateFrom(clonedConfiguration, results.Model, results.SimulationBuilder.EntitySources).WithName(simulationName);
+         var simulation = CreateFrom(clonedConfiguration, results.Model, results.SimulationBuilder.EntitySources).WithName(simulationName);
+         return new SimulationAndValidationResult(simulation, results.ValidationResult);
       }
 
       private CreationResult createModel(SimulationConfiguration simulationConfiguration, string name)

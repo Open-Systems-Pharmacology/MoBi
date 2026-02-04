@@ -40,6 +40,7 @@ namespace MoBi.BatchTool.Services
       public ParameterIdentificationFeedbackEditorSettings ParameterIdentificationFeedbackEditorSettings { get; set; }
       public SensitivityAnalysisFeedbackEditorSettings SensitivityAnalysisFeedbackEditorSettings { get; set; }
       public MergeConflictViewSettings MergeConflictViewSettings { get; set; }
+      public ParameterGroupingModeIdForParameterAnalyzable DefaultParameterGroupingModeForPIAndSA { get; set; }
       public string PKSimPath { get; set; }
 
       public string IconSizeGeneral { get; set; }
@@ -93,5 +94,6 @@ namespace MoBi.BatchTool.Services
       public int MaximumNumberOfCoresToUse { get; set; }
       public int NumberOfBins { get; set; }
       public int NumberOfIndividualsPerBin { get; set; }
+      public bool WarnForNonFiniteQuantities { get; set; }
    }
 }

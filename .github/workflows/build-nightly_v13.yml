@@ -5,12 +5,6 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '0 2 * * *'
-    
-
-env:
-  MAJOR: 13
-  MINOR: 0
-  RUN: ${{ github.run_number }}
 
 permissions:
   contents: read
@@ -56,7 +50,7 @@ jobs:
 
       - name: define env variables
         run: |
-          echo "APP_VERSION=${{ env.MAJOR }}.${{ env.MINOR }}.${{ env.RUN }}" | Out-File -FilePath $env:GITHUB_ENV -Append
+          echo "APP_VERSION=13.0.${{ github.run_number }}" | Out-File -FilePath $env:GITHUB_ENV -Append
 
       - name: Build
         run: |
@@ -64,7 +58,7 @@ jobs:
           dotnet build MoBi.sln /p:Version=${{env.APP_VERSION}} -p:ExcludeDesigner=true
 
       - name : Test
-        run: dotnet test .\tests\**\bin\Debug\net8*\MoBi*Tests.dll -v normal --no-build  --logger:"html;LogFileName=../testLog_Windows.html"
+        run: dotnet test -v normal --no-build  --logger:"html;LogFileName=../testLog_Windows.html"
 
       - name: Sign MoBi.exe with CodeSignTool
         uses: Open-Systems-Pharmacology/Workflows/.github/actions/codesigner-SSL@main

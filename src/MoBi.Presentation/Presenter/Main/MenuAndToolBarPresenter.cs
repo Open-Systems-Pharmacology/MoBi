@@ -231,7 +231,6 @@ namespace MoBi.Presentation.Presenter.Main
             _menuBarItemRepository[MenuBarItemIds.LoadProjectSimulationSettings].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.LoadSimulationIntoProject].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.HistoryReportGroup].Enabled = enabled;
-            _menuBarItemRepository[MenuBarItemIds.ExportHistoryToExcel].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.NewMolecule].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.LoadMolecule].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.LoadMoleculeFromTemplate].Enabled = enabled;

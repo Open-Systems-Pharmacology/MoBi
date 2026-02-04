@@ -164,11 +164,18 @@ namespace MoBi.Presentation.Presenter.Main
             return;
 
          bool simulationNodeExpanded = _view.IsNodeExpanded(simulationNode);
+         bool wasSelected = _view.TreeView.SelectedNode?.Id == simulationNode.Id;
+
          var parentNode = simulationNode.ParentNode.DowncastTo<ITreeNode<IClassification>>();
          RemoveNodeFor(simulation);
+
          var classifiableSimulation = _projectRetriever.CurrentProject.GetOrCreateClassifiableFor<ClassifiableSimulation, IMoBiSimulation>(simulation);
          simulationNode = addClassifiableSimulationToTree(parentNode, classifiableSimulation);
+
          _view.ExpandNodeIfRequired(simulationNode, simulationNodeExpanded);
+
+         if (wasSelected)
+            _view.SelectNode(simulationNode);
       }
 
       private void refreshDisplayedSimulation(IMoBiSimulation simulation)

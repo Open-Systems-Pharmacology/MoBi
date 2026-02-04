@@ -35,6 +35,7 @@ namespace MoBi.Presentation.Tasks
       protected ISimModelManagerFactory _simModelManagerFactory;
       protected IKeyPathMapper _keyPathMapper;
       protected IEntityValidationTask _eventValidationTask;
+      protected ISimulationQuantityValueWarningTask _simulationQuantityWarningTask;
 
       protected override Task Context()
       {
@@ -46,6 +47,7 @@ namespace MoBi.Presentation.Tasks
          _simModelManagerFactory = A.Fake<ISimModelManagerFactory>();
          _keyPathMapper = A.Fake<IKeyPathMapper>();
          _eventValidationTask = A.Fake<IEntityValidationTask>();
+         _simulationQuantityWarningTask = A.Fake<ISimulationQuantityValueWarningTask>();
 
          sut = new SimulationRunner(
             _context,
@@ -55,10 +57,10 @@ namespace MoBi.Presentation.Tasks
             _displayUnitUpdater,
             _simModelManagerFactory,
             _keyPathMapper,
-            _eventValidationTask);
+            _eventValidationTask,
+            _simulationQuantityWarningTask);
 
          return Task.CompletedTask;
-
       }
    }
 
@@ -311,6 +313,12 @@ namespace MoBi.Presentation.Tasks
       }
 
       [Observation]
+      public void should_check_for_non_finite_values()
+      {
+         A.CallTo(() => _simulationQuantityWarningTask.WarnForNonFiniteQuantities(_simulation.Model, A<RunValidationResult>._)).MustHaveHappened();
+      }
+
+      [Observation]
       public void should_publish_the_simulation_run_finished_event()
       {
          A.CallTo(() => _context.PublishEvent(A<SimulationRunFinishedEvent>._)).MustHaveHappened();
@@ -494,7 +502,6 @@ namespace MoBi.Presentation.Tasks
       {
          A.CallTo(() => _context.PublishEvent(A<SimulationRunCanceledEvent>._)).MustHaveHappened();
       }
-
 
       [Observation]
       public void is_any_simulation_running_must_be_false()

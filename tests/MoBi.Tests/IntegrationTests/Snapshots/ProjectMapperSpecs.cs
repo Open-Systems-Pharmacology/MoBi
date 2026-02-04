@@ -46,6 +46,9 @@ namespace MoBi.IntegrationTests.Snapshots
       private SimulationMapper _simulationMapper;
       private ICoreSimulationRunner _coreSimulationRunner;
       private ICoreUserSettings _coreUserSettings;
+      protected IParameterValueUpdateManager _parameterValueUpdateManager;
+      protected IndividualBuildingBlock _snapshotIndividualBuildingBlock;
+      protected ExpressionProfileBuildingBlock _snapshotExpressionProfile;
 
       protected override void Context()
       {
@@ -61,11 +64,12 @@ namespace MoBi.IntegrationTests.Snapshots
          _simulationMapper = IoC.Resolve<SimulationMapper>();
          _coreSimulationRunner = A.Fake<ICoreSimulationRunner>();
          _coreUserSettings = A.Fake<ICoreUserSettings>();
+         _parameterValueUpdateManager = A.Fake<IParameterValueUpdateManager>();
 
          A.CallTo(() => _context.Resolve<ISnapshotMapper>()).ReturnsLazily(x => IoC.Resolve<ISnapshotMapper>());
 
          _project = new MoBiProject();
-         sut = new ProjectMapper(_xmlSerializationService, _creationMetaDataFactory, _classificationSnapshotTask, _context, _ospSuiteLogger, _parameterIdentificationMapper, _simulationMapper, _pkSimStarter, _simulationSettingsFactory, _coreSimulationRunner, _coreUserSettings);
+         sut = new ProjectMapper(_xmlSerializationService, _creationMetaDataFactory, _classificationSnapshotTask, _context, _ospSuiteLogger, _parameterIdentificationMapper, _simulationMapper, _pkSimStarter, _simulationSettingsFactory, _coreSimulationRunner, _coreUserSettings, _parameterValueUpdateManager);
 
          var module = new Module().WithId("module").WithName("module");
          _project.AddModule(module);
@@ -73,13 +77,13 @@ namespace MoBi.IntegrationTests.Snapshots
          var pksimModule = new Module { IsPKSimModule = true, Snapshot = "{ \"JSON\":true }".ToBase64String(), Id = "pksimmodule" };
          _project.AddModule(pksimModule);
 
-         var snapshotIndividualBuildingBlock = new IndividualBuildingBlock
+         _snapshotIndividualBuildingBlock = new IndividualBuildingBlock
          {
             Snapshot = "{ \"JSON\":true }".ToBase64String(),
             Id = "pksimInd"
          };
 
-         var snapshotExpressionProfile = new ExpressionProfileBuildingBlock
+         _snapshotExpressionProfile = new ExpressionProfileBuildingBlock
          {
             Type = ExpressionTypes.MetabolizingEnzyme,
             Snapshot = "{ \"JSON\":true }".ToBase64String(),
@@ -121,9 +125,9 @@ namespace MoBi.IntegrationTests.Snapshots
          };
 
          _project.AddExpressionProfileBuildingBlock(expressionProfileBuildingBlock);
-         _project.AddExpressionProfileBuildingBlock(snapshotExpressionProfile);
+         _project.AddExpressionProfileBuildingBlock(_snapshotExpressionProfile);
          _project.AddIndividualBuildingBlock(new IndividualBuildingBlock());
-         _project.AddIndividualBuildingBlock(snapshotIndividualBuildingBlock);
+         _project.AddIndividualBuildingBlock(_snapshotIndividualBuildingBlock);
 
          _moduleClassification = new Classification { ClassificationType = ClassificationType.Module }.WithName("Module Classification");
          _observedDataClassification = new Classification { ClassificationType = ClassificationType.ObservedData }.WithName("Observed Data Classification");
@@ -293,6 +297,17 @@ namespace MoBi.IntegrationTests.Snapshots
    internal class When_mapping_project_to_snapshot : concern_for_ProjectMapper
    {
       private SnapshotProject _snapshot;
+      private IndividualParameter _individualParameter;
+      private ExpressionParameter _expressionParameter;
+
+      protected override void Context()
+      {
+         base.Context();
+         _individualParameter = new IndividualParameter { Value = 1.0, InitialValue = 2.0 };
+         _snapshotIndividualBuildingBlock.Add(_individualParameter);
+         _expressionParameter = new ExpressionParameter { Value = 3.0, InitialValue = 4.0 };
+         _snapshotExpressionProfile.Add(_expressionParameter);
+      }
 
       protected override void Because()
       {
@@ -336,6 +351,13 @@ namespace MoBi.IntegrationTests.Snapshots
          _snapshot.ObservedDataClassifications.Length.ShouldBeEqualTo(1);
          _snapshot.SimulationClassifications.Length.ShouldBeEqualTo(1);
          _snapshot.ParameterIdentificationClassifications.Length.ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void the_updated_value_manager_should_be_called_to_update_values_in_building_blocks()
+      {
+         A.CallTo(() => _parameterValueUpdateManager.MapFrom(_individualParameter)).MustHaveHappened();
+         A.CallTo(() => _parameterValueUpdateManager.MapFrom(_expressionParameter)).MustHaveHappened();
       }
    }
 }
