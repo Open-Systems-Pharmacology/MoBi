@@ -19,7 +19,7 @@ namespace MoBi.R.Services
       SimulationCreationResult CreateSimulationFrom(string simulationName, RModuleConfiguration[] moduleConfigurations,
          ExpressionProfileBuildingBlock[] expressionProfiles,
          IndividualBuildingBlock individual,
-         bool createAllProcessRateParameters,
+         bool createAllProcessRateParameters = false,
          SimulationSettings simulationSettings = null);
    }
 
@@ -42,7 +42,7 @@ namespace MoBi.R.Services
       public SimulationCreationResult CreateSimulationFrom(string simulationName, RModuleConfiguration[] moduleConfigurations,
          ExpressionProfileBuildingBlock[] expressionProfiles,
          IndividualBuildingBlock individual,
-         bool createAllProcessRateParameters,
+         bool createAllProcessRateParameters = false,
          SimulationSettings simulationSettings = null)
       {
          if (string.IsNullOrWhiteSpace(simulationName))

@@ -182,3 +182,73 @@ internal class when_creating_simulation_with_errors : concern_for_SimulationTask
          .ShouldThrowAn<InvalidOperationException>();
    }
 }
+
+internal class when_creating_simulation_with_create_all_process_rate_parameters_flag : concern_for_SimulationTask
+{
+   private SimulationCreationResult _creationResult;
+
+   protected override void Context()
+   {
+      base.Context();
+
+      _moduleForSimulation = _projectTask.ModuleByName(_project, "Module1");
+      var moduleConfig = sut.CreateModuleConfiguration(_moduleForSimulation, "Parameter Values", "Initial Conditions");
+
+      _request = new SimulationRequest();
+      _request.AddModuleConfiguration(moduleConfig);
+      _request.SetIndividual(_projectTask.IndividualBuildingBlockByName(_project, "European (P-gp modified, CYP3A4 36 h)"));
+      _request.CreateAllProcessRateParameters = true;
+
+      _projectTask.CloseProject();
+   }
+
+   protected override void Because()
+   {
+      _creationResult = sut.CreateSimulationAndValidateFrom(_simulationName, _request);
+   }
+
+   [Observation]
+   public void should_propagate_create_all_process_rate_parameters_to_simulation_configuration()
+   {
+      _creationResult.ShouldNotBeNull();
+      _creationResult.Simulation.ShouldNotBeNull();
+      _creationResult.Simulation.Configuration.CreateAllProcessRateParameters.ShouldBeTrue();
+   }
+}
+
+internal class when_creating_simulation_with_custom_simulation_settings : concern_for_SimulationTask
+{
+   private SimulationCreationResult _creationResult;
+
+   protected override void Context()
+   {
+      base.Context();
+
+      _moduleForSimulation = _projectTask.ModuleByName(_project, "Module1");
+      var moduleConfig = sut.CreateModuleConfiguration(_moduleForSimulation, "Parameter Values", "Initial Conditions");
+
+      var customSettings = new SimulationSettings();
+      customSettings.Name = "CustomSettings";
+
+      _request = new SimulationRequest();
+      _request.AddModuleConfiguration(moduleConfig);
+      _request.SetIndividual(_projectTask.IndividualBuildingBlockByName(_project, "European (P-gp modified, CYP3A4 36 h)"));
+      _request.SimulationSettings = customSettings;
+
+      _projectTask.CloseProject();
+   }
+
+   protected override void Because()
+   {
+      _creationResult = sut.CreateSimulationAndValidateFrom(_simulationName, _request);
+   }
+
+   [Observation]
+   public void should_use_the_provided_simulation_settings()
+   {
+      _creationResult.ShouldNotBeNull();
+      _creationResult.Simulation.ShouldNotBeNull();
+      _creationResult.Simulation.Settings.ShouldNotBeNull();
+      _creationResult.Simulation.Settings.Name.ShouldBeEqualTo("CustomSettings");
+   }
+}
