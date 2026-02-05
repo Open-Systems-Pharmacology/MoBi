@@ -84,15 +84,36 @@ namespace MoBi.R.Services
       {
          var messages = e.ValidationResult?.Messages.ToList() ?? new List<ValidationMessage>();
 
-         var warnings = messages
-            .Where(m => m.NotificationType == NotificationType.Warning)
-            .Select(m => m.Text);
+         var warnings = new List<string>();
+         var errors = new List<string>();
 
-         var errors = messages
-            .Where(m => m.NotificationType == NotificationType.Error)
-            .Select(m => m.Text);
+         messages.Each(message =>
+         {
+            switch (message.NotificationType)
+            {
+               case NotificationType.Warning:
+                  addValidationMessage(message, warnings);
+                  break;
+               case NotificationType.Error:
+                  addValidationMessage(message, errors);
+                  break;
+            }
+         });
 
          return new SimulationCreationResult(null, warnings, errors);
+      }
+
+      private static void addValidationMessage(ValidationMessage message, List<string> messageList)
+      {
+         var detailsText = message.Details != null && message.Details.Any()
+            ? string.Join(", ", message.Details)
+            : string.Empty;
+
+         var fullMessage = string.IsNullOrEmpty(detailsText)
+            ? message.Text
+            : $"{message.Text} - {detailsText}";
+
+         messageList.Add(fullMessage);
       }
    }
 }
