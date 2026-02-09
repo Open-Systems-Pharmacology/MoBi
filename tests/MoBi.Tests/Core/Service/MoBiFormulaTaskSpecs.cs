@@ -170,7 +170,6 @@ public class When_the_formula_task_is_changing_path_on_a_time_path : When_manipu
 public class When_creating_a_new_mobi_formula_for_a_given_building_block : concern_for_MoBiFormulaTask
 {
    private IDimension _formulaDimension;
-   private IEnumerable<string> _existingNames;
    private IMoBiCommand _command;
    private IFormula _formula;
 
@@ -178,7 +177,6 @@ public class When_creating_a_new_mobi_formula_for_a_given_building_block : conce
    {
       base.Context();
       _formulaDimension = DomainHelperForSpecs.ConcentrationDimension;
-      _existingNames = new List<string>();
    }
 
    protected override void Because()
@@ -316,7 +314,7 @@ public class When_adding_formula_to_cache_with_existing_formula_name : concern_f
    }
 
    [Observation]
-   public void new_formula_should_not_have_been_added_to_cache()
+   public void new_formula_should_have_been_added_to_cache()
    {
       A.CallTo(() => _buildingBlock.AddFormula(_usingFormulaObject.Formula)).MustHaveHappened();
    }

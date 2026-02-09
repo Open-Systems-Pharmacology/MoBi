@@ -97,7 +97,6 @@ namespace MoBi.Core
    internal class When_the_building_block_version_updater_is_updating_the_building_block_version_not_used_in_a_project : concern_for_BuildingBlockVersionUpdater
    {
       private IBuildingBlock _changeBuildingBlock;
-      private readonly uint _targetVersion = 2;
       private Module _module;
       protected override void Context()
       {

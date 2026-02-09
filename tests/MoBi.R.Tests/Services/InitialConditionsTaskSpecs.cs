@@ -170,7 +170,7 @@ internal class When_extending_initial_conditions_with_all_molecules_for_building
    }
 
    [Observation]
-   public void commands_were_used_to_remove_them()
+   public void commands_were_used_to_add_them()
    {
       var command = _context.HistoryManager.History.Last().Command;
       command.ShouldBeAnInstanceOf<IMacroCommand>();
