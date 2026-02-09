@@ -1,5 +1,3 @@
-using MoBi.Assets;
-using MoBi.Core.Commands;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -23,17 +21,6 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       protected InteractionTasksForEnumerableBuildingBlock(IInteractionTaskContext interactionTaskContext, IEditTasksForBuildingBlock<TBuildingBlock> editTask) : this(interactionTaskContext, editTask, null)
       {
-      }
-
-      protected MoBiMacroCommand CreateAddBuilderMacroCommand(TBuilder builder, IBuildingBlock targetBuildingBlock)
-      {
-         var objectType = _interactionTaskContext.GetTypeFor<TBuilder>();
-         return new MoBiMacroCommand
-         {
-            Description = AppConstants.Commands.AddToDescription(objectType, builder.Name, targetBuildingBlock.Name),
-            CommandType = AppConstants.Commands.AddCommand,
-            ObjectType = objectType
-         };
       }
    }
 }

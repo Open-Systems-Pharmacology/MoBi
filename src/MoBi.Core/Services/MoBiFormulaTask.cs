@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
@@ -8,8 +7,6 @@ using MoBi.Core.Domain.Services;
 using MoBi.Core.Events;
 using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
-using MoBi.Core.Services;
-using MoBi.Presentation.Presenter;
 using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
@@ -20,46 +17,31 @@ using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Extensions;
 
-namespace MoBi.Presentation.Tasks
+namespace MoBi.Core.Services
 {
    public class MoBiFormulaTask : IMoBiFormulaTask
    {
       private readonly IMoBiContext _context;
-      private readonly IMoBiApplicationController _applicationController;
       private readonly IFormulaTask _formulaTask;
-      private readonly INameCorrector _nameCorrector;
+      private readonly INameAutoCorrector _nameCorrector;
       private readonly IQuantityTask _quantityTask;
       private readonly IEntitiesInBuildingBlockRetriever<IParameter> _parameterInBuildingBlockRetriever;
-      private readonly IObjectBaseNamingTask _namingTask;
 
       public MoBiFormulaTask(
          IMoBiContext context,
-         IMoBiApplicationController applicationController,
          IFormulaTask formulaTask,
-         INameCorrector nameCorrector,
+         INameAutoCorrector nameCorrector,
          IQuantityTask quantityTask,
-         IEntitiesInBuildingBlockRetriever<IParameter> parameterInBuildingBlockRetriever,
-         IObjectBaseNamingTask namingTask)
+         IEntitiesInBuildingBlockRetriever<IParameter> parameterInBuildingBlockRetriever)
       {
          _context = context;
-         _applicationController = applicationController;
          _formulaTask = formulaTask;
          _nameCorrector = nameCorrector;
          _quantityTask = quantityTask;
          _parameterInBuildingBlockRetriever = parameterInBuildingBlockRetriever;
-         _namingTask = namingTask;
       }
 
       private IDimension timeDimension => _context.DimensionFactory.Dimension(Constants.Dimension.TIME);
-
-      public bool EditNewFormula(IFormula formula, ICommandCollector command, IBuildingBlock buildingBlock, IParameter parameter)
-      {
-         using (var presenter = _applicationController.Start<INewFormulaPresenter>())
-         {
-            presenter.InitializeWith(command);
-            return presenter.Edit(formula, buildingBlock, parameter);
-         }
-      }
 
       public IMoBiCommand AddFormulaToCacheOrFixReferenceCommand(IBuildingBlock targetBuildingBlock, IUsingFormula usingFormulaObject)
       {
@@ -134,7 +116,7 @@ namespace MoBi.Presentation.Tasks
          return withUpdatedDefaultStateAndValueOrigin(command, formula, buildingBlock);
       }
 
-      public IMoBiCommand EditAliasInFormula(IFormula formula, string newAlias, string oldAlias, FormulaUsablePath formulaUsablePath, IBuildingBlock buildingBlock) => 
+      public IMoBiCommand EditAliasInFormula(IFormula formula, string newAlias, string oldAlias, FormulaUsablePath formulaUsablePath, IBuildingBlock buildingBlock) =>
          new EditFormulaAliasCommand(formula, newAlias, oldAlias, buildingBlock).RunCommand(_context);
 
       public IMoBiCommand SetFormulaPathDimension(IFormula formula, IDimension newDimension, string alias, IBuildingBlock buildingBlock)
@@ -277,20 +259,12 @@ namespace MoBi.Presentation.Tasks
          return macroCommand;
       }
 
-      public (IMoBiCommand command, IFormula formula) CreateNewFormulaInBuildingBlock(Type formulaType, IDimension formulaDimension, IEnumerable<string> existingFormulaNames, IBuildingBlock buildingBlock, string newFormulaName = null)
+      public (IMoBiCommand command, IFormula formula) CreateNewFormulaInBuildingBlock(Type formulaType, IDimension formulaDimension, IBuildingBlock buildingBlock, string newFormulaName)
       {
-         if (shouldNameFormula(newFormulaName, buildingBlock.FormulaCache.AllNames()))
-            newFormulaName = _namingTask.NewName(AppConstants.Captions.NewName, AppConstants.Captions.EnterNewFormulaName, string.Empty, existingFormulaNames);
-
-         if (string.IsNullOrEmpty(newFormulaName))
-            return (new MoBiEmptyCommand(), null);
-
          var formula = CreateNewFormula(formulaType, formulaDimension).WithName(newFormulaName);
 
          return (new AddFormulaToFormulaCacheCommand(buildingBlock, formula).RunCommand(_context), formula);
       }
-
-      private static bool shouldNameFormula(string newFormulaName, IReadOnlyList<string> forbiddenNames) => string.IsNullOrEmpty(newFormulaName) || forbiddenNames.Contains(newFormulaName);
 
       public IFormula CreateNewFormula(Type formulaType, IDimension formulaDimension) => createFormulaFromType(formulaType).WithDimension(formulaDimension);
 

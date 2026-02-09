@@ -11,6 +11,7 @@ using MoBi.Core.Exceptions;
 using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
 using MoBi.Core.Mappers;
+using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
@@ -171,52 +172,16 @@ namespace MoBi.Presentation.Tasks.Interaction
          return target.Dimension == subject.Dimension;
       }
 
-      protected MoBiMacroCommand CreateExtendMacroCommand(string buildingBlockType)
-      {
-         var moBiMacroCommand = new BulkUpdateMacroCommand
-         {
-            CommandType = AppConstants.Commands.ExtendCommand,
-            Description = AppConstants.Commands.ExtendDescription,
-            ObjectType = buildingBlockType
-         };
-         return moBiMacroCommand;
-      }
-
       public IMoBiCommand Extend(IReadOnlyList<TPathAndValueEntity> pathAndValueEntities, ILookupBuildingBlock<TPathAndValueEntity> buildingBlockToExtend, bool retainConflictingEntities = true)
       {
-         var macro = CreateExtendMacroCommand(_interactionTaskContext.GetTypeFor(buildingBlockToExtend));
-
-         prepareExtendActions(buildingBlockToExtend, macro);
-
-         var cacheToExtend = pathAndValueEntities.ToCache();
-         var targetCache = buildingBlockToExtend.ToCache();
-
-         _extendManager.Merge(cacheToExtend, targetCache, mergeConflictOption: retainConflictingEntities ? MergeConflictOptions.SkipAll : MergeConflictOptions.ReplaceAll);
-
-         return macro;
+         return _extendManager.Extend(pathAndValueEntities, buildingBlockToExtend, retainConflictingEntities);
       }
 
-      private void prepareExtendActions(ILookupBuildingBlock<TPathAndValueEntity> targetBuildingBlock, MoBiMacroCommand macro)
+      public IMoBiCommand AddPathAndValueEntityToBuildingBlock(TBuildingBlock buildingBlock, TPathAndValueEntity pathAndValueEntity)
       {
-         // Perform extend commands per-entity. That allows the formula references to be managed on up-to-date formula cache enabling consolidation of equivalent formulas
-         _extendManager.AddAction = entityToMerge => macro.Add(generateAddCommandAndUpdateFormulaReferences(entityToMerge, targetBuildingBlock).RunCommand(Context));
-         _extendManager.RemoveAction = entityToMerge => macro.Add(GenerateRemoveCommand(targetBuildingBlock, entityToMerge).RunCommand(Context));
+         return GenerateAddCommand(buildingBlock, pathAndValueEntity).RunCommand(Context);
       }
-
-      private IMoBiMacroCommand generateAddCommandAndUpdateFormulaReferences(TPathAndValueEntity entityToMerge, ILookupBuildingBlock<TPathAndValueEntity> targetBuildingBlock)
-      {
-         var macroCommand = CreateAddBuilderMacroCommand(entityToMerge, targetBuildingBlock);
-
-         macroCommand.Add(GenerateAddCommand(targetBuildingBlock, entityToMerge));
-         macroCommand.Add(_moBiFormulaTask.AddFormulaToCacheOrFixReferenceCommand(targetBuildingBlock, entityToMerge));
-
-         return macroCommand;
-      }
-
-      protected abstract IMoBiCommand GenerateRemoveCommand(ILookupBuildingBlock<TPathAndValueEntity> targetBuildingBlock, TPathAndValueEntity entityToRemove);
       protected abstract IMoBiCommand GenerateAddCommand(ILookupBuildingBlock<TPathAndValueEntity> targetBuildingBlock, TPathAndValueEntity entityToAdd);
-      protected abstract IReadOnlyList<TPathAndValueEntity> CreatePathAndValueEntitiesBasedOnUsedTemplates(SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules, TBuildingBlock buildingBlock);
-      public abstract IMoBiCommand AddPathAndValueEntityToBuildingBlock(TBuildingBlock buildingBlock, TPathAndValueEntity pathAndValueEntity);
       public abstract IMoBiCommand ImportPathAndValueEntitiesToBuildingBlock(TBuildingBlock buildingBlock, IEnumerable<ImportedQuantityDTO> startQuantities);
       public abstract IMoBiCommand RemovePathAndValueEntityFromBuildingBlockCommand(TPathAndValueEntity pathAndValueEntity, TBuildingBlock buildingBlock);
 
@@ -227,8 +192,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (spatialStructure == null || molecules == null || !molecules.Any())
             return;
 
-         var newPathAndValueEntities = CreatePathAndValueEntitiesBasedOnUsedTemplates(spatialStructure, molecules, buildingBlock);
-         AddCommand(Extend(newPathAndValueEntities, buildingBlock));
+         AddCommand(_extendManager.ExtendPathAndValueEntitiesBasedOnUsedTemplates(spatialStructure, molecules, buildingBlock));
       }
 
       public IMoBiCommand UpdatePathAndValueEntityDimension(TBuildingBlock pathAndValueEntitiesBuildingBlock, TPathAndValueEntity pathAndValueEntity, IDimension newDimension)
@@ -248,12 +212,12 @@ namespace MoBi.Presentation.Tasks.Interaction
          return AddTo(clone, parentModule, null);
       }
 
-      protected static bool ShouldFormulaBeOverridden(ImportedQuantityDTO quantityDTO, TPathAndValueEntity pathAndValueEntity)
+      private static bool shouldFormulaBeOverridden(ImportedQuantityDTO quantityDTO, TPathAndValueEntity pathAndValueEntity)
       {
          return quantityDTO.IsQuantitySpecified && pathAndValueEntity.Formula != null;
       }
 
-      protected IMoBiCommand GetChangePathAndValueEntityFormulaCommand(TBuildingBlock buildingBlock, TPathAndValueEntity pathAndValueEntity, IFormula newFormula, IFormula oldFormula)
+      private IMoBiCommand getChangePathAndValueEntityFormulaCommand(TBuildingBlock buildingBlock, TPathAndValueEntity pathAndValueEntity, IFormula newFormula, IFormula oldFormula)
       {
          return new ChangeValueFormulaCommand<TPathAndValueEntity>(buildingBlock, pathAndValueEntity, newFormula, oldFormula);
       }
@@ -270,8 +234,8 @@ namespace MoBi.Presentation.Tasks.Interaction
                macroCommand.Add(GenerateAddCommand(buildingBlock, _dtoToQuantityToParameterValueMapper.MapFrom(quantityDTO)));
             else
             {
-               if (ShouldFormulaBeOverridden(quantityDTO, pathAndValueEntity))
-                  macroCommand.Add(GetChangePathAndValueEntityFormulaCommand(buildingBlock, pathAndValueEntity: pathAndValueEntity, newFormula: null, oldFormula: pathAndValueEntity.Formula));
+               if (shouldFormulaBeOverridden(quantityDTO, pathAndValueEntity))
+                  macroCommand.Add(getChangePathAndValueEntityFormulaCommand(buildingBlock, pathAndValueEntity: pathAndValueEntity, newFormula: null, oldFormula: pathAndValueEntity.Formula));
 
                macroCommand.Add(GetUpdatePathAndValueEntityInBuildingBlockCommand(buildingBlock, quantityDTO));
             }
@@ -352,7 +316,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       public IMoBiCommand ExtendBuildingBlockWith(TBuildingBlock buildingBlock, IReadOnlyList<TPathAndValueEntity> newEntities)
       {
          var newStartValues = FilterEntitiesToRetain(buildingBlock, newEntities);
-         return Extend(newStartValues, buildingBlock, retainConflictingEntities: false);
+         return _extendManager.Extend(newStartValues, buildingBlock, retainConflictingEntities: false);
       }
 
       public IReadOnlyList<TPathAndValueEntity> FilterEntitiesToRetain(TBuildingBlock originalBuildingBlock, IReadOnlyList<TPathAndValueEntity> newEntities)

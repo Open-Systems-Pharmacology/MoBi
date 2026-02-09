@@ -5,6 +5,7 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Helper;
+using MoBi.Core.Services;
 using MoBi.HelpersForTests;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -29,6 +30,7 @@ namespace MoBi.Presentation
       protected ICommandCollector _commandCollector;
       protected IMoBiFormulaTask _formulaTask;
       private ICircularReferenceChecker _circularReferenceChecker;
+      protected IObjectBaseNamingTask _namingTask;
 
       protected override void Context()
       {
@@ -38,7 +40,8 @@ namespace MoBi.Presentation
          _formulaToDTOInfoMapper = new FormulaToFormulaInfoDTOMapper();
          _formulaTask = A.Fake<IMoBiFormulaTask>();
          _circularReferenceChecker = A.Fake<ICircularReferenceChecker>();
-         sut = new EditFormulaInContainerPresenter(_editFormulaView, _formulaPresenterCache, _context, _formulaToDTOInfoMapper, new FormulaTypeCaptionRepository(), _formulaTask, _circularReferenceChecker);
+         _namingTask = A.Fake<IObjectBaseNamingTask>();
+         sut = new EditFormulaInContainerPresenter(_editFormulaView, _formulaPresenterCache, _context, _formulaToDTOInfoMapper, new FormulaTypeCaptionRepository(), _formulaTask, _circularReferenceChecker, _namingTask);
          _commandCollector = A.Fake<ICommandCollector>();
          sut.InitializeWith(_commandCollector);
       }
@@ -125,6 +128,49 @@ namespace MoBi.Presentation
       }
    }
 
+   internal class When_adding_a_named_Formula_after_selecting_named_formula_type_but_canceling_the_name_selection : concern_for_EditFormulaInContainerPresenter
+   {
+      private IParameter _parameter;
+      private IBuildingBlock _buildingBlockWithFormulaCache;
+      private ExplicitFormula _explicitFormula;
+      private IFormula _oldFormula;
+
+      protected override void Context()
+      {
+         base.Context();
+         _parameter = A.Fake<IParameter>();
+         _buildingBlockWithFormulaCache = new ParameterValuesBuildingBlock();
+
+
+         _oldFormula = new ExplicitFormula("1+2").WithId("OLD_FORMULA");
+         _parameter.Formula = _oldFormula;
+         _explicitFormula = new ExplicitFormula { Id = "Formula", Name = "toto" };
+         A.CallTo(() => _context.ObjectRepository.ContainsObjectWithId(_oldFormula.Id)).Returns(true);
+         A.CallTo(() => _formulaTask.CreateNewFormula(typeof(ExplicitFormula), _parameter.Dimension)).Returns(_explicitFormula);
+         A.CallTo(_namingTask).WithReturnType<string>().Returns(null);
+
+         sut.Init(_parameter, _buildingBlockWithFormulaCache);
+
+         //add so that it will be found when setting the value in the parameter
+         _buildingBlockWithFormulaCache.AddFormula(_explicitFormula);
+
+         A.CallTo(() => _formulaTask.CreateNewFormulaInBuildingBlock(A<Type>._, A<IDimension>._, _buildingBlockWithFormulaCache, A<string>._))
+            .Returns((A.Fake<IMoBiCommand>(), _explicitFormula));
+      }
+
+      protected override void Because()
+      {
+         sut.AddNewFormula();
+      }
+
+      [Observation]
+      public void should_Add_a_formula_to_formula_cache()
+      {
+         A.CallTo(() => _formulaTask.CreateNewFormulaInBuildingBlock(typeof(ExplicitFormula), A<IDimension>._, _buildingBlockWithFormulaCache, A<string>._))
+            .MustNotHaveHappened();
+      }
+   }
+
    internal class When_adding_a_named_Formula_after_selecting_named_formula_type : concern_for_EditFormulaInContainerPresenter
    {
       private IParameter _parameter;
@@ -144,13 +190,14 @@ namespace MoBi.Presentation
          _explicitFormula = new ExplicitFormula { Id = "Formula", Name = "toto" };
          A.CallTo(() => _context.ObjectRepository.ContainsObjectWithId(_oldFormula.Id)).Returns(true);
          A.CallTo(() => _formulaTask.CreateNewFormula(typeof(ExplicitFormula), _parameter.Dimension)).Returns(_explicitFormula);
+         A.CallTo(_namingTask).WithReturnType<string>().Returns("new_name");
 
          sut.Init(_parameter, _buildingBlockWithFormulaCache);
 
          //add so that it will be found when setting the value in the parameter
          _buildingBlockWithFormulaCache.AddFormula(_explicitFormula);
 
-         A.CallTo(() => _formulaTask.CreateNewFormulaInBuildingBlock(A<Type>._, A<IDimension>._, A<IEnumerable<string>>._, _buildingBlockWithFormulaCache, null))
+         A.CallTo(() => _formulaTask.CreateNewFormulaInBuildingBlock(A<Type>._, A<IDimension>._, _buildingBlockWithFormulaCache, "new_name"))
             .Returns((A.Fake<IMoBiCommand>(), _explicitFormula));
       }
 
@@ -162,7 +209,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_Add_a_formula_to_formula_cache()
       {
-         A.CallTo(() => _formulaTask.CreateNewFormulaInBuildingBlock(typeof(ExplicitFormula), A<IDimension>._, A<IEnumerable<string>>._, _buildingBlockWithFormulaCache, null))
+         A.CallTo(() => _formulaTask.CreateNewFormulaInBuildingBlock(typeof(ExplicitFormula), A<IDimension>._, _buildingBlockWithFormulaCache, "new_name"))
             .MustHaveHappened();
       }
 
@@ -170,45 +217,6 @@ namespace MoBi.Presentation
       public void should_change_parents_formula_to_new_formula()
       {
          A.CallTo(() => _formulaTask.UpdateFormula(_parameter, _oldFormula, _explicitFormula, A<FormulaDecoder>._, _buildingBlockWithFormulaCache)).MustHaveHappened();
-      }
-   }
-
-   public class When_adding_a_new_formula_to_the_edited_building_block : concern_for_EditFormulaInContainerPresenter
-   {
-      private IBuildingBlock _buildingBlockWithFormulaCache;
-      private IFormulaCache _formulaCache;
-      private IParameter _parameter;
-      private IEnumerable<string> _availableFormulaNames;
-
-      protected override void Context()
-      {
-         base.Context();
-         _parameter = A.Fake<IParameter>();
-         _buildingBlockWithFormulaCache = A.Fake<IBuildingBlock>();
-         _formulaCache = new FormulaCache();
-         A.CallTo(() => _buildingBlockWithFormulaCache.FormulaCache).Returns(_formulaCache);
-
-         _formulaCache.Add(new ExplicitFormula().WithId("A").WithName("A"));
-         _formulaCache.Add(new TableFormulaWithOffset().WithId("B").WithName("B"));
-         _formulaCache.Add(new SumFormula().WithId("C").WithName("C"));
-
-         A.CallTo(() => _formulaTask.CreateNewFormulaInBuildingBlock(A<Type>._, A<IDimension>._, A<IEnumerable<string>>._, _buildingBlockWithFormulaCache, null))
-            .Invokes(x => _availableFormulaNames = x.GetArgument<IEnumerable<string>>(2))
-            .Returns((A.Fake<IMoBiCommand>(), null));
-
-
-         sut.Init(_parameter, _buildingBlockWithFormulaCache, new UsingFormulaDecoder());
-      }
-
-      protected override void Because()
-      {
-         sut.AddNewFormula();
-      }
-
-      [Observation]
-      public void should_ensure_that_the_formula_created_as_a_unique_name()
-      {
-         _availableFormulaNames.ShouldOnlyContain("A", "B", "C");
       }
    }
 

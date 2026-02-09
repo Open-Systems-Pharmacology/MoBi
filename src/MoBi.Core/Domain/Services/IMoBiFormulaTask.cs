@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
 using MoBi.Core.Commands;
 using MoBi.Core.Helper;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -13,8 +11,6 @@ namespace MoBi.Core.Domain.Services
 {
    public interface IMoBiFormulaTask
    {
-      bool EditNewFormula(IFormula formula, ICommandCollector command, IBuildingBlock buildingBlockWithFormulaCache, IParameter parameter);
-
       /// <summary>
       ///    Fixes up the formula references for an object which is going to be added to a building block.
       ///    if the same formula can be found already, the reference is modified on the object,
@@ -85,7 +81,7 @@ namespace MoBi.Core.Domain.Services
 
       IMoBiCommand UpdateFormula(IEntity usingFormula, IFormula oldFormula, IFormula newFormula, FormulaDecoder decoder, IBuildingBlock buildingBlock);
 
-      (IMoBiCommand command, IFormula formula) CreateNewFormulaInBuildingBlock(Type formulaType, IDimension formulaDimension, IEnumerable<string> existingFormulaNames, IBuildingBlock buildingBlock, string newFormulaName = null);
+      (IMoBiCommand command, IFormula formula) CreateNewFormulaInBuildingBlock(Type formulaType, IDimension formulaDimension, IBuildingBlock buildingBlock, string newFormulaName);
 
       IFormula CreateNewFormula(Type formulaType, IDimension formulaDimension);
       TFormula CreateNewFormula<TFormula>(IDimension formulaDimension) where TFormula : IFormula;
