@@ -3,6 +3,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Events;
 using MoBi.Core.Helper;
+using MoBi.Core.Services;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Interaction;
@@ -31,9 +32,11 @@ namespace MoBi.Presentation
       protected ParameterValue _entity;
       protected ParameterValuesBuildingBlock _buildingBlock;
       protected ParameterValue _pathAndValueEntity;
+      private IObjectBaseNamingTask _namingTask;
 
       protected override void Context()
       {
+         _namingTask = A.Fake<IObjectBaseNamingTask>();
          _editFormulaInPathAndValues = A.Fake<IEditFormulaInPathAndValuesView>();
          _formulaPresenterCache = A.Fake<IFormulaPresenterCache>();
          _moBiContext = A.Fake<IMoBiContext>();
@@ -55,7 +58,8 @@ namespace MoBi.Presentation
             _formulaTypeCaptionRepository,
             _moBiFormulaTask,
             _circularReferenceChecker,
-            _selectReferenceAtParameterValuePresenter);
+            _selectReferenceAtParameterValuePresenter,
+            _namingTask);
          
          sut.InitializeWith(A.Fake<ICommandCollector>());
       }

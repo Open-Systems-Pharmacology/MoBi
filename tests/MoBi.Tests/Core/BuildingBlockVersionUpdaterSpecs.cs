@@ -93,4 +93,47 @@ namespace MoBi.Core
          _module.IsPKSimModule.ShouldBeFalse();
       }
    }
+
+   internal class When_the_building_block_version_updater_is_updating_the_building_block_version_not_used_in_a_project : concern_for_BuildingBlockVersionUpdater
+   {
+      private IBuildingBlock _changeBuildingBlock;
+      private Module _module;
+      protected override void Context()
+      {
+         base.Context();
+         _changeBuildingBlock = new ParameterValuesBuildingBlock();
+         _changeBuildingBlock.Version = 1;
+         _changeBuildingBlock.Id = "TRALLLLA";
+         var project = DomainHelperForSpecs.NewProject();
+         _module = new Module { _changeBuildingBlock };
+         _module.PKSimVersion = "1";
+         _module.ModuleImportVersion = _module.Version;
+         _module.IsPKSimModule = true;
+         project.AddModule(_module);
+
+         A.CallTo(() => _projectRetriever.Current).Returns(null);
+      }
+      protected override void Because()
+      {
+         sut.UpdateBuildingBlockVersion(_changeBuildingBlock, true, PKSimModuleConversion.SetAsExtensionModule);
+      }
+      
+      [Observation]
+      public void should_not_publish_module_status_changed_event()
+      {
+         A.CallTo(() => _eventPublisher.PublishEvent(A<ModuleStatusChangedEvent>._)).MustNotHaveHappened();
+      }
+
+      [Observation]
+      public void should_not_publish_simulation_status_changed_event()
+      {
+         A.CallTo(() => _eventPublisher.PublishEvent(A<SimulationStatusChangedEvent>._)).MustNotHaveHappened();
+      }
+
+      [Observation]
+      public void module_is_pksim_property_should_be_changed_to_false()
+      {
+         _module.IsPKSimModule.ShouldBeFalse();
+      }
+   }
 }

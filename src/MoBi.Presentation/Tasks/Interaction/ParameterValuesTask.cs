@@ -6,6 +6,7 @@ using MoBi.Core.Domain.Services;
 using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
 using MoBi.Core.Mappers;
+using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -16,7 +17,6 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
-using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
@@ -59,15 +59,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          _parameterValuesCreator = parameterValuesCreator;
       }
 
-      protected override IReadOnlyList<ParameterValue> CreatePathAndValueEntitiesBasedOnUsedTemplates(SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules, ParameterValuesBuildingBlock buildingBlock)
-      {
-         return _parameterValuesCreator.CreateFrom(spatialStructure, molecules);
-      }
 
-      public override IMoBiCommand AddPathAndValueEntityToBuildingBlock(ParameterValuesBuildingBlock buildingBlock, ParameterValue pathAndValueEntity)
-      {
-         return GenerateAddCommand(buildingBlock, pathAndValueEntity).RunCommand(Context);
-      }
 
       protected override IMoBiCommand GetUpdatePathAndValueEntityInBuildingBlockCommand(ParameterValuesBuildingBlock buildingBlock, ImportedQuantityDTO dto)
       {
@@ -184,8 +176,6 @@ namespace MoBi.Presentation.Tasks.Interaction
          var forbiddenNames = _editTask.GetForbiddenNames(buildingBlock, module.ParameterValuesCollection);
          return InteractionTask.CorrectName(buildingBlock, forbiddenNames);
       }
-
-      protected override IMoBiCommand GenerateRemoveCommand(ILookupBuildingBlock<ParameterValue> targetBuildingBlock, ParameterValue startValueToRemove) => new RemoveParameterValueFromBuildingBlockCommand(targetBuildingBlock, startValueToRemove.Path);
 
       protected override IMoBiCommand GenerateAddCommand(ILookupBuildingBlock<ParameterValue> targetBuildingBlock, ParameterValue startValueToAdd) => new AddParameterValueToBuildingBlockCommand(targetBuildingBlock, startValueToAdd);
 

@@ -2,7 +2,6 @@
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
-using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Events;
 using MoBi.Core.Extensions;
@@ -135,11 +134,6 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new UpdateInitialConditionNegativeValuesAllowedCommand(initialConditions, msv, negativeValuesAllowed).RunCommand(Context);
       }
 
-      public override IMoBiCommand AddPathAndValueEntityToBuildingBlock(TBuildingBlock buildingBlock, InitialCondition initialCondition)
-      {
-         return GenerateAddCommand(buildingBlock, initialCondition).RunCommand(Context);
-      }
-
       public override IMoBiCommand ImportPathAndValueEntitiesToBuildingBlock(TBuildingBlock buildingBlock, IEnumerable<ImportedQuantityDTO> startQuantities)
       {
          var macroCommand = new BulkUpdateMacroCommand
@@ -253,12 +247,6 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
          return new AddInitialConditionToBuildingBlockCommand(targetBuildingBlock, initialCondition);
       }
-
-      protected override IMoBiCommand GenerateRemoveCommand(ILookupBuildingBlock<InitialCondition> targetBuildingBlock, InitialCondition initialCondition)
-      {
-         return new RemoveInitialConditionFromBuildingBlockCommand(targetBuildingBlock, initialCondition.Path);
-      }
-
       public override IDimension GetDefaultDimension()
       {
          return _dimensionRetriever.MoleculeDimension;
@@ -275,21 +263,6 @@ namespace MoBi.Presentation.Tasks.Interaction
       protected override IReadOnlyCollection<IObjectBase> GetNamedObjectsInParent(TBuildingBlock buildingBlockToClone)
       {
          return buildingBlockToClone.Module.InitialConditionsCollection;
-      }
-
-      private void updateDefaultIsPresentToFalseForSpecificExtendedValues(IReadOnlyList<InitialCondition> allInitialConditions, IReadOnlyList<InitialCondition> templateValues)
-      {
-         var templateInitialConditions = templateValues.ToCache();
-         var entitiesThatShouldPotentiallyNotBePresent = allInitialConditions.ToCache().KeyValues.Where(x => AppConstants.Organs.DefaultIsPresentShouldBeFalse.Any(organ => x.Key.Contains(organ)));
-         var newInitialConditionsToUpdate = entitiesThatShouldPotentiallyNotBePresent.Where(x => !templateInitialConditions.Contains(x.Key));
-         newInitialConditionsToUpdate.Each(x => x.Value.IsPresent = false);
-      }
-
-      protected override IReadOnlyList<InitialCondition> CreatePathAndValueEntitiesBasedOnUsedTemplates(SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules, TBuildingBlock initialConditionsBuildingBlock)
-      {
-         var newEntities = _initialConditionsCreator.CreateFrom(spatialStructure, molecules).ToList();
-         updateDefaultIsPresentToFalseForSpecificExtendedValues(newEntities, initialConditionsBuildingBlock.ToList());
-         return newEntities;
       }
    }
 }

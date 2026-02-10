@@ -30,6 +30,8 @@ namespace MoBi.R
 
       public static IParameterValuesTask GetParameterValuesTask() => resolveTask<IParameterValuesTask>();
 
+      public static IInitialConditionsTask GetInitialConditionsTask() => resolveTask<IInitialConditionsTask>();
+
       private static T resolveTask<T>()
       {
          try
