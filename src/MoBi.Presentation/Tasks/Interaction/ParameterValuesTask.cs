@@ -75,7 +75,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             ObjectType = ObjectTypes.ParameterValue
          };
 
-         GetImportPathAndValueEntityMacroCommand(buildingBlock, startQuantities, macroCommand);
+         GetImportPathAndValueEntityMacroCommand(buildingBlock, startQuantities.ToList(), macroCommand);
 
          return macroCommand.RunCommand(Context);
       }

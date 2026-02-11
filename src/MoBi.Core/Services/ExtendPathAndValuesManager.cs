@@ -25,8 +25,18 @@ public interface IExtendPathAndValuesManager<T> : IMergeManager<T> where T : Pat
    /// </summary>
    Action<T> AddAction { set; }
 
+   /// <summary>
+   /// Runs commands to extend the path and value entities of the <paramref name="buildingBlock"/> based on the provided <paramref name="spatialStructure"/>and <paramref name="molecules"/>
+   /// Each command has to run before the next one is created to ensure the formula cache is up to date for the next command to consolidate formulas where possible.
+   /// </summary>
+   /// <returns>The already run command</returns>
    IMoBiCommand ExtendPathAndValueEntitiesBasedOnUsedTemplates(SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules, ILookupBuildingBlock<T> buildingBlock);
-   
+
+   /// <summary>
+   /// Runs commands to extend the <paramref name="buildingBlockToExtend"/> with the provided <paramref name="pathAndValueEntities"/>.
+   /// Each command has to run before the next one is created to ensure the formula cache is up to date for the next command to consolidate formulas where possible.
+   /// </summary>
+   /// <returns>The already run command</returns>
    IMoBiCommand Extend(IReadOnlyList<T> pathAndValueEntities, ILookupBuildingBlock<T> buildingBlockToExtend, bool retainConflictingEntities = true);
 }
 

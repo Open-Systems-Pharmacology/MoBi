@@ -224,7 +224,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       protected abstract IMoBiCommand GetUpdatePathAndValueEntityInBuildingBlockCommand(TBuildingBlock buildingBlock, ImportedQuantityDTO dto);
 
-      protected void GetImportPathAndValueEntityMacroCommand(TBuildingBlock buildingBlock, IEnumerable<ImportedQuantityDTO> startQuantities, BulkUpdateMacroCommand macroCommand)
+      protected void GetImportPathAndValueEntityMacroCommand(TBuildingBlock buildingBlock, IReadOnlyList<ImportedQuantityDTO> startQuantities, BulkUpdateMacroCommand macroCommand)
       {
          startQuantities.Each(quantityDTO =>
          {

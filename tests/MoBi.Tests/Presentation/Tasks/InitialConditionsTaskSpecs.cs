@@ -57,7 +57,7 @@ namespace MoBi.Presentation.Tasks
          _reactionDimensionRetriever = A.Fake<IReactionDimensionRetriever>();
          _formulaTask = A.Fake<IFormulaTask>();
          _mapper = A.Fake<IPathAndValueEntityToDistributedParameterMapper>();
-         var extendManager = new InitialConditionsBuildingBlockExtendManager(_initialConditionsCreator, A.Fake<IMoBiFormulaTask>(), _objectTypeResolver, _context.Context);
+         var extendManager = new InitialConditionsBuildingBlockExtendManager(_initialConditionsCreator, A.Fake<IMoBiFormulaTask>(), _objectTypeResolver, _context.Context, DimensionFactoryForSpecs.Factory);
          sut = new InitialConditionsTask<InitialConditionsBuildingBlock>(_context, _editTask, extendManager, _cloneManagerForBuildingBlock, A.Fake<IMoBiFormulaTask>(),
             new ImportedQuantityToInitialConditionMapper(_initialConditionsCreator),
             new InitialConditionPathTask(_formulaTask, _context.Context), _reactionDimensionRetriever, _initialConditionsCreator, _objectTypeResolver, _nameCorrector, A.Fake<IExportDataTableToExcelTask>(), A.Fake<IInitialConditionsToDataTableMapper>(), _mapper);
@@ -167,7 +167,7 @@ namespace MoBi.Presentation.Tasks
          for (var i = 1; i < 3; i++)
          {
             var dto = _initialConditions[i];
-            A.CallTo(() => _initialConditionsCreator.CreateInitialCondition(dto.ContainerPath, dto.Name, A<IDimension>._, A<Unit>._, A<ValueOrigin>._)).Returns(
+            A.CallTo(() => _initialConditionsCreator.CreateInitialCondition(dto.ContainerPath, dto.Name, A<IDimension>._, A<Unit>._, A<ValueOrigin>._, A<bool>._, A<double>._, A<double>._, A<bool>._)).Returns(
                new InitialCondition
                {
                   ContainerPath = dto.ContainerPath,
