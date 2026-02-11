@@ -15,7 +15,7 @@ namespace MoBi.Core.Services;
 
 public interface IInitialConditionsBuildingBlockExtendManager : IExtendPathAndValuesManager<InitialCondition>
 {
-   IMoBiCommand MergeWithUpdate(InitialConditionsBuildingBlock buildingBlock, ObjectPath objectPath, string dimensionName, int valueInBaseUnit, int scaleDivisor, bool isPresent, bool negativeAllowed);
+   IMoBiCommand MergeWithUpdate(InitialConditionsBuildingBlock buildingBlock, ObjectPath objectPath, string dimensionName, double valueInBaseUnit, double scaleDivisor, bool isPresent, bool negativeAllowed);
 }
 
 public class InitialConditionsBuildingBlockExtendManager : ExtendPathAndValuesManager<InitialCondition>, IInitialConditionsBuildingBlockExtendManager
@@ -53,7 +53,7 @@ public class InitialConditionsBuildingBlockExtendManager : ExtendPathAndValuesMa
 
    protected override IMoBiCommand GenerateRemoveCommand(ILookupBuildingBlock<InitialCondition> targetBuildingBlock, InitialCondition initialCondition) => new RemoveInitialConditionFromBuildingBlockCommand(targetBuildingBlock, initialCondition.Path);
 
-   public IMoBiCommand MergeWithUpdate(InitialConditionsBuildingBlock buildingBlock, ObjectPath objectPath, string dimensionName, int valueInBaseUnit, int scaleDivisor, bool isPresent, bool negativeAllowed)
+   public IMoBiCommand MergeWithUpdate(InitialConditionsBuildingBlock buildingBlock, ObjectPath objectPath, string dimensionName, double valueInBaseUnit, double scaleDivisor, bool isPresent, bool negativeAllowed)
    {
       var pathAndValueEntity = buildingBlock[objectPath];
       if (pathAndValueEntity != null)

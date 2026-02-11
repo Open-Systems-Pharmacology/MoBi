@@ -19,7 +19,7 @@ public interface IInitialConditionsTask
 
    void ExtendInitialConditions(InitialConditionsBuildingBlock buildingBlock, MoBiSpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock, string[] moleculeNames);
 
-   void SetInitialConditions(InitialConditionsBuildingBlock buildingBlock, string[] quantityPaths, string[] dimensionNames, int[] quantityValues, int[] scaleDivisors, bool[] isPresent, bool[] negativeAllowed);
+   void SetInitialConditions(InitialConditionsBuildingBlock buildingBlock, string[] quantityPaths, string[] dimensionNames, double[] quantityValues, double[] scaleDivisors, bool[] isPresent, bool[] negativeAllowed);
 }
 
 public class InitialConditionsTask : IInitialConditionsTask
@@ -61,7 +61,7 @@ public class InitialConditionsTask : IInitialConditionsTask
       _context.AddToHistory(_extendManager.ExtendPathAndValueEntitiesBasedOnUsedTemplates(spatialStructure, molecules, buildingBlock));
    }
 
-   public void SetInitialConditions(InitialConditionsBuildingBlock buildingBlock, string[] quantityPaths, string[] dimensionNames, int[] quantityValues, int[] scaleDivisors, bool[] isPresent, bool[] negativeAllowed)
+   public void SetInitialConditions(InitialConditionsBuildingBlock buildingBlock, string[] quantityPaths, string[] dimensionNames, double[] quantityValues, double[] scaleDivisors, bool[] isPresent, bool[] negativeAllowed)
    {
       if (!arrayLengthsAreConsistent(quantityPaths, dimensionNames, quantityValues, scaleDivisors, isPresent, negativeAllowed))
          throw new ArgumentException("All input arrays must have the same length.");

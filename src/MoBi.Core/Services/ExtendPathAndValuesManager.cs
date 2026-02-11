@@ -26,7 +26,7 @@ public interface IExtendPathAndValuesManager<T> : IMergeManager<T> where T : Pat
    Action<T> AddAction { set; }
 
    /// <summary>
-   /// Runs commands to extend the path and value entities of the <paramref name="buildingBlock"/> based on the provided <paramref name="spatialStructure"/>and <paramref name="molecules"/>
+   /// Runs commands to extend the path and value entities of the <paramref name="buildingBlock"/> based on the provided <paramref name="spatialStructure"/> and <paramref name="molecules"/>
    /// Each command has to run before the next one is created to ensure the formula cache is up to date for the next command to consolidate formulas where possible.
    /// </summary>
    /// <returns>The already run command</returns>

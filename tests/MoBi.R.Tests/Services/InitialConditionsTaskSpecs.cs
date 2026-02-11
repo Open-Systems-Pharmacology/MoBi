@@ -464,7 +464,7 @@ internal class When_setting_initial_conditions_that_all_already_exist_with_proje
          quantityPaths: ["TopContainer|Physical|Molecule1", "TopContainer|Physical|Molecule2"],
          dimensionNames: ["Amount", "Amount"],
          quantityValues: [100, 200],
-         scaleDivisors: [1, 1],
+         scaleDivisors: [1.5, 10.5],
          isPresent: [true, false],
          negativeAllowed: [false, true]
       );
@@ -491,6 +491,15 @@ internal class When_setting_initial_conditions_that_all_already_exist_with_proje
       var ic2 = _buildingBlock.FindByPath("TopContainer|Physical|Molecule2");
       ic1.IsPresent.ShouldBeTrue();
       ic2.IsPresent.ShouldBeFalse();
+   }
+
+   [Observation]
+   public void should_update_scale_divisor()
+   {
+      var ic1 = _buildingBlock.FindByPath("TopContainer|Physical|Molecule1");
+      var ic2 = _buildingBlock.FindByPath("TopContainer|Physical|Molecule2");
+      ic1.ScaleDivisor.ShouldBeEqualTo(1.5);
+      ic2.ScaleDivisor.ShouldBeEqualTo(10.5);
    }
 
    [Observation]
@@ -523,7 +532,7 @@ internal class When_setting_initial_conditions_that_dont_exist_with_project : co
          quantityPaths: ["TopContainer|Physical|Molecule1", "TopContainer|Physical|Molecule2"],
          dimensionNames: ["Amount", "Amount"],
          quantityValues: [150, 250],
-         scaleDivisors: [1, 1],
+         scaleDivisors: [1.5, 10.5],
          isPresent: [true, true],
          negativeAllowed: [false, false]
       );
@@ -533,6 +542,15 @@ internal class When_setting_initial_conditions_that_dont_exist_with_project : co
    public void should_add_new_initial_conditions_to_building_block()
    {
       _buildingBlock.Count().ShouldBeEqualTo(2);
+   }
+
+   [Observation]
+   public void should_update_scale_divisor()
+   {
+      var ic1 = _buildingBlock.FindByPath("TopContainer|Physical|Molecule1");
+      var ic2 = _buildingBlock.FindByPath("TopContainer|Physical|Molecule2");
+      ic1.ScaleDivisor.ShouldBeEqualTo(1.5);
+      ic2.ScaleDivisor.ShouldBeEqualTo(10.5);
    }
 
    [Observation]
@@ -596,7 +614,7 @@ internal class When_setting_initial_conditions_with_mix_of_existing_and_new_with
          quantityPaths: ["TopContainer|Physical|Molecule1", "TopContainer|Physical|Molecule2", "TopContainer|Physical|Molecule3"],
          dimensionNames: ["Amount", "Amount", "Amount"],
          quantityValues: [100, 200, 300],
-         scaleDivisors: [1, 1, 1],
+         scaleDivisors: [1.0, 2.0, 3.0],
          isPresent: [true, true, false],
          negativeAllowed: [true, false, true]
       );
@@ -615,6 +633,7 @@ internal class When_setting_initial_conditions_with_mix_of_existing_and_new_with
       var ic1 = _buildingBlock.FindByPath("TopContainer|Physical|Molecule1");
       ic1.IsPresent.ShouldBeTrue();
       ic1.NegativeValuesAllowed.ShouldBeTrue();
+      ic1.ScaleDivisor.ShouldBeEqualTo(1.0);
    }
 
    [Observation]
@@ -625,6 +644,7 @@ internal class When_setting_initial_conditions_with_mix_of_existing_and_new_with
       ic2.Value.ShouldBeEqualTo(200);
       ic2.IsPresent.ShouldBeTrue();
       ic2.NegativeValuesAllowed.ShouldBeFalse();
+      ic2.ScaleDivisor.ShouldBeEqualTo(2.0);
    }
 
    [Observation]
@@ -635,6 +655,7 @@ internal class When_setting_initial_conditions_with_mix_of_existing_and_new_with
       ic3.Value.ShouldBeEqualTo(300);
       ic3.IsPresent.ShouldBeFalse();
       ic3.NegativeValuesAllowed.ShouldBeTrue();
+      ic3.ScaleDivisor.ShouldBeEqualTo(3.0);
    }
 
    [Observation]
@@ -682,10 +703,19 @@ internal class When_setting_initial_conditions_that_all_already_exist : concern_
          quantityPaths: ["TopContainer|Physical|Molecule1", "TopContainer|Physical|Molecule2"],
          dimensionNames: ["Amount", "Amount"],
          quantityValues: [100, 200],
-         scaleDivisors: [1, 1],
+         scaleDivisors: [1.5, 10.5],
          isPresent: [true, false],
          negativeAllowed: [false, true]
       );
+   }
+
+   [Observation]
+   public void should_update_scale_divisor()
+   {
+      var ic1 = _buildingBlock.FindByPath("TopContainer|Physical|Molecule1");
+      var ic2 = _buildingBlock.FindByPath("TopContainer|Physical|Molecule2");
+      ic1.ScaleDivisor.ShouldBeEqualTo(1.5);
+      ic2.ScaleDivisor.ShouldBeEqualTo(10.5);
    }
 
    [Observation]
@@ -739,7 +769,7 @@ internal class When_setting_initial_conditions_that_dont_exist : concern_for_Ini
          quantityPaths: ["TopContainer|Physical|Molecule1", "TopContainer|Physical|Molecule2"],
          dimensionNames: ["Amount", "Amount"],
          quantityValues: [150, 250],
-         scaleDivisors: [1, 1],
+         scaleDivisors: [1, 5],
          isPresent: [true, true],
          negativeAllowed: [false, false]
       );
@@ -757,6 +787,7 @@ internal class When_setting_initial_conditions_that_dont_exist : concern_for_Ini
       var ic1 = _buildingBlock.FindByPath("TopContainer|Physical|Molecule1");
       ic1.ShouldNotBeNull();
       ic1.Value.ShouldBeEqualTo(150);
+      ic1.ScaleDivisor.ShouldBeEqualTo(1.0);
    }
 
    [Observation]
@@ -765,6 +796,7 @@ internal class When_setting_initial_conditions_that_dont_exist : concern_for_Ini
       var ic2 = _buildingBlock.FindByPath("TopContainer|Physical|Molecule2");
       ic2.ShouldNotBeNull();
       ic2.Value.ShouldBeEqualTo(250);
+      ic2.ScaleDivisor.ShouldBeEqualTo(5.0);
    }
 
    [Observation]
@@ -829,6 +861,7 @@ internal class When_setting_initial_conditions_with_mix_of_existing_and_new : co
       var ic1 = _buildingBlock.FindByPath("TopContainer|Physical|Molecule1");
       ic1.IsPresent.ShouldBeTrue();
       ic1.NegativeValuesAllowed.ShouldBeTrue();
+      ic1.ScaleDivisor.ShouldBeEqualTo(1.0);
    }
 
    [Observation]
@@ -839,6 +872,7 @@ internal class When_setting_initial_conditions_with_mix_of_existing_and_new : co
       ic2.Value.ShouldBeEqualTo(200);
       ic2.IsPresent.ShouldBeTrue();
       ic2.NegativeValuesAllowed.ShouldBeFalse();
+      ic2.ScaleDivisor.ShouldBeEqualTo(1.0);
    }
 
    [Observation]
@@ -849,6 +883,7 @@ internal class When_setting_initial_conditions_with_mix_of_existing_and_new : co
       ic3.Value.ShouldBeEqualTo(300);
       ic3.IsPresent.ShouldBeFalse();
       ic3.NegativeValuesAllowed.ShouldBeTrue();
+      ic3.ScaleDivisor.ShouldBeEqualTo(1.0);
    }
 
    [Observation]
