@@ -48,7 +48,7 @@ namespace MoBi.Core.Services
       IndividualBuildingBlock LoadIndividualFromSnapshot(string serializedSnapshot);
    }
 
-   public class PKSimStarter : IPKSimStarter
+   public class PKSimStarter : PKSimAssemblyLoader, IPKSimStarter
    {
       private const string CREATE_INDIVIDUAL_ENZYME_EXPRESSION_PROFILE = "CreateIndividualEnzymeExpressionProfile";
       private const string CREATE_BINDING_PARTNER_EXPRESSION_PROFILE = "CreateBindingPartnerExpressionProfile";
@@ -67,7 +67,6 @@ namespace MoBi.Core.Services
       private readonly IMoBiConfiguration _configuration;
       private readonly IApplicationSettings _applicationSettings;
       private readonly IStartableProcessFactory _startableProcessFactory;
-      private Assembly _externalAssembly;
       private readonly ICloneManagerForBuildingBlock _cloneManager;
       private readonly IMoBiProjectRetriever _projectRetriever;
       private readonly IXmlSerializationService _serializationService;
@@ -111,18 +110,17 @@ namespace MoBi.Core.Services
          if (string.IsNullOrEmpty(methodName))
             return null;
 
-         return executeAndCloneBuildingBlock<ExpressionProfileBuildingBlock>(getMethod(PKSIM_UI_STARTER_EXPRESSION_PROFILE_CREATOR, methodName));
+         return executeAndCloneBuildingBlock<ExpressionProfileBuildingBlock>(GetMethod(PKSIM_UI_STARTER_EXPRESSION_PROFILE_CREATOR, methodName));
       }
 
       public IBuildingBlock CreateIndividual()
       {
-         return executeAndCloneBuildingBlock<IndividualBuildingBlock>(getMethod(PKSIM_UI_STARTER_INDIVIDUAL_CREATOR, CREATE_INDIVIDUAL));
+         return executeAndCloneBuildingBlock<IndividualBuildingBlock>(GetMethod(PKSIM_UI_STARTER_INDIVIDUAL_CREATOR, CREATE_INDIVIDUAL));
       }
 
       private TBuildingBlock executeAndCloneBuildingBlock<TBuildingBlock>(MethodInfo method) where TBuildingBlock : class, IBuildingBlock
       {
-         loadPKSimAssembly();
-         var buildingBlock = executeMethod(method) as TBuildingBlock;
+         var buildingBlock = ExecuteMethod(method) as TBuildingBlock;
 
          //in case of cancelling
          if (buildingBlock == null)
@@ -133,13 +131,13 @@ namespace MoBi.Core.Services
 
       public IReadOnlyList<ExpressionParameterValueUpdate> UpdateExpressionProfileFromDatabase(ExpressionProfileBuildingBlock expressionProfile)
       {
-         loadPKSimAssembly();
-         return executeMethod(getMethod(PKSIM_UI_STARTER_EXPRESSION_PROFILE_CREATOR, GET_EXPRESSION_DATABASE_QUERY), [expressionProfile]) as List<ExpressionParameterValueUpdate>;
+         LoadPKSimAssembly();
+         return ExecuteMethod(GetMethod(PKSIM_UI_STARTER_EXPRESSION_PROFILE_CREATOR, GET_EXPRESSION_DATABASE_QUERY), [expressionProfile]) as List<ExpressionParameterValueUpdate>;
       }
 
       public Module LoadModuleFromSnapshot(string serializedSnapshot)
       {
-         var element = executeMethod(getMethod(PKSIM_UI_STARTER_SNAPSHOT_EXCHANGE, CREATE_MODULE), [serializedSnapshot]) as string;
+         var element = ExecuteMethod(GetMethod(PKSIM_UI_STARTER_SNAPSHOT_EXCHANGE, CREATE_MODULE), [serializedSnapshot]) as string;
 
          // all object exchanges should be done using serialization to ensure that objects are recreated in MoBi.
          return _serializationService.Deserialize<Module>(element, _projectRetriever.Current);
@@ -147,7 +145,7 @@ namespace MoBi.Core.Services
 
       public (Module module, InputMapping[] inputMappings) LoadModuleFromSnapshotAndExportInputs(string serializedSnapshot, QualificationConfiguration qualificationConfiguration)
       {
-         var tuple = executeMethod(getMethod(PKSIM_UI_STARTER_SNAPSHOT_EXCHANGE, CREATE_MODULE_AND_EXPORT_INPUTS), [serializedSnapshot, qualificationConfiguration]);
+         var tuple = ExecuteMethod(GetMethod(PKSIM_UI_STARTER_SNAPSHOT_EXCHANGE, CREATE_MODULE_AND_EXPORT_INPUTS), [serializedSnapshot, qualificationConfiguration]);
 
          var (element, mappings) = tuple as (string element, InputMapping[] mappings)? ?? (null, null);
 
@@ -159,7 +157,7 @@ namespace MoBi.Core.Services
 
       public ExpressionProfileBuildingBlock LoadExpressionProfileFromSnapshot(string serializedSnapshot)
       {
-         var pkml = executeMethod(getMethod(PKSIM_UI_STARTER_SNAPSHOT_EXCHANGE, CREATE_EXPRESSION_PROFILE_BUILDING_BLOCK), [serializedSnapshot]) as string;
+         var pkml = ExecuteMethod(GetMethod(PKSIM_UI_STARTER_SNAPSHOT_EXCHANGE, CREATE_EXPRESSION_PROFILE_BUILDING_BLOCK), [serializedSnapshot]) as string;
 
          // all object exchanges should be done using serialization to ensure that objects are recreated in MoBi.
          return _serializationService.Deserialize<ExpressionProfileBuildingBlock>(pkml, _projectRetriever.Current);
@@ -167,30 +165,10 @@ namespace MoBi.Core.Services
 
       public IndividualBuildingBlock LoadIndividualFromSnapshot(string serializedSnapshot)
       {
-         var pkml = executeMethod(getMethod(PKSIM_UI_STARTER_SNAPSHOT_EXCHANGE, CREATE_INDIVIDUAL_BUILDING_BLOCK), [serializedSnapshot]) as string;
+         var pkml = ExecuteMethod(GetMethod(PKSIM_UI_STARTER_SNAPSHOT_EXCHANGE, CREATE_INDIVIDUAL_BUILDING_BLOCK), [serializedSnapshot]) as string;
 
          // all object exchanges should be done using serialization to ensure that objects are recreated in MoBi.
          return _serializationService.Deserialize<IndividualBuildingBlock>(pkml, _projectRetriever.Current);
-      }
-
-      private object executeMethod(MethodInfo method, object[] parameters = null)
-      {
-         return method.Invoke(null, parameters);
-      }
-
-      private void loadPKSimAssembly()
-      {
-         if (_externalAssembly != null)
-            return;
-
-         _externalAssembly = Assembly.LoadFrom(retrievePKSimUIStarterPath());
-      }
-
-      private MethodInfo getMethod(string type, string methodName)
-      {
-         loadPKSimAssembly();
-
-         return _externalAssembly.GetType(type).GetMethod(methodName);
       }
 
       private void startPKSimWithFile(string filePathToStart, string option)
@@ -207,7 +185,7 @@ namespace MoBi.Core.Services
          this.DoWithinExceptionHandler(() => { _startableProcessFactory.CreateStartableProcess(pkSimPath, args).Start(); });
       }
 
-      private string retrievePKSimUIStarterPath()
+      protected override string RetrievePKSimAssemblyPath()
       {
          var pkSimPath = retrievePKSimExecutablePath();
          var directory = Path.GetDirectoryName(pkSimPath);

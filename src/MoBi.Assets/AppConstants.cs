@@ -2429,6 +2429,8 @@ namespace MoBi.Assets
          public static readonly string IncompatibleVersionInstalled = "PK-Sim was found on the system, but it was not compatible with this feature. Please make sure that a compatible version of PK-Sim was installed using the provided setup.\n" +
                                                                       "Alternatively, you can specify where PK-Sim is installed on your system under Utilities -> Options -> Application tab\n" +
                                                                       "After changing the PK-Sim installation path, please restart MoBi.";
+
+         public static string CouldNotFindCompatiblePKSimAssemblies(string path) => $"Could not find compatible PK-Sim assemblies {path}";
       }
 
       public static string DefaultFileNameForBuildingBlockExport(string projectName, IBuildingBlock buildingBlock)

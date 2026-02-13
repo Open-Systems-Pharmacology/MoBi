@@ -73,7 +73,7 @@ namespace MoBi.Presentation.Mapper
       {
          _msvCreator = A.Fake<IInitialConditionsCreator>();
 
-         A.CallTo(() => _msvCreator.CreateInitialCondition(A<ObjectPath>.Ignored, A<string>.Ignored, A<IDimension>.Ignored, A<Unit>._, A<ValueOrigin>._))
+         A.CallTo(() => _msvCreator.CreateInitialCondition(A<ObjectPath>.Ignored, A<string>.Ignored, A<IDimension>.Ignored, A<Unit>._, A<ValueOrigin>._, A<bool>._, A<double>._, A<double>._, A<bool>._))
             .ReturnsLazily((ObjectPath path, string moleculeName, IDimension dimension) => new InitialCondition { ContainerPath = path, Name = moleculeName, Dimension = dimension});
 
          _concentrationDimension = new Dimension(new BaseDimensionRepresentation(), Constants.Dimension.MOLAR_CONCENTRATION, "mol/l");

@@ -167,7 +167,7 @@ namespace MoBi.Presentation.Tasks
          for (var i = 1; i < 3; i++)
          {
             var dto = _initialConditions[i];
-            A.CallTo(() => _initialConditionsCreator.CreateInitialCondition(dto.ContainerPath, dto.Name, A<IDimension>._, A<Unit>._, A<ValueOrigin>._)).Returns(
+            A.CallTo(() => _initialConditionsCreator.CreateInitialCondition(dto.ContainerPath, dto.Name, A<IDimension>._, A<Unit>._, A<ValueOrigin>._, A<bool>._, A<double>._, A<double>._, A<bool>._)).Returns(
                new InitialCondition
                {
                   ContainerPath = dto.ContainerPath,
