@@ -64,18 +64,12 @@ namespace MoBi.Presentation.Mapper
       protected IDimension _concentrationDimension;
       protected IDimension _amountDimension;
       private IDimension _timeDimension;
-      private IInitialConditionsCreator _msvCreator;
 
       protected InitialConditionsBuildingBlock _startValuesBuildingBlock;
       private IReactionDimensionRetriever _reactionDimensionRetriever;
 
       protected override void Context()
       {
-         _msvCreator = A.Fake<IInitialConditionsCreator>();
-
-         A.CallTo(() => _msvCreator.CreateInitialCondition(A<ObjectPath>.Ignored, A<string>.Ignored, A<IDimension>.Ignored, A<Unit>._, A<ValueOrigin>._, A<bool>._, A<double>._, A<double>._, A<bool>._))
-            .ReturnsLazily((ObjectPath path, string moleculeName, IDimension dimension) => new InitialCondition { ContainerPath = path, Name = moleculeName, Dimension = dimension});
-
          _concentrationDimension = new Dimension(new BaseDimensionRepresentation(), Constants.Dimension.MOLAR_CONCENTRATION, "mol/l");
 
          _amountDimension = new Dimension(new BaseDimensionRepresentation(), Constants.Dimension.MOLAR_AMOUNT, "mol");
@@ -131,7 +125,7 @@ namespace MoBi.Presentation.Mapper
    }
 
 
-   public class When_converting_and_validating_rows_resulting_in_duplicated_entriues: concern_for_DataTableToImportQuantityDTOMapperForMolecules
+   public class When_converting_and_validating_rows_resulting_in_duplicated_entries: concern_for_DataTableToImportQuantityDTOMapperForMolecules
    {
       private QuantityImporterDTO _result;
       private DataTable _tables;

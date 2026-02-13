@@ -2431,6 +2431,13 @@ namespace MoBi.Assets
                                                                       "After changing the PK-Sim installation path, please restart MoBi.";
 
          public static string CouldNotFindCompatiblePKSimAssemblies(string path) => $"Could not find compatible PK-Sim assemblies {path}";
+
+         public static string CouldNotFindTypeInAssembly(string type, string assemblyLocation) => $"Could not find type '{type}' in '{assemblyLocation}'";
+
+         public static string CouldNotFindMethodInAssembly(string methodName, string type, string assemblyLocation)
+         {
+            return $"Could not find method '{methodName}' on type '{type}' in '{assemblyLocation}'";
+         }
       }
 
       public static string DefaultFileNameForBuildingBlockExport(string projectName, IBuildingBlock buildingBlock)

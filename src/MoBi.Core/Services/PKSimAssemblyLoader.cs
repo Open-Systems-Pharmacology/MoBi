@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using MoBi.Assets;
+using MoBi.Core.Exceptions;
+using System.Reflection;
 
 namespace MoBi.Core.Services;
 
@@ -20,7 +22,9 @@ public abstract class PKSimAssemblyLoader
    {
       LoadPKSimAssembly();
 
-      return _externalAssembly.GetType(type).GetMethod(methodName);
+      var resolvedType = _externalAssembly.GetType(type) ?? throw new MoBiException(AppConstants.PKSim.CouldNotFindTypeInAssembly(type, _externalAssembly.Location));
+      return resolvedType.GetMethod(methodName) ?? throw new MoBiException(AppConstants.PKSim.CouldNotFindMethodInAssembly(methodName, type, _externalAssembly.Location));
+
    }
 
    protected object ExecuteMethod(MethodInfo method, object[] parameters = null)
