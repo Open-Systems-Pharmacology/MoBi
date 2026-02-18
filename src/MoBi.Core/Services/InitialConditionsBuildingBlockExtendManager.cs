@@ -15,7 +15,7 @@ namespace MoBi.Core.Services;
 
 public interface IInitialConditionsBuildingBlockExtendManager : IExtendPathAndValuesManager<InitialCondition>
 {
-   IMoBiCommand MergeWithUpdate(InitialConditionsBuildingBlock buildingBlock, ObjectPath objectPath, string dimensionName, double valueInBaseUnit, double scaleDivisor, bool isPresent, bool negativeAllowed);
+   IMoBiCommand MergeWithUpdate(InitialConditionsBuildingBlock buildingBlock, InitialConditionPropertiesForMerge properties);
 }
 
 public class InitialConditionsBuildingBlockExtendManager : ExtendPathAndValuesManager<InitialCondition>, IInitialConditionsBuildingBlockExtendManager
@@ -53,16 +53,16 @@ public class InitialConditionsBuildingBlockExtendManager : ExtendPathAndValuesMa
 
    protected override IMoBiCommand GenerateRemoveCommand(ILookupBuildingBlock<InitialCondition> targetBuildingBlock, InitialCondition initialCondition) => new RemoveInitialConditionFromBuildingBlockCommand(targetBuildingBlock, initialCondition.Path);
 
-   public IMoBiCommand MergeWithUpdate(InitialConditionsBuildingBlock buildingBlock, ObjectPath objectPath, string dimensionName, double valueInBaseUnit, double scaleDivisor, bool isPresent, bool negativeAllowed)
+   public IMoBiCommand MergeWithUpdate(InitialConditionsBuildingBlock buildingBlock, InitialConditionPropertiesForMerge properties)
    {
-      var pathAndValueEntity = buildingBlock[objectPath];
+      var pathAndValueEntity = buildingBlock[properties.ObjectPath];
       if (pathAndValueEntity != null)
-         return new UpdateInitialConditionInBuildingBlockCommand(buildingBlock, objectPath, valueInBaseUnit, isPresent, scaleDivisor, negativeAllowed);
+         return new UpdateInitialConditionInBuildingBlockCommand(buildingBlock, properties.ObjectPath, properties.ValueInBaseUnit, properties.IsPresent, properties.ScaleDivisor, properties.NegativeAllowed);
 
-      var moleculeName = objectPath.Last();
-      var containerPath = objectPath.Clone<ObjectPath>();
+      var moleculeName = properties.ObjectPath.Last();
+      var containerPath = properties.ObjectPath.Clone<ObjectPath>();
       containerPath.RemoveAt(containerPath.Count - 1);
-      var dimension = _dimensionFactory.Dimension(dimensionName);
+      var dimension = _dimensionFactory.Dimension(properties.DimensionName);
 
       var initialCondition = _initialConditionsCreator.CreateInitialCondition(
          containerPath,
@@ -70,10 +70,10 @@ public class InitialConditionsBuildingBlockExtendManager : ExtendPathAndValuesMa
          dimension,
          displayUnit: null,
          valueOrigin: null,
-         isPresent: isPresent,
-         valueInBaseUnit: valueInBaseUnit,
-         scaleDivisor,
-         negativeAllowed
+         properties.IsPresent,
+         properties.ValueInBaseUnit,
+         properties.ScaleDivisor,
+         properties.NegativeAllowed
       );
 
       return GenerateAddCommand(buildingBlock, initialCondition);

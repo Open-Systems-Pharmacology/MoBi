@@ -56,7 +56,7 @@ namespace MoBi.R.Services
       public SimulationCreationResult CreateSimulationAndValidateFrom(string simulationName, SimulationRequest request)
       {
          if (request == null)
-            throw new InvalidArgumentException("Simulation request cannot be null");
+            throw new InvalidArgumentException(AppConstants.Exceptions.SimulationRequestCannotBeNull);
 
          var modulesArray = request?.ModuleConfigurations?.ToArray() ?? Array.Empty<ModuleConfiguration>();
          var expressionsArray = request?.ExpressionProfiles?.ToArray() ?? Array.Empty<ExpressionProfileBuildingBlock>();

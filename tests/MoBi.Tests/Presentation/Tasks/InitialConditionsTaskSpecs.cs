@@ -137,7 +137,7 @@ namespace MoBi.Presentation.Tasks
 
    public class When_importing_multiple_molecule_start_values : concern_for_InitialConditionsTask
    {
-      private IList<ImportedQuantityDTO> _initialConditions;
+      private IReadOnlyList<ImportedQuantityDTO> _initialConditions;
       private InitialCondition _firstStartValueRef;
       private IMoBiCommand _result;
 

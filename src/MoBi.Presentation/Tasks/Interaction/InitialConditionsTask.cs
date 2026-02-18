@@ -134,7 +134,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return new UpdateInitialConditionNegativeValuesAllowedCommand(initialConditions, msv, negativeValuesAllowed).RunCommand(Context);
       }
 
-      public override IMoBiCommand ImportPathAndValueEntitiesToBuildingBlock(TBuildingBlock buildingBlock, IEnumerable<ImportedQuantityDTO> startQuantities)
+      public override IMoBiCommand ImportPathAndValueEntitiesToBuildingBlock(TBuildingBlock buildingBlock, IReadOnlyList<ImportedQuantityDTO> startQuantities)
       {
          var macroCommand = new BulkUpdateMacroCommand
          {
@@ -247,6 +247,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
          return new AddInitialConditionToBuildingBlockCommand(targetBuildingBlock, initialCondition);
       }
+
       public override IDimension GetDefaultDimension()
       {
          return _dimensionRetriever.MoleculeDimension;

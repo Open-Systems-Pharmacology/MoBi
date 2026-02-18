@@ -64,7 +64,7 @@ public class InitialConditionsTask : IInitialConditionsTask
    public void SetInitialConditions(InitialConditionsBuildingBlock buildingBlock, string[] quantityPaths, string[] dimensionNames, double[] quantityValues, double[] scaleDivisors, bool[] isPresent, bool[] negativeAllowed)
    {
       if (!arrayLengthsAreConsistent(quantityPaths, dimensionNames, quantityValues, scaleDivisors, isPresent, negativeAllowed))
-         throw new ArgumentException("All input arrays must have the same length.");
+         throw new ArgumentException(AppConstants.Exceptions.AllArraysMustHaveTheSameLength);
 
       var macroCommand = new MoBiMacroCommand
       {
@@ -73,7 +73,16 @@ public class InitialConditionsTask : IInitialConditionsTask
          ObjectType = _objectTypeResolver.TypeFor<InitialConditionsBuildingBlock>()
       };
 
-      quantityPaths.Each((quantityPath, i) => macroCommand.Add(_extendManager.MergeWithUpdate(buildingBlock, quantityPath.ToObjectPath(), dimensionNames[i], quantityValues[i], scaleDivisors[i], isPresent[i], negativeAllowed[i])));
+      quantityPaths.Each((quantityPath, i) => macroCommand.Add(_extendManager.MergeWithUpdate(buildingBlock,
+         new InitialConditionPropertiesForMerge
+         {
+            ObjectPath = quantityPath.ToObjectPath(),
+            DimensionName = dimensionNames[i],
+            ValueInBaseUnit = quantityValues[i],
+            ScaleDivisor = scaleDivisors[i],
+            IsPresent = isPresent[i],
+            NegativeAllowed = negativeAllowed[i]
+         })));
 
       _context.AddToHistory(macroCommand.RunCommand(_context));
    }

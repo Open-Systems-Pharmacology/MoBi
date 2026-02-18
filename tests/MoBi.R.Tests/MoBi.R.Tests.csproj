@@ -68,7 +68,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="OSPSuite.Dimensions.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="OSPSuite.PKParameters.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
