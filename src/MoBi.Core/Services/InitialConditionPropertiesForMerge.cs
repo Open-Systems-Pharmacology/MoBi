@@ -9,5 +9,5 @@ public class InitialConditionPropertiesForMerge
    public double ValueInBaseUnit { set; get; }
    public double ScaleDivisor { set; get; } = Constants.DEFAULT_SCALE_DIVISOR;
    public bool IsPresent { set; get; }
-   public bool NegativeAllowed { set; get; } = false;
+   public bool NegativeAllowed { set; get; }
 }
