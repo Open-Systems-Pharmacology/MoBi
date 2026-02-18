@@ -31,7 +31,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       /// <param name="buildingBlock">The building block being updated</param>
       /// <param name="startQuantities">The list of path and value entities to be added or updated</param>
       /// <returns>The command used to update the building block</returns>
-      IMoBiCommand ImportPathAndValueEntitiesToBuildingBlock(TBuildingBlock buildingBlock, IEnumerable<ImportedQuantityDTO> startQuantities);
+      IMoBiCommand ImportPathAndValueEntitiesToBuildingBlock(TBuildingBlock buildingBlock, IReadOnlyList<ImportedQuantityDTO> startQuantities);
 
       /// <summary>
       ///    Sets the path and value entity formula to a new value

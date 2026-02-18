@@ -1252,6 +1252,10 @@ namespace MoBi.Assets
          public static readonly string MissingName = "Name missing";
          public static readonly string DeserializationFailed = "Deserialization failed";
          public static readonly string TheStartTimeMustBeEarlierThanTheEndTimeOfTheInterval = "The start time must be earlier than the end time of the interval";
+         public static readonly string AllArraysMustHaveTheSameLength = "All arrays must have the same length";
+         public static readonly string SimulationNameIsRequired = "Simulation name is required";
+         public static readonly string NameContainsIllegalCharacters = "Name contains illegal characters";
+         public static readonly string SimulationRequestCannotBeNull = "Simulation request cannot be null";
 
          public static string SourceBuildingBlockNotInProject(string entityType) => $"Building Block used to create {entityType} is not present in project";
          public static readonly string ShouldNeverHappen = "Should never happen";

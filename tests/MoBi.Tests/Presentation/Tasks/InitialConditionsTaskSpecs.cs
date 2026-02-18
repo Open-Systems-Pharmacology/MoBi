@@ -57,7 +57,7 @@ namespace MoBi.Presentation.Tasks
          _reactionDimensionRetriever = A.Fake<IReactionDimensionRetriever>();
          _formulaTask = A.Fake<IFormulaTask>();
          _mapper = A.Fake<IPathAndValueEntityToDistributedParameterMapper>();
-         var extendManager = new InitialConditionsBuildingBlockExtendManager(_initialConditionsCreator, A.Fake<IMoBiFormulaTask>(), _objectTypeResolver, _context.Context);
+         var extendManager = new InitialConditionsBuildingBlockExtendManager(_initialConditionsCreator, A.Fake<IMoBiFormulaTask>(), _objectTypeResolver, _context.Context, DimensionFactoryForSpecs.Factory);
          sut = new InitialConditionsTask<InitialConditionsBuildingBlock>(_context, _editTask, extendManager, _cloneManagerForBuildingBlock, A.Fake<IMoBiFormulaTask>(),
             new ImportedQuantityToInitialConditionMapper(_initialConditionsCreator),
             new InitialConditionPathTask(_formulaTask, _context.Context), _reactionDimensionRetriever, _initialConditionsCreator, _objectTypeResolver, _nameCorrector, A.Fake<IExportDataTableToExcelTask>(), A.Fake<IInitialConditionsToDataTableMapper>(), _mapper);
@@ -137,7 +137,7 @@ namespace MoBi.Presentation.Tasks
 
    public class When_importing_multiple_molecule_start_values : concern_for_InitialConditionsTask
    {
-      private IList<ImportedQuantityDTO> _initialConditions;
+      private IReadOnlyList<ImportedQuantityDTO> _initialConditions;
       private InitialCondition _firstStartValueRef;
       private IMoBiCommand _result;
 

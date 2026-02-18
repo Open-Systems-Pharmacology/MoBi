@@ -181,8 +181,9 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
          return GenerateAddCommand(buildingBlock, pathAndValueEntity).RunCommand(Context);
       }
+
       protected abstract IMoBiCommand GenerateAddCommand(ILookupBuildingBlock<TPathAndValueEntity> targetBuildingBlock, TPathAndValueEntity entityToAdd);
-      public abstract IMoBiCommand ImportPathAndValueEntitiesToBuildingBlock(TBuildingBlock buildingBlock, IEnumerable<ImportedQuantityDTO> startQuantities);
+      public abstract IMoBiCommand ImportPathAndValueEntitiesToBuildingBlock(TBuildingBlock buildingBlock, IReadOnlyList<ImportedQuantityDTO> startQuantities);
       public abstract IMoBiCommand RemovePathAndValueEntityFromBuildingBlockCommand(TPathAndValueEntity pathAndValueEntity, TBuildingBlock buildingBlock);
 
       public virtual void ExtendPathAndValueEntityBuildingBlock(TBuildingBlock buildingBlock)
@@ -224,7 +225,7 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       protected abstract IMoBiCommand GetUpdatePathAndValueEntityInBuildingBlockCommand(TBuildingBlock buildingBlock, ImportedQuantityDTO dto);
 
-      protected void GetImportPathAndValueEntityMacroCommand(TBuildingBlock buildingBlock, IEnumerable<ImportedQuantityDTO> startQuantities, BulkUpdateMacroCommand macroCommand)
+      protected void GetImportPathAndValueEntityMacroCommand(TBuildingBlock buildingBlock, IReadOnlyList<ImportedQuantityDTO> startQuantities, BulkUpdateMacroCommand macroCommand)
       {
          startQuantities.Each(quantityDTO =>
          {

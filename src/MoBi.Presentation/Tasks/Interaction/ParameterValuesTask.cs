@@ -59,14 +59,12 @@ namespace MoBi.Presentation.Tasks.Interaction
          _parameterValuesCreator = parameterValuesCreator;
       }
 
-
-
       protected override IMoBiCommand GetUpdatePathAndValueEntityInBuildingBlockCommand(ParameterValuesBuildingBlock buildingBlock, ImportedQuantityDTO dto)
       {
          return new UpdateParameterValueInBuildingBlockCommand(buildingBlock, dto.Path, dto.QuantityInBaseUnit);
       }
 
-      public override IMoBiCommand ImportPathAndValueEntitiesToBuildingBlock(ParameterValuesBuildingBlock buildingBlock, IEnumerable<ImportedQuantityDTO> startQuantities)
+      public override IMoBiCommand ImportPathAndValueEntitiesToBuildingBlock(ParameterValuesBuildingBlock buildingBlock, IReadOnlyList<ImportedQuantityDTO> startQuantities)
       {
          var macroCommand = new BulkUpdateMacroCommand
          {
@@ -137,15 +135,15 @@ namespace MoBi.Presentation.Tasks.Interaction
             modalPresenter.Encapsulate(referenceAtParamValuePresenter);
             referenceAtParamValuePresenter.Init(null, new List<IObjectBase>(), null);
             referenceAtParamValuePresenter.SetRelativePathSelectorVisible(false);
-            
+
             if (!modalPresenter.Show(referenceAtParamValuePresenter.ModalSize))
                return Enumerable.Empty<ObjectPath>().ToList();
-            
+
             var selections = referenceAtParamValuePresenter.GetAllSelections();
             var invalidSelections = selections.Where(pathContainsIllegalCharacters).ToList();
             var validSelections = selections.Except(invalidSelections).ToList();
-               
-            if(invalidSelections.Any())
+
+            if (invalidSelections.Any())
                _interactionTaskContext.DialogCreator.MessageBoxInfo(AppConstants.Captions.PathsContainIllegalCharacters(invalidSelections.Select(x => x.PathAsString).ToList(), Constants.ILLEGAL_CHARACTERS));
 
             return validSelections;

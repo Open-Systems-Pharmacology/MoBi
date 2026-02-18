@@ -1,6 +1,6 @@
 ﻿using OSPSuite.Utility;
-
 using MoBi.Presentation.DTO;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 
@@ -22,19 +22,16 @@ namespace MoBi.Presentation.Mappers
 
       public InitialCondition MapFrom(ImportedQuantityDTO importedQuantityDTO)
       {
-         var initialCondition = _initialConditionsCreator.CreateInitialCondition(importedQuantityDTO.ContainerPath, importedQuantityDTO.Name, importedQuantityDTO.Dimension, importedQuantityDTO.DisplayUnit);
-         initialCondition.Value = importedQuantityDTO.QuantityInBaseUnit;
-         initialCondition.DisplayUnit = importedQuantityDTO.DisplayUnit;
-         initialCondition.IsPresent = importedQuantityDTO.IsPresent;
-         initialCondition.NegativeValuesAllowed = importedQuantityDTO.NegativeValuesAllowed;
-
-         if(importedQuantityDTO.IsQuantitySpecified)
-            initialCondition.Value = importedQuantityDTO.QuantityInBaseUnit;
-
-         if (importedQuantityDTO.IsScaleDivisorSpecified)
-            initialCondition.ScaleDivisor = importedQuantityDTO.ScaleDivisor;
-
-         return initialCondition;
+         return _initialConditionsCreator.CreateInitialCondition(
+            importedQuantityDTO.ContainerPath, 
+            importedQuantityDTO.Name, 
+            importedQuantityDTO.Dimension, 
+            importedQuantityDTO.DisplayUnit,
+            valueOrigin:null,
+            isPresent:importedQuantityDTO.IsPresent,
+            valueInBaseUnit:importedQuantityDTO.QuantityInBaseUnit,
+            scaleDivisor:importedQuantityDTO.IsScaleDivisorSpecified ? importedQuantityDTO.ScaleDivisor : Constants.DEFAULT_SCALE_DIVISOR,
+            negativeValuesAllowed:importedQuantityDTO.NegativeValuesAllowed);
       }
    }
 }

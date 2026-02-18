@@ -50,7 +50,7 @@ namespace MoBi.Presentation.Tasks
 
          var extendManager = new ParameterValueBuildingBlockExtendManager(_parameterValuesCreator, _formulaTask, _objectTypeResolver, _context.Context);
          sut = new ParameterValuesTask(_context, _editTasks, _cloneManagerForBuildingBlock,
-            new ImportedQuantityToParameterValueMapper(_parameterValuesCreator), 
+            new ImportedQuantityToParameterValueMapper(_parameterValuesCreator),
             extendManager,
             _formulaTask, new ParameterValuePathTask(A.Fake<IFormulaTask>(), _context.Context),
             _parameterValuesCreator, _objectTypeResolver, A.Fake<IExportDataTableToExcelTask>(), A.Fake<IParameterValuesToParameterValuesDataTableMapper>(), _mapper);
@@ -119,7 +119,7 @@ namespace MoBi.Presentation.Tasks
 
    public class importing_multiple_parameter_values : concern_for_ParameterValuesTask
    {
-      private IList<ImportedQuantityDTO> _parameterValue;
+      private IReadOnlyList<ImportedQuantityDTO> _parameterValue;
       private ParameterValue _firstStartValueRef;
       private IMoBiCommand _result;
 
