@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
@@ -22,56 +20,26 @@ public interface IInitialConditionsTask
    void SetInitialConditions(InitialConditionsBuildingBlock buildingBlock, string[] quantityPaths, string[] dimensionNames, double[] quantityValues, double[] scaleDivisors, bool[] isPresent, bool[] negativeAllowed);
 }
 
-public class InitialConditionsTask : IInitialConditionsTask
+public class InitialConditionsTask : PathAndValuesTask<InitialConditionsBuildingBlock, InitialCondition>, IInitialConditionsTask
 {
-   private readonly IMoBiContext _context;
-   private readonly IObjectTypeResolver _objectTypeResolver;
    private readonly IInitialConditionsBuildingBlockExtendManager _extendManager;
 
-   public InitialConditionsTask(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IInitialConditionsBuildingBlockExtendManager extendManager)
+   public InitialConditionsTask(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IInitialConditionsBuildingBlockExtendManager extendManager) : base(context, objectTypeResolver, extendManager)
    {
-      _context = context;
-      _objectTypeResolver = objectTypeResolver;
       _extendManager = extendManager;
    }
 
-   public void DeleteInitialConditions(InitialConditionsBuildingBlock buildingBlock, string[] pathsToDelete)
-   {
-      var initialConditionsToDelete = pathsToDelete.Select(buildingBlock.FindByPath).Where(x => x != null).ToList();
-      var macroCommand = new MoBiMacroCommand
-      {
-         Description = AppConstants.Commands.RemoveMultipleInitialConditions,
-         CommandType = AppConstants.Commands.DeleteCommand,
-         ObjectType = _objectTypeResolver.TypeFor<InitialCondition>()
-      };
+   public void DeleteInitialConditions(InitialConditionsBuildingBlock buildingBlock, string[] pathsToDelete) => Delete(buildingBlock, pathsToDelete);
 
-      macroCommand.AddRange(initialConditionsToDelete.Select(ic => new RemoveInitialConditionFromBuildingBlockCommand(buildingBlock, ic.Path)));
-
-      _context.AddToHistory(macroCommand.RunCommand(_context));
-   }
-
-   public void ExtendInitialConditions(InitialConditionsBuildingBlock buildingBlock, MoBiSpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock, string[] moleculeNames)
-   {
-      IReadOnlyList<MoleculeBuilder> molecules;
-      if (moleculeNames == null || !moleculeNames.Any())
-         molecules = moleculeBuildingBlock.All().ToList();
-      else
-         molecules = moleculeBuildingBlock.Where(x => moleculeNames.Contains(x.Name)).ToList();
-
-      _context.AddToHistory(_extendManager.ExtendPathAndValueEntitiesBasedOnUsedTemplates(spatialStructure, molecules, buildingBlock));
-   }
+   public void ExtendInitialConditions(InitialConditionsBuildingBlock buildingBlock, MoBiSpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock, string[] moleculeNames) => 
+      Extend(buildingBlock, spatialStructure, moleculeBuildingBlock, moleculeNames);
 
    public void SetInitialConditions(InitialConditionsBuildingBlock buildingBlock, string[] quantityPaths, string[] dimensionNames, double[] quantityValues, double[] scaleDivisors, bool[] isPresent, bool[] negativeAllowed)
    {
-      if (!arrayLengthsAreConsistent(quantityPaths, dimensionNames, quantityValues, scaleDivisors, isPresent, negativeAllowed))
+      if (!ArrayLengthsAreConsistent(quantityPaths, dimensionNames, quantityValues, scaleDivisors, isPresent, negativeAllowed))
          throw new ArgumentException(AppConstants.Exceptions.AllArraysMustHaveTheSameLength);
 
-      var macroCommand = new MoBiMacroCommand
-      {
-         CommandType = AppConstants.Commands.ExtendCommand,
-         Description = AppConstants.Commands.ExtendDescription,
-         ObjectType = _objectTypeResolver.TypeFor<InitialConditionsBuildingBlock>()
-      };
+      var macroCommand = MacroCommandForUpdateAndInsert();
 
       quantityPaths.Each((quantityPath, i) => macroCommand.Add(_extendManager.MergeWithUpdate(buildingBlock,
          new InitialConditionPropertiesForMerge
@@ -87,8 +55,6 @@ public class InitialConditionsTask : IInitialConditionsTask
       _context.AddToHistory(macroCommand.RunCommand(_context));
    }
 
-   private static bool arrayLengthsAreConsistent(params Array[] arrays)
-   {
-      return arrays.All(x => x.Length == arrays[0].Length);
-   }
+   protected override IMoBiCommand RemoveCommandFor(InitialConditionsBuildingBlock buildingBlock, ObjectPath path) => 
+      new RemoveInitialConditionFromBuildingBlockCommand(buildingBlock, path);
 }
