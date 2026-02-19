@@ -363,10 +363,10 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_not_throw()
+      public void should_not_add_the_building_block_to_a_module_tree_node()
       {
-         // No exception should be thrown when the parent is not a Module (e.g., during SBML import)
-         true.ShouldBeTrue();
+         // No node should be added for the building block when the parent is not a Module (e.g., during SBML import)
+         A.CallTo(() => _view.AddNode(A<ITreeNode>.That.Matches(x => x.TagAsObject.Equals(_addedObject)))).MustNotHaveHappened();
       }
    }
 

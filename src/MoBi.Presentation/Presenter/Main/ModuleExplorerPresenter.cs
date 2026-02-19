@@ -407,8 +407,6 @@ namespace MoBi.Presentation.Presenter.Main
 
       private void refreshModuleIcon(Module module)
       {
-         if (module == null)
-            return;
          var node = _view.NodeById(module.Id);
          if (node == null)
             return;
