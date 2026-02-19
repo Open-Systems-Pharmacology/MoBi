@@ -40,7 +40,7 @@ public class ParameterValueBuildingBlockExtendManager : ExtendPathAndValuesManag
 
       var dimension = _dimensionFactory.Dimension(dimensionName);
 
-      var initialCondition = _parameterValuesCreator.CreateParameterValue(
+      var parameterValue = _parameterValuesCreator.CreateParameterValue(
          objectPath,
          valueInBaseUnit,
          dimension,
@@ -48,6 +48,6 @@ public class ParameterValueBuildingBlockExtendManager : ExtendPathAndValuesManag
          valueOrigin: null
       );
 
-      return GenerateAddCommand(buildingBlock, initialCondition);
+      return GenerateAddCommand(buildingBlock, parameterValue);
    }
 }

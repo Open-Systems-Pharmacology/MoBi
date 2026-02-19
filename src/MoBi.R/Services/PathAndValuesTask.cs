@@ -29,6 +29,9 @@ public abstract class PathAndValuesTask<TBuildingBlock, TBuilder> where TBuildin
    protected void Delete(TBuildingBlock buildingBlock, string[] pathsToDelete)
    {
       var foundPaths = pathsToDelete.Where(x => buildingBlock.FindByPath(x) != null).ToList();
+      if (!foundPaths.Any())
+         return;
+
       var macroCommand = new MoBiMacroCommand
       {
          Description = RemoveCommandDescription(),
