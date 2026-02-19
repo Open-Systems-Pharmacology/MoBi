@@ -355,6 +355,21 @@ namespace MoBi.Presentation
       }
    }
 
+   public class When_the_module_explorer_presenter_receives_an_added_building_block_event_with_non_module_parent : When_the_module_explorer_presenter_receives_an_added_event<MoBiReactionBuildingBlock>
+   {
+      protected override void Because()
+      {
+         sut.Handle(new AddedEvent<MoBiReactionBuildingBlock>(_addedObject, _project));
+      }
+
+      [Observation]
+      public void should_not_throw()
+      {
+         // No exception should be thrown when the parent is not a Module (e.g., during SBML import)
+         true.ShouldBeTrue();
+      }
+   }
+
    public class When_the_module_explorer_presenter_is_adding_the_project_to_the_tree_without_initial_conditions : concern_for_ModuleExplorerPresenter
    {
       private List<ITreeNode> _allNodesAdded;
