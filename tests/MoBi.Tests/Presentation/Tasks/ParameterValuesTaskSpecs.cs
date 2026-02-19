@@ -36,10 +36,12 @@ namespace MoBi.Presentation.Tasks
       private IObjectTypeResolver _objectTypeResolver;
       private IPathAndValueEntityToDistributedParameterMapper _mapper;
       private IMoBiFormulaTask _formulaTask;
+      private IDimensionFactory _dimensionFactory;
 
       protected override void Context()
       {
          _context = A.Fake<IInteractionTaskContext>();
+         _dimensionFactory = A.Fake<IDimensionFactory>();
          _editTasks = A.Fake<IEditTasksForBuildingBlock<ParameterValuesBuildingBlock>>();
          _parameterValuesCreator = A.Fake<IParameterValuesCreator>();
          _cloneManagerForBuildingBlock = A.Fake<ICloneManagerForBuildingBlock>();
@@ -48,7 +50,7 @@ namespace MoBi.Presentation.Tasks
          _mapper = A.Fake<IPathAndValueEntityToDistributedParameterMapper>();
          _formulaTask = A.Fake<IMoBiFormulaTask>();
 
-         var extendManager = new ParameterValueBuildingBlockExtendManager(_parameterValuesCreator, _formulaTask, _objectTypeResolver, _context.Context);
+         var extendManager = new ParameterValueBuildingBlockExtendManager(_parameterValuesCreator, _formulaTask, _objectTypeResolver, _context.Context, _dimensionFactory);
          sut = new ParameterValuesTask(_context, _editTasks, _cloneManagerForBuildingBlock,
             new ImportedQuantityToParameterValueMapper(_parameterValuesCreator),
             extendManager,

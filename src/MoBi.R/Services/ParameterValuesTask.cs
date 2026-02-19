@@ -1,20 +1,54 @@
-﻿using System.Linq;
+﻿using MoBi.Assets;
+using MoBi.Core.Commands;
+using MoBi.Core.Domain.Model;
+using MoBi.Core.Extensions;
+using MoBi.Core.Services;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Extensions;
+using System;
+using static MoBi.Assets.AppConstants;
 
-namespace MoBi.R.Services
+namespace MoBi.R.Services;
+
+public interface IParameterValuesTask
 {
-   public interface IParameterValuesTask
+   void SetParameterValue(ParameterValuesBuildingBlock buildingBlock, string[] quantityPaths, double[] quantityValues, string[] dimensionNames);
+
+   void DeleteParameterValues(ParameterValuesBuildingBlock buildingBlock, string[] pathsToDelete);
+
+   void AddLocalMoleculeParameters(ParameterValuesBuildingBlock buildingBlock, MoBiSpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock, string[] moleculeNames);
+}
+
+public class ParameterValuesTask : PathAndValuesTask<ParameterValuesBuildingBlock, ParameterValue>, IParameterValuesTask
+{
+   private readonly IParameterValueBuildingBlockExtendManager _extendManager;
+
+   public ParameterValuesTask(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IParameterValueBuildingBlockExtendManager extendManager) : base(context, objectTypeResolver, extendManager)
    {
-      void SetParameterValue(ParameterValuesBuildingBlock pvBB, string fullPath, double newValue);
+      _extendManager = extendManager;
    }
 
-   public class ParameterValuesTask : IParameterValuesTask
+   public void SetParameterValue(ParameterValuesBuildingBlock buildingBlock, string[] quantityPaths, double[] quantityValues, string[] dimensionNames)
    {
-      public void SetParameterValue(ParameterValuesBuildingBlock pvBB, string fullPath,  double newValue)
-      {
-         var parameter = pvBB.FirstOrDefault(p => p.Path == fullPath);
-         if (parameter != null)
-            parameter.Value = newValue;
-      }
+      if (!ArrayLengthsAreConsistent(quantityPaths, dimensionNames, quantityValues))
+         throw new ArgumentException(Exceptions.AllArraysMustHaveTheSameLength);
+
+      var macroCommand = MacroCommandForUpdateAndInsert();
+
+      quantityPaths.Each((quantityPath, i) => macroCommand.Add(_extendManager.MergeWithUpdate(buildingBlock, quantityPath.ToObjectPath(), quantityValues[i], dimensionNames[i])));
+
+      _context.AddToHistory(macroCommand.RunCommand(_context));
    }
+
+   public void DeleteParameterValues(ParameterValuesBuildingBlock buildingBlock, string[] pathsToDelete) => Delete(buildingBlock, pathsToDelete);
+
+   public void AddLocalMoleculeParameters(ParameterValuesBuildingBlock buildingBlock, MoBiSpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock, string[] moleculeNames) => 
+      Extend(buildingBlock, spatialStructure, moleculeBuildingBlock, moleculeNames);
+
+   protected override string RemoveCommandDescription() => Commands.RemoveManyParameterValues;
+
+   protected override IMoBiCommand RemoveCommandFor(ParameterValuesBuildingBlock buildingBlock, ObjectPath path) => 
+      new RemoveParameterValueFromBuildingBlockCommand(buildingBlock, path);
 }
