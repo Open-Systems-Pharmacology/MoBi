@@ -55,6 +55,11 @@ public class InitialConditionsTask : PathAndValuesTask<InitialConditionsBuilding
       _context.AddToHistory(macroCommand.RunCommand(_context));
    }
 
+   protected override string RemoveCommandDescription()
+   {
+      return AppConstants.Commands.RemoveMultipleInitialConditions;
+   }
+
    protected override IMoBiCommand RemoveCommandFor(InitialConditionsBuildingBlock buildingBlock, ObjectPath path) => 
       new RemoveInitialConditionFromBuildingBlockCommand(buildingBlock, path);
 }

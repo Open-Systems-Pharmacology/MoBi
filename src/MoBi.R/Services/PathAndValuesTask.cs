@@ -15,7 +15,7 @@ namespace MoBi.R.Services;
 
 public abstract class PathAndValuesTask<TBuildingBlock, TBuilder> where TBuildingBlock : PathAndValueEntityBuildingBlock<TBuilder> where TBuilder : PathAndValueEntity
 {
-   protected readonly IObjectTypeResolver _objectTypeResolver;
+   private readonly IObjectTypeResolver _objectTypeResolver;
    private readonly IExtendPathAndValuesManager<TBuilder> _extendManager;
    protected readonly IMoBiContext _context;
 
@@ -31,7 +31,7 @@ public abstract class PathAndValuesTask<TBuildingBlock, TBuilder> where TBuildin
       var foundPaths = pathsToDelete.Where(x => buildingBlock.FindByPath(x) != null).ToList();
       var macroCommand = new MoBiMacroCommand
       {
-         Description = AppConstants.Commands.RemoveMultipleInitialConditions,
+         Description = RemoveCommandDescription(),
          CommandType = AppConstants.Commands.DeleteCommand,
          ObjectType = _objectTypeResolver.TypeFor<TBuilder>()
       };
@@ -40,6 +40,8 @@ public abstract class PathAndValuesTask<TBuildingBlock, TBuilder> where TBuildin
 
       _context.AddToHistory(macroCommand.RunCommand(_context));
    }
+
+   protected abstract string RemoveCommandDescription();
 
    protected void Extend(TBuildingBlock buildingBlock, MoBiSpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock, string[] moleculeNames)
    {

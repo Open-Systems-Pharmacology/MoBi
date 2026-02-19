@@ -1,4 +1,4 @@
-﻿using System;
+﻿using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Extensions;
@@ -7,6 +7,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
+using System;
 using static MoBi.Assets.AppConstants;
 
 namespace MoBi.R.Services;
@@ -45,6 +46,8 @@ public class ParameterValuesTask : PathAndValuesTask<ParameterValuesBuildingBloc
 
    public void AddLocalMoleculeParameters(ParameterValuesBuildingBlock buildingBlock, MoBiSpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock, string[] moleculeNames) => 
       Extend(buildingBlock, spatialStructure, moleculeBuildingBlock, moleculeNames);
+
+   protected override string RemoveCommandDescription() => Commands.RemoveManyParameterValues;
 
    protected override IMoBiCommand RemoveCommandFor(ParameterValuesBuildingBlock buildingBlock, ObjectPath path) => 
       new RemoveParameterValueFromBuildingBlockCommand(buildingBlock, path);

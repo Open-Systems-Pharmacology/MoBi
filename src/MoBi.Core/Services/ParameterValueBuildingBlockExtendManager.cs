@@ -2,7 +2,6 @@
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
@@ -12,7 +11,7 @@ namespace MoBi.Core.Services;
 
 public interface IParameterValueBuildingBlockExtendManager : IExtendPathAndValuesManager<ParameterValue>
 {
-   ICommand MergeWithUpdate(ParameterValuesBuildingBlock buildingBlock, ObjectPath objectPath, double valueInBaseUnit, string dimensionName);
+   IMoBiCommand MergeWithUpdate(ParameterValuesBuildingBlock buildingBlock, ObjectPath objectPath, double valueInBaseUnit, string dimensionName);
 }
 
 public class ParameterValueBuildingBlockExtendManager : ExtendPathAndValuesManager<ParameterValue>, IParameterValueBuildingBlockExtendManager
@@ -33,7 +32,7 @@ public class ParameterValueBuildingBlockExtendManager : ExtendPathAndValuesManag
 
    public override IMoBiCommand GenerateAddCommand(ILookupBuildingBlock<ParameterValue> targetBuildingBlock, ParameterValue startValueToAdd) => new AddParameterValueToBuildingBlockCommand(targetBuildingBlock, startValueToAdd);
 
-   public ICommand MergeWithUpdate(ParameterValuesBuildingBlock buildingBlock, ObjectPath objectPath, double valueInBaseUnit, string dimensionName)
+   public IMoBiCommand MergeWithUpdate(ParameterValuesBuildingBlock buildingBlock, ObjectPath objectPath, double valueInBaseUnit, string dimensionName)
    {
       var pathAndValueEntity = buildingBlock[objectPath];
       if (pathAndValueEntity != null)
