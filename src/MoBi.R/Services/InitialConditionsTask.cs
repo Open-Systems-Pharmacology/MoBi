@@ -11,13 +11,21 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.R.Services;
 
-public interface IInitialConditionsTask
+public interface IInitialConditionsTask : IPathAndValuesTask<InitialConditionsBuildingBlock, InitialCondition>
 {
    void DeleteInitialConditions(InitialConditionsBuildingBlock buildingBlock, string[] pathsToDelete);
 
    void ExtendInitialConditions(InitialConditionsBuildingBlock buildingBlock, MoBiSpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock, string[] moleculeNames);
 
    void SetInitialConditions(InitialConditionsBuildingBlock buildingBlock, string[] quantityPaths, string[] dimensionNames, double[] quantityValues, double[] scaleDivisors, bool[] isPresent, bool[] negativeAllowed);
+
+   string[] AllMoleculeNamesFrom(InitialConditionsBuildingBlock buildingBlock, string[] paths);
+
+   double[] AllScaleDivisorsFrom(InitialConditionsBuildingBlock buildingBlock, string[] paths);
+
+   bool[] AllIsPresentFrom(InitialConditionsBuildingBlock buildingBlock, string[] paths);
+
+   bool[] AllNegativeValuesAllowedFrom(InitialConditionsBuildingBlock buildingBlock, string[] paths);
 }
 
 public class InitialConditionsTask : PathAndValuesTask<InitialConditionsBuildingBlock, InitialCondition>, IInitialConditionsTask
@@ -31,7 +39,7 @@ public class InitialConditionsTask : PathAndValuesTask<InitialConditionsBuilding
 
    public void DeleteInitialConditions(InitialConditionsBuildingBlock buildingBlock, string[] pathsToDelete) => Delete(buildingBlock, pathsToDelete);
 
-   public void ExtendInitialConditions(InitialConditionsBuildingBlock buildingBlock, MoBiSpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock, string[] moleculeNames) => 
+   public void ExtendInitialConditions(InitialConditionsBuildingBlock buildingBlock, MoBiSpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock, string[] moleculeNames) =>
       Extend(buildingBlock, spatialStructure, moleculeBuildingBlock, moleculeNames);
 
    public void SetInitialConditions(InitialConditionsBuildingBlock buildingBlock, string[] quantityPaths, string[] dimensionNames, double[] quantityValues, double[] scaleDivisors, bool[] isPresent, bool[] negativeAllowed)
@@ -55,11 +63,16 @@ public class InitialConditionsTask : PathAndValuesTask<InitialConditionsBuilding
       _context.AddToHistory(macroCommand.RunCommand(_context));
    }
 
-   protected override string RemoveCommandDescription()
-   {
-      return AppConstants.Commands.RemoveMultipleInitialConditions;
-   }
+   public string[] AllMoleculeNamesFrom(InitialConditionsBuildingBlock buildingBlock, string[] paths) => AllFrom(buildingBlock, paths, x => x.MoleculeName);
 
-   protected override IMoBiCommand RemoveCommandFor(InitialConditionsBuildingBlock buildingBlock, ObjectPath path) => 
+   public double[] AllScaleDivisorsFrom(InitialConditionsBuildingBlock buildingBlock, string[] paths) => AllFrom(buildingBlock, paths, x => x.ScaleDivisor);
+
+   public bool[] AllIsPresentFrom(InitialConditionsBuildingBlock buildingBlock, string[] paths) => AllFrom(buildingBlock, paths, x => x.IsPresent);
+
+   public bool[] AllNegativeValuesAllowedFrom(InitialConditionsBuildingBlock buildingBlock, string[] paths) => AllFrom(buildingBlock, paths, x => x.NegativeValuesAllowed);
+
+   protected override string RemoveCommandDescription() => AppConstants.Commands.RemoveMultipleInitialConditions;
+
+   protected override IMoBiCommand RemoveCommandFor(InitialConditionsBuildingBlock buildingBlock, ObjectPath path) =>
       new RemoveInitialConditionFromBuildingBlockCommand(buildingBlock, path);
 }

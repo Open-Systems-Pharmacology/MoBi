@@ -13,7 +13,14 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.R.Services;
 
-public abstract class PathAndValuesTask<TBuildingBlock, TBuilder> where TBuildingBlock : PathAndValueEntityBuildingBlock<TBuilder> where TBuilder : PathAndValueEntity
+public interface IPathAndValuesTask<TBuildingBlock, TBuilder> where TBuildingBlock : PathAndValueEntityBuildingBlock<TBuilder> where TBuilder : PathAndValueEntity
+{
+   string[] AllPathsFrom(TBuildingBlock buildingBlock);
+   double[] AllValuesFrom(TBuildingBlock buildingBlock, string[] paths);
+   string[] AllDimensionsFrom(TBuildingBlock buildingBlock, string[] paths);
+}
+
+public abstract class PathAndValuesTask<TBuildingBlock, TBuilder>: IPathAndValuesTask<TBuildingBlock, TBuilder> where TBuildingBlock : PathAndValueEntityBuildingBlock<TBuilder> where TBuilder : PathAndValueEntity
 {
    private readonly IObjectTypeResolver _objectTypeResolver;
    private readonly IExtendPathAndValuesManager<TBuilder> _extendManager;
@@ -76,4 +83,30 @@ public abstract class PathAndValuesTask<TBuildingBlock, TBuilder> where TBuildin
          ObjectType = _objectTypeResolver.TypeFor<TBuildingBlock>()
       };
    }
+
+   protected T[] AllFrom<T>(TBuildingBlock buildingBlock, string[] paths, Func<TBuilder, T> selector)
+   {
+      if (paths != null && paths.Length != 0)
+      {
+         if(paths.Distinct().Count() != paths.Length)
+            throw new ArgumentException(AppConstants.Exceptions.DuplicatePathsInInput(paths.Length, paths.Distinct().Count()));
+
+         var entities = buildingBlock.Where(x => paths.Contains(x.Path)).ToList();
+
+         if (entities.Count != paths.Length)
+            throw new ArgumentException(AppConstants.Exceptions.NotAllPathsFoundInBuildingBlock(paths.Length, entities.Count));
+
+         return entities.Select(selector).ToArray();
+      }
+
+      return buildingBlock.Select(selector).ToArray();
+
+
+   }
+
+   public string[] AllPathsFrom(TBuildingBlock buildingBlock) => AllFrom(buildingBlock, paths:null, x => x.Path.PathAsString);
+
+   public double[] AllValuesFrom(TBuildingBlock buildingBlock, string[] paths) => AllFrom(buildingBlock, paths, x => x.Value ?? double.NaN);
+
+   public string[] AllDimensionsFrom(TBuildingBlock buildingBlock, string[] paths) => AllFrom(buildingBlock, paths, x => x.Dimension.Name);
 }

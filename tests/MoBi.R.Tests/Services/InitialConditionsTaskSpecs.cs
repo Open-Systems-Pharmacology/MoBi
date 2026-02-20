@@ -892,3 +892,633 @@ internal class When_setting_initial_conditions_with_mix_of_existing_and_new : co
       _buildingBlock.Count().ShouldBeEqualTo(3);
    }
 }
+
+internal class When_getting_all_molecule_names_from_building_block : concern_for_InitialConditionsTask
+{
+   private InitialConditionsBuildingBlock _buildingBlock;
+   private string[] _result;
+
+   protected override void Context()
+   {
+      base.Context();
+      _buildingBlock = new InitialConditionsBuildingBlock().WithName("IC Building Block");
+      _buildingBlock.Add(new InitialCondition
+      {
+         Path = new ObjectPath("Path1", "Container1", "Molecule1"),
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+      _buildingBlock.Add(new InitialCondition
+      {
+         Path = new ObjectPath("Path2", "Container2", "Molecule2"),
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+      _buildingBlock.Add(new InitialCondition
+      {
+         Path = new ObjectPath("Path3", "Container3", "Molecule3"),
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+   }
+
+   protected override void Because()
+   {
+      _result = sut.AllMoleculeNamesFrom(_buildingBlock, null);
+   }
+
+   [Observation]
+   public void should_return_all_molecule_names()
+   {
+      _result.Length.ShouldBeEqualTo(3);
+      _result.ShouldOnlyContainInOrder("Molecule1", "Molecule2", "Molecule3");
+   }
+}
+
+internal class When_getting_molecule_names_for_specified_paths : concern_for_InitialConditionsTask
+{
+   private InitialConditionsBuildingBlock _buildingBlock;
+   private string[] _result;
+
+   protected override void Context()
+   {
+      base.Context();
+      _buildingBlock = new InitialConditionsBuildingBlock().WithName("IC Building Block");
+      _buildingBlock.Add(new InitialCondition
+      {
+         Path = new ObjectPath("Path1", "Container1", "Molecule1"),
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+      _buildingBlock.Add(new InitialCondition
+      {
+         Path = new ObjectPath("Path2", "Container2", "Molecule2"),
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+      _buildingBlock.Add(new InitialCondition
+      {
+         Path = new ObjectPath("Path3", "Container3", "Molecule3"),
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+   }
+
+   protected override void Because()
+   {
+      _result = sut.AllMoleculeNamesFrom(_buildingBlock, ["Path1|Container1|Molecule1", "Path3|Container3|Molecule3"]);
+   }
+
+   [Observation]
+   public void should_return_molecule_names_for_specified_paths_in_order()
+   {
+      _result.Length.ShouldBeEqualTo(2);
+      _result[0].ShouldBeEqualTo("Molecule1");
+      _result[1].ShouldBeEqualTo("Molecule3");
+   }
+}
+
+internal class When_getting_molecule_names_with_duplicate_paths : concern_for_InitialConditionsTask
+{
+   private InitialConditionsBuildingBlock _buildingBlock;
+
+   protected override void Context()
+   {
+      base.Context();
+      _buildingBlock = new InitialConditionsBuildingBlock().WithName("IC Building Block");
+      _buildingBlock.Add(new InitialCondition
+      {
+         Path = new ObjectPath("Path1", "Container1", "Molecule1"),
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+   }
+
+   [Observation]
+   public void should_throw_argument_exception()
+   {
+      The.Action(() => sut.AllMoleculeNamesFrom(_buildingBlock, ["Path1|Container1|Molecule1", "Path1|Container1|Molecule1"]))
+         .ShouldThrowAn<ArgumentException>();
+   }
+}
+
+internal class When_getting_molecule_names_with_non_existent_paths : concern_for_InitialConditionsTask
+{
+   private InitialConditionsBuildingBlock _buildingBlock;
+
+   protected override void Context()
+   {
+      base.Context();
+      _buildingBlock = new InitialConditionsBuildingBlock().WithName("IC Building Block");
+      _buildingBlock.Add(new InitialCondition
+      {
+         Path = new ObjectPath("Path1", "Container1", "Molecule1"),
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+   }
+
+   [Observation]
+   public void should_throw_argument_exception()
+   {
+      The.Action(() => sut.AllMoleculeNamesFrom(_buildingBlock, ["Path1|Container1|Molecule1", "NonExistent|Path"]))
+         .ShouldThrowAn<ArgumentException>();
+   }
+}
+
+internal class When_getting_all_scale_divisors_from_building_block : concern_for_InitialConditionsTask
+{
+   private InitialConditionsBuildingBlock _buildingBlock;
+   private double[] _result;
+
+   protected override void Context()
+   {
+      base.Context();
+      _buildingBlock = new InitialConditionsBuildingBlock().WithName("IC Building Block");
+      _buildingBlock.Add(new InitialCondition
+      {
+         Path = new ObjectPath("Path1", "Container1", "Molecule1"),
+         ScaleDivisor = 1.5,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+      _buildingBlock.Add(new InitialCondition
+      {
+         Path = new ObjectPath("Path2", "Container2", "Molecule2"),
+         ScaleDivisor = 2.5,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+      _buildingBlock.Add(new InitialCondition
+      {
+         Path = new ObjectPath("Path3", "Container3", "Molecule3"),
+         ScaleDivisor = 3.75,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+   }
+
+   protected override void Because()
+   {
+      _result = sut.AllScaleDivisorsFrom(_buildingBlock, null);
+   }
+
+   [Observation]
+   public void should_return_all_scale_divisors()
+   {
+      _result.Length.ShouldBeEqualTo(3);
+      _result.ShouldContain(1.5);
+      _result.ShouldContain(2.5);
+      _result.ShouldContain(3.75);
+   }
+}
+
+internal class When_getting_scale_divisors_for_specified_paths : concern_for_InitialConditionsTask
+{
+   private InitialConditionsBuildingBlock _buildingBlock;
+   private double[] _result;
+
+   protected override void Context()
+   {
+      base.Context();
+      _buildingBlock = new InitialConditionsBuildingBlock().WithName("IC Building Block");
+      _buildingBlock.Add(new InitialCondition
+      {
+         Path = new ObjectPath("Path1", "Container1", "Molecule1"),
+         ScaleDivisor = 1.5,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+
+      _buildingBlock.Add(new InitialCondition
+      {
+         Path = new ObjectPath("Path2", "Container2", "Molecule2"),
+         ScaleDivisor = 2.5,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+
+      _buildingBlock.Add(new InitialCondition
+      {
+         Path = new ObjectPath("Path3", "Container3", "Molecule3"),
+         ScaleDivisor = 3.75,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+   }
+
+   protected override void Because()
+   {
+      _result = sut.AllScaleDivisorsFrom(_buildingBlock, ["Path2|Container2|Molecule2", "Path3|Container3|Molecule3"]);
+   }
+
+   [Observation]
+   public void should_return_scale_divisors_for_specified_paths_in_order()
+   {
+      _result.Length.ShouldBeEqualTo(2);
+      _result[0].ShouldBeEqualTo(2.5);
+      _result[1].ShouldBeEqualTo(3.75);
+   }
+}
+
+internal class When_getting_scale_divisors_with_duplicate_paths : concern_for_InitialConditionsTask
+{
+   private InitialConditionsBuildingBlock _buildingBlock;
+
+   protected override void Context()
+   {
+      base.Context();
+      _buildingBlock = new InitialConditionsBuildingBlock().WithName("IC Building Block");
+      _buildingBlock.Add(new InitialCondition
+      {
+         Path = new ObjectPath("Path1", "Container1", "Molecule1"),
+         ScaleDivisor = 1.5,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+   }
+
+   [Observation]
+   public void should_throw_argument_exception()
+   {
+      The.Action(() => sut.AllScaleDivisorsFrom(_buildingBlock, ["Path1|Container1|Molecule1", "Path1|Container1|Molecule1"]))
+         .ShouldThrowAn<ArgumentException>();
+   }
+}
+
+internal class When_getting_scale_divisors_with_non_existent_paths : concern_for_InitialConditionsTask
+{
+   private InitialConditionsBuildingBlock _buildingBlock;
+
+   protected override void Context()
+   {
+      base.Context();
+      _buildingBlock = new InitialConditionsBuildingBlock().WithName("IC Building Block");
+      _buildingBlock.Add(new InitialCondition
+      {
+         Path = new ObjectPath("Path1", "Container1", "Molecule1"),
+         ScaleDivisor = 1.5,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+   }
+
+   [Observation]
+   public void should_throw_argument_exception()
+   {
+      The.Action(() => sut.AllScaleDivisorsFrom(_buildingBlock, ["Path1|Container1|Molecule1", "NonExistent|Path"]))
+         .ShouldThrowAn<ArgumentException>();
+   }
+}
+
+internal class When_getting_all_is_present_flags_from_building_block : concern_for_InitialConditionsTask
+{
+   private InitialConditionsBuildingBlock _buildingBlock;
+   private bool[] _result;
+
+   protected override void Context()
+   {
+      base.Context();
+      _buildingBlock = new InitialConditionsBuildingBlock().WithName("IC Building Block");
+      _buildingBlock.Add(new InitialCondition
+      {
+         Path = new ObjectPath("Path1", "Container1", "Molecule1"),
+         IsPresent = true,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+
+      _buildingBlock.Add(new InitialCondition
+      {
+         Path = new ObjectPath("Path2", "Container2", "Molecule2"),
+         IsPresent = false,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+
+      _buildingBlock.Add(new InitialCondition
+      {
+         Path = new ObjectPath("Path3", "Container3", "Molecule3"),
+         IsPresent = true,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+   }
+
+   protected override void Because()
+   {
+      _result = sut.AllIsPresentFrom(_buildingBlock, null);
+   }
+
+   [Observation]
+   public void should_return_all_is_present_flags()
+   {
+      _result.Length.ShouldBeEqualTo(3);
+      _result.Count(x => x).ShouldBeEqualTo(2);
+      _result.Count(x => !x).ShouldBeEqualTo(1);
+   }
+}
+
+internal class When_getting_is_present_flags_for_specified_paths : concern_for_InitialConditionsTask
+{
+   private InitialConditionsBuildingBlock _buildingBlock;
+   private bool[] _result;
+
+   protected override void Context()
+   {
+      base.Context();
+      _buildingBlock = new InitialConditionsBuildingBlock().WithName("IC Building Block");
+      _buildingBlock.Add(new InitialCondition
+      {
+         Path = new ObjectPath("Path1", "Container1", "Molecule1"),
+         IsPresent = true,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+
+      _buildingBlock.Add(new InitialCondition
+      {
+         Path = new ObjectPath("Path2", "Container2", "Molecule2"),
+         IsPresent = false,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+
+      _buildingBlock.Add(new InitialCondition
+      {
+         Path = new ObjectPath("Path3", "Container3", "Molecule3"),
+         IsPresent = true,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+   }
+
+   protected override void Because()
+   {
+      _result = sut.AllIsPresentFrom(_buildingBlock, ["Path1|Container1|Molecule1", "Path2|Container2|Molecule2"]);
+   }
+
+   [Observation]
+   public void should_return_is_present_flags_for_specified_paths_in_order()
+   {
+      _result.Length.ShouldBeEqualTo(2);
+      _result[0].ShouldBeTrue();
+      _result[1].ShouldBeFalse();
+   }
+}
+
+internal class When_getting_is_present_flags_with_duplicate_paths : concern_for_InitialConditionsTask
+{
+   private InitialConditionsBuildingBlock _buildingBlock;
+
+   protected override void Context()
+   {
+      base.Context();
+      _buildingBlock = new InitialConditionsBuildingBlock().WithName("IC Building Block");
+      _buildingBlock.Add(new InitialCondition
+      {
+         Path = new ObjectPath("Path1", "Container1", "Molecule1"),
+         IsPresent = true,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+   }
+
+   [Observation]
+   public void should_throw_argument_exception()
+   {
+      The.Action(() => sut.AllIsPresentFrom(_buildingBlock, ["Path1|Container1|Molecule1", "Path1|Container1|Molecule1"]))
+         .ShouldThrowAn<ArgumentException>();
+   }
+}
+
+internal class When_getting_is_present_flags_with_non_existent_paths : concern_for_InitialConditionsTask
+{
+   private InitialConditionsBuildingBlock _buildingBlock;
+
+   protected override void Context()
+   {
+      base.Context();
+      _buildingBlock = new InitialConditionsBuildingBlock().WithName("IC Building Block");
+      _buildingBlock.Add(new InitialCondition
+      {
+         Path = new ObjectPath("Path1", "Container1", "Molecule1"),
+         IsPresent = true,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+   }
+
+   [Observation]
+   public void should_throw_argument_exception()
+   {
+      The.Action(() => sut.AllIsPresentFrom(_buildingBlock, ["Path1|Container1|Molecule1", "NonExistent|Path"]))
+         .ShouldThrowAn<ArgumentException>();
+   }
+}
+
+internal class When_getting_all_negative_values_allowed_flags_from_building_block : concern_for_InitialConditionsTask
+{
+   private InitialConditionsBuildingBlock _buildingBlock;
+   private bool[] _result;
+
+   protected override void Context()
+   {
+      base.Context();
+      _buildingBlock = new InitialConditionsBuildingBlock().WithName("IC Building Block");
+      _buildingBlock.Add(new InitialCondition
+      {
+         Path = new ObjectPath("Path1", "Container1", "Molecule1"),
+         NegativeValuesAllowed = false,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+
+      _buildingBlock.Add(new InitialCondition
+      {
+         Path = new ObjectPath("Path2", "Container2", "Molecule2"),
+         NegativeValuesAllowed = true,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+
+      _buildingBlock.Add(new InitialCondition
+      {
+         Path = new ObjectPath("Path3", "Container3", "Molecule3"),
+         NegativeValuesAllowed = false,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+   }
+
+   protected override void Because()
+   {
+      _result = sut.AllNegativeValuesAllowedFrom(_buildingBlock, null);
+   }
+
+   [Observation]
+   public void should_return_all_negative_values_allowed_flags()
+   {
+      _result.Length.ShouldBeEqualTo(3);
+      _result.Count(x => x).ShouldBeEqualTo(1);
+      _result.Count(x => !x).ShouldBeEqualTo(2);
+   }
+}
+
+internal class When_getting_negative_values_allowed_flags_for_specified_paths : concern_for_InitialConditionsTask
+{
+   private InitialConditionsBuildingBlock _buildingBlock;
+   private bool[] _result;
+
+   protected override void Context()
+   {
+      base.Context();
+      _buildingBlock = new InitialConditionsBuildingBlock().WithName("IC Building Block");
+      _buildingBlock.Add(new InitialCondition
+      {
+         Path = new ObjectPath("Path1", "Container1", "Molecule1"),
+         NegativeValuesAllowed = false,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+
+      _buildingBlock.Add(new InitialCondition
+      {
+         Path = new ObjectPath("Path2", "Container2", "Molecule2"),
+         NegativeValuesAllowed = true,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+
+      _buildingBlock.Add(new InitialCondition
+      {
+         Path = new ObjectPath("Path3", "Container3", "Molecule3"),
+         NegativeValuesAllowed = false,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+   }
+
+   protected override void Because()
+   {
+      _result = sut.AllNegativeValuesAllowedFrom(_buildingBlock, ["Path2|Container2|Molecule2", "Path3|Container3|Molecule3"]);
+   }
+
+   [Observation]
+   public void should_return_negative_values_allowed_flags_for_specified_paths_in_order()
+   {
+      _result.Length.ShouldBeEqualTo(2);
+      _result[0].ShouldBeTrue();
+      _result[1].ShouldBeFalse();
+   }
+}
+
+internal class When_getting_negative_values_allowed_flags_with_duplicate_paths : concern_for_InitialConditionsTask
+{
+   private InitialConditionsBuildingBlock _buildingBlock;
+
+   protected override void Context()
+   {
+      base.Context();
+      _buildingBlock = new InitialConditionsBuildingBlock().WithName("IC Building Block");
+      _buildingBlock.Add(new InitialCondition
+      {
+         Path = new ObjectPath("Path1", "Container1", "Molecule1"),
+         NegativeValuesAllowed = true,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+   }
+
+   [Observation]
+   public void should_throw_argument_exception()
+   {
+      The.Action(() => sut.AllNegativeValuesAllowedFrom(_buildingBlock, ["Path1|Container1|Molecule1", "Path1|Container1|Molecule1"]))
+         .ShouldThrowAn<ArgumentException>();
+   }
+}
+
+internal class When_getting_negative_values_allowed_flags_with_non_existent_paths : concern_for_InitialConditionsTask
+{
+   private InitialConditionsBuildingBlock _buildingBlock;
+
+   protected override void Context()
+   {
+      base.Context();
+      _buildingBlock = new InitialConditionsBuildingBlock().WithName("IC Building Block");
+      _buildingBlock.Add(new InitialCondition
+      {
+         Path = new ObjectPath("Path1", "Container1", "Molecule1"),
+         NegativeValuesAllowed = true,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+   }
+
+   [Observation]
+   public void should_throw_argument_exception()
+   {
+      The.Action(() => sut.AllNegativeValuesAllowedFrom(_buildingBlock, ["Path1|Container1|Molecule1", "NonExistent|Path"]))
+         .ShouldThrowAn<ArgumentException>();
+   }
+}
+
+internal class When_getting_molecule_names_from_empty_building_block : concern_for_InitialConditionsTask
+{
+   private InitialConditionsBuildingBlock _buildingBlock;
+   private string[] _result;
+
+   protected override void Context()
+   {
+      base.Context();
+      _buildingBlock = new InitialConditionsBuildingBlock().WithName("IC Building Block");
+   }
+
+   protected override void Because()
+   {
+      _result = sut.AllMoleculeNamesFrom(_buildingBlock, null);
+   }
+
+   [Observation]
+   public void should_return_empty_array()
+   {
+      _result.ShouldBeEmpty();
+   }
+}
+
+internal class When_getting_scale_divisors_from_empty_building_block : concern_for_InitialConditionsTask
+{
+   private InitialConditionsBuildingBlock _buildingBlock;
+   private double[] _result;
+
+   protected override void Context()
+   {
+      base.Context();
+      _buildingBlock = new InitialConditionsBuildingBlock().WithName("IC Building Block");
+   }
+
+   protected override void Because()
+   {
+      _result = sut.AllScaleDivisorsFrom(_buildingBlock, null);
+   }
+
+   [Observation]
+   public void should_return_empty_array()
+   {
+      _result.ShouldBeEmpty();
+   }
+}
+
+internal class When_getting_is_present_flags_from_empty_building_block : concern_for_InitialConditionsTask
+{
+   private InitialConditionsBuildingBlock _buildingBlock;
+   private bool[] _result;
+
+   protected override void Context()
+   {
+      base.Context();
+      _buildingBlock = new InitialConditionsBuildingBlock().WithName("IC Building Block");
+   }
+
+   protected override void Because()
+   {
+      _result = sut.AllIsPresentFrom(_buildingBlock, null);
+   }
+
+   [Observation]
+   public void should_return_empty_array()
+   {
+      _result.ShouldBeEmpty();
+   }
+}
+
+internal class When_getting_negative_values_allowed_flags_from_empty_building_block : concern_for_InitialConditionsTask
+{
+   private InitialConditionsBuildingBlock _buildingBlock;
+   private bool[] _result;
+
+   protected override void Context()
+   {
+      base.Context();
+      _buildingBlock = new InitialConditionsBuildingBlock().WithName("IC Building Block");
+   }
+
+   protected override void Because()
+   {
+      _result = sut.AllNegativeValuesAllowedFrom(_buildingBlock, null);
+   }
+
+   [Observation]
+   public void should_return_empty_array()
+   {
+      _result.ShouldBeEmpty();
+   }
+}

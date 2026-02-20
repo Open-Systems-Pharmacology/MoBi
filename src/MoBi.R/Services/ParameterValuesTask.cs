@@ -1,5 +1,4 @@
-﻿using MoBi.Assets;
-using MoBi.Core.Commands;
+﻿using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Extensions;
 using MoBi.Core.Services;
@@ -12,7 +11,7 @@ using static MoBi.Assets.AppConstants;
 
 namespace MoBi.R.Services;
 
-public interface IParameterValuesTask
+public interface IParameterValuesTask : IPathAndValuesTask<ParameterValuesBuildingBlock, ParameterValue>
 {
    void SetParameterValue(ParameterValuesBuildingBlock buildingBlock, string[] quantityPaths, double[] quantityValues, string[] dimensionNames);
 

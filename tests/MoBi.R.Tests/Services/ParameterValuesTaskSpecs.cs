@@ -7,6 +7,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.R.Tests.Services;
@@ -140,7 +141,7 @@ internal class When_extending_parameter_values_with_all_molecules_for_building_b
          Formula = new ConstantFormula(4.0),
          Name = "parameter"
       };
-      
+
       _molecule1.AddParameter(parameter);
       _moleculeBuildingBlock.Add(_molecule1);
       _moleculeBuildingBlock.Add(_molecule2);
@@ -720,5 +721,343 @@ internal class When_setting_parameter_values_with_mix_of_existing_and_new : conc
    public void should_increase_building_block_count()
    {
       _buildingBlock.Count().ShouldBeEqualTo(3);
+   }
+}
+
+internal class When_getting_all_paths_from_building_block : concern_for_ParameterValuesTask
+{
+   private ParameterValuesBuildingBlock _buildingBlock;
+   private string[] _result;
+
+   protected override void Context()
+   {
+      base.Context();
+      _buildingBlock = new ParameterValuesBuildingBlock().WithName("PV Building Block");
+      _buildingBlock.Add(new ParameterValue { Path = new ObjectPath("Path1", "Container1", "Parameter1") });
+      _buildingBlock.Add(new ParameterValue { Path = new ObjectPath("Path2", "Container2", "Parameter2") });
+      _buildingBlock.Add(new ParameterValue { Path = new ObjectPath("Path3", "Container3", "Parameter3") });
+   }
+
+   protected override void Because()
+   {
+      _result = sut.AllPathsFrom(_buildingBlock);
+   }
+
+   [Observation]
+   public void should_return_all_paths()
+   {
+      _result.Length.ShouldBeEqualTo(3);
+      _result.ShouldContain("Path1|Container1|Parameter1");
+      _result.ShouldContain("Path2|Container2|Parameter2");
+      _result.ShouldContain("Path3|Container3|Parameter3");
+   }
+}
+
+internal class When_getting_all_paths_from_empty_building_block : concern_for_ParameterValuesTask
+{
+   private ParameterValuesBuildingBlock _buildingBlock;
+   private string[] _result;
+
+   protected override void Context()
+   {
+      base.Context();
+      _buildingBlock = new ParameterValuesBuildingBlock().WithName("PV Building Block");
+   }
+
+   protected override void Because()
+   {
+      _result = sut.AllPathsFrom(_buildingBlock);
+   }
+
+   [Observation]
+   public void should_return_empty_array()
+   {
+      _result.ShouldBeEmpty();
+   }
+}
+
+internal class When_getting_all_values_from_building_block_with_specified_paths : concern_for_ParameterValuesTask
+{
+   private ParameterValuesBuildingBlock _buildingBlock;
+   private double[] _result;
+
+   protected override void Context()
+   {
+      base.Context();
+      _buildingBlock = new ParameterValuesBuildingBlock().WithName("PV Building Block");
+      _buildingBlock.Add(new ParameterValue
+      {
+         Path = new ObjectPath("Path1", "Container1", "Parameter1"),
+         Value = 100.0,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+      _buildingBlock.Add(new ParameterValue
+      {
+         Path = new ObjectPath("Path2", "Container2", "Parameter2"),
+         Value = 200.0,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+      _buildingBlock.Add(new ParameterValue
+      {
+         Path = new ObjectPath("Path3", "Container3", "Parameter3"),
+         Value = 300.0,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+   }
+
+   protected override void Because()
+   {
+      _result = sut.AllValuesFrom(_buildingBlock, ["Path1|Container1|Parameter1", "Path3|Container3|Parameter3"]);
+   }
+
+   [Observation]
+   public void should_return_values_for_specified_paths_in_order()
+   {
+      _result.Length.ShouldBeEqualTo(2);
+      _result[0].ShouldBeEqualTo(100.0);
+      _result[1].ShouldBeEqualTo(300.0);
+   }
+}
+
+internal class When_getting_all_values_from_building_block_without_specified_paths : concern_for_ParameterValuesTask
+{
+   private ParameterValuesBuildingBlock _buildingBlock;
+   private double[] _result;
+
+   protected override void Context()
+   {
+      base.Context();
+      _buildingBlock = new ParameterValuesBuildingBlock().WithName("PV Building Block");
+      _buildingBlock.Add(new ParameterValue
+      {
+         Path = new ObjectPath("Path1", "Container1", "Parameter1"),
+         Value = 100.0,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+      _buildingBlock.Add(new ParameterValue
+      {
+         Path = new ObjectPath("Path2", "Container2", "Parameter2"),
+         Value = 200.0,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+   }
+
+   protected override void Because()
+   {
+      _result = sut.AllValuesFrom(_buildingBlock, []);
+   }
+
+   [Observation]
+   public void should_return_all_values()
+   {
+      _result.Length.ShouldBeEqualTo(2);
+      _result.ShouldContain(100.0);
+      _result.ShouldContain(200.0);
+   }
+}
+
+internal class When_getting_all_values_with_null_value : concern_for_ParameterValuesTask
+{
+   private ParameterValuesBuildingBlock _buildingBlock;
+   private double[] _result;
+
+   protected override void Context()
+   {
+      base.Context();
+      _buildingBlock = new ParameterValuesBuildingBlock().WithName("PV Building Block");
+      _buildingBlock.Add(new ParameterValue
+      {
+         Path = new ObjectPath("Path1", "Container1", "Parameter1"),
+         Value = null,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+   }
+
+   protected override void Because()
+   {
+      _result = sut.AllValuesFrom(_buildingBlock, null);
+   }
+
+   [Observation]
+   public void should_return_nan_for_null_values()
+   {
+      _result.Length.ShouldBeEqualTo(1);
+      double.IsNaN(_result[0]).ShouldBeTrue();
+   }
+}
+
+internal class When_getting_all_values_with_duplicate_paths : concern_for_ParameterValuesTask
+{
+   private ParameterValuesBuildingBlock _buildingBlock;
+
+   protected override void Context()
+   {
+      base.Context();
+      _buildingBlock = new ParameterValuesBuildingBlock().WithName("PV Building Block");
+      _buildingBlock.Add(new ParameterValue
+      {
+         Path = new ObjectPath("Path1", "Container1", "Parameter1"),
+         Value = 100.0,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+   }
+
+   [Observation]
+   public void should_throw_argument_exception()
+   {
+      The.Action(() => sut.AllValuesFrom(_buildingBlock, ["Path1|Container1|Parameter1", "Path1|Container1|Parameter1"]))
+         .ShouldThrowAn<ArgumentException>();
+   }
+}
+
+internal class When_getting_all_values_with_non_existent_paths : concern_for_ParameterValuesTask
+{
+   private ParameterValuesBuildingBlock _buildingBlock;
+
+   protected override void Context()
+   {
+      base.Context();
+      _buildingBlock = new ParameterValuesBuildingBlock().WithName("PV Building Block");
+      _buildingBlock.Add(new ParameterValue
+      {
+         Path = new ObjectPath("Path1", "Container1", "Parameter1"),
+         Value = 100.0,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+   }
+
+   [Observation]
+   public void should_throw_argument_exception()
+   {
+      The.Action(() => sut.AllValuesFrom(_buildingBlock, ["Path1|Container1|Parameter1", "NonExistent|Path"]))
+         .ShouldThrowAn<ArgumentException>();
+   }
+}
+
+internal class When_getting_all_dimensions_from_building_block_with_specified_paths : concern_for_ParameterValuesTask
+{
+   private ParameterValuesBuildingBlock _buildingBlock;
+   private string[] _result;
+
+   protected override void Context()
+   {
+      base.Context();
+      _buildingBlock = new ParameterValuesBuildingBlock().WithName("PV Building Block");
+      _buildingBlock.Add(new ParameterValue
+      {
+         Path = new ObjectPath("Path1", "Container1", "Parameter1"),
+         Value = 100.0,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+      _buildingBlock.Add(new ParameterValue
+      {
+         Path = new ObjectPath("Path2", "Container2", "Parameter2"),
+         Value = 200.0,
+         Dimension = new Dimension(new BaseDimensionRepresentation(), "Time", "min")
+      });
+      _buildingBlock.Add(new ParameterValue
+      {
+         Path = new ObjectPath("Path3", "Container3", "Parameter3"),
+         Value = 300.0,
+         Dimension = new Dimension(new BaseDimensionRepresentation(), "Concentration", "mol/l")
+      });
+   }
+
+   protected override void Because()
+   {
+      _result = sut.AllDimensionsFrom(_buildingBlock, ["Path2|Container2|Parameter2", "Path3|Container3|Parameter3"]);
+   }
+
+   [Observation]
+   public void should_return_dimension_names_for_specified_paths_in_order()
+   {
+      _result.Length.ShouldBeEqualTo(2);
+      _result[0].ShouldBeEqualTo("Time");
+      _result[1].ShouldBeEqualTo("Concentration");
+   }
+}
+
+internal class When_getting_all_dimensions_from_building_block_without_specified_paths : concern_for_ParameterValuesTask
+{
+   private ParameterValuesBuildingBlock _buildingBlock;
+   private string[] _result;
+
+   protected override void Context()
+   {
+      base.Context();
+      _buildingBlock = new ParameterValuesBuildingBlock().WithName("PV Building Block");
+      _buildingBlock.Add(new ParameterValue
+      {
+         Path = new ObjectPath("Path1", "Container1", "Parameter1"),
+         Value = 100.0,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+      _buildingBlock.Add(new ParameterValue
+      {
+         Path = new ObjectPath("Path2", "Container2", "Parameter2"),
+         Value = 200.0,
+         Dimension = new Dimension(new BaseDimensionRepresentation(), "Time", "min")
+      });
+   }
+
+   protected override void Because()
+   {
+      _result = sut.AllDimensionsFrom(_buildingBlock, null);
+   }
+
+   [Observation]
+   public void should_return_all_dimension_names()
+   {
+      _result.Length.ShouldBeEqualTo(2);
+      _result.ShouldContain(Constants.Dimension.NO_DIMENSION.Name);
+      _result.ShouldContain("Time");
+   }
+}
+
+internal class When_getting_all_dimensions_with_duplicate_paths : concern_for_ParameterValuesTask
+{
+   private ParameterValuesBuildingBlock _buildingBlock;
+
+   protected override void Context()
+   {
+      base.Context();
+      _buildingBlock = new ParameterValuesBuildingBlock().WithName("PV Building Block");
+      _buildingBlock.Add(new ParameterValue
+      {
+         Path = new ObjectPath("Path1", "Container1", "Parameter1"),
+         Value = 100.0,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+   }
+
+   [Observation]
+   public void should_throw_argument_exception()
+   {
+      The.Action(() => sut.AllDimensionsFrom(_buildingBlock, ["Path1|Container1|Parameter1", "Path1|Container1|Parameter1"]))
+         .ShouldThrowAn<ArgumentException>();
+   }
+}
+
+internal class When_getting_all_dimensions_with_non_existent_paths : concern_for_ParameterValuesTask
+{
+   private ParameterValuesBuildingBlock _buildingBlock;
+
+   protected override void Context()
+   {
+      base.Context();
+      _buildingBlock = new ParameterValuesBuildingBlock().WithName("PV Building Block");
+      _buildingBlock.Add(new ParameterValue
+      {
+         Path = new ObjectPath("Path1", "Container1", "Parameter1"),
+         Value = 100.0,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+   }
+
+   [Observation]
+   public void should_throw_argument_exception()
+   {
+      The.Action(() => sut.AllDimensionsFrom(_buildingBlock, ["Path1|Container1|Parameter1", "NonExistent|Path"]))
+         .ShouldThrowAn<ArgumentException>();
    }
 }
