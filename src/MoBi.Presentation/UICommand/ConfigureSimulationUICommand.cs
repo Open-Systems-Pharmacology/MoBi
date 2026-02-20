@@ -1,23 +1,27 @@
 ﻿using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Tasks;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Services;
+using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.UICommand
 {
-   public class ConfigureSimulationUICommand : ReconfigureSimulationUICommand
+   public class ConfigureSimulationUICommand : ActiveObjectUICommand<IMoBiSimulation>
    {
+      private readonly ISimulationUpdateTask _simulationUpdateTask;
+      private readonly IMoBiContext _context;
+
       public ConfigureSimulationUICommand(
          ISimulationUpdateTask simulationUpdateTask,
          IMoBiContext context,
-         IActiveSubjectRetriever activeSubjectRetriever) :
-         base(activeSubjectRetriever, simulationUpdateTask, context)
+         IActiveSubjectRetriever activeSubjectRetriever) : base(activeSubjectRetriever)
       {
+         _simulationUpdateTask = simulationUpdateTask;
+         _context = context;
       }
 
-      protected override ICommand PerformReconfigure()
+      protected override void PerformExecute()
       {
-         return _simulationUpdateTask.ConfigureSimulation(Subject);
+         _context.AddToHistory(_simulationUpdateTask.ConfigureSimulation(Subject));
       }
    }
 }

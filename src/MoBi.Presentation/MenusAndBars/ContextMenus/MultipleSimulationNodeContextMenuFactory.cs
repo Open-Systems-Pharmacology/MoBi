@@ -53,6 +53,11 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithCommandFor<RunSimulationsCommand, IReadOnlyList<IMoBiSimulation>>(simulations, _container)
             .WithIcon(ApplicationIcons.Run);
 
+         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.UpdateFromBuildingBlocks)
+            .WithEnabled(allSimulationsAreIdle(simulations))
+            .WithIcon(ApplicationIcons.Update)
+            .WithCommandFor<UpdateSimulationUICommand, IReadOnlyList<IMoBiSimulation>>(simulations, _container);
+
          yield return ObjectBaseCommonContextMenuItems.AddToJournal(simulations, _container);
 
          yield return createStartParameterIdentificationMenuBarItem(simulations);
