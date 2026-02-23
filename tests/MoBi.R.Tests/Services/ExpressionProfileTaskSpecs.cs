@@ -21,14 +21,12 @@ internal class concern_for_ExpressionProfileTask : ContextForIntegration<IExpres
 internal class concern_for_ExpressionProfileTask_with_project : concern_for_ExpressionProfileTask
 {
    private MoBiProject _project;
-   protected IMoBiContext _context;
 
    protected override void Context()
    {
       base.Context();
       var projectFile = HelperForSpecs.DataTestFileFullPath("SampleProject.mbp3");
       _project = Api.GetProjectTask().LoadProject(projectFile);
-      _context = OSPSuite.R.Api.Container.Resolve<IMoBiContext>();
    }
 
    protected void AddBuildingBlocksToProject(IBuildingBlock buildingBlock)

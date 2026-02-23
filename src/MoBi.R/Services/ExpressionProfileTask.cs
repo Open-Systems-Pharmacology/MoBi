@@ -29,12 +29,12 @@ public class ExpressionProfileTask : PKSimPathAndValuesTask, IExpressionProfileT
    {
       if (!quantityPaths.HasConsistentLengthWith(quantityValues))
          throw new ArgumentException(AppConstants.Exceptions.AllArraysMustHaveTheSameLength);
-
+      
       var macroCommand = new MoBiMacroCommand
       {
          CommandType = AppConstants.Commands.ExtendCommand,
          Description = AppConstants.Commands.ExtendDescription,
-         ObjectType = _objectTypeResolver.TypeFor<IndividualBuildingBlock>()
+         ObjectType = _objectTypeResolver.TypeFor<ExpressionProfileBuildingBlock>()
       };
 
       macroCommand.AddRange(quantityPaths.Select((quantityPath, i) => UpdateValueCommandFor<ExpressionProfileBuildingBlock, ExpressionParameter>(buildingBlock, quantityPath, quantityValues[i])));

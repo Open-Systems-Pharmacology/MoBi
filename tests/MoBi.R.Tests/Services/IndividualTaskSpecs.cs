@@ -27,7 +27,6 @@ internal class concern_for_IndividualTask_with_project : concern_for_IndividualT
       base.Context();
       var projectFile = HelperForSpecs.DataTestFileFullPath("SampleProject.mbp3");
       _project = Api.GetProjectTask().LoadProject(projectFile);
-      OSPSuite.R.Api.Container.Resolve<IMoBiContext>();
    }
 
    protected void AddBuildingBlocksToProject(IBuildingBlock buildingBlock)
