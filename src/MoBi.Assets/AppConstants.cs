@@ -1395,6 +1395,8 @@ namespace MoBi.Assets
          public static string NotAllPathsFoundInBuildingBlock(int pathCount, int entityCount) => $"Not all paths were found in the building block. {pathCount} distinct paths were given and {entityCount} were found.";
 
          public static string DuplicatePathsInInput(int allPaths, int distinctPaths) => $"There were duplicate paths with {allPaths} total and {distinctPaths} distinct.";
+
+         public static string ParameterNotFoundForPath(string path, string buildingBlockName) => $"No parameter was found for path '{path}' in building block '{buildingBlockName}'";
       }
 
       public static class Captions
