@@ -20,13 +20,13 @@ public interface IPathAndValuesTask<TBuildingBlock, TBuilder> where TBuildingBlo
    string[] AllDimensionsFrom(TBuildingBlock buildingBlock, string[] paths);
 }
 
-public abstract class PathAndValuesTask<TBuildingBlock, TBuilder>: IPathAndValuesTask<TBuildingBlock, TBuilder> where TBuildingBlock : PathAndValueEntityBuildingBlock<TBuilder> where TBuilder : PathAndValueEntity
+public abstract class ExtendablePathAndValuesTask<TBuildingBlock, TBuilder>: IPathAndValuesTask<TBuildingBlock, TBuilder> where TBuildingBlock : PathAndValueEntityBuildingBlock<TBuilder> where TBuilder : PathAndValueEntity
 {
    private readonly IObjectTypeResolver _objectTypeResolver;
    private readonly IExtendPathAndValuesManager<TBuilder> _extendManager;
    protected readonly IMoBiContext _context;
 
-   protected PathAndValuesTask(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IExtendPathAndValuesManager<TBuilder> extendManager)
+   protected ExtendablePathAndValuesTask(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IExtendPathAndValuesManager<TBuilder> extendManager)
    {
       _objectTypeResolver = objectTypeResolver;
       _extendManager = extendManager;
@@ -72,8 +72,6 @@ public abstract class PathAndValuesTask<TBuildingBlock, TBuilder>: IPathAndValue
 
    protected abstract IMoBiCommand RemoveCommandFor(TBuildingBlock buildingBlock, ObjectPath path);
 
-   protected static bool ArrayLengthsAreConsistent(params Array[] arrays) => arrays.All(x => x.Length == arrays[0].Length);
-
    protected MoBiMacroCommand MacroCommandForUpdateAndInsert()
    {
       return new MoBiMacroCommand
@@ -88,10 +86,12 @@ public abstract class PathAndValuesTask<TBuildingBlock, TBuilder>: IPathAndValue
    {
       if (paths != null && paths.Length != 0)
       {
-         if(paths.Distinct().Count() != paths.Length)
-            throw new ArgumentException(AppConstants.Exceptions.DuplicatePathsInInput(paths.Length, paths.Distinct().Count()));
+         var pathSet = new HashSet<string>(paths);
 
-         var entities = buildingBlock.Where(x => paths.Contains(x.Path)).ToList();
+         if (pathSet.Count != paths.Length)
+            throw new ArgumentException(AppConstants.Exceptions.DuplicatePathsInInput(paths.Length, pathSet.Count));
+
+         var entities = buildingBlock.Where(x => pathSet.Contains(x.Path)).ToList();
 
          if (entities.Count != paths.Length)
             throw new ArgumentException(AppConstants.Exceptions.NotAllPathsFoundInBuildingBlock(paths.Length, entities.Count));
@@ -100,8 +100,6 @@ public abstract class PathAndValuesTask<TBuildingBlock, TBuilder>: IPathAndValue
       }
 
       return buildingBlock.Select(selector).ToArray();
-
-
    }
 
    public string[] AllPathsFrom(TBuildingBlock buildingBlock) => AllFrom(buildingBlock, paths:null, x => x.Path.PathAsString);

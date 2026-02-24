@@ -28,6 +28,8 @@ namespace MoBi.R
 
       public static IIndividualTask GetIndividualTask() => resolveTask<IIndividualTask>();
 
+      public static IExpressionProfileTask GetExpressionProfileTask() => resolveTask<IExpressionProfileTask>();
+
       public static IParameterValuesTask GetParameterValuesTask() => resolveTask<IParameterValuesTask>();
 
       public static IInitialConditionsTask GetInitialConditionsTask() => resolveTask<IInitialConditionsTask>();

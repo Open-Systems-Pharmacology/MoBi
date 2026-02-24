@@ -20,7 +20,7 @@ public interface IParameterValuesTask : IPathAndValuesTask<ParameterValuesBuildi
    void AddLocalMoleculeParameters(ParameterValuesBuildingBlock buildingBlock, MoBiSpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock, string[] moleculeNames);
 }
 
-public class ParameterValuesTask : PathAndValuesTask<ParameterValuesBuildingBlock, ParameterValue>, IParameterValuesTask
+public class ParameterValuesTask : ExtendablePathAndValuesTask<ParameterValuesBuildingBlock, ParameterValue>, IParameterValuesTask
 {
    private readonly IParameterValueBuildingBlockExtendManager _extendManager;
 
@@ -31,7 +31,7 @@ public class ParameterValuesTask : PathAndValuesTask<ParameterValuesBuildingBloc
 
    public void SetParameterValue(ParameterValuesBuildingBlock buildingBlock, string[] quantityPaths, double[] quantityValues, string[] dimensionNames)
    {
-      if (!ArrayLengthsAreConsistent(quantityPaths, dimensionNames, quantityValues))
+      if (!quantityPaths.HasConsistentLengthWith(dimensionNames, quantityValues))
          throw new ArgumentException(Exceptions.AllArraysMustHaveTheSameLength);
 
       var macroCommand = MacroCommandForUpdateAndInsert();

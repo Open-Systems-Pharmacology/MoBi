@@ -28,7 +28,7 @@ public interface IInitialConditionsTask : IPathAndValuesTask<InitialConditionsBu
    bool[] AllNegativeValuesAllowedFrom(InitialConditionsBuildingBlock buildingBlock, string[] paths);
 }
 
-public class InitialConditionsTask : PathAndValuesTask<InitialConditionsBuildingBlock, InitialCondition>, IInitialConditionsTask
+public class InitialConditionsTask : ExtendablePathAndValuesTask<InitialConditionsBuildingBlock, InitialCondition>, IInitialConditionsTask
 {
    private readonly IInitialConditionsBuildingBlockExtendManager _extendManager;
 
@@ -44,7 +44,7 @@ public class InitialConditionsTask : PathAndValuesTask<InitialConditionsBuilding
 
    public void SetInitialConditions(InitialConditionsBuildingBlock buildingBlock, string[] quantityPaths, string[] dimensionNames, double[] quantityValues, double[] scaleDivisors, bool[] isPresent, bool[] negativeAllowed)
    {
-      if (!ArrayLengthsAreConsistent(quantityPaths, dimensionNames, quantityValues, scaleDivisors, isPresent, negativeAllowed))
+      if (!quantityPaths.HasConsistentLengthWith(dimensionNames, quantityValues, scaleDivisors, isPresent, negativeAllowed))
          throw new ArgumentException(AppConstants.Exceptions.AllArraysMustHaveTheSameLength);
 
       var macroCommand = MacroCommandForUpdateAndInsert();
