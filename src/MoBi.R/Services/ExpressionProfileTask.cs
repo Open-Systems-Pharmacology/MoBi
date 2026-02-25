@@ -4,6 +4,8 @@ using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Extensions;
+using MoBi.Core.Serialization.Xml.Services;
+using MoBi.Core.Services;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 
@@ -11,25 +13,39 @@ namespace MoBi.R.Services;
 
 public interface IExpressionProfileTask
 {
+   ExpressionProfileBuildingBlock CreateExpressionProfile(string category, string moleculeName, string speciesName);
    void SetExpressionParameter(ExpressionProfileBuildingBlock buildingBlock, string[] quantityPaths, double[] quantityValues);
 }
 
 public class ExpressionProfileTask : PKSimPathAndValuesTask, IExpressionProfileTask
 {
+   private readonly IXmlSerializationService _xmlSerializationService;
+   private readonly IMoBiProjectRetriever _projectRetriever;
    private readonly IMoBiContext _context;
    private readonly IObjectTypeResolver _objectTypeResolver;
 
-   public ExpressionProfileTask(IMoBiContext context, IObjectTypeResolver objectTypeResolver)
+   public ExpressionProfileTask(IXmlSerializationService xmlSerializationService, IMoBiProjectRetriever projectRetriever, IMoBiContext context, IObjectTypeResolver objectTypeResolver)
    {
+      _xmlSerializationService = xmlSerializationService;
+      _projectRetriever = projectRetriever;
       _context = context;
       _objectTypeResolver = objectTypeResolver;
+   }
+
+   public ExpressionProfileBuildingBlock CreateExpressionProfile(string category, string moleculeName, string speciesName)
+   {
+      LoadPKSimAssembly();
+
+      var serializedExpressionProfile = ExecuteMethod(GetMethod("PKSim.R.Exchange.BuildingBlockCreator", "CreateExpressionProfile"), [category, moleculeName, speciesName]) as string;
+
+      return _xmlSerializationService.Deserialize<ExpressionProfileBuildingBlock>(serializedExpressionProfile, _projectRetriever.Current);
    }
 
    public void SetExpressionParameter(ExpressionProfileBuildingBlock buildingBlock, string[] quantityPaths, double[] quantityValues)
    {
       if (!quantityPaths.HasConsistentLengthWith(quantityValues))
          throw new ArgumentException(AppConstants.Exceptions.AllArraysMustHaveTheSameLength);
-      
+
       var macroCommand = new MoBiMacroCommand
       {
          CommandType = AppConstants.Commands.ExtendCommand,
