@@ -1,7 +1,6 @@
 ﻿using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Repository;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -9,9 +8,11 @@ using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Nodes;
 using System.Collections.Generic;
 using System.Linq;
+using IBuildingBlockRepository = MoBi.Core.Domain.Repository.IBuildingBlockRepository;
 
 
 namespace MoBi.Presentation
@@ -21,14 +22,16 @@ namespace MoBi.Presentation
       protected ISelectReferenceView _view;
       protected IObjectBaseDTOToReferenceNodeMapper _referenceMapper;
       protected IBuildingBlockRepository _buildingBlockRepository;
+      protected IObjectBaseToObjectBaseDTOMapper _objectBaseDTOMapper;
 
       protected override void Context()
       {
          _view = A.Fake<ISelectReferenceView>();
          _referenceMapper = A.Fake<IObjectBaseDTOToReferenceNodeMapper>();
          _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
+         _objectBaseDTOMapper = A.Fake<IObjectBaseToObjectBaseDTOMapper>();
          sut = new SelectReferenceAtParameterPresenter(_view,
-            A.Fake<IObjectBaseToObjectBaseDTOMapper>(),
+            _objectBaseDTOMapper,
             A.Fake<IMoBiContext>(),
             A.Fake<IUserSettings>(),
             A.Fake<IObjectBaseToDummyMoleculeDTOMapper>(),
@@ -72,47 +75,31 @@ namespace MoBi.Presentation
       }
    }
 
-   internal class When_adding_reactions_grouped_by_module : concern_for_SelectReferenceAtParameterPresenter
+   internal class When_grouping_reaction_builders_by_module_in_parameter_reference_tree : concern_for_SelectReferenceAtParameterPresenter
    {
-      private MoBiReactionBuildingBlock _reactionBlock1;
-      private MoBiReactionBuildingBlock _reactionBlock2;
-      private IEntity _reference;
-      private Parameter _parameter;
-      private ITreeNode _reactionBlockNode1;
-      private ITreeNode _reactionBlockNode2;
+      private ITreeNode _moduleNode;
 
       protected override void Context()
       {
          base.Context();
-         _reference = new Parameter();
-         _parameter = new Parameter();
-
-         _reactionBlockNode1 = A.Fake<ITreeNode>();
-         _reactionBlockNode2 = A.Fake<ITreeNode>();
-
-
-         _reactionBlock1 = new MoBiReactionBuildingBlock().WithName("RB1");
-         _reactionBlock2 = new MoBiReactionBuildingBlock().WithName("RB2");
+         var reactionBlock = new MoBiReactionBuildingBlock().WithName("RB1");
 
          A.CallTo(() => _buildingBlockRepository.ReactionBlockCollection)
-            .Returns(new[] { _reactionBlock1, _reactionBlock2 });
+            .Returns(new[] { reactionBlock });
 
-         A.CallTo(() => _referenceMapper.MapFrom(_reactionBlock1))
-            .Returns(_reactionBlockNode2);
-
-         A.CallTo(() => _referenceMapper.MapFrom(_reactionBlock2))
-            .Returns(_reactionBlockNode1);
+         _moduleNode = A.Fake<ITreeNode>();
+         A.CallTo(() => _referenceMapper.MapFrom(reactionBlock)).Returns(_moduleNode);
       }
 
       protected override void Because()
       {
-         sut.Init(_reference, new List<IObjectBase>(), _parameter);
+         sut.Init(new Parameter(), new List<IObjectBase>(), new Parameter());
       }
 
       [Observation]
-      public void should_add_nodes_to_the_view()
+      public void should_add_module_nodes_to_the_view()
       {
-         A.CallTo(() => _view.AddNodes(A<IEnumerable<ITreeNode>>.That.Matches(x => x.Contains(_reactionBlockNode1) && x.Contains(_reactionBlockNode2)))).MustHaveHappened();
+         A.CallTo(() => _view.AddNodes(A<IEnumerable<ITreeNode>>.That.Matches(x => x.Contains(_moduleNode)))).MustHaveHappened();
       }
    }
 }

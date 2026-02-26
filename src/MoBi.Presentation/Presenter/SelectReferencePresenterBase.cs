@@ -468,6 +468,13 @@ namespace MoBi.Presentation.Presenter
          _view.AddNodes(nodes);
       }
 
+      protected void AddReactionBuilders()
+      {
+         var nodes = _buildingBlockRepository.ReactionBlockCollection
+            .Select(block => _referenceMapper.MapFrom(block));
+         _view.AddNodes(nodes);
+      }
+
       protected void AddMolecule()
       {
          var dummyMolecule = new DummyParameterDTO(null) { Name = ObjectPathKeywords.MOLECULE, Id = ObjectPathKeywords.MOLECULE };
