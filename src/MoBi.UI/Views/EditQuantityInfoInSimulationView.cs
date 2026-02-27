@@ -1,11 +1,19 @@
-﻿using DevExpress.XtraLayout.Utils;
+﻿using System.Drawing;
+using System.Linq;
+using DevExpress.Utils;
+using DevExpress.XtraLayout;
+using DevExpress.XtraLayout.Utils;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
+using MoBi.Presentation.Formatters;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using OSPSuite.Assets;
+using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Extensions;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
@@ -16,6 +24,7 @@ namespace MoBi.UI.Views
    {
       private readonly ScreenBinder<QuantityDTO> _screenBinder = new ScreenBinder<QuantityDTO>();
       private IEditQuantityInfoInSimulationPresenter _presenter;
+      private GridViewBinder<UsedCalculationMethod> _gridBinder;
 
       public EditQuantityInfoInSimulationView()
       {
@@ -34,6 +43,19 @@ namespace MoBi.UI.Views
 
          btnGoToSource.InitWithImage(ApplicationIcons.Search, text: AppConstants.Captions.GoToSource);
          layoutControlItemGoToSource.AdjustControlSize(OSPSuite.UI.UIConstants.Size.BUTTON_WIDTH, layoutControlItemGoToSource.ControlMaxSize.Height);
+         layoutControlItemCalculationMethods.Text = AppConstants.Captions.UsedCalculationMethods.FormatForLabel();
+         gridViewCalculationMethods.OptionsView.ShowGroupPanel = false;
+         layoutControlItemCalculationMethods.TextLocation = Locations.Top;
+         layoutControlItemCalculationMethods.TextVisible = true;
+         
+         gridViewCalculationMethods.OptionsBehavior.Editable = false;
+         showCalculationMethods(shouldShow:false);
+         Resize += (_, _) => OnEvent(resizeGrid);
+      }
+
+      private void showCalculationMethods(bool shouldShow)
+      {
+         layoutControlItemCalculationMethods.Visibility = LayoutVisibilityConvertor.FromBoolean(shouldShow);
       }
 
       public override void InitializeBinding()
@@ -43,14 +65,32 @@ namespace MoBi.UI.Views
          _screenBinder.Bind(item => item.SourceDisplayName).To(tbSource);
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
          btnGoToSource.Click += (o, e) => OnEvent(() => _presenter.NavigateToQuantitySource());
+         _gridBinder = new GridViewBinder<UsedCalculationMethod>(gridViewCalculationMethods);
+         _gridBinder.Bind(x => x.Category)
+            .AsReadOnly()
+            .WithFormat(new UsedCalculationMethodCategoryFormatter());
+
+         _gridBinder.Bind(x => x.CalculationMethod)
+            .WithCaption(nameof(UsedCalculationMethod.CalculationMethod).SplitToUpperCase())
+            .AsReadOnly();
+
       }
 
       public void BindTo(QuantityDTO dto)
       {
          _screenBinder.BindToSource(dto);
-
+         _gridBinder.BindToSource(dto.UsedCalculationMethods);
+         showCalculationMethods(shouldShow: dto.UsedCalculationMethods.Any());
+         resizeGrid();
          layoutControlItemSource.Visibility = LayoutVisibilityConvertor.FromBoolean(dto.SourceReference != null);
          layoutControlItemGoToSource.Visibility = layoutControlItemSource.Visibility;
+      }
+
+      private void resizeGrid()
+      {
+         var size = layoutControlItemCalculationMethods.Size;
+         size.Height = gridViewCalculationMethods.OptimalHeight + layoutControlItemCalculationMethods.TextSize.Height + layoutControlItemCalculationMethods.Padding.Height;
+         layoutControlItemCalculationMethods.Size = size;
       }
 
       public void AttachPresenter(IEditQuantityInfoInSimulationPresenter presenter)

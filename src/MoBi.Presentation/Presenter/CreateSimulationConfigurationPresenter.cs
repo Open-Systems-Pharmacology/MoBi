@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
@@ -13,6 +14,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
@@ -105,6 +107,8 @@ namespace MoBi.Presentation.Presenter
       {
          var moduleConfigurations = PresenterAt(SimulationItems.ModuleConfiguration).ModuleConfigurationDTOs.MapAllUsing(_moduleConfigurationMapper);
          var individualAndExpressionPresenter = PresenterAt(SimulationItems.IndividualAndExpressionConfiguration);
+         var moleculeCalculationMethodsPresenter = PresenterAt(SimulationItems.MoleculeCalculationMethodsConfiguration);
+
          var selectedExpressions = individualAndExpressionPresenter.ExpressionProfiles;
          var selectedIndividual = individualAndExpressionPresenter.SelectedIndividual;
 
@@ -116,6 +120,36 @@ namespace MoBi.Presentation.Presenter
          simulationConfiguration.PerformCircularReferenceCheck = _userSettings.CheckCircularReference;
 
          simulationConfiguration.CreateAllProcessRateParameters = _simulationDTO.CreateAllProcessRateParameters;
+
+         updateMoleculeCalculationMethods(moleculeCalculationMethodsPresenter.CalculationMethodOverrides, simulationConfiguration);
       }
+
+      private void updateMoleculeCalculationMethods(Cache<string, IReadOnlyList<UsedCalculationMethod>> calculationMethodOverrides, SimulationConfiguration simulationConfiguration)
+      {
+         simulationConfiguration.ModuleConfigurations.Select(x => x.Module).Each(module =>
+         {
+            if (module.Molecules == null)
+               return;
+
+            updateMoleculeCalculationMethods(module.Molecules, calculationMethodOverrides);
+         });
+      }
+
+      private void updateMoleculeCalculationMethods(MoleculeBuildingBlock buildingBlock, Cache<string, IReadOnlyList<UsedCalculationMethod>> calculationMethodOverrides)
+      {
+         buildingBlock.Each(molecule =>
+         {
+            if (!calculationMethodOverrides.Contains(molecule.Name))
+               return;
+
+            updateMoleculeCalculationMethods(molecule, calculationMethodOverrides[molecule.Name]);
+         });
+      }
+
+      private void updateMoleculeCalculationMethods(MoleculeBuilder moleculeBuilder, IReadOnlyList<UsedCalculationMethod> calculationMethodOverrides) => 
+         moleculeBuilder.UsedCalculationMethods.Each(x => updateUsedCalculationMethod(x, calculationMethodOverrides.Single(o => string.Equals(o.Category, x.Category))));
+
+      private void updateUsedCalculationMethod(UsedCalculationMethod usedCalculationMethod, UsedCalculationMethod overriddenCalculationMethod) => 
+         usedCalculationMethod.CalculationMethod = overriddenCalculationMethod.CalculationMethod;
    }
 }

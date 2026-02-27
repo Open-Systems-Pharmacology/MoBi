@@ -10,13 +10,13 @@ namespace MoBi.Presentation.DTO
       {
       }
 
-      public IEnumerable<UsedCalculationMethodDTO> UsedCalculationMethods { set; get; }
-      public IEnumerable<TransporterMoleculeContainerDTO> TransporterMolecules { get; set; }
+      public IReadOnlyList<UsedCalculationMethodDTO> UsedCalculationMethods { set; get; }
+      public IReadOnlyList<TransporterMoleculeContainerDTO> TransporterMolecules { get; set; }
       public FormulaBuilderDTO DefaultStartFormula { get; set; }
       public bool Stationary { get; set; }
-      public IEnumerable<ParameterDTO> Parameters { get; set; }
+      public IReadOnlyList<ParameterDTO> Parameters { get; set; }
       public QuantityType MoleculeType { set; get; }
-      public IEnumerable<InteractionContainerDTO> InteractionContainerCollection { set; get; }
+      public IReadOnlyList<InteractionContainerDTO> InteractionContainerCollection { set; get; }
    }
 
    public class UsedCalculationMethodDTO
