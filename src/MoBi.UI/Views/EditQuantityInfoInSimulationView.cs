@@ -1,7 +1,6 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
 using System.Linq;
 using DevExpress.Utils;
-using DevExpress.XtraLayout;
 using DevExpress.XtraLayout.Utils;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
@@ -47,9 +46,9 @@ namespace MoBi.UI.Views
          gridViewCalculationMethods.OptionsView.ShowGroupPanel = false;
          layoutControlItemCalculationMethods.TextLocation = Locations.Top;
          layoutControlItemCalculationMethods.TextVisible = true;
-         
+
          gridViewCalculationMethods.OptionsBehavior.Editable = false;
-         showCalculationMethods(shouldShow:false);
+         showCalculationMethods(shouldShow: false);
          Resize += (_, _) => OnEvent(resizeGrid);
       }
 
@@ -73,17 +72,20 @@ namespace MoBi.UI.Views
          _gridBinder.Bind(x => x.CalculationMethod)
             .WithCaption(nameof(UsedCalculationMethod.CalculationMethod).SplitToUpperCase())
             .AsReadOnly();
-
       }
 
       public void BindTo(QuantityDTO dto)
       {
          _screenBinder.BindToSource(dto);
-         _gridBinder.BindToSource(dto.UsedCalculationMethods);
-         showCalculationMethods(shouldShow: dto.UsedCalculationMethods.Any());
-         resizeGrid();
          layoutControlItemSource.Visibility = LayoutVisibilityConvertor.FromBoolean(dto.SourceReference != null);
          layoutControlItemGoToSource.Visibility = layoutControlItemSource.Visibility;
+      }
+
+      public void BindTo(IReadOnlyCollection<UsedCalculationMethod> dtoUsedCalculationMethods)
+      {
+         _gridBinder.BindToSource(dtoUsedCalculationMethods);
+         showCalculationMethods(shouldShow: dtoUsedCalculationMethods.Any());
+         resizeGrid();
       }
 
       private void resizeGrid()

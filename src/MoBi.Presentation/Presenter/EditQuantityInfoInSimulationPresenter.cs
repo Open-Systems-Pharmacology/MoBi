@@ -1,7 +1,10 @@
+using System.Linq;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Views;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Presenters;
+using static MoBi.Assets.AppConstants.UsedCalculationMethods.Categories;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -26,6 +29,8 @@ namespace MoBi.Presentation.Presenter
       {
          _quantityDTO = quantityDTO;
          _view.BindTo(quantityDTO);
+         if(quantityDTO.UsedCalculationMethods.Any())
+            _view.BindTo(quantityDTO.UsedCalculationMethods.Where(x => x.Category.IsOneOf(DiffusionIntCell, DistributionCellular)).ToList());
       }
 
       public void NavigateToQuantitySource() => _sourceReferenceNavigator.GoTo(_quantityDTO.SourceReference);

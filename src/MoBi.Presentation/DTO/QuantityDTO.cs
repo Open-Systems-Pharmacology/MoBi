@@ -20,7 +20,7 @@ namespace MoBi.Presentation.DTO
          set => Value.Dimension = value;
       }
 
-      public IReadOnlyCollection<UsedCalculationMethod> UsedCalculationMethods => ObjectBase is MoleculeAmount moleculeAMount ? moleculeAMount.UsedCalculationMethods : [];
+      public IReadOnlyCollection<UsedCalculationMethod> UsedCalculationMethods => ObjectBase is MoleculeAmount moleculeAmount ? moleculeAmount.UsedCalculationMethods : [];
       public SimulationEntitySourceReference SourceReference { get; set; }
       public string SourceDisplayName => SourceReference?.BuildingBlock?.DisplayName ?? string.Empty;
    }
