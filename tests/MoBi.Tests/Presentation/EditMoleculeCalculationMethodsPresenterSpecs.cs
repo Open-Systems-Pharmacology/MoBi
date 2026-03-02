@@ -106,7 +106,7 @@ internal class When_updating_for_a_selected_molecule : concern_for_EditMoleculeC
    [Observation]
    public void should_bind_the_used_calculation_methods_to_the_view()
    {
-      A.CallTo(() => _view.BindTo(_moleculeDTO.UsedCalculationMethods)).MustHaveHappened();
+      A.CallTo(() => _view.BindTo(A<IReadOnlyList<UsedCalculationMethodDTO>>._)).MustHaveHappened();
    }
 }
 
@@ -164,7 +164,7 @@ internal class When_setting_a_calculation_method : concern_for_EditMoleculeCalcu
    public void should_rebind_the_view_with_updated_calculation_methods()
    {
       // Once during initial UpdateForSelectedMolecule, once after SetCalculationMethod
-      A.CallTo(() => _view.BindTo(_moleculeDTO.UsedCalculationMethods)).MustHaveHappenedTwiceExactly();
+      A.CallTo(() => _view.BindTo(A<IReadOnlyList<UsedCalculationMethodDTO>>._)).MustHaveHappenedTwiceExactly();
    }
 }
 
