@@ -29,8 +29,6 @@ namespace MoBi.Presentation.Presenter
       {
          _quantityDTO = quantityDTO;
          _view.BindTo(quantityDTO);
-         if(quantityDTO.UsedCalculationMethods.Any())
-            _view.BindTo(quantityDTO.UsedCalculationMethods.Where(x => x.Category.IsOneOf(DiffusionIntCell, DistributionCellular)).ToList());
       }
 
       public void NavigateToQuantitySource() => _sourceReferenceNavigator.GoTo(_quantityDTO.SourceReference);

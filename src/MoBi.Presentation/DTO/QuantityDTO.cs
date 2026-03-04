@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
+﻿using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
 
 namespace MoBi.Presentation.DTO
@@ -20,7 +18,6 @@ namespace MoBi.Presentation.DTO
          set => Value.Dimension = value;
       }
 
-      public IReadOnlyCollection<UsedCalculationMethod> UsedCalculationMethods => ObjectBase is MoleculeAmount moleculeAmount ? moleculeAmount.UsedCalculationMethods : [];
       public SimulationEntitySourceReference SourceReference { get; set; }
       public string SourceDisplayName => SourceReference?.BuildingBlock?.DisplayName ?? string.Empty;
    }

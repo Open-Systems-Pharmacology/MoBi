@@ -39,9 +39,6 @@
          descriptionLayoutControlItem = new DevExpress.XtraLayout.LayoutControlItem();
          layoutControlItemSource = new DevExpress.XtraLayout.LayoutControlItem();
          layoutControlItemGoToSource = new DevExpress.XtraLayout.LayoutControlItem();
-         this.gridControl = new OSPSuite.UI.Controls.UxGridControl();
-         gridViewCalculationMethods = new OSPSuite.UI.Controls.UxGridView();
-         layoutControlItemCalculationMethods = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)errorProvider).BeginInit();
          ((System.ComponentModel.ISupportInitialize)htmlEditor.Properties).BeginInit();
          ((System.ComponentModel.ISupportInitialize)uxLayoutControl).BeginInit();
@@ -53,23 +50,19 @@
          ((System.ComponentModel.ISupportInitialize)descriptionLayoutControlItem).BeginInit();
          ((System.ComponentModel.ISupportInitialize)layoutControlItemSource).BeginInit();
          ((System.ComponentModel.ISupportInitialize)layoutControlItemGoToSource).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)this.gridControl).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)gridViewCalculationMethods).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)layoutControlItemCalculationMethods).BeginInit();
          SuspendLayout();
          // 
          // htmlEditor
          // 
-         htmlEditor.Location = new System.Drawing.Point(12, 102);
+         htmlEditor.Location = new System.Drawing.Point(12, 78);
          htmlEditor.Name = "htmlEditor";
-         htmlEditor.Size = new System.Drawing.Size(374, 229);
+         htmlEditor.Size = new System.Drawing.Size(374, 253);
          htmlEditor.StyleController = uxLayoutControl;
          htmlEditor.TabIndex = 4;
          // 
          // uxLayoutControl
          // 
          uxLayoutControl.AllowCustomization = false;
-         uxLayoutControl.Controls.Add(this.gridControl);
          uxLayoutControl.Controls.Add(btnGoToSource);
          uxLayoutControl.Controls.Add(tbSource);
          uxLayoutControl.Controls.Add(htmlEditor);
@@ -115,7 +108,7 @@
          // 
          Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
          Root.GroupBordersVisible = false;
-         Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] { nameLayoutControlItem, descriptionLayoutControlItem, layoutControlItemSource, layoutControlItemGoToSource, layoutControlItemCalculationMethods });
+         Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] { nameLayoutControlItem, descriptionLayoutControlItem, layoutControlItemSource, layoutControlItemGoToSource });
          Root.Name = "Root";
          Root.Size = new System.Drawing.Size(398, 343);
          Root.TextVisible = false;
@@ -131,9 +124,9 @@
          // descriptionLayoutControlItem
          // 
          descriptionLayoutControlItem.Control = htmlEditor;
-         descriptionLayoutControlItem.Location = new System.Drawing.Point(0, 74);
+         descriptionLayoutControlItem.Location = new System.Drawing.Point(0, 50);
          descriptionLayoutControlItem.Name = "descriptionLayoutControlItem";
-         descriptionLayoutControlItem.Size = new System.Drawing.Size(378, 249);
+         descriptionLayoutControlItem.Size = new System.Drawing.Size(378, 273);
          descriptionLayoutControlItem.TextLocation = DevExpress.Utils.Locations.Top;
          descriptionLayoutControlItem.TextSize = new System.Drawing.Size(142, 13);
          // 
@@ -154,38 +147,6 @@
          layoutControlItemGoToSource.TextSize = new System.Drawing.Size(0, 0);
          layoutControlItemGoToSource.TextVisible = false;
          // 
-         // gridControl
-         // 
-         this.gridControl.Location = new System.Drawing.Point(12, 62);
-         this.gridControl.MainView = gridViewCalculationMethods;
-         this.gridControl.Name = "gridControl";
-         this.gridControl.Size = new System.Drawing.Size(374, 20);
-         this.gridControl.TabIndex = 10;
-         this.gridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] { gridViewCalculationMethods });
-         // 
-         // calculationMethodsGridView
-         // 
-         gridViewCalculationMethods.AllowsFiltering = true;
-         gridViewCalculationMethods.EnableColumnContextMenu = true;
-         gridViewCalculationMethods.GridControl = this.gridControl;
-         gridViewCalculationMethods.MultiSelect = true;
-         gridViewCalculationMethods.Name = "gridViewCalculationMethods";
-         gridViewCalculationMethods.OptionsBehavior.EditorShowMode = DevExpress.Utils.EditorShowMode.MouseDown;
-         gridViewCalculationMethods.OptionsNavigation.AutoFocusNewRow = true;
-         gridViewCalculationMethods.OptionsSelection.EnableAppearanceFocusedCell = false;
-         gridViewCalculationMethods.OptionsSelection.EnableAppearanceFocusedRow = false;
-         gridViewCalculationMethods.OptionsSelection.MultiSelect = true;
-         gridViewCalculationMethods.OptionsSelection.MultiSelectMode = DevExpress.XtraGrid.Views.Grid.GridMultiSelectMode.CellSelect;
-         // 
-         // layoutControlItemCalculationMethods
-         // 
-         layoutControlItemCalculationMethods.Control = this.gridControl;
-         layoutControlItemCalculationMethods.Location = new System.Drawing.Point(0, 50);
-         layoutControlItemCalculationMethods.Name = "layoutControlItemCalculationMethods";
-         layoutControlItemCalculationMethods.Size = new System.Drawing.Size(378, 24);
-         layoutControlItemCalculationMethods.TextSize = new System.Drawing.Size(0, 0);
-         layoutControlItemCalculationMethods.TextVisible = false;
-         // 
          // EditQuantityInfoInSimulationView
          // 
          AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -204,9 +165,6 @@
          ((System.ComponentModel.ISupportInitialize)descriptionLayoutControlItem).EndInit();
          ((System.ComponentModel.ISupportInitialize)layoutControlItemSource).EndInit();
          ((System.ComponentModel.ISupportInitialize)layoutControlItemGoToSource).EndInit();
-         ((System.ComponentModel.ISupportInitialize)this.gridControl).EndInit();
-         ((System.ComponentModel.ISupportInitialize)gridViewCalculationMethods).EndInit();
-         ((System.ComponentModel.ISupportInitialize)layoutControlItemCalculationMethods).EndInit();
          ResumeLayout(false);
 
       }
@@ -222,8 +180,5 @@
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemSource;
       private OSPSuite.UI.Controls.UxSimpleButton btnGoToSource;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemGoToSource;
-      private OSPSuite.UI.Controls.UxGridControl gridControl;
-      private OSPSuite.UI.Controls.UxGridView gridViewCalculationMethods;
-      private DevExpress.XtraLayout.LayoutControlItem layoutControlItemCalculationMethods;
    }
 }
