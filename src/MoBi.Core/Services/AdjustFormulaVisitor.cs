@@ -82,6 +82,7 @@ namespace MoBi.Core.Services
          if (_canceled) return;
 
          parameter.Formula = checkFormula(_formulaCache, parameter.Formula);
+         if (_canceled) return;
          if (parameter.RHSFormula != null)
             parameter.RHSFormula = checkFormula(_formulaCache, parameter.RHSFormula);
       }
@@ -111,6 +112,9 @@ namespace MoBi.Core.Services
 
       private T checkFormulaByType<T>(IFormulaCache formulaCache, T formula, Func<T, T, bool> areEqualFormula) where T : class, IFormula
       {
+         if (_canceled)
+            return formula;
+
          var alreadyUsedFormula = lookForSimilarFormula(formulaCache, formula, areEqualFormula);
          if (alreadyUsedFormula != null)
             return alreadyUsedFormula;
