@@ -1720,7 +1720,7 @@ namespace MoBi.Assets
          public static readonly string DefaultParameterView = "Default parameter view";
          public static readonly string RenameDependentObjects = "Rename dependent objects";
          public static readonly string WarnForNonFiniteQuantities = "Warn for non-finite quantities";
-         public static readonly string ConfigurePartitionCoefficientsAndCellularPermeabilities = "Configure Partition Coefficients and Cellular Permeabilities";
+         public static readonly string CalculationMethods = "Calculation Methods";
          public static readonly string CellularPermeabilities = "Cellular Permeabilities";
          public static readonly string PartitionCoefficients = "Partition Coefficients";
 

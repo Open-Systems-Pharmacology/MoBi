@@ -1,10 +1,7 @@
-using System.Linq;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Views;
-using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Presenters;
-using static MoBi.Assets.AppConstants.UsedCalculationMethods.Categories;
 
 namespace MoBi.Presentation.Presenter
 {

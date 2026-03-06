@@ -23,16 +23,15 @@ namespace MoBi.UI.Views
 {
    public partial class EditMoleculeCalculationMethodsView : BaseUserControl, IEditMoleculeCalculationMethodsView
    {
-      private readonly IMoleculeBuilderDTOToTreeNodeMapper _moleculeBuilderToTreeNodeMapper;
+      private readonly IMoleculeUsedCalculationMethodsDTOToTreeNodeMapper _moleculeUsedCalculationMethodsDTOToTreeNodeMapper;
       private IEditMoleculeCalculationMethodsPresenter _presenter;
       private readonly UxTreeView _treeView;
       private readonly GridViewBinder<UsedCalculationMethodDTO> _gridBinder;
 
-      public EditMoleculeCalculationMethodsView(IMoleculeBuilderDTOToTreeNodeMapper moleculeBuilderToTreeNodeMapper,
+      public EditMoleculeCalculationMethodsView(IMoleculeUsedCalculationMethodsDTOToTreeNodeMapper moleculeUsedCalculationMethodsDTOToTreeNodeMapper,
          IImageListRetriever imageListRetriever)
       {
-         _moleculeBuilderToTreeNodeMapper = moleculeBuilderToTreeNodeMapper;
-         // barManager.Images
+         _moleculeUsedCalculationMethodsDTOToTreeNodeMapper = moleculeUsedCalculationMethodsDTOToTreeNodeMapper;
          InitializeComponent();
          _treeView = new UxTreeView { StateImageList = imageListRetriever.AllImages16x16 };
          treeViewPanel.FillWith(_treeView);
@@ -67,13 +66,13 @@ namespace MoBi.UI.Views
       {
          if (node == null)
             return;
-         _presenter.UpdateForSelectedMolecule(node.TagAsObject as MoleculeBuilderDTO);
+         _presenter.UpdateForSelectedMolecule(node.TagAsObject as MoleculeUsedCalculationMethodsDTO);
       }
 
       public override void InitializeResources()
       {
          base.InitializeResources();
-         Caption = AppConstants.Captions.ConfigurePartitionCoefficientsAndCellularPermeabilities;
+         Caption = AppConstants.Captions.CalculationMethods;
          ApplicationIcon = ApplicationIcons.Permeability;
          gridViewCalculationMethods.OptionsView.ShowGroupPanel = false;
 
@@ -91,12 +90,13 @@ namespace MoBi.UI.Views
          _presenter = presenter;
       }
 
-      public void Show(IReadOnlyList<MoleculeBuilderDTO> molecules)
+      public void Show(IReadOnlyList<MoleculeUsedCalculationMethodsDTO> molecules)
       {
-         var nodes = molecules.MapAllUsing(_moleculeBuilderToTreeNodeMapper);
+         var nodes = molecules.MapAllUsing(_moleculeUsedCalculationMethodsDTOToTreeNodeMapper);
+         _treeView.Clear();
          nodes.Each(node => _treeView.AddNode(node));
          if (nodes.Any())
-            _presenter.UpdateForSelectedMolecule(nodes.First().TagAsObject as MoleculeBuilderDTO);
+            _presenter.UpdateForSelectedMolecule(nodes.First().TagAsObject as MoleculeUsedCalculationMethodsDTO);
       }
 
       public void BindTo(IReadOnlyList<UsedCalculationMethodDTO> usedCalculationMethods)

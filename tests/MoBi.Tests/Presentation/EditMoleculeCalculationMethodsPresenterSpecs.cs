@@ -1,4 +1,7 @@
-﻿using FakeItEasy;
+﻿using System.Collections.Generic;
+using System.Linq;
+using FakeItEasy;
+using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -6,282 +9,253 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Utility.Collections;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace MoBi.Presentation;
 
 internal class concern_for_EditMoleculeCalculationMethodsPresenter : ContextSpecification<EditMoleculeCalculationMethodsPresenter>
 {
    protected IEditMoleculeCalculationMethodsView _view;
-   protected IMoleculeBuilderToMoleculeBuilderDTOMapper _moleculeBuilderToDTOMapper;
-   protected ICoreCalculationMethodRepository _calculationMethodsRepository;
+   protected ISimulationConfigurationToMoleculeUsedCalculationMethodsDTOMapper _simulationConfigurationToMoleculeUsedCalculationMethodsDTOMapper;
+   protected IModuleConfigurationToMoleculeUsedCalculationMethodsDTOMapper _moduleConfigurationToMoleculeUsedCalculationMethodsDTOMapper;
+   private ICoreCalculationMethodRepository _calculationMethodsRepository;
 
    protected override void Context()
    {
       _view = A.Fake<IEditMoleculeCalculationMethodsView>();
-      _moleculeBuilderToDTOMapper = A.Fake<IMoleculeBuilderToMoleculeBuilderDTOMapper>();
+      _simulationConfigurationToMoleculeUsedCalculationMethodsDTOMapper = A.Fake<ISimulationConfigurationToMoleculeUsedCalculationMethodsDTOMapper>();
+      _moduleConfigurationToMoleculeUsedCalculationMethodsDTOMapper = A.Fake<IModuleConfigurationToMoleculeUsedCalculationMethodsDTOMapper>();
       _calculationMethodsRepository = A.Fake<ICoreCalculationMethodRepository>();
 
-      sut = new EditMoleculeCalculationMethodsPresenter(_view, _moleculeBuilderToDTOMapper, _calculationMethodsRepository);
+      sut = new EditMoleculeCalculationMethodsPresenter(_view, _simulationConfigurationToMoleculeUsedCalculationMethodsDTOMapper, _moduleConfigurationToMoleculeUsedCalculationMethodsDTOMapper, _calculationMethodsRepository);
    }
 
-   protected MoleculeBuilder CreateFloatingMolecule(string name, params (string category, string method)[] calculationMethods)
+   protected MoleculeUsedCalculationMethodsDTO CreateMoleculeUsedCalculationMethodsDTO(string name, params (string category, string method)[] calculationMethods)
    {
-      var molecule = new MoleculeBuilder().WithName(name);
-      molecule.IsFloating = true;
+      var dto = new MoleculeUsedCalculationMethodsDTO { MoleculeName = name };
       foreach (var (category, method) in calculationMethods)
-         molecule.AddUsedCalculationMethod(new UsedCalculationMethod(category, method));
-      return molecule;
-   }
-
-   protected MoleculeBuilderDTO CreateMoleculeDTO(string name, params (string category, string method)[] calculationMethods)
-   {
-      var molecule = CreateFloatingMolecule(name, calculationMethods);
-      var dto = new MoleculeBuilderDTO(molecule).WithName(name);
-      dto.UsedCalculationMethods = calculationMethods.Select(cm => new UsedCalculationMethodDTO { Category = cm.category, CalculationMethodName = cm.method }).ToList();
+         dto.AddUsedCalculationMethod(new UsedCalculationMethodDTO { Category = category, CalculationMethodName = method });
       return dto;
    }
-}
 
-internal class When_editing_a_simulation_configuration : concern_for_EditMoleculeCalculationMethodsPresenter
-{
-   private SimulationConfiguration _simulationConfiguration;
-   private MoleculeBuilder _floatingMolecule;
-   private MoleculeBuilder _stationaryMolecule;
-   private MoleculeBuilderDTO _floatingMoleculeDTO;
-
-   protected override void Context()
+   protected void SetupCalculationMethodsForCategory(string category, params string[] methodNames)
    {
-      base.Context();
-
-      _floatingMolecule = CreateFloatingMolecule("Drug", ("Absorption", "Method1"));
-
-      _stationaryMolecule = new MoleculeBuilder().WithName("Enzyme");
-      _stationaryMolecule.IsFloating = false;
-
-      var moleculeBuildingBlock = new MoleculeBuildingBlock { _floatingMolecule, _stationaryMolecule };
-      var module = new Module { moleculeBuildingBlock };
-      _simulationConfiguration = new SimulationConfiguration();
-      _simulationConfiguration.AddModuleConfiguration(new ModuleConfiguration(module));
-
-      _floatingMoleculeDTO = CreateMoleculeDTO("Drug", ("Absorption", "Method1"));
-      A.CallTo(() => _moleculeBuilderToDTOMapper.MapFrom(_floatingMolecule)).Returns(_floatingMoleculeDTO);
-   }
-
-   protected override void Because()
-   {
-      sut.Edit(_simulationConfiguration);
-   }
-
-   [Observation]
-   public void should_show_only_non_stationary_molecules_in_view()
-   {
-      A.CallTo(() => _view.Show(A<IReadOnlyList<MoleculeBuilderDTO>>.That.Matches(list => list.Count == 1 && list[0] == _floatingMoleculeDTO))).MustHaveHappened();
-   }
-
-   [Observation]
-   public void should_not_map_stationary_molecules()
-   {
-      A.CallTo(() => _moleculeBuilderToDTOMapper.MapFrom(_stationaryMolecule)).MustNotHaveHappened();
+      var methods = methodNames.Select(n => new CoreCalculationMethod { Name = n, Category = category }).ToList();
+      A.CallTo(() => _calculationMethodsRepository.GetAllCalculationMethodsFor(category)).Returns(methods);
    }
 }
 
-internal class When_updating_for_a_selected_molecule : concern_for_EditMoleculeCalculationMethodsPresenter
-{
-   private MoleculeBuilderDTO _moleculeDTO;
-
-   protected override void Context()
-   {
-      base.Context();
-      _moleculeDTO = CreateMoleculeDTO("Drug", ("Absorption", "Method1"));
-   }
-
-   protected override void Because()
-   {
-      sut.UpdateForSelectedMolecule(_moleculeDTO);
-   }
-
-   [Observation]
-   public void should_bind_the_used_calculation_methods_to_the_view()
-   {
-      A.CallTo(() => _view.BindTo(A<IReadOnlyList<UsedCalculationMethodDTO>>._)).MustHaveHappened();
-   }
-}
-
-internal class When_getting_calculation_methods_for_a_category : concern_for_EditMoleculeCalculationMethodsPresenter
+internal class When_getting_calculation_methods_for_category : concern_for_EditMoleculeCalculationMethodsPresenter
 {
    private IReadOnlyList<string> _result;
-   private CoreCalculationMethod _method1;
-   private CoreCalculationMethod _method2;
 
    protected override void Context()
    {
       base.Context();
-      _method1 = new CoreCalculationMethod{Name = "MethodA", Category = "Absorption"};
-      _method2 = new CoreCalculationMethod{Name = "MethodB", Category = "Absorption" };
-
-      A.CallTo(() => _calculationMethodsRepository.GetAllCalculationMethodsFor("Absorption"))
-         .Returns(new List<CoreCalculationMethod> { _method1, _method2 });
+      SetupCalculationMethodsForCategory("Partition", "MethodA", "MethodB", AppConstants.DefaultNames.EmptyCalculationMethod);
    }
 
    protected override void Because()
    {
-      _result = sut.GetCalculationMethodsForCategory("Absorption");
+      _result = sut.GetCalculationMethodsForCategory("Partition");
    }
 
    [Observation]
-   public void should_return_the_names_of_all_calculation_methods_in_the_category()
+   public void should_return_methods_excluding_the_empty_calculation_method()
    {
-      _result.ShouldContain("MethodA", "MethodB");
+      _result.ShouldOnlyContain("MethodA", "MethodB");
    }
 }
 
-internal class When_setting_a_calculation_method : concern_for_EditMoleculeCalculationMethodsPresenter
+internal class When_updating_for_selected_molecule : concern_for_EditMoleculeCalculationMethodsPresenter
 {
-   private MoleculeBuilderDTO _moleculeDTO;
+   private MoleculeUsedCalculationMethodsDTO _moleculeDTO;
+   private IReadOnlyList<UsedCalculationMethodDTO> _boundCalculationMethods;
 
    protected override void Context()
    {
       base.Context();
-      _moleculeDTO = CreateMoleculeDTO("Drug", ("Absorption", "OldMethod"));
+      // "MultiOptionCategory" has 2 methods => should be shown
+      SetupCalculationMethodsForCategory("MultiOptionCategory", "Method1", "Method2");
+      // "SingleOptionCategory" has only 1 method => should be filtered out
+      SetupCalculationMethodsForCategory("SingleOptionCategory", "OnlyMethod");
+
+      _moleculeDTO = CreateMoleculeUsedCalculationMethodsDTO("Drug",
+         ("MultiOptionCategory", "Method1"),
+         ("SingleOptionCategory", "OnlyMethod"));
+
+      A.CallTo(() => _view.BindTo(A<IReadOnlyList<UsedCalculationMethodDTO>>._))
+         .Invokes(call => _boundCalculationMethods = call.GetArgument<IReadOnlyList<UsedCalculationMethodDTO>>(0));
+   }
+
+   protected override void Because()
+   {
+      sut.UpdateForSelectedMolecule(_moleculeDTO);
+   }
+
+   [Observation]
+   public void should_only_bind_calculation_methods_with_more_than_one_option()
+   {
+      _boundCalculationMethods.Count.ShouldBeEqualTo(1);
+      _boundCalculationMethods[0].Category.ShouldBeEqualTo("MultiOptionCategory");
+   }
+}
+
+internal class When_setting_calculation_method : concern_for_EditMoleculeCalculationMethodsPresenter
+{
+   private MoleculeUsedCalculationMethodsDTO _moleculeDTO;
+
+   protected override void Context()
+   {
+      base.Context();
+      SetupCalculationMethodsForCategory("Partition", "MethodA", "MethodB");
+
+      _moleculeDTO = CreateMoleculeUsedCalculationMethodsDTO("Drug", ("Partition", "MethodA"));
+
+      // Select the molecule first so that _selectedMoleculeDTO is set
       sut.UpdateForSelectedMolecule(_moleculeDTO);
    }
 
    protected override void Because()
    {
-      sut.SetCalculationMethod(new UsedCalculationMethodDTO { Category = "Absorption", CalculationMethodName = "OldMethod" }, "OldMethod", "NewMethod");
+      sut.SetCalculationMethod(_moleculeDTO.UsedCalculationMethods.First(), "MethodA", "MethodB");
    }
 
    [Observation]
-   public void should_update_the_calculation_method_name_on_the_dto()
+   public void should_update_the_calculation_method_name()
    {
-      _moleculeDTO.UsedCalculationMethods.Single(x => x.Category == "Absorption").CalculationMethodName.ShouldBeEqualTo("NewMethod");
+      _moleculeDTO.UsedCalculationMethods.First().CalculationMethodName.ShouldBeEqualTo("MethodB");
    }
 
    [Observation]
-   public void should_rebind_the_view_with_updated_calculation_methods()
+   public void should_rebind_the_view()
    {
-      // Once during initial UpdateForSelectedMolecule, once after SetCalculationMethod
+      // Once in Context (UpdateForSelectedMolecule) and once in Because (SetCalculationMethod calls UpdateForSelectedMolecule)
       A.CallTo(() => _view.BindTo(A<IReadOnlyList<UsedCalculationMethodDTO>>._)).MustHaveHappenedTwiceExactly();
    }
 }
 
-internal class When_setting_a_calculation_method_with_non_matching_category : concern_for_EditMoleculeCalculationMethodsPresenter
+internal class When_getting_all_used_calculation_methods_for_existing_molecule : concern_for_EditMoleculeCalculationMethodsPresenter
 {
-   private MoleculeBuilderDTO _moleculeDTO;
+   private IReadOnlyList<UsedCalculationMethod> _result;
+   private SimulationConfiguration _simulationConfiguration;
 
    protected override void Context()
    {
       base.Context();
-      _moleculeDTO = CreateMoleculeDTO("Drug", ("Absorption", "OldMethod"));
-      sut.UpdateForSelectedMolecule(_moleculeDTO);
+      _simulationConfiguration = new SimulationConfiguration();
+      sut.Edit(_simulationConfiguration);
+
+      var moduleMoleculeDTO = CreateMoleculeUsedCalculationMethodsDTO("Drug", ("Partition", "MethodA"));
+
+      A.CallTo(() => _simulationConfigurationToMoleculeUsedCalculationMethodsDTOMapper.MapFrom(_simulationConfiguration))
+         .Returns(new List<MoleculeUsedCalculationMethodsDTO>());
+
+      var moduleConfiguration = new ModuleConfiguration(new Module());
+      A.CallTo(() => _moduleConfigurationToMoleculeUsedCalculationMethodsDTOMapper.MapFrom(moduleConfiguration))
+         .Returns(new List<MoleculeUsedCalculationMethodsDTO> { moduleMoleculeDTO });
+
+      SetupCalculationMethodsForCategory("Partition", "MethodA", "MethodB");
+
+      var moduleConfigDTO = new ModuleConfigurationDTO(moduleConfiguration);
+
+      sut.RefreshWith(new List<ModuleConfigurationDTO> { moduleConfigDTO });
    }
 
    protected override void Because()
    {
-      sut.SetCalculationMethod(new UsedCalculationMethodDTO { Category = "NonExistentCategory", CalculationMethodName = "OldMethod" }, "OldMethod", "NewMethod");
+      _result = sut.AllUsedCalculationMethodsFor("Drug");
    }
 
    [Observation]
-   public void should_not_change_existing_calculation_methods()
+   public void should_return_the_calculation_methods_for_the_molecule()
    {
-      _moleculeDTO.UsedCalculationMethods.Single(x => x.Category == "Absorption").CalculationMethodName.ShouldBeEqualTo("OldMethod");
+      _result.Count.ShouldBeEqualTo(1);
+      _result[0].Category.ShouldBeEqualTo("Partition");
+      _result[0].CalculationMethod.ShouldBeEqualTo("MethodA");
    }
 }
 
-internal class When_retrieving_calculation_method_overrides : concern_for_EditMoleculeCalculationMethodsPresenter
+internal class When_getting_all_used_calculation_methods_for_unknown_molecule : concern_for_EditMoleculeCalculationMethodsPresenter
 {
-   private Cache<string, IReadOnlyList<UsedCalculationMethod>> _result;
-   private MoleculeBuilderDTO _drugADTO;
-   private MoleculeBuilderDTO _drugBDTO;
-
-   protected override void Context()
-   {
-      base.Context();
-
-      var moleculeA = CreateFloatingMolecule("DrugA", ("Absorption", "AbsMethod"));
-      var moleculeB = CreateFloatingMolecule("DrugB", ("Elimination", "ElimMethod"), ("Distribution", "DistMethod"));
-
-      _drugADTO = CreateMoleculeDTO("DrugA", ("Absorption", "AbsMethod"));
-      _drugBDTO = CreateMoleculeDTO("DrugB", ("Elimination", "ElimMethod"), ("Distribution", "DistMethod"));
-
-      A.CallTo(() => _moleculeBuilderToDTOMapper.MapFrom(moleculeA)).Returns(_drugADTO);
-      A.CallTo(() => _moleculeBuilderToDTOMapper.MapFrom(moleculeB)).Returns(_drugBDTO);
-
-      var moleculeBuildingBlock = new MoleculeBuildingBlock { moleculeA, moleculeB };
-      var module = new Module { moleculeBuildingBlock };
-      var simulationConfiguration = new SimulationConfiguration();
-      simulationConfiguration.AddModuleConfiguration(new ModuleConfiguration(module));
-
-      sut.Edit(simulationConfiguration);
-   }
+   private IReadOnlyList<UsedCalculationMethod> _result;
 
    protected override void Because()
    {
-      _result = sut.CalculationMethodOverrides;
+      _result = sut.AllUsedCalculationMethodsFor("UnknownMolecule");
    }
 
    [Observation]
-   public void should_contain_overrides_for_each_molecule()
+   public void should_return_an_empty_list()
    {
-      _result.Contains("DrugA").ShouldBeTrue();
-      _result.Contains("DrugB").ShouldBeTrue();
-   }
-
-   [Observation]
-   public void should_map_calculation_methods_correctly_for_first_molecule()
-   {
-      var drugAOverrides = _result["DrugA"];
-      drugAOverrides.Count.ShouldBeEqualTo(1);
-      drugAOverrides[0].Category.ShouldBeEqualTo("Absorption");
-      drugAOverrides[0].CalculationMethod.ShouldBeEqualTo("AbsMethod");
-   }
-
-   [Observation]
-   public void should_map_calculation_methods_correctly_for_second_molecule()
-   {
-      var drugBOverrides = _result["DrugB"];
-      drugBOverrides.Count.ShouldBeEqualTo(2);
-      drugBOverrides.Any(x => x.Category == "Elimination" && x.CalculationMethod == "ElimMethod").ShouldBeTrue();
-      drugBOverrides.Any(x => x.Category == "Distribution" && x.CalculationMethod == "DistMethod").ShouldBeTrue();
+      _result.ShouldBeEmpty();
    }
 }
 
-internal class When_retrieving_calculation_method_overrides_after_a_change : concern_for_EditMoleculeCalculationMethodsPresenter
+internal class When_refreshing_with_module_configurations_and_simulation_overrides : concern_for_EditMoleculeCalculationMethodsPresenter
 {
-   private Cache<string, IReadOnlyList<UsedCalculationMethod>> _result;
-   private MoleculeBuilderDTO _moleculeDTO;
+   private SimulationConfiguration _simulationConfiguration;
+   private IReadOnlyList<MoleculeUsedCalculationMethodsDTO> _shownMolecules;
+   private ModuleConfigurationDTO _moduleConfigDTO;
 
    protected override void Context()
    {
       base.Context();
+      _simulationConfiguration = new SimulationConfiguration();
+      sut.Edit(_simulationConfiguration);
 
-      var molecule = CreateFloatingMolecule("Drug", ("Absorption", "OldMethod"));
-      _moleculeDTO = CreateMoleculeDTO("Drug", ("Absorption", "OldMethod"));
+      // Simulation has overrides for "Drug" with MethodB
+      var simulationDrugDTO = CreateMoleculeUsedCalculationMethodsDTO("Drug", ("Partition", "MethodB"));
 
-      A.CallTo(() => _moleculeBuilderToDTOMapper.MapFrom(molecule)).Returns(_moleculeDTO);
+      // Simulation has another override, but the molecule "Drug3" is not present in the module configuration, so it should be ignored
+      var simulationDrugDTO2 = CreateMoleculeUsedCalculationMethodsDTO("Drug3", ("Partition", "MethodB"));
+      A.CallTo(() => _simulationConfigurationToMoleculeUsedCalculationMethodsDTOMapper.MapFrom(_simulationConfiguration))
+         .Returns(new List<MoleculeUsedCalculationMethodsDTO> { simulationDrugDTO, simulationDrugDTO2 });
 
-      var moleculeBuildingBlock = new MoleculeBuildingBlock { molecule };
-      var module = new Module { moleculeBuildingBlock };
-      var simulationConfiguration = new SimulationConfiguration();
-      simulationConfiguration.AddModuleConfiguration(new ModuleConfiguration(module));
+      // Module configuration has "Drug" with MethodA (will be overridden) and "Drug2" with MethodC (no override)
+      var moduleDrug1DTO = CreateMoleculeUsedCalculationMethodsDTO("Drug", ("Partition", "MethodA"));
+      var moduleDrug2DTO = CreateMoleculeUsedCalculationMethodsDTO("Drug2", ("Permeability", "MethodC"));
 
-      sut.Edit(simulationConfiguration);
-      sut.UpdateForSelectedMolecule(_moleculeDTO);
-      sut.SetCalculationMethod(new UsedCalculationMethodDTO { Category = "Absorption", CalculationMethodName = "OldMethod" }, "OldMethod", "NewMethod");
+      var moduleConfiguration = new ModuleConfiguration(new Module());
+      A.CallTo(() => _moduleConfigurationToMoleculeUsedCalculationMethodsDTOMapper.MapFrom(moduleConfiguration))
+         .Returns(new List<MoleculeUsedCalculationMethodsDTO> { moduleDrug1DTO, moduleDrug2DTO });
+
+      SetupCalculationMethodsForCategory("Partition", "MethodA", "MethodB");
+      SetupCalculationMethodsForCategory("Permeability", "MethodC", "MethodD");
+
+      _moduleConfigDTO = new ModuleConfigurationDTO(moduleConfiguration);
+
+      A.CallTo(() => _view.Show(A<IReadOnlyList<MoleculeUsedCalculationMethodsDTO>>._))
+         .Invokes(call => _shownMolecules = call.GetArgument<IReadOnlyList<MoleculeUsedCalculationMethodsDTO>>(0));
    }
 
    protected override void Because()
    {
-      _result = sut.CalculationMethodOverrides;
+      sut.RefreshWith(new List<ModuleConfigurationDTO> { _moduleConfigDTO });
    }
 
    [Observation]
-   public void should_reflect_the_updated_calculation_method()
+   public void should_show_molecules_from_module_configurations()
    {
-      var overrides = _result["Drug"];
-      overrides.Single(x => x.Category == "Absorption").CalculationMethod.ShouldBeEqualTo("NewMethod");
+      _shownMolecules.Count.ShouldBeEqualTo(2);
+   }
+
+   [Observation]
+   public void should_use_simulation_overrides_for_existing_molecules()
+   {
+      var drugDTO = _shownMolecules.First(x => string.Equals(x.Name, "Drug"));
+      drugDTO.UsedCalculationMethods.First().CalculationMethodName.ShouldBeEqualTo("MethodB");
+   }
+
+   [Observation]
+   public void should_use_module_values_for_molecules_without_simulation_overrides()
+   {
+      var drug2DTO = _shownMolecules.First(x => string.Equals(x.Name, "Drug2"));
+      drug2DTO.UsedCalculationMethods.First().CalculationMethodName.ShouldBeEqualTo("MethodC");
+   }
+
+   [Observation]
+   public void should_return_correct_molecule_names()
+   {
+      sut.MoleculeNames.ShouldContain("Drug", "Drug2");
    }
 }
