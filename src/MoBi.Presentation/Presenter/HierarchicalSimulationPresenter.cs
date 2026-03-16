@@ -17,6 +17,8 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using MoBi.Presentation.Formatters;
+using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -39,6 +41,7 @@ namespace MoBi.Presentation.Presenter
       private readonly ISimulationSettingsToObjectBaseDTOMapper _simulationSettingsMapper;
       private readonly IViewItemContextMenuFactory _contextMenuFactory;
       private readonly IEntityPathResolver _entityPathResolver;
+      private readonly ICoreCalculationMethodRepository _calculationMethodRepository;
       public Action ShowSolverSettings { set; get; }
       public Action ShowOutputSchema { get; set; }
 
@@ -48,12 +51,18 @@ namespace MoBi.Presentation.Presenter
 
       public HierarchicalSimulationPresenter(IHierarchicalStructureView view, IMoBiContext context,
          IObjectBaseToObjectBaseDTOMapper objectBaseMapper,
-         ISimulationSettingsToObjectBaseDTOMapper simulationSettingsMapper, ITreeNodeFactory treeNodeFactory, IViewItemContextMenuFactory contextMenuFactory, INeighborhoodToNeighborDTOMapper neighborhoodToNeighborDTOMapper, IEntityPathResolver entityPathResolver)
+         ISimulationSettingsToObjectBaseDTOMapper simulationSettingsMapper, 
+         ITreeNodeFactory treeNodeFactory, 
+         IViewItemContextMenuFactory contextMenuFactory, 
+         INeighborhoodToNeighborDTOMapper neighborhoodToNeighborDTOMapper, 
+         IEntityPathResolver entityPathResolver,
+         ICoreCalculationMethodRepository calculationMethodRepository)
          : base(view, context, objectBaseMapper, treeNodeFactory, neighborhoodToNeighborDTOMapper)
       {
          _simulationSettingsMapper = simulationSettingsMapper;
          _contextMenuFactory = contextMenuFactory;
          _entityPathResolver = entityPathResolver;
+         _calculationMethodRepository = calculationMethodRepository;
       }
 
       protected override void RaiseFavoritesSelectedEvent() => _context.PublishEvent(new FavoritesSelectedEvent(_simulation));
@@ -73,10 +82,30 @@ namespace MoBi.Presentation.Presenter
          _view.AddNode(_userDefinedNode);
 
          var roots = new List<ObjectBaseDTO> { _simulationSettingsMapper.MapFrom(simulation.Settings) };
-         roots.AddRange(rootContainers());
+         var objectBaseDtos = rootContainers();
+         objectBaseDtos.Where(x => x.ObjectBase is Container { ContainerType: ContainerType.Molecule }).Each(x => buildCalculationMethodDescription(x, simulation.Configuration.CalculationMethodOverridesFor(x.Name)));
+         roots.AddRange(objectBaseDtos);
          _view.Show(roots);
 
          ShowOutputSchema();
+      }
+
+      private void buildCalculationMethodDescription(ObjectBaseDTO moleculeContainerDTO, MoleculeCalculationMethodOverride overriddenCalculationMethods)
+      {
+         var formatter = new UsedCalculationMethodCategoryFormatter();
+         moleculeContainerDTO.Description = descriptionFor(formatter, overriddenCalculationMethods.UsedCalculationMethods.Where(shouldShow));
+      }
+
+      private string descriptionFor(UsedCalculationMethodCategoryFormatter formatter, IEnumerable<UsedCalculationMethod> usedMethods)
+      {
+         return string.Join(Environment.NewLine, usedMethods.Select(x => $"{formatter.Format(x.Category)} - {x.CalculationMethod}"));
+      }
+
+      private bool shouldShow(UsedCalculationMethod method)
+      {
+         return _calculationMethodRepository
+            .GetAllCalculationMethodsFor(method.Category)
+            .Count(x => !x.IsNamed(AppConstants.DefaultNames.EmptyCalculationMethod)) > 1;
       }
 
       private IEnumerable<ObjectBaseDTO> rootContainers() => GetChildrenSorted(_simulation.Model.Root, x => true);

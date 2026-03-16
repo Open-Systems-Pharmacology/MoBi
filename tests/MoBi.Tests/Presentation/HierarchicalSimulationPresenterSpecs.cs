@@ -12,6 +12,7 @@ using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Assets;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using ITreeNodeFactory = MoBi.Presentation.Nodes.ITreeNodeFactory;
@@ -29,6 +30,7 @@ namespace MoBi.Presentation
       private IViewItemContextMenuFactory _contextMenuFactory;
       protected INeighborhoodToNeighborDTOMapper _neighborhoodDTOMapper;
       protected IEntityPathResolver _entityPathResolver;
+      private ICoreCalculationMethodRepository _calculationMethodRepository;
 
       protected override void Context()
       {
@@ -38,6 +40,7 @@ namespace MoBi.Presentation
          _dtoMapper = A.Fake<IObjectBaseToObjectBaseDTOMapper>();
          _neighborhoodDTOMapper = A.Fake<INeighborhoodToNeighborDTOMapper>();
          _entityPathResolver = A.Fake<IEntityPathResolver>();
+         _calculationMethodRepository = A.Fake<ICoreCalculationMethodRepository>();
 
          _favorites = new ObjectBaseDTO
          {
@@ -53,7 +56,7 @@ namespace MoBi.Presentation
          _contextMenuFactory = A.Fake<IViewItemContextMenuFactory>();
 
          sut = new HierarchicalSimulationPresenter(_view, _context, _dtoMapper, _simulationSettingsMapper,
-            _treeNodeFactory, _contextMenuFactory, _neighborhoodDTOMapper, _entityPathResolver);
+            _treeNodeFactory, _contextMenuFactory, _neighborhoodDTOMapper, _entityPathResolver, _calculationMethodRepository);
 
          sut.ShowOutputSchema = () => { };
          sut.ShowSolverSettings = () => { };
