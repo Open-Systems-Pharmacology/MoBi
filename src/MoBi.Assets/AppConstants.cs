@@ -1720,6 +1720,10 @@ namespace MoBi.Assets
          public static readonly string DefaultParameterView = "Default parameter view";
          public static readonly string RenameDependentObjects = "Rename dependent objects";
          public static readonly string WarnForNonFiniteQuantities = "Warn for non-finite quantities";
+         public static readonly string CalculationMethods = "Calculation Methods";
+         public static readonly string CellularPermeabilities = "Cellular Permeabilities";
+         public static readonly string PartitionCoefficients = "Partition Coefficients";
+
          public static string SelectTheBuildingBlockWhereEntitiesWillBeAddedOrUpdated(string typeBeingAdded) => $"Select the building block where {typeBeingAdded} will be added or updated";
          public static readonly string SelectBuildingBlock = "Select Building Block";
          public static readonly string MakeDefault = "Make defaults";
@@ -2517,5 +2521,19 @@ namespace MoBi.Assets
       }
 
       public static string PathCannotContainIllegalCharacters(IEnumerable<string> illegalCharacters) => "Path cannot contain any of the following characters:\n" + illegalCharacters.ToString<string>(", ", "'");
+
+      public static class UsedCalculationMethods
+      {
+         public static class Categories
+         {
+            public const string DiffusionIntCell = "DiffusionIntCell";
+            public const string DistributionCellular = "DistributionCellular";
+         }
+
+         public static class Names
+         {
+            public static string EmptyCalculationMethod => DefaultNames.EmptyCalculationMethod;
+         }
+      }
    }
 }

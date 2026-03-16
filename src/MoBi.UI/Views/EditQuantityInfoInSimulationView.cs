@@ -48,7 +48,6 @@ namespace MoBi.UI.Views
       public void BindTo(QuantityDTO dto)
       {
          _screenBinder.BindToSource(dto);
-
          layoutControlItemSource.Visibility = LayoutVisibilityConvertor.FromBoolean(dto.SourceReference != null);
          layoutControlItemGoToSource.Visibility = layoutControlItemSource.Visibility;
       }

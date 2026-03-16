@@ -1,6 +1,7 @@
 ﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 
 namespace MoBi.Presentation
@@ -32,6 +33,22 @@ namespace MoBi.Presentation
    public class ModuleComparer : ArgumentEqualityComparer<Module>
    {
       protected override bool AreEqual(Module expectedValue, Module argumentValue)
+      {
+         return ReferenceEquals(expectedValue, argumentValue);
+      }
+   }
+
+   public class MoleculeBuildingBlockComparer : ArgumentEqualityComparer<MoleculeBuildingBlock>
+   {
+      protected override bool AreEqual(MoleculeBuildingBlock expectedValue, MoleculeBuildingBlock argumentValue)
+      {
+         return ReferenceEquals(expectedValue, argumentValue);
+      }
+   }
+
+   public class MoleculeBuilderComparer : ArgumentEqualityComparer<MoleculeBuilder>
+   {
+      protected override bool AreEqual(MoleculeBuilder expectedValue, MoleculeBuilder argumentValue)
       {
          return ReferenceEquals(expectedValue, argumentValue);
       }

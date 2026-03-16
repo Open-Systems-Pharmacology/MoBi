@@ -1,11 +1,17 @@
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Presentation.DTO;
+using MoBi.Presentation.Formatters;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Core;
@@ -13,10 +19,6 @@ using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -30,35 +32,40 @@ namespace MoBi.Presentation.Presenter
       Func<IEnumerable<IParameter>> SimulationFavorites { get; set; }
       IMoBiSimulation Simulation { get; }
       void CopyCurrentPathToClipBoard(IEntity entity);
-
    }
 
    internal class HierarchicalSimulationPresenter : HierarchicalStructureEditPresenter, IHierarchicalSimulationPresenter
    {
-      private IMoBiSimulation _simulation;
       private readonly ISimulationSettingsToObjectBaseDTOMapper _simulationSettingsMapper;
       private readonly IViewItemContextMenuFactory _contextMenuFactory;
       private readonly IEntityPathResolver _entityPathResolver;
+      private readonly ICoreCalculationMethodRepository _calculationMethodRepository;
       public Action ShowSolverSettings { set; get; }
       public Action ShowOutputSchema { get; set; }
 
       public Func<IEnumerable<IParameter>> SimulationFavorites { get; set; } = () => new List<IParameter>();
 
-      public IMoBiSimulation Simulation => _simulation;
+      public IMoBiSimulation Simulation { get; private set; }
 
       public HierarchicalSimulationPresenter(IHierarchicalStructureView view, IMoBiContext context,
          IObjectBaseToObjectBaseDTOMapper objectBaseMapper,
-         ISimulationSettingsToObjectBaseDTOMapper simulationSettingsMapper, ITreeNodeFactory treeNodeFactory, IViewItemContextMenuFactory contextMenuFactory, INeighborhoodToNeighborDTOMapper neighborhoodToNeighborDTOMapper, IEntityPathResolver entityPathResolver)
+         ISimulationSettingsToObjectBaseDTOMapper simulationSettingsMapper,
+         ITreeNodeFactory treeNodeFactory,
+         IViewItemContextMenuFactory contextMenuFactory,
+         INeighborhoodToNeighborDTOMapper neighborhoodToNeighborDTOMapper,
+         IEntityPathResolver entityPathResolver,
+         ICoreCalculationMethodRepository calculationMethodRepository)
          : base(view, context, objectBaseMapper, treeNodeFactory, neighborhoodToNeighborDTOMapper)
       {
          _simulationSettingsMapper = simulationSettingsMapper;
          _contextMenuFactory = contextMenuFactory;
          _entityPathResolver = entityPathResolver;
+         _calculationMethodRepository = calculationMethodRepository;
       }
 
-      protected override void RaiseFavoritesSelectedEvent() => _context.PublishEvent(new FavoritesSelectedEvent(_simulation));
+      protected override void RaiseFavoritesSelectedEvent() => _context.PublishEvent(new FavoritesSelectedEvent(Simulation));
 
-      protected override void RaiseUserDefinedSelectedEvent() => _context.PublishEvent(new UserDefinedSelectedEvent(_simulation));
+      protected override void RaiseUserDefinedSelectedEvent() => _context.PublishEvent(new UserDefinedSelectedEvent(Simulation));
 
       public override void ShowContextMenu(IViewItem objectRequestingPopup, Point popupLocation)
       {
@@ -68,20 +75,47 @@ namespace MoBi.Presentation.Presenter
 
       public void Edit(IMoBiSimulation simulation)
       {
-         _simulation = simulation;
+         Simulation = simulation;
          _view.AddNode(_favoritesNode);
          _view.AddNode(_userDefinedNode);
 
          var roots = new List<ObjectBaseDTO> { _simulationSettingsMapper.MapFrom(simulation.Settings) };
-         roots.AddRange(rootContainers());
+         var objectBaseDTOs = rootContainers();
+         addCalculationMethodDescriptions(simulation, moleculeRootContainerDTOs(objectBaseDTOs));
+         roots.AddRange(objectBaseDTOs);
          _view.Show(roots);
 
          ShowOutputSchema();
       }
 
-      private IEnumerable<ObjectBaseDTO> rootContainers() => GetChildrenSorted(_simulation.Model.Root, x => true);
+      private void addCalculationMethodDescriptions(IMoBiSimulation simulation, IReadOnlyList<ObjectBaseDTO> moleculeRootContainerDTOs) => 
+         moleculeRootContainerDTOs.Each(x => addCalculationMethodDescription(simulation, x));
 
-      public object Subject => _simulation;
+      private void addCalculationMethodDescription(IMoBiSimulation simulation, ObjectBaseDTO x)
+      {
+         var overrides = simulation.Configuration.CalculationMethodOverridesFor(x.Name);
+         if (overrides.UsedCalculationMethods.Any())
+            addCalculationMethodDescription(x, overrides, new UsedCalculationMethodCategoryFormatter());
+      }
+
+      private static IReadOnlyList<ObjectBaseDTO> moleculeRootContainerDTOs(IEnumerable<ObjectBaseDTO> objectBaseDTOs) => 
+         objectBaseDTOs.Where(x => x.ObjectBase is Container { ContainerType: ContainerType.Molecule }).ToList();
+
+      private void addCalculationMethodDescription(ObjectBaseDTO moleculeContainerDTO, MoleculeCalculationMethodOverride overriddenCalculationMethods, UsedCalculationMethodCategoryFormatter formatter) => 
+         moleculeContainerDTO.Description = descriptionFor(overriddenCalculationMethods.UsedCalculationMethods.Where(shouldShow).ToList(), formatter);
+
+      private string descriptionFor(IReadOnlyList<UsedCalculationMethod> usedMethods, UsedCalculationMethodCategoryFormatter formatter) => ToolTips.CalculationMethodDescription(usedMethods, formatter);
+
+      private bool shouldShow(UsedCalculationMethod method)
+      {
+         return _calculationMethodRepository
+            .GetAllCalculationMethodsFor(method.Category)
+            .Count(x => !x.IsNamed(AppConstants.DefaultNames.EmptyCalculationMethod)) > 1;
+      }
+
+      private IReadOnlyList<ObjectBaseDTO> rootContainers() => GetChildrenSorted(Simulation.Model.Root, x => true);
+
+      public object Subject => Simulation;
 
       public void Edit(object objectToEdit) => Edit(objectToEdit.DowncastTo<IMoBiSimulation>());
 
@@ -90,8 +124,8 @@ namespace MoBi.Presentation.Presenter
          if (string.Equals(dto.Id, AppConstants.SimulationSettingsId))
             return new[]
             {
-               _simulationSettingsMapper.MapFrom(_simulation.OutputSchema),
-               _simulationSettingsMapper.MapFrom(_simulation.Solver),
+               _simulationSettingsMapper.MapFrom(Simulation.OutputSchema),
+               _simulationSettingsMapper.MapFrom(Simulation.Solver),
             };
 
          if (dto.Id.IsOneOf(AppConstants.OutputIntervalId, AppConstants.SolverSettingsId))
@@ -113,7 +147,7 @@ namespace MoBi.Presentation.Presenter
       public override void ReleaseFrom(IEventPublisher eventPublisher)
       {
          base.ReleaseFrom(eventPublisher);
-         _simulation = null;
+         Simulation = null;
       }
 
       public void Handle(EntitySelectedEvent eventToHandle)
@@ -133,8 +167,8 @@ namespace MoBi.Presentation.Presenter
       }
 
       private bool selectedEntityIsInSimulation(IEntity entity) =>
-         _simulation.Model.Root.Equals(entity.RootContainer) ||
-         _simulation.Model.Neighborhoods.Equals(entity.RootContainer);
+         Simulation.Model.Root.Equals(entity.RootContainer) ||
+         Simulation.Model.Neighborhoods.Equals(entity.RootContainer);
 
       protected override IReadOnlyList<ObjectBaseDTO> GetChildrenSorted(IContainer container, Func<IEntity, bool> predicate)
       {
@@ -151,13 +185,13 @@ namespace MoBi.Presentation.Presenter
          var neighbors = _neighborhoodToNeighborDTOMapper.MapFrom(neighborhood).ToList();
          neighbors.Each(x =>
          {
-            x.Path.Remove(_simulation.Name);
+            x.Path.Remove(Simulation.Name);
             x.Name = x.Path;
          });
          return neighbors;
       }
 
-      protected override IEntity GetEntityForNeighbor(NeighborDTO neighborDTO) => neighborDTO.Path.Resolve<IEntity>(_simulation.Model.Root);
+      protected override IEntity GetEntityForNeighbor(NeighborDTO neighborDTO) => neighborDTO.Path.Resolve<IEntity>(Simulation.Model.Root);
 
       public void CopyCurrentPathToClipBoard(IEntity entity) => _view.CopyToClipBoard(_entityPathResolver.PathFor(entity));
    }
