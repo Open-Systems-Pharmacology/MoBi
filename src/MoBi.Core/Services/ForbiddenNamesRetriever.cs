@@ -61,10 +61,23 @@ namespace MoBi.Core.Services
       public IEnumerable<string> For(MoleculeBuilder moleculeBuilder)
       {
          var nameHash = new HashSet<string>();
-         addNamesToHash(nameHash, allParameterNamesFromSpatialStructureInProject());
-         addNamesToHash(nameHash, allParametersFromMoleculesInProject());
-         addNamesToHash(nameHash, allMoleculeNamesFromInitialConditions(moleculeBuilder));
-         addNamesToHash(nameHash, allReactionNamesFromProject());
+         var module = moleculeBuilder.BuildingBlock?.Module;
+
+         if (module != null)
+         {
+            addNamesToHash(nameHash, allParameterNamesFromSpatialStructureInModule(module));
+            addNamesToHash(nameHash, allParametersFromMoleculesInModule(module));
+            addNamesToHash(nameHash, allMoleculeNamesFromInitialConditionsInModule(moleculeBuilder, module));
+            addNamesToHash(nameHash, allReactionNamesFromModule(module));
+         }
+         else
+         {
+            addNamesToHash(nameHash, allParameterNamesFromSpatialStructureInProject());
+            addNamesToHash(nameHash, allParametersFromMoleculesInProject());
+            addNamesToHash(nameHash, allMoleculeNamesFromInitialConditions(moleculeBuilder));
+            addNamesToHash(nameHash, allReactionNamesFromProject());
+         }
+
          return nameHash;
       }
 
@@ -173,6 +186,55 @@ namespace MoBi.Core.Services
          return _buildingBlockRepository.InitialConditionBlockCollection
             .Where(x => x.Any(msv => msv.MoleculeName.Equals(builderName)))
             .SelectMany(x => x.All());
+      }
+
+      private IEnumerable<string> allParameterNamesFromSpatialStructureInModule(Module module)
+      {
+         var nameHash = new HashSet<string>();
+         var spatialStructure = module.SpatialStructure;
+
+         if (spatialStructure != null)
+            spatialStructure.TopContainers.Each(c => addNamesToHash(nameHash, allParameterNamesFrom(c)));
+
+         return nameHash;
+      }
+
+      private IEnumerable<string> allParametersFromMoleculesInModule(Module module)
+      {
+         var nameHash = new HashSet<string>();
+         var molecules = module.Molecules;
+
+         if (molecules != null)
+         {
+            molecules.Each(m =>
+            {
+               addNamesToHash(nameHash, allParameterNamesFrom(m, x => x.BuildMode == ParameterBuildMode.Global));
+               addNamesToHash(nameHash, allParameterNamesFrom(m, x => x.BuildMode == ParameterBuildMode.Local));
+            });
+         }
+
+         return nameHash;
+      }
+
+      private IEnumerable<string> allMoleculeNamesFromInitialConditionsInModule(MoleculeBuilder moleculeBuilder, Module module)
+      {
+         var nameHash = new HashSet<string>();
+         var builderName = moleculeBuilder.Name;
+
+         module.InitialConditionsCollection
+            .Where(x => x.Any(ic => ic.MoleculeName.Equals(builderName)))
+            .SelectMany(x => x)
+            .Select(x => x.MoleculeName).Distinct()
+            .Where(x => !x.Equals(builderName))
+            .Each(x => nameHash.Add(x));
+
+         return nameHash;
+      }
+
+      private IEnumerable<string> allReactionNamesFromModule(Module module)
+      {
+         var reactions = module.Reactions;
+         return reactions?.Select(x => x.Name) ?? Enumerable.Empty<string>();
       }
 
       private IEnumerable<string> allParameterNamesFromSpatialStructureInProject()
