@@ -102,7 +102,8 @@ public class EditMoleculeCalculationMethodsPresenter : AbstractSubPresenter<IEdi
       });
 
       _view.Show(_moleculeDTOs);
-      UpdateForSelectedMolecule(_moleculeDTOs.First());
+      if(_moleculeDTOs.Any())
+         UpdateForSelectedMolecule(_moleculeDTOs.First());
    }
 }
 

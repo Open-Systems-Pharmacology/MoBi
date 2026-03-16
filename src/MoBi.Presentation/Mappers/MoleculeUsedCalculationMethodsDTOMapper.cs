@@ -32,6 +32,7 @@ public abstract class MoleculeUsedCalculationMethodsDTOMapper<T> : IMapper<T, IR
 
          overridingCalculationMethods.Each(x => dto.AddUsedCalculationMethod(usedCalculationMethodDTOFor(x)));
 
+         // The intent is to have only one entry per molecule, so if there are multiple, we just overwrite the previous one.
          cache[m.Name] = dto;
       });
 

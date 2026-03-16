@@ -18,8 +18,8 @@ public class ModuleConfigurationToMoleculeUsedCalculationMethodsDTOMapper : Mole
       return configuration.Module.Molecules?.ToList();
    }
 
-   protected override IReadOnlyCollection<UsedCalculationMethod> MoleculeUsedCalculationMethodsFor(ModuleConfiguration configuration, MoleculeBuilder m)
+   protected override IReadOnlyCollection<UsedCalculationMethod> MoleculeUsedCalculationMethodsFor(ModuleConfiguration configuration, MoleculeBuilder builder)
    {
-      return configuration.Module.Molecules?.FindByName(m.Name).UsedCalculationMethods.ToList();
+      return configuration.Module.Molecules.FindByName(builder.Name).UsedCalculationMethods.ToList();
    }
 }
