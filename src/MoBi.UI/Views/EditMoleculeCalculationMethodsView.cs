@@ -103,5 +103,10 @@ namespace MoBi.UI.Views
       {
          _gridBinder.BindToSource(usedCalculationMethods);
       }
+
+      private void disposeBinders()
+      {
+         _gridBinder.Dispose();
+      }
    }
 }

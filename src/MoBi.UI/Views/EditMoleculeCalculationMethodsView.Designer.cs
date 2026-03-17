@@ -16,6 +16,7 @@
          if (disposing && (components != null))
          {
             components.Dispose();
+            disposeBinders();
          }
          base.Dispose(disposing);
       }
