@@ -267,10 +267,10 @@ internal class when_creating_simulation_with_calculation_method_override : conce
       _moduleForSimulation.Molecules.Add(new MoleculeBuilder().WithName("Molecule name"));
 
       var molecule = _moduleForSimulation.Molecules.First();
+      molecule.AddUsedCalculationMethod(new UsedCalculationMethod("someCategory", "someName"));
       var usedCalculationMethod = molecule.UsedCalculationMethods.First();
       _category = usedCalculationMethod.Category;
-      molecule.AddUsedCalculationMethod(new UsedCalculationMethod("someCategory", "someName"));
-
+      
       var moduleConfiguration = sut.CreateModuleConfiguration(_moduleForSimulation, "Parameter Values", "Initial Conditions");
 
       _request = new SimulationRequest();
