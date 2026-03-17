@@ -38,12 +38,12 @@ namespace MoBi.Core.Domain.Extensions
 
       public static IEnumerable<T> GetChildrenSortedByName<T>(this IContainer container, Func<T, bool> pred) where T : class, IEntity
       {
-         return container.GetChildren(pred).OrderBy(x => x.Name);
+         return container.GetChildren(pred).OrderBy(x => x.Name, new IndexedNameComparer());
       }
 
       public static IEnumerable<T> GetChildrenSortedByName<T>(this IContainer container) where T : class, IEntity
       {
-         return container.GetChildren<T>().OrderBy(x => x.Name);
+         return container.GetChildren<T>().OrderBy(x => x.Name, new IndexedNameComparer());
       }
    }
 }
