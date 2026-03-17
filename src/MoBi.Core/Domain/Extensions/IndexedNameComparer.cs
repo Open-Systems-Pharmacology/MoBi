@@ -8,6 +8,10 @@ namespace MoBi.Core.Domain.Extensions
    {
       public int Compare(string x, string y)
       {
+         if (x == null && y == null) return 0;
+         if (x == null) return -1;
+         if (y == null) return 1;
+
          var xParts = x.Split('_');
          var yParts = y.Split('_');
 

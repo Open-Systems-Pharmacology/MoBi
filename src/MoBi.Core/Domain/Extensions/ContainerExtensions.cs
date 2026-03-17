@@ -43,7 +43,7 @@ namespace MoBi.Core.Domain.Extensions
 
       public static IEnumerable<T> GetChildrenSortedByName<T>(this IContainer container) where T : class, IEntity
       {
-         return container.GetChildren<T>().OrderBy(x => x.Name, new IndexedNameComparer());
+         return container.GetChildrenSortedByName<T>(x => true);
       }
    }
 }

@@ -70,4 +70,25 @@ namespace MoBi.Core.Domain.Extensions
          (sut.Compare("application_def", "application_11") > 0).ShouldBeTrue();
       }
    }
+
+   public class When_comparing_names_with_null_values : concern_for_IndexedNameComparer
+   {
+      [Observation]
+      public void should_return_zero_when_both_are_null()
+      {
+         sut.Compare(null, null).ShouldBeEqualTo(0);
+      }
+
+      [Observation]
+      public void should_order_null_before_non_null()
+      {
+         (sut.Compare(null, "application_1") < 0).ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_order_non_null_after_null()
+      {
+         (sut.Compare("application_1", null) > 0).ShouldBeTrue();
+      }
+   }
 }
