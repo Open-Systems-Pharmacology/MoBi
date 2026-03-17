@@ -264,16 +264,17 @@ internal class when_creating_simulation_with_calculation_method_override : conce
       base.Context();
 
       _moduleForSimulation = _projectTask.ModuleByName(_project, "Module1");
-      var moduleConfig = sut.CreateModuleConfiguration(_moduleForSimulation, "Parameter Values", "Initial Conditions");
       _moduleForSimulation.Molecules.Add(new MoleculeBuilder().WithName("Molecule name"));
+
       var molecule = _moduleForSimulation.Molecules.First();
-      molecule.AddUsedCalculationMethod(new UsedCalculationMethod("someCategory", "someName"));
-      
       var usedCalculationMethod = molecule.UsedCalculationMethods.First();
       _category = usedCalculationMethod.Category;
+      molecule.AddUsedCalculationMethod(new UsedCalculationMethod("someCategory", "someName"));
+
+      var moduleConfiguration = sut.CreateModuleConfiguration(_moduleForSimulation, "Parameter Values", "Initial Conditions");
 
       _request = new SimulationRequest();
-      _request.AddModuleConfiguration(moduleConfig);
+      _request.AddModuleConfiguration(moduleConfiguration);
       _request.SetIndividual(_projectTask.IndividualBuildingBlockByName(_project, "European (P-gp modified, CYP3A4 36 h)"));
       _request.AddMoleculeUsedCalculationMethod("Molecule name", _category, _overriddenCalculationMethod);
 
