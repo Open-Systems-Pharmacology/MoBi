@@ -252,3 +252,48 @@ internal class when_creating_simulation_with_custom_simulation_settings : concer
       _creationResult.Simulation.Settings.Name.ShouldBeEqualTo("CustomSettings");
    }
 }
+
+internal class when_creating_simulation_with_calculation_method_override : concern_for_SimulationTask
+{
+   private SimulationCreationResult _creationResult;
+   private string _category;
+   private const string _overriddenCalculationMethod = "OverriddenMethod";
+
+   protected override void Context()
+   {
+      base.Context();
+
+      _moduleForSimulation = _projectTask.ModuleByName(_project, "Module1");
+      var moduleConfig = sut.CreateModuleConfiguration(_moduleForSimulation, "Parameter Values", "Initial Conditions");
+      _moduleForSimulation.Molecules.Add(new MoleculeBuilder().WithName("Molecule name"));
+      var molecule = _moduleForSimulation.Molecules.First();
+      molecule.AddUsedCalculationMethod(new UsedCalculationMethod("someCategory", "someName"));
+      
+      var usedCalculationMethod = molecule.UsedCalculationMethods.First();
+      _category = usedCalculationMethod.Category;
+
+      _request = new SimulationRequest();
+      _request.AddModuleConfiguration(moduleConfig);
+      _request.SetIndividual(_projectTask.IndividualBuildingBlockByName(_project, "European (P-gp modified, CYP3A4 36 h)"));
+      _request.AddMoleculeUsedCalculationMethod("Molecule name", _category, _overriddenCalculationMethod);
+
+      _projectTask.CloseProject();
+   }
+
+   protected override void Because()
+   {
+      _creationResult = sut.CreateSimulationAndValidateFrom(_simulationName, _request);
+   }
+
+   [Observation]
+   public void should_contain_the_override_in_the_simulation_configuration()
+   {
+      _creationResult.ShouldNotBeNull();
+      _creationResult.Simulation.ShouldNotBeNull();
+      var overrideForMolecule = _creationResult.Simulation.Configuration.CalculationMethodOverridesFor("Molecule name");
+      overrideForMolecule.ShouldNotBeNull();
+      overrideForMolecule.UsedCalculationMethods
+         .Single(ucm => ucm.Category == _category)
+         .CalculationMethod.ShouldBeEqualTo(_overriddenCalculationMethod);
+   }
+}

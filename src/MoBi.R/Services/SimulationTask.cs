@@ -65,6 +65,7 @@ namespace MoBi.R.Services
             modulesArray,
             expressionsArray,
             request.Individual,
+            request.AllCalculationMethodOverrides(),
             request.CreateAllProcessRateParameters,
             request.SimulationSettings);
       }
