@@ -259,6 +259,7 @@ namespace MoBi.Core.Service
       private readonly string _moleculeNameInModule1 = "Drug";
       private readonly string _reactionNameInModule1 = "Reaction1";
       private readonly string _parameterNameInModule1 = "Para1";
+      private readonly string _initialConditionMoleculeNameInModule1 = "ICMolecule1";
       private readonly string _reactionNameInModule2 = "Reaction2";
       private readonly string _parameterNameInModule2 = "Para2";
 
@@ -267,7 +268,7 @@ namespace MoBi.Core.Service
          base.Context();
          _project = DomainHelperForSpecs.NewProject();
 
-         // Module 1 with molecule "Drug"
+         // Module 1 with molecule "Drug" and initial conditions
          var molecule1 = new MoleculeBuilder().WithName(_moleculeNameInModule1);
          var molecules1 = new MoleculeBuildingBlock() { molecule1 };
          var reaction1 = new ReactionBuilder().WithName(_reactionNameInModule1);
@@ -275,15 +276,19 @@ namespace MoBi.Core.Service
          var root1 = new Container().WithName("Root1");
          root1.Add(new Parameter().WithName(_parameterNameInModule1));
          var spatialStructure1 = new MoBiSpatialStructure().WithTopContainer(root1);
+         var ic1 = new InitialCondition { Path = new ObjectPath("A", _initialConditionMoleculeNameInModule1) };
+         var ic1b = new InitialCondition { Path = new ObjectPath("A", "OtherMolecule") };
+         var initialConditions1 = new InitialConditionsBuildingBlock() { ic1, ic1b };
 
          var module1 = new Module()
          {
             molecules1,
             reactions1,
-            spatialStructure1
+            spatialStructure1,
+            initialConditions1
          };
 
-         // Module 2 with a different molecule that we want to rename to "Drug"
+         // Module 2 with a different molecule that we want to rename
          _moleculeInModule2 = new MoleculeBuilder().WithName("OtherMolecule");
          var molecules2 = new MoleculeBuildingBlock() { _moleculeInModule2 };
          var reaction2 = new ReactionBuilder().WithName(_reactionNameInModule2);
@@ -311,21 +316,15 @@ namespace MoBi.Core.Service
       }
 
       [Observation]
-      public void should_not_contain_molecule_names_from_other_module()
+      public void should_contain_reaction_names_from_other_module()
       {
-         _forbiddenNames.ShouldNotContain(_moleculeNameInModule1);
+         _forbiddenNames.ShouldContain(_reactionNameInModule1);
       }
 
       [Observation]
-      public void should_not_contain_reaction_names_from_other_module()
+      public void should_contain_parameter_names_from_other_module()
       {
-         _forbiddenNames.ShouldNotContain(_reactionNameInModule1);
-      }
-
-      [Observation]
-      public void should_not_contain_parameter_names_from_other_module()
-      {
-         _forbiddenNames.ShouldNotContain(_parameterNameInModule1);
+         _forbiddenNames.ShouldContain(_parameterNameInModule1);
       }
 
       [Observation]
@@ -338,6 +337,12 @@ namespace MoBi.Core.Service
       public void should_contain_parameter_names_from_same_module()
       {
          _forbiddenNames.ShouldContain(_parameterNameInModule2);
+      }
+
+      [Observation]
+      public void should_not_contain_initial_condition_molecule_names_from_other_module()
+      {
+         _forbiddenNames.ShouldNotContain(_initialConditionMoleculeNameInModule1);
       }
    }
 

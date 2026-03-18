@@ -61,23 +61,10 @@ namespace MoBi.Core.Services
       public IEnumerable<string> For(MoleculeBuilder moleculeBuilder)
       {
          var nameHash = new HashSet<string>();
-         var module = moleculeBuilder.BuildingBlock?.Module;
-
-         if (module != null)
-         {
-            addNamesToHash(nameHash, allParameterNamesFromSpatialStructureInModule(module));
-            addNamesToHash(nameHash, allParametersFromMoleculesInModule(module));
-            addNamesToHash(nameHash, allMoleculeNamesFromInitialConditionsInModule(moleculeBuilder, module));
-            addNamesToHash(nameHash, allReactionNamesFromModule(module));
-         }
-         else
-         {
-            addNamesToHash(nameHash, allParameterNamesFromSpatialStructureInProject());
-            addNamesToHash(nameHash, allParametersFromMoleculesInProject());
-            addNamesToHash(nameHash, allMoleculeNamesFromInitialConditions(moleculeBuilder));
-            addNamesToHash(nameHash, allReactionNamesFromProject());
-         }
-
+         addNamesToHash(nameHash, allParameterNamesFromSpatialStructureInProject());
+         addNamesToHash(nameHash, allParametersFromMoleculesInProject());
+         addNamesToHash(nameHash, allMoleculeNamesFromInitialConditionsInModule(moleculeBuilder));
+         addNamesToHash(nameHash, allReactionNamesFromProject());
          return nameHash;
       }
 
@@ -188,36 +175,17 @@ namespace MoBi.Core.Services
             .SelectMany(x => x.All());
       }
 
-      private IEnumerable<string> allParameterNamesFromSpatialStructureInModule(Module module)
+      /// <summary>
+      ///    Retrieves molecule names from initial conditions scoped to the molecule builder's module only.
+      ///    Same-type entities (molecules) merge across modules during model construction,
+      ///    so only initial conditions within the same module should be checked.
+      /// </summary>
+      private IEnumerable<string> allMoleculeNamesFromInitialConditionsInModule(MoleculeBuilder moleculeBuilder)
       {
-         var nameHash = new HashSet<string>();
-         var spatialStructure = module.SpatialStructure;
+         var module = moleculeBuilder.BuildingBlock?.Module;
+         if (module == null)
+            return allMoleculeNamesFromInitialConditions(moleculeBuilder);
 
-         if (spatialStructure != null)
-            spatialStructure.TopContainers.Each(c => addNamesToHash(nameHash, allParameterNamesFrom(c)));
-
-         return nameHash;
-      }
-
-      private IEnumerable<string> allParametersFromMoleculesInModule(Module module)
-      {
-         var nameHash = new HashSet<string>();
-         var molecules = module.Molecules;
-
-         if (molecules != null)
-         {
-            molecules.Each(m =>
-            {
-               addNamesToHash(nameHash, allParameterNamesFrom(m, x => x.BuildMode == ParameterBuildMode.Global));
-               addNamesToHash(nameHash, allParameterNamesFrom(m, x => x.BuildMode == ParameterBuildMode.Local));
-            });
-         }
-
-         return nameHash;
-      }
-
-      private IEnumerable<string> allMoleculeNamesFromInitialConditionsInModule(MoleculeBuilder moleculeBuilder, Module module)
-      {
          var nameHash = new HashSet<string>();
          var builderName = moleculeBuilder.Name;
 
@@ -229,12 +197,6 @@ namespace MoBi.Core.Services
             .Each(x => nameHash.Add(x));
 
          return nameHash;
-      }
-
-      private IEnumerable<string> allReactionNamesFromModule(Module module)
-      {
-         var reactions = module.Reactions;
-         return reactions?.Select(x => x.Name) ?? Enumerable.Empty<string>();
       }
 
       private IEnumerable<string> allParameterNamesFromSpatialStructureInProject()
