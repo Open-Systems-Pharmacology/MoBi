@@ -95,8 +95,10 @@ public class EditMoleculeCalculationMethodsPresenter : AbstractSubPresenter<IEdi
       // moduleDTOs has the list of present molecules in the new configuration, simulationDTOs has the existing overrides
       // we only want to see the list of present molecules with any applicable overrides.
       // For example, if the overrides from the simulation has a molecule that is not in the module configuration, we don't want to show it.
-      moduleDTOs.Each(moduleDTO =>
+      moduleDTOs.GroupBy(x => x.MoleculeName).Each(group =>
       {
+         // Take the last moduleDTO that is present in the configuration. Those are the default UsedCalculationMethods
+         var moduleDTO = group.Last();
          var simulationDTO = simulationDTOs.SingleOrDefault(x => string.Equals(x.Name, moduleDTO.Name));
          _moleculeDTOs.Add(simulationDTO ?? moduleDTO);
       });

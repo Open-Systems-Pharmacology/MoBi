@@ -145,20 +145,27 @@ internal class When_getting_all_used_calculation_methods_for_existing_molecule :
       _simulationConfiguration = new SimulationConfiguration();
       sut.Edit(_simulationConfiguration);
 
-      var moduleMoleculeDTO = CreateMoleculeUsedCalculationMethodsDTO("Drug", ("Partition", "MethodA"));
+      var moduleMoleculeDTOA = CreateMoleculeUsedCalculationMethodsDTO("Drug", ("Partition", "MethodA"));
+      var moduleMoleculeDTOB = CreateMoleculeUsedCalculationMethodsDTO("Drug", ("Partition", "MethodB"));
 
       A.CallTo(() => _simulationConfigurationToMoleculeUsedCalculationMethodsDTOMapper.MapFrom(_simulationConfiguration))
          .Returns(new List<MoleculeUsedCalculationMethodsDTO>());
 
       var moduleConfiguration = new ModuleConfiguration(new Module());
       A.CallTo(() => _moduleConfigurationToMoleculeUsedCalculationMethodsDTOMapper.MapFrom(moduleConfiguration))
-         .Returns(new List<MoleculeUsedCalculationMethodsDTO> { moduleMoleculeDTO });
+         .Returns(new List<MoleculeUsedCalculationMethodsDTO> { moduleMoleculeDTOA });
 
       SetupCalculationMethodsForCategory("Partition", "MethodA", "MethodB");
 
       var moduleConfigDTO = new ModuleConfigurationDTO(moduleConfiguration);
 
-      sut.RefreshWith(new List<ModuleConfigurationDTO> { moduleConfigDTO });
+      moduleConfiguration = new ModuleConfiguration(new Module());
+      A.CallTo(() => _moduleConfigurationToMoleculeUsedCalculationMethodsDTOMapper.MapFrom(moduleConfiguration))
+         .Returns(new List<MoleculeUsedCalculationMethodsDTO> { moduleMoleculeDTOB });
+
+      var moduleConfigDTO2 = new ModuleConfigurationDTO(moduleConfiguration);
+
+      sut.RefreshWith(new List<ModuleConfigurationDTO> { moduleConfigDTO, moduleConfigDTO2 });
    }
 
    protected override void Because()
@@ -167,11 +174,11 @@ internal class When_getting_all_used_calculation_methods_for_existing_molecule :
    }
 
    [Observation]
-   public void should_return_the_calculation_methods_for_the_molecule()
+   public void should_return_the_calculation_methods_for_the_molecule_from_the_last_module_in_the_configuration()
    {
       _result.Count.ShouldBeEqualTo(1);
       _result[0].Category.ShouldBeEqualTo("Partition");
-      _result[0].CalculationMethod.ShouldBeEqualTo("MethodA");
+      _result[0].CalculationMethod.ShouldBeEqualTo("MethodB");
    }
 }
 
