@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Visitor;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Repository;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Repositories;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Visitor;
 using IBuildingBlockRepository = MoBi.Core.Domain.Repository.IBuildingBlockRepository;
 
 namespace MoBi.Core.Services
@@ -26,7 +25,7 @@ namespace MoBi.Core.Services
    public interface IForbiddenNamesRetriever
    {
       IEnumerable<string> For(MoleculeBuilder moleculeBuilder);
-      IEnumerable<string> For(ReactionBuilder moleculeBuilder);
+      IEnumerable<string> For(ReactionBuilder reactionBuilder);
       IEnumerable<string> For(IParameter parameter);
       IEnumerable<string> For(ObserverBuilder parameter);
       IEnumerable<string> For(TransportBuilder transportBuilder);
@@ -74,7 +73,7 @@ namespace MoBi.Core.Services
          return buildingBlock == null ? Enumerable.Empty<string>().ToList() : buildingBlock.AllNames();
       }
 
-      public IEnumerable<string> For(ReactionBuilder moleculeBuilder)
+      public IEnumerable<string> For(ReactionBuilder reactionBuilder)
       {
          var nameHash = new HashSet<string>();
          addNamesToHash(nameHash, allParameterNamesFromSpatialStructureInProject());
