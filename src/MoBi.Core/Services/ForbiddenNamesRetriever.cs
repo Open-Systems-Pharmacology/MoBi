@@ -63,9 +63,15 @@ namespace MoBi.Core.Services
          var nameHash = new HashSet<string>();
          addNamesToHash(nameHash, allParameterNamesFromSpatialStructureInProject());
          addNamesToHash(nameHash, allParametersFromMoleculesInProject());
-         addNamesToHash(nameHash, allMoleculeNamesFromInitialConditionsInModule(moleculeBuilder));
+         addNamesToHash(nameHash, allMoleculeNamesFromBuildingBlock(moleculeBuilder));
          addNamesToHash(nameHash, allReactionNamesFromProject());
          return nameHash;
+      }
+
+      private static IReadOnlyList<string> allMoleculeNamesFromBuildingBlock(MoleculeBuilder builder)
+      {
+         var buildingBlock = builder.BuildingBlock as MoleculeBuildingBlock;
+         return buildingBlock == null ? Enumerable.Empty<string>().ToList() : buildingBlock.AllNames();
       }
 
       public IEnumerable<string> For(ReactionBuilder moleculeBuilder)
@@ -122,7 +128,7 @@ namespace MoBi.Core.Services
 
       private IEnumerable<string> allReactionNamesFromProject() => allNamesFrom<MoBiReactionBuildingBlock, ReactionBuilder>(_buildingBlockRepository.ReactionBlockCollection);
 
-      private IEnumerable<string> allNamesFrom<TBuildingBlock, TBuilder>(IEnumerable<TBuildingBlock> buildingBlock) where TBuildingBlock : IBuildingBlock<TBuilder> where TBuilder : class, IBuilder => 
+      private IEnumerable<string> allNamesFrom<TBuildingBlock, TBuilder>(IEnumerable<TBuildingBlock> buildingBlock) where TBuildingBlock : IBuildingBlock<TBuilder> where TBuilder : class, IBuilder =>
          buildingBlock.SelectMany(x => x.All()).Select(x => x.Name);
 
       private IEnumerable<string> allLocalParametersFromMoleculesInProject() => allParametersFromMoleculesInProject(ParameterBuildMode.Local);
@@ -140,61 +146,6 @@ namespace MoBi.Core.Services
          var nameHash = new HashSet<string>();
          _buildingBlockRepository.MoleculeBlockCollection
             .SelectMany(x => x.All()).Each(m => addNamesToHash(nameHash, allParameterNamesFrom(m, x => x.BuildMode == buildMode)));
-
-         return nameHash;
-      }
-
-      /// <summary>
-      ///    Retrieves all the molecule names from start values where a molecule is named like the molecule builder.
-      ///    The MoleculeBuilders Name is not returned
-      /// </summary>
-      /// <param name="moleculeBuilder">The molecule builder for which forbidden names are retrieved.</param>
-      /// <returns>molecule names that are forbidden for the moleculebuilder</returns>
-      /// <remarks>
-      ///    This is necessary when a molecule was removed and another molecule should be renamed. It
-      ///    should not be possible to rename to the removed named to prevent double definitions of InitialConditions
-      /// </remarks>
-      private IEnumerable<string> allMoleculeNamesFromInitialConditions(MoleculeBuilder moleculeBuilder)
-      {
-         var nameHash = new HashSet<string>();
-         // We need to retrieve Names from here if a removed Molecule is still in MSV
-         // to prevent double definitions in InitialConditions
-         getAllInitialConditionsFromBuildingBlocksFor(moleculeBuilder)
-            .Select(x => x.MoleculeName).Distinct()
-            .Where(x => !x.Equals(moleculeBuilder.Name))
-            .Each(x => nameHash.Add(x));
-
-         return nameHash;
-      }
-
-      private IEnumerable<InitialCondition> getAllInitialConditionsFromBuildingBlocksFor(MoleculeBuilder builder)
-      {
-         var builderName = builder.Name;
-         return _buildingBlockRepository.InitialConditionBlockCollection
-            .Where(x => x.Any(msv => msv.MoleculeName.Equals(builderName)))
-            .SelectMany(x => x.All());
-      }
-
-      /// <summary>
-      ///    Retrieves molecule names from initial conditions scoped to the molecule builder's module only.
-      ///    Same-type entities (molecules) merge across modules during model construction,
-      ///    so only initial conditions within the same module should be checked.
-      /// </summary>
-      private IEnumerable<string> allMoleculeNamesFromInitialConditionsInModule(MoleculeBuilder moleculeBuilder)
-      {
-         var module = moleculeBuilder.BuildingBlock?.Module;
-         if (module == null)
-            return allMoleculeNamesFromInitialConditions(moleculeBuilder);
-
-         var nameHash = new HashSet<string>();
-         var builderName = moleculeBuilder.Name;
-
-         module.InitialConditionsCollection
-            .Where(x => x.Any(ic => ic.MoleculeName.Equals(builderName)))
-            .SelectMany(x => x)
-            .Select(x => x.MoleculeName).Distinct()
-            .Where(x => !x.Equals(builderName))
-            .Each(x => nameHash.Add(x));
 
          return nameHash;
       }

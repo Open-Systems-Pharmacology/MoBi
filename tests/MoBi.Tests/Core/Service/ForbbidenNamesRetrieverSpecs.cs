@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
 using MoBi.Core.Repositories;
 using MoBi.Core.Services;
+using MoBi.Helpers;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using MoBi.Helpers;
 using IBuildingBlockRepository = MoBi.Core.Domain.Repository.IBuildingBlockRepository;
 
 namespace MoBi.Core.Service
@@ -37,6 +37,7 @@ namespace MoBi.Core.Service
       private readonly string _parameterName = "Para";
       private readonly string _reactionName = "Reaction";
       private readonly string _moleculeParameterName = "MW";
+
       protected override void Context()
       {
          base.Context();
@@ -44,8 +45,8 @@ namespace MoBi.Core.Service
          var molecule = new MoleculeBuilder().WithName(_moleculeName);
          var moleculeParameter = new Parameter().WithName(_moleculeParameterName);
          molecule.Add(moleculeParameter);
-         var molecules = new MoleculeBuildingBlock() { molecule };
-         
+         var molecules = new MoleculeBuildingBlock { molecule };
+
          var parameter = new Parameter().WithName(_parameterName);
          var root = new Container().WithName("Root");
          root.Add(parameter);
@@ -75,7 +76,6 @@ namespace MoBi.Core.Service
       {
          _forbiddenNames.ShouldContain(_moleculeName);
       }
-
    }
 
    class When_retrieving_forbidden_names_for_a_distributed_parameter : concern_for_ForbiddenNamesRetrieverSpecs
@@ -130,22 +130,21 @@ namespace MoBi.Core.Service
       {
          _forbiddenNames.ShouldContain(_moleculeName);
       }
-
    }
 
    class When_retrieving_forbidden_names_for_an_reaction : concern_for_ForbiddenNamesRetrieverSpecs
    {
       private MoBiProject _project;
       private IEnumerable<string> _forbiddenNames;
-      private readonly string _moleculeName="Drug";
-      private readonly string _parameterName="Para";
+      private readonly string _moleculeName = "Drug";
+      private readonly string _parameterName = "Para";
 
       protected override void Context()
       {
          base.Context();
          _project = DomainHelperForSpecs.NewProject();
          var molecule = new MoleculeBuilder().WithName(_moleculeName);
-         var molecules= new MoleculeBuildingBlock(){molecule};
+         var molecules = new MoleculeBuildingBlock() { molecule };
          var parameter = new Parameter().WithName(_parameterName);
          var root = new Container().WithName("Root");
          root.Add(parameter);
@@ -185,26 +184,29 @@ namespace MoBi.Core.Service
       private IEnumerable<string> _forbiddenNames;
       private MoleculeBuilder _molecule;
       private readonly string _moleculeName = "Drug";
+      private readonly string _moleculeName2 = "Drug2";
       private readonly string _parameterName = "Para";
       private readonly string _reactionName = "Reaction";
-      private readonly string _msvName = "MSV";
+      private readonly string _icName = "MSV";
       private readonly string _moleculeParameterName = "MW";
+      private MoleculeBuilder _molecule2;
 
       protected override void Context()
       {
          base.Context();
          _project = DomainHelperForSpecs.NewProject();
          _molecule = new MoleculeBuilder().WithName(_moleculeName);
+         _molecule2 = new MoleculeBuilder().WithName(_moleculeName2);
          var moleculeParameter = new Parameter().WithName(_moleculeParameterName);
          _molecule.Add(moleculeParameter);
-         var molecules = new MoleculeBuildingBlock() { _molecule };
+         var molecules = new MoleculeBuildingBlock { _molecule, _molecule2 };
          var parameter = new Parameter().WithName(_parameterName);
          var root = new Container().WithName("Root");
          root.Add(parameter);
          var spatialStructure = new MoBiSpatialStructure().WithTopContainer(root);
          var reactionBuilder = new ReactionBuilder().WithName(_reactionName);
          var reactions = new MoBiReactionBuildingBlock() { reactionBuilder };
-         var msv = new InitialCondition { Path = new ObjectPath("A", _msvName) };
+         var msv = new InitialCondition { Path = new ObjectPath("A", _icName) };
          var msv2 = new InitialCondition { Path = new ObjectPath("A", _moleculeName) };
          var initialConditions = new InitialConditionsBuildingBlock() { msv, msv2 };
 
@@ -227,27 +229,33 @@ namespace MoBi.Core.Service
       }
 
       [Observation]
-      public void should_look_for_reaction_Names1()
+      public void should_forbid_reaction_name()
       {
          _forbiddenNames.ShouldContain(_reactionName);
       }
 
       [Observation]
-      public void should_look_for_spatial_structure_parameter_name()
+      public void should_forbid_spatial_structure_parameter_name()
       {
          _forbiddenNames.ShouldContain(_parameterName);
       }
 
       [Observation]
-      public void should_look_for_molecule_start_values_molecule_names_where_molecule_name_is_used()
+      public void should_allow_initial_condition_when_molecule_is_not_present()
       {
-         _forbiddenNames.ShouldContain(_msvName);
+         _forbiddenNames.ShouldNotContain(_icName);
       }
 
       [Observation]
-      public void should_look_for_molecule_parameters()
+      public void should_forbid_molecule_parameters()
       {
          _forbiddenNames.ShouldContain(_moleculeParameterName);
+      }
+
+      [Observation]
+      public void should_forbid_molecule_from_same_building_block()
+      {
+         _forbiddenNames.ShouldContain(_moleculeName2);
       }
    }
 
@@ -354,9 +362,9 @@ namespace MoBi.Core.Service
       private readonly string _parameterName = "Para";
       private readonly string _reactionName = "Reaction";
       private readonly string _moleculeParameterName = "MW";
-      private readonly string _topContainerName="Organism";
-      private readonly string _eventGroupName="Events";
-      private readonly string _simulationName="Test";
+      private readonly string _topContainerName = "Organism";
+      private readonly string _eventGroupName = "Events";
+      private readonly string _simulationName = "Test";
 
       protected override void Context()
       {
@@ -372,7 +380,7 @@ namespace MoBi.Core.Service
          var spatialStructure = new MoBiSpatialStructure().WithTopContainer(root);
          spatialStructure.GlobalMoleculeDependentProperties = new Container().WithName(Constants.MOLECULE_PROPERTIES);
          spatialStructure.NeighborhoodsContainer = new Container().WithName(Constants.NEIGHBORHOODS);
-         
+
          var reactionBuilder = new ReactionBuilder().WithName(_reactionName);
          var reactions = new MoBiReactionBuildingBlock() { reactionBuilder };
          _project.AddSimulation(new MoBiSimulation().WithName(_simulationName));
@@ -390,7 +398,6 @@ namespace MoBi.Core.Service
          _project.AddModule(module);
 
          A.CallTo(() => _moBiProjectRetriever.Current).Returns(_project);
-
       }
 
       protected override void Because()
@@ -405,13 +412,12 @@ namespace MoBi.Core.Service
          _forbiddenNames.ShouldContain(_reactionName);
       }
 
-
       [Observation]
       public void should_look_for_spatial_structure_TopContainer_name()
       {
          _forbiddenNames.ShouldContain(_topContainerName);
       }
-     
+
       [Observation]
       public void should_allow_for_root_EventGroupName()
       {
@@ -424,4 +430,4 @@ namespace MoBi.Core.Service
          _forbiddenNames.ShouldContain(_simulationName);
       }
    }
-}	
+}
