@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
@@ -408,6 +409,98 @@ namespace MoBi.Core
       }
    }
 
+   public class When_adjusting_formulas_with_name_conflict_and_user_cancels_rename : concern_for_AdjustFormulaVisitor
+   {
+      private IUsingFormula _newObject;
+      private IBuildingBlock _buildingBlockToAddTo;
+      private IFormulaCache _formulaCache;
+      private ExplicitFormula _newFormula;
+      private ExplicitFormula _existingFormula;
+      private IDimension _theDimension;
+      private bool _canceled;
+
+      protected override void Context()
+      {
+         base.Context();
+         _buildingBlockToAddTo = A.Fake<IBuildingBlock>();
+         _formulaCache = new FormulaCache();
+         A.CallTo(() => _buildingBlockToAddTo.FormulaCache).Returns(_formulaCache);
+         _newObject = new Parameter().WithName("New");
+         _theDimension = A.Fake<IDimension>();
+         _existingFormula = A.Fake<ExplicitFormula>().WithName("F").WithDimension(_theDimension).WithFormulaString("1+1").WithId("1");
+         _newFormula = A.Fake<ExplicitFormula>().WithName("F").WithDimension(_theDimension).WithFormulaString("2+2").WithId("2");
+         _newFormula.ObjectPaths = Array.Empty<FormulaUsablePath>();
+         _existingFormula.ObjectPaths = Array.Empty<FormulaUsablePath>();
+         _formulaCache.Add(_existingFormula);
+         _newObject.Formula = _newFormula;
+         A.CallTo(() => _nameCorrector.CorrectName(_formulaCache, _newFormula)).Returns(false);
+      }
+
+      protected override void Because()
+      {
+         var result = sut.AdjustFormulasIn(_newObject, _buildingBlockToAddTo);
+         _canceled = result.canceled;
+      }
+
+      [Observation]
+      public void should_not_add_formula_to_formula_cache()
+      {
+         A.CallTo(() => _buildingBlockToAddTo.AddFormula(_newFormula)).MustNotHaveHappened();
+      }
+
+      [Observation]
+      public void should_return_canceled()
+      {
+         _canceled.ShouldBeTrue();
+      }
+   }
+
+   public class When_adjusting_formulas_with_name_conflict_and_name_still_conflicts_after_correction : concern_for_AdjustFormulaVisitor
+   {
+      private IUsingFormula _newObject;
+      private IBuildingBlock _buildingBlockToAddTo;
+      private IFormulaCache _formulaCache;
+      private ExplicitFormula _newFormula;
+      private ExplicitFormula _existingFormula;
+      private IDimension _theDimension;
+
+      protected override void Context()
+      {
+         base.Context();
+         _buildingBlockToAddTo = A.Fake<IBuildingBlock>();
+         _formulaCache = new FormulaCache();
+         A.CallTo(() => _buildingBlockToAddTo.FormulaCache).Returns(_formulaCache);
+         _newObject = new Parameter().WithName("New");
+         _theDimension = A.Fake<IDimension>();
+         _existingFormula = A.Fake<ExplicitFormula>().WithName("F").WithDimension(_theDimension).WithFormulaString("1+1").WithId("1");
+         _newFormula = A.Fake<ExplicitFormula>().WithName("F").WithDimension(_theDimension).WithFormulaString("2+2").WithId("2");
+         _newFormula.ObjectPaths = Array.Empty<FormulaUsablePath>();
+         _existingFormula.ObjectPaths = Array.Empty<FormulaUsablePath>();
+         _formulaCache.Add(_existingFormula);
+         _newObject.Formula = _newFormula;
+         // CorrectName returns true (claims rename happened) but the mock doesn't actually change the name
+         A.CallTo(() => _nameCorrector.CorrectName(_formulaCache, _newFormula)).Returns(true);
+         A.CallTo(() => _objectBaseRepository.ContainsObjectWithId(_newFormula.Id)).Returns(false);
+      }
+
+      protected override void Because()
+      {
+         sut.AdjustFormulasIn(_newObject, _buildingBlockToAddTo);
+      }
+
+      [Observation]
+      public void should_auto_correct_the_name_as_safety_net()
+      {
+         A.CallTo(() => _nameCorrector.AutoCorrectName(A<IEnumerable<string>>._, _newFormula)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_still_add_formula_to_formula_cache()
+      {
+         A.CallTo(() => _buildingBlockToAddTo.AddFormula(_newFormula)).MustHaveHappened();
+      }
+   }
+
    public class When_adjusting_Formulas_at_a_object_with_already_existing_Formula_with_different_name : concern_for_AdjustFormulaVisitor
    {
       private IParameter _totallyNewObject;
@@ -427,11 +520,12 @@ namespace MoBi.Core
          _totallyNewObject = new Parameter().WithName("New");
          _theDimension = A.Fake<IDimension>();
          _oldFormula = A.Fake<ExplicitFormula>().WithName("New Formula").WithDimension(_theDimension).WithFormulaString("1+1").WithId("1");
-         _newFormula = A.Fake<ExplicitFormula>().WithName("New Formula_2").WithDimension(_theDimension).WithFormulaString("1+1").WithId("1");
+         _newFormula = A.Fake<ExplicitFormula>().WithName("New Formula_2").WithDimension(_theDimension).WithFormulaString("1+1").WithId("2");
          _newFormula.ObjectPaths = Array.Empty<FormulaUsablePath>();
          _oldFormula.ObjectPaths = Array.Empty<FormulaUsablePath>();
          _formulaCache.Add(_oldFormula);
          _totallyNewObject.Formula = _newFormula;
+         A.CallTo(() => _objectBaseRepository.ContainsObjectWithId(_newFormula.Id)).Returns(false);
       }
 
       protected override void Because()
@@ -440,15 +534,15 @@ namespace MoBi.Core
       }
 
       [Observation]
-      public void should_not_add_formula_to_formula_cache()
+      public void should_add_formula_to_formula_cache_with_its_own_name()
       {
-         A.CallTo(() => _buildingBlockToAddTo.AddFormula(_newFormula)).MustNotHaveHappened();
+         A.CallTo(() => _buildingBlockToAddTo.AddFormula(_newFormula)).MustHaveHappened();
       }
 
       [Observation]
-      public void should_set_the_formula_for_the_new_object_to_the_old_formula()
+      public void should_keep_the_new_formula_on_the_object()
       {
-         _totallyNewObject.Formula.ShouldBeEqualTo(_oldFormula);
+         _totallyNewObject.Formula.ShouldBeEqualTo(_newFormula);
       }
    }
 }

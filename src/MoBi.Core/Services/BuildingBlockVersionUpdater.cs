@@ -66,10 +66,8 @@ namespace MoBi.Core.Services
          refreshModule(buildingBlock.Module);
       }
 
-      private void refreshModule(Module module)
-      {
+      private void refreshModule(Module module) => 
          _eventPublisher.PublishEvent(new ModuleStatusChangedEvent(module));
-      }
 
       public void UpdateBuildingBlockVersion(IBuildingBlock buildingBlock, bool shouldIncrementVersion, PKSimModuleConversion conversionOption)
       {
@@ -90,9 +88,7 @@ namespace MoBi.Core.Services
          affectedSimulations.Each(refreshSimulation);
       }
 
-      private void refreshSimulation(IMoBiSimulation simulation)
-      {
+      private void refreshSimulation(IMoBiSimulation simulation) => 
          _eventPublisher.PublishEvent(new SimulationStatusChangedEvent(simulation));
-      }
    }
 }
