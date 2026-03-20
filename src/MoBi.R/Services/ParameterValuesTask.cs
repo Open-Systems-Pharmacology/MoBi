@@ -14,10 +14,11 @@ namespace MoBi.R.Services;
 public interface IParameterValuesTask : IPathAndValuesTask<ParameterValuesBuildingBlock, ParameterValue>
 {
    void SetParameterValue(ParameterValuesBuildingBlock buildingBlock, string[] quantityPaths, double[] quantityValues, string[] dimensionNames);
+   void SetParameterValue(ParameterValuesBuildingBlock buildingBlock, string quantityPath, double quantityValue, string dimensionName);
 
-   void DeleteParameterValues(ParameterValuesBuildingBlock buildingBlock, string[] pathsToDelete);
+   void DeleteParameterValues(ParameterValuesBuildingBlock buildingBlock, params string[] pathsToDelete);
 
-   void AddLocalMoleculeParameters(ParameterValuesBuildingBlock buildingBlock, MoBiSpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock, string[] moleculeNames);
+   void AddLocalMoleculeParameters(ParameterValuesBuildingBlock buildingBlock, MoBiSpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock, params string[] moleculeNames);
 }
 
 public class ParameterValuesTask : ExtendablePathAndValuesTask<ParameterValuesBuildingBlock, ParameterValue>, IParameterValuesTask
@@ -40,6 +41,8 @@ public class ParameterValuesTask : ExtendablePathAndValuesTask<ParameterValuesBu
 
       _context.AddToHistory(macroCommand.RunCommand(_context));
    }
+
+   public void SetParameterValue(ParameterValuesBuildingBlock buildingBlock, string quantityPath, double quantityValue, string dimensionName) => SetParameterValue(buildingBlock, [quantityPath], [quantityValue], [dimensionName]);
 
    public void DeleteParameterValues(ParameterValuesBuildingBlock buildingBlock, string[] pathsToDelete) => Delete(buildingBlock, pathsToDelete);
 

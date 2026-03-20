@@ -15,6 +15,7 @@ public interface IExpressionProfileTask
 {
    ExpressionProfileBuildingBlock CreateExpressionProfile(string category, string moleculeName, string speciesName);
    void SetExpressionParameter(ExpressionProfileBuildingBlock buildingBlock, string[] quantityPaths, double[] quantityValues);
+   void SetExpressionParameter(ExpressionProfileBuildingBlock buildingBlock, string quantityPath, double quantityValue);
 }
 
 public class ExpressionProfileTask : PKSimPathAndValuesTask, IExpressionProfileTask
@@ -57,4 +58,6 @@ public class ExpressionProfileTask : PKSimPathAndValuesTask, IExpressionProfileT
 
       _context.AddToHistory(macroCommand.RunCommand(_context));
    }
+
+   public void SetExpressionParameter(ExpressionProfileBuildingBlock buildingBlock, string quantityPath, double quantityValue) => SetExpressionParameter(buildingBlock, [quantityPath], [quantityValue]);
 }
