@@ -279,7 +279,7 @@ namespace MoBi.Core.Domain.Model
          if (!changeCommand.WillConvertPKSimModuleToExtensionModule)
             return;
 
-         if (!CurrentProject.Modules.Contains(changeCommand.Module))
+         if (CurrentProject == null || !CurrentProject.Modules.Contains(changeCommand.Module))
             return;
 
          if (confirmedModuleConversions.Contains(changeCommand.Module))
