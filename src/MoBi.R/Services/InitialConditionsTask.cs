@@ -24,7 +24,7 @@ public interface IInitialConditionsTask : IPathAndValuesTask<InitialConditionsBu
 
    double[] AllScaleDivisorsFrom(InitialConditionsBuildingBlock buildingBlock, params string[] paths);
 
-   bool[] AllIsPresentFrom(InitialConditionsBuildingBlock buildingBlock, string[] paths);
+   bool[] AllIsPresentFrom(InitialConditionsBuildingBlock buildingBlock, params string[] paths);
 
    bool[] AllNegativeValuesAllowedFrom(InitialConditionsBuildingBlock buildingBlock, params string[] paths);
 }
