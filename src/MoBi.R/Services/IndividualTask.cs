@@ -16,6 +16,7 @@ public interface IIndividualTask
 {
    IndividualBuildingBlock CreateIndividual(IndividualCharacteristics individualCharacteristics);
    void SetIndividualParameter(IndividualBuildingBlock buildingBlock, string[] quantityPaths, double[] quantityValues);
+   void SetIndividualParameter(IndividualBuildingBlock buildingBlock, string quantityPath, double quantityValue);
 }
 
 public class IndividualTask : PKSimPathAndValuesTask, IIndividualTask
@@ -58,4 +59,6 @@ public class IndividualTask : PKSimPathAndValuesTask, IIndividualTask
 
       _context.AddToHistory(macroCommand.RunCommand(_context));
    }
+
+   public void SetIndividualParameter(IndividualBuildingBlock buildingBlock, string quantityPath, double quantityValue) => SetIndividualParameter(buildingBlock, [quantityPath], [quantityValue]);
 }

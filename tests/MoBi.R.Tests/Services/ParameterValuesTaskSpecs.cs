@@ -977,6 +977,49 @@ internal class When_getting_all_dimensions_from_building_block_with_specified_pa
    }
 }
 
+internal class When_getting_all_base_units_from_building_block_with_specified_paths : concern_for_ParameterValuesTask
+{
+   private ParameterValuesBuildingBlock _buildingBlock;
+   private string[] _result;
+
+   protected override void Context()
+   {
+      base.Context();
+      _buildingBlock = new ParameterValuesBuildingBlock().WithName("PV Building Block");
+      _buildingBlock.Add(new ParameterValue
+      {
+         Path = new ObjectPath("Path1", "Container1", "Parameter1"),
+         Value = 100.0,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+      _buildingBlock.Add(new ParameterValue
+      {
+         Path = new ObjectPath("Path2", "Container2", "Parameter2"),
+         Value = 200.0,
+         Dimension = new Dimension(new BaseDimensionRepresentation(), "Time", "min")
+      });
+      _buildingBlock.Add(new ParameterValue
+      {
+         Path = new ObjectPath("Path3", "Container3", "Parameter3"),
+         Value = 300.0,
+         Dimension = new Dimension(new BaseDimensionRepresentation(), "Concentration", "mol/l")
+      });
+   }
+
+   protected override void Because()
+   {
+      _result = sut.AllUnitsFrom(_buildingBlock, ["Path2|Container2|Parameter2", "Path3|Container3|Parameter3"]);
+   }
+
+   [Observation]
+   public void should_return_unit_names_for_specified_paths_in_order()
+   {
+      _result.Length.ShouldBeEqualTo(2);
+      _result[0].ShouldBeEqualTo("min");
+      _result[1].ShouldBeEqualTo("mol/l");
+   }
+}
+
 internal class When_getting_all_dimensions_from_building_block_without_specified_paths : concern_for_ParameterValuesTask
 {
    private ParameterValuesBuildingBlock _buildingBlock;

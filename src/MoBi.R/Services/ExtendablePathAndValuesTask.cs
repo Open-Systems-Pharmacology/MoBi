@@ -16,8 +16,9 @@ namespace MoBi.R.Services;
 public interface IPathAndValuesTask<TBuildingBlock, TBuilder> where TBuildingBlock : PathAndValueEntityBuildingBlock<TBuilder> where TBuilder : PathAndValueEntity
 {
    string[] AllPathsFrom(TBuildingBlock buildingBlock);
-   double[] AllValuesFrom(TBuildingBlock buildingBlock, string[] paths);
-   string[] AllDimensionsFrom(TBuildingBlock buildingBlock, string[] paths);
+   double[] AllValuesFrom(TBuildingBlock buildingBlock, params string[] paths);
+   string[] AllDimensionsFrom(TBuildingBlock buildingBlock, params string[] paths);
+   string[] AllUnitsFrom(TBuildingBlock buildingBlock, params string[] paths);
 }
 
 public abstract class ExtendablePathAndValuesTask<TBuildingBlock, TBuilder>: IPathAndValuesTask<TBuildingBlock, TBuilder> where TBuildingBlock : PathAndValueEntityBuildingBlock<TBuilder> where TBuilder : PathAndValueEntity
@@ -104,7 +105,9 @@ public abstract class ExtendablePathAndValuesTask<TBuildingBlock, TBuilder>: IPa
 
    public string[] AllPathsFrom(TBuildingBlock buildingBlock) => AllFrom(buildingBlock, paths:null, x => x.Path.PathAsString);
 
-   public double[] AllValuesFrom(TBuildingBlock buildingBlock, string[] paths) => AllFrom(buildingBlock, paths, x => x.Value ?? double.NaN);
+   public double[] AllValuesFrom(TBuildingBlock buildingBlock, params string[] paths) => AllFrom(buildingBlock, paths, x => x.Value ?? double.NaN);
 
-   public string[] AllDimensionsFrom(TBuildingBlock buildingBlock, string[] paths) => AllFrom(buildingBlock, paths, x => x.Dimension.Name);
+   public string[] AllDimensionsFrom(TBuildingBlock buildingBlock, params string[] paths) => AllFrom(buildingBlock, paths, x => x.Dimension.Name);
+
+   public string[] AllUnitsFrom(TBuildingBlock buildingBlock, params string[] paths) => AllFrom(buildingBlock, paths, x => x.Dimension.BaseUnit.Name);
 }
