@@ -64,16 +64,16 @@ namespace MoBi.Presentation.Mapper
       protected IDimension _concentrationDimension;
       protected IDimension _amountDimension;
       private IDimension _timeDimension;
-      private IInitialConditionsCreator _msvCreator;
+      private IInitialConditionsCreator _initialConditionsCreator;
 
-      protected InitialConditionsBuildingBlock _startValuesBuildingBlock;
+      protected InitialConditionsBuildingBlock _initialConditionsBuildingBlock;
       private IReactionDimensionRetriever _reactionDimensionRetriever;
 
       protected override void Context()
       {
-         _msvCreator = A.Fake<IInitialConditionsCreator>();
+         _initialConditionsCreator = A.Fake<IInitialConditionsCreator>();
 
-         A.CallTo(() => _msvCreator.CreateInitialCondition(A<ObjectPath>.Ignored, A<string>.Ignored, A<IDimension>.Ignored, A<Unit>._, A<ValueOrigin>._))
+         A.CallTo(() => _initialConditionsCreator.CreateInitialCondition(A<ObjectPath>.Ignored, A<string>.Ignored, A<IDimension>.Ignored, A<Unit>._, A<ValueOrigin>._))
             .ReturnsLazily((ObjectPath path, string moleculeName, IDimension dimension) => new InitialCondition { ContainerPath = path, Name = moleculeName, Dimension = dimension});
 
          _concentrationDimension = new Dimension(new BaseDimensionRepresentation(), Constants.Dimension.MOLAR_CONCENTRATION, "mol/l");
@@ -85,7 +85,7 @@ namespace MoBi.Presentation.Mapper
          _timeDimension.Unit("s").Factor = 1.0 / 60;
 
          _dimensionFactory = A.Fake<IMoBiDimensionFactory>();
-         _startValuesBuildingBlock = A.Fake<InitialConditionsBuildingBlock>();
+         _initialConditionsBuildingBlock = A.Fake<InitialConditionsBuildingBlock>();
 
          _reactionDimensionRetriever = A.Fake<IReactionDimensionRetriever>();
 
@@ -113,14 +113,14 @@ namespace MoBi.Presentation.Mapper
       {
          base.Context();
 
-         _startValuesBuildingBlock = new InitialConditionsBuildingBlock();
+         _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock();
          _tables = new MsvDataTableProvider().ImportTables();
          _tables.Rows[0][0] = string.Empty;
       }
 
       protected override void Because()
       {
-         _result = sut.MapFrom(_tables, _startValuesBuildingBlock);
+         _result = sut.MapFrom(_tables, _initialConditionsBuildingBlock);
       }
 
       [Observation]
@@ -140,14 +140,14 @@ namespace MoBi.Presentation.Mapper
       {
          base.Context();
 
-         _startValuesBuildingBlock = new InitialConditionsBuildingBlock();
+         _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock();
          _tables = new MsvDataTableProvider().ImportTables();
          _tables.Rows[0][0] = _tables.Rows[1][0];
       }
 
       protected override void Because()
       {
-         _result = sut.MapFrom(_tables, _startValuesBuildingBlock);
+         _result = sut.MapFrom(_tables, _initialConditionsBuildingBlock);
       }
 
       [Observation]
@@ -166,14 +166,14 @@ namespace MoBi.Presentation.Mapper
       {
          base.Context();
 
-         _startValuesBuildingBlock = new InitialConditionsBuildingBlock();
+         _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock();
          _tables = new MsvDataTableProvider().ImportTables();
          _tables.Rows[0][1] = string.Empty;
       }
 
       protected override void Because()
       {
-         _result = sut.MapFrom(_tables, _startValuesBuildingBlock);
+         _result = sut.MapFrom(_tables, _initialConditionsBuildingBlock);
       }
 
       [Observation]
@@ -193,14 +193,14 @@ namespace MoBi.Presentation.Mapper
          base.Context();
 
          // We'll need a real building block for this test so that it will return null when asked for a start value from a path
-         _startValuesBuildingBlock = new InitialConditionsBuildingBlock();
+         _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock();
          _tables = new MsvDataTableProvider().ImportTables();
          _tables.Rows[0][5] = string.Empty;
       }
 
       protected override void Because()
       {
-         _result = sut.MapFrom(_tables, _startValuesBuildingBlock);
+         _result = sut.MapFrom(_tables, _initialConditionsBuildingBlock);
       }
 
       [Observation]
@@ -220,14 +220,14 @@ namespace MoBi.Presentation.Mapper
          base.Context();
 
          // We'll need a real building block for this test so that it will return null when asked for a start value from a path
-         _startValuesBuildingBlock = new InitialConditionsBuildingBlock();
+         _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock();
          _tables = new MsvDataTableProvider().ImportTables();
          _tables.Rows[0][6] = string.Empty;
       }
 
       protected override void Because()
       {
-         _result = sut.MapFrom(_tables, _startValuesBuildingBlock);
+         _result = sut.MapFrom(_tables, _initialConditionsBuildingBlock);
       }
 
       [Observation]
@@ -247,14 +247,14 @@ namespace MoBi.Presentation.Mapper
          base.Context();
 
          // We'll need a real building block for this test so that it will return null when asked for a start value from a path
-         _startValuesBuildingBlock = new InitialConditionsBuildingBlock();
+         _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock();
          _tables = new MsvDataTableProvider().ImportTables();
          _tables.Rows[0][3] = string.Empty;
       }
 
       protected override void Because()
       {
-         _result = sut.MapFrom(_tables, _startValuesBuildingBlock);
+         _result = sut.MapFrom(_tables, _initialConditionsBuildingBlock);
       }
 
       [Observation]
@@ -274,14 +274,14 @@ namespace MoBi.Presentation.Mapper
          base.Context();
 
          // We'll need a real building block for this test so that it will return null when asked for a start value from a path
-         _startValuesBuildingBlock = new InitialConditionsBuildingBlock();
+         _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock();
          _tables = new MsvDataTableProvider().ImportTables();
          _tables.Rows[0][3] = string.Empty;
       }
 
       protected override void Because()
       {
-         _result = sut.MapFrom(_tables, _startValuesBuildingBlock);
+         _result = sut.MapFrom(_tables, _initialConditionsBuildingBlock);
       }
 
       [Observation]
@@ -301,17 +301,17 @@ namespace MoBi.Presentation.Mapper
          base.Context();
 
          // We'll need a real building block for this test so that it will return null when asked for a start value from a path
-         _startValuesBuildingBlock = new InitialConditionsBuildingBlock();
+         _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock();
          
          _tables = new MsvDataTableProvider().ImportTables();
 
-         _startValuesBuildingBlock.Add(new InitialCondition { Name="Drug", ContainerPath = ContainerPathFromDataTableRow(_tables, 0), Value = 9.0});
+         _initialConditionsBuildingBlock.Add(new InitialCondition { Name="Drug", ContainerPath = ContainerPathFromDataTableRow(_tables, 0), Value = 9.0});
          _tables.Rows[0][3] = string.Empty;
       }
 
       protected override void Because()
       {
-         _result = sut.MapFrom(_tables, _startValuesBuildingBlock);
+         _result = sut.MapFrom(_tables, _initialConditionsBuildingBlock);
       }
 
       [Observation]
@@ -328,13 +328,13 @@ namespace MoBi.Presentation.Mapper
    }
 
 
-   public class When_converting_msv_data_table_to_import_quantity_dto_that_match_specs : concern_for_DataTableToImportQuantityDTOMapperForMolecules
+   public class When_converting_ic_data_table_to_import_quantity_dto_that_match_specs : concern_for_DataTableToImportQuantityDTOMapperForMolecules
    {
       private QuantityImporterDTO _result;
 
       protected override void Because()
       {
-         _result = sut.MapFrom(new MsvDataTableProvider().ImportTables(), _startValuesBuildingBlock);
+         _result = sut.MapFrom(new MsvDataTableProvider().ImportTables(), _initialConditionsBuildingBlock);
       }
 
       [Observation]
@@ -368,7 +368,7 @@ namespace MoBi.Presentation.Mapper
       [Observation]
       public void molecule_name_is_converted()
       {
-         _result.QuantityDTOs.Each(msv => msv.Name.ShouldBeEqualTo("Drug"));
+         _result.QuantityDTOs.Each(dto => dto.Name.ShouldBeEqualTo("Drug"));
       }
 
       [Observation]
@@ -389,14 +389,14 @@ namespace MoBi.Presentation.Mapper
       protected override void Context()
       {
          base.Context();
-         _startValuesBuildingBlock = new InitialConditionsBuildingBlock();
+         _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock();
          _importTables = new MsvDataTableProvider().ImportTables();
          _importTables.Rows[0][4] = string.Empty;
       }
 
       protected override void Because()
       {
-         _result = sut.MapFrom(_importTables, _startValuesBuildingBlock);
+         _result = sut.MapFrom(_importTables, _initialConditionsBuildingBlock);
       }
 
       [Observation]
@@ -414,17 +414,17 @@ namespace MoBi.Presentation.Mapper
       protected override void Context()
       {
          base.Context();
-         _startValuesBuildingBlock = new InitialConditionsBuildingBlock();
+         _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock();
          _importTables = new MsvDataTableProvider().ImportTables();
          _importTables.Rows[0][4] = string.Empty;
          _importTables.Rows[0][3] = string.Empty;
          
-         _startValuesBuildingBlock.Add(new InitialCondition { ContainerPath = ContainerPathFromDataTableRow(_importTables, 0), Name = "Drug", Value = 9.0});
+         _initialConditionsBuildingBlock.Add(new InitialCondition { ContainerPath = ContainerPathFromDataTableRow(_importTables, 0), Name = "Drug", Value = 9.0});
       }
 
       protected override void Because()
       {
-         _result = sut.MapFrom(_importTables, _startValuesBuildingBlock);
+         _result = sut.MapFrom(_importTables, _initialConditionsBuildingBlock);
       }
 
       [Observation]
@@ -440,7 +440,7 @@ namespace MoBi.Presentation.Mapper
 
       protected override void Because()
       {
-         _result = sut.MapFrom(new ConcentrationDataTableProvider().ImportTables(), _startValuesBuildingBlock);
+         _result = sut.MapFrom(new ConcentrationDataTableProvider().ImportTables(), _initialConditionsBuildingBlock);
       }
 
       [Observation]
@@ -453,6 +453,31 @@ namespace MoBi.Presentation.Mapper
       public void should_result_in_no_imported_quantities()
       {
          _result.Count.ShouldBeEqualTo(0);
+      }
+   }
+
+   public class When_converting_rows_with_trailing_empty_path_segments : concern_for_DataTableToImportQuantityDTOMapperForMolecules
+   {
+      private QuantityImporterDTO _result;
+      private DataTable _tables;
+
+      protected override void Context()
+      {
+         base.Context();
+         _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock();
+         _tables = new MsvDataTableProvider().ImportTables();
+         _tables.Rows[0][0] = _tables.Rows[0][0] + ObjectPath.PATH_DELIMITER + ObjectPath.PATH_DELIMITER;
+      }
+
+      protected override void Because()
+      {
+         _result = sut.MapFrom(_tables, _initialConditionsBuildingBlock);
+      }
+
+      [Observation]
+      public void should_trim_trailing_empty_segments_from_the_path()
+      {
+         _result.QuantityDTOs[0].ContainerPath.Count.ShouldBeEqualTo(5);
       }
    }
 

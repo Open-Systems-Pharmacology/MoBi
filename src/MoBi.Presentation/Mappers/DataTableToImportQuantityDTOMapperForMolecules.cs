@@ -90,14 +90,17 @@ namespace MoBi.Presentation.Mappers
 
       protected override ImportedQuantityDTO MapQuantityFromRow(DataTable table, DataRow row, int rowIndex)
       {
-         if (row.ItemArray.Count() < InitialConditions.COLUMNS)
+         if (row.ItemArray.Length < InitialConditions.COLUMNS)
             throw new ImportQuantityDTOsFromDataTablesMapperException(row, rowIndex, AppConstants.Exceptions.TableShouldBeNColumns(InitialConditions.COLUMNS));
 
-         var path = GetPath(row, InitialConditions.PATH);
+         var path = GetPath(row, InitialConditions.PATH).ToList();
 
+         while (path.Count > 0 && string.IsNullOrEmpty(path[path.Count - 1]))
+            path.RemoveAt(path.Count - 1);
+         
          var moleculeName = GetQuantityName(row, InitialConditions.MOLECULE);
 
-         var msv = new ImportedQuantityDTO
+         var importedQuantityDTO = new ImportedQuantityDTO
          {
             ContainerPath = new ObjectPath(path),
             Name = moleculeName,
@@ -106,17 +109,17 @@ namespace MoBi.Presentation.Mappers
             IsQuantitySpecified = getIsValueSpecified(row, InitialConditions.VALUE),
             NegativeValuesAllowed = getNegativeValuesAllowed(row)
          };
-         msv.ScaleDivisor = msv.IsScaleDivisorSpecified ? getScaleFactor(table, rowIndex) : double.NaN;
+         importedQuantityDTO.ScaleDivisor = importedQuantityDTO.IsScaleDivisorSpecified ? getScaleFactor(table, rowIndex) : double.NaN;
 
-         if (!msv.IsQuantitySpecified) return msv;
+         if (!importedQuantityDTO.IsQuantitySpecified) return importedQuantityDTO;
 
          var dimension = GetDimension(table, rowIndex, InitialConditions.UNIT, InitialConditions.DIMENSION);
-         msv.Dimension = dimension;
-         msv.DisplayUnit = dimension.Unit(row[InitialConditions.UNIT].ToString());
+         importedQuantityDTO.Dimension = dimension;
+         importedQuantityDTO.DisplayUnit = dimension.Unit(row[InitialConditions.UNIT].ToString());
 
-         msv.QuantityInBaseUnit = msv.IsQuantitySpecified ? msv.ConvertToBaseUnit(GetQuantity(table, rowIndex, InitialConditions.VALUE)) : double.NaN;
+         importedQuantityDTO.QuantityInBaseUnit = importedQuantityDTO.IsQuantitySpecified ? importedQuantityDTO.ConvertToBaseUnit(GetQuantity(table, rowIndex, InitialConditions.VALUE)) : double.NaN;
 
-         return msv;
+         return importedQuantityDTO;
       }
 
       private double getScaleFactor(DataTable table, int rowIndex)
