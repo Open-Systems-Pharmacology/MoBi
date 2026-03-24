@@ -74,7 +74,7 @@ namespace MoBi.Presentation.Mappers
       {
          var path = row[index].ToString().ToPathArray().ToList();
 
-         while (path.Count > 0 && string.IsNullOrEmpty(path[path.Count - 1]))
+         while (path.Count > 0 && string.IsNullOrWhiteSpace(path[path.Count - 1]))
             path.RemoveAt(path.Count - 1);
 
          return path;
