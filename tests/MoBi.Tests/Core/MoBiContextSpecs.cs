@@ -417,4 +417,39 @@ namespace MoBi.Core
          A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, A<ViewResult>._)).MustNotHaveHappened();
       }
    }
+
+   public class When_running_module_commands_that_converts_a_module_and_there_isnt_a_current_project : concern_for_MoBiContext
+   {
+      private MoBiMacroCommand _command;
+      private ParameterValue _parameterValue;
+      private ParameterValuesBuildingBlock _buildingBlock;
+      private Module _module;
+
+      protected override void Context()
+      {
+         base.Context();
+         _command = new MoBiMacroCommand();
+         sut.CurrentProject = null;
+         _parameterValue = new ParameterValue();
+         _buildingBlock = new ParameterValuesBuildingBlock();
+         _module = new Module
+         {
+            IsPKSimModule = true
+         };
+         _module.Add(_buildingBlock);
+         _command.Add(new AddParameterValueToBuildingBlockCommand(_buildingBlock, _parameterValue));
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, A<ViewResult>._)).Returns(ViewResult.Yes);
+      }
+
+      protected override void Because()
+      {
+         sut.PromptForCancellation(_command);
+      }
+
+      [Observation]
+      public void the_user_should_not_be_prompted()
+      {
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, A<ViewResult>._)).MustNotHaveHappened();
+      }
+   }
 }
