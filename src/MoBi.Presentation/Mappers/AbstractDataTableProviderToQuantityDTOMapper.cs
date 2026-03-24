@@ -65,14 +65,19 @@ namespace MoBi.Presentation.Mappers
       }
 
       /// <summary>
-      ///    Gets the object path from a string in a datarow
+      ///    Gets the object path from a string in a datarow removing trailing empty path elements
       /// </summary>
       /// <param name="row">The row to convert</param>
       /// <param name="index">The index of the column containing the path</param>
       /// <returns>The an enumeration of strings that can be used to create an ObjectPath</returns>
       protected static IEnumerable<string> GetPath(DataRow row, int index)
       {
-         return row[index].ToString().ToPathArray();
+         var path = row[index].ToString().ToPathArray().ToList();
+
+         while (path.Count > 0 && string.IsNullOrEmpty(path[path.Count - 1]))
+            path.RemoveAt(path.Count - 1);
+
+         return path;
       }
 
       /// <summary>

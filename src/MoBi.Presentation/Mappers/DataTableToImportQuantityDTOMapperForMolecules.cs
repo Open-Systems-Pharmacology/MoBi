@@ -94,9 +94,6 @@ namespace MoBi.Presentation.Mappers
             throw new ImportQuantityDTOsFromDataTablesMapperException(row, rowIndex, AppConstants.Exceptions.TableShouldBeNColumns(InitialConditions.COLUMNS));
 
          var path = GetPath(row, InitialConditions.PATH).ToList();
-
-         while (path.Count > 0 && string.IsNullOrEmpty(path[path.Count - 1]))
-            path.RemoveAt(path.Count - 1);
          
          var moleculeName = GetQuantityName(row, InitialConditions.MOLECULE);
 
