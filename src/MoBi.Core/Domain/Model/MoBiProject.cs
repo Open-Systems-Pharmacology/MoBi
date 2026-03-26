@@ -58,6 +58,7 @@ namespace MoBi.Core.Domain.Model
       public void RemoveModule(Module module)
       {
          _modules.Remove(module);
+         RemoveClassifiableForWrappedObject(module);
       }
 
       public IReadOnlyList<IMoBiSimulation> Simulations => _allSimulations;
@@ -148,8 +149,8 @@ namespace MoBi.Core.Domain.Model
       }
 
       /// <summary>
-      /// Returns a list of simulations that have a module where the name matches <paramref name="module"/>
-      /// This indicates that the <paramref name="module"/> was used as a template for the simulation
+      ///    Returns a list of simulations that have a module where the name matches <paramref name="module" />
+      ///    This indicates that the <paramref name="module" /> was used as a template for the simulation
       /// </summary>
       public IReadOnlyList<IMoBiSimulation> SimulationsUsing(Module module)
       {
