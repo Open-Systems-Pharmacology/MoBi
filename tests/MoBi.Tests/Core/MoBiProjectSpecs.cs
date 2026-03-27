@@ -128,4 +128,29 @@ namespace MoBi.Core
          sut.AllClassifiables.Count.ShouldBeEqualTo(0);
       }
    }
+
+   public class When_removing_a_module : concern_for_MoBiProject
+   {
+      private Module _module;
+
+      protected override void Context()
+      {
+         base.Context();
+         _module = new Module().WithName("module").WithId("Id");
+         sut.AddModule(_module);
+         sut.GetOrCreateClassifiableFor<ClassifiableModule, Module>(_module);
+         sut.AllClassifiables.Count.ShouldBeEqualTo(1);
+      }
+
+      protected override void Because()
+      {
+         sut.RemoveModule(_module);
+      }
+
+      [Observation]
+      public void should_also_remove_the_associated_classifiable_wrapper()
+      {
+         sut.AllClassifiables.Count.ShouldBeEqualTo(0);
+      }
+   }
 }
