@@ -54,11 +54,15 @@ public abstract class ExtendablePathAndValuesTask<TBuildingBlock, TBuilder>: IPa
 
    protected abstract string RemoveCommandDescription();
 
-   protected void Extend(TBuildingBlock buildingBlock, MoBiSpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock, string[] moleculeNames)
+   protected string[] Extend(TBuildingBlock buildingBlock, MoBiSpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock, string[] moleculeNames)
    {
       var molecules = moleculesFor(moleculeNames, moleculeBuildingBlock);
 
+      var existingPaths = new HashSet<string>(buildingBlock.Select(x => x.Path.PathAsString));
+
       _context.AddToHistory(_extendManager.ExtendPathAndValueEntitiesBasedOnUsedTemplates(spatialStructure, molecules, buildingBlock));
+
+      return buildingBlock.Where(x => !existingPaths.Contains(x.Path.PathAsString)).Select(x => x.Path.PathAsString).ToArray();
    }
 
    private static IReadOnlyList<MoleculeBuilder> moleculesFor(string[] moleculeNames, MoleculeBuildingBlock moleculeBuildingBlock)
