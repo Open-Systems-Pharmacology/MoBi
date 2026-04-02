@@ -226,7 +226,7 @@ public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
       if (!UsesObservedData(dataRepository))
          return;
 
-      Charts.Where(c => c != null).Each(chart =>
+      Charts.Each(chart =>
       {
          var curvesToRemove = chart.Curves.Where(c => Equals(c.yData.Repository, dataRepository)).ToList();
          curvesToRemove.Each(curve => chart.RemoveCurve(curve.Id));
