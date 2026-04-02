@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using FakeItEasy;
+using MoBi.Core.Chart;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Services;
@@ -11,6 +12,7 @@ using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Chart;
+using OSPSuite.Core.Chart.Simulations;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
@@ -38,6 +40,7 @@ namespace MoBi.Presentation
       protected ISimulationOutputMappingPresenter _simulationOutputMappingPresenter;
       protected IMoBiContext _context;
       protected IOutputMappingMatchingTask _outputMappingMatchingTask;
+      protected IMoBiSimulationAnalysisCreator _simulationAnalysisCreator;
       private ISimulationChangesPresenter _simulationChangesPresenter;
       private ISimulationEntitySourceReferenceFactory _entitySourceReferenceFactory;
       private ISimulationRunner _simulationRunner;
@@ -62,10 +65,13 @@ namespace MoBi.Presentation
          _outputMappingMatchingTask = A.Fake<IOutputMappingMatchingTask>();
          _entitySourceReferenceFactory = A.Fake<ISimulationEntitySourceReferenceFactory>();
          _simulationRunner = A.Fake<ISimulationRunner>();
+         _simulationAnalysisCreator = A.Fake<IMoBiSimulationAnalysisCreator>();
+
+         configureSimulationAnalysisCreator(_simulationAnalysisCreator);
 
          sut = new EditSimulationPresenter(_view, _chartPresenter, _hierarchicalSimulationPresenter, _diagramPresenter,
             _solverSettings, _outputSchemaPresenter, _presenterFactory, new HeavyWorkManagerForSpecs(),
-            A.Fake<IChartFactory>(), _editFavoritePresenter, _chartTasks, _userDefinedParametersPresenter, _simulationOutputMappingPresenter,
+            _simulationAnalysisCreator, _editFavoritePresenter, _chartTasks, _userDefinedParametersPresenter, _simulationOutputMappingPresenter,
             _simulationPredictedVsObservedChartPresenter, _simulationResidualVsTimeChartPresenter, _context, _outputMappingMatchingTask, _simulationChangesPresenter, _entitySourceReferenceFactory, _simulationRunner);
       }
 
@@ -91,6 +97,39 @@ namespace MoBi.Presentation
          curve.SetxData(baseGrid, dimensionFactory);
          curve.SetyData(ydata, dimensionFactory);
          return curve;
+      }
+
+      private static void configureSimulationAnalysisCreator(IMoBiSimulationAnalysisCreator simulationAnalysisCreator)
+      {
+         A.CallTo(() => simulationAnalysisCreator.CreateTimeProfileAnalysisFor(A<IMoBiSimulation>._))
+            .ReturnsLazily((IMoBiSimulation simulation) =>
+            {
+               var chart = new MoBiSimulationTimeProfileChart();
+               simulation.AddAnalysis(chart);
+               if (!(simulation is MoBiSimulation))
+                  A.CallTo(() => simulation.Chart).Returns(chart);
+               return chart;
+            });
+
+         A.CallTo(() => simulationAnalysisCreator.CreatePredictedVsObservedAnalysisFor(A<IMoBiSimulation>._))
+            .ReturnsLazily((IMoBiSimulation simulation) =>
+            {
+               var chart = new SimulationPredictedVsObservedChart();
+               simulation.AddAnalysis(chart);
+               if (!(simulation is MoBiSimulation))
+                  A.CallTo(() => simulation.PredictedVsObservedChart).Returns(chart);
+               return chart;
+            });
+
+         A.CallTo(() => simulationAnalysisCreator.CreateResidualsVsTimeAnalysisFor(A<IMoBiSimulation>._))
+            .ReturnsLazily((IMoBiSimulation simulation) =>
+            {
+               var chart = new SimulationResidualVsTimeChart();
+               simulation.AddAnalysis(chart);
+               if (!(simulation is MoBiSimulation))
+                  A.CallTo(() => simulation.ResidualVsTimeChart).Returns(chart);
+               return chart;
+            });
       }
    }
 
@@ -210,14 +249,14 @@ namespace MoBi.Presentation
       concern_for_EditSimulationPresenter
    {
       private IMoBiSimulation _simulation;
-      private CurveChart _chart;
+      private MoBiSimulationTimeProfileChart _chart;
 
       protected override void Context()
       {
          base.Context();
          _simulation = A.Fake<IMoBiSimulation>();
          sut.Edit(_simulation);
-         _chart = A.Fake<CurveChart>();
+         _chart = A.Fake<MoBiSimulationTimeProfileChart>();
          A.CallTo(() => _simulation.Chart).Returns(_chart);
          A.CallTo(() => _view.ShowsResults).Returns(true);
       }
@@ -239,14 +278,14 @@ namespace MoBi.Presentation
       concern_for_EditSimulationPresenter
    {
       private IMoBiSimulation _simulation;
-      private CurveChart _chart;
+      private MoBiSimulationTimeProfileChart _chart;
 
       protected override void Context()
       {
          base.Context();
          _simulation = A.Fake<IMoBiSimulation>();
          sut.Edit(_simulation);
-         _chart = A.Fake<CurveChart>();
+         _chart = A.Fake<MoBiSimulationTimeProfileChart>();
          A.CallTo(() => _simulation.Chart).Returns(_chart);
          A.CallTo(() => _view.ShowsResults).Returns(true);
       }
@@ -311,7 +350,7 @@ namespace MoBi.Presentation
          base.Context();
          _simulation = new MoBiSimulation { ResultsDataRepository = new DataRepository() };
 
-         var chart = new CurveChart();
+         var chart = new MoBiSimulationTimeProfileChart();
 
          _observedDataRepository = new DataRepository();
 
@@ -325,7 +364,7 @@ namespace MoBi.Presentation
             OutputSelection = new SimulationQuantitySelection(_simulation, new QuantitySelection())
          });
 
-         _simulation.Chart = chart;
+         _simulation.AddAnalysis(chart);
 
          A.CallTo(() => _chartPresenter.Show(chart, A<IReadOnlyList<DataRepository>>._, A<IReadOnlyList<DataRepository>>._, null))
             .Invokes(x =>
@@ -440,13 +479,13 @@ namespace MoBi.Presentation
       {
          base.Context();
          _simulation = new MoBiSimulation { ResultsDataRepository = new DataRepository() };
-         var chart = new CurveChart();
+         var chart = new MoBiSimulationTimeProfileChart();
          _firstObservedDataRepository = new DataRepository();
          chart.AddCurve(createObservedCurve(_firstObservedDataRepository));
          _secondObservedDataRepository = new DataRepository();
          _repositoryList.Add(_firstObservedDataRepository);
          _repositoryList.Add(_secondObservedDataRepository);
-         _simulation.Chart = chart;
+         _simulation.AddAnalysis(chart);
          _firstOutputMapping = A.Fake<OutputMapping>();
 
          // A.CallTo(() => _firstOutputMapping.UsesObservedData(A<DataRepository>._)).ReturnsLazily((DataRepository x) => ReferenceEquals(_firstObservedDataRepository, x));

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FakeItEasy;
+using MoBi.Core.Chart;
 using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
@@ -144,6 +145,8 @@ namespace MoBi.Core
          sut.Model = new Model();
          sut.Model.Root = new Container();
 
+         _moBiSimulation.AddAnalysis(new MoBiSimulationTimeProfileChart());
+
          var originalQuantityValue = new OriginalQuantityValue
          {
             Path = "A|BC",
@@ -186,7 +189,7 @@ namespace MoBi.Core
       [Observation]
       public void the_chart_should_be_cloned()
       {
-         A.CallTo(() => _cloneManager.Clone(_moBiSimulation.Chart)).MustHaveHappened();
+         A.CallTo(() => _cloneManager.Clone(A<CurveChart>.That.IsEqualTo(_moBiSimulation.Chart))).MustHaveHappened();
       }
 
       [Observation]
@@ -236,7 +239,7 @@ namespace MoBi.Core
 
    public class When_removing_observed_data_from_the_simulation : concern_for_MoBiSimulation
    {
-      private CurveChart _chart;
+      private MoBiSimulationTimeProfileChart _chart;
       private Curve _curve;
       private readonly DataRepository _dataRepository = new DataRepository();
       private DataColumn _dataColumn;
@@ -245,7 +248,7 @@ namespace MoBi.Core
       protected override void Context()
       {
          base.Context();
-         _chart = new CurveChart();
+         _chart = new MoBiSimulationTimeProfileChart();
          _curve = new Curve();
          _curve.SetxData(new DataColumn(), new MoBiDimensionFactory());
          _dataColumn = new DataColumn
@@ -256,7 +259,7 @@ namespace MoBi.Core
          _chart.AddCurve(_curve);
 
          sut.Update(A.Fake<SimulationConfiguration>(), A.Fake<IModel>(), _simulationEntitySources);
-         sut.Chart = _chart;
+         sut.AddAnalysis(_chart);
          sut.HasChanged = false;
          //make sure we do have curves initially
          sut.Chart.Curves.ShouldNotBeEmpty();

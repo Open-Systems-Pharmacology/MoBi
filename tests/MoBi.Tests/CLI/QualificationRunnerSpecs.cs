@@ -303,6 +303,7 @@ namespace MoBi.CLI
    {
       private SimulationPlot _simulationPlot;
       private CurveChart _mainChart;
+      private MoBi.Core.Snapshots.SimulationPredictedVsObservedChart _predictedVsObservedChart;
       private CurveChart _residualChart;
       private Simulation _simulation;
       private QualificationMapping _mapping;
@@ -315,16 +316,19 @@ namespace MoBi.CLI
          _simulationName = "S1";
 
          _mainChart = new CurveChart();
+         _predictedVsObservedChart = new MoBi.Core.Snapshots.SimulationPredictedVsObservedChart();
          _residualChart = new CurveChart();
 
          _mainChart.Name = "Main Chart";
+         _predictedVsObservedChart.Name = "PvO Chart";
          _residualChart.Name = "Residual Chart";
 
          _simulation = new Simulation
          {
             Name = _simulationName,
-            Chart = _mainChart,
-            SimulationResidualVsTimeChart = _residualChart
+            Charts = new[] { _mainChart },
+            PredictedVsObservedCharts = new[] { _predictedVsObservedChart },
+            ResidualVsTimeCharts = new[] { _residualChart }
          };
 
          _projectSnapshot.Simulations = [_simulation];
@@ -354,7 +358,7 @@ namespace MoBi.CLI
       [Observation]
       public void should_include_main_and_residual_charts_in_plot_mappings()
       {
-         _mapping.Plots.Length.ShouldBeEqualTo(2);
+         _mapping.Plots.Length.ShouldBeEqualTo(3);
       }
 
       [Observation]

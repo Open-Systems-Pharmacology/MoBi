@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using MoBi.Core.Chart;
 using MoBi.Core.Domain.Extensions;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Chart.Simulations;
@@ -17,9 +18,9 @@ namespace MoBi.Core.Domain.Model;
 public interface IMoBiSimulation : IWithDiagramFor<IMoBiSimulation>, ISimulation, IWithChartTemplates
 {
    ICache<string, DataRepository> HistoricResults { get; }
-   CurveChart Chart { get; set; }
-   SimulationPredictedVsObservedChart PredictedVsObservedChart { get; set; }
-   SimulationResidualVsTimeChart ResidualVsTimeChart { get; set; }
+   MoBiSimulationTimeProfileChart Chart { get; }
+   SimulationPredictedVsObservedChart PredictedVsObservedChart { get; }
+   SimulationResidualVsTimeChart ResidualVsTimeChart { get; }
 
    void Update(SimulationConfiguration simulationConfiguration, IModel model, IReadOnlyCollection<SimulationEntitySource> simulationEntitySources);
    SolverSettings Solver { get; }
@@ -73,9 +74,13 @@ public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
    private readonly IList<ISimulationAnalysis> _allSimulationAnalyses = new List<ISimulationAnalysis>();
    private DataRepository _results;
    public IDiagramModel DiagramModel { get; set; }
-   public CurveChart Chart { get; set; }
-   public SimulationPredictedVsObservedChart PredictedVsObservedChart { get; set; }
-   public SimulationResidualVsTimeChart ResidualVsTimeChart { get; set; }
+
+   // TODO: Remove single-chart properties once Presentation/UI supports multiple charts per type (https://github.com/Open-Systems-Pharmacology/MoBi/issues/2315)
+   public MoBiSimulationTimeProfileChart Chart => _allSimulationAnalyses.OfType<MoBiSimulationTimeProfileChart>().FirstOrDefault();
+
+   public SimulationPredictedVsObservedChart PredictedVsObservedChart => _allSimulationAnalyses.OfType<SimulationPredictedVsObservedChart>().FirstOrDefault();
+
+   public SimulationResidualVsTimeChart ResidualVsTimeChart => _allSimulationAnalyses.OfType<SimulationResidualVsTimeChart>().FirstOrDefault();
    public string ParameterIdentificationWorkingDirectory { get; set; }
    public IDiagramManager<IMoBiSimulation> DiagramManager { get; set; }
    public OutputMappings OutputMappings { get; set; } = new OutputMappings();
@@ -178,7 +183,7 @@ public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
    public override void AcceptVisitor(IVisitor visitor)
    {
       base.AcceptVisitor(visitor);
-      Chart?.AcceptVisitor(visitor);
+      _allSimulationAnalyses.OfType<MoBiSimulationTimeProfileChart>().Each(chart => chart.AcceptVisitor(visitor));
    }
 
    public void Update(SimulationConfiguration simulationConfiguration, IModel model, IReadOnlyCollection<SimulationEntitySource> simulationEntitySources)
@@ -207,7 +212,12 @@ public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
       HasUntraceableChanges = sourceSimulation.HasUntraceableChanges;
 
       this.UpdateDiagramFrom(sourceSimulation);
-      Chart = cloneManager.Clone(sourceSimulation.Chart);
+      sourceSimulation.Analyses.OfType<CurveChart>().Each(analysis =>
+      {
+         var clone = cloneManager.Clone(analysis);
+         if (clone is ISimulationAnalysis simulationAnalysis)
+            AddAnalysis(simulationAnalysis);
+      });
    }
    
    public void RemoveUsedObservedData(DataRepository dataRepository)
@@ -215,11 +225,11 @@ public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
       if (!UsesObservedData(dataRepository))
          return;
 
-      var curveToRemove = Chart.Curves.Where(c => Equals(c.yData.Repository, dataRepository)).ToList();
-      if (!curveToRemove.Any())
-         return;
-
-      curveToRemove.Each(curve => Chart.RemoveCurve(curve.Id));
+      Charts.Where(c => c != null).Each(chart =>
+      {
+         var curvesToRemove = chart.Curves.Where(c => Equals(c.yData.Repository, dataRepository)).ToList();
+         curvesToRemove.Each(curve => chart.RemoveCurve(curve.Id));
+      });
 
       HasChanged = true;
    }
@@ -230,10 +240,7 @@ public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
       outputsMatchingDeletedObservedData.Each(OutputMappings.Remove);
    }
 
-   public IEnumerable<CurveChart> Charts
-   {
-      get { yield return Chart; }
-   }
+   public IEnumerable<CurveChart> Charts => _allSimulationAnalyses.OfType<CurveChart>();
 
    public void AddChartTemplate(CurveChartTemplate chartTemplate) => Settings.AddChartTemplate(chartTemplate);
 

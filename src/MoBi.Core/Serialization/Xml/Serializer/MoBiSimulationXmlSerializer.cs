@@ -1,9 +1,9 @@
-﻿using System.IO;
 using System.Xml.Linq;
+using MoBi.Core.Chart;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
-using OSPSuite.Core.Chart;
 using OSPSuite.Core.Chart.Simulations;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Serialization.Diagram;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Serializer;
@@ -12,6 +12,8 @@ namespace MoBi.Core.Serialization.Xml.Serializer
 {
    public class MoBiSimulationXmlSerializer : SimulationXmlSerializer<MoBiSimulation>
    {
+      private const string _analysesElement = "Analyses";
+
       public MoBiSimulationXmlSerializer() : base(SerializationConstants.MoBiSimulation)
       {
       }
@@ -40,15 +42,41 @@ namespace MoBi.Core.Serialization.Xml.Serializer
          if (simulation.ResultsDataRepository != null)
             serializationContext.AddRepository(simulation.ResultsDataRepository);
 
-         simulation.Chart = deserializeChart<CurveChart>(simulationElement, serializationContext);
-         simulation.PredictedVsObservedChart = deserializeChart<SimulationPredictedVsObservedChart>(simulationElement, serializationContext);
-         simulation.ResidualVsTimeChart = deserializeChart<SimulationResidualVsTimeChart>(simulationElement, serializationContext);
+         var analysesElement = simulationElement.Element(_analysesElement);
+         if (analysesElement != null)
+            deserializeAnalysesFrom(simulation, analysesElement, serializationContext);
 
          var diagramSerializer = serializationContext.Resolve<IDiagramModelToXmlMapper>();
 
          var diagramElement = simulationElement.Element(diagramSerializer.ElementName);
          if (diagramElement != null)
             simulation.DiagramModel = diagramSerializer.XmlDocumentToDiagramModel(diagramElement.ToXmlDocument());
+      }
+
+      private void deserializeAnalysesFrom(MoBiSimulation simulation, XElement analysesElement, SerializationContext serializationContext)
+      {
+         foreach (var childElement in analysesElement.Elements())
+         {
+            var analysis = deserializeAnalysis(childElement, serializationContext);
+            if (analysis != null)
+               simulation.AddAnalysis(analysis);
+         }
+      }
+
+      private ISimulationAnalysis deserializeAnalysis(XElement element, SerializationContext serializationContext)
+      {
+         return (ISimulationAnalysis)tryDeserializeChart<MoBiSimulationTimeProfileChart>(element, serializationContext)
+                ?? (ISimulationAnalysis)tryDeserializeChart<SimulationPredictedVsObservedChart>(element, serializationContext)
+                ?? tryDeserializeChart<SimulationResidualVsTimeChart>(element, serializationContext);
+      }
+
+      private T tryDeserializeChart<T>(XElement element, SerializationContext serializationContext) where T : class
+      {
+         var serializer = SerializerRepository.SerializerFor<T>();
+         if (!string.Equals(element.Name.LocalName, serializer.ElementName))
+            return null;
+
+         return serializer.Deserialize<T>(element, serializationContext);
       }
 
       protected override XElement TypedSerialize(MoBiSimulation simulation, SerializationContext serializationContext)
@@ -60,30 +88,41 @@ namespace MoBi.Core.Serialization.Xml.Serializer
          if (simulation.DiagramModel != null)
             simulationElement.Add(diagramSerializer.DiagramModelToXmlDocument(simulation.DiagramModel).ToXElement());
 
-         addSerializedChart(simulationElement, simulation.Chart, serializationContext);
-         addSerializedChart(simulationElement, simulation.PredictedVsObservedChart, serializationContext);
-         addSerializedChart(simulationElement, simulation.ResidualVsTimeChart, serializationContext);
+         // Serialize all analyses into an <Analyses> wrapper element
+         var analysesElement = new XElement(_analysesElement);
+         foreach (var analysis in simulation.Analyses)
+         {
+            addSerializedAnalysis(analysesElement, analysis, serializationContext);
+         }
+
+         simulationElement.Add(analysesElement);
 
          return simulationElement;
       }
 
-      private T deserializeChart<T>(XElement simulationElement, SerializationContext serializationContext) where T : class
+      private void addSerializedAnalysis(XElement parentElement, ISimulationAnalysis analysis, SerializationContext serializationContext)
       {
-         var chartSerializer = SerializerRepository.SerializerFor<T>();
-         var chartElement = simulationElement.Element(chartSerializer.ElementName);
-         if (chartElement == null)
-            return null;
-
-         return chartSerializer.Deserialize<T>(simulationElement.Element(chartSerializer.ElementName), serializationContext);
+         switch (analysis)
+         {
+            case MoBiSimulationTimeProfileChart chart:
+               addSerializedChart(parentElement, chart, serializationContext);
+               break;
+            case SimulationPredictedVsObservedChart chart:
+               addSerializedChart(parentElement, chart, serializationContext);
+               break;
+            case SimulationResidualVsTimeChart chart:
+               addSerializedChart(parentElement, chart, serializationContext);
+               break;
+         }
       }
 
-      private void addSerializedChart<T>(XElement simulationElement, T chart, SerializationContext serializationContext) where T : class
+      private void addSerializedChart<T>(XElement parentElement, T chart, SerializationContext serializationContext) where T : class
       {
          if (chart == null)
             return;
 
          var chartSerializer = SerializerRepository.SerializerFor<T>();
-         simulationElement.Add(chartSerializer.Serialize(chart, serializationContext));
+         parentElement.Add(chartSerializer.Serialize(chart, serializationContext));
       }
    }
 }
