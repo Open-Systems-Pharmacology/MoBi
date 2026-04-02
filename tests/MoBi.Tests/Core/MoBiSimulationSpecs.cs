@@ -200,6 +200,56 @@ namespace MoBi.Core
       }
    }
 
+   public class When_updating_properties_from_a_source_simulation_that_already_has_analyses : concern_for_MoBiSimulation
+   {
+      private ICloneManager _cloneManager;
+      private MoBiSimulation _sourceSimulation;
+      private MoBiSimulationTimeProfileChart _existingChart;
+      private MoBiSimulationTimeProfileChart _sourceChart;
+      private MoBiSimulationTimeProfileChart _clonedChart;
+
+      protected override void Context()
+      {
+         base.Context();
+         _cloneManager = A.Fake<ICloneManager>();
+         sut.Model = new Model();
+         sut.Model.Root = new Container();
+
+         _existingChart = new MoBiSimulationTimeProfileChart().WithName("Existing");
+         sut.AddAnalysis(_existingChart);
+
+         _sourceSimulation = new MoBiSimulation();
+         _sourceChart = new MoBiSimulationTimeProfileChart().WithName("Source");
+         _sourceSimulation.AddAnalysis(_sourceChart);
+
+         _clonedChart = new MoBiSimulationTimeProfileChart().WithName("Cloned");
+         A.CallTo(() => _cloneManager.Clone(A<CurveChart>.That.IsEqualTo(_sourceChart))).Returns(_clonedChart);
+      }
+
+      protected override void Because()
+      {
+         sut.UpdatePropertiesFrom(_sourceSimulation, _cloneManager);
+      }
+
+      [Observation]
+      public void should_clear_existing_analyses_before_adding_cloned_ones()
+      {
+         sut.Analyses.Count().ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void should_contain_only_the_cloned_chart_from_the_source()
+      {
+         sut.Analyses.ShouldContain(_clonedChart);
+      }
+
+      [Observation]
+      public void should_not_contain_the_previously_existing_chart()
+      {
+         sut.Analyses.ShouldNotContain(_existingChart);
+      }
+   }
+
    public class When_removing_analyses_from_the_simulation : concern_for_MoBiSimulation
    {
       private ISimulationAnalysis _simulationAnalysis;

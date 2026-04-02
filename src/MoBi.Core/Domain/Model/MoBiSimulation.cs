@@ -212,6 +212,7 @@ public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
       HasUntraceableChanges = sourceSimulation.HasUntraceableChanges;
 
       this.UpdateDiagramFrom(sourceSimulation);
+      _allSimulationAnalyses.Clear();
       sourceSimulation.Analyses.OfType<CurveChart>().Each(analysis =>
       {
          var clone = cloneManager.Clone(analysis);

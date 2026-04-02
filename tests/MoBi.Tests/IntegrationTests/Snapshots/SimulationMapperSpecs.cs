@@ -106,8 +106,9 @@ namespace MoBi.IntegrationTests.Snapshots
       [Observation]
       public void result_charts_are_mapped()
       {
-         _result.Charts.ShouldNotBeNull();
-         _result.Charts.Length.ShouldBeGreaterThan(0);
+         _result.Charts.Length.ShouldBeEqualTo(1);
+         _result.PredictedVsObservedCharts.Length.ShouldBeEqualTo(1);
+         _result.ResidualVsTimeCharts.Length.ShouldBeEqualTo(1);
       }
 
       [Observation]
