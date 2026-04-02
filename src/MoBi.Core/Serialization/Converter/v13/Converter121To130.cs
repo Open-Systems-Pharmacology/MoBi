@@ -31,8 +31,7 @@ public class Converter121To130 : IMoBiObjectConverter, IVisitor<MoBiProject>
 
       element.DescendantsAndSelfNamed("MoBiSimulation").Each(simulationNode =>
       {
-         convertLegacyChartsToAnalyses(simulationNode);
-         converted = true;
+         converted |= convertLegacyChartsToAnalyses(simulationNode);
       });
 
       return (ProjectVersions.V13_0, converted);
@@ -44,10 +43,10 @@ public class Converter121To130 : IMoBiObjectConverter, IVisitor<MoBiProject>
          _coreConverter.Visit(moBiProject.SimulationSettings);
    }
 
-   private void convertLegacyChartsToAnalyses(XElement simulationNode)
+   private bool convertLegacyChartsToAnalyses(XElement simulationNode)
    {
       if (simulationNode.Element("Analyses") != null)
-         return;
+         return false;
 
       var analysesElement = new XElement("Analyses");
 
@@ -63,6 +62,7 @@ public class Converter121To130 : IMoBiObjectConverter, IVisitor<MoBiProject>
       moveElementIfExists(simulationNode, analysesElement, "SimulationResidualVsTimeChart");
 
       simulationNode.Add(analysesElement);
+      return true;
    }
 
    private void moveElementIfExists(XElement source, XElement target, string elementName)
