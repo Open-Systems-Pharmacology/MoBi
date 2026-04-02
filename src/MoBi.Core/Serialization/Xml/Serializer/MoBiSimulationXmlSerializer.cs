@@ -65,12 +65,12 @@ namespace MoBi.Core.Serialization.Xml.Serializer
 
       private ISimulationAnalysis deserializeAnalysis(XElement element, SerializationContext serializationContext)
       {
-         return (ISimulationAnalysis)tryDeserializeChart<MoBiSimulationTimeProfileChart>(element, serializationContext)
-                ?? (ISimulationAnalysis)tryDeserializeChart<SimulationPredictedVsObservedChart>(element, serializationContext)
+         return tryDeserializeChart<MoBiSimulationTimeProfileChart>(element, serializationContext)
+                ?? tryDeserializeChart<SimulationPredictedVsObservedChart>(element, serializationContext)
                 ?? tryDeserializeChart<SimulationResidualVsTimeChart>(element, serializationContext);
       }
 
-      private T tryDeserializeChart<T>(XElement element, SerializationContext serializationContext) where T : class
+      private ISimulationAnalysis tryDeserializeChart<T>(XElement element, SerializationContext serializationContext) where T : class, ISimulationAnalysis
       {
          var serializer = SerializerRepository.SerializerFor<T>();
          if (!string.Equals(element.Name.LocalName, serializer.ElementName))
