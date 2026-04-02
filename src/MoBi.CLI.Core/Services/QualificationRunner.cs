@@ -22,7 +22,9 @@ using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 using static OSPSuite.Assets.Error;
 using ModelProject = MoBi.Core.Domain.Model.MoBiProject;
+using SnapshotCurveChart = OSPSuite.Core.Snapshots.CurveChart;
 using SnapshotProject = MoBi.Core.Snapshots.Project;
+using SnapshotSimulationPredictedVsObservedChart = MoBi.Core.Snapshots.SimulationPredictedVsObservedChart;
 
 namespace MoBi.CLI.Core.Services
 {
@@ -72,7 +74,9 @@ namespace MoBi.CLI.Core.Services
          var simulationName = simulationPlot.Simulation;
          var simulation = simulationFrom(snapshotProject, simulationName);
 
-         var charts = new[] { simulation.Chart, simulation.SimulationResidualVsTimeChart };
+         var charts = (simulation.Charts ?? Array.Empty<SnapshotCurveChart>())
+            .Concat(simulation.PredictedVsObservedCharts ?? Array.Empty<SnapshotSimulationPredictedVsObservedChart>())
+            .Concat(simulation.ResidualVsTimeCharts ?? Array.Empty<SnapshotCurveChart>());
 
          return charts.Select(chart => new PlotMapping
          {

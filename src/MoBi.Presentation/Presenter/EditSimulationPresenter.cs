@@ -11,7 +11,6 @@ using MoBi.Presentation.Presenter.ModelDiagram;
 using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Chart;
-using OSPSuite.Core.Chart.Simulations;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Events;
@@ -56,7 +55,7 @@ namespace MoBi.Presentation.Presenter
       private readonly ICache<Type, IEditInSimulationPresenter> _cacheShowPresenter;
       private bool _diagramLoaded;
       private readonly IHeavyWorkManager _heavyWorkManager;
-      private readonly IChartFactory _chartFactory;
+      private readonly IMoBiSimulationAnalysisCreator _simulationAnalysisCreator;
       private readonly IEditFavoritesInSimulationPresenter _favoritesPresenter;
       private readonly IUserDefinedParametersPresenter _userDefinedParametersPresenter;
       private readonly IChartTasks _chartTask;
@@ -75,7 +74,7 @@ namespace MoBi.Presentation.Presenter
          IEditOutputSchemaPresenter editOutputSchemaPresenter,
          IEditInSimulationPresenterFactory showPresenterFactory,
          IHeavyWorkManager heavyWorkManager,
-         IChartFactory chartFactory,
+         IMoBiSimulationAnalysisCreator simulationAnalysisCreator,
          IEditFavoritesInSimulationPresenter favoritesPresenter,
          IChartTasks chartTask,
          IUserDefinedParametersPresenter userDefinedParametersPresenter,
@@ -94,7 +93,7 @@ namespace MoBi.Presentation.Presenter
          _editOutputSchemaPresenter = editOutputSchemaPresenter;
          _showPresenterFactory = showPresenterFactory;
          _heavyWorkManager = heavyWorkManager;
-         _chartFactory = chartFactory;
+         _simulationAnalysisCreator = simulationAnalysisCreator;
          _favoritesPresenter = favoritesPresenter;
          _chartTask = chartTask;
          _userDefinedParametersPresenter = userDefinedParametersPresenter;
@@ -184,14 +183,15 @@ namespace MoBi.Presentation.Presenter
 
          //This whole initialization of Chart in presenter is really ugly.
          //It's done like this now so that we can release 11.1 but should be done like in PK-Sim (multiple chart per simulation, added dynamically)
+         // TODO: Remove and support multiple charts per simulation (https://github.com/Open-Systems-Pharmacology/MoBi/issues/2315)
          if (_simulation.Chart == null)
          {
-            _simulation.Chart = _chartFactory.Create<CurveChart>().WithAxes();
+            _simulationAnalysisCreator.CreateTimeProfileAnalysisFor(_simulation);
             _chartTask.SetOriginText(_simulation.Name, _simulation.Chart);
          }
 
          if (_simulation.PredictedVsObservedChart == null)
-            _simulation.PredictedVsObservedChart = _chartFactory.Create<SimulationPredictedVsObservedChart>();
+            _simulationAnalysisCreator.CreatePredictedVsObservedAnalysisFor(_simulation);
 
          if (_simulationPredictedVsObservedChartPresenter.Chart == null)
             _simulationPredictedVsObservedChartPresenter.InitializeAnalysis(_simulation.PredictedVsObservedChart, _simulation);
@@ -199,7 +199,7 @@ namespace MoBi.Presentation.Presenter
             _simulationPredictedVsObservedChartPresenter.UpdateAnalysisBasedOn(_simulation);
 
          if (_simulation.ResidualVsTimeChart == null)
-            _simulation.ResidualVsTimeChart = _chartFactory.Create<SimulationResidualVsTimeChart>();
+            _simulationAnalysisCreator.CreateResidualsVsTimeAnalysisFor(_simulation);
 
          if (_simulationResidualVsTimeChartPresenter.Chart == null)
             _simulationResidualVsTimeChartPresenter.InitializeAnalysis(_simulation.ResidualVsTimeChart, _simulation);
