@@ -74,9 +74,7 @@ namespace MoBi.CLI.Core.Services
          var simulationName = simulationPlot.Simulation;
          var simulation = simulationFrom(snapshotProject, simulationName);
 
-         var charts = (simulation.Charts ?? Array.Empty<SnapshotCurveChart>())
-            .Concat(simulation.PredictedVsObservedCharts ?? Array.Empty<SnapshotSimulationPredictedVsObservedChart>())
-            .Concat(simulation.ResidualVsTimeCharts ?? Array.Empty<SnapshotCurveChart>());
+         var charts = simulation.Charts.Concat(simulation.PredictedVsObservedCharts).Concat(simulation.ResidualVsTimeCharts);
 
          return charts.Select(chart => new PlotMapping
          {

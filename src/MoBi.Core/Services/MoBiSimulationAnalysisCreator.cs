@@ -50,10 +50,8 @@ namespace MoBi.Core.Services
 
       public override ISimulationAnalysis CreateAnalysisBasedOn(ISimulationAnalysis sourceAnalysis)
       {
-         if (sourceAnalysis is CurveChart curveChart)
-            return _cloneManager.Clone(curveChart) as ISimulationAnalysis;
-
-         return null;
+         var updateable = sourceAnalysis as IUpdatable;
+         return _cloneManager.Clone(updateable) as ISimulationAnalysis;
       }
    }
 }

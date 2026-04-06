@@ -1,6 +1,10 @@
 ﻿using System.Xml.Linq;
+using MoBi.Core.Chart;
 using MoBi.Core.Domain.Model;
+using OSPSuite.Core.Chart.Simulations;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Serialization.Xml.Extensions;
+using OSPSuite.Serializer.Xml.Extensions;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
 using CoreConverter121To130 = OSPSuite.Core.Converters.v13.Converter121To130;
@@ -10,10 +14,12 @@ namespace MoBi.Core.Serialization.Converter.v13;
 public class Converter121To130 : IMoBiObjectConverter, IVisitor<MoBiProject>
 {
    private readonly CoreConverter121To130 _coreConverter;
+   private readonly IObjectTypeResolver _objectTypeResolver;
 
-   public Converter121To130(CoreConverter121To130 coreConverter)
+   public Converter121To130(CoreConverter121To130 coreConverter, IObjectTypeResolver objectTypeResolver)
    {
       _coreConverter = coreConverter;
+      _objectTypeResolver = objectTypeResolver;
    }
 
    public bool IsSatisfiedBy(int version) => version == ProjectVersions.V12_1;
@@ -55,6 +61,7 @@ public class Converter121To130 : IMoBiObjectConverter, IVisitor<MoBiProject>
       {
          curveChart.Remove();
          curveChart.Name = "MoBiSimulationTimeProfileChart";
+         setDefaultNameIfMissing(curveChart);
          analysesElement.Add(curveChart);
       }
 
@@ -71,7 +78,27 @@ public class Converter121To130 : IMoBiObjectConverter, IVisitor<MoBiProject>
       if (element != null)
       {
          element.Remove();
+         setDefaultNameIfMissing(element);
          target.Add(element);
       }
    }
+
+   private void setDefaultNameIfMissing(XElement element)
+   {
+      if (!string.IsNullOrEmpty(element.Attribute("name")?.Value))
+         return;
+
+      // No need to check for unique names because before now a simulation could only have one of each type
+      var defaultName = defaultNameFor(element.Name.LocalName);
+      if (defaultName != null)
+         element.AddAttribute("name", defaultName);
+   }
+
+   private string defaultNameFor(string elementName) => elementName switch
+   {
+      nameof(MoBiSimulationTimeProfileChart) => _objectTypeResolver.TypeFor<MoBiSimulationTimeProfileChart>(),
+      nameof(SimulationPredictedVsObservedChart) => _objectTypeResolver.TypeFor<SimulationPredictedVsObservedChart>(),
+      nameof(SimulationResidualVsTimeChart) => _objectTypeResolver.TypeFor<SimulationResidualVsTimeChart>(),
+      _ => null
+   };
 }

@@ -213,7 +213,7 @@ public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
 
       this.UpdateDiagramFrom(sourceSimulation);
       _allSimulationAnalyses.Clear();
-      sourceSimulation.Analyses.OfType<CurveChart>().Each(analysis =>
+      sourceSimulation.Analyses.OfType<IUpdatable>().Each(analysis =>
       {
          var clone = cloneManager.Clone(analysis);
          if (clone is ISimulationAnalysis simulationAnalysis)
