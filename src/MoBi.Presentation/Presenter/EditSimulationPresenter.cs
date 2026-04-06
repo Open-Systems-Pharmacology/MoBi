@@ -144,7 +144,6 @@ namespace MoBi.Presentation.Presenter
          UpdateCaption();
          _view.Display();
          loadAnalyses();
-         
          _trackableSimulation = new TrackableSimulation(_simulation, _entitySourceReferenceFactory.CreateFor(simulation));
          _favoritesPresenter.TrackableSimulation = _trackableSimulation;
          _favoritesPresenter.Edit(_simulation);

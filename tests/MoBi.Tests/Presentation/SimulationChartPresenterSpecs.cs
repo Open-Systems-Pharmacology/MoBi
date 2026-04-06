@@ -153,7 +153,7 @@ public class When_handling_observed_data_removed_event_and_the_data_is_in_the_ch
    }
 
    [Observation]
-   public void the_display_is_not_refreshed()
+   public void the_display_is_refreshed()
    {
       A.CallTo(() => _chartDisplayPresenter.Refresh()).MustHaveHappened();
    }

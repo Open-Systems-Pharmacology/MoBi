@@ -1,9 +1,11 @@
+using System;
 using FakeItEasy;
 using MoBi.Core.Chart;
 using MoBi.Presentation.Presenter;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Chart.Simulations;
+using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 using SimulationAnalysisPresenterFactory = MoBi.Presentation.Presenter.SimulationAnalysisPresenterFactory;
@@ -88,5 +90,14 @@ public class When_creating_a_presenter_for_a_residuals_vs_time_chart : concern_f
    public void should_return_a_residuals_vs_time_chart_presenter()
    {
       _result.ShouldBeEqualTo(_residualsVsTimePresenter);
+   }
+}
+
+public class When_creating_a_presenter_for_an_unknown_analysis_type : concern_for_SimulationAnalysisPresenterFactory
+{
+   [Observation]
+   public void should_throw_an_argument_exception()
+   {
+      The.Action(() => sut.PresenterFor(A.Fake<ISimulationAnalysis>())).ShouldThrowAn<ArgumentException>();
    }
 }

@@ -100,7 +100,6 @@ namespace MoBi.UI.Views.SimulationView
       }
 
       public void AddAnalysis(ISimulationAnalysisPresenter analysisPresenter)
-
       {
          var page = new XtraTabPage();
          page.Tag = analysisPresenter;
