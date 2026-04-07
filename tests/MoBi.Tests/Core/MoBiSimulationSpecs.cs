@@ -189,7 +189,7 @@ namespace MoBi.Core
       [Observation]
       public void the_chart_should_be_cloned()
       {
-         A.CallTo(() => _cloneManager.Clone(A<IUpdatable>.That.IsEqualTo(_moBiSimulation.Chart))).MustHaveHappened();
+         A.CallTo(() => _cloneManager.Clone(A<IUpdatable>.That.IsEqualTo(_moBiSimulation.Charts.First()))).MustHaveHappened();
       }
 
       [Observation]
@@ -312,7 +312,7 @@ namespace MoBi.Core
          sut.AddAnalysis(_chart);
          sut.HasChanged = false;
          //make sure we do have curves initially
-         sut.Chart.Curves.ShouldNotBeEmpty();
+         sut.Charts.First().Curves.ShouldNotBeEmpty();
       }
 
       protected override void Because()
@@ -329,7 +329,7 @@ namespace MoBi.Core
       [Observation]
       public void the_observed_data_should_have_been_removed()
       {
-         sut.Chart.Curves.ShouldBeEmpty();
+         sut.Charts.First().Curves.ShouldBeEmpty();
       }
    }
 
