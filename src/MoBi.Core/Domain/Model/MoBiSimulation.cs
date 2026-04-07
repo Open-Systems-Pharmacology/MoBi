@@ -3,7 +3,6 @@ using System.Linq;
 using MoBi.Core.Chart;
 using MoBi.Core.Domain.Extensions;
 using OSPSuite.Core.Chart;
-using OSPSuite.Core.Chart.Simulations;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -18,9 +17,6 @@ namespace MoBi.Core.Domain.Model;
 public interface IMoBiSimulation : IWithDiagramFor<IMoBiSimulation>, ISimulation, IWithChartTemplates
 {
    ICache<string, DataRepository> HistoricResults { get; }
-   MoBiSimulationTimeProfileChart Chart { get; }
-   SimulationPredictedVsObservedChart PredictedVsObservedChart { get; }
-   SimulationResidualVsTimeChart ResidualVsTimeChart { get; }
 
    void Update(SimulationConfiguration simulationConfiguration, IModel model, IReadOnlyCollection<SimulationEntitySource> simulationEntitySources);
    SolverSettings Solver { get; }
@@ -75,12 +71,6 @@ public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
    private DataRepository _results;
    public IDiagramModel DiagramModel { get; set; }
 
-   // TODO: Remove single-chart properties once Presentation/UI supports multiple charts per type (https://github.com/Open-Systems-Pharmacology/MoBi/issues/2315)
-   public MoBiSimulationTimeProfileChart Chart => _allSimulationAnalyses.OfType<MoBiSimulationTimeProfileChart>().FirstOrDefault();
-
-   public SimulationPredictedVsObservedChart PredictedVsObservedChart => _allSimulationAnalyses.OfType<SimulationPredictedVsObservedChart>().FirstOrDefault();
-
-   public SimulationResidualVsTimeChart ResidualVsTimeChart => _allSimulationAnalyses.OfType<SimulationResidualVsTimeChart>().FirstOrDefault();
    public string ParameterIdentificationWorkingDirectory { get; set; }
    public IDiagramManager<IMoBiSimulation> DiagramManager { get; set; }
    public OutputMappings OutputMappings { get; set; } = new OutputMappings();
@@ -148,7 +138,7 @@ public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
       // Only add selected InitialConditions and ParameterValues, not ones that are not selected
       return module.BuildingBlocks
          .Except(module.ParameterValuesCollection.Concat<IBuildingBlock>(module.InitialConditionsCollection))
-         .Concat(new List<IBuildingBlock> {moduleConfiguration.SelectedInitialConditions, moduleConfiguration.SelectedParameterValues})
+         .Concat(new List<IBuildingBlock> { moduleConfiguration.SelectedInitialConditions, moduleConfiguration.SelectedParameterValues })
          .Where(x => x != null).ToList();
    }
 
@@ -220,7 +210,7 @@ public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
             AddAnalysis(simulationAnalysis);
       });
    }
-   
+
    public void RemoveUsedObservedData(DataRepository dataRepository)
    {
       if (!UsesObservedData(dataRepository))
@@ -287,5 +277,4 @@ public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
    }
 
    public bool ComesFromPKSim => Creation.Origin == Origins.PKSim;
-
 }
