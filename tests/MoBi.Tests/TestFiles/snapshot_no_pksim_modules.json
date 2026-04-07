@@ -207,7 +207,7 @@
           "ObservedData": "Human.Plasma.IV.Subj 1.Human.Plasma.IV.Subj 1"
         }
       ],
-      "Chart": {
+      "Charts": [{
         "Axes": [
           {
             "Unit": "h",
@@ -263,7 +263,7 @@
           "DiagramBackColor": "#FFFFFF"
         },
         "OriginText": "snapshot\ntest\n2025-06-27 10:26"
-      },
+      }],
       "Configuration": {
         "Settings": {
           "Name": "Default Simulation Settings",
@@ -309,7 +309,7 @@
       "OutputSelections": [
         "Organism|PeripheralVenousBlood|Theophylline|Plasma (Peripheral Venous Blood)"
       ],
-      "SimulationPredictedVsObservedChart": {
+      "PredictedVsObservedCharts": [{
         "DeviationFoldValues": [],
         "Axes": [
           {
@@ -376,8 +376,8 @@
           "BackColor": "#FFFFFF",
           "DiagramBackColor": "#FFFFFF"
         }
-      },
-      "SimulationResidualVsTimeChart": {
+      }],
+      "ResidualVsTimeCharts": [{
         "Axes": [
           {
             "Unit": "h",
@@ -443,7 +443,7 @@
           "BackColor": "#FFFFFF",
           "DiagramBackColor": "#FFFFFF"
         }
-      },
+      }],
       "Parameters": [
         {
           "Path": "Organism|ArterialBlood|BloodCells|Volume",

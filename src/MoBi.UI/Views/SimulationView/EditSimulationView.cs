@@ -1,12 +1,16 @@
-﻿using System;
+using System;
+using System.Linq;
+using DevExpress.Utils;
 using DevExpress.XtraEditors;
 using DevExpress.XtraTab;
+using DevExpress.XtraTab.ViewInfo;
 using MoBi.Assets;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using MoBi.Presentation.Views.BaseDiagram;
 using MoBi.UI.Extensions;
 using OSPSuite.Assets;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Views;
@@ -21,6 +25,8 @@ namespace MoBi.UI.Views.SimulationView
          InitializeComponent();
          spliterDiagram.CollapsePanel = SplitCollapsePanel.Panel1;
          splitSimulationParameters.CollapsePanel = SplitCollapsePanel.Panel1;
+         tabs.ClosePageButtonShowMode = ClosePageButtonShowMode.InActiveTabPageHeader;
+         tabs.CloseButtonClick += (o, e) => OnEvent(closeButtonClick, e as ClosePageButtonEventArgs);
       }
 
       public void AttachPresenter(IEditSimulationPresenter presenter)
@@ -37,10 +43,7 @@ namespace MoBi.UI.Views.SimulationView
          tabDiagram.InitWith(AppConstants.Captions.ModelDiagram, ApplicationIcons.Diagram);
          tabTree.InitWith(AppConstants.Captions.Tree, ApplicationIcons.Tree);
          tabSimulation.InitWith(AppConstants.Captions.SimulationParameters, ApplicationIcons.Parameter);
-         tabResults.InitWith(AppConstants.Captions.Results, ApplicationIcons.TimeProfileAnalysis);
          tabData.InitWith(AppConstants.Captions.SimulationObservedData, ApplicationIcons.ObservedData);
-         tabPredVsObs.InitWith(Captions.SimulationUI.PredictedVsObservedSimulation, ApplicationIcons.PredictedVsObservedAnalysis);
-         tabResidVsTime.InitWith(Captions.SimulationUI.ResidualsVsTimeSimulation, ApplicationIcons.ResidualVsTimeAnalysis);
          tabChanges.InitWith(AppConstants.Captions.Changes, ApplicationIcons.Comparison);
 
          tabsNavigation.SelectedPageChanging += (o, e) => OnEvent(tabSelectionChanged, e);
@@ -58,6 +61,15 @@ namespace MoBi.UI.Views.SimulationView
             simulationPresenter.LoadChanges();
       }
 
+      private void closeButtonClick(ClosePageButtonEventArgs e)
+      {
+         var closingTab = e.Page as XtraTabPage;
+         if (closingTab?.Tag is not ISimulationAnalysisPresenter analysisPresenter)
+            return;
+
+         simulationPresenter.RemoveAnalysis(analysisPresenter);
+      }
+
       public void SetEditView(IView view)
       {
          splitSimulationParameters.Panel2.FillWith(view);
@@ -73,32 +85,39 @@ namespace MoBi.UI.Views.SimulationView
          tabData.FillWith(view);
       }
 
-      public void SetChartView(IChartView chartView)
-      {
-         chartView.CaptionChanged += (o, e) => OnEvent(() => tabResults.Text = simulationPresenter.CreateResultTabCaption(chartView.Caption));
-         tabResults.FillWith(chartView);
-      }
-
       public void SetModelDiagram(ISimulationDiagramView subView)
       {
          spliterDiagram.Panel2.FillWith(subView);
       }
 
-      public bool ShowsResults => tabs.SelectedTabPage.Equals(tabResults);
+      public bool ShowsResults => tabs.SelectedTabPage?.Tag is ISimulationAnalysisPresenter;
 
       public void ShowResultsTab()
       {
-         tabs.SelectedTabPage = tabResults;
+         var firstAnalysisTab = tabs.TabPages.FirstOrDefault(x => x.Tag is ISimulationAnalysisPresenter);
+         if (firstAnalysisTab != null)
+            tabs.SelectedTabPage = firstAnalysisTab;
       }
 
-      public void SetPredictedVsObservedView(ISimulationVsObservedDataView view)
+      public void AddAnalysis(ISimulationAnalysisPresenter analysisPresenter)
       {
-         tabPredVsObs.FillWith(view);
+         var page = new XtraTabPage();
+         page.Tag = analysisPresenter;
+         page.ShowCloseButton = DefaultBoolean.True;
+         page.InitializeFrom(analysisPresenter.BaseView);
+
+         var changesIndex = tabs.TabPages.IndexOf(tabChanges);
+         tabs.TabPages.Insert(changesIndex, page);
+         tabs.SelectedTabPage = page;
       }
 
-      public void SetResidualsVsTimeView(ISimulationVsObservedDataView view)
+      public void RemoveAnalysis(ISimulationAnalysisPresenter analysisPresenter)
       {
-         tabResidVsTime.FillWith(view);
+         var tab = tabs.TabPages.FirstOrDefault(x => Equals(x.Tag, analysisPresenter));
+         if (tab == null)
+            return;
+
+         tabs.TabPages.Remove(tab);
       }
 
       public void ShowChangesTab()

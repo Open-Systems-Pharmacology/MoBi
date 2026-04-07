@@ -43,14 +43,14 @@ namespace MoBi.Core.Reporting
          {
             listToReport.Add(new Section(Constants.RESULTS));
             listToReport.Add(new SubSection(Constants.CHART));
-            listToReport.Add(simulation.Chart);
+            listToReport.Add(simulation.Charts);
          }
          return listToReport;
       }
 
       private bool simulationHasChartWithCurves(IMoBiSimulation simulation)
       {
-         return simulation.Chart != null && simulation.Chart.Curves.Any();
+         return simulation.Charts.Any() && simulation.Charts.Any(x =>x.Curves.Any());
       }
    }
 }

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using MoBi.Core.Chart;
 using MoBi.Core.Domain.Extensions;
 using OSPSuite.Core.Chart;
-using OSPSuite.Core.Chart.Simulations;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -17,9 +17,6 @@ namespace MoBi.Core.Domain.Model;
 public interface IMoBiSimulation : IWithDiagramFor<IMoBiSimulation>, ISimulation, IWithChartTemplates
 {
    ICache<string, DataRepository> HistoricResults { get; }
-   CurveChart Chart { get; set; }
-   SimulationPredictedVsObservedChart PredictedVsObservedChart { get; set; }
-   SimulationResidualVsTimeChart ResidualVsTimeChart { get; set; }
 
    void Update(SimulationConfiguration simulationConfiguration, IModel model, IReadOnlyCollection<SimulationEntitySource> simulationEntitySources);
    SolverSettings Solver { get; }
@@ -73,9 +70,7 @@ public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
    private readonly IList<ISimulationAnalysis> _allSimulationAnalyses = new List<ISimulationAnalysis>();
    private DataRepository _results;
    public IDiagramModel DiagramModel { get; set; }
-   public CurveChart Chart { get; set; }
-   public SimulationPredictedVsObservedChart PredictedVsObservedChart { get; set; }
-   public SimulationResidualVsTimeChart ResidualVsTimeChart { get; set; }
+
    public string ParameterIdentificationWorkingDirectory { get; set; }
    public IDiagramManager<IMoBiSimulation> DiagramManager { get; set; }
    public OutputMappings OutputMappings { get; set; } = new OutputMappings();
@@ -143,7 +138,7 @@ public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
       // Only add selected InitialConditions and ParameterValues, not ones that are not selected
       return module.BuildingBlocks
          .Except(module.ParameterValuesCollection.Concat<IBuildingBlock>(module.InitialConditionsCollection))
-         .Concat(new List<IBuildingBlock> {moduleConfiguration.SelectedInitialConditions, moduleConfiguration.SelectedParameterValues})
+         .Concat(new List<IBuildingBlock> { moduleConfiguration.SelectedInitialConditions, moduleConfiguration.SelectedParameterValues })
          .Where(x => x != null).ToList();
    }
 
@@ -178,7 +173,7 @@ public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
    public override void AcceptVisitor(IVisitor visitor)
    {
       base.AcceptVisitor(visitor);
-      Chart?.AcceptVisitor(visitor);
+      _allSimulationAnalyses.OfType<MoBiSimulationTimeProfileChart>().Each(chart => chart.AcceptVisitor(visitor));
    }
 
    public void Update(SimulationConfiguration simulationConfiguration, IModel model, IReadOnlyCollection<SimulationEntitySource> simulationEntitySources)
@@ -207,19 +202,25 @@ public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
       HasUntraceableChanges = sourceSimulation.HasUntraceableChanges;
 
       this.UpdateDiagramFrom(sourceSimulation);
-      Chart = cloneManager.Clone(sourceSimulation.Chart);
+      _allSimulationAnalyses.Clear();
+      sourceSimulation.Analyses.OfType<IUpdatable>().Each(analysis =>
+      {
+         var clone = cloneManager.Clone(analysis);
+         if (clone is ISimulationAnalysis simulationAnalysis)
+            AddAnalysis(simulationAnalysis);
+      });
    }
-   
+
    public void RemoveUsedObservedData(DataRepository dataRepository)
    {
       if (!UsesObservedData(dataRepository))
          return;
 
-      var curveToRemove = Chart.Curves.Where(c => Equals(c.yData.Repository, dataRepository)).ToList();
-      if (!curveToRemove.Any())
-         return;
-
-      curveToRemove.Each(curve => Chart.RemoveCurve(curve.Id));
+      Charts.Each(chart =>
+      {
+         var curvesToRemove = chart.Curves.Where(c => Equals(c.yData.Repository, dataRepository)).ToList();
+         curvesToRemove.Each(curve => chart.RemoveCurve(curve.Id));
+      });
 
       HasChanged = true;
    }
@@ -230,10 +231,7 @@ public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
       outputsMatchingDeletedObservedData.Each(OutputMappings.Remove);
    }
 
-   public IEnumerable<CurveChart> Charts
-   {
-      get { yield return Chart; }
-   }
+   public IEnumerable<CurveChart> Charts => _allSimulationAnalyses.OfType<CurveChart>();
 
    public void AddChartTemplate(CurveChartTemplate chartTemplate) => Settings.AddChartTemplate(chartTemplate);
 
@@ -279,5 +277,4 @@ public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
    }
 
    public bool ComesFromPKSim => Creation.Origin == Origins.PKSim;
-
 }

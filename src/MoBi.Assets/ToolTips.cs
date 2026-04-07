@@ -110,6 +110,9 @@ namespace MoBi.Assets
          public static readonly string StopSimulation = "Stop the currently running simulation";
          public static readonly string CalculateScaleFactors = "Calculate scale factors";
          public static readonly string ConfigureSimulationDescription = "Configure simulation";
+         public static readonly string AddTimeProfileAnalysis = "Add a new time profile analysis chart to the simulation";
+         public static readonly string AddPredictedVsObservedAnalysis = "Add a new predicted vs. observed analysis chart to the simulation";
+         public static readonly string AddResidualsVsTimeAnalysis = "Add a new residuals vs. time analysis chart to the simulation";
       }
 
       public static class ImportRibbon

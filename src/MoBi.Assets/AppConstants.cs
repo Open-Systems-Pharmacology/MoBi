@@ -881,6 +881,7 @@ namespace MoBi.Assets
          public static readonly string Journal = "Journal";
          public static readonly string File = "File";
          public static readonly string Favorites = "Favorites";
+         public static readonly string Analyses = "Analyses";
       }
 
       public static class RibbonButtonNames
@@ -1176,6 +1177,9 @@ namespace MoBi.Assets
          public static readonly string ImportFromExcel = "Import from Excel®...";
          public static readonly string ShowChanges = "Show Changes";
          public static readonly string StopAllRunningSimulations = "Stop all running simulations";
+         public static readonly string TimeProfile = "Time Profile";
+         public static readonly string PredictedVsObserved = "Predicted vs. Observed";
+         public static readonly string ResidualsVsTime = "Residuals vs. Time";
          public static readonly string ReloadModule = "Reload module";
          public static readonly string Snapshot = "Snapshot";
          public static readonly string Export = "Export";
@@ -1401,6 +1405,8 @@ namespace MoBi.Assets
 
       public static class Captions
       {
+         public static readonly string PredictedVsObserved = "Predicted vs. Observed";
+         public static readonly string ResidualsVsTime = "Residuals vs. Time";
          public static readonly string Modifiers = "Modifiers";
          public static readonly string Dimension = "Dimension";
          public static readonly string Unit = "Unit";

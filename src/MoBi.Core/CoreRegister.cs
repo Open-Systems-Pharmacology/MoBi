@@ -86,6 +86,7 @@ namespace MoBi.Core
          container.Register<IGroupRepository, GroupRepository>(LifeStyle.Singleton);
          container.Register<IClipboardManager, ClipboardManager>(LifeStyle.Singleton);
          container.Register<ICloneManager, CloneManagerForBuildingBlock>(LifeStyle.Singleton);
+         container.Register<IMoBiSimulationAnalysisCreator, ISimulationAnalysisCreator, MoBiSimulationAnalysisCreator>(LifeStyle.Singleton);
 
          container.Register<IProjectRetriever, MoBiProjectRetriever>();
          container.Register<IHistoryManager, MoBiHistoryManager>();
