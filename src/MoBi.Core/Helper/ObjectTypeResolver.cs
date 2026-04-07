@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Extensions;
+using MoBi.Core.Chart;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using OSPSuite.Assets;
+using OSPSuite.Assets.Extensions;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Chart.ParameterIdentifications;
+using OSPSuite.Core.Chart.Simulations;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -16,8 +18,8 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
-using OSPSuite.Assets;
-using OSPSuite.Assets.Extensions;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Helper
 {
@@ -82,6 +84,9 @@ namespace MoBi.Core.Helper
          addToCache<ParameterIdentificationTimeProfileChart>(Captions.ParameterIdentification.TimeProfileAnalysis);
          addToCache<ParameterIdentificationPredictedVsObservedChart>(Captions.ParameterIdentification.PredictedVsObservedAnalysis);
          addToCache<ParameterIdentification>(ObjectTypes.ParameterIdentification);
+         addToCache<MoBiSimulationTimeProfileChart>(AppConstants.Captions.TimeProfile);
+         addToCache<SimulationPredictedVsObservedChart>(AppConstants.Captions.PredictedVsObserved);
+         addToCache<SimulationResidualVsTimeChart>(AppConstants.Captions.ResidualsVsTime);
       }
 
       private void addToCache<T>(string value)
@@ -110,7 +115,7 @@ namespace MoBi.Core.Helper
 
       public string TypeFor<T>()
       {
-         return typeFor(typeof (T));
+         return typeFor(typeof(T));
       }
 
       private string typeFor(Type type)

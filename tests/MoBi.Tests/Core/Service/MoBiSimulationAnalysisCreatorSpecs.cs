@@ -160,7 +160,7 @@ namespace MoBi.Core.Service
          base.Context();
          _sourceChart = new MoBiSimulationTimeProfileChart();
          _clonedChart = new MoBiSimulationTimeProfileChart();
-         A.CallTo(() => _cloneManager.Clone(A<CurveChart>.That.IsEqualTo(_sourceChart))).Returns(_clonedChart);
+         A.CallTo(() => _cloneManager.Clone(A<IUpdatable>.That.IsEqualTo(_sourceChart))).Returns(_clonedChart);
       }
 
       protected override void Because()

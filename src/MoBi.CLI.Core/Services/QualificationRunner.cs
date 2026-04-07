@@ -74,6 +74,7 @@ namespace MoBi.CLI.Core.Services
          var simulationName = simulationPlot.Simulation;
          var simulation = simulationFrom(snapshotProject, simulationName);
 
+         // Any of the chart lists can be null if there were no charts in the simulation when the snapshot was created
          var charts = (simulation.Charts ?? Array.Empty<SnapshotCurveChart>())
             .Concat(simulation.PredictedVsObservedCharts ?? Array.Empty<SnapshotSimulationPredictedVsObservedChart>())
             .Concat(simulation.ResidualVsTimeCharts ?? Array.Empty<SnapshotCurveChart>());

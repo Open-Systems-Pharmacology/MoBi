@@ -189,7 +189,7 @@ namespace MoBi.Core
       [Observation]
       public void the_chart_should_be_cloned()
       {
-         A.CallTo(() => _cloneManager.Clone(A<CurveChart>.That.IsEqualTo(_moBiSimulation.Chart))).MustHaveHappened();
+         A.CallTo(() => _cloneManager.Clone(A<IUpdatable>.That.IsEqualTo(_moBiSimulation.Chart))).MustHaveHappened();
       }
 
       [Observation]
@@ -223,7 +223,7 @@ namespace MoBi.Core
          _sourceSimulation.AddAnalysis(_sourceChart);
 
          _clonedChart = new MoBiSimulationTimeProfileChart().WithName("Cloned");
-         A.CallTo(() => _cloneManager.Clone(A<CurveChart>.That.IsEqualTo(_sourceChart))).Returns(_clonedChart);
+         A.CallTo(() => _cloneManager.Clone(A<IUpdatable>.That.IsEqualTo(_sourceChart))).Returns(_clonedChart);
       }
 
       protected override void Because()

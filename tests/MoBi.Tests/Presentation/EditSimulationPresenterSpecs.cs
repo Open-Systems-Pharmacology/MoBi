@@ -1,4 +1,3 @@
-﻿using System.Collections.Generic;
 using FakeItEasy;
 using MoBi.Core.Chart;
 using MoBi.Core.Domain.Model;
@@ -7,16 +6,13 @@ using MoBi.Core.Services;
 using MoBi.HelpersForTests;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Presenter.ModelDiagram;
-using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Chart;
 using OSPSuite.Core.Chart.Simulations;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Data;
-using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Views;
@@ -26,38 +22,30 @@ namespace MoBi.Presentation
    public abstract class concern_for_EditSimulationPresenter : ContextSpecification<EditSimulationPresenter>
    {
       protected IEditSimulationView _view;
-      protected ISimulationChartPresenter _chartPresenter;
-      protected ISimulationPredictedVsObservedChartPresenter _simulationPredictedVsObservedChartPresenter;
-      protected ISimulationResidualVsTimeChartPresenter _simulationResidualVsTimeChartPresenter;
       protected IHierarchicalSimulationPresenter _hierarchicalSimulationPresenter;
       protected ISimulationDiagramPresenter _diagramPresenter;
       protected IEditSolverSettingsPresenter _solverSettings;
       protected IEditOutputSchemaPresenter _outputSchemaPresenter;
       protected IEditInSimulationPresenterFactory _presenterFactory;
       protected IEditFavoritesInSimulationPresenter _editFavoritePresenter;
-      protected IChartTasks _chartTasks;
       protected IUserDefinedParametersPresenter _userDefinedParametersPresenter;
       protected ISimulationOutputMappingPresenter _simulationOutputMappingPresenter;
       protected IMoBiContext _context;
       protected IOutputMappingMatchingTask _outputMappingMatchingTask;
-      protected IMoBiSimulationAnalysisCreator _simulationAnalysisCreator;
+      protected ISimulationEntitySourceReferenceFactory _entitySourceReferenceFactory;
+      protected ISimulationRunner _simulationRunner;
+      protected ISimulationAnalysisPresenterFactory _simulationAnalysisPresenterFactory;
       private ISimulationChangesPresenter _simulationChangesPresenter;
-      private ISimulationEntitySourceReferenceFactory _entitySourceReferenceFactory;
-      private ISimulationRunner _simulationRunner;
 
       protected override void Context()
       {
          _view = A.Fake<IEditSimulationView>();
-         _chartPresenter = A.Fake<ISimulationChartPresenter>();
-         _simulationPredictedVsObservedChartPresenter = A.Fake<ISimulationPredictedVsObservedChartPresenter>();
-         _simulationResidualVsTimeChartPresenter = A.Fake<ISimulationResidualVsTimeChartPresenter>();
          _hierarchicalSimulationPresenter = A.Fake<IHierarchicalSimulationPresenter>();
          _diagramPresenter = A.Fake<ISimulationDiagramPresenter>();
          _solverSettings = A.Fake<IEditSolverSettingsPresenter>();
          _outputSchemaPresenter = A.Fake<IEditOutputSchemaPresenter>();
          _presenterFactory = A.Fake<IEditInSimulationPresenterFactory>();
          _editFavoritePresenter = A.Fake<IEditFavoritesInSimulationPresenter>();
-         _chartTasks = A.Fake<IChartTasks>();
          _simulationOutputMappingPresenter = A.Fake<ISimulationOutputMappingPresenter>();
          _userDefinedParametersPresenter = A.Fake<IUserDefinedParametersPresenter>();
          _context = A.Fake<IMoBiContext>();
@@ -65,71 +53,13 @@ namespace MoBi.Presentation
          _outputMappingMatchingTask = A.Fake<IOutputMappingMatchingTask>();
          _entitySourceReferenceFactory = A.Fake<ISimulationEntitySourceReferenceFactory>();
          _simulationRunner = A.Fake<ISimulationRunner>();
-         _simulationAnalysisCreator = A.Fake<IMoBiSimulationAnalysisCreator>();
+         _simulationAnalysisPresenterFactory = A.Fake<ISimulationAnalysisPresenterFactory>();
 
-         configureSimulationAnalysisCreator(_simulationAnalysisCreator);
-
-         sut = new EditSimulationPresenter(_view, _chartPresenter, _hierarchicalSimulationPresenter, _diagramPresenter,
+         sut = new EditSimulationPresenter(_view, _hierarchicalSimulationPresenter, _diagramPresenter,
             _solverSettings, _outputSchemaPresenter, _presenterFactory, new HeavyWorkManagerForSpecs(),
-            _simulationAnalysisCreator, _editFavoritePresenter, _chartTasks, _userDefinedParametersPresenter, _simulationOutputMappingPresenter,
-            _simulationPredictedVsObservedChartPresenter, _simulationResidualVsTimeChartPresenter, _context, _outputMappingMatchingTask, _simulationChangesPresenter, _entitySourceReferenceFactory, _simulationRunner);
-      }
-
-      protected Curve createObservedCurve(DataRepository observedDataRepository)
-      {
-         var dimensionFactory = A.Fake<IDimensionFactory>();
-         var curve = new Curve
-         {
-            Name = "OBS"
-         };
-         var baseGrid = new BaseGrid("baseGrid", DomainHelperForSpecs.TimeDimension)
-         {
-            DataInfo = new DataInfo(ColumnOrigins.BaseGrid),
-            Repository = observedDataRepository
-         };
-
-         var ydata = new DataColumn("ydata", DomainHelperForSpecs.ConcentrationDimension, baseGrid)
-         {
-            DataInfo = new DataInfo(ColumnOrigins.Observation),
-            Repository = observedDataRepository
-         };
-
-         curve.SetxData(baseGrid, dimensionFactory);
-         curve.SetyData(ydata, dimensionFactory);
-         return curve;
-      }
-
-      private static void configureSimulationAnalysisCreator(IMoBiSimulationAnalysisCreator simulationAnalysisCreator)
-      {
-         A.CallTo(() => simulationAnalysisCreator.CreateTimeProfileAnalysisFor(A<IMoBiSimulation>._))
-            .ReturnsLazily((IMoBiSimulation simulation) =>
-            {
-               var chart = new MoBiSimulationTimeProfileChart();
-               simulation.AddAnalysis(chart);
-               if (!(simulation is MoBiSimulation))
-                  A.CallTo(() => simulation.Chart).Returns(chart);
-               return chart;
-            });
-
-         A.CallTo(() => simulationAnalysisCreator.CreatePredictedVsObservedAnalysisFor(A<IMoBiSimulation>._))
-            .ReturnsLazily((IMoBiSimulation simulation) =>
-            {
-               var chart = new SimulationPredictedVsObservedChart();
-               simulation.AddAnalysis(chart);
-               if (!(simulation is MoBiSimulation))
-                  A.CallTo(() => simulation.PredictedVsObservedChart).Returns(chart);
-               return chart;
-            });
-
-         A.CallTo(() => simulationAnalysisCreator.CreateResidualsVsTimeAnalysisFor(A<IMoBiSimulation>._))
-            .ReturnsLazily((IMoBiSimulation simulation) =>
-            {
-               var chart = new SimulationResidualVsTimeChart();
-               simulation.AddAnalysis(chart);
-               if (!(simulation is MoBiSimulation))
-                  A.CallTo(() => simulation.ResidualVsTimeChart).Returns(chart);
-               return chart;
-            });
+            _editFavoritePresenter, _userDefinedParametersPresenter, _simulationOutputMappingPresenter,
+            _context, _outputMappingMatchingTask, _simulationChangesPresenter, _entitySourceReferenceFactory,
+            _simulationRunner, _simulationAnalysisPresenterFactory);
       }
    }
 
@@ -153,6 +83,192 @@ namespace MoBi.Presentation
       public void the_favorites_presenter_has_tracking_enabled()
       {
          _editFavoritePresenter.TrackableSimulation.Simulation.ShouldBeEqualTo(_simulation);
+      }
+   }
+
+   public class When_editing_a_simulation_with_existing_analyses : concern_for_EditSimulationPresenter
+   {
+      private IMoBiSimulation _simulation;
+      private MoBiSimulationTimeProfileChart _timeProfileChart;
+      private SimulationPredictedVsObservedChart _predictedVsObservedChart;
+      private ISimulationAnalysisPresenter _timeProfilePresenter;
+      private ISimulationAnalysisPresenter _predictedVsObservedPresenter;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = A.Fake<IMoBiSimulation>();
+         _timeProfileChart = new MoBiSimulationTimeProfileChart();
+         _predictedVsObservedChart = new SimulationPredictedVsObservedChart();
+         A.CallTo(() => _simulation.Analyses).Returns(new ISimulationAnalysis[] { _timeProfileChart, _predictedVsObservedChart });
+
+         _timeProfilePresenter = A.Fake<ISimulationAnalysisPresenter>();
+         _predictedVsObservedPresenter = A.Fake<ISimulationAnalysisPresenter>();
+         A.CallTo(() => _simulationAnalysisPresenterFactory.PresenterFor(_timeProfileChart)).Returns(_timeProfilePresenter);
+         A.CallTo(() => _simulationAnalysisPresenterFactory.PresenterFor(_predictedVsObservedChart)).Returns(_predictedVsObservedPresenter);
+      }
+
+      protected override void Because()
+      {
+         sut.Edit(_simulation);
+      }
+
+      [Observation]
+      public void should_create_a_presenter_for_each_analysis()
+      {
+         A.CallTo(() => _simulationAnalysisPresenterFactory.PresenterFor(_timeProfileChart)).MustHaveHappened();
+         A.CallTo(() => _simulationAnalysisPresenterFactory.PresenterFor(_predictedVsObservedChart)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_initialize_each_analysis_presenter()
+      {
+         A.CallTo(() => _timeProfilePresenter.InitializeAnalysis(_timeProfileChart, _simulation)).MustHaveHappened();
+         A.CallTo(() => _predictedVsObservedPresenter.InitializeAnalysis(_predictedVsObservedChart, _simulation)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_add_each_analysis_to_the_view()
+      {
+         A.CallTo(() => _view.AddAnalysis(_timeProfilePresenter)).MustHaveHappened();
+         A.CallTo(() => _view.AddAnalysis(_predictedVsObservedPresenter)).MustHaveHappened();
+      }
+   }
+
+   public class When_editing_a_simulation_with_no_analyses : concern_for_EditSimulationPresenter
+   {
+      private IMoBiSimulation _simulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = A.Fake<IMoBiSimulation>();
+         A.CallTo(() => _simulation.Analyses).Returns(new ISimulationAnalysis[] { });
+      }
+
+      protected override void Because()
+      {
+         sut.Edit(_simulation);
+      }
+
+      [Observation]
+      public void should_not_add_any_analysis_to_the_view()
+      {
+         A.CallTo(() => _view.AddAnalysis(A<ISimulationAnalysisPresenter>._)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_handling_a_simulation_analysis_created_event_for_the_edited_simulation : concern_for_EditSimulationPresenter
+   {
+      private IMoBiSimulation _simulation;
+      private MoBiSimulationTimeProfileChart _chart;
+      private ISimulationAnalysisPresenter _analysisPresenter;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = A.Fake<IMoBiSimulation>();
+         A.CallTo(() => _simulation.Analyses).Returns(new ISimulationAnalysis[] { });
+         sut.Edit(_simulation);
+
+         _chart = new MoBiSimulationTimeProfileChart();
+         _analysisPresenter = A.Fake<ISimulationAnalysisPresenter>();
+         A.CallTo(() => _simulationAnalysisPresenterFactory.PresenterFor(_chart)).Returns(_analysisPresenter);
+      }
+
+      protected override void Because()
+      {
+         sut.Handle(new SimulationAnalysisCreatedEvent(_simulation, _chart));
+      }
+
+      [Observation]
+      public void should_create_a_presenter_for_the_analysis()
+      {
+         A.CallTo(() => _simulationAnalysisPresenterFactory.PresenterFor(_chart)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_initialize_the_presenter()
+      {
+         A.CallTo(() => _analysisPresenter.InitializeAnalysis(_chart, _simulation)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_add_the_analysis_to_the_view()
+      {
+         A.CallTo(() => _view.AddAnalysis(_analysisPresenter)).MustHaveHappened();
+      }
+   }
+
+   public class When_handling_a_simulation_analysis_created_event_for_a_different_simulation : concern_for_EditSimulationPresenter
+   {
+      private IMoBiSimulation _simulation;
+      private IMoBiSimulation _otherSimulation;
+      private MoBiSimulationTimeProfileChart _chart;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = A.Fake<IMoBiSimulation>();
+         _otherSimulation = A.Fake<IMoBiSimulation>();
+         A.CallTo(() => _simulation.Analyses).Returns(new ISimulationAnalysis[] { });
+         sut.Edit(_simulation);
+         _chart = new MoBiSimulationTimeProfileChart();
+      }
+
+      protected override void Because()
+      {
+         sut.Handle(new SimulationAnalysisCreatedEvent(_otherSimulation, _chart));
+      }
+
+      [Observation]
+      public void should_not_add_any_analysis_to_the_view()
+      {
+         A.CallTo(() => _view.AddAnalysis(A<ISimulationAnalysisPresenter>._)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_removing_an_analysis : concern_for_EditSimulationPresenter
+   {
+      private IMoBiSimulation _simulation;
+      private MoBiSimulationTimeProfileChart _chart;
+      private ISimulationAnalysisPresenter _analysisPresenter;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = A.Fake<IMoBiSimulation>();
+         _chart = new MoBiSimulationTimeProfileChart();
+         A.CallTo(() => _simulation.Analyses).Returns(new ISimulationAnalysis[] { _chart });
+
+         _analysisPresenter = A.Fake<ISimulationAnalysisPresenter>();
+         A.CallTo(() => _analysisPresenter.Analysis).Returns(_chart);
+         A.CallTo(() => _simulationAnalysisPresenterFactory.PresenterFor(_chart)).Returns(_analysisPresenter);
+
+         sut.Edit(_simulation);
+      }
+
+      protected override void Because()
+      {
+         sut.RemoveAnalysis(_analysisPresenter);
+      }
+
+      [Observation]
+      public void should_remove_the_analysis_from_the_simulation()
+      {
+         A.CallTo(() => _simulation.RemoveAnalysis(_chart)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_remove_the_analysis_from_the_view()
+      {
+         A.CallTo(() => _view.RemoveAnalysis(_analysisPresenter)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_clear_the_presenter()
+      {
+         A.CallTo(() => _analysisPresenter.Clear()).MustHaveHappened();
       }
    }
 
@@ -186,13 +302,19 @@ namespace MoBi.Presentation
    {
       private SimulationRunFinishedEvent _simulationRunFinishedEvent;
       private IMoBiSimulation _simulation;
+      private ISimulationAnalysisPresenter _analysisPresenter;
 
       protected override void Context()
       {
          base.Context();
          _simulation = A.Fake<IMoBiSimulation>();
-         _simulationRunFinishedEvent = new SimulationRunFinishedEvent(_simulation, true);
+         var chart = new MoBiSimulationTimeProfileChart();
+         A.CallTo(() => _simulation.Analyses).Returns(new ISimulationAnalysis[] { chart });
+         _analysisPresenter = A.Fake<ISimulationAnalysisPresenter>();
+         A.CallTo(() => _simulationAnalysisPresenterFactory.PresenterFor(chart)).Returns(_analysisPresenter);
+
          sut.Edit(_simulation);
+         _simulationRunFinishedEvent = new SimulationRunFinishedEvent(_simulation, true);
          A.CallTo(() => _view.ShowsResults).Returns(false);
       }
 
@@ -202,9 +324,9 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void the_chart_origin_data_should_be_changed()
+      public void should_update_all_analysis_presenters()
       {
-         A.CallTo(() => _chartTasks.SetOriginText(_simulation.Name, _simulation.Chart)).MustHaveHappened();
+         A.CallTo(() => _analysisPresenter.UpdateAnalysisBasedOn(_simulation)).MustHaveHappened();
       }
 
       [Observation]
@@ -249,15 +371,12 @@ namespace MoBi.Presentation
       concern_for_EditSimulationPresenter
    {
       private IMoBiSimulation _simulation;
-      private MoBiSimulationTimeProfileChart _chart;
 
       protected override void Context()
       {
          base.Context();
          _simulation = A.Fake<IMoBiSimulation>();
          sut.Edit(_simulation);
-         _chart = A.Fake<MoBiSimulationTimeProfileChart>();
-         A.CallTo(() => _simulation.Chart).Returns(_chart);
          A.CallTo(() => _view.ShowsResults).Returns(true);
       }
 
@@ -278,15 +397,12 @@ namespace MoBi.Presentation
       concern_for_EditSimulationPresenter
    {
       private IMoBiSimulation _simulation;
-      private MoBiSimulationTimeProfileChart _chart;
 
       protected override void Context()
       {
          base.Context();
          _simulation = A.Fake<IMoBiSimulation>();
          sut.Edit(_simulation);
-         _chart = A.Fake<MoBiSimulationTimeProfileChart>();
-         A.CallTo(() => _simulation.Chart).Returns(_chart);
          A.CallTo(() => _view.ShowsResults).Returns(true);
       }
 
@@ -296,19 +412,13 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_ask_view_if_resultData_is_shown()
+      public void should_ask_view_if_results_are_shown()
       {
          A.CallTo(() => _view.ShowsResults).MustHaveHappened();
       }
 
       [Observation]
-      public void should_show_simulation_chart()
-      {
-         A.CallTo(() => _chartPresenter.Show(_chart, A<IReadOnlyList<DataRepository>>._, A<IReadOnlyList<DataRepository>>._, A<CurveChartTemplate>._)).MustHaveHappened();
-      }
-
-      [Observation]
-      public void should_show_results_tab()
+      public void should_not_show_results_tab_when_already_showing()
       {
          A.CallTo(() => _view.ShowResultsTab()).MustNotHaveHappened();
       }
@@ -334,80 +444,6 @@ namespace MoBi.Presentation
       public void should_initialise_Diagram_presenter()
       {
          A.CallTo(() => _diagramPresenter.Edit(_simulation)).MustHaveHappened();
-      }
-   }
-
-   public class When_the_simulation_presenter_is_editing_a_simulation_with_data : concern_for_EditSimulationPresenter
-   {
-      private IMoBiSimulation _simulation;
-      private DataRepository _observedDataRepository;
-      private IEnumerable<DataRepository> _plottedData;
-      private IEnumerable<DataRepository> _notPlottedData;
-      private DataRepository _mappedData;
-
-      protected override void Context()
-      {
-         base.Context();
-         _simulation = new MoBiSimulation { ResultsDataRepository = new DataRepository() };
-
-         var chart = new MoBiSimulationTimeProfileChart();
-
-         _observedDataRepository = new DataRepository();
-
-         chart.AddCurve(createObservedCurve(_observedDataRepository));
-
-         _mappedData = new DataRepository();
-         _mappedData.Add(new BaseGrid("basegrid", DimensionFactoryForSpecs.TimeDimension));
-         _simulation.OutputMappings.Add(new OutputMapping
-         {
-            WeightedObservedData = new WeightedObservedData(_mappedData),
-            OutputSelection = new SimulationQuantitySelection(_simulation, new QuantitySelection())
-         });
-
-         _simulation.AddAnalysis(chart);
-
-         A.CallTo(() => _chartPresenter.Show(chart, A<IReadOnlyList<DataRepository>>._, A<IReadOnlyList<DataRepository>>._, null))
-            .Invokes(x =>
-            {
-               _notPlottedData = x.GetArgument<IEnumerable<DataRepository>>(2);
-               _plottedData = x.GetArgument<IEnumerable<DataRepository>>(1);
-            });
-      }
-
-      protected override void Because()
-      {
-         sut.Edit(_simulation);
-      }
-
-      [Observation]
-      public void should_initialise_hierarchical_presenter()
-      {
-         A.CallTo(() => _hierarchicalSimulationPresenter.Edit(_simulation)).MustHaveHappened();
-      }
-
-      [Observation]
-      public void should_display_result_data()
-      {
-         A.CallTo(() => _chartPresenter.Show(A<CurveChart>._, A<IReadOnlyList<DataRepository>>._, A<IReadOnlyList<DataRepository>>._, A<CurveChartTemplate>._))
-            .MustHaveHappened();
-      }
-
-      [Observation]
-      public void should_plot_observed_data_repository()
-      {
-         _plottedData.ShouldContain(_observedDataRepository);
-      }
-
-      [Observation]
-      public void should_add_observed_data_to_editor()
-      {
-         _notPlottedData.ShouldContain(_mappedData);
-      }
-
-      [Observation]
-      public void should_not_display_diagram()
-      {
-         A.CallTo(() => _diagramPresenter.Edit(_simulation)).MustNotHaveHappened();
       }
    }
 
@@ -467,51 +503,49 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_adding_observed_data_to_the_simulation : concern_for_EditSimulationPresenter
+   public class When_handling_simulation_run_started_event : concern_for_EditSimulationPresenter
    {
       private IMoBiSimulation _simulation;
-      private DataRepository _firstObservedDataRepository;
-      private DataRepository _secondObservedDataRepository;
-      private readonly List<DataRepository> _repositoryList = new List<DataRepository>();
-      private OutputMapping _firstOutputMapping;
 
       protected override void Context()
       {
          base.Context();
-         _simulation = new MoBiSimulation { ResultsDataRepository = new DataRepository() };
-         var chart = new MoBiSimulationTimeProfileChart();
-         _firstObservedDataRepository = new DataRepository();
-         chart.AddCurve(createObservedCurve(_firstObservedDataRepository));
-         _secondObservedDataRepository = new DataRepository();
-         _repositoryList.Add(_firstObservedDataRepository);
-         _repositoryList.Add(_secondObservedDataRepository);
-         _simulation.AddAnalysis(chart);
-         _firstOutputMapping = A.Fake<OutputMapping>();
-
-         // A.CallTo(() => _firstOutputMapping.UsesObservedData(A<DataRepository>._)).ReturnsLazily((DataRepository x) => ReferenceEquals(_firstObservedDataRepository, x));
-
-         A.CallTo(() => _firstOutputMapping.UsesObservedData(_firstObservedDataRepository)).Returns(true);
-         A.CallTo(() => _firstOutputMapping.UsesObservedData(_secondObservedDataRepository)).Returns(false);
-
-         _simulation.OutputMappings.Add(_firstOutputMapping);
+         _simulation = A.Fake<IMoBiSimulation>();
          sut.Edit(_simulation);
       }
 
       protected override void Because()
       {
-         _chartPresenter.OnObservedDataAddedToChart += Raise.With(new ObservedDataAddedToChartEventArgs { AddedDataRepositories = _repositoryList });
+         sut.Handle(new SimulationRunStartedEvent(_simulation));
       }
 
       [Observation]
-      public void should_add_missing_mapping()
+      public void should_disable_parameters_tab()
       {
-         A.CallTo(() => _outputMappingMatchingTask.AddMatchingOutputMapping(_secondObservedDataRepository, A<ISimulation>._)).MustHaveHappened();
+         A.CallTo(() => _view.SetParametersTabEnabled(false)).MustHaveHappened();
+      }
+   }
+
+   public class When_handling_show_simulation_changes_event : concern_for_EditSimulationPresenter
+   {
+      private IMoBiSimulation _simulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = A.Fake<IMoBiSimulation>();
+         sut.Edit(_simulation);
+      }
+
+      protected override void Because()
+      {
+         sut.Handle(new ShowSimulationChangesEvent(_simulation));
       }
 
       [Observation]
-      public void should_not_add_duplicate_mapping()
+      public void should_show_changes_tab()
       {
-         A.CallTo(() => _outputMappingMatchingTask.AddMatchingOutputMapping(_firstObservedDataRepository, A<ISimulation>._)).MustNotHaveHappened();
+         A.CallTo(() => _view.ShowChangesTab()).MustHaveHappened();
       }
    }
 }
