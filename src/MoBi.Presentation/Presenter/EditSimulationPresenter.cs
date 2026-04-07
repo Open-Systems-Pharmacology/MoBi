@@ -124,8 +124,7 @@ namespace MoBi.Presentation.Presenter
 
       private void releaseAllAnalysisPresenters()
       {
-         _analysisPresenters.Each(removeAndReleaseAnalysisPresenter);
-         _analysisPresenters.Clear();
+         _analysisPresenters.ToList().Each(removeAndReleaseAnalysisPresenter);
       }
 
       private void removeAndReleaseAnalysisPresenter(ISimulationAnalysisPresenter presenter)
@@ -134,6 +133,7 @@ namespace MoBi.Presentation.Presenter
          _view.RemoveAnalysis(presenter);
          presenter.Clear();
          presenter.ReleaseFrom(_eventPublisher);
+         _analysisPresenters.Remove(presenter);
       }
 
       public void Edit(IMoBiSimulation simulation)
@@ -182,7 +182,6 @@ namespace MoBi.Presentation.Presenter
       {
          _simulation.RemoveAnalysis(analysisPresenter.Analysis);
          removeAndReleaseAnalysisPresenter(analysisPresenter);
-         _analysisPresenters.Remove(analysisPresenter);
       }
 
       public override void Edit(object subject) => Edit(subject.DowncastTo<IMoBiSimulation>());
