@@ -57,6 +57,7 @@ namespace MoBi.Presentation.Presenter
       private TrackableSimulation _trackableSimulation;
       private readonly ISimulationRunner _simulationRunner;
       private readonly ISimulationAnalysisPresenterFactory _simulationAnalysisPresenterFactory;
+      private readonly IEventPublisher _eventPublisher;
       private readonly IList<ISimulationAnalysisPresenter> _analysisPresenters = new List<ISimulationAnalysisPresenter>();
 
       public EditSimulationPresenter(
@@ -75,7 +76,8 @@ namespace MoBi.Presentation.Presenter
          ISimulationChangesPresenter changesPresenter,
          ISimulationEntitySourceReferenceFactory entitySourceReferenceFactory,
          ISimulationRunner simulationRunner,
-         ISimulationAnalysisPresenterFactory simulationAnalysisPresenterFactory)
+         ISimulationAnalysisPresenterFactory simulationAnalysisPresenterFactory,
+         IEventPublisher eventPublisher)
          : base(view)
       {
          _simulationChangesPresenter = changesPresenter;
@@ -92,6 +94,7 @@ namespace MoBi.Presentation.Presenter
          _context = context;
          _simulationRunner = simulationRunner;
          _simulationAnalysisPresenterFactory = simulationAnalysisPresenterFactory;
+         _eventPublisher = eventPublisher;
          _outputMappingMatchingTask = outputMappingMatchingTask;
          _view.SetTreeView(hierarchicalPresenter.BaseView);
          _view.SetModelDiagram(_simulationDiagramPresenter.View);
@@ -116,20 +119,21 @@ namespace MoBi.Presentation.Presenter
          base.ReleaseFrom(eventPublisher);
          _cacheShowPresenter.Each(p => p.ReleaseFrom(eventPublisher));
          _cacheShowPresenter.Clear();
-         releaseAllAnalysisPresenters(eventPublisher);
+         releaseAllAnalysisPresenters();
       }
 
-      private void releaseAllAnalysisPresenters(IEventPublisher eventPublisher)
+      private void releaseAllAnalysisPresenters()
       {
-         _analysisPresenters.Each(x => releasePresenter(x, eventPublisher));
-         _analysisPresenters.Clear();
+         _analysisPresenters.ToList().Each(removeAndReleaseAnalysisPresenter);
       }
 
-      private void releasePresenter(ISimulationAnalysisPresenter presenter, IEventPublisher eventPublisher)
+      private void removeAndReleaseAnalysisPresenter(ISimulationAnalysisPresenter presenter)
       {
-         presenter.Clear();
-         presenter.ReleaseFrom(eventPublisher);
          unRegisterObservedDataEvent(presenter);
+         _view.RemoveAnalysis(presenter);
+         presenter.Clear();
+         presenter.ReleaseFrom(_eventPublisher);
+         _analysisPresenters.Remove(presenter);
       }
 
       public void Edit(IMoBiSimulation simulation)
@@ -143,6 +147,7 @@ namespace MoBi.Presentation.Presenter
          _simulationOutputMappingPresenter.EditSimulation(simulation);
          UpdateCaption();
          _view.Display();
+         releaseAllAnalysisPresenters();
          loadAnalyses();
          _trackableSimulation = new TrackableSimulation(_simulation, _entitySourceReferenceFactory.CreateFor(simulation));
          _favoritesPresenter.TrackableSimulation = _trackableSimulation;
@@ -175,11 +180,8 @@ namespace MoBi.Presentation.Presenter
 
       public void RemoveAnalysis(ISimulationAnalysisPresenter analysisPresenter)
       {
-         _analysisPresenters.Remove(analysisPresenter);
          _simulation.RemoveAnalysis(analysisPresenter.Analysis);
-         _view.RemoveAnalysis(analysisPresenter);
-         analysisPresenter.Clear();
-         unRegisterObservedDataEvent(analysisPresenter);
+         removeAndReleaseAnalysisPresenter(analysisPresenter);
       }
 
       public override void Edit(object subject) => Edit(subject.DowncastTo<IMoBiSimulation>());

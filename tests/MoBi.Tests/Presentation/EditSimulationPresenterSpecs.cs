@@ -16,6 +16,7 @@ using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Views;
+using OSPSuite.Utility.Events;
 
 namespace MoBi.Presentation
 {
@@ -35,6 +36,7 @@ namespace MoBi.Presentation
       protected ISimulationEntitySourceReferenceFactory _entitySourceReferenceFactory;
       protected ISimulationRunner _simulationRunner;
       protected ISimulationAnalysisPresenterFactory _simulationAnalysisPresenterFactory;
+      protected IEventPublisher _eventPublisher;
       private ISimulationChangesPresenter _simulationChangesPresenter;
 
       protected override void Context()
@@ -54,12 +56,13 @@ namespace MoBi.Presentation
          _entitySourceReferenceFactory = A.Fake<ISimulationEntitySourceReferenceFactory>();
          _simulationRunner = A.Fake<ISimulationRunner>();
          _simulationAnalysisPresenterFactory = A.Fake<ISimulationAnalysisPresenterFactory>();
+         _eventPublisher = A.Fake<IEventPublisher>();
 
          sut = new EditSimulationPresenter(_view, _hierarchicalSimulationPresenter, _diagramPresenter,
             _solverSettings, _outputSchemaPresenter, _presenterFactory, new HeavyWorkManagerForSpecs(),
             _editFavoritePresenter, _userDefinedParametersPresenter, _simulationOutputMappingPresenter,
             _context, _outputMappingMatchingTask, _simulationChangesPresenter, _entitySourceReferenceFactory,
-            _simulationRunner, _simulationAnalysisPresenterFactory);
+            _simulationRunner, _simulationAnalysisPresenterFactory, _eventPublisher);
       }
    }
 
@@ -270,6 +273,12 @@ namespace MoBi.Presentation
       {
          A.CallTo(() => _analysisPresenter.Clear()).MustHaveHappened();
       }
+
+      [Observation]
+      public void should_release_the_presenter_from_events()
+      {
+         A.CallTo(() => _analysisPresenter.ReleaseFrom(_eventPublisher)).MustHaveHappened();
+      }
    }
 
    public class When_the_simulation_presenter_is_handling_a_favorite_selected_event : concern_for_EditSimulationPresenter
@@ -339,11 +348,17 @@ namespace MoBi.Presentation
    public class When_the_simulation_presenter_is_notified_that_the_edit_simulation_was_reloaded : concern_for_EditSimulationPresenter
    {
       private IMoBiSimulation _simulation;
+      private ISimulationAnalysisPresenter _analysisPresenter;
+      private MoBiSimulationTimeProfileChart _chart;
 
       protected override void Context()
       {
          base.Context();
          _simulation = A.Fake<IMoBiSimulation>();
+         _chart = new MoBiSimulationTimeProfileChart();
+         A.CallTo(() => _simulation.Analyses).Returns(new ISimulationAnalysis[] { _chart });
+         _analysisPresenter = A.Fake<ISimulationAnalysisPresenter>();
+         A.CallTo(() => _simulationAnalysisPresenterFactory.PresenterFor(_chart)).Returns(_analysisPresenter);
          sut.Edit(_simulation);
       }
 
@@ -363,6 +378,13 @@ namespace MoBi.Presentation
       {
          // Needs to be at least twice because first time it's called during set up.
          A.CallTo(() => _hierarchicalSimulationPresenter.Edit(_simulation)).MustHaveHappenedTwiceOrMore();
+      }
+
+      [Observation]
+      public void should_release_existing_analysis_presenters_before_reloading()
+      {
+         A.CallTo(() => _analysisPresenter.Clear()).MustHaveHappened();
+         A.CallTo(() => _analysisPresenter.ReleaseFrom(_eventPublisher)).MustHaveHappened();
       }
    }
 
