@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
@@ -36,7 +38,7 @@ public class ParameterValueBuildingBlockExtendManager : ExtendPathAndValuesManag
    {
       var pathAndValueEntity = buildingBlock[objectPath];
       if (pathAndValueEntity != null)
-         return new UpdateParameterValueInBuildingBlockCommand(buildingBlock, objectPath, valueInBaseUnit);
+         return updateValueAndDimension(buildingBlock, pathAndValueEntity, objectPath, valueInBaseUnit, dimensionName);
 
       var dimension = _dimensionFactory.Dimension(dimensionName);
 
@@ -49,5 +51,24 @@ public class ParameterValueBuildingBlockExtendManager : ExtendPathAndValuesManag
       );
 
       return GenerateAddCommand(buildingBlock, parameterValue);
+   }
+
+   private IMoBiCommand updateValueAndDimension(ParameterValuesBuildingBlock buildingBlock, ParameterValue pathAndValueEntity, ObjectPath objectPath, double valueInBaseUnit, string dimensionName)
+   {
+      var updateValueCommand = new UpdateParameterValueInBuildingBlockCommand(buildingBlock, objectPath, valueInBaseUnit);
+
+      var newDimension = _dimensionFactory.Dimension(dimensionName);
+      if (Equals(pathAndValueEntity.Dimension, newDimension))
+         return updateValueCommand;
+
+      var macroCommand = new MoBiMacroCommand
+      {
+         CommandType = AppConstants.Commands.UpdateCommand,
+         ObjectType = ObjectTypes.ParameterValue
+      };
+
+      macroCommand.Add(updateValueCommand);
+      macroCommand.Add(new UpdateDimensionInPathAndValueEntityCommand<ParameterValue>(pathAndValueEntity, newDimension, newDimension.DefaultUnit, buildingBlock));
+      return macroCommand;
    }
 }
