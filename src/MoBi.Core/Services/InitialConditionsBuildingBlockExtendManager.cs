@@ -5,6 +5,7 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
@@ -57,7 +58,7 @@ public class InitialConditionsBuildingBlockExtendManager : ExtendPathAndValuesMa
    {
       var pathAndValueEntity = buildingBlock[properties.ObjectPath];
       if (pathAndValueEntity != null)
-         return new UpdateInitialConditionInBuildingBlockCommand(buildingBlock, properties.ObjectPath, properties.ValueInBaseUnit, properties.IsPresent, properties.ScaleDivisor, properties.NegativeAllowed);
+         return updateValueAndDimension(buildingBlock, pathAndValueEntity, properties);
 
       var moleculeName = properties.ObjectPath.Last();
       var containerPath = properties.ObjectPath.Clone<ObjectPath>();
@@ -77,5 +78,24 @@ public class InitialConditionsBuildingBlockExtendManager : ExtendPathAndValuesMa
       );
 
       return GenerateAddCommand(buildingBlock, initialCondition);
+   }
+
+   private IMoBiCommand updateValueAndDimension(InitialConditionsBuildingBlock buildingBlock, InitialCondition pathAndValueEntity, InitialConditionPropertiesForMerge properties)
+   {
+      var updateValueCommand = new UpdateInitialConditionInBuildingBlockCommand(buildingBlock, properties.ObjectPath, properties.ValueInBaseUnit, properties.IsPresent, properties.ScaleDivisor, properties.NegativeAllowed);
+
+      var newDimension = _dimensionFactory.Dimension(properties.DimensionName);
+      if (Equals(pathAndValueEntity.Dimension, newDimension))
+         return updateValueCommand;
+
+      var macroCommand = new MoBiMacroCommand
+      {
+         CommandType = AppConstants.Commands.UpdateCommand,
+         ObjectType = ObjectTypes.InitialCondition
+      };
+
+      macroCommand.Add(updateValueCommand);
+      macroCommand.Add(new UpdateDimensionInPathAndValueEntityCommand<InitialCondition>(pathAndValueEntity, newDimension, newDimension.DefaultUnit, buildingBlock));
+      return macroCommand;
    }
 }

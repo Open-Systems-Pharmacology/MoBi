@@ -8,6 +8,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.R.Tests.Services;
@@ -619,6 +620,60 @@ internal class When_setting_initial_conditions_that_all_already_exist_with_proje
       var ic2 = _buildingBlock.FindByPath("TopContainer|Physical|Molecule2");
       ic1.NegativeValuesAllowed.ShouldBeFalse();
       ic2.NegativeValuesAllowed.ShouldBeTrue();
+   }
+}
+
+internal class When_setting_initial_conditions_with_different_dimension_on_existing_entries : concern_for_InitialConditionsTask_with_project
+{
+   private InitialConditionsBuildingBlock _buildingBlock;
+   private IDimension _originalDimension;
+
+   protected override void Context()
+   {
+      base.Context();
+
+      _buildingBlock = new InitialConditionsBuildingBlock().WithName("IC Building Block");
+
+      var dimensionFactory = OSPSuite.R.Api.Container.Resolve<IDimensionFactory>();
+      _originalDimension = dimensionFactory.Dimension("Volume");
+
+      var initialCondition = new InitialCondition
+      {
+         Path = new ObjectPath("TopContainer", "Physical", "Molecule1"),
+         Value = 1.5,
+         Dimension = _originalDimension,
+         IsPresent = true
+      };
+
+      _buildingBlock.Add(initialCondition);
+      AddBuildingBlocksToProject(_buildingBlock);
+   }
+
+   protected override void Because()
+   {
+      sut.SetInitialConditions(
+         _buildingBlock,
+         quantityPaths: ["TopContainer|Physical|Molecule1"],
+         dimensionNames: ["Amount"],
+         quantityValues: [1],
+         scaleDivisors: [1],
+         isPresent: [true],
+         negativeAllowed: [false]
+      );
+   }
+
+   [Observation]
+   public void should_update_the_dimension_of_the_initial_condition()
+   {
+      var ic = _buildingBlock.FindByPath("TopContainer|Physical|Molecule1");
+      ic.Dimension.Name.ShouldBeEqualTo("Amount");
+   }
+
+   [Observation]
+   public void should_update_the_value()
+   {
+      var ic = _buildingBlock.FindByPath("TopContainer|Physical|Molecule1");
+      ic.Value.ShouldBeEqualTo(1);
    }
 }
 
