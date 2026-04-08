@@ -22,6 +22,7 @@ public interface IParameterValuesTask : IPathAndValuesTask<ParameterValuesBuildi
    void DeleteParameterValues(ParameterValuesBuildingBlock buildingBlock, string pathToDelete);
 
    string[] AddLocalMoleculeParameters(ParameterValuesBuildingBlock buildingBlock, MoBiSpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock, params string[] moleculeNames);
+   string[] AddLocalMoleculeParameters(ParameterValuesBuildingBlock buildingBlock, MoBiSpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock, string moleculeName);
 }
 
 public class ParameterValuesTask : ExtendablePathAndValuesTask<ParameterValuesBuildingBlock, ParameterValue>, IParameterValuesTask
@@ -53,6 +54,9 @@ public class ParameterValuesTask : ExtendablePathAndValuesTask<ParameterValuesBu
 
    public string[] AddLocalMoleculeParameters(ParameterValuesBuildingBlock buildingBlock, MoBiSpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock, string[] moleculeNames) =>
       Extend(buildingBlock, spatialStructure, moleculeBuildingBlock, moleculeNames);
+
+   public string[] AddLocalMoleculeParameters(ParameterValuesBuildingBlock buildingBlock, MoBiSpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock, string moleculeName) =>
+      AddLocalMoleculeParameters(buildingBlock, spatialStructure, moleculeBuildingBlock, [moleculeName]);
 
    protected override string RemoveCommandDescription() => Commands.RemoveManyParameterValues;
 
