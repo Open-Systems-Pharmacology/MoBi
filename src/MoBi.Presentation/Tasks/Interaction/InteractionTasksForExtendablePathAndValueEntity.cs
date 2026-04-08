@@ -277,13 +277,6 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (moleculeBlockCollection.Count == 0 && spatialStructureCollection.Count == 0)
             return (null, Enumerable.Empty<MoleculeBuilder>().ToList());
 
-         // If there is only one option that could be selected for each required building block, then we just use those options and don't
-         // need to ask the user to make a selection
-         if (!shouldSelectBuildingBlocks(moleculeBlockCollection, spatialStructureCollection))
-         {
-            return (spatialStructureCollection.Single(), moleculeBlockCollection.Single().ToList());
-         }
-
          using (var selectorPresenter = Context.Resolve<ISelectSpatialStructureAndMoleculesPresenter>())
          {
             actionToSelectBuildingBlocks(selectorPresenter);
@@ -291,15 +284,6 @@ namespace MoBi.Presentation.Tasks.Interaction
          }
       }
 
-      private static bool shouldSelectBuildingBlocks(IReadOnlyList<MoleculeBuildingBlock> moleculeBlockCollection, IReadOnlyList<MoBiSpatialStructure> spatialStructureCollection)
-      {
-         return shouldSelectMolecules(moleculeBlockCollection) || spatialStructureCollection.Count > 1;
-      }
-
-      private static bool shouldSelectMolecules(IReadOnlyList<MoleculeBuildingBlock> moleculeBlockCollection)
-      {
-         return moleculeBlockCollection.Count > 1 || moleculeBlockCollection.Any(x => x.Count() > 1);
-      }
 
       public IMoBiCommand AddOrExtendWith(TBuildingBlock buildingBlock, Module module)
       {

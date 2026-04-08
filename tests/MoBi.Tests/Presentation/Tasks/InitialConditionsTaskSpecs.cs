@@ -511,13 +511,13 @@ namespace MoBi.Presentation.Tasks
       }
 
       [Observation]
-      public void the_spatial_structure_and_molecule_selection_presenter_is_not_used_to_select_the_building_blocks()
+      public void the_spatial_structure_and_molecule_selection_presenter_is_used_to_select_the_building_blocks()
       {
-         A.CallTo(() => _context.Context.Resolve<ISelectSpatialStructureAndMoleculesPresenter>()).MustNotHaveHappened();
+         A.CallTo(() => _selectionPresenter.SelectBuildingBlocksForExtend(A<MoleculeBuildingBlock>._, A<SpatialStructure>._)).MustHaveHappened();
       }
 
       [Observation]
-      public void the_only_valid_values_should_be_used_to_create_new_initial_conditions()
+      public void the_selected_values_should_be_used_to_create_new_initial_conditions()
       {
          A.CallTo(() => _initialConditionsCreator.CreateFrom(_moBiSpatialStructure, A<IReadOnlyList<MoleculeBuilder>>._)).MustHaveHappened();
       }
