@@ -74,7 +74,7 @@ namespace MoBi.UI.Views
          layoutItemDecimalPlace.Text = AppConstants.Captions.DecimalPlace.FormatForLabel();
          layoutGroupValidationItems.Text = AppConstants.Captions.ValidationOptions;
          layoutItemNumberOfRecentProjects.Text = AppConstants.Captions.MRUListItemCount.FormatForLabel();
-         CancelVisible = false;
+         CancelVisible = true;
          tabDisplayUnits.Text = AppConstants.Captions.DefaultDisplayUnits;
          tabApplicationSettings.Text = AppConstants.Captions.ApplicationSettings;
          ApplicationIcon = ApplicationIcons.Settings;

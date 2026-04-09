@@ -50,13 +50,21 @@ namespace MoBi.Presentation.UICommand
       public void Edit(IUserSettings userSettings)
       {
          _view.LayoutViewVisible = _runOptions.IsDeveloperMode;
-         _diagramOptionsPresenter.Edit(userSettings.DiagramOptions);
-         _forceLayoutConfigurationPresenter.Edit(userSettings.ForceLayoutConfigutation);
-         _chartOptionsPresenter.Edit(userSettings.ChartOptions);
-         _validationOptionsPresenter.Edit(userSettings.ValidationSettings);
+
+         var clone = userSettings.Clone();
+
+         _diagramOptionsPresenter.Edit(clone.DiagramOptions);
+         _forceLayoutConfigurationPresenter.Edit(clone.ForceLayoutConfigutation);
+         _chartOptionsPresenter.Edit(clone.ChartOptions);
+         _validationOptionsPresenter.Edit(clone.ValidationSettings);
          _displayUnitsPresenter.Edit(userSettings.DisplayUnits);
-         _view.BindTo(userSettings);
+         _view.BindTo(clone);
          _view.Display();
+
+         if (_view.Canceled)
+            return;
+
+         userSettings.UpdatePropertiesFrom(clone);
       }
 
       public IReadOnlyList<ParameterGroupingModeForParameterAnalyzable> AllParameterGroupingMode() => ParameterGroupingModesForParameterAnalyzable.All();

@@ -138,6 +138,50 @@ namespace MoBi.UI.Settings
          Rules.AddRange(AllRules.All());
       }
 
+      private UserSettings(IUserSettings source)
+      {
+         _numericFormatterOptions = new NumericFormatterOptions();
+         DirectoryMapSettings = source.DirectoryMapSettings;
+         DiagramOptions = source.DiagramOptions.Clone();
+         ForceLayoutConfigutation = source.ForceLayoutConfigutation.Clone();
+         ChartOptions = source.ChartOptions.Clone();
+         ValidationSettings = source.ValidationSettings.Clone();
+         DisplayUnits = new DisplayUnitsManager();
+         DisplayUnits.UpdatePropertiesFrom(source.DisplayUnits, null);
+         RenameDependentObjectsDefault = source.RenameDependentObjectsDefault;
+         MRUListItemCount = source.MRUListItemCount;
+         MaximumNumberOfCoresToUse = source.MaximumNumberOfCoresToUse;
+         WarnForNonFiniteQuantities = source.WarnForNonFiniteQuantities;
+         DefaultParameterGroupingModeForPIAndSA = source.DefaultParameterGroupingModeForPIAndSA;
+         Rules.AddRange(AllRules.All());
+      }
+
+      public IUserSettings Clone()
+      {
+         return new UserSettings(this)
+         {
+            _numericFormatterOptions =
+            {
+               AllowsScientificNotation = _numericFormatterOptions.AllowsScientificNotation,
+               DecimalPlace = _numericFormatterOptions.DecimalPlace
+            }
+         };
+      }
+
+      public void UpdatePropertiesFrom(IUserSettings source)
+      {
+         RenameDependentObjectsDefault = source.RenameDependentObjectsDefault;
+         MRUListItemCount = source.MRUListItemCount;
+         DecimalPlace = source.DecimalPlace;
+         MaximumNumberOfCoresToUse = source.MaximumNumberOfCoresToUse;
+         WarnForNonFiniteQuantities = source.WarnForNonFiniteQuantities;
+         DefaultParameterGroupingModeForPIAndSA = source.DefaultParameterGroupingModeForPIAndSA;
+         DiagramOptions.UpdatePropertiesFrom(source.DiagramOptions);
+         ForceLayoutConfigutation.UpdatePropertiesFrom(source.ForceLayoutConfigutation);
+         ChartOptions.UpdatePropertiesFrom(source.ChartOptions);
+         ValidationSettings.UpdatePropertiesFrom(source.ValidationSettings);
+      }
+
       public bool ShowPKSimDimensionProblemWarnings
       {
          set => ValidationSettings.ShowPKSimDimensionProblemWarnings = value;

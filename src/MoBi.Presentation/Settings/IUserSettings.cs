@@ -12,6 +12,9 @@ namespace MoBi.Presentation.Settings
 {
    public interface IUserSettings : IPresentationUserSettings, IMoBiCoreUserSettings
    {
+      IUserSettings Clone();
+      void UpdatePropertiesFrom(IUserSettings source);
+
       string IconSizeGeneral { get; set; }
       bool RenameDependentObjectsDefault { get; set; }
       IForceLayoutConfiguration ForceLayoutConfigutation { get; set; }
