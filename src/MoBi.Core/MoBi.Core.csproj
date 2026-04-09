@@ -35,7 +35,6 @@
     <PackageReference Include="OSPSuite.Assets" Version="13.0.91" />
     <PackageReference Include="OSPSuite.Assets.Images" Version="13.0.91" />
     <PackageReference Include="OSPSuite.Infrastructure.Export" Version="13.0.91" />
-    <PackageReference Include="OSPSuite.Infrastructure.Reporting" Version="13.0.91" />
     <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="13.0.91" />
     <PackageReference Include="OSPSuite.Infrastructure.Import" Version="13.0.91" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0" />
