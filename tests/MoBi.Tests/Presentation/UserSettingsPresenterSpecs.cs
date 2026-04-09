@@ -109,6 +109,9 @@ namespace MoBi.Presentation
       {
          base.Context();
          A.CallTo(() => _view.Canceled).Returns(false);
+
+         A.CallTo(() => _applicationSettingsPresenter.Edit(A<ApplicationSettingsDTO>._))
+            .Invokes((ApplicationSettingsDTO dto) => dto.PKSimPath = "modified_path");
       }
 
       protected override void Because()
@@ -125,7 +128,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_update_application_settings_from_dto()
       {
-         _applicationSettings.PKSimPath.ShouldBeEqualTo("original_path");
+         A.CallToSet(() => _applicationSettings.PKSimPath).To("modified_path").MustHaveHappened();
       }
 
       [Observation]

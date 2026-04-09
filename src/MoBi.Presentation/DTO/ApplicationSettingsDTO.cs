@@ -29,13 +29,21 @@ namespace MoBi.Presentation.DTO
       public bool UseWatermark
       {
          get => _useWatermark;
-         set => _useWatermark = value;
+         set
+         {
+            _useWatermark = value;
+            OnPropertyChanged();
+         }
       }
 
       public string WatermarkText
       {
          get => _watermarkText;
-         set => _watermarkText = value;
+         set
+         {
+            _watermarkText = value;
+            OnPropertyChanged();
+         }
       }
 
       public void UpdateApplicationSettings(IApplicationSettings applicationSettings)
