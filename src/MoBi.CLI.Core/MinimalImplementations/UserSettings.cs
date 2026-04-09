@@ -44,14 +44,14 @@ namespace MoBi.CLI.Core.MinimalImplementations
       public IUserSettings Clone()
       {
          // Clones are used as a DTO when editing user settings in UI modal dialog.
-         // There is no need for a clone in Batch
+         // There is no need for a clone in CLI
          throw new System.NotImplementedException();
       }
 
       public void UpdatePropertiesFrom(IUserSettings source)
       {
          // Clones are used as a DTO when editing user settings in UI modal dialog.
-         // There is no need for a clone in Batch
+         // There is no need for a clone in CLI
          throw new System.NotImplementedException();
       }
 
