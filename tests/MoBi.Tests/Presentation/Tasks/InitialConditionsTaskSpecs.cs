@@ -562,6 +562,10 @@ namespace MoBi.Presentation.Tasks
          moleculeBuildingBlock.Add(molecule);
          var nanStartValue = new InitialCondition { Formula = new ConstantFormula(double.NaN), Name = molecule.Name, Value = double.NaN, Dimension = Constants.Dimension.NO_DIMENSION };
          _initialConditionsBuildingBlock.Add(nanStartValue);
+         var selectionPresenter = A.Fake<ISelectSpatialStructureAndMoleculesPresenter>();
+         A.CallTo(() => _context.Context.Resolve<ISelectSpatialStructureAndMoleculesPresenter>()).Returns(selectionPresenter);
+         A.CallTo(() => selectionPresenter.SelectedMolecules).Returns(moleculeBuildingBlock.ToList());
+         A.CallTo(() => selectionPresenter.SelectedSpatialStructure).Returns(spatialStructure);
       }
 
       protected override void Because()
@@ -590,6 +594,10 @@ namespace MoBi.Presentation.Tasks
          var startValue = new InitialCondition { Name = builder.Name, Value = 45, Dimension = Constants.Dimension.NO_DIMENSION, Formula = null };
          _initialConditionsBuildingBlock.Add(startValue);
          A.CallTo(() => _cloneManagerForBuildingBlock.Clone(builder.DefaultStartFormula, _initialConditionsBuildingBlock.FormulaCache)).Returns(new ExplicitFormula("M/V"));
+         var selectionPresenter = A.Fake<ISelectSpatialStructureAndMoleculesPresenter>();
+         A.CallTo(() => _context.Context.Resolve<ISelectSpatialStructureAndMoleculesPresenter>()).Returns(selectionPresenter);
+         A.CallTo(() => selectionPresenter.SelectedMolecules).Returns(moleculeBuildingBlock.ToList());
+         A.CallTo(() => selectionPresenter.SelectedSpatialStructure).Returns(spatialStructure);
       }
 
       protected override void Because()
@@ -619,6 +627,10 @@ namespace MoBi.Presentation.Tasks
          moleculeBuildingBlock.Add(molecule);
          var nanStartValue = new InitialCondition { Name = molecule.Name, Value = null, Dimension = Constants.Dimension.NO_DIMENSION };
          _initialConditionsBuildingBlock.Add(nanStartValue);
+         var selectionPresenter = A.Fake<ISelectSpatialStructureAndMoleculesPresenter>();
+         A.CallTo(() => _context.Context.Resolve<ISelectSpatialStructureAndMoleculesPresenter>()).Returns(selectionPresenter);
+         A.CallTo(() => selectionPresenter.SelectedMolecules).Returns(moleculeBuildingBlock.ToList());
+         A.CallTo(() => selectionPresenter.SelectedSpatialStructure).Returns(spatialStructure);
       }
 
       protected override void Because()
@@ -649,7 +661,10 @@ namespace MoBi.Presentation.Tasks
          moleculeBuildingBlock.Add(molecule);
          _nullStartValue = new InitialCondition { Name = molecule.Name, Value = 1, Dimension = Constants.Dimension.NO_DIMENSION };
          _initialConditionsBuildingBlock.Add(_nullStartValue);
-         A.CallTo(_context.Context).WithReturnType<MoleculeBuildingBlock>().Returns(moleculeBuildingBlock);
+         var selectionPresenter = A.Fake<ISelectSpatialStructureAndMoleculesPresenter>();
+         A.CallTo(() => _context.Context.Resolve<ISelectSpatialStructureAndMoleculesPresenter>()).Returns(selectionPresenter);
+         A.CallTo(() => selectionPresenter.SelectedMolecules).Returns(moleculeBuildingBlock.ToList());
+         A.CallTo(() => selectionPresenter.SelectedSpatialStructure).Returns(spatialStructure);
       }
 
       protected override void Because()
@@ -691,6 +706,10 @@ namespace MoBi.Presentation.Tasks
          _initialConditionsBuildingBlock.Add(startValue);
          _initialConditionsBuildingBlock.FormulaCache.Add(startValue.Formula);
          _refreshedFormula = new ExplicitFormula("M/V").WithId("m/v").WithName("FormulaName");
+         var selectionPresenter = A.Fake<ISelectSpatialStructureAndMoleculesPresenter>();
+         A.CallTo(() => _context.Context.Resolve<ISelectSpatialStructureAndMoleculesPresenter>()).Returns(selectionPresenter);
+         A.CallTo(() => selectionPresenter.SelectedMolecules).Returns(moleculeBuildingBlock.ToList());
+         A.CallTo(() => selectionPresenter.SelectedSpatialStructure).Returns(spatialStructure);
       }
    }
 
@@ -788,6 +807,10 @@ namespace MoBi.Presentation.Tasks
 
          A.CallTo(() => _formulaTask.FormulasAreTheSame(startValue.Formula, secondStartValue.Formula)).Returns(true);
          _initialConditionsToRefresh = new List<InitialCondition> { startValue, thirdStartValue };
+         var selectionPresenter = A.Fake<ISelectSpatialStructureAndMoleculesPresenter>();
+         A.CallTo(() => _context.Context.Resolve<ISelectSpatialStructureAndMoleculesPresenter>()).Returns(selectionPresenter);
+         A.CallTo(() => selectionPresenter.SelectedMolecules).Returns(moleculeBuildingBlock.ToList());
+         A.CallTo(() => selectionPresenter.SelectedSpatialStructure).Returns(spatialStructure);
       }
 
       protected override void Because()
