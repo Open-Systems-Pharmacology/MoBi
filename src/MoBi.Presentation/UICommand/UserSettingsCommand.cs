@@ -6,11 +6,11 @@ namespace MoBi.Presentation.UICommand
 {
    internal class UserSettingsCommand : IUICommand
    {
-      private readonly IUserSettings _userSettings;
+      private readonly ICloneableUserSettings _userSettings;
 
       private readonly IMoBiApplicationController _applicationController;
 
-      public UserSettingsCommand(IUserSettings userSettings, IMoBiApplicationController applicationController)
+      public UserSettingsCommand(ICloneableUserSettings userSettings, IMoBiApplicationController applicationController)
       {
          _userSettings = userSettings;
          _applicationController = applicationController;

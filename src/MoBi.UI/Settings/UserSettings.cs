@@ -28,7 +28,7 @@ using ICoreUserSettings = OSPSuite.Core.ICoreUserSettings;
 
 namespace MoBi.UI.Settings
 {
-   public class UserSettings : ValidatableDTO, IUserSettings
+   public class UserSettings : ValidatableDTO, ICloneableUserSettings
    {
       public int LayoutVersion { get; set; }
 
@@ -141,19 +141,15 @@ namespace MoBi.UI.Settings
       private UserSettings(IUserSettings source)
       {
          _numericFormatterOptions = new NumericFormatterOptions();
-         DirectoryMapSettings = source.DirectoryMapSettings;
-         DiagramOptions = source.DiagramOptions.Clone();
-         ForceLayoutConfigutation = source.ForceLayoutConfigutation.Clone();
-         ChartOptions = source.ChartOptions.Clone();
-         ValidationSettings = source.ValidationSettings.Clone();
+         DirectoryMapSettings = new DirectoryMapSettings();
+         DiagramOptions = new DiagramOptions();
+         ForceLayoutConfigutation = new ForceLayoutConfiguration();
+         ChartOptions = new ChartOptions();
+         ValidationSettings = new ValidationSettings();
          DisplayUnits = new DisplayUnitsManager();
-         DisplayUnits.UpdatePropertiesFrom(source.DisplayUnits, null);
-         RenameDependentObjectsDefault = source.RenameDependentObjectsDefault;
-         MRUListItemCount = source.MRUListItemCount;
-         MaximumNumberOfCoresToUse = source.MaximumNumberOfCoresToUse;
-         WarnForNonFiniteQuantities = source.WarnForNonFiniteQuantities;
-         DefaultParameterGroupingModeForPIAndSA = source.DefaultParameterGroupingModeForPIAndSA;
+         
          Rules.AddRange(AllRules.All());
+         UpdatePropertiesFrom(source);
       }
 
       public IUserSettings Clone()
@@ -176,10 +172,16 @@ namespace MoBi.UI.Settings
          MaximumNumberOfCoresToUse = source.MaximumNumberOfCoresToUse;
          WarnForNonFiniteQuantities = source.WarnForNonFiniteQuantities;
          DefaultParameterGroupingModeForPIAndSA = source.DefaultParameterGroupingModeForPIAndSA;
+         ShowAdvancedParameters = source.ShowAdvancedParameters;
+         GroupParameters = source.GroupParameters;
+         NumberOfBins = source.NumberOfBins;
+         NumberOfIndividualsPerBin = source.NumberOfIndividualsPerBin;
          DiagramOptions.UpdatePropertiesFrom(source.DiagramOptions);
          ForceLayoutConfigutation.UpdatePropertiesFrom(source.ForceLayoutConfigutation);
          ChartOptions.UpdatePropertiesFrom(source.ChartOptions);
          ValidationSettings.UpdatePropertiesFrom(source.ValidationSettings);
+         DisplayUnits.UpdatePropertiesFrom(source.DisplayUnits, null);
+         source.DirectoryMapSettings.UsedDirectories.Each(x => DirectoryMapSettings.AddUsedDirectory(x.Key, x.Path));
       }
 
       public bool ShowPKSimDimensionProblemWarnings
@@ -291,9 +293,15 @@ namespace MoBi.UI.Settings
             .WithRule((x, numCore) => numCore > 0 && numCore <= Environment.ProcessorCount)
             .WithError(Error.NumberOfCoreToUseShouldBeInferiorAsTheNumberOfProcessor(Environment.ProcessorCount));
 
+         private static IBusinessRule decimalPlaceInRange { get; } = CreateRule.For<IUserSettings>()
+            .Property(x => x.DecimalPlace)
+            .WithRule((x, decimalPlace) => decimalPlace <= 15)
+            .WithError(AppConstants.Validation.DecimalPlaceMustBeBetween0And15);
+
          public static IEnumerable<IBusinessRule> All()
          {
             yield return numberOfCoreSmallerThanNumberOfProcessor;
+            yield return decimalPlaceInRange;
          }
       }
    }

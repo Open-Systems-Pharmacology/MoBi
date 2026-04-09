@@ -2206,7 +2206,8 @@ namespace MoBi.Assets
          public static readonly string CannotCreateANeighborhoodThatConnectsAContainerToItself = "Cannot create a neighborhood that connects a container to itself";
          public static readonly string InputsAreNotSupportedInMoBiQualification = "Inputs are not supported in a MoBi qualification";
          public static readonly string CannotCreateANeighborhoodFromLogicalContainers = "Cannot create a neighborhood with logical containers";
-         
+         public static readonly string DecimalPlaceMustBeBetween0And15 = "Number of decimal places must be between 0 and 15";
+
          public static string AnotherMoleculeNamedIsSelected(string moleculeName) => $"Another molecule named {moleculeName} is selected";
 
          public static string XDimensionColumnMustNotHaveRepeatedValues(string dimensionName)

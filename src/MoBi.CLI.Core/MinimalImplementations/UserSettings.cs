@@ -40,20 +40,6 @@ namespace MoBi.CLI.Core.MinimalImplementations
       public int NumberOfBins { get; set; }
       public int NumberOfIndividualsPerBin { get; set; }
       public bool WarnForNonFiniteQuantities { get; set; }
-      
-      public IUserSettings Clone()
-      {
-         // Clones are used as a DTO when editing user settings in UI modal dialog.
-         // There is no need for a clone in CLI
-         throw new System.NotImplementedException();
-      }
-
-      public void UpdatePropertiesFrom(IUserSettings source)
-      {
-         // Clones are used as a DTO when editing user settings in UI modal dialog.
-         // There is no need for a clone in CLI
-         throw new System.NotImplementedException();
-      }
 
       public string IconSizeGeneral { get; set; }
       public bool RenameDependentObjectsDefault { get; set; }

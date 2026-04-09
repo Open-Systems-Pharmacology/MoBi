@@ -49,7 +49,6 @@ namespace MoBi.UI.Views
          this.layoutItemValidationItems = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutItemParameterLayout = new DevExpress.XtraLayout.LayoutControlItem();
          this.tabDiagramOptions = new DevExpress.XtraTab.XtraTabPage();
-         this.tabFlowLayout = new DevExpress.XtraTab.XtraTabPage();
          this.tabChartOptions = new DevExpress.XtraTab.XtraTabPage();
          this.tabDisplayUnits = new DevExpress.XtraTab.XtraTabPage();
          this.tabApplicationSettings = new DevExpress.XtraTab.XtraTabPage();
@@ -96,7 +95,6 @@ namespace MoBi.UI.Views
          this.tabControl.TabPages.AddRange(new DevExpress.XtraTab.XtraTabPage[] {
             this.tabGeneral,
             this.tabDiagramOptions,
-            this.tabFlowLayout,
             this.tabChartOptions,
             this.tabDisplayUnits,
             this.tabApplicationSettings});
@@ -272,13 +270,7 @@ namespace MoBi.UI.Views
          this.tabDiagramOptions.Name = "tabDiagramOptions";
          this.tabDiagramOptions.Size = new System.Drawing.Size(795, 429);
          this.tabDiagramOptions.Text = "Diagram Options";
-         // 
-         // tabFlowLayout
-         // 
-         this.tabFlowLayout.Name = "tabFlowLayout";
-         this.tabFlowLayout.Size = new System.Drawing.Size(795, 429);
-         this.tabFlowLayout.Text = "Diagram Auto Layout";
-         // 
+         //
          // tabChartOptions
          // 
          this.tabChartOptions.Name = "tabChartOptions";
@@ -358,7 +350,6 @@ namespace MoBi.UI.Views
 
       private DevExpress.XtraTab.XtraTabControl tabControl;
       private DevExpress.XtraTab.XtraTabPage tabGeneral;
-      private DevExpress.XtraTab.XtraTabPage tabFlowLayout;
       private DevExpress.XtraTab.XtraTabPage tabDiagramOptions;
       private DevExpress.XtraTab.XtraTabPage tabChartOptions;
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl1;

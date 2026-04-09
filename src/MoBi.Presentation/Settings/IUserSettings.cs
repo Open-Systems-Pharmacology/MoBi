@@ -10,11 +10,14 @@ using IMoBiCoreUserSettings = MoBi.Core.ICoreUserSettings;
 
 namespace MoBi.Presentation.Settings
 {
-   public interface IUserSettings : IPresentationUserSettings, IMoBiCoreUserSettings
+   public interface ICloneableUserSettings : IUserSettings
    {
       IUserSettings Clone();
       void UpdatePropertiesFrom(IUserSettings source);
-
+   }
+   
+   public interface IUserSettings : IPresentationUserSettings, IMoBiCoreUserSettings
+   {
       string IconSizeGeneral { get; set; }
       bool RenameDependentObjectsDefault { get; set; }
       IForceLayoutConfiguration ForceLayoutConfigutation { get; set; }
