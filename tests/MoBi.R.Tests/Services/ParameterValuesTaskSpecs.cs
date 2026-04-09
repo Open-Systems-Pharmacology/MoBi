@@ -527,7 +527,7 @@ internal class When_setting_parameter_values_with_inconsistent_array_lengths : c
    [Observation]
    public void should_throw_argument_exception()
    {
-      The.Action(() => sut.SetParameterValue(
+      The.Action(() => sut.SetParameterValues(
          _buildingBlock,
          quantityPaths: ["Path1|Container1|Parameter1", "Path2|Container2|Parameter2"],
          quantityValues: [100, 200],
@@ -569,7 +569,7 @@ internal class When_setting_parameter_values_that_all_already_exist_with_project
 
    protected override void Because()
    {
-      sut.SetParameterValue(
+      sut.SetParameterValues(
          _buildingBlock,
          quantityPaths: ["TopContainer|Physical|Parameter1", "TopContainer|Physical|Parameter2"],
          quantityValues: [100, 200],
@@ -592,6 +592,56 @@ internal class When_setting_parameter_values_that_all_already_exist_with_project
    }
 }
 
+internal class When_setting_parameter_values_with_different_dimension_on_existing_entries : concern_for_ParameterValuesTask_with_project
+{
+   private ParameterValuesBuildingBlock _buildingBlock;
+   private IDimension _originalDimension;
+
+   protected override void Context()
+   {
+      base.Context();
+
+      _buildingBlock = new ParameterValuesBuildingBlock().WithName("PV Building Block");
+
+      var dimensionFactory = OSPSuite.R.Api.Container.Resolve<IDimensionFactory>();
+      _originalDimension = dimensionFactory.Dimension("Volume");
+
+      var parameterValue = new ParameterValue
+      {
+         Path = new ObjectPath("TopContainer", "Physical", "Parameter1"),
+         Value = 1.5,
+         Dimension = _originalDimension
+      };
+
+      _buildingBlock.Add(parameterValue);
+      AddBuildingBlocksToProject(_buildingBlock);
+   }
+
+   protected override void Because()
+   {
+      sut.SetParameterValues(
+         _buildingBlock,
+         quantityPaths: ["TopContainer|Physical|Parameter1"],
+         quantityValues: [1],
+         dimensionNames: ["Amount"]
+      );
+   }
+
+   [Observation]
+   public void should_update_the_dimension_of_the_parameter_value()
+   {
+      var pv = _buildingBlock.FindByPath("TopContainer|Physical|Parameter1");
+      pv.Dimension.Name.ShouldBeEqualTo("Amount");
+   }
+
+   [Observation]
+   public void should_update_the_value()
+   {
+      var pv = _buildingBlock.FindByPath("TopContainer|Physical|Parameter1");
+      pv.Value.ShouldBeEqualTo(1);
+   }
+}
+
 internal class When_setting_parameter_values_that_dont_exist_with_project : concern_for_ParameterValuesTask_with_project
 {
    private ParameterValuesBuildingBlock _buildingBlock;
@@ -607,7 +657,7 @@ internal class When_setting_parameter_values_that_dont_exist_with_project : conc
 
    protected override void Because()
    {
-      sut.SetParameterValue(
+      sut.SetParameterValues(
          _buildingBlock,
          quantityPaths: ["TopContainer|Physical|Parameter1", "TopContainer|Physical|Parameter2"],
          quantityValues: [150, 250],
@@ -666,7 +716,7 @@ internal class When_setting_parameter_values_with_mix_of_existing_and_new_with_p
 
    protected override void Because()
    {
-      sut.SetParameterValue(
+      sut.SetParameterValues(
          _buildingBlock,
          quantityPaths: ["TopContainer|Physical|Parameter1", "TopContainer|Physical|Parameter2", "TopContainer|Physical|Parameter3"],
          quantityValues: [100, 200, 300],
@@ -735,7 +785,7 @@ internal class When_setting_parameter_values_that_all_already_exist : concern_fo
 
    protected override void Because()
    {
-      sut.SetParameterValue(
+      sut.SetParameterValues(
          _buildingBlock,
          quantityPaths: ["TopContainer|Physical|Parameter1", "TopContainer|Physical|Parameter2"],
          quantityValues: [100, 200],
@@ -771,7 +821,7 @@ internal class When_setting_parameter_values_that_dont_exist : concern_for_Param
 
    protected override void Because()
    {
-      sut.SetParameterValue(
+      sut.SetParameterValues(
          _buildingBlock,
          quantityPaths: ["TopContainer|Physical|Parameter1", "TopContainer|Physical|Parameter2"],
          quantityValues: [150, 250],
@@ -828,7 +878,7 @@ internal class When_setting_parameter_values_with_mix_of_existing_and_new : conc
 
    protected override void Because()
    {
-      sut.SetParameterValue(
+      sut.SetParameterValues(
          _buildingBlock,
          quantityPaths: ["TopContainer|Physical|Parameter1", "TopContainer|Physical|Parameter2", "TopContainer|Physical|Parameter3"],
          quantityValues: [100, 200, 300],

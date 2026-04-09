@@ -21,17 +21,15 @@ public interface IInitialConditionsBuildingBlockExtendManager : IExtendPathAndVa
 public class InitialConditionsBuildingBlockExtendManager : ExtendPathAndValuesManager<InitialCondition>, IInitialConditionsBuildingBlockExtendManager
 {
    private readonly IInitialConditionsCreator _initialConditionsCreator;
-   private readonly IDimensionFactory _dimensionFactory;
 
    public InitialConditionsBuildingBlockExtendManager(
       IInitialConditionsCreator initialConditionsCreator,
       IMoBiFormulaTask moBiFormulaTask,
       IObjectTypeResolver objectTypeResolver,
       IMoBiContext moBiContext,
-      IDimensionFactory dimensionFactory) : base(moBiFormulaTask, objectTypeResolver, moBiContext)
+      IDimensionFactory dimensionFactory) : base(moBiFormulaTask, objectTypeResolver, moBiContext, dimensionFactory)
    {
       _initialConditionsCreator = initialConditionsCreator;
-      _dimensionFactory = dimensionFactory;
    }
 
    private void updateDefaultIsPresentToFalseForSpecificExtendedValues(IReadOnlyList<InitialCondition> allInitialConditions, IReadOnlyList<InitialCondition> templateValues)
@@ -57,7 +55,10 @@ public class InitialConditionsBuildingBlockExtendManager : ExtendPathAndValuesMa
    {
       var pathAndValueEntity = buildingBlock[properties.ObjectPath];
       if (pathAndValueEntity != null)
-         return new UpdateInitialConditionInBuildingBlockCommand(buildingBlock, properties.ObjectPath, properties.ValueInBaseUnit, properties.IsPresent, properties.ScaleDivisor, properties.NegativeAllowed);
+      {
+         var updateValueCommand = new UpdateInitialConditionInBuildingBlockCommand(buildingBlock, properties.ObjectPath, properties.ValueInBaseUnit, properties.IsPresent, properties.ScaleDivisor, properties.NegativeAllowed);
+         return UpdateValueAndDimension(updateValueCommand, buildingBlock, pathAndValueEntity, properties.DimensionName);
+      }
 
       var moleculeName = properties.ObjectPath.Last();
       var containerPath = properties.ObjectPath.Clone<ObjectPath>();
