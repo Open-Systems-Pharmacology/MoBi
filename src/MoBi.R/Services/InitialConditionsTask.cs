@@ -3,10 +3,13 @@ using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Extensions;
+using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
+using MoBi.R.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Serialization;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.R.Services;
@@ -15,7 +18,7 @@ public interface IInitialConditionsTask : IPathAndValuesTask<InitialConditionsBu
 {
    void DeleteInitialConditions(InitialConditionsBuildingBlock buildingBlock, params string[] pathsToDelete);
 
-   string[] ExtendInitialConditions(InitialConditionsBuildingBlock buildingBlock, MoBiSpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock, params string[] moleculeNames);
+   string[] ExtendInitialConditions(InitialConditionsBuildingBlock buildingBlock, SpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock, params string[] moleculeNames);
 
    void SetInitialConditions(InitialConditionsBuildingBlock buildingBlock, string[] quantityPaths, string[] dimensionNames, double[] quantityValues, double[] scaleDivisors, bool[] isPresent, bool[] negativeAllowed);
    void SetInitialConditions(InitialConditionsBuildingBlock buildingBlock, string quantityPath, string dimensionName, double quantityValue, double scaleDivisor, bool isPresent, bool negativeAllowed);
@@ -27,20 +30,24 @@ public interface IInitialConditionsTask : IPathAndValuesTask<InitialConditionsBu
    bool[] AllIsPresentFrom(InitialConditionsBuildingBlock buildingBlock, params string[] paths);
 
    bool[] AllNegativeValuesAllowedFrom(InitialConditionsBuildingBlock buildingBlock, params string[] paths);
+
+   void ExportToPKML(InitialConditionsBuildingBlock buildingBlock, string filePath);
 }
 
 public class InitialConditionsTask : ExtendablePathAndValuesTask<InitialConditionsBuildingBlock, InitialCondition>, IInitialConditionsTask
 {
    private readonly IInitialConditionsBuildingBlockExtendManager _extendManager;
+   private readonly IXmlSerializationService _xmlSerializationService;
 
-   public InitialConditionsTask(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IInitialConditionsBuildingBlockExtendManager extendManager) : base(context, objectTypeResolver, extendManager)
+   public InitialConditionsTask(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IInitialConditionsBuildingBlockExtendManager extendManager, IXmlSerializationService xmlSerializationService) : base(context, objectTypeResolver, extendManager)
    {
       _extendManager = extendManager;
+      _xmlSerializationService = xmlSerializationService;
    }
 
    public void DeleteInitialConditions(InitialConditionsBuildingBlock buildingBlock, params string[] pathsToDelete) => Delete(buildingBlock, pathsToDelete);
 
-   public string[] ExtendInitialConditions(InitialConditionsBuildingBlock buildingBlock, MoBiSpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock, params string[] moleculeNames) =>
+   public string[] ExtendInitialConditions(InitialConditionsBuildingBlock buildingBlock, SpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock, params string[] moleculeNames) =>
       Extend(buildingBlock, spatialStructure, moleculeBuildingBlock, moleculeNames);
 
    public void SetInitialConditions(InitialConditionsBuildingBlock buildingBlock, string[] quantityPaths, string[] dimensionNames, double[] quantityValues, double[] scaleDivisors, bool[] isPresent, bool[] negativeAllowed)
@@ -67,15 +74,18 @@ public class InitialConditionsTask : ExtendablePathAndValuesTask<InitialConditio
    public void SetInitialConditions(InitialConditionsBuildingBlock buildingBlock, string quantityPath, string dimensionName, double quantityValue, double scaleDivisor, bool isPresent, bool negativeAllowed) =>
       SetInitialConditions(buildingBlock, [quantityPath], [dimensionName], [quantityValue], [scaleDivisor], [isPresent], [negativeAllowed]);
 
-   public string[] AllMoleculeNamesFrom(InitialConditionsBuildingBlock buildingBlock, params string[] paths) => AllFrom(buildingBlock, paths, x => x.MoleculeName);
+   public string[] AllMoleculeNamesFrom(InitialConditionsBuildingBlock buildingBlock, params string[] paths) => buildingBlock.AllFrom(paths, x => x.MoleculeName);
 
-   public double[] AllScaleDivisorsFrom(InitialConditionsBuildingBlock buildingBlock, params string[] paths) => AllFrom(buildingBlock, paths, x => x.ScaleDivisor);
+   public double[] AllScaleDivisorsFrom(InitialConditionsBuildingBlock buildingBlock, params string[] paths) => buildingBlock.AllFrom(paths, x => x.ScaleDivisor);
 
-   public bool[] AllIsPresentFrom(InitialConditionsBuildingBlock buildingBlock, params string[] paths) => AllFrom(buildingBlock, paths, x => x.IsPresent);
+   public bool[] AllIsPresentFrom(InitialConditionsBuildingBlock buildingBlock, params string[] paths) => buildingBlock.AllFrom(paths, x => x.IsPresent);
 
-   public bool[] AllNegativeValuesAllowedFrom(InitialConditionsBuildingBlock buildingBlock, params string[] paths) => AllFrom(buildingBlock, paths, x => x.NegativeValuesAllowed);
+   public bool[] AllNegativeValuesAllowedFrom(InitialConditionsBuildingBlock buildingBlock, params string[] paths) => buildingBlock.AllFrom(paths, x => x.NegativeValuesAllowed);
 
    protected override string RemoveCommandDescription() => AppConstants.Commands.RemoveMultipleInitialConditions;
+
+   public void ExportToPKML(InitialConditionsBuildingBlock buildingBlock, string filePath) =>
+      _xmlSerializationService.SerializeModelPart(buildingBlock).PermissiveSave(filePath);
 
    protected override IMoBiCommand RemoveCommandFor(InitialConditionsBuildingBlock buildingBlock, ObjectPath path) =>
       new RemoveInitialConditionFromBuildingBlockCommand(buildingBlock, path);

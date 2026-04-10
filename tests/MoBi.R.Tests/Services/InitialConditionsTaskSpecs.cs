@@ -1,5 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
+using System.Xml.Linq;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.R.Services;
@@ -1685,5 +1687,38 @@ internal class When_getting_negative_values_allowed_flags_from_empty_building_bl
    public void should_return_empty_array()
    {
       _result.ShouldBeEmpty();
+   }
+}
+
+internal class When_exporting_initial_conditions_to_pkml : concern_for_InitialConditionsTask_with_project
+{
+   private InitialConditionsBuildingBlock _buildingBlock;
+   private string _filePath;
+
+   protected override void Context()
+   {
+      base.Context();
+      _filePath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".pkml");
+      _buildingBlock = new InitialConditionsBuildingBlock().WithName("IC Export Test");
+      _buildingBlock.Add(new InitialCondition { Path = new ObjectPath("Root", "Container", "Molecule"), Value = 1.0 });
+      AddBuildingBlocksToProject(_buildingBlock);
+   }
+
+   protected override void Because()
+   {
+      sut.ExportToPKML(_buildingBlock, _filePath);
+   }
+
+   [Observation]
+   public void should_create_a_valid_pkml_file()
+   {
+      File.Exists(_filePath).ShouldBeTrue();
+      XDocument.Load(_filePath).ShouldNotBeNull();
+   }
+
+   public override void Cleanup()
+   {
+      base.Cleanup();
+      File.Delete(_filePath);
    }
 }

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
+using System.Xml.Linq;
 using MoBi.Core.Domain.Model;
 using MoBi.R.Services;
 using OSPSuite.BDDHelper;
@@ -1294,5 +1296,38 @@ internal class When_getting_all_dimensions_with_non_existent_paths : concern_for
    {
       The.Action(() => sut.AllDimensionsFrom(_buildingBlock, ["Path1|Container1|Parameter1", "NonExistent|Path"]))
          .ShouldThrowAn<ArgumentException>();
+   }
+}
+
+internal class When_exporting_parameter_values_to_pkml : concern_for_ParameterValuesTask_with_project
+{
+   private ParameterValuesBuildingBlock _buildingBlock;
+   private string _filePath;
+
+   protected override void Context()
+   {
+      base.Context();
+      _filePath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".pkml");
+      _buildingBlock = new ParameterValuesBuildingBlock().WithName("PV Export Test");
+      _buildingBlock.Add(new ParameterValue { Path = new ObjectPath("Root", "Container", "Parameter"), Value = 42.0 });
+      AddBuildingBlocksToProject(_buildingBlock);
+   }
+
+   protected override void Because()
+   {
+      sut.ExportToPKML(_buildingBlock, _filePath);
+   }
+
+   [Observation]
+   public void should_create_a_valid_pkml_file()
+   {
+      File.Exists(_filePath).ShouldBeTrue();
+      XDocument.Load(_filePath).ShouldNotBeNull();
+   }
+
+   public override void Cleanup()
+   {
+      base.Cleanup();
+      File.Delete(_filePath);
    }
 }

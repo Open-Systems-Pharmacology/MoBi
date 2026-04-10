@@ -1,12 +1,14 @@
-﻿using MoBi.Core.Commands;
+﻿using System;
+using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Extensions;
+using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Serialization;
 using OSPSuite.Utility.Extensions;
-using System;
 using static MoBi.Assets.AppConstants;
 
 namespace MoBi.R.Services;
@@ -21,16 +23,20 @@ public interface IParameterValuesTask : IPathAndValuesTask<ParameterValuesBuildi
    
    void DeleteParameterValues(ParameterValuesBuildingBlock buildingBlock, string pathToDelete);
 
-   string[] AddLocalMoleculeParameters(ParameterValuesBuildingBlock buildingBlock, MoBiSpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock, params string[] moleculeNames);
+   string[] AddLocalMoleculeParameters(ParameterValuesBuildingBlock buildingBlock, SpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock, params string[] moleculeNames);
+
+   void ExportToPKML(ParameterValuesBuildingBlock buildingBlock, string filePath);
 }
 
 public class ParameterValuesTask : ExtendablePathAndValuesTask<ParameterValuesBuildingBlock, ParameterValue>, IParameterValuesTask
 {
    private readonly IParameterValueBuildingBlockExtendManager _extendManager;
+   private readonly IXmlSerializationService _xmlSerializationService;
 
-   public ParameterValuesTask(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IParameterValueBuildingBlockExtendManager extendManager) : base(context, objectTypeResolver, extendManager)
+   public ParameterValuesTask(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IParameterValueBuildingBlockExtendManager extendManager, IXmlSerializationService xmlSerializationService) : base(context, objectTypeResolver, extendManager)
    {
       _extendManager = extendManager;
+      _xmlSerializationService = xmlSerializationService;
    }
 
    public void SetParameterValues(ParameterValuesBuildingBlock buildingBlock, string[] quantityPaths, double[] quantityValues, string[] dimensionNames)
@@ -51,8 +57,11 @@ public class ParameterValuesTask : ExtendablePathAndValuesTask<ParameterValuesBu
 
    public void DeleteParameterValues(ParameterValuesBuildingBlock buildingBlock, string pathToDelete) => DeleteParameterValues(buildingBlock, [pathToDelete]);
 
-   public string[] AddLocalMoleculeParameters(ParameterValuesBuildingBlock buildingBlock, MoBiSpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock, params string[] moleculeNames) =>
+   public string[] AddLocalMoleculeParameters(ParameterValuesBuildingBlock buildingBlock, SpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock, params string[] moleculeNames) =>
       Extend(buildingBlock, spatialStructure, moleculeBuildingBlock, moleculeNames);
+
+   public void ExportToPKML(ParameterValuesBuildingBlock buildingBlock, string filePath) =>
+      _xmlSerializationService.SerializeModelPart(buildingBlock).PermissiveSave(filePath);
 
    protected override string RemoveCommandDescription() => Commands.RemoveManyParameterValues;
 

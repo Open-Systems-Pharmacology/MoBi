@@ -8,17 +8,19 @@ using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Serialization;
 
 namespace MoBi.R.Services;
 
-public interface IExpressionProfileTask
+public interface IExpressionProfileTask : IPathAndValuesTask<ExpressionProfileBuildingBlock, ExpressionParameter>
 {
    ExpressionProfileBuildingBlock CreateExpressionProfile(string category, string moleculeName, string speciesName);
    void SetExpressionParameter(ExpressionProfileBuildingBlock buildingBlock, string[] quantityPaths, double[] quantityValues);
    void SetExpressionParameter(ExpressionProfileBuildingBlock buildingBlock, string quantityPath, double quantityValue);
+   void ExportToPKML(ExpressionProfileBuildingBlock buildingBlock, string filePath);
 }
 
-public class ExpressionProfileTask : PKSimPathAndValuesTask, IExpressionProfileTask
+public class ExpressionProfileTask : PKSimPathAndValuesTask<ExpressionProfileBuildingBlock, ExpressionParameter>, IExpressionProfileTask
 {
    private readonly IXmlSerializationService _xmlSerializationService;
    private readonly IMoBiProjectRetriever _projectRetriever;
@@ -54,10 +56,13 @@ public class ExpressionProfileTask : PKSimPathAndValuesTask, IExpressionProfileT
          ObjectType = _objectTypeResolver.TypeFor<ExpressionProfileBuildingBlock>()
       };
 
-      macroCommand.AddRange(quantityPaths.Select((quantityPath, i) => UpdateValueCommandFor<ExpressionProfileBuildingBlock, ExpressionParameter>(buildingBlock, quantityPath, quantityValues[i])));
+      macroCommand.AddRange(quantityPaths.Select((quantityPath, i) => UpdateValueCommandFor(buildingBlock, quantityPath, quantityValues[i])));
 
       _context.AddToHistory(macroCommand.RunCommand(_context));
    }
 
    public void SetExpressionParameter(ExpressionProfileBuildingBlock buildingBlock, string quantityPath, double quantityValue) => SetExpressionParameter(buildingBlock, [quantityPath], [quantityValue]);
+
+   public void ExportToPKML(ExpressionProfileBuildingBlock buildingBlock, string filePath) =>
+      _xmlSerializationService.SerializeModelPart(buildingBlock).PermissiveSave(filePath);
 }

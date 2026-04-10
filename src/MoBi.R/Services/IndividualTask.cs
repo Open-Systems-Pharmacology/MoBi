@@ -8,18 +8,20 @@ using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Serialization;
 using OSPSuite.R.Domain;
 
 namespace MoBi.R.Services;
 
-public interface IIndividualTask
+public interface IIndividualTask : IPathAndValuesTask<IndividualBuildingBlock, IndividualParameter>
 {
-   IndividualBuildingBlock CreateIndividual(IndividualCharacteristics individualCharacteristics);
+   IndividualBuildingBlock CreateIndividual(IndividualCharacteristics individualCharacteristics, string name);
    void SetIndividualParameter(IndividualBuildingBlock buildingBlock, string[] quantityPaths, double[] quantityValues);
    void SetIndividualParameter(IndividualBuildingBlock buildingBlock, string quantityPath, double quantityValue);
+   void ExportToPKML(IndividualBuildingBlock buildingBlock, string filePath);
 }
 
-public class IndividualTask : PKSimPathAndValuesTask, IIndividualTask
+public class IndividualTask : PKSimPathAndValuesTask<IndividualBuildingBlock, IndividualParameter>, IIndividualTask
 {
    private readonly IXmlSerializationService _xmlSerializationService;
    private readonly IMoBiProjectRetriever _projectRetriever;
@@ -34,13 +36,15 @@ public class IndividualTask : PKSimPathAndValuesTask, IIndividualTask
       _objectTypeResolver = objectTypeResolver;
    }
 
-   public IndividualBuildingBlock CreateIndividual(IndividualCharacteristics individualCharacteristics)
+   public IndividualBuildingBlock CreateIndividual(IndividualCharacteristics individualCharacteristics, string name)
    {
       LoadPKSimAssembly();
 
       var serializedIndividual = ExecuteMethod(GetMethod("PKSim.R.Exchange.BuildingBlockCreator", "CreateIndividual"), [individualCharacteristics]) as string;
 
-      return _xmlSerializationService.Deserialize<IndividualBuildingBlock>(serializedIndividual, _projectRetriever.Current);
+      var buildingBlock = _xmlSerializationService.Deserialize<IndividualBuildingBlock>(serializedIndividual, _projectRetriever.Current);
+      buildingBlock.Name = name;
+      return buildingBlock;
    }
 
    public void SetIndividualParameter(IndividualBuildingBlock buildingBlock, string[] quantityPaths, double[] quantityValues)
@@ -55,10 +59,13 @@ public class IndividualTask : PKSimPathAndValuesTask, IIndividualTask
          ObjectType = _objectTypeResolver.TypeFor<IndividualBuildingBlock>()
       };
 
-      macroCommand.AddRange(quantityPaths.Select((quantityPath, i) => UpdateValueCommandFor<IndividualBuildingBlock, IndividualParameter>(buildingBlock, quantityPath, quantityValues[i])));
+      macroCommand.AddRange(quantityPaths.Select((quantityPath, i) => UpdateValueCommandFor(buildingBlock, quantityPath, quantityValues[i])));
 
       _context.AddToHistory(macroCommand.RunCommand(_context));
    }
 
    public void SetIndividualParameter(IndividualBuildingBlock buildingBlock, string quantityPath, double quantityValue) => SetIndividualParameter(buildingBlock, [quantityPath], [quantityValue]);
+
+   public void ExportToPKML(IndividualBuildingBlock buildingBlock, string filePath) =>
+      _xmlSerializationService.SerializeModelPart(buildingBlock).PermissiveSave(filePath);
 }

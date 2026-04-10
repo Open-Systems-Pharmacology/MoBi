@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Extensions;
 using MoBi.Core.Services;
+using MoBi.R.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
@@ -21,7 +21,7 @@ public interface IPathAndValuesTask<TBuildingBlock, TBuilder> where TBuildingBlo
    string[] AllUnitsFrom(TBuildingBlock buildingBlock, params string[] paths);
 }
 
-public abstract class ExtendablePathAndValuesTask<TBuildingBlock, TBuilder>: IPathAndValuesTask<TBuildingBlock, TBuilder> where TBuildingBlock : PathAndValueEntityBuildingBlock<TBuilder> where TBuilder : PathAndValueEntity
+public abstract class ExtendablePathAndValuesTask<TBuildingBlock, TBuilder> : IPathAndValuesTask<TBuildingBlock, TBuilder> where TBuildingBlock : PathAndValueEntityBuildingBlock<TBuilder> where TBuilder : PathAndValueEntity
 {
    private readonly IObjectTypeResolver _objectTypeResolver;
    private readonly IExtendPathAndValuesManager<TBuilder> _extendManager;
@@ -54,7 +54,7 @@ public abstract class ExtendablePathAndValuesTask<TBuildingBlock, TBuilder>: IPa
 
    protected abstract string RemoveCommandDescription();
 
-   protected string[] Extend(TBuildingBlock buildingBlock, MoBiSpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock, string[] moleculeNames)
+   protected string[] Extend(TBuildingBlock buildingBlock, SpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock, string[] moleculeNames)
    {
       var molecules = moleculesFor(moleculeNames, moleculeBuildingBlock);
 
@@ -87,31 +87,11 @@ public abstract class ExtendablePathAndValuesTask<TBuildingBlock, TBuilder>: IPa
       };
    }
 
-   protected T[] AllFrom<T>(TBuildingBlock buildingBlock, string[] paths, Func<TBuilder, T> selector)
-   {
-      if (paths != null && paths.Length != 0)
-      {
-         var pathSet = new HashSet<string>(paths);
+   public string[] AllPathsFrom(TBuildingBlock buildingBlock) => buildingBlock.AllPathsFrom();
 
-         if (pathSet.Count != paths.Length)
-            throw new ArgumentException(AppConstants.Exceptions.DuplicatePathsInInput(paths.Length, pathSet.Count));
+   public double[] AllValuesFrom(TBuildingBlock buildingBlock, params string[] paths) => buildingBlock.AllValuesFrom(paths);
 
-         var entities = buildingBlock.Where(x => pathSet.Contains(x.Path)).ToList();
+   public string[] AllDimensionsFrom(TBuildingBlock buildingBlock, params string[] paths) => buildingBlock.AllDimensionsFrom(paths);
 
-         if (entities.Count != paths.Length)
-            throw new ArgumentException(AppConstants.Exceptions.NotAllPathsFoundInBuildingBlock(paths.Length, entities.Count));
-
-         return entities.Select(selector).ToArray();
-      }
-
-      return buildingBlock.Select(selector).ToArray();
-   }
-
-   public string[] AllPathsFrom(TBuildingBlock buildingBlock) => AllFrom(buildingBlock, paths:null, x => x.Path.PathAsString);
-
-   public double[] AllValuesFrom(TBuildingBlock buildingBlock, params string[] paths) => AllFrom(buildingBlock, paths, x => x.Value ?? double.NaN);
-
-   public string[] AllDimensionsFrom(TBuildingBlock buildingBlock, params string[] paths) => AllFrom(buildingBlock, paths, x => x.Dimension.Name);
-
-   public string[] AllUnitsFrom(TBuildingBlock buildingBlock, params string[] paths) => AllFrom(buildingBlock, paths, x => x.Dimension.BaseUnit.Name);
+   public string[] AllUnitsFrom(TBuildingBlock buildingBlock, params string[] paths) => buildingBlock.AllUnitsFrom(paths);
 }
