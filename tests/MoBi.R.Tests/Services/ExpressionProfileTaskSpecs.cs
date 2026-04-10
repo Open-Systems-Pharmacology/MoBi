@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using System.Xml.Linq;
 using MoBi.Core.Domain.Model;
 using MoBi.R.Services;
 using OSPSuite.BDDHelper;
@@ -269,5 +271,39 @@ internal class When_setting_single_expression_parameter : concern_for_Expression
    public void should_update_the_parameter_value()
    {
       _buildingBlock["Organism|Heart|Enzyme".ToObjectPath()].Value.ShouldBeEqualTo(1.25);
+   }
+}
+
+internal class When_exporting_expression_profile_to_pkml : concern_for_ExpressionProfileTask_with_project
+{
+   private ExpressionProfileBuildingBlock _buildingBlock;
+   private string _filePath;
+
+   protected override void Context()
+   {
+      base.Context();
+      _filePath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".pkml");
+      _buildingBlock = new ExpressionProfileBuildingBlock { Type = ExpressionTypes.MetabolizingEnzyme };
+      _buildingBlock.Name = "CYP3A4|Human|Enzyme";
+      _buildingBlock.Add(new ExpressionParameter { Path = new ObjectPath("Organism", "Liver", "CYP3A4"), Value = 1.0 });
+      AddBuildingBlocksToProject(_buildingBlock);
+   }
+
+   protected override void Because()
+   {
+      sut.ExportToPKML(_buildingBlock, _filePath);
+   }
+
+   [Observation]
+   public void should_create_a_valid_pkml_file()
+   {
+      File.Exists(_filePath).ShouldBeTrue();
+      XDocument.Load(_filePath).ShouldNotBeNull();
+   }
+
+   public override void Cleanup()
+   {
+      base.Cleanup();
+      File.Delete(_filePath);
    }
 }
