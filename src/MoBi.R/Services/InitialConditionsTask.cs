@@ -4,6 +4,7 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Extensions;
 using MoBi.Core.Services;
+using MoBi.R.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
@@ -67,13 +68,13 @@ public class InitialConditionsTask : ExtendablePathAndValuesTask<InitialConditio
    public void SetInitialConditions(InitialConditionsBuildingBlock buildingBlock, string quantityPath, string dimensionName, double quantityValue, double scaleDivisor, bool isPresent, bool negativeAllowed) =>
       SetInitialConditions(buildingBlock, [quantityPath], [dimensionName], [quantityValue], [scaleDivisor], [isPresent], [negativeAllowed]);
 
-   public string[] AllMoleculeNamesFrom(InitialConditionsBuildingBlock buildingBlock, params string[] paths) => AllFrom(buildingBlock, paths, x => x.MoleculeName);
+   public string[] AllMoleculeNamesFrom(InitialConditionsBuildingBlock buildingBlock, params string[] paths) => PathAndValueEntityBuildingBlockExtensions.AllFrom(buildingBlock, paths, x => x.MoleculeName);
 
-   public double[] AllScaleDivisorsFrom(InitialConditionsBuildingBlock buildingBlock, params string[] paths) => AllFrom(buildingBlock, paths, x => x.ScaleDivisor);
+   public double[] AllScaleDivisorsFrom(InitialConditionsBuildingBlock buildingBlock, params string[] paths) => PathAndValueEntityBuildingBlockExtensions.AllFrom(buildingBlock, paths, x => x.ScaleDivisor);
 
-   public bool[] AllIsPresentFrom(InitialConditionsBuildingBlock buildingBlock, params string[] paths) => AllFrom(buildingBlock, paths, x => x.IsPresent);
+   public bool[] AllIsPresentFrom(InitialConditionsBuildingBlock buildingBlock, params string[] paths) => PathAndValueEntityBuildingBlockExtensions.AllFrom(buildingBlock, paths, x => x.IsPresent);
 
-   public bool[] AllNegativeValuesAllowedFrom(InitialConditionsBuildingBlock buildingBlock, params string[] paths) => AllFrom(buildingBlock, paths, x => x.NegativeValuesAllowed);
+   public bool[] AllNegativeValuesAllowedFrom(InitialConditionsBuildingBlock buildingBlock, params string[] paths) => PathAndValueEntityBuildingBlockExtensions.AllFrom(buildingBlock, paths, x => x.NegativeValuesAllowed);
 
    protected override string RemoveCommandDescription() => AppConstants.Commands.RemoveMultipleInitialConditions;
 

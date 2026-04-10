@@ -12,14 +12,14 @@ using OSPSuite.R.Domain;
 
 namespace MoBi.R.Services;
 
-public interface IIndividualTask
+public interface IIndividualTask : IPathAndValuesTask<IndividualBuildingBlock, IndividualParameter>
 {
    IndividualBuildingBlock CreateIndividual(IndividualCharacteristics individualCharacteristics, string name);
    void SetIndividualParameter(IndividualBuildingBlock buildingBlock, string[] quantityPaths, double[] quantityValues);
    void SetIndividualParameter(IndividualBuildingBlock buildingBlock, string quantityPath, double quantityValue);
 }
 
-public class IndividualTask : PKSimPathAndValuesTask, IIndividualTask
+public class IndividualTask : PKSimPathAndValuesTask<IndividualBuildingBlock, IndividualParameter>, IIndividualTask
 {
    private readonly IXmlSerializationService _xmlSerializationService;
    private readonly IMoBiProjectRetriever _projectRetriever;
@@ -57,7 +57,7 @@ public class IndividualTask : PKSimPathAndValuesTask, IIndividualTask
          ObjectType = _objectTypeResolver.TypeFor<IndividualBuildingBlock>()
       };
 
-      macroCommand.AddRange(quantityPaths.Select((quantityPath, i) => UpdateValueCommandFor<IndividualBuildingBlock, IndividualParameter>(buildingBlock, quantityPath, quantityValues[i])));
+      macroCommand.AddRange(quantityPaths.Select((quantityPath, i) => UpdateValueCommandFor(buildingBlock, quantityPath, quantityValues[i])));
 
       _context.AddToHistory(macroCommand.RunCommand(_context));
    }

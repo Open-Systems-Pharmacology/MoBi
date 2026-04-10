@@ -11,14 +11,14 @@ using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.R.Services;
 
-public interface IExpressionProfileTask
+public interface IExpressionProfileTask : IPathAndValuesTask<ExpressionProfileBuildingBlock, ExpressionParameter>
 {
    ExpressionProfileBuildingBlock CreateExpressionProfile(string category, string moleculeName, string speciesName);
    void SetExpressionParameter(ExpressionProfileBuildingBlock buildingBlock, string[] quantityPaths, double[] quantityValues);
    void SetExpressionParameter(ExpressionProfileBuildingBlock buildingBlock, string quantityPath, double quantityValue);
 }
 
-public class ExpressionProfileTask : PKSimPathAndValuesTask, IExpressionProfileTask
+public class ExpressionProfileTask : PKSimPathAndValuesTask<ExpressionProfileBuildingBlock, ExpressionParameter>, IExpressionProfileTask
 {
    private readonly IXmlSerializationService _xmlSerializationService;
    private readonly IMoBiProjectRetriever _projectRetriever;
@@ -54,7 +54,7 @@ public class ExpressionProfileTask : PKSimPathAndValuesTask, IExpressionProfileT
          ObjectType = _objectTypeResolver.TypeFor<ExpressionProfileBuildingBlock>()
       };
 
-      macroCommand.AddRange(quantityPaths.Select((quantityPath, i) => UpdateValueCommandFor<ExpressionProfileBuildingBlock, ExpressionParameter>(buildingBlock, quantityPath, quantityValues[i])));
+      macroCommand.AddRange(quantityPaths.Select((quantityPath, i) => UpdateValueCommandFor(buildingBlock, quantityPath, quantityValues[i])));
 
       _context.AddToHistory(macroCommand.RunCommand(_context));
    }
