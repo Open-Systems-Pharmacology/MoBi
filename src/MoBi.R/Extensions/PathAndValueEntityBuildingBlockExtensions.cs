@@ -29,12 +29,12 @@ public static class PathAndValueEntityBuildingBlockExtensions
          if (pathSet.Count != paths.Length)
             throw new ArgumentException(AppConstants.Exceptions.DuplicatePathsInInput(paths.Length, pathSet.Count));
 
-         var entities = buildingBlock.Where(x => pathSet.Contains(x.Path)).ToList();
+         var lookup = buildingBlock.Where(x => pathSet.Contains(x.Path)).ToDictionary(x => x.Path.PathAsString);
 
-         if (entities.Count != paths.Length)
-            throw new ArgumentException(AppConstants.Exceptions.NotAllPathsFoundInBuildingBlock(paths.Length, entities.Count));
+         if (lookup.Count != paths.Length)
+            throw new ArgumentException(AppConstants.Exceptions.NotAllPathsFoundInBuildingBlock(paths.Length, lookup.Count));
 
-         return entities.Select(selector).ToArray();
+         return paths.Select(p => selector(lookup[p])).ToArray();
       }
 
       return buildingBlock.Select(selector).ToArray();

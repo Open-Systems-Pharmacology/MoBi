@@ -94,7 +94,7 @@ task :create_local_nuget_r do
   FileUtils.rm_f Dir.glob("#{nuget_repo}/MoBi.*.nupkg")
   version_id = "13.0.0-" + generate_code(5)
   puts("Your MoBi version is " + version_id.red)
-  system("dotnet", "pack", "MoBi.sln", "--no-build", "--no-restore", "-o", nuget_repo, "-p:PackageVersion=" + version_id, "--configuration", "Debug")
+  abort("dotnet pack failed") unless system("dotnet", "pack", "MoBi.sln", "--no-build", "--no-restore", "-o", nuget_repo, "-p:PackageVersion=" + version_id, "--configuration", "Debug")
   update_ospsuite_r_mobi(version_id)
   build_dependency_manager
 end
@@ -192,5 +192,5 @@ end
 
 def build_dependency_manager
   puts("building DependencyManager")
-  system("dotnet", "build", "../OSPSuite-R/shared/DependencyManager/DependencyManager.sln", "--configuration", "Debug")
+  abort("dotnet build failed") unless system("dotnet", "build", "../OSPSuite-R/shared/DependencyManager/DependencyManager.sln", "--configuration", "Debug")
 end
