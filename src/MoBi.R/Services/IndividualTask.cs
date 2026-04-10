@@ -14,7 +14,7 @@ namespace MoBi.R.Services;
 
 public interface IIndividualTask
 {
-   IndividualBuildingBlock CreateIndividual(IndividualCharacteristics individualCharacteristics);
+   IndividualBuildingBlock CreateIndividual(IndividualCharacteristics individualCharacteristics, string name);
    void SetIndividualParameter(IndividualBuildingBlock buildingBlock, string[] quantityPaths, double[] quantityValues);
    void SetIndividualParameter(IndividualBuildingBlock buildingBlock, string quantityPath, double quantityValue);
 }
@@ -34,13 +34,15 @@ public class IndividualTask : PKSimPathAndValuesTask, IIndividualTask
       _objectTypeResolver = objectTypeResolver;
    }
 
-   public IndividualBuildingBlock CreateIndividual(IndividualCharacteristics individualCharacteristics)
+   public IndividualBuildingBlock CreateIndividual(IndividualCharacteristics individualCharacteristics, string name)
    {
       LoadPKSimAssembly();
 
       var serializedIndividual = ExecuteMethod(GetMethod("PKSim.R.Exchange.BuildingBlockCreator", "CreateIndividual"), [individualCharacteristics]) as string;
 
-      return _xmlSerializationService.Deserialize<IndividualBuildingBlock>(serializedIndividual, _projectRetriever.Current);
+      var buildingBlock = _xmlSerializationService.Deserialize<IndividualBuildingBlock>(serializedIndividual, _projectRetriever.Current);
+      buildingBlock.Name = name;
+      return buildingBlock;
    }
 
    public void SetIndividualParameter(IndividualBuildingBlock buildingBlock, string[] quantityPaths, double[] quantityValues)

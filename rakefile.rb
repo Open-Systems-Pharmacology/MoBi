@@ -185,7 +185,7 @@ end
 def update_ospsuite_r_mobi(version_id)
   puts("updating OSPSuite-R with MoBi.R")
   csproj = "../OSPSuite-R/shared/DependencyManager/src/DependencyManager.csproj"
-  token = find_token(csproj, /<PackageReference Include="MoBi.R" Version="(.*)"/)
+  token = find_token(csproj, /<PackageReference Include="MoBi.R" Version="([^"]*)"/)
   return if token.nil?
   Utils.replace_tokens({token => version_id}, csproj)
 end
