@@ -54,7 +54,7 @@ public abstract class ExtendablePathAndValuesTask<TBuildingBlock, TBuilder>: IPa
 
    protected abstract string RemoveCommandDescription();
 
-   protected string[] Extend(TBuildingBlock buildingBlock, MoBiSpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock, string[] moleculeNames)
+   protected string[] Extend(TBuildingBlock buildingBlock, SpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock, string[] moleculeNames)
    {
       var molecules = moleculesFor(moleculeNames, moleculeBuildingBlock);
 
