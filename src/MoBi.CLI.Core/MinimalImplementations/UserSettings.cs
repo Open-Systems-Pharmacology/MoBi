@@ -40,6 +40,7 @@ namespace MoBi.CLI.Core.MinimalImplementations
       public int NumberOfBins { get; set; }
       public int NumberOfIndividualsPerBin { get; set; }
       public bool WarnForNonFiniteQuantities { get; set; }
+
       public string IconSizeGeneral { get; set; }
       public bool RenameDependentObjectsDefault { get; set; }
       public bool CheckDimensions { get; set; }

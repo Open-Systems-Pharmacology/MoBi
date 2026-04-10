@@ -16,6 +16,7 @@ using MoBi.Presentation.Serialization.Xml;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
 using MoBi.UI.Diagram;
+using MoBi.UI.Extensions;
 using MoBi.UI.Settings;
 using MoBi.UI.Views;
 using OSPSuite.Assets;
@@ -100,10 +101,10 @@ namespace MoBi.UI.Services
       {
          container.AddRegister(x => x.FromType<DiagramRegister>());
       }
-
+      
       private static void registerSettings(IContainer container)
       {
-         container.Register<IUserSettings, IPresentationUserSettings, ICoreUserSettings, IMoBiCoreUserSettings, UserSettings>(LifeStyle.Singleton);
+         container.Register<ICloneableUserSettings, IUserSettings, IPresentationUserSettings, ICoreUserSettings, IMoBiCoreUserSettings, UserSettings>(LifeStyle.Singleton);
       }
 
       private void initContext(IContainer container)

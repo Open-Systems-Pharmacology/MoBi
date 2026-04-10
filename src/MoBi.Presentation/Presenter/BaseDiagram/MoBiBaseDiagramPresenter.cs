@@ -38,8 +38,6 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
 
       void ApplyLayoutTemplate(IContainerBase containerBase, string diagramTemplateXmlFilePath, bool recursive);
       void ApplyLayoutTemplateToSelection();
-
-      void ConfigureLayout();
    }
 
    public interface IMoBiBaseDiagramPresenter<T> : IMoBiBaseDiagramPresenter, IBaseDiagramPresenter<T>,
@@ -232,12 +230,6 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
          }
 
          _view.Refresh();
-      }
-
-      public void ConfigureLayout()
-      {
-         var forceLayoutConfigurationPresenter = IoC.Resolve<IForceLayoutConfigurationPresenter>();
-         forceLayoutConfigurationPresenter.Edit(LayoutConfiguration);
       }
 
       public void Undo() => DiagramModel.Undo();
