@@ -1299,6 +1299,90 @@ internal class When_getting_all_dimensions_with_non_existent_paths : concern_for
    }
 }
 
+internal class When_getting_all_value_origins_from_building_block_with_specified_paths : concern_for_ParameterValuesTask
+{
+   private ParameterValuesBuildingBlock _buildingBlock;
+   private string[] _result;
+
+   protected override void Context()
+   {
+      base.Context();
+      _buildingBlock = new ParameterValuesBuildingBlock().WithName("PV Building Block");
+      var pv1 = new ParameterValue
+      {
+         Path = new ObjectPath("Path1", "Container1", "Parameter1"),
+         Value = 100.0,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      };
+      pv1.ValueOrigin.UpdateFrom(new ValueOrigin { Source = ValueOriginSources.Database, Method = ValueOriginDeterminationMethods.InVitro });
+      _buildingBlock.Add(pv1);
+
+      var pv2 = new ParameterValue
+      {
+         Path = new ObjectPath("Path2", "Container2", "Parameter2"),
+         Value = 200.0,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      };
+      pv2.ValueOrigin.UpdateFrom(new ValueOrigin { Source = ValueOriginSources.Publication, Method = ValueOriginDeterminationMethods.Assumption });
+      _buildingBlock.Add(pv2);
+
+      _buildingBlock.Add(new ParameterValue
+      {
+         Path = new ObjectPath("Path3", "Container3", "Parameter3"),
+         Value = 300.0,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+   }
+
+   protected override void Because()
+   {
+      _result = sut.AllValueOriginsFrom(_buildingBlock, "Path1|Container1|Parameter1", "Path2|Container2|Parameter2");
+   }
+
+   [Observation]
+   public void should_return_value_origins_for_specified_paths_in_order()
+   {
+      _result.Length.ShouldBeEqualTo(2);
+      _result[0].ShouldBeEqualTo(new ValueOrigin { Source = ValueOriginSources.Database, Method = ValueOriginDeterminationMethods.InVitro }.Display);
+      _result[1].ShouldBeEqualTo(new ValueOrigin { Source = ValueOriginSources.Publication, Method = ValueOriginDeterminationMethods.Assumption }.Display);
+   }
+}
+
+internal class When_getting_all_value_origins_from_building_block_without_specified_paths : concern_for_ParameterValuesTask
+{
+   private ParameterValuesBuildingBlock _buildingBlock;
+   private string[] _result;
+
+   protected override void Context()
+   {
+      base.Context();
+      _buildingBlock = new ParameterValuesBuildingBlock().WithName("PV Building Block");
+      _buildingBlock.Add(new ParameterValue
+      {
+         Path = new ObjectPath("Path1", "Container1", "Parameter1"),
+         Value = 100.0,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+      _buildingBlock.Add(new ParameterValue
+      {
+         Path = new ObjectPath("Path2", "Container2", "Parameter2"),
+         Value = 200.0,
+         Dimension = Constants.Dimension.NO_DIMENSION
+      });
+   }
+
+   protected override void Because()
+   {
+      _result = sut.AllValueOriginsFrom(_buildingBlock, null);
+   }
+
+   [Observation]
+   public void should_return_all_value_origins()
+   {
+      _result.Length.ShouldBeEqualTo(2);
+   }
+}
+
 internal class When_exporting_parameter_values_to_pkml : concern_for_ParameterValuesTask_with_project
 {
    private ParameterValuesBuildingBlock _buildingBlock;

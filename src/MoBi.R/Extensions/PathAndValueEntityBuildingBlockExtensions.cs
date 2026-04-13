@@ -20,6 +20,9 @@ public static class PathAndValueEntityBuildingBlockExtensions
    public static string[] AllUnitsFrom<TBuilder>(this PathAndValueEntityBuildingBlock<TBuilder> buildingBlock, params string[] paths) where TBuilder : PathAndValueEntity
       => AllFrom(buildingBlock, paths, x => x.Dimension.BaseUnit.Name);
 
+   public static string[] AllValueOriginsFrom<TBuilder>(this PathAndValueEntityBuildingBlock<TBuilder> buildingBlock, params string[] paths) where TBuilder : PathAndValueEntity
+      => AllFrom(buildingBlock, paths, x => x.ValueOrigin.Display);
+
    public static T[] AllFrom<TBuilder, T>(this PathAndValueEntityBuildingBlock<TBuilder> buildingBlock, string[] paths, Func<TBuilder, T> selector) where TBuilder : PathAndValueEntity
    {
       if (paths != null && paths.Length != 0)
