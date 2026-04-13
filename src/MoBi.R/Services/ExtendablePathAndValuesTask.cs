@@ -19,6 +19,7 @@ public interface IPathAndValuesTask<TBuildingBlock, TBuilder> where TBuildingBlo
    double[] AllValuesFrom(TBuildingBlock buildingBlock, params string[] paths);
    string[] AllDimensionsFrom(TBuildingBlock buildingBlock, params string[] paths);
    string[] AllUnitsFrom(TBuildingBlock buildingBlock, params string[] paths);
+   string[] AllValueOriginsFrom(TBuildingBlock buildingBlock, params string[] paths);
 }
 
 public abstract class ExtendablePathAndValuesTask<TBuildingBlock, TBuilder> : IPathAndValuesTask<TBuildingBlock, TBuilder> where TBuildingBlock : PathAndValueEntityBuildingBlock<TBuilder> where TBuilder : PathAndValueEntity
@@ -94,4 +95,6 @@ public abstract class ExtendablePathAndValuesTask<TBuildingBlock, TBuilder> : IP
    public string[] AllDimensionsFrom(TBuildingBlock buildingBlock, params string[] paths) => buildingBlock.AllDimensionsFrom(paths);
 
    public string[] AllUnitsFrom(TBuildingBlock buildingBlock, params string[] paths) => buildingBlock.AllUnitsFrom(paths);
+
+   public string[] AllValueOriginsFrom(TBuildingBlock buildingBlock, params string[] paths) => buildingBlock.AllValueOriginsFrom(paths);
 }

@@ -24,6 +24,8 @@ public abstract class PKSimPathAndValuesTask<TBuildingBlock, TBuilder> : PKSimAs
 
    public string[] AllUnitsFrom(TBuildingBlock buildingBlock, params string[] paths) => buildingBlock.AllUnitsFrom(paths);
 
+   public string[] AllValueOriginsFrom(TBuildingBlock buildingBlock, params string[] paths) => buildingBlock.AllValueOriginsFrom(paths);
+
    private const string PKSIM_R_DLL = "PKSim.R.dll";
 
    protected override string RetrievePKSimAssemblyPath()
