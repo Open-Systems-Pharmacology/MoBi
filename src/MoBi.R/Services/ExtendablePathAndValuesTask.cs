@@ -13,7 +13,7 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.R.Services;
 
-public interface IPathAndValuesTask<TBuildingBlock, TBuilder> where TBuildingBlock : PathAndValueEntityBuildingBlock<TBuilder> where TBuilder : PathAndValueEntity
+public interface IPathAndValuesTask<TBuildingBlock, TBuilder> where TBuildingBlock : ILookupBuildingBlock<TBuilder> where TBuilder : PathAndValueEntity
 {
    string[] AllPathsFrom(TBuildingBlock buildingBlock);
    double[] AllValuesFrom(TBuildingBlock buildingBlock, params string[] paths);
@@ -22,7 +22,7 @@ public interface IPathAndValuesTask<TBuildingBlock, TBuilder> where TBuildingBlo
    string[] AllValueOriginsFrom(TBuildingBlock buildingBlock, params string[] paths);
 }
 
-public abstract class ExtendablePathAndValuesTask<TBuildingBlock, TBuilder> : IPathAndValuesTask<TBuildingBlock, TBuilder> where TBuildingBlock : PathAndValueEntityBuildingBlock<TBuilder> where TBuilder : PathAndValueEntity
+public abstract class ExtendablePathAndValuesTask<TBuildingBlock, TBuilder> : IPathAndValuesTask<TBuildingBlock, TBuilder> where TBuildingBlock : ILookupBuildingBlock<TBuilder> where TBuilder : PathAndValueEntity
 {
    private readonly IObjectTypeResolver _objectTypeResolver;
    private readonly IExtendPathAndValuesManager<TBuilder> _extendManager;
@@ -37,7 +37,7 @@ public abstract class ExtendablePathAndValuesTask<TBuildingBlock, TBuilder> : IP
 
    protected void Delete(TBuildingBlock buildingBlock, string[] pathsToDelete)
    {
-      var foundPaths = pathsToDelete.Where(x => buildingBlock.FindByPath(x) != null).ToList();
+      var foundPaths = pathsToDelete.Where(x => buildingBlock.ByPath(x.ToObjectPath()) != null).ToList();
       if (!foundPaths.Any())
          return;
 
