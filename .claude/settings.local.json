@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs grep:*)",
+      "Bash(gh issue:*)",
+      "Bash(git checkout:*)",
+      "Bash(cmd.exe /c \"del /f E:\\\\\\\\repos\\\\\\\\OSPSuite\\\\\\\\SuiteTools\\\\\\\\MoBi\\\\\\\\.git\\\\\\\\index.lock\")"
+    ]
+  }
+}
