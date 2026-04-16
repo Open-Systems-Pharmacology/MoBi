@@ -63,7 +63,7 @@ public class ParameterValuesTask : ExtendablePathAndValuesTask<ParameterValuesBu
 
       quantityPaths.Each((quantityPath, i) => macroCommand.Add(_extendManager.MergeWithUpdate(buildingBlock, quantityPath.ToObjectPath(), quantityValues[i], dimensionNames[i])));
 
-      macroCommand.RunCommand(_context);
+      _context.AddToHistory(macroCommand.RunCommand(_context));
    }
 
    public void SetParameterValues(ParameterValuesBuildingBlock buildingBlock, string quantityPath, double quantityValue, string dimensionName) => SetParameterValues(buildingBlock, [quantityPath], [quantityValue], [dimensionName]);
@@ -92,7 +92,7 @@ public class ParameterValuesTask : ExtendablePathAndValuesTask<ParameterValuesBu
          .Where(x => !existingPaths.Contains(x.Path.PathAsString))
          .ToList();
 
-      _extendManager.Extend(newParameterValues, buildingBlock);
+      _context.AddToHistory(_extendManager.Extend(newParameterValues, buildingBlock));
 
       return newParameterValues.Select(x => x.Path.PathAsString).ToArray();
    }
