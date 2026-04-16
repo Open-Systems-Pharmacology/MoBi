@@ -14,7 +14,7 @@ namespace MoBi.R.Services;
 
 public interface IExpressionProfileTask : IPathAndValuesTask<ExpressionProfileBuildingBlock, ExpressionParameter>
 {
-   ExpressionProfileBuildingBlock CreateExpressionProfile(string category, string moleculeName, string speciesName);
+   ExpressionProfileBuildingBlock CreateExpressionProfile(string category, string moleculeName, string speciesName, string phenotype);
    void SetExpressionParameter(ExpressionProfileBuildingBlock buildingBlock, string[] quantityPaths, double[] quantityValues);
    void SetExpressionParameter(ExpressionProfileBuildingBlock buildingBlock, string quantityPath, double quantityValue);
    void ExportToPKML(ExpressionProfileBuildingBlock buildingBlock, string filePath);
@@ -35,11 +35,11 @@ public class ExpressionProfileTask : PKSimPathAndValuesTask<ExpressionProfileBui
       _objectTypeResolver = objectTypeResolver;
    }
 
-   public ExpressionProfileBuildingBlock CreateExpressionProfile(string category, string moleculeName, string speciesName)
+   public ExpressionProfileBuildingBlock CreateExpressionProfile(string category, string moleculeName, string speciesName, string phenotype)
    {
       LoadPKSimAssembly();
 
-      var serializedExpressionProfile = ExecuteMethod(GetMethod("PKSim.R.Exchange.BuildingBlockCreator", "CreateExpressionProfile"), [category, moleculeName, speciesName]) as string;
+      var serializedExpressionProfile = ExecuteMethod(GetMethod("PKSim.R.Exchange.BuildingBlockCreator", "CreateExpressionProfile"), [category, moleculeName, speciesName, phenotype]) as string;
 
       return _xmlSerializationService.Deserialize<ExpressionProfileBuildingBlock>(serializedExpressionProfile, _projectRetriever.Current);
    }
