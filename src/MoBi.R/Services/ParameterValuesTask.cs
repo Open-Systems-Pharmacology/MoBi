@@ -118,7 +118,7 @@ public class ParameterValuesTask : ExtendablePathAndValuesTask<ParameterValuesBu
             containerCache[kvp.Key] = kvp.Value;
       }
 
-      return organPaths.Select(path => containerCache[path] ?? throw new ArgumentException(Exceptions.OrganNotFoundInSpatialStructure(path))
+      return organPaths.Distinct().Select(path => containerCache[path] ?? throw new ArgumentException(Exceptions.OrganNotFoundInSpatialStructure(path))
       ).ToList();
    }
 

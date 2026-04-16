@@ -1682,9 +1682,16 @@ internal class When_adding_protein_expression_parameters_with_organ_not_in_spati
       _moleculeBuildingBlock = new MoleculeBuildingBlock();
 
       var molecule = new MoleculeBuilder().WithName("Protein1").WithDimension(Constants.Dimension.NO_DIMENSION);
+      molecule.AddParameter(new Parameter
+      {
+         BuildMode = ParameterBuildMode.Local,
+         Formula = new ConstantFormula(1.0),
+         Name = "RelExp"
+      });
       _moleculeBuildingBlock.Add(molecule);
 
       _expressionProfile = new ExpressionProfileBuildingBlock { Name = "Protein1|Human|Default" };
+      _expressionProfile.Add(new ExpressionParameter { Path = new ObjectPath("Organism", "Liver", "Protein1", "RelExp"), Name = "RelExp", Value = 0.5 });
 
       var topContainer = new Container().WithMode(ContainerMode.Logical).WithName("Organism");
       topContainer.Add(new Container().WithMode(ContainerMode.Physical).WithName("Liver"));
@@ -1697,5 +1704,130 @@ internal class When_adding_protein_expression_parameters_with_organ_not_in_spati
       The.Action(() => sut.AddProteinExpressionParameters(
          _buildingBlock, _expressionProfile, _moleculeBuildingBlock, "Protein1", _spatialStructure, "Organism|NonExistentOrgan"
       )).ShouldThrowAn<ArgumentException>();
+   }
+}
+
+internal class When_adding_protein_expression_parameters_with_duplicate_organ_paths : concern_for_ParameterValuesTask_with_project
+{
+   private ParameterValuesBuildingBlock _buildingBlock;
+   private MoBiSpatialStructure _spatialStructure;
+   private MoleculeBuildingBlock _moleculeBuildingBlock;
+   private ExpressionProfileBuildingBlock _expressionProfile;
+   private string[] _result;
+
+   protected override void Context()
+   {
+      base.Context();
+
+      _buildingBlock = new ParameterValuesBuildingBlock().WithName("PV Building Block");
+      _spatialStructure = new MoBiSpatialStructure();
+      _moleculeBuildingBlock = new MoleculeBuildingBlock();
+
+      var molecule = new MoleculeBuilder().WithName("Protein1").WithDimension(Constants.Dimension.NO_DIMENSION);
+      molecule.AddParameter(new Parameter
+      {
+         BuildMode = ParameterBuildMode.Local,
+         Formula = new ConstantFormula(1.0),
+         Name = "RelExp"
+      });
+      _moleculeBuildingBlock.Add(molecule);
+
+      _expressionProfile = new ExpressionProfileBuildingBlock { Name = "Protein1|Human|Default" };
+      _expressionProfile.Add(new ExpressionParameter { Path = new ObjectPath("Organism", "Liver", "Protein1", "RelExp"), Name = "RelExp", Value = 0.5 });
+
+      var topContainer = new Container().WithMode(ContainerMode.Logical).WithName("Organism");
+      var liver = new Container().WithMode(ContainerMode.Physical).WithName("Liver");
+      topContainer.Add(liver);
+      _spatialStructure.AddTopContainer(topContainer);
+
+      AddBuildingBlocksToProject(_buildingBlock, _moleculeBuildingBlock, _spatialStructure);
+   }
+
+   protected override void Because()
+   {
+      _result = sut.AddProteinExpressionParameters(_buildingBlock, _expressionProfile, _moleculeBuildingBlock, "Protein1", _spatialStructure, "Organism|Liver", "Organism|Liver");
+   }
+
+   [Observation]
+   public void should_return_only_a_single_path()
+   {
+      _result.Length.ShouldBeEqualTo(1);
+      _result.ShouldContain("Organism|Liver|Protein1|RelExp");
+   }
+
+   [Observation]
+   public void should_add_only_a_single_parameter_value_to_building_block()
+   {
+      _buildingBlock.Count().ShouldBeEqualTo(1);
+   }
+}
+
+internal class When_adding_protein_expression_parameters_with_multiple_expression_parameters : concern_for_ParameterValuesTask_with_project
+{
+   private ParameterValuesBuildingBlock _buildingBlock;
+   private MoBiSpatialStructure _spatialStructure;
+   private MoleculeBuildingBlock _moleculeBuildingBlock;
+   private ExpressionProfileBuildingBlock _expressionProfile;
+   private string[] _result;
+
+   protected override void Context()
+   {
+      base.Context();
+
+      _buildingBlock = new ParameterValuesBuildingBlock().WithName("PV Building Block");
+      _spatialStructure = new MoBiSpatialStructure();
+      _moleculeBuildingBlock = new MoleculeBuildingBlock();
+
+      var molecule = new MoleculeBuilder().WithName("Protein1").WithDimension(Constants.Dimension.NO_DIMENSION);
+      molecule.AddParameter(new Parameter
+      {
+         BuildMode = ParameterBuildMode.Local,
+         Formula = new ConstantFormula(1.0),
+         Name = "RelExp"
+      });
+      molecule.AddParameter(new Parameter
+      {
+         BuildMode = ParameterBuildMode.Local,
+         Formula = new ConstantFormula(2.0),
+         Name = "RelExp norm"
+      });
+      _moleculeBuildingBlock.Add(molecule);
+
+      _expressionProfile = new ExpressionProfileBuildingBlock { Name = "Protein1|Human|Default" };
+      _expressionProfile.Add(new ExpressionParameter { Path = new ObjectPath("Organism", "Liver", "Protein1", "RelExp"), Name = "RelExp", Value = 0.5 });
+      _expressionProfile.Add(new ExpressionParameter { Path = new ObjectPath("Organism", "Liver", "Protein1", "RelExp norm"), Name = "RelExp norm", Value = 0.8 });
+
+      var topContainer = new Container().WithMode(ContainerMode.Logical).WithName("Organism");
+      var liver = new Container().WithMode(ContainerMode.Physical).WithName("Liver");
+      var kidney = new Container().WithMode(ContainerMode.Physical).WithName("Kidney");
+      topContainer.Add(liver);
+      topContainer.Add(kidney);
+      _spatialStructure.AddTopContainer(topContainer);
+
+      AddBuildingBlocksToProject(_buildingBlock, _moleculeBuildingBlock, _spatialStructure);
+   }
+
+   protected override void Because()
+   {
+      _result = sut.AddProteinExpressionParameters(_buildingBlock, _expressionProfile, _moleculeBuildingBlock, "Protein1", _spatialStructure, "Organism|Liver", "Organism|Kidney");
+   }
+
+   [Observation]
+   public void should_add_both_expression_parameters_for_each_organ()
+   {
+      _result.ShouldContain("Organism|Liver|Protein1|RelExp");
+      _result.ShouldContain("Organism|Liver|Protein1|RelExp norm");
+      _result.ShouldContain("Organism|Kidney|Protein1|RelExp");
+      _result.ShouldContain("Organism|Kidney|Protein1|RelExp norm");
+   }
+
+   [Observation]
+   public void should_add_all_parameter_values_to_building_block()
+   {
+      _buildingBlock.Count().ShouldBeEqualTo(4);
+      _buildingBlock.FindByPath("Organism|Liver|Protein1|RelExp").ShouldNotBeNull();
+      _buildingBlock.FindByPath("Organism|Liver|Protein1|RelExp norm").ShouldNotBeNull();
+      _buildingBlock.FindByPath("Organism|Kidney|Protein1|RelExp").ShouldNotBeNull();
+      _buildingBlock.FindByPath("Organism|Kidney|Protein1|RelExp norm").ShouldNotBeNull();
    }
 }
