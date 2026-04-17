@@ -9,7 +9,6 @@ using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Serialization;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
@@ -20,20 +19,20 @@ namespace MoBi.R.Services;
 public interface IParameterValuesTask : IPathAndValuesTask<ParameterValuesBuildingBlock, ParameterValue>
 {
    void SetParameterValues(ParameterValuesBuildingBlock buildingBlock, string[] quantityPaths, double[] quantityValues, string[] dimensionNames);
-   
+
    void SetParameterValues(ParameterValuesBuildingBlock buildingBlock, string quantityPath, double quantityValue, string dimensionName);
 
    void DeleteParameterValues(ParameterValuesBuildingBlock buildingBlock, params string[] pathsToDelete);
-   
+
    void DeleteParameterValues(ParameterValuesBuildingBlock buildingBlock, string pathToDelete);
 
    string[] AddLocalMoleculeParameters(ParameterValuesBuildingBlock buildingBlock, SpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock, params string[] moleculeNames);
-   
+
    string[] AddProteinExpressionParameters(ParameterValuesBuildingBlock buildingBlock,
       ExpressionProfileBuildingBlock referenceExpression,
-      MoleculeBuildingBlock moleculeBuildingBlock, 
-      string moleculeName, 
-      SpatialStructure spatialStructure, 
+      MoleculeBuildingBlock moleculeBuildingBlock,
+      string moleculeName,
+      SpatialStructure spatialStructure,
       params string[] organPaths);
 
    void ExportToPKML(ParameterValuesBuildingBlock buildingBlock, string filePath);
@@ -75,7 +74,8 @@ public class ParameterValuesTask : ExtendablePathAndValuesTask<ParameterValuesBu
    public string[] AddLocalMoleculeParameters(ParameterValuesBuildingBlock buildingBlock, SpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock, params string[] moleculeNames) =>
       Extend(buildingBlock, spatialStructure, moleculeBuildingBlock, moleculeNames);
 
-   public string[] AddProteinExpressionParameters(ParameterValuesBuildingBlock buildingBlock, ExpressionProfileBuildingBlock referenceExpression, MoleculeBuildingBlock moleculeBuildingBlock, string moleculeName, SpatialStructure spatialStructure, params string[] organPaths)
+   public string[] AddProteinExpressionParameters(ParameterValuesBuildingBlock buildingBlock, ExpressionProfileBuildingBlock referenceExpression,
+      MoleculeBuildingBlock moleculeBuildingBlock, string moleculeName, SpatialStructure spatialStructure, params string[] organPaths)
    {
       if (!string.Equals(referenceExpression.MoleculeName, moleculeName))
          throw new ArgumentException(Exceptions.ExpressionProfileMoleculeNameMismatch(referenceExpression.MoleculeName, moleculeName));
@@ -83,7 +83,7 @@ public class ParameterValuesTask : ExtendablePathAndValuesTask<ParameterValuesBu
       var molecule = moleculeBuildingBlock.FirstOrDefault(x => string.Equals(x.Name, moleculeName))
                      ?? throw new ArgumentException(Exceptions.MoleculeNotFoundInBuildingBlock(moleculeName));
 
-      var organs = resolveOrgans(spatialStructure, organPaths);
+      var organs = resolveOrgans(spatialStructure, organPaths.Distinct().ToArray());
 
       var existingPaths = new HashSet<string>(buildingBlock.Select(x => x.Path.PathAsString));
 
@@ -104,18 +104,16 @@ public class ParameterValuesTask : ExtendablePathAndValuesTask<ParameterValuesBu
    /// <param name="spatialStructure">The spatial structure to resolve organ containers from.</param>
    /// <param name="organPaths">
    ///    The absolute paths of the organs to resolve (e.g. <c>"Organism|Liver"</c>). Each path must match the
-   ///    absolute path of a physical container in the <paramref name="spatialStructure" />. The absolute path of
-   ///    a top container is its <see cref="IContainer.ParentPath" /> joined with its <see cref="IContainer.Name" />,
-   ///    so a top container can itself represent an organ — e.g. a top container named <c>"Tumor"</c> with
+   ///    absolute path of a container whose <see cref="IContainer.ContainerType" /> is
+   ///    <see cref="ContainerType.Organ" /> in the <paramref name="spatialStructure" />. The absolute path of a top
+   ///    container is its <see cref="IContainer.ParentPath" /> joined with its <see cref="IContainer.Name" />, so a top
+   ///    container can itself represent an organ — e.g. a top container named <c>"Tumor"</c> with
    ///    <c>ParentPath = "Organism|Liver"</c> is resolved by the organ path <c>"Organism|Liver|Tumor"</c>.
-   ///    Duplicate paths are deduplicated so that each organ is only returned once. When <c>null</c> or empty,
-   ///    all top containers are returned and the expression parameters will be populated recursively through
-   ///    every physical sub-container.
    /// </param>
-   /// <returns>The resolved organ containers, one per distinct entry in <paramref name="organPaths" />.</returns>
+   /// <returns>The resolved organ containers, one per entry in <paramref name="organPaths" />.</returns>
    /// <exception cref="ArgumentException">
-   ///    Thrown when an entry in <paramref name="organPaths" /> does not correspond to a physical container
-   ///    in the <paramref name="spatialStructure" />.
+   ///    Thrown when an entry in <paramref name="organPaths" /> does not correspond to an organ container in the
+   ///    <paramref name="spatialStructure" />.
    /// </exception>
    private IReadOnlyList<IContainer> resolveOrgans(SpatialStructure spatialStructure, string[] organPaths)
    {
@@ -124,14 +122,14 @@ public class ParameterValuesTask : ExtendablePathAndValuesTask<ParameterValuesBu
       if (organPaths == null || !organPaths.Any())
          return spatialStructure.TopContainers.ToList();
 
-      var containerCache = new Cache<string, IContainer>(onMissingKey:_ => null);
+      var containerCache = new Cache<string, IContainer>(onMissingKey: _ => null);
 
-      // Build the container cache for every physical container that lives at or beneath a top container referenced
-      // by one of the organ paths. Top containers may carry a ParentPath, so their absolute path is the ParentPath
-      // joined with their Name — a top container itself can therefore be an organ (e.g. top container "Tumor" with
+      // Build the container cache for every organ container (ContainerType.Organ) that lives at or beneath a top container referenced by one
+      // of the organ paths. Top containers may carry a ParentPath, so their absolute path is the ParentPath joined
+      // with their Name — a top container itself can therefore be an organ (e.g. top container "Tumor" with
       // ParentPath "Organism|Liver" is reached via organ path "Organism|Liver|Tumor"). The PathCache returned by
       // CacheAllChildrenSatisfying already uses absolute paths (ParentPath-aware), but it only contains descendants,
-      // so the top container itself is added explicitly when it is physical.
+      // so the top container itself is added explicitly when it is an organ.
       foreach (var topContainer in spatialStructure.TopContainers)
       {
          var topContainerPath = absolutePathFor(topContainer);
@@ -139,16 +137,17 @@ public class ParameterValuesTask : ExtendablePathAndValuesTask<ParameterValuesBu
          if (!anyOrganPathUnder(organPaths, topContainerPath))
             continue;
 
-         if (topContainer.Mode.Is(ContainerMode.Physical))
+         // cache self if necessary
+         if (topContainer.ContainerType == ContainerType.Organ)
             containerCache[topContainerPath] = topContainer;
 
-         var physicalContainers = _containerTask.CacheAllChildrenSatisfying<IContainer>(topContainer, c => c.Mode.Is(ContainerMode.Physical));
-         foreach (var kvp in physicalContainers.KeyValues)
+         var organContainers = _containerTask.CacheAllChildrenSatisfying<IContainer>(topContainer, c => c.ContainerType == ContainerType.Organ);
+         foreach (var kvp in organContainers.KeyValues)
             containerCache[kvp.Key] = kvp.Value;
       }
 
-      return organPaths.Distinct()
-         .Select(path => containerCache[path] ?? throw new ArgumentException(Exceptions.OrganNotFoundInSpatialStructure(path))).ToList();
+      // return the container from the cache that matches each organPath
+      return organPaths.Select(path => containerCache[path] ?? throw new ArgumentException(Exceptions.OrganNotFoundInSpatialStructure(path))).ToList();
    }
 
    private static string absolutePathFor(IContainer topContainer) =>
@@ -169,6 +168,6 @@ public class ParameterValuesTask : ExtendablePathAndValuesTask<ParameterValuesBu
 
    protected override string RemoveCommandDescription() => Commands.RemoveManyParameterValues;
 
-   protected override IMoBiCommand RemoveCommandFor(ParameterValuesBuildingBlock buildingBlock, ObjectPath path) => 
+   protected override IMoBiCommand RemoveCommandFor(ParameterValuesBuildingBlock buildingBlock, ObjectPath path) =>
       new RemoveParameterValueFromBuildingBlockCommand(buildingBlock, path);
 }

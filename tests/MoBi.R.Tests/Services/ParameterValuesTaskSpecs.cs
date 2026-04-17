@@ -1442,11 +1442,13 @@ internal class When_adding_protein_expression_parameters_for_specified_organs : 
       _moleculeBuildingBlock.Add(molecule);
 
       _expressionProfile = new ExpressionProfileBuildingBlock { Name = "Protein1|Human|Default" };
-      _expressionProfile.Add(new ExpressionParameter { Path = new ObjectPath("Organism", "Liver", "Protein1", "RelExp"), Name = "RelExp", Value = 0.5 });
+      _expressionProfile.Add(new ExpressionParameter { Path = new ObjectPath("Organism", "Liver", "Intracellular", "Protein1", "RelExp"), Name = "RelExp", Value = 0.5 });
 
-      var topContainer = new Container().WithMode(ContainerMode.Logical).WithName("Organism");
-      var liver = new Container().WithMode(ContainerMode.Physical).WithName("Liver");
-      var kidney = new Container().WithMode(ContainerMode.Physical).WithName("Kidney");
+      var topContainer = new Container().WithMode(ContainerMode.Logical).WithContainerType(ContainerType.Organism).WithName("Organism");
+      var liver = new Container().WithMode(ContainerMode.Logical).WithContainerType(ContainerType.Organ).WithName("Liver");
+      liver.Add(new Container().WithMode(ContainerMode.Physical).WithContainerType(ContainerType.Compartment).WithName("Intracellular"));
+      var kidney = new Container().WithMode(ContainerMode.Logical).WithContainerType(ContainerType.Organ).WithName("Kidney");
+      kidney.Add(new Container().WithMode(ContainerMode.Physical).WithContainerType(ContainerType.Compartment).WithName("Intracellular"));
       topContainer.Add(liver);
       topContainer.Add(kidney);
       _spatialStructure.AddTopContainer(topContainer);
@@ -1462,25 +1464,25 @@ internal class When_adding_protein_expression_parameters_for_specified_organs : 
    [Observation]
    public void should_return_path_for_specified_organ()
    {
-      _result.ShouldContain("Organism|Liver|Protein1|RelExp");
+      _result.ShouldContain("Organism|Liver|Intracellular|Protein1|RelExp");
    }
 
    [Observation]
    public void should_not_return_path_for_unspecified_organ()
    {
-      _result.ShouldNotContain("Organism|Kidney|Protein1|RelExp");
+      _result.ShouldNotContain("Organism|Kidney|Intracellular|Protein1|RelExp");
    }
 
    [Observation]
    public void should_add_parameter_value_to_building_block_for_specified_organ()
    {
-      _buildingBlock.FindByPath("Organism|Liver|Protein1|RelExp").ShouldNotBeNull();
+      _buildingBlock.FindByPath("Organism|Liver|Intracellular|Protein1|RelExp").ShouldNotBeNull();
    }
 
    [Observation]
    public void should_not_add_parameter_value_to_building_block_for_unspecified_organ()
    {
-      _buildingBlock.FindByPath("Organism|Kidney|Protein1|RelExp").ShouldBeNull();
+      _buildingBlock.FindByPath("Organism|Kidney|Intracellular|Protein1|RelExp").ShouldBeNull();
    }
 }
 
@@ -1510,11 +1512,13 @@ internal class When_adding_protein_expression_parameters_with_no_organ_paths : c
       _moleculeBuildingBlock.Add(molecule);
 
       _expressionProfile = new ExpressionProfileBuildingBlock { Name = "Protein1|Human|Default" };
-      _expressionProfile.Add(new ExpressionParameter { Path = new ObjectPath("Organism", "Liver", "Protein1", "RelExp"), Name = "RelExp", Value = 0.5 });
+      _expressionProfile.Add(new ExpressionParameter { Path = new ObjectPath("Organism", "Liver", "Intracellular", "Protein1", "RelExp"), Name = "RelExp", Value = 0.5 });
 
-      var topContainer = new Container().WithMode(ContainerMode.Logical).WithName("Organism");
-      var liver = new Container().WithMode(ContainerMode.Physical).WithName("Liver");
-      var kidney = new Container().WithMode(ContainerMode.Physical).WithName("Kidney");
+      var topContainer = new Container().WithMode(ContainerMode.Logical).WithContainerType(ContainerType.Organism).WithName("Organism");
+      var liver = new Container().WithMode(ContainerMode.Logical).WithContainerType(ContainerType.Organ).WithName("Liver");
+      liver.Add(new Container().WithMode(ContainerMode.Physical).WithContainerType(ContainerType.Compartment).WithName("Intracellular"));
+      var kidney = new Container().WithMode(ContainerMode.Logical).WithContainerType(ContainerType.Organ).WithName("Kidney");
+      kidney.Add(new Container().WithMode(ContainerMode.Physical).WithContainerType(ContainerType.Compartment).WithName("Intracellular"));
       topContainer.Add(liver);
       topContainer.Add(kidney);
       _spatialStructure.AddTopContainer(topContainer);
@@ -1528,17 +1532,17 @@ internal class When_adding_protein_expression_parameters_with_no_organ_paths : c
    }
 
    [Observation]
-   public void should_return_paths_for_all_physical_containers()
+   public void should_return_paths_for_all_organs()
    {
-      _result.ShouldContain("Organism|Liver|Protein1|RelExp");
-      _result.ShouldContain("Organism|Kidney|Protein1|RelExp");
+      _result.ShouldContain("Organism|Liver|Intracellular|Protein1|RelExp");
+      _result.ShouldContain("Organism|Kidney|Intracellular|Protein1|RelExp");
    }
 
    [Observation]
-   public void should_add_parameter_values_to_building_block_for_all_physical_containers()
+   public void should_add_parameter_values_to_building_block_for_all_organs()
    {
-      _buildingBlock.FindByPath("Organism|Liver|Protein1|RelExp").ShouldNotBeNull();
-      _buildingBlock.FindByPath("Organism|Kidney|Protein1|RelExp").ShouldNotBeNull();
+      _buildingBlock.FindByPath("Organism|Liver|Intracellular|Protein1|RelExp").ShouldNotBeNull();
+      _buildingBlock.FindByPath("Organism|Kidney|Intracellular|Protein1|RelExp").ShouldNotBeNull();
    }
 }
 
@@ -1568,11 +1572,13 @@ internal class When_adding_protein_expression_parameters_with_pre_existing_paths
       _moleculeBuildingBlock.Add(molecule);
 
       _expressionProfile = new ExpressionProfileBuildingBlock { Name = "Protein1|Human|Default" };
-      _expressionProfile.Add(new ExpressionParameter { Path = new ObjectPath("Organism", "Liver", "Protein1", "RelExp"), Name = "RelExp", Value = 0.5 });
+      _expressionProfile.Add(new ExpressionParameter { Path = new ObjectPath("Organism", "Liver", "Intracellular", "Protein1", "RelExp"), Name = "RelExp", Value = 0.5 });
 
-      var topContainer = new Container().WithMode(ContainerMode.Logical).WithName("Organism");
-      var liver = new Container().WithMode(ContainerMode.Physical).WithName("Liver");
-      var kidney = new Container().WithMode(ContainerMode.Physical).WithName("Kidney");
+      var topContainer = new Container().WithMode(ContainerMode.Logical).WithContainerType(ContainerType.Organism).WithName("Organism");
+      var liver = new Container().WithMode(ContainerMode.Logical).WithContainerType(ContainerType.Organ).WithName("Liver");
+      liver.Add(new Container().WithMode(ContainerMode.Physical).WithContainerType(ContainerType.Compartment).WithName("Intracellular"));
+      var kidney = new Container().WithMode(ContainerMode.Logical).WithContainerType(ContainerType.Organ).WithName("Kidney");
+      kidney.Add(new Container().WithMode(ContainerMode.Physical).WithContainerType(ContainerType.Compartment).WithName("Intracellular"));
       topContainer.Add(liver);
       topContainer.Add(kidney);
       _spatialStructure.AddTopContainer(topContainer);
@@ -1580,7 +1586,7 @@ internal class When_adding_protein_expression_parameters_with_pre_existing_paths
       // Pre-populate with Liver entry
       _buildingBlock.Add(new ParameterValue
       {
-         Path = new ObjectPath("Organism", "Liver", "Protein1", "RelExp"),
+         Path = new ObjectPath("Organism", "Liver", "Intracellular", "Protein1", "RelExp"),
          Value = 99.0
       });
 
@@ -1595,25 +1601,25 @@ internal class When_adding_protein_expression_parameters_with_pre_existing_paths
    [Observation]
    public void should_not_return_pre_existing_paths()
    {
-      _result.ShouldNotContain("Organism|Liver|Protein1|RelExp");
+      _result.ShouldNotContain("Organism|Liver|Intracellular|Protein1|RelExp");
    }
 
    [Observation]
    public void should_return_only_newly_added_paths()
    {
-      _result.ShouldContain("Organism|Kidney|Protein1|RelExp");
+      _result.ShouldContain("Organism|Kidney|Intracellular|Protein1|RelExp");
    }
 
    [Observation]
    public void should_add_new_parameter_value_to_building_block()
    {
-      _buildingBlock.FindByPath("Organism|Kidney|Protein1|RelExp").ShouldNotBeNull();
+      _buildingBlock.FindByPath("Organism|Kidney|Intracellular|Protein1|RelExp").ShouldNotBeNull();
    }
 
    [Observation]
    public void should_retain_pre_existing_parameter_value_in_building_block()
    {
-      _buildingBlock.FindByPath("Organism|Liver|Protein1|RelExp").ShouldNotBeNull();
+      _buildingBlock.FindByPath("Organism|Liver|Intracellular|Protein1|RelExp").ShouldNotBeNull();
    }
 }
 
@@ -1691,10 +1697,12 @@ internal class When_adding_protein_expression_parameters_with_organ_not_in_spati
       _moleculeBuildingBlock.Add(molecule);
 
       _expressionProfile = new ExpressionProfileBuildingBlock { Name = "Protein1|Human|Default" };
-      _expressionProfile.Add(new ExpressionParameter { Path = new ObjectPath("Organism", "Liver", "Protein1", "RelExp"), Name = "RelExp", Value = 0.5 });
+      _expressionProfile.Add(new ExpressionParameter { Path = new ObjectPath("Organism", "Liver", "Intracellular", "Protein1", "RelExp"), Name = "RelExp", Value = 0.5 });
 
-      var topContainer = new Container().WithMode(ContainerMode.Logical).WithName("Organism");
-      topContainer.Add(new Container().WithMode(ContainerMode.Physical).WithName("Liver"));
+      var topContainer = new Container().WithMode(ContainerMode.Logical).WithContainerType(ContainerType.Organism).WithName("Organism");
+      var liver = new Container().WithMode(ContainerMode.Logical).WithContainerType(ContainerType.Organ).WithName("Liver");
+      liver.Add(new Container().WithMode(ContainerMode.Physical).WithContainerType(ContainerType.Compartment).WithName("Intracellular"));
+      topContainer.Add(liver);
       _spatialStructure.AddTopContainer(topContainer);
    }
 
@@ -1733,10 +1741,11 @@ internal class When_adding_protein_expression_parameters_with_duplicate_organ_pa
       _moleculeBuildingBlock.Add(molecule);
 
       _expressionProfile = new ExpressionProfileBuildingBlock { Name = "Protein1|Human|Default" };
-      _expressionProfile.Add(new ExpressionParameter { Path = new ObjectPath("Organism", "Liver", "Protein1", "RelExp"), Name = "RelExp", Value = 0.5 });
+      _expressionProfile.Add(new ExpressionParameter { Path = new ObjectPath("Organism", "Liver", "Intracellular", "Protein1", "RelExp"), Name = "RelExp", Value = 0.5 });
 
-      var topContainer = new Container().WithMode(ContainerMode.Logical).WithName("Organism");
-      var liver = new Container().WithMode(ContainerMode.Physical).WithName("Liver");
+      var topContainer = new Container().WithMode(ContainerMode.Logical).WithContainerType(ContainerType.Organism).WithName("Organism");
+      var liver = new Container().WithMode(ContainerMode.Logical).WithContainerType(ContainerType.Organ).WithName("Liver");
+      liver.Add(new Container().WithMode(ContainerMode.Physical).WithContainerType(ContainerType.Compartment).WithName("Intracellular"));
       topContainer.Add(liver);
       _spatialStructure.AddTopContainer(topContainer);
 
@@ -1752,7 +1761,7 @@ internal class When_adding_protein_expression_parameters_with_duplicate_organ_pa
    public void should_return_only_a_single_path()
    {
       _result.Length.ShouldBeEqualTo(1);
-      _result.ShouldContain("Organism|Liver|Protein1|RelExp");
+      _result.ShouldContain("Organism|Liver|Intracellular|Protein1|RelExp");
    }
 
    [Observation]
@@ -1794,12 +1803,14 @@ internal class When_adding_protein_expression_parameters_with_multiple_expressio
       _moleculeBuildingBlock.Add(molecule);
 
       _expressionProfile = new ExpressionProfileBuildingBlock { Name = "Protein1|Human|Default" };
-      _expressionProfile.Add(new ExpressionParameter { Path = new ObjectPath("Organism", "Liver", "Protein1", "RelExp"), Name = "RelExp", Value = 0.5 });
-      _expressionProfile.Add(new ExpressionParameter { Path = new ObjectPath("Organism", "Liver", "Protein1", "RelExp norm"), Name = "RelExp norm", Value = 0.8 });
+      _expressionProfile.Add(new ExpressionParameter { Path = new ObjectPath("Organism", "Liver", "Intracellular", "Protein1", "RelExp"), Name = "RelExp", Value = 0.5 });
+      _expressionProfile.Add(new ExpressionParameter { Path = new ObjectPath("Organism", "Liver", "Intracellular", "Protein1", "RelExp norm"), Name = "RelExp norm", Value = 0.8 });
 
-      var topContainer = new Container().WithMode(ContainerMode.Logical).WithName("Organism");
-      var liver = new Container().WithMode(ContainerMode.Physical).WithName("Liver");
-      var kidney = new Container().WithMode(ContainerMode.Physical).WithName("Kidney");
+      var topContainer = new Container().WithMode(ContainerMode.Logical).WithContainerType(ContainerType.Organism).WithName("Organism");
+      var liver = new Container().WithMode(ContainerMode.Logical).WithContainerType(ContainerType.Organ).WithName("Liver");
+      liver.Add(new Container().WithMode(ContainerMode.Physical).WithContainerType(ContainerType.Compartment).WithName("Intracellular"));
+      var kidney = new Container().WithMode(ContainerMode.Logical).WithContainerType(ContainerType.Organ).WithName("Kidney");
+      kidney.Add(new Container().WithMode(ContainerMode.Physical).WithContainerType(ContainerType.Compartment).WithName("Intracellular"));
       topContainer.Add(liver);
       topContainer.Add(kidney);
       _spatialStructure.AddTopContainer(topContainer);
@@ -1815,20 +1826,20 @@ internal class When_adding_protein_expression_parameters_with_multiple_expressio
    [Observation]
    public void should_add_both_expression_parameters_for_each_organ()
    {
-      _result.ShouldContain("Organism|Liver|Protein1|RelExp");
-      _result.ShouldContain("Organism|Liver|Protein1|RelExp norm");
-      _result.ShouldContain("Organism|Kidney|Protein1|RelExp");
-      _result.ShouldContain("Organism|Kidney|Protein1|RelExp norm");
+      _result.ShouldContain("Organism|Liver|Intracellular|Protein1|RelExp");
+      _result.ShouldContain("Organism|Liver|Intracellular|Protein1|RelExp norm");
+      _result.ShouldContain("Organism|Kidney|Intracellular|Protein1|RelExp");
+      _result.ShouldContain("Organism|Kidney|Intracellular|Protein1|RelExp norm");
    }
 
    [Observation]
    public void should_add_all_parameter_values_to_building_block()
    {
       _buildingBlock.Count().ShouldBeEqualTo(4);
-      _buildingBlock.FindByPath("Organism|Liver|Protein1|RelExp").ShouldNotBeNull();
-      _buildingBlock.FindByPath("Organism|Liver|Protein1|RelExp norm").ShouldNotBeNull();
-      _buildingBlock.FindByPath("Organism|Kidney|Protein1|RelExp").ShouldNotBeNull();
-      _buildingBlock.FindByPath("Organism|Kidney|Protein1|RelExp norm").ShouldNotBeNull();
+      _buildingBlock.FindByPath("Organism|Liver|Intracellular|Protein1|RelExp").ShouldNotBeNull();
+      _buildingBlock.FindByPath("Organism|Liver|Intracellular|Protein1|RelExp norm").ShouldNotBeNull();
+      _buildingBlock.FindByPath("Organism|Kidney|Intracellular|Protein1|RelExp").ShouldNotBeNull();
+      _buildingBlock.FindByPath("Organism|Kidney|Intracellular|Protein1|RelExp norm").ShouldNotBeNull();
    }
 }
 
@@ -1858,10 +1869,11 @@ internal class When_adding_protein_expression_parameters_for_top_container_with_
       _moleculeBuildingBlock.Add(molecule);
 
       _expressionProfile = new ExpressionProfileBuildingBlock { Name = "Protein1|Human|Default" };
-      _expressionProfile.Add(new ExpressionParameter { Path = new ObjectPath("Organism", "Liver", "Tumor", "Protein1", "RelExp"), Name = "RelExp", Value = 0.5 });
+      _expressionProfile.Add(new ExpressionParameter { Path = new ObjectPath("Organism", "Liver", "Tumor", "Intracellular", "Protein1", "RelExp"), Name = "RelExp", Value = 0.5 });
 
-      var tumor = new Container().WithMode(ContainerMode.Physical).WithName("Tumor");
+      var tumor = new Container().WithMode(ContainerMode.Logical).WithContainerType(ContainerType.Organ).WithName("Tumor");
       tumor.ParentPath = new ObjectPath("Organism", "Liver");
+      tumor.Add(new Container().WithMode(ContainerMode.Physical).WithContainerType(ContainerType.Compartment).WithName("Intracellular"));
       _spatialStructure.AddTopContainer(tumor);
 
       AddBuildingBlocksToProject(_buildingBlock, _moleculeBuildingBlock, _spatialStructure);
@@ -1875,12 +1887,12 @@ internal class When_adding_protein_expression_parameters_for_top_container_with_
    [Observation]
    public void should_resolve_the_top_container_using_its_parent_path()
    {
-      _result.ShouldContain("Organism|Liver|Tumor|Protein1|RelExp");
+      _result.ShouldContain("Organism|Liver|Tumor|Intracellular|Protein1|RelExp");
    }
 
    [Observation]
    public void should_add_the_parameter_value_to_the_building_block()
    {
-      _buildingBlock.FindByPath("Organism|Liver|Tumor|Protein1|RelExp").ShouldNotBeNull();
+      _buildingBlock.FindByPath("Organism|Liver|Tumor|Intracellular|Protein1|RelExp").ShouldNotBeNull();
    }
 }
