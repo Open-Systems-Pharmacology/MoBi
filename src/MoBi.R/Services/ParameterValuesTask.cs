@@ -97,6 +97,26 @@ public class ParameterValuesTask : ExtendablePathAndValuesTask<ParameterValuesBu
       return newParameterValues.Select(x => x.Path.PathAsString).ToArray();
    }
 
+   /// <summary>
+   ///    Resolves the organ containers in the <paramref name="spatialStructure" /> that correspond to the provided
+   ///    <paramref name="organPaths" />.
+   /// </summary>
+   /// <param name="spatialStructure">The spatial structure to resolve organ containers from.</param>
+   /// <param name="organPaths">
+   ///    The absolute paths of the organs to resolve (e.g. <c>"Organism|Liver"</c>). Each path must match the
+   ///    absolute path of a physical container in the <paramref name="spatialStructure" />. The absolute path of
+   ///    a top container is its <see cref="IContainer.ParentPath" /> joined with its <see cref="IContainer.Name" />,
+   ///    so a top container can itself represent an organ — e.g. a top container named <c>"Tumor"</c> with
+   ///    <c>ParentPath = "Organism|Liver"</c> is resolved by the organ path <c>"Organism|Liver|Tumor"</c>.
+   ///    Duplicate paths are deduplicated so that each organ is only returned once. When <c>null</c> or empty,
+   ///    all top containers are returned and the expression parameters will be populated recursively through
+   ///    every physical sub-container.
+   /// </param>
+   /// <returns>The resolved organ containers, one per distinct entry in <paramref name="organPaths" />.</returns>
+   /// <exception cref="ArgumentException">
+   ///    Thrown when an entry in <paramref name="organPaths" /> does not correspond to a physical container
+   ///    in the <paramref name="spatialStructure" />.
+   /// </exception>
    private IReadOnlyList<IContainer> resolveOrgans(SpatialStructure spatialStructure, string[] organPaths)
    {
       // We only need the top containers if creating an expression for the whole organism
@@ -104,23 +124,45 @@ public class ParameterValuesTask : ExtendablePathAndValuesTask<ParameterValuesBu
       if (organPaths == null || !organPaths.Any())
          return spatialStructure.TopContainers.ToList();
 
-      var topContainerNames = organPaths
-         .Select(x => x.ToPathArray().First())
-         .Distinct()
-         .ToHashSet();
-
       var containerCache = new Cache<string, IContainer>(onMissingKey:_ => null);
 
-      foreach (var topContainer in spatialStructure.TopContainers.Where(x => topContainerNames.Contains(x.Name)))
+      // Build the container cache for every physical container that lives at or beneath a top container referenced
+      // by one of the organ paths. Top containers may carry a ParentPath, so their absolute path is the ParentPath
+      // joined with their Name — a top container itself can therefore be an organ (e.g. top container "Tumor" with
+      // ParentPath "Organism|Liver" is reached via organ path "Organism|Liver|Tumor"). The PathCache returned by
+      // CacheAllChildrenSatisfying already uses absolute paths (ParentPath-aware), but it only contains descendants,
+      // so the top container itself is added explicitly when it is physical.
+      foreach (var topContainer in spatialStructure.TopContainers)
       {
+         var topContainerPath = absolutePathFor(topContainer);
+
+         if (!anyOrganPathUnder(organPaths, topContainerPath))
+            continue;
+
+         if (topContainer.Mode.Is(ContainerMode.Physical))
+            containerCache[topContainerPath] = topContainer;
+
          var physicalContainers = _containerTask.CacheAllChildrenSatisfying<IContainer>(topContainer, c => c.Mode.Is(ContainerMode.Physical));
          foreach (var kvp in physicalContainers.KeyValues)
             containerCache[kvp.Key] = kvp.Value;
       }
 
-      return organPaths.Distinct().Select(path => containerCache[path] ?? throw new ArgumentException(Exceptions.OrganNotFoundInSpatialStructure(path))
-      ).ToList();
+      return organPaths.Distinct()
+         .Select(path => containerCache[path] ?? throw new ArgumentException(Exceptions.OrganNotFoundInSpatialStructure(path))).ToList();
    }
+
+   private static string absolutePathFor(IContainer topContainer) =>
+      topContainer.ParentPath != null
+         ? new ObjectPath(topContainer.ParentPath.Append(topContainer.Name))
+         : topContainer.Name;
+
+   /// <summary>
+   ///    Returns <c>true</c> if any of the <paramref name="organPaths" /> equals <paramref name="topContainerPath" />
+   ///    or is a descendant of it (i.e. the organ path starts with <paramref name="topContainerPath" /> followed by
+   ///    the path delimiter).
+   /// </summary>
+   private static bool anyOrganPathUnder(string[] organPaths, string topContainerPath) =>
+      organPaths.Any(p => p == topContainerPath || p.StartsWith(topContainerPath + ObjectPath.PATH_DELIMITER));
 
    public void ExportToPKML(ParameterValuesBuildingBlock buildingBlock, string filePath) =>
       _xmlSerializationService.SerializeModelPart(buildingBlock).PermissiveSave(filePath);

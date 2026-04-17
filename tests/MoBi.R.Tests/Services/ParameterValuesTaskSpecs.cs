@@ -1831,3 +1831,56 @@ internal class When_adding_protein_expression_parameters_with_multiple_expressio
       _buildingBlock.FindByPath("Organism|Kidney|Protein1|RelExp norm").ShouldNotBeNull();
    }
 }
+
+internal class When_adding_protein_expression_parameters_for_top_container_with_parent_path : concern_for_ParameterValuesTask_with_project
+{
+   private ParameterValuesBuildingBlock _buildingBlock;
+   private MoBiSpatialStructure _spatialStructure;
+   private MoleculeBuildingBlock _moleculeBuildingBlock;
+   private ExpressionProfileBuildingBlock _expressionProfile;
+   private string[] _result;
+
+   protected override void Context()
+   {
+      base.Context();
+
+      _buildingBlock = new ParameterValuesBuildingBlock().WithName("PV Building Block");
+      _spatialStructure = new MoBiSpatialStructure();
+      _moleculeBuildingBlock = new MoleculeBuildingBlock();
+
+      var molecule = new MoleculeBuilder().WithName("Protein1").WithDimension(Constants.Dimension.NO_DIMENSION);
+      molecule.AddParameter(new Parameter
+      {
+         BuildMode = ParameterBuildMode.Local,
+         Formula = new ConstantFormula(1.0),
+         Name = "RelExp"
+      });
+      _moleculeBuildingBlock.Add(molecule);
+
+      _expressionProfile = new ExpressionProfileBuildingBlock { Name = "Protein1|Human|Default" };
+      _expressionProfile.Add(new ExpressionParameter { Path = new ObjectPath("Organism", "Liver", "Tumor", "Protein1", "RelExp"), Name = "RelExp", Value = 0.5 });
+
+      var tumor = new Container().WithMode(ContainerMode.Physical).WithName("Tumor");
+      tumor.ParentPath = new ObjectPath("Organism", "Liver");
+      _spatialStructure.AddTopContainer(tumor);
+
+      AddBuildingBlocksToProject(_buildingBlock, _moleculeBuildingBlock, _spatialStructure);
+   }
+
+   protected override void Because()
+   {
+      _result = sut.AddProteinExpressionParameters(_buildingBlock, _expressionProfile, _moleculeBuildingBlock, "Protein1", _spatialStructure, "Organism|Liver|Tumor");
+   }
+
+   [Observation]
+   public void should_resolve_the_top_container_using_its_parent_path()
+   {
+      _result.ShouldContain("Organism|Liver|Tumor|Protein1|RelExp");
+   }
+
+   [Observation]
+   public void should_add_the_parameter_value_to_the_building_block()
+   {
+      _buildingBlock.FindByPath("Organism|Liver|Tumor|Protein1|RelExp").ShouldNotBeNull();
+   }
+}
