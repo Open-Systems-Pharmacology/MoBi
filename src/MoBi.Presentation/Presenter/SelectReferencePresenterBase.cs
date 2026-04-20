@@ -145,7 +145,6 @@ namespace MoBi.Presentation.Presenter
             addChildrenFromSpatialStructure(children, objectBase as SpatialStructure);
             addChildrenFromContainer(children, objectBase as IContainer);
             addChildrenFromNeighborhood(children, objectBase as NeighborhoodBuilder);
-            addParametersFromParameterContainer(children, objectBase as IContainsParameters);
             addChildrenFromReaction(children, objectBase as MoBiReactionBuildingBlock);
          }
 
@@ -354,16 +353,6 @@ namespace MoBi.Presentation.Presenter
          return SelectionPredicate(objectBase);
       }
 
-      private void addParametersFromParameterContainer(List<ObjectBaseDTO> children, IContainsParameters parameterContainer)
-      {
-         if (parameterContainer == null)
-            return;
-
-         children.AddRange(parameterContainer.Parameters
-            .OrderBy(x => x.Name)
-            .MapAllUsing(_objectBaseDTOMapper));
-      }
-
       private void addChildrenFromNeighborhood(List<ObjectBaseDTO> children, NeighborhoodBuilder neighborhood)
       {
          if (neighborhood == null)
@@ -465,13 +454,6 @@ namespace MoBi.Presentation.Presenter
       protected void AddReactions()
       {
          var nodes = _buildingBlockRepository.ReactionBlockCollection.Select(x => _referenceMapper.MapFrom(x));
-         _view.AddNodes(nodes);
-      }
-
-      protected void AddReactionBuilders()
-      {
-         var nodes = _buildingBlockRepository.ReactionBlockCollection
-            .Select(block => _referenceMapper.MapFrom(block));
          _view.AddNodes(nodes);
       }
 

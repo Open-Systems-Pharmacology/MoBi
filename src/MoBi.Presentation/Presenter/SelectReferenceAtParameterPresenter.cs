@@ -31,7 +31,7 @@ namespace MoBi.Presentation.Presenter
       protected override void AddSpecificInitialObjects()
       {
          AddSpatialStructures();
-         AddReactionBuilders();
+         AddReactions();
       }
 
       public bool ChangeLocalisationAllowed
