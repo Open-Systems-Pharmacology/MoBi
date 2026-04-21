@@ -33,7 +33,7 @@ namespace MoBi.BatchTool
                x.FromType<OSPSuite.Core.CoreRegister>();
                x.FromType<BatchRegister>();
                x.FromType<EngineRegister>();
-               x.FromType<InfrastructureRegister>();
+               // x.FromType<InfrastructureRegister>();
                x.FromInstance(new PresentationRegister(false));
                x.FromInstance(register);
             });
