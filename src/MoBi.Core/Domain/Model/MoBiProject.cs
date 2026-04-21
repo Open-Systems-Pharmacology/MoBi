@@ -50,7 +50,11 @@ public class MoBiProject : Project
 
    public void AddModule(Module module) => _modules.Add(module);
 
-   public void RemoveModule(Module module) => _modules.Remove(module);
+   public void RemoveModule(Module module)
+   {
+      _modules.Remove(module);
+      RemoveClassifiableForWrappedObject(module);
+   }
 
    public IReadOnlyList<IMoBiSimulation> Simulations => _allSimulations;
 
@@ -90,24 +94,26 @@ public class MoBiProject : Project
       RemoveClassifiableForWrappedObject(buildingBlockToRemove);
    }
 
-      public override void AcceptVisitor(IVisitor visitor)
-      {
-         base.AcceptVisitor(visitor);
-         _modules.Each(x => x.AcceptVisitor(visitor));
-         _buildingBlocks.Each(x => x.AcceptVisitor(visitor));
-         _allSimulations.Each(x => x.AcceptVisitor(visitor));
-         _charts.Each(x => x.AcceptVisitor(visitor));
-      }
+   public override void AcceptVisitor(IVisitor visitor)
+   {
+      base.AcceptVisitor(visitor);
+      _modules.Each(x => x.AcceptVisitor(visitor));
+      _buildingBlocks.Each(x => x.AcceptVisitor(visitor));
+      _allSimulations.Each(x => x.AcceptVisitor(visitor));
+      _charts.Each(x => x.AcceptVisitor(visitor));
+   }
 
    public IReadOnlyList<IMoBiSimulation> SimulationsUsing(IBuildingBlock templateBuildingBlock) => Simulations.Where(simulation => simulation.Uses(templateBuildingBlock)).ToList();
 
    public IEnumerable<IObjectBase> All() => All<IObjectBase>().Union(Simulations);
 
    /// <summary>
-   /// Returns a list of simulations that have a module where the name matches <paramref name="module"/>
-   /// This indicates that the <paramref name="module"/> was used as a template for the simulation
+   ///    Returns a list of simulations that have a module where the name matches <paramref name="module" />
+   ///    This indicates that the <paramref name="module" /> was used as a template for the simulation
    /// </summary>
-   public IReadOnlyList<IMoBiSimulation> SimulationsUsing(Module module) => Simulations.Where(simulation => simulation.Uses(module)).ToList();
-
-   public override IReadOnlyCollection<DataRepository> AllDataRepositories() => AllObservedData.Union(_allSimulations.Where(x => x.HasResults).Select(x => x.ResultsDataRepository)).ToList();
+   public IReadOnlyList<IMoBiSimulation> SimulationsUsing(Module module)
+   {
+      return Simulations.Where(simulation => simulation.Uses(module)).ToList();
+   }
 }
+

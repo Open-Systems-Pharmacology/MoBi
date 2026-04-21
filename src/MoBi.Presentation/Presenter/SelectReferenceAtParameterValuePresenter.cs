@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Repository;
 using MoBi.Core.Extensions;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -11,7 +10,6 @@ using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Extensions;
-using OSPSuite.Presentation.Nodes;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using IBuildingBlockRepository = MoBi.Core.Domain.Repository.IBuildingBlockRepository;
@@ -41,6 +39,15 @@ namespace MoBi.Presentation.Presenter
       {
          view.EnableMultiSelect = true;
          _pathAndValueContainers = new Cache<IBuildingBlock, IContainer>();
+         SelectionPredicate = filterObjects;
+      }
+
+      private bool filterObjects(IObjectBase objectBase)
+      {
+         if (objectBase is IParameter parameter && parameter.ParentContainer is ReactionBuilder)
+            return parameter.BuildMode == ParameterBuildMode.Global;
+
+         return true;
       }
 
       public override IEnumerable<ObjectBaseDTO> GetChildObjects(ObjectBaseDTO dto)
@@ -227,6 +234,7 @@ namespace MoBi.Presentation.Presenter
          addIndividuals();
          addExpressions();
          addEvents();
+         AddReactions();
          _view.ChangeLocalisationAllowed = true;
       }
 
