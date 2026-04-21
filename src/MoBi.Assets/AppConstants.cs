@@ -1401,6 +1401,12 @@ namespace MoBi.Assets
          public static string DuplicatePathsInInput(int allPaths, int distinctPaths) => $"There were duplicate paths with {allPaths} total and {distinctPaths} distinct.";
 
          public static string ParameterNotFoundForPath(string path, string buildingBlockName) => $"No parameter was found for path '{path}' in building block '{buildingBlockName}'";
+
+         public static string ExpressionProfileMoleculeNameMismatch(string expressionMoleculeName, string moleculeName) => $"The expression profile molecule name '{expressionMoleculeName}' does not match the specified molecule name '{moleculeName}'.";
+
+         public static string MoleculeNotFoundInBuildingBlock(string moleculeName) => $"Molecule '{moleculeName}' was not found in the molecule building block.";
+
+         public static string OrganNotFoundInSpatialStructure(string organPath) => $"Organ with path '{organPath}' was not found in the spatial structure.";
       }
 
       public static class Captions

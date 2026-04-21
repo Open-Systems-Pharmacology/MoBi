@@ -30,19 +30,19 @@ internal class When_getting_parameter_values : concern_for_ModuleTask
    [Observation]
    public void returns_null_when_not_found()
    {
-      sut.ParameterValueBuildingBlockByName(_module, "not_there").ShouldBeNull();
+      sut.ParameterValuesBuildingBlockByName(_module, "not_there").ShouldBeNull();
    }
 
    [Observation]
    public void returns_building_block_when_found()
    {
-      sut.ParameterValueBuildingBlockByName(_module, "P2").ShouldBeAnInstanceOf<ParameterValuesBuildingBlock>();
+      sut.ParameterValuesBuildingBlockByName(_module, "P2").ShouldBeAnInstanceOf<ParameterValuesBuildingBlock>();
    }
 
    [Observation]
    public void returns_all_building_block_names_in_module()
    {
-      var allInitialConditionsBuildingBlockNames = sut.AllParameterValueBuildingBlockNames(_module);
+      var allInitialConditionsBuildingBlockNames = sut.AllParameterValuesBuildingBlockNames(_module);
       allInitialConditionsBuildingBlockNames.Length.ShouldBeEqualTo(1);
       allInitialConditionsBuildingBlockNames.ShouldContain("P2");
    }
