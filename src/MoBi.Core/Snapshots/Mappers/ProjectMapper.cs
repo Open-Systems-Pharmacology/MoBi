@@ -78,9 +78,10 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
          .Where(x => !string.IsNullOrEmpty(x.PKSimModule))
          .Each(x => x.Project = x.PKSimModule);
 
-      InputMapping[] inputMappings = [];
+      var inputMappings = new List<InputMapping>();
 
-      return (await mapToModel(snapshot, projectContext, (module, project) => inputMappings = loadModulesAndExportInputsFromPKSimSnapshot(module, project, qualificationConfiguration)), inputMappings);
+      return (await mapToModel(snapshot, projectContext, (module, project) =>
+         inputMappings.AddRange(loadModulesAndExportInputsFromPKSimSnapshot(module, project, qualificationConfiguration))), inputMappings.ToArray());
    }
 
    private async Task<ModelProject> mapToModel(SnapshotProject projectSnapshot, ProjectContext context, Action<string, ModelProject> rebuildAction)

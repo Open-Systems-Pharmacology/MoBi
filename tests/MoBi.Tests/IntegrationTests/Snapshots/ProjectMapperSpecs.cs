@@ -299,7 +299,7 @@ namespace MoBi.IntegrationTests.Snapshots
       }
 
       [Observation]
-      public void the_returned_inputmappings_should_include_results_from_every_PKSim_module()
+      public void the_returned_input_mappings_should_include_results_from_every_PKSim_module()
       {
          _result.Length.ShouldBeEqualTo(2);
          _result.ShouldContain(_mappingFromFirstModule);
