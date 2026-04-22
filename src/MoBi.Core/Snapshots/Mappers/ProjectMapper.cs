@@ -70,6 +70,14 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
    /// <returns>The project that was created and any input mappings that were exported</returns>
    public async Task<(ModelProject, InputMapping[])> MapToModelAndExportInputs(SnapshotProject snapshot, ProjectContext projectContext, QualificationConfiguration qualificationConfiguration)
    {
+      //The qualification plan scopes Inputs by the MoBi project Id, but PK-Sim resolves
+      //inputs per PKSimModule using Input.Project == PKSimProject.Name. Rewrite Project to
+      //PKSimModule (when supplied) so PK-Sim's per-module partitioning picks the right
+      //inputs for each module without any extra filtering on the MoBi side.
+      qualificationConfiguration.Inputs?
+         .Where(x => !string.IsNullOrEmpty(x.PKSimModule))
+         .Each(x => x.Project = x.PKSimModule);
+
       InputMapping[] inputMappings = [];
 
       return (await mapToModel(snapshot, projectContext, (module, project) => inputMappings = loadModulesAndExportInputsFromPKSimSnapshot(module, project, qualificationConfiguration)), inputMappings);

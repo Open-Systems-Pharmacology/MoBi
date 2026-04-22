@@ -206,6 +206,70 @@ namespace MoBi.IntegrationTests.Snapshots
       }
    }
 
+   internal class When_mapping_snapshot_to_project_and_exporting_inputs_with_PKSimModule_on_inputs : concern_for_ProjectMapper
+   {
+      private SnapshotProject _snapshot;
+      private QualificationConfiguration _configuration;
+      private Input _inputWithPKSimModule;
+      private Input _inputWithoutPKSimModule;
+      private Input _inputWithEmptyPKSimModule;
+
+      protected override void Context()
+      {
+         base.Context();
+         _snapshot = sut.MapToSnapshot(_project).Result;
+
+         _inputWithPKSimModule = new Input
+         {
+            Name = "Amikacin",
+            Project = "MoBi_Project_Id",
+            PKSimModule = "PKSim Module Name",
+            Type = PKSimBuildingBlockType.Compound
+         };
+         _inputWithoutPKSimModule = new Input
+         {
+            Name = "OtherCompound",
+            Project = "MoBi_Project_Id",
+            PKSimModule = null,
+            Type = PKSimBuildingBlockType.Compound
+         };
+         _inputWithEmptyPKSimModule = new Input
+         {
+            Name = "YetAnother",
+            Project = "MoBi_Project_Id",
+            PKSimModule = "",
+            Type = PKSimBuildingBlockType.Compound
+         };
+         _configuration = new QualificationConfiguration
+         {
+            Inputs = new[] { _inputWithPKSimModule, _inputWithoutPKSimModule, _inputWithEmptyPKSimModule }
+         };
+      }
+
+      protected override void Because()
+      {
+         sut.MapToModelAndExportInputs(_snapshot, new ProjectContext(new MoBiProject(), runSimulations: false), _configuration).Wait();
+      }
+
+      [Observation]
+      public void the_input_with_PKSimModule_set_should_have_its_Project_rewritten_to_the_PKSimModule_value()
+      {
+         _inputWithPKSimModule.Project.ShouldBeEqualTo("PKSim Module Name");
+      }
+
+      [Observation]
+      public void the_input_with_null_PKSimModule_should_have_its_Project_preserved()
+      {
+         _inputWithoutPKSimModule.Project.ShouldBeEqualTo("MoBi_Project_Id");
+      }
+
+      [Observation]
+      public void the_input_with_empty_PKSimModule_should_have_its_Project_preserved()
+      {
+         _inputWithEmptyPKSimModule.Project.ShouldBeEqualTo("MoBi_Project_Id");
+      }
+   }
+
    internal class When_mapping_snapshot_to_project : concern_for_ProjectMapper
    {
       private SnapshotProject _snapshot;
