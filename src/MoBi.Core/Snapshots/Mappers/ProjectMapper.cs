@@ -75,8 +75,8 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       //PKSimModule (when supplied) so PK-Sim's per-module partitioning picks the right
       //inputs for each module without any extra filtering on the MoBi side.
       qualificationConfiguration.Inputs?
-         .Where(i => !string.IsNullOrEmpty(i.PKSimModule))
-         .Each(i => i.Project = i.PKSimModule);
+         .Where(x => !string.IsNullOrEmpty(x.PKSimModule))
+         .Each(x => x.Project = x.PKSimModule);
 
       InputMapping[] inputMappings = [];
 
