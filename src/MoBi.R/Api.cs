@@ -34,6 +34,8 @@ namespace MoBi.R
 
       public static IInitialConditionsTask GetInitialConditionsTask() => resolveTask<IInitialConditionsTask>();
 
+      public static IMoleculesTask GetMoleculesTask() => resolveTask<IMoleculesTask>();
+
       private static T resolveTask<T>()
       {
          try
