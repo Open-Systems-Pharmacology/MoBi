@@ -1,11 +1,12 @@
-using System.Collections.Generic;
-using System.Linq;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Extensions;
+using NHibernate.Loader.Custom;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MoBi.Core.Services
 {
@@ -43,6 +44,9 @@ namespace MoBi.Core.Services
       {
          if (buildingBlock == null)
             return new List<IObjectBase>();
+
+         if (cache.Contains(buildingBlock))
+            return orderedChildrenOf(cache[buildingBlock]); ;
 
          var orderedEntities = buildingBlock.OrderBy(x => x.Path.PathAsString).ToList();
          var rootContainer = buildGroups(entitiesExceptSubParameters(orderedEntities));
