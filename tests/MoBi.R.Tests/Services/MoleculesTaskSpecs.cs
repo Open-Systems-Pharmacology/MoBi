@@ -23,13 +23,14 @@ internal abstract class concern_for_MoleculesTask : ContextForIntegration<IMolec
       _buildingBlock = new MoleculeBuildingBlock().WithName("Molecules");
    }
 
-   protected MoleculeBuilder addMolecule(string name, bool isFloating, QuantityType quantityType)
+   protected MoleculeBuilder addMolecule(string name, bool isFloating, QuantityType quantityType, bool isXenobiotic = true)
    {
       var molecule = new MoleculeBuilder
       {
          Name = name,
          IsFloating = isFloating,
-         QuantityType = quantityType
+         QuantityType = quantityType,
+         IsXenobiotic = isXenobiotic
       };
       _buildingBlock.Add(molecule);
       return molecule;
@@ -171,6 +172,58 @@ internal class When_getting_all_molecule_names_of_type_drug : concern_for_Molecu
    public void should_return_only_drug_molecule_names()
    {
       _result.ShouldOnlyContainInOrder("Drug1", "Drug2");
+   }
+}
+
+internal class When_getting_all_xenobiotic_floating_molecule_names : concern_for_MoleculesTask
+{
+   private string[] _result;
+
+   protected override void Context()
+   {
+      base.Context();
+      addMolecule("Drug", isFloating: true, QuantityType.Drug, isXenobiotic: true);
+      addMolecule("Metabolite", isFloating: true, QuantityType.Metabolite, isXenobiotic: true);
+      addMolecule("Enzyme", isFloating: false, QuantityType.Enzyme, isXenobiotic: false);
+      addMolecule("FloatingEnzyme", isFloating: true, QuantityType.Enzyme, isXenobiotic: false);
+      addMolecule("StationaryDrug", isFloating: false, QuantityType.Drug, isXenobiotic: true);
+   }
+
+   protected override void Because()
+   {
+      _result = sut.AllXenobioticFloatingMoleculeNames(_buildingBlock);
+   }
+
+   [Observation]
+   public void should_return_only_xenobiotic_floating_molecule_names()
+   {
+      _result.ShouldOnlyContainInOrder("Drug", "Metabolite");
+   }
+}
+
+internal class When_getting_all_endogenous_stationary_molecule_names : concern_for_MoleculesTask
+{
+   private string[] _result;
+
+   protected override void Context()
+   {
+      base.Context();
+      addMolecule("Drug", isFloating: true, QuantityType.Drug, isXenobiotic: true);
+      addMolecule("Enzyme", isFloating: false, QuantityType.Enzyme, isXenobiotic: false);
+      addMolecule("Transporter", isFloating: false, QuantityType.Transporter, isXenobiotic: false);
+      addMolecule("StationaryDrug", isFloating: false, QuantityType.Drug, isXenobiotic: true);
+      addMolecule("FloatingEnzyme", isFloating: true, QuantityType.Enzyme, isXenobiotic: false);
+   }
+
+   protected override void Because()
+   {
+      _result = sut.AllEndogenousStationaryMoleculeNames(_buildingBlock);
+   }
+
+   [Observation]
+   public void should_return_only_endogenous_stationary_molecule_names()
+   {
+      _result.ShouldOnlyContainInOrder("Enzyme", "Transporter");
    }
 }
 
