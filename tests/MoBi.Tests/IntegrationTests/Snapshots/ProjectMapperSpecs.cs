@@ -41,7 +41,7 @@ namespace MoBi.IntegrationTests.Snapshots
       private IMoBiContext _context;
       private IOSPSuiteLogger _ospSuiteLogger;
       private ParameterIdentificationMapper _parameterIdentificationMapper;
-      private IPKSimStarter _pkSimStarter;
+      protected IPKSimStarter _pkSimStarter;
       private ISimulationSettingsFactory _simulationSettingsFactory;
       private SimulationMapper _simulationMapper;
       private ICoreSimulationRunner _coreSimulationRunner;
@@ -267,6 +267,43 @@ namespace MoBi.IntegrationTests.Snapshots
       public void the_input_with_empty_PKSimModule_should_have_its_Project_preserved()
       {
          _inputWithEmptyPKSimModule.Project.ShouldBeEqualTo("MoBi_Project_Id");
+      }
+   }
+
+   internal class When_mapping_snapshot_to_project_and_exporting_inputs_from_multiple_PKSim_modules : concern_for_ProjectMapper
+   {
+      private SnapshotProject _snapshot;
+      private InputMapping[] _result;
+      private readonly InputMapping _mappingFromFirstModule = new InputMapping { Path = "first" };
+      private readonly InputMapping _mappingFromSecondModule = new InputMapping { Path = "second" };
+
+      protected override void Context()
+      {
+         base.Context();
+
+         var secondPKSimModule = new Module { IsPKSimModule = true, Snapshot = "{ \"JSON\":true }".ToBase64String(), Id = "pksimmodule2" };
+         _project.AddModule(secondPKSimModule);
+
+         var transferModule = new Module { IsPKSimModule = true };
+         A.CallTo(() => _pkSimStarter.LoadModuleFromSnapshotAndExportInputs(A<string>._, A<QualificationConfiguration>._))
+            .ReturnsNextFromSequence(
+               (transferModule, new[] { _mappingFromFirstModule }),
+               (transferModule, new[] { _mappingFromSecondModule }));
+
+         _snapshot = sut.MapToSnapshot(_project).Result;
+      }
+
+      protected override void Because()
+      {
+         (_, _result) = sut.MapToModelAndExportInputs(_snapshot, new ProjectContext(new MoBiProject(), runSimulations: false), new QualificationConfiguration()).Result;
+      }
+
+      [Observation]
+      public void the_returned_input_mappings_should_include_results_from_every_PKSim_module()
+      {
+         _result.Length.ShouldBeEqualTo(2);
+         _result.ShouldContain(_mappingFromFirstModule);
+         _result.ShouldContain(_mappingFromSecondModule);
       }
    }
 
