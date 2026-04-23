@@ -3,6 +3,7 @@ using System.Linq;
 using FakeItEasy;
 using FakeItEasy.Core;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -30,6 +31,7 @@ namespace MoBi.Presentation
       protected IObjectBaseDTOToReferenceNodeMapper _referenceMapper;
       protected IBuildingBlockRepository _buildingBlockRepository;
       protected IObjectPathFactory _objectPathFactory;
+      protected IPathAndValueContainerizingTask _containerizingTask;
 
       protected override void Context()
       {
@@ -43,10 +45,11 @@ namespace MoBi.Presentation
          _objectPathCreator = A.Fake<IObjectPathCreatorAtParameter>();
          _referenceMapper = A.Fake<IObjectBaseDTOToReferenceNodeMapper>();
          _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
+         _containerizingTask = new PathAndValueContainerizingTask();
          A.CallTo(() => _context.ObjectPathFactory).Returns(_objectPathFactory);
          A.CallTo(() => _view.Shows(A<IEntity>.Ignored)).Returns(true);
          sut = new SelectReferenceAtParameterValuePresenter(_view, _objectBaseDTOMapper, _context, _userSettings,
-            _moleculeMapper, _parameterMapper, _referenceMapper, _objectPathCreator, _buildingBlockRepository);
+            _moleculeMapper, _parameterMapper, _referenceMapper, _objectPathCreator, _buildingBlockRepository, _containerizingTask);
       }
    }
 

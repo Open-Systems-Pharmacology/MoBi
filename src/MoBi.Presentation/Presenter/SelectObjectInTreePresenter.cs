@@ -40,19 +40,17 @@ namespace MoBi.Presentation.Presenter
    public class SelectEntityInTreePresenter : AbstractPresenter<ISelectEntityInTreeView, ISelectEntityInTreePresenter>, ISelectEntityInTreePresenter
    {
       private readonly IObjectPathFactory _objectPathFactory;
-      private readonly IMoBiContext _context;
       public event EventHandler<SelectedEntityChangedArgs> OnSelectedEntityChanged = delegate { };
-      private readonly IObjectBaseDTOToSpatialStructureNodeMapper _spatialStructureNodeMapper;
+      private readonly IObjectBaseDTOToReferenceNodeMapper _referenceNodeMapper;
 
-      public SelectEntityInTreePresenter(ISelectEntityInTreeView view, IObjectPathFactory objectPathFactory, IMoBiContext context, IObjectBaseDTOToSpatialStructureNodeMapper spatialStructureNodeMapper) : base(view)
+      public SelectEntityInTreePresenter(ISelectEntityInTreeView view, IObjectPathFactory objectPathFactory, IObjectBaseDTOToReferenceNodeMapper referenceNodeMapper) : base(view)
       {
          _objectPathFactory = objectPathFactory;
-         _context = context;
-         _spatialStructureNodeMapper = spatialStructureNodeMapper;
-         _spatialStructureNodeMapper.Initialize(objectBase => GetChildren(objectBase));
+         _referenceNodeMapper = referenceNodeMapper;
+         _referenceNodeMapper.Initialize(objectBase => GetChildren(objectBase));
       }
 
-      protected IEntity EntityFrom(ObjectBaseDTO dto) => _context.Get<IEntity>(dto.Id);
+      protected IEntity EntityFrom(ObjectBaseDTO dto) => dto.ObjectBase as IEntity;
 
       public virtual ObjectPath SelectedEntityPath => SelectedEntity != null ? _objectPathFactory.CreateAbsoluteObjectPath(SelectedEntity) : null;
 
@@ -86,29 +84,30 @@ namespace MoBi.Presentation.Presenter
             case BuildingBlockDTO buildingBlockDTO:
                return getBuildingBlockNode(buildingBlockDTO);
             default:
-               return _spatialStructureNodeMapper.MapFrom(dto);
+               return _referenceNodeMapper.MapFrom(dto);
          }
       }
 
-      private HierarchicalStructureNode getBuildingBlockNode(BuildingBlockDTO buildingBlockDTO)
+      private ITreeNode getBuildingBlockNode(BuildingBlockDTO buildingBlockDTO)
       {
-         var buildingBlockNode = _spatialStructureNodeMapper.MapFrom(buildingBlockDTO);
-         buildingBlockDTO.Builder.MapAllUsing(_spatialStructureNodeMapper).Each(buildingBlockNode.AddChild);
+         var buildingBlockNode = _referenceNodeMapper.MapFrom(buildingBlockDTO);
+
+         buildingBlockDTO.Builder.MapAllUsing<ObjectBaseDTO, ITreeNode>(_referenceNodeMapper).Each(buildingBlockNode.AddChild);
          return buildingBlockNode;
       }
 
-      private HierarchicalStructureNode getSpatialStructureNode(SpatialStructureDTO spatialStructureDTO)
+      private ITreeNode getSpatialStructureNode(SpatialStructureDTO spatialStructureDTO)
       {
-         var spatialStructureNode = _spatialStructureNodeMapper.MapFrom(spatialStructureDTO);
+         var spatialStructureNode = _referenceNodeMapper.MapFrom(spatialStructureDTO);
 
          if (spatialStructureDTO.MoleculeProperties != null)
-            spatialStructureNode.AddChild(_spatialStructureNodeMapper.MapFrom(spatialStructureDTO.MoleculeProperties));
+            spatialStructureNode.AddChild(_referenceNodeMapper.MapFrom(spatialStructureDTO.MoleculeProperties));
 
          if (spatialStructureDTO.TopContainers != null && spatialStructureDTO.TopContainers.Any())
-            spatialStructureDTO.TopContainers.Each(dto => spatialStructureNode.AddChild(_spatialStructureNodeMapper.MapFrom(dto)));
+            spatialStructureDTO.TopContainers.Each(dto => spatialStructureNode.AddChild(_referenceNodeMapper.MapFrom(dto)));
 
          if (spatialStructureDTO.Neighborhoods != null)
-            spatialStructureNode.AddChild(_spatialStructureNodeMapper.MapFrom(spatialStructureDTO.Neighborhoods));
+            spatialStructureNode.AddChild(_referenceNodeMapper.MapFrom(spatialStructureDTO.Neighborhoods));
 
          return spatialStructureNode;
       }
