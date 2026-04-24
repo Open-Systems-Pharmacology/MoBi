@@ -20,22 +20,22 @@ public interface IMoleculesTask
 public class MoleculesTask : IMoleculesTask
 {
    public string[] AllMoleculeNames(MoleculeBuildingBlock buildingBlock) =>
-      buildingBlock.Select(x => x.Name).ToArray();
+      buildingBlock.AllNames().ToArray();
 
    public string[] AllFloatingMoleculeNames(MoleculeBuildingBlock buildingBlock) =>
-      buildingBlock.Where(x => x.IsFloating).Select(x => x.Name).ToArray();
+      buildingBlock.AllFloating().AllNames().ToArray();
 
    public string[] AllStationaryMoleculeNames(MoleculeBuildingBlock buildingBlock) =>
-      buildingBlock.Where(x => !x.IsFloating).Select(x => x.Name).ToArray();
+      buildingBlock.AllStationary().AllNames().ToArray();
 
    public string[] AllMoleculeNamesOfType(MoleculeBuildingBlock buildingBlock, QuantityType quantityType) =>
-      buildingBlock.Where(x => x.QuantityType.Is(quantityType)).Select(x => x.Name).ToArray();
+      buildingBlock.AllOfType(quantityType).AllNames().ToArray();
 
    public string[] AllXenobioticFloatingMoleculeNames(MoleculeBuildingBlock buildingBlock) =>
-      buildingBlock.Where(x => x.IsFloating && x.IsXenobiotic).Select(x => x.Name).ToArray();
+      buildingBlock.AllXenobioticFloating().AllNames().ToArray();
 
    public string[] AllEndogenousStationaryMoleculeNames(MoleculeBuildingBlock buildingBlock) =>
-      buildingBlock.Where(x => !x.IsFloating && !x.IsXenobiotic).Select(x => x.Name).ToArray();
+      buildingBlock.AllEndogenousStationary().AllNames().ToArray();
 
    public string MoleculeTypeFor(MoleculeBuildingBlock buildingBlock, string moleculeName)
    {
