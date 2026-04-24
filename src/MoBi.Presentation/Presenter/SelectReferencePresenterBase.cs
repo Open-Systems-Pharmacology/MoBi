@@ -14,6 +14,7 @@ using MoBi.Presentation.Views;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
@@ -96,7 +97,7 @@ namespace MoBi.Presentation.Presenter
 
          _view.Clear();
          addInitialObjects();
-         _view.Show(contextSpecificEntitiesToAddToReferenceTree.Where(x => !alreadyInView(x)).MapAllUsing(_referenceMapper), false);
+         _view.Show(contextSpecificEntitiesToAddToReferenceTree.Where(x => !alreadyInView(x)).MapAllUsing<IObjectBase, ITreeNode>(_referenceMapper), false);
 
          if (_refObject != null)
          {

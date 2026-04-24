@@ -10,10 +10,8 @@ using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Mappers
 {
-   public interface IObjectBaseDTOToReferenceNodeMapper : IMapper<IObjectBase, ITreeNode>
+   public interface IObjectBaseDTOToReferenceNodeMapper : IMapper<IObjectBase, ITreeNode>, IMapper<ObjectBaseDTO, ITreeNode>
    {
-      ITreeNode MapFrom(ObjectBaseDTO objectBaseDTO);
-
       void Initialize(Func<ObjectBaseDTO, IEnumerable<ObjectBaseDTO>> getChildren);
    }
 

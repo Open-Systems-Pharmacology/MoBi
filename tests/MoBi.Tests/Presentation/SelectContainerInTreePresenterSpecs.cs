@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 using FakeItEasy;
-using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
-using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -15,20 +13,18 @@ namespace MoBi.Presentation
 {
    internal class concern_for_SelectContainerInTreePresenter : ContextSpecification<SelectContainerInTreePresenter>
    {
-      protected IObjectBaseDTOToSpatialStructureNodeMapper _objectBaseToSpatialStructureNodeMapper;
+      protected IObjectBaseDTOToReferenceNodeMapper _referenceNodeMapper;
       protected IContainerToContainerDTOMapper _containerDTOMapper;
       protected ISelectEntityInTreeView _view;
       protected IObjectPathFactory _objectPathFactory;
-      protected IMoBiContext _context;
 
       protected override void Context()
       {
          _view = A.Fake<ISelectEntityInTreeView>();
          _objectPathFactory = A.Fake<IObjectPathFactory>();
-         _context = A.Fake<IMoBiContext>();
          _containerDTOMapper = A.Fake<IContainerToContainerDTOMapper>();
-         _objectBaseToSpatialStructureNodeMapper = A.Fake<IObjectBaseDTOToSpatialStructureNodeMapper>();
-         sut = new SelectContainerInTreePresenter(_view, _objectPathFactory, _context, _containerDTOMapper, _objectBaseToSpatialStructureNodeMapper);
+         _referenceNodeMapper = A.Fake<IObjectBaseDTOToReferenceNodeMapper>();
+         sut = new SelectContainerInTreePresenter(_view, _objectPathFactory, _containerDTOMapper, _referenceNodeMapper);
       }
    }
 
@@ -42,7 +38,6 @@ namespace MoBi.Presentation
       {
          base.Context();
          _container = new Container().WithId("id");
-         A.CallTo(() => _context.Get<IEntity>(_container.Id)).Returns(_container);
          _subContainer = new Container();
          _container.Add(_subContainer);
       }
@@ -74,7 +69,6 @@ namespace MoBi.Presentation
       {
          base.Context();
          _buildingBlock = new ParameterValuesBuildingBlock().WithId("id");
-         A.CallTo(() => _context.Get<IEntity>(_buildingBlock.Id)).Returns(null);
       }
 
       protected override void Because()
@@ -98,7 +92,6 @@ namespace MoBi.Presentation
       {
          base.Context();
          _distributedParameter = new DistributedParameter().WithId("distParm");
-         A.CallTo(() => _context.Get<IEntity>(_distributedParameter.Id)).Returns(_distributedParameter);
       }
 
       protected override void Because()
