@@ -4,11 +4,10 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Repository;
+using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
-using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
@@ -39,6 +38,8 @@ namespace MoBi.Presentation.Presenter
       private readonly ISelectEntityInTreePresenter _selectEntityInTreePresenter;
       private readonly ISpatialStructureToSpatialStructureDTOMapper _spatialStructureDTOMapper;
       private readonly IBuildingBlockRepository _buildingBlockRepository;
+      private readonly IPathAndValueContainerizingTask _containerizingTask;
+      private readonly Cache<IBuildingBlock, IContainer> _pathAndValueContainers = new Cache<IBuildingBlock, IContainer>();
       private IReadOnlyList<MoleculeBuilder> _molecules;
       private IReadOnlyList<ReactionBuilder> _reactions;
       private ICache<IObjectBase, string> _forbiddenAssignees;
@@ -54,7 +55,8 @@ namespace MoBi.Presentation.Presenter
          IReactionDimensionRetriever dimensionRetriever,
          ISelectEntityInTreePresenter selectEntityInTreePresenter,
          ISpatialStructureToSpatialStructureDTOMapper spatialStructureDTOMapper,
-         IBuildingBlockRepository buildingBlockRepository
+         IBuildingBlockRepository buildingBlockRepository,
+         IPathAndValueContainerizingTask containerizingTask
       )
          : base(view)
       {
@@ -63,6 +65,7 @@ namespace MoBi.Presentation.Presenter
          _selectEntityInTreePresenter = selectEntityInTreePresenter;
          _spatialStructureDTOMapper = spatialStructureDTOMapper;
          _buildingBlockRepository = buildingBlockRepository;
+         _containerizingTask = containerizingTask;
          _objectPathFactory = objectPathFactory;
          _dummyMoleculeDTOMapper = dummyMoleculeDTOMapper;
          _dummyReactionDTOMapper = dummyReactionDTOMapper;
@@ -94,13 +97,17 @@ namespace MoBi.Presentation.Presenter
          if (parent.IsAnImplementationOf<IDistributedParameter>())
             return Array.Empty<ObjectBaseDTO>();
 
-         var spatialStructureDTO = parentDTO as SpatialStructureDTO;
-         if (spatialStructureDTO != null)
+         if (parentDTO is SpatialStructureDTO spatialStructureDTO)
             return mapSpatialStructureChildren(spatialStructureDTO);
 
-         var container = parent as IContainer;
-         if (container == null)
+         if (parent is IndividualBuildingBlock individualBuildingBlock)
+            return map(_containerizingTask.ChildrenFor<IndividualBuildingBlock, IndividualParameter>(individualBuildingBlock, _pathAndValueContainers));
+
+         if (!(parent is IContainer container))
             return Array.Empty<ObjectBaseDTO>();
+
+         if (_containerizingTask.IsInCachedTree(container, _pathAndValueContainers))
+            return map(_containerizingTask.ChildrenFor(container, _pathAndValueContainers));
 
          if (parent.IsAnImplementationOf<MoleculeBuilder>() || parent.IsAnImplementationOf<ReactionBuilder>())
          {
@@ -112,7 +119,7 @@ namespace MoBi.Presentation.Presenter
             return map(globalParameterUnder(container));
          }
 
-         //Real structural container. 
+         //Real structural container.
          var list = new List<ObjectBaseDTO>();
 
          //Add sub containers
@@ -136,10 +143,10 @@ namespace MoBi.Presentation.Presenter
          if (spatialStructureDTO.MoleculeProperties != null)
             objectBaseDTOs.Add(spatialStructureDTO.MoleculeProperties);
 
-         if(spatialStructureDTO.TopContainers != null && spatialStructureDTO.TopContainers.Any())
+         if (spatialStructureDTO.TopContainers != null && spatialStructureDTO.TopContainers.Any())
             objectBaseDTOs.AddRange(spatialStructureDTO.TopContainers);
 
-         if(spatialStructureDTO.Neighborhoods != null)
+         if (spatialStructureDTO.Neighborhoods != null)
             objectBaseDTOs.Add(spatialStructureDTO.Neighborhoods);
 
          return objectBaseDTOs;
@@ -199,9 +206,11 @@ namespace MoBi.Presentation.Presenter
          _molecules = _buildingBlockRepository.MoleculeBlockCollection.SelectMany(bb => bb.All()).Distinct(new NameComparer<MoleculeBuilder>()).OrderBy(x => x.Name).ToList();
          _reactions = _buildingBlockRepository.ReactionBlockCollection.SelectMany(bb => bb.All()).Distinct(new NameComparer<ReactionBuilder>()).OrderBy(x => x.Name).ToList();
          _forbiddenAssignees = forbiddenAssignees;
+         _pathAndValueContainers.Clear();
          var list = new List<ObjectBaseDTO>();
          list.AddRange(_buildingBlockRepository.SpatialStructureCollection.MapAllUsing(_spatialStructureDTOMapper));
          list.Add(_objectBaseDTOMapper.MapFrom(container));
+         list.AddRange(_buildingBlockRepository.IndividualsCollection.MapAllUsing(_objectBaseDTOMapper));
          list.AddRange(globalReactionParameters());
 
          _selectEntityInTreePresenter.InitTreeStructure(list);
@@ -227,6 +236,12 @@ namespace MoBi.Presentation.Presenter
             var parent = dto.DowncastTo<IDummyContainer>().StructureParent;
             var path = _objectPathFactory.CreateAbsoluteObjectPath(parent).AndAdd(dto.Name);
             return formulaUsablePathFrom(path, getDimensionFor(dto));
+         }
+
+         if (dto.ObjectBase is IndividualParameter individualParameter)
+         {
+            var path = new ObjectPath(individualParameter.Path);
+            return formulaUsablePathFrom(path, individualParameter.Dimension);
          }
 
          var selectedEntity = _context.Get<IEntity>(dto.Id);
@@ -258,8 +273,6 @@ namespace MoBi.Presentation.Presenter
          var dtoParent = treeNode.ParentNode.ParentNode.TagAsObject.DowncastTo<ObjectBaseDTO>();
          return dtoParent.ObjectBase as IEntity;
       }
-
-   
 
       private IEnumerable<ObjectBaseDTO> getLocalInformationForReaction(IContainer container)
       {

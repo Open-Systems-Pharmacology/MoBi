@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Core.Domain.Extensions;
-using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
@@ -25,9 +24,8 @@ namespace MoBi.Presentation.Presenter
 
       public SelectContainerInTreePresenter(ISelectEntityInTreeView view,
          IObjectPathFactory objectPathFactory,
-         IMoBiContext context,
          IContainerToContainerDTOMapper containerDTOMapper,
-         IObjectBaseDTOToSpatialStructureNodeMapper spatialStructureNodeMapper) : base(view, objectPathFactory, context, spatialStructureNodeMapper)
+         IObjectBaseDTOToReferenceNodeMapper referenceNodeMapper) : base(view, objectPathFactory, referenceNodeMapper)
       {
          _containerDTOMapper = containerDTOMapper;
          _objectPathFactory = objectPathFactory;

@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Extensions;
+using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Settings;
@@ -22,8 +21,8 @@ namespace MoBi.Presentation.Presenter
 
    public class SelectReferenceAtParameterValuePresenter : SelectReferencePresenterBase, ISelectReferenceAtParameterValuePresenter
    {
-      // Cache to store the containers for the PathAndValueEntities only
-      private readonly Cache<IBuildingBlock, IContainer> _pathAndValueContainers;
+      private readonly IPathAndValueContainerizingTask _containerizingTask;
+      private readonly Cache<IBuildingBlock, IContainer> _pathAndValueContainers = new Cache<IBuildingBlock, IContainer>();
 
       public SelectReferenceAtParameterValuePresenter(ISelectReferenceView view,
          IObjectBaseToObjectBaseDTOMapper objectBaseDTOMapper,
@@ -33,12 +32,13 @@ namespace MoBi.Presentation.Presenter
          IParameterToDummyParameterDTOMapper dummyParameterDTOMapper,
          IObjectBaseDTOToReferenceNodeMapper referenceMapper,
          IObjectPathCreatorAtParameter objectPathCreator,
-         IBuildingBlockRepository buildingBlockRepository)
+         IBuildingBlockRepository buildingBlockRepository,
+         IPathAndValueContainerizingTask containerizingTask)
          : base(view, objectBaseDTOMapper, context, userSettings,
             objectBaseToMoleculeDummyMapper, dummyParameterDTOMapper, referenceMapper, objectPathCreator, Localisations.ContainerOnly, buildingBlockRepository)
       {
+         _containerizingTask = containerizingTask;
          view.EnableMultiSelect = true;
-         _pathAndValueContainers = new Cache<IBuildingBlock, IContainer>();
          SelectionPredicate = filterObjects;
       }
 
@@ -54,16 +54,15 @@ namespace MoBi.Presentation.Presenter
       {
          var children = base.GetChildObjects(dto).ToList();
 
-         var container = containerFrom(dto);
          if (_context.ObjectRepository.ContainsObjectWithId(dto.Id))
          {
             addExpressionChildren(dto, children);
             addIndividualChildren(dto, children);
             addEventsChildren(dto, children);
          }
-         else
+         else if (dto.ObjectBase is IContainer container && _containerizingTask.IsInCachedTree(container, _pathAndValueContainers))
          {
-            container?.Children.Each(x => children.Add(_objectBaseDTOMapper.MapFrom(x)));
+            children.AddRange(_containerizingTask.ChildrenFor(container, _pathAndValueContainers).MapAllUsing(_objectBaseDTOMapper));
          }
 
          return children;
@@ -141,91 +140,21 @@ namespace MoBi.Presentation.Presenter
                 && itemParam.BuildMode == ParameterBuildMode.Local;
       }
 
-      private IContainer containerFrom(ObjectBaseDTO dto)
-      {
-         if (dto.ObjectBase is IContainer container && _pathAndValueContainers.Any(x => x.GetAllContainersAndSelf<IContainer>().Contains(container)))
-            return container;
-
-         return null;
-      }
-
       private void addIndividualChildren(ObjectBaseDTO dto, List<ObjectBaseDTO> children)
       {
          var buildingBlock = _context.Get<IndividualBuildingBlock>(dto.Id);
-         addChildrenFromPathAndValueBuildingBlock<IndividualBuildingBlock, IndividualParameter>(children, buildingBlock);
+         if (buildingBlock == null)
+            return;
+         children.AddRange(_containerizingTask.ChildrenFor<IndividualBuildingBlock, IndividualParameter>(buildingBlock, _pathAndValueContainers).MapAllUsing(_objectBaseDTOMapper));
       }
 
       private void addExpressionChildren(ObjectBaseDTO dto, List<ObjectBaseDTO> children)
       {
          var buildingBlock = _context.Get<ExpressionProfileBuildingBlock>(dto.Id);
+         if (buildingBlock == null)
+            return;
          // We need the TBuilder type because ExpressionProfileBuildingBlock contains two types of PathAndValueEntity, and we only want to map ExpressionParameters
-         addChildrenFromPathAndValueBuildingBlock<ExpressionProfileBuildingBlock, ExpressionParameter>(children, buildingBlock);
-      }
-
-      private void addChildrenFromPathAndValueBuildingBlock<TBuildingBlock, TEntity>(List<ObjectBaseDTO> children, TBuildingBlock pathAndValueEntities) where TBuildingBlock : PathAndValueEntityBuildingBlock<TEntity> where TEntity : PathAndValueEntity
-      {
-         if (pathAndValueEntities == null)
-            return;
-
-         var orderedEntities = pathAndValueEntities.OrderBy(x => x.Path.PathAsString).ToList();
-
-         _pathAndValueContainers[pathAndValueEntities] = getGroups(entitiesExceptSubParameters(orderedEntities));
-
-         orderedEntities.Each(x => addToContainer(x, _pathAndValueContainers[pathAndValueEntities]));
-
-         addPathAndValuesFromContainer(children, _pathAndValueContainers[pathAndValueEntities]);
-      }
-
-      private static IReadOnlyList<TEntity> entitiesExceptSubParameters<TEntity>(IReadOnlyList<TEntity> pathAndValueEntities) where TEntity : PathAndValueEntity
-      {
-         return pathAndValueEntities.Where(x => !isSubParameter(x, pathAndValueEntities)).ToList();
-      }
-
-      private static bool isSubParameter<TEntity>(TEntity pathAndValueEntity, IReadOnlyList<TEntity> buildingBlock) where TEntity : PathAndValueEntity
-      {
-         return buildingBlock.Any(pathAndValueEntity.IsDirectSubParameterOf);
-      }
-
-      private void addPathAndValuesFromContainer(List<ObjectBaseDTO> children, IContainer container)
-      {
-         // first containers
-         children.AddRange(
-            container.GetChildrenSortedByName<IContainer>()
-               .MapAllUsing(_objectBaseDTOMapper));
-
-         //then parameters
-         children.AddRange(container.GetChildrenSortedByName<PathAndValueEntity>()
-            .MapAllUsing(_objectBaseDTOMapper));
-      }
-
-      private static void addToContainer(PathAndValueEntity x, IContainer container)
-      {
-         var parentContainer = x.ContainerPath.TryResolve<IContainer>(container);
-         if (parentContainer != null)
-         {
-            parentContainer.Add(x);
-         }
-      }
-
-      private IContainer getGroups<TEntity>(IReadOnlyList<TEntity> pathAndValueEntities) where TEntity : PathAndValueEntity
-      {
-         var rootContainer = new Container();
-
-         // construct a new object path to avoid changing the original object path
-         pathAndValueEntities.Select(x => new ObjectPath(x.ContainerPath)).ToList().Where(x => x.Any()).GroupBy(x => x.First()).Each(x => addContainersFor(x, rootContainer));
-
-         return rootContainer;
-      }
-
-      private void addContainersFor(IGrouping<string, ObjectPath> group, Container rootContainer)
-      {
-         if (string.IsNullOrEmpty(group.Key))
-            return;
-
-         var groupContainer = new Container().WithName(group.Key);
-         group.Each(x => x.RemoveFirst());
-         group.Where(x => x.Any()).GroupBy(x => x.First()).Each(x => addContainersFor(x, groupContainer));
-         rootContainer.Add(groupContainer);
+         children.AddRange(_containerizingTask.ChildrenFor<ExpressionProfileBuildingBlock, ExpressionParameter>(buildingBlock, _pathAndValueContainers).MapAllUsing(_objectBaseDTOMapper));
       }
 
       protected override void AddSpecificInitialObjects()
