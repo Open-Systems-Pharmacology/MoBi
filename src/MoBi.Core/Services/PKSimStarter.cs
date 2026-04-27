@@ -191,7 +191,7 @@ namespace MoBi.Core.Services
       private string retrievePKSimAssemblyPath()
       {
          var pkSimPath = prioritizedPKSimPath();
-         return Path.Combine(Path.GetDirectoryName(pkSimPath), PKSIM_UI_STARTER_DLL);
+         return Path.Combine(Path.GetDirectoryName(pkSimPath) ?? string.Empty, PKSIM_UI_STARTER_DLL);
       }
 
       private string retrievePKSimExecutablePath()
