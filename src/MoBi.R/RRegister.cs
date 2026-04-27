@@ -67,6 +67,7 @@ namespace MoBi.R
          container.Register<IDiagramManagerFactory, DiagramManagerFactory>(LifeStyle.Singleton);
          container.Register<IDimensionValidator, DimensionValidator>(LifeStyle.Singleton);
          container.Register<IPresentationUserSettings, IUserSettings, ICoreUserSettings, IMoBiCoreUserSettings, UserSettings>(LifeStyle.Transient);
+         container.Register<IPKSimAssemblyLoader, PKSimAssemblyLoader>(LifeStyle.Singleton);
       }
    }
 }
