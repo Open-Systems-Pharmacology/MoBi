@@ -268,3 +268,36 @@ internal class When_exporting_individual_to_pkml : concern_for_IndividualTask_wi
       File.Delete(_filePath);
    }
 }
+
+internal class When_loading_individual_from_pkml : concern_for_IndividualTask
+{
+   private IndividualBuildingBlock _exported;
+   private IndividualBuildingBlock _loaded;
+   private string _tempFile;
+
+   protected override void Context()
+   {
+      base.Context();
+      _tempFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".pkml");
+      _exported = new IndividualBuildingBlock().WithName("Round-tripped individual");
+      sut.ExportToPKML(_exported, _tempFile);
+   }
+
+   protected override void Because()
+   {
+      _loaded = sut.LoadFromPKML(_tempFile);
+   }
+
+   [Observation]
+   public void should_return_the_individual_building_block_with_the_original_name()
+   {
+      _loaded.ShouldNotBeNull();
+      _loaded.Name.ShouldBeEqualTo(_exported.Name);
+   }
+
+   public override void Cleanup()
+   {
+      base.Cleanup();
+      File.Delete(_tempFile);
+   }
+}

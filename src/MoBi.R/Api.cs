@@ -36,6 +36,16 @@ namespace MoBi.R
 
       public static IMoleculesTask GetMoleculesTask() => resolveTask<IMoleculesTask>();
 
+      public static ISpatialStructureTask GetSpatialStructureTask() => resolveTask<ISpatialStructureTask>();
+
+      public static IReactionsTask GetReactionsTask() => resolveTask<IReactionsTask>();
+
+      public static IObserversTask GetObserversTask() => resolveTask<IObserversTask>();
+
+      public static IEventGroupsTask GetEventGroupsTask() => resolveTask<IEventGroupsTask>();
+
+      public static IPassiveTransportsTask GetPassiveTransportsTask() => resolveTask<IPassiveTransportsTask>();
+
       private static T resolveTask<T>()
       {
          try

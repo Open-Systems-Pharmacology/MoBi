@@ -1,34 +1,27 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Extensions;
 using MoBi.Core.Services;
-using MoBi.R.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
+using ISerializationTask = MoBi.Presentation.Tasks.ISerializationTask;
 
 namespace MoBi.R.Services;
 
-public interface IPathAndValuesTask<TBuildingBlock, TBuilder> where TBuildingBlock : ILookupBuildingBlock<TBuilder> where TBuilder : PathAndValueEntity
-{
-   string[] AllPathsFrom(TBuildingBlock buildingBlock);
-   double[] AllValuesFrom(TBuildingBlock buildingBlock, params string[] paths);
-   string[] AllDimensionsFrom(TBuildingBlock buildingBlock, params string[] paths);
-   string[] AllUnitsFrom(TBuildingBlock buildingBlock, params string[] paths);
-   string[] AllValueOriginsFrom(TBuildingBlock buildingBlock, params string[] paths);
-}
-
-public abstract class ExtendablePathAndValuesTask<TBuildingBlock, TBuilder> : IPathAndValuesTask<TBuildingBlock, TBuilder> where TBuildingBlock : ILookupBuildingBlock<TBuilder> where TBuilder : PathAndValueEntity
+public abstract class ExtendablePathAndValuesTask<TBuildingBlock, TBuilder> : PathAndValuesBuildingBlockTask<TBuildingBlock, TBuilder>
+   where TBuildingBlock : ILookupBuildingBlock<TBuilder>
+   where TBuilder : PathAndValueEntity
 {
    private readonly IObjectTypeResolver _objectTypeResolver;
    private readonly IExtendPathAndValuesManager<TBuilder> _extendManager;
    protected readonly IMoBiContext _context;
 
-   protected ExtendablePathAndValuesTask(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IExtendPathAndValuesManager<TBuilder> extendManager)
+   protected ExtendablePathAndValuesTask(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IExtendPathAndValuesManager<TBuilder> extendManager, ISerializationTask serializationTask) : base(serializationTask)
    {
       _objectTypeResolver = objectTypeResolver;
       _extendManager = extendManager;
@@ -87,14 +80,4 @@ public abstract class ExtendablePathAndValuesTask<TBuildingBlock, TBuilder> : IP
          ObjectType = _objectTypeResolver.TypeFor<TBuildingBlock>()
       };
    }
-
-   public string[] AllPathsFrom(TBuildingBlock buildingBlock) => buildingBlock.AllPathsFrom();
-
-   public double[] AllValuesFrom(TBuildingBlock buildingBlock, params string[] paths) => buildingBlock.AllValuesFrom(paths);
-
-   public string[] AllDimensionsFrom(TBuildingBlock buildingBlock, params string[] paths) => buildingBlock.AllDimensionsFrom(paths);
-
-   public string[] AllUnitsFrom(TBuildingBlock buildingBlock, params string[] paths) => buildingBlock.AllUnitsFrom(paths);
-
-   public string[] AllValueOriginsFrom(TBuildingBlock buildingBlock, params string[] paths) => buildingBlock.AllValueOriginsFrom(paths);
 }

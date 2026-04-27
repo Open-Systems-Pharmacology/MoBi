@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
@@ -9,6 +9,7 @@ using MoBi.Core.Services;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Serialization;
+using ISerializationTask = MoBi.Presentation.Tasks.ISerializationTask;
 
 namespace MoBi.R.Services;
 
@@ -27,7 +28,7 @@ public class ExpressionProfileTask : PKSimPathAndValuesTask<ExpressionProfileBui
    private readonly IMoBiContext _context;
    private readonly IObjectTypeResolver _objectTypeResolver;
 
-   public ExpressionProfileTask(IXmlSerializationService xmlSerializationService, IMoBiProjectRetriever projectRetriever, IMoBiContext context, IObjectTypeResolver objectTypeResolver)
+   public ExpressionProfileTask(IXmlSerializationService xmlSerializationService, IMoBiProjectRetriever projectRetriever, IMoBiContext context, IObjectTypeResolver objectTypeResolver, ISerializationTask serializationTask, IPKSimAssemblyLoader pkSimLoader) : base(serializationTask, pkSimLoader)
    {
       _xmlSerializationService = xmlSerializationService;
       _projectRetriever = projectRetriever;
@@ -37,9 +38,9 @@ public class ExpressionProfileTask : PKSimPathAndValuesTask<ExpressionProfileBui
 
    public ExpressionProfileBuildingBlock CreateExpressionProfile(string category, string moleculeName, string speciesName, string phenotype)
    {
-      LoadPKSimAssembly();
+      _pkSimLoader.LoadPKSimAssembly();
 
-      var serializedExpressionProfile = ExecuteMethod(GetMethod("PKSim.R.Exchange.BuildingBlockCreator", "CreateExpressionProfile"), [category, moleculeName, speciesName, phenotype]) as string;
+      var serializedExpressionProfile = _pkSimLoader.ExecuteMethod(_pkSimLoader.GetMethod("PKSim.R.Exchange.BuildingBlockCreator", "CreateExpressionProfile"), [category, moleculeName, speciesName, phenotype]) as string;
 
       return _xmlSerializationService.Deserialize<ExpressionProfileBuildingBlock>(serializedExpressionProfile, _projectRetriever.Current);
    }

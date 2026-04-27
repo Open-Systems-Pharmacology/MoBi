@@ -13,6 +13,7 @@ using OSPSuite.Core.Serialization;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using static MoBi.Assets.AppConstants;
+using ISerializationTask = MoBi.Presentation.Tasks.ISerializationTask;
 
 namespace MoBi.R.Services;
 
@@ -45,7 +46,7 @@ public class ParameterValuesTask : ExtendablePathAndValuesTask<ParameterValuesBu
    private readonly IParameterValuesCreator _parameterValuesCreator;
    private readonly IContainerTask _containerTask;
 
-   public ParameterValuesTask(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IParameterValueBuildingBlockExtendManager extendManager, IXmlSerializationService xmlSerializationService, IParameterValuesCreator parameterValuesCreator, IContainerTask containerTask) : base(context, objectTypeResolver, extendManager)
+   public ParameterValuesTask(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IParameterValueBuildingBlockExtendManager extendManager, IXmlSerializationService xmlSerializationService, IParameterValuesCreator parameterValuesCreator, IContainerTask containerTask, ISerializationTask serializationTask) : base(context, objectTypeResolver, extendManager, serializationTask)
    {
       _extendManager = extendManager;
       _xmlSerializationService = xmlSerializationService;

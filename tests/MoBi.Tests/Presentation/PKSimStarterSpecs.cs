@@ -3,11 +3,9 @@ using FakeItEasy;
 using MoBi.Core;
 using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
-using MoBi.Presentation.Tasks;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Exceptions;
@@ -19,7 +17,7 @@ namespace MoBi.Presentation
       protected IMoBiConfiguration _configuration;
       protected IStartableProcessFactory _startableProcessFactory;
       protected IApplicationSettings _applicationSettings;
-      protected string _simulationFile = "SimFile.pkml";
+      protected readonly string _simulationFile = "SimFile.pkml";
       private ICloneManagerForBuildingBlock _cloneManager;
 
       protected override void Context()
@@ -28,7 +26,13 @@ namespace MoBi.Presentation
          _startableProcessFactory = A.Fake<IStartableProcessFactory>();
          _applicationSettings = A.Fake<IApplicationSettings>();
          _cloneManager = A.Fake<ICloneManagerForBuildingBlock>();
-         sut = new PKSimStarter(_configuration, _applicationSettings, _startableProcessFactory, _cloneManager, A.Fake<IXmlSerializationService>(), A.Fake<IMoBiProjectRetriever>());
+         A.CallTo(() => _configuration.PKSimPath).Returns("path");
+         sut = new PKSimStarter(_configuration, _applicationSettings, _startableProcessFactory, _cloneManager, A.Fake<IXmlSerializationService>(), A.Fake<IMoBiProjectRetriever>(), new PKSimAssemblyLoader());
+      }
+
+      protected void CreateStarter()
+      {
+         
       }
    }
 
@@ -50,6 +54,7 @@ namespace MoBi.Presentation
          base.Context();
          A.CallTo(() => _configuration.PKSimPath).Returns(_pkSimConfigPath);
          A.CallTo(() => _applicationSettings.PKSimPath).Returns(_pkSimUserSettingsPath);
+         CreateStarter();
       }
 
       protected override void Because()
@@ -86,6 +91,7 @@ namespace MoBi.Presentation
       {
          base.Context();
          A.CallTo(() => _configuration.PKSimPath).Returns(_pkSimConfigPath);
+         CreateStarter();
       }
 
       protected override void Because()
@@ -122,6 +128,7 @@ namespace MoBi.Presentation
       {
          base.Context();
          A.CallTo(() => _applicationSettings.PKSimPath).Returns(_pkSimUserSettingsPath);
+         CreateStarter();
       }
 
       protected override void Because()
@@ -145,10 +152,13 @@ namespace MoBi.Presentation
    public class When_exporting_a_simulation_file_to_PKSim_and_pksim_is_not_found_on_the_system : concern_for_PKSimStarter
    {
       private Func<string, bool> _oldFileHelper;
-
-      public override void GlobalContext()
+      private readonly string _pkSimUserSettingsPath = "PKSimUserSettingsPath";
+      
+      protected override void Context()
       {
-         base.GlobalContext();
+         base.Context();
+         A.CallTo(() => _configuration.PKSimPath).Returns(_pkSimUserSettingsPath);
+         CreateStarter();
          _oldFileHelper = FileHelper.FileExists;
          FileHelper.FileExists = s => false;
       }
@@ -159,7 +169,7 @@ namespace MoBi.Presentation
          The.Action(() => sut.StartPopulationSimulationWithSimulationFile(_simulationFile)).ShouldThrowAn<OSPSuiteException>();
       }
 
-      public override void GlobalCleanup()
+      public override void Cleanup()
       {
          base.GlobalCleanup();
          FileHelper.FileExists = _oldFileHelper;

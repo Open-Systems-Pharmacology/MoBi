@@ -2465,6 +2465,8 @@ namespace MoBi.Assets
          {
             return $"Could not find method '{methodName}' on type '{type}' in '{assemblyLocation}'";
          }
+
+         public static readonly string PKSimAssemblyLoaderNotInitialized = "PKSimAssemblyLoader has no path configured. Call InitializePath before loading the assembly.";
       }
 
       public static string DefaultFileNameForBuildingBlockExport(string projectName, IBuildingBlock buildingBlock)

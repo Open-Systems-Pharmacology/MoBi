@@ -263,3 +263,20 @@ internal class When_getting_the_type_of_a_molecule_that_does_not_exist : concern
       The.Action(() => sut.MoleculeTypeFor(_buildingBlock, "NotThere")).ShouldThrowAn<ArgumentException>();
    }
 }
+
+internal class When_loading_molecules_from_pkml : concern_for_MoleculesTask
+{
+   private MoleculeBuildingBlock _result;
+
+   protected override void Because()
+   {
+      _result = sut.LoadFromPKML(HelperForSpecs.DataTestFileFullPath("simulation with two modules.pkml"));
+   }
+
+   [Observation]
+   public void should_return_the_molecule_building_block_from_the_file()
+   {
+      _result.ShouldNotBeNull();
+      _result.Name.ShouldBeEqualTo("Molecules");
+   }
+}
