@@ -29,11 +29,6 @@ namespace MoBi.Presentation
          A.CallTo(() => _configuration.PKSimPath).Returns("path");
          sut = new PKSimStarter(_configuration, _applicationSettings, _startableProcessFactory, _cloneManager, A.Fake<IXmlSerializationService>(), A.Fake<IMoBiProjectRetriever>(), new PKSimAssemblyLoader());
       }
-
-      protected void CreateStarter()
-      {
-         
-      }
    }
 
    public class When_exporting_a_simulation_file_to_PKSim_and_the_application_was_installed_using_the_setup_but_overridden : concern_for_PKSimStarter
@@ -54,7 +49,6 @@ namespace MoBi.Presentation
          base.Context();
          A.CallTo(() => _configuration.PKSimPath).Returns(_pkSimConfigPath);
          A.CallTo(() => _applicationSettings.PKSimPath).Returns(_pkSimUserSettingsPath);
-         CreateStarter();
       }
 
       protected override void Because()
@@ -91,7 +85,6 @@ namespace MoBi.Presentation
       {
          base.Context();
          A.CallTo(() => _configuration.PKSimPath).Returns(_pkSimConfigPath);
-         CreateStarter();
       }
 
       protected override void Because()
@@ -128,7 +121,6 @@ namespace MoBi.Presentation
       {
          base.Context();
          A.CallTo(() => _applicationSettings.PKSimPath).Returns(_pkSimUserSettingsPath);
-         CreateStarter();
       }
 
       protected override void Because()
@@ -158,7 +150,6 @@ namespace MoBi.Presentation
       {
          base.Context();
          A.CallTo(() => _configuration.PKSimPath).Returns(_pkSimUserSettingsPath);
-         CreateStarter();
          _oldFileHelper = FileHelper.FileExists;
          FileHelper.FileExists = s => false;
       }

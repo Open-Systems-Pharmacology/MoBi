@@ -24,6 +24,8 @@ public abstract class BuildingBlockTask<TBuildingBlock> : IBuildingBlockTask<TBu
    protected T LoadSingleFromPKML<T>(string filePath)
    {
       var buildingBlocks = _serializationTask.LoadAll<T>(filePath);
+      if (buildingBlocks.Count == 0)
+         throw new MoBiException(AppConstants.Exceptions.NoBuildingBlocksOfTypeFound(typeof(T).Name));
       if (buildingBlocks.Count > 1)
          throw new MoBiException(AppConstants.Exceptions.MoreThanOneBuildingBlocks(typeof(T).Name));
       return buildingBlocks.First();
