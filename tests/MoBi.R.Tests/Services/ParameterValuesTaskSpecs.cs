@@ -10,6 +10,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Serialization;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.R.Tests.Services;
@@ -1894,5 +1895,51 @@ internal class When_adding_protein_expression_parameters_for_top_container_with_
    public void should_add_the_parameter_value_to_the_building_block()
    {
       _buildingBlock.FindByPath("Organism|Liver|Tumor|Intracellular|Protein1|RelExp").ShouldNotBeNull();
+   }
+}
+
+internal class When_loading_parameter_values_from_pkml : concern_for_ParameterValuesTask
+{
+   private ParameterValuesBuildingBlock _result;
+
+   protected override void Because()
+   {
+      _result = sut.LoadFromPKML(HelperForSpecs.DataTestFileFullPath("simulation with two modules.pkml"));
+   }
+
+   [Observation]
+   public void should_return_the_parameter_values_building_block_from_the_file()
+   {
+      _result.ShouldNotBeNull();
+      _result.Name.ShouldBeEqualTo("P2");
+   }
+}
+
+internal class When_loading_parameter_values_from_pkml_that_contains_multiple : concern_for_ParameterValuesTask
+{
+   private string _tempFile;
+
+   protected override void Context()
+   {
+      base.Context();
+      _tempFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".pkml");
+      var xmlSerializer = OSPSuite.R.Api.Container.Resolve<MoBi.Core.Serialization.Xml.Services.IXmlSerializationService>();
+      var first = xmlSerializer.SerializeModelPart(new ParameterValuesBuildingBlock().WithName("First"));
+      var second = xmlSerializer.SerializeModelPart(new ParameterValuesBuildingBlock().WithName("Second"));
+
+      var root = new XElement("ParameterValuesContainer", first, second);
+      root.PermissiveSave(_tempFile);
+   }
+
+   [Observation]
+   public void should_throw_mobi_exception()
+   {
+      The.Action(() => sut.LoadFromPKML(_tempFile)).ShouldThrowAn<MoBi.Core.Exceptions.MoBiException>();
+   }
+
+   public override void Cleanup()
+   {
+      base.Cleanup();
+      File.Delete(_tempFile);
    }
 }

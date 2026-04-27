@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
@@ -10,6 +10,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Serialization;
 using OSPSuite.R.Domain;
+using ISerializationTask = MoBi.Presentation.Tasks.ISerializationTask;
 
 namespace MoBi.R.Services;
 
@@ -28,7 +29,7 @@ public class IndividualTask : PKSimPathAndValuesTask<IndividualBuildingBlock, In
    private readonly IMoBiContext _context;
    private readonly IObjectTypeResolver _objectTypeResolver;
 
-   public IndividualTask(IXmlSerializationService xmlSerializationService, IMoBiProjectRetriever projectRetriever, IMoBiContext context, IObjectTypeResolver objectTypeResolver)
+   public IndividualTask(IXmlSerializationService xmlSerializationService, IMoBiProjectRetriever projectRetriever, IMoBiContext context, IObjectTypeResolver objectTypeResolver, ISerializationTask serializationTask, IPKSimAssemblyLoader pkSimLoader) : base(serializationTask, pkSimLoader)
    {
       _xmlSerializationService = xmlSerializationService;
       _projectRetriever = projectRetriever;
@@ -38,9 +39,9 @@ public class IndividualTask : PKSimPathAndValuesTask<IndividualBuildingBlock, In
 
    public IndividualBuildingBlock CreateIndividual(IndividualCharacteristics individualCharacteristics, string name)
    {
-      LoadPKSimAssembly();
+      _pkSimLoader.LoadPKSimAssembly();
 
-      var serializedIndividual = ExecuteMethod(GetMethod("PKSim.R.Exchange.BuildingBlockCreator", "CreateIndividual"), [individualCharacteristics]) as string;
+      var serializedIndividual = _pkSimLoader.ExecuteMethod("PKSim.R.Exchange.BuildingBlockCreator", "CreateIndividual", [individualCharacteristics]) as string;
 
       var buildingBlock = _xmlSerializationService.Deserialize<IndividualBuildingBlock>(serializedIndividual, _projectRetriever.Current);
       buildingBlock.Name = name;

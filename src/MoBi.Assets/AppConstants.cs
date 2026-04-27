@@ -1341,6 +1341,11 @@ namespace MoBi.Assets
             return $"A module is allowed to have only one Building Block of type {buildingBlockType}. The file you are trying to load contains multiple.";
          }
 
+         public static string NoBuildingBlocksOfTypeFound(string buildingBlockType)
+         {
+            return $"The file you are trying to load contains no Building Block of type {buildingBlockType}.";
+         }
+
          public static string FormulaInUse(IFormula formula) => $"Unable to remove Formula '{formula.Name}' still in use.";
 
          public static string NotSupportedFormulaType(Type type) => $"Formula type {type} is not supported";
@@ -2465,6 +2470,8 @@ namespace MoBi.Assets
          {
             return $"Could not find method '{methodName}' on type '{type}' in '{assemblyLocation}'";
          }
+
+         public static readonly string PKSimAssemblyLoaderNotInitialized = "PKSimAssemblyLoader has no path configured. Call InitializePath before loading the assembly.";
       }
 
       public static string DefaultFileNameForBuildingBlockExport(string projectName, IBuildingBlock buildingBlock)

@@ -1722,3 +1722,20 @@ internal class When_exporting_initial_conditions_to_pkml : concern_for_InitialCo
       File.Delete(_filePath);
    }
 }
+
+internal class When_loading_initial_conditions_from_pkml : concern_for_InitialConditionsTask
+{
+   private InitialConditionsBuildingBlock _result;
+
+   protected override void Because()
+   {
+      _result = sut.LoadFromPKML(HelperForSpecs.DataTestFileFullPath("simulation with two modules.pkml"));
+   }
+
+   [Observation]
+   public void should_return_the_initial_conditions_building_block_from_the_file()
+   {
+      _result.ShouldNotBeNull();
+      _result.Name.ShouldBeEqualTo("M2");
+   }
+}

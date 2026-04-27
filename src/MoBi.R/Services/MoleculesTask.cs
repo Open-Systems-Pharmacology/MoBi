@@ -3,10 +3,11 @@ using System.Linq;
 using MoBi.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using ISerializationTask = MoBi.Presentation.Tasks.ISerializationTask;
 
 namespace MoBi.R.Services;
 
-public interface IMoleculesTask
+public interface IMoleculesTask : IBuildingBlockTask<MoleculeBuildingBlock>
 {
    string[] AllMoleculeNames(MoleculeBuildingBlock buildingBlock);
    string[] AllFloatingMoleculeNames(MoleculeBuildingBlock buildingBlock);
@@ -17,8 +18,12 @@ public interface IMoleculesTask
    string MoleculeTypeFor(MoleculeBuildingBlock buildingBlock, string moleculeName);
 }
 
-public class MoleculesTask : IMoleculesTask
+public class MoleculesTask : BuildingBlockTask<MoleculeBuildingBlock>, IMoleculesTask
 {
+   public MoleculesTask(ISerializationTask serializationTask) : base(serializationTask)
+   {
+   }
+
    public string[] AllMoleculeNames(MoleculeBuildingBlock buildingBlock) =>
       buildingBlock.AllNames().ToArray();
 

@@ -307,3 +307,36 @@ internal class When_exporting_expression_profile_to_pkml : concern_for_Expressio
       File.Delete(_filePath);
    }
 }
+
+internal class When_loading_expression_profile_from_pkml : concern_for_ExpressionProfileTask
+{
+   private ExpressionProfileBuildingBlock _exported;
+   private ExpressionProfileBuildingBlock _loaded;
+   private string _tempFile;
+
+   protected override void Context()
+   {
+      base.Context();
+      _tempFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".pkml");
+      _exported = new ExpressionProfileBuildingBlock { Type = ExpressionTypes.MetabolizingEnzyme, Name = "CYP3A4|Human|Enzyme" };
+      sut.ExportToPKML(_exported, _tempFile);
+   }
+
+   protected override void Because()
+   {
+      _loaded = sut.LoadFromPKML(_tempFile);
+   }
+
+   [Observation]
+   public void should_return_the_expression_profile_building_block_with_the_original_name()
+   {
+      _loaded.ShouldNotBeNull();
+      _loaded.Name.ShouldBeEqualTo(_exported.Name);
+   }
+
+   public override void Cleanup()
+   {
+      base.Cleanup();
+      File.Delete(_tempFile);
+   }
+}
