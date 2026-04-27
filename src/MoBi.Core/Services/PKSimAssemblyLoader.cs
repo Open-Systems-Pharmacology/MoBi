@@ -9,8 +9,7 @@ public interface IPKSimAssemblyLoader
 {
    void InitializePath(string path);
    void LoadPKSimAssembly();
-   MethodInfo GetMethod(string type, string methodName);
-   object ExecuteMethod(MethodInfo method, object[] parameters = null);
+   object ExecuteMethod(string type, string methodName, object[] parameters = null);
 }
 
 public class PKSimAssemblyLoader : IPKSimAssemblyLoader
@@ -37,7 +36,7 @@ public class PKSimAssemblyLoader : IPKSimAssemblyLoader
       _externalAssembly = Assembly.LoadFrom(_assemblyPath);
    }
 
-   public MethodInfo GetMethod(string type, string methodName)
+   private MethodInfo getMethod(string type, string methodName)
    {
       LoadPKSimAssembly();
 
@@ -45,8 +44,9 @@ public class PKSimAssemblyLoader : IPKSimAssemblyLoader
       return resolvedType.GetMethod(methodName) ?? throw new MoBiException(AppConstants.PKSim.CouldNotFindMethodInAssembly(methodName, type, _externalAssembly.Location));
    }
 
-   public object ExecuteMethod(MethodInfo method, object[] parameters = null)
+   public object ExecuteMethod(string type, string methodName, object[] parameters = null)
    {
+      var method = getMethod(type, methodName);
       return method.Invoke(null, parameters);
    }
 }

@@ -114,17 +114,17 @@ namespace MoBi.Core.Services
          if (string.IsNullOrEmpty(methodName))
             return null;
 
-         return executeAndCloneBuildingBlock<ExpressionProfileBuildingBlock>(_pkSimLoader.GetMethod(PKSIM_UI_STARTER_EXPRESSION_PROFILE_CREATOR, methodName));
+         return executeAndCloneBuildingBlock<ExpressionProfileBuildingBlock>(PKSIM_UI_STARTER_EXPRESSION_PROFILE_CREATOR, methodName);
       }
 
       public IBuildingBlock CreateIndividual()
       {
-         return executeAndCloneBuildingBlock<IndividualBuildingBlock>(_pkSimLoader.GetMethod(PKSIM_UI_STARTER_INDIVIDUAL_CREATOR, CREATE_INDIVIDUAL));
+         return executeAndCloneBuildingBlock<IndividualBuildingBlock>(PKSIM_UI_STARTER_INDIVIDUAL_CREATOR, CREATE_INDIVIDUAL);
       }
 
-      private TBuildingBlock executeAndCloneBuildingBlock<TBuildingBlock>(MethodInfo method) where TBuildingBlock : class, IBuildingBlock
+      private TBuildingBlock executeAndCloneBuildingBlock<TBuildingBlock>(string type, string methodName) where TBuildingBlock : class, IBuildingBlock
       {
-         var buildingBlock = _pkSimLoader.ExecuteMethod(method) as TBuildingBlock;
+         var buildingBlock = _pkSimLoader.ExecuteMethod(type, methodName) as TBuildingBlock;
 
          //in case of cancelling
          if (buildingBlock == null)
@@ -135,12 +135,12 @@ namespace MoBi.Core.Services
 
       public IReadOnlyList<ExpressionParameterValueUpdate> UpdateExpressionProfileFromDatabase(ExpressionProfileBuildingBlock expressionProfile)
       {
-         return _pkSimLoader.ExecuteMethod(_pkSimLoader.GetMethod(PKSIM_UI_STARTER_EXPRESSION_PROFILE_CREATOR, GET_EXPRESSION_DATABASE_QUERY), [expressionProfile]) as List<ExpressionParameterValueUpdate>;
+         return _pkSimLoader.ExecuteMethod(PKSIM_UI_STARTER_EXPRESSION_PROFILE_CREATOR, GET_EXPRESSION_DATABASE_QUERY, [expressionProfile]) as List<ExpressionParameterValueUpdate>;
       }
 
       public Module LoadModuleFromSnapshot(string serializedSnapshot)
       {
-         var element = _pkSimLoader.ExecuteMethod(_pkSimLoader.GetMethod(PKSIM_UI_STARTER_SNAPSHOT_EXCHANGE, CREATE_MODULE), [serializedSnapshot]) as string;
+         var element = _pkSimLoader.ExecuteMethod(PKSIM_UI_STARTER_SNAPSHOT_EXCHANGE, CREATE_MODULE, [serializedSnapshot]) as string;
 
          // all object exchanges should be done using serialization to ensure that objects are recreated in MoBi.
          return _serializationService.Deserialize<Module>(element, _projectRetriever.Current);
@@ -148,7 +148,7 @@ namespace MoBi.Core.Services
 
       public (Module module, InputMapping[] inputMappings) LoadModuleFromSnapshotAndExportInputs(string serializedSnapshot, QualificationConfiguration qualificationConfiguration)
       {
-         var tuple = _pkSimLoader.ExecuteMethod(_pkSimLoader.GetMethod(PKSIM_UI_STARTER_SNAPSHOT_EXCHANGE, CREATE_MODULE_AND_EXPORT_INPUTS), [serializedSnapshot, qualificationConfiguration]);
+         var tuple = _pkSimLoader.ExecuteMethod(PKSIM_UI_STARTER_SNAPSHOT_EXCHANGE, CREATE_MODULE_AND_EXPORT_INPUTS, [serializedSnapshot, qualificationConfiguration]);
 
          var (element, mappings) = tuple as (string element, InputMapping[] mappings)? ?? (null, null);
 
@@ -160,7 +160,7 @@ namespace MoBi.Core.Services
 
       public ExpressionProfileBuildingBlock LoadExpressionProfileFromSnapshot(string serializedSnapshot)
       {
-         var pkml = _pkSimLoader.ExecuteMethod(_pkSimLoader.GetMethod(PKSIM_UI_STARTER_SNAPSHOT_EXCHANGE, CREATE_EXPRESSION_PROFILE_BUILDING_BLOCK), [serializedSnapshot]) as string;
+         var pkml = _pkSimLoader.ExecuteMethod(PKSIM_UI_STARTER_SNAPSHOT_EXCHANGE, CREATE_EXPRESSION_PROFILE_BUILDING_BLOCK, [serializedSnapshot]) as string;
 
          // all object exchanges should be done using serialization to ensure that objects are recreated in MoBi.
          return _serializationService.Deserialize<ExpressionProfileBuildingBlock>(pkml, _projectRetriever.Current);
@@ -168,7 +168,7 @@ namespace MoBi.Core.Services
 
       public IndividualBuildingBlock LoadIndividualFromSnapshot(string serializedSnapshot)
       {
-         var pkml = _pkSimLoader.ExecuteMethod(_pkSimLoader.GetMethod(PKSIM_UI_STARTER_SNAPSHOT_EXCHANGE, CREATE_INDIVIDUAL_BUILDING_BLOCK), [serializedSnapshot]) as string;
+         var pkml = _pkSimLoader.ExecuteMethod(PKSIM_UI_STARTER_SNAPSHOT_EXCHANGE, CREATE_INDIVIDUAL_BUILDING_BLOCK, [serializedSnapshot]) as string;
 
          // all object exchanges should be done using serialization to ensure that objects are recreated in MoBi.
          return _serializationService.Deserialize<IndividualBuildingBlock>(pkml, _projectRetriever.Current);

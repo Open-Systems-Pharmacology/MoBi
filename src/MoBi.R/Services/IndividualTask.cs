@@ -41,7 +41,7 @@ public class IndividualTask : PKSimPathAndValuesTask<IndividualBuildingBlock, In
    {
       _pkSimLoader.LoadPKSimAssembly();
 
-      var serializedIndividual = _pkSimLoader.ExecuteMethod(_pkSimLoader.GetMethod("PKSim.R.Exchange.BuildingBlockCreator", "CreateIndividual"), [individualCharacteristics]) as string;
+      var serializedIndividual = _pkSimLoader.ExecuteMethod("PKSim.R.Exchange.BuildingBlockCreator", "CreateIndividual", [individualCharacteristics]) as string;
 
       var buildingBlock = _xmlSerializationService.Deserialize<IndividualBuildingBlock>(serializedIndividual, _projectRetriever.Current);
       buildingBlock.Name = name;

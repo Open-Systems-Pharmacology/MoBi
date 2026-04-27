@@ -40,7 +40,7 @@ public class ExpressionProfileTask : PKSimPathAndValuesTask<ExpressionProfileBui
    {
       _pkSimLoader.LoadPKSimAssembly();
 
-      var serializedExpressionProfile = _pkSimLoader.ExecuteMethod(_pkSimLoader.GetMethod("PKSim.R.Exchange.BuildingBlockCreator", "CreateExpressionProfile"), [category, moleculeName, speciesName, phenotype]) as string;
+      var serializedExpressionProfile = _pkSimLoader.ExecuteMethod("PKSim.R.Exchange.BuildingBlockCreator", "CreateExpressionProfile", [category, moleculeName, speciesName, phenotype]) as string;
 
       return _xmlSerializationService.Deserialize<ExpressionProfileBuildingBlock>(serializedExpressionProfile, _projectRetriever.Current);
    }
