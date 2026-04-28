@@ -1,6 +1,8 @@
 ﻿using System.Linq;
+using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility.Extensions;
 using ISerializationTask = MoBi.Presentation.Tasks.ISerializationTask;
 
 namespace MoBi.R.Services
@@ -14,15 +16,20 @@ namespace MoBi.R.Services
       Module[] LoadModulesFromFile(string filePath);
       string[] AllInitialConditionsBuildingBlockNames(Module module);
       string[] AllParameterValuesBuildingBlockNames(Module module);
+      Module CreateModule(string name, params IBuildingBlock[] buildingBlocks);
+      void AddBuildingBlocksToModule(Module module, params IBuildingBlock[] buildingBlocks);
+      void RemoveBuildingBlockFromModule(Module module, IBuildingBlock buildingBlock);
    }
 
    public class ModuleTask : IModuleTask
    {
       private readonly ISerializationTask _serializationTask;
+      private readonly IMoBiContext _context;
 
-      public ModuleTask(IProjectTask projectTask, ISerializationTask serializationTask)
+      public ModuleTask(ISerializationTask serializationTask, IMoBiContext context)
       {
          _serializationTask = serializationTask;
+         _context = context;
       }
 
       public Module[] LoadModulesFromFile(string filePath) =>
@@ -43,5 +50,18 @@ namespace MoBi.R.Services
       public string[] AllInitialConditionsBuildingBlockNames(Module module) => AllInitialConditionsBuildingBlocksFromModule(module).AllNames().ToArray();
 
       public string[] AllParameterValuesBuildingBlockNames(Module module) => AllParameterValuesBuildingBlocksFromModule(module).AllNames().ToArray();
+
+      public Module CreateModule(string name, params IBuildingBlock[] buildingBlocks)
+      {
+         var module = _context.Create<Module>().WithName(name);
+         AddBuildingBlocksToModule(module, buildingBlocks);
+         return module;
+      }
+
+      public void AddBuildingBlocksToModule(Module module, params IBuildingBlock[] buildingBlocks) =>
+         buildingBlocks.Each(module.Add);
+
+      public void RemoveBuildingBlockFromModule(Module module, IBuildingBlock buildingBlock) =>
+         module.Remove(buildingBlock);
    }
 }
