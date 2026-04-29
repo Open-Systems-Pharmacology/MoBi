@@ -1,5 +1,6 @@
 ﻿using System;
 using DevExpress.XtraEditors.DXErrorProvider;
+using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
@@ -86,6 +87,20 @@ namespace MoBi.UI.Views
       public void HideFormulaCaption()
       {
          SetFormulaCaption(string.Empty);
+      }
+
+      public void SetFormulaUnit(string unitName)
+      {
+         if (string.IsNullOrEmpty(unitName))
+         {
+            lblFormulaUnit.Text = string.Empty;
+            layoutItemFormulaUnit.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Never;
+         }
+         else
+         {
+            lblFormulaUnit.Text = AppConstants.Captions.FormulaUnit(unitName);
+            layoutItemFormulaUnit.Visibility = DevExpress.XtraLayout.Utils.LayoutVisibility.Always;
+         }
       }
 
       public void AddFormulaPathListView(IView view)

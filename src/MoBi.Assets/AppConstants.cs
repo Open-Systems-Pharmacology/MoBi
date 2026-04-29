@@ -1441,6 +1441,7 @@ namespace MoBi.Assets
          public static readonly string FormulaType = "Formula Type";
          public static readonly string FormulaName = "Formula Name";
          public static readonly string Formula = "Formula";
+         public static string FormulaUnit(string unitName) => $"[{unitName}]";
          public static readonly string ExplicitFormula = "Formula (an explicit formula)";
          public static readonly string ConstantFormula = "Constant (a single numeric value)";
          public static readonly string TableFormula = "Table (multiple time discrete and piecewise constant numeric values)";
