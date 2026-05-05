@@ -27,8 +27,8 @@ public class RemoveConditionGroupCommand<T> : TagConditionCommandBase<T> where T
       _serializedConditionGroup = context.Serialize(_conditionGroup);
 
       var descriptorCriteria = _descriptorCriteriaRetriever(_taggedObject);
-
-      descriptorCriteria.Remove(_conditionGroup);
+      if (descriptorCriteria == null || !descriptorCriteria.Remove(_conditionGroup))
+         return;
 
       context.PublishEvent(new RemoveTagConditionEvent(_taggedObject));
       Description = AppConstants.Commands.RemoveTagFromConditionDescription(ObjectType, _conditionGroup.Condition, _taggedObject.Name);
