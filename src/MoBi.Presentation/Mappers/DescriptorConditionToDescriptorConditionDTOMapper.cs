@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
@@ -11,7 +12,7 @@ namespace MoBi.Presentation.Mappers
    {
    }
 
-   internal class DescriptorConditionToDescriptorConditionDTOMapper : IDescriptorConditionToDescriptorConditionDTOMapper
+   public class DescriptorConditionToDescriptorConditionDTOMapper : IDescriptorConditionToDescriptorConditionDTOMapper
    {
       public DescriptorConditionDTO MapFrom(ITagCondition descriptorCondition)
       {
@@ -31,6 +32,8 @@ namespace MoBi.Presentation.Mappers
                return new DescriptorConditionDTO(string.Empty, TagType.InParent, AppConstants.InParent);
             case InChildrenCondition _:
                return new DescriptorConditionDTO(string.Empty, TagType.InChildren, AppConstants.InChildren);
+            case ConditionGroup conditionGroup:
+               return new ConditionGroupDTO(conditionGroup, conditionGroup.Select(MapFrom).ToList());
             default:
                throw new ArgumentException($"Cannot create descriptor condition for {descriptorCondition.GetType().Name}");
          }

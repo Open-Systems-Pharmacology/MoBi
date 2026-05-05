@@ -1,4 +1,4 @@
-﻿using FakeItEasy;
+using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
@@ -76,6 +76,56 @@ namespace MoBi.Core.Service
       public void should_add_the_tag_to_the_object_and_return_the_expected_command()
       {
          _command.ShouldBeAnInstanceOf<AddMatchAllConditionCommand<ObserverBuilder>>();
+      }
+   }
+
+   public class When_adding_a_condition_group_to_a_taggable_object : concern_for_TagTask
+   {
+      private IMoBiCommand _command;
+      private ConditionGroup _conditionGroup;
+
+      protected override void Context()
+      {
+         base.Context();
+         _conditionGroup = new ConditionGroup { Operator = CriteriaOperator.And };
+         _conditionGroup.Add(new MatchTagCondition("A"));
+         _conditionGroup.Add(new MatchTagCondition("B"));
+      }
+
+      protected override void Because()
+      {
+         _command = sut.AddConditionGroup(_conditionGroup, _commandParameters);
+      }
+
+      [Observation]
+      public void should_return_an_add_condition_group_command()
+      {
+         _command.ShouldBeAnInstanceOf<AddConditionGroupCommand<ObserverBuilder>>();
+      }
+   }
+
+   public class When_removing_a_condition_group_from_a_taggable_object : concern_for_TagTask
+   {
+      private IMoBiCommand _command;
+      private ConditionGroup _conditionGroup;
+
+      protected override void Context()
+      {
+         base.Context();
+         _conditionGroup = new ConditionGroup { Operator = CriteriaOperator.And };
+         _conditionGroup.Add(new MatchTagCondition("A"));
+         _conditionGroup.Add(new MatchTagCondition("B"));
+      }
+
+      protected override void Because()
+      {
+         _command = sut.RemoveConditionGroup(_conditionGroup, _commandParameters);
+      }
+
+      [Observation]
+      public void should_return_a_remove_condition_group_command()
+      {
+         _command.ShouldBeAnInstanceOf<RemoveConditionGroupCommand<ObserverBuilder>>();
       }
    }
 

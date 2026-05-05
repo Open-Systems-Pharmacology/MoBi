@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Extensions;
@@ -15,7 +15,8 @@ namespace MoBi.Core.Services
       InContainer,
       NotInContainer,
       InParent,
-      InChildren
+      InChildren,
+      ConditionGroup
    }
 
    public interface ITagTask
@@ -39,6 +40,16 @@ namespace MoBi.Core.Services
       ///    Edits the tag <paramref name="newOperator" />
       /// </summary>
       IMoBiCommand EditOperator<T>(CriteriaOperator newOperator, TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase;
+
+      /// <summary>
+      ///    Adds a condition group (grouped AND/OR conditions) to the criteria.
+      /// </summary>
+      IMoBiCommand AddConditionGroup<T>(ConditionGroup conditionGroup, TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase;
+
+      /// <summary>
+      ///    Removes the given condition group from the criteria.
+      /// </summary>
+      IMoBiCommand RemoveConditionGroup<T>(ConditionGroup conditionGroup, TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase;
    }
 
    public class TagTask : ITagTask
@@ -68,6 +79,16 @@ namespace MoBi.Core.Services
       public IMoBiCommand EditOperator<T>(CriteriaOperator newOperator, TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase
       {
          return new EditOperatorCommand<T>(newOperator, tagConditionCommandParameters).RunCommand(_context);
+      }
+
+      public IMoBiCommand AddConditionGroup<T>(ConditionGroup conditionGroup, TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase
+      {
+         return new AddConditionGroupCommand<T>(conditionGroup, tagConditionCommandParameters).RunCommand(_context);
+      }
+
+      public IMoBiCommand RemoveConditionGroup<T>(ConditionGroup conditionGroup, TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase
+      {
+         return new RemoveConditionGroupCommand<T>(conditionGroup, tagConditionCommandParameters).RunCommand(_context);
       }
 
       private IMoBiCommand getAddCommand<T>(string tag, TagType tagType, TagConditionCommandParameters<T> tagConditionCommandParameters) where T : class, IObjectBase

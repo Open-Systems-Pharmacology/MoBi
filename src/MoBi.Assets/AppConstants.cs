@@ -24,6 +24,7 @@ namespace MoBi.Assets
       public static readonly string InParent = "in parent";
       public static readonly string InChildren = "in children";
       public static readonly string NotInContainer = "not in container";
+      public static readonly string ConditionGroup = "condition group";
       public static readonly string NullFormulaDescription = "No Formula";
       public static readonly string DefaultSkin = "Office 2013 Light Gray";
       public static readonly string NewFormulaDescription = "Create New Formula";
@@ -244,6 +245,7 @@ namespace MoBi.Assets
          public static readonly string InParentCondition = "In Parent Condition";
          public static readonly string InChildrenCondition = "In Children Condition";
          public static readonly string NotInContainerCondition = "Not In Container Condition";
+         public static readonly string ConditionGroup = "Condition Group";
          public static readonly string Name = "Name";
          public static readonly string UpdateDimensionsAndUnits = "Changing dimensions and units";
          public static readonly string RefreshParameterValuesFromBuildingBlocks = "Refreshing parameter values from original building blocks";
@@ -1581,6 +1583,9 @@ namespace MoBi.Assets
          public static readonly string AddMatchAllCondition = "Add \"Match all tag\" condition";
          public static readonly string AddInParentCondition = "Add \"In parent\" condition";
          public static readonly string AddInChildrenCondition = "Add \"In children\" condition";
+         public static readonly string NewConditionGroup = "New condition group (AND/OR)";
+         public static readonly string CreateConditionGroup = "Create condition group";
+         public static readonly string AddCondition = "Add condition";
          public static readonly string Persistable = "Plot parameter";
          public static readonly string Properties = "Properties";
          public static readonly string Tags = "Tags";
