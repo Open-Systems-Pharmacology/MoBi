@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
+using MoBi.Core.Exceptions;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -100,7 +101,7 @@ public class CreateConditionGroupPresenter : AbstractDisposablePresenter<ICreate
          case TagType.ConditionGroup:
             return AppConstants.ConditionGroup;
          default:
-            return tagType.ToString();
+            throw new MoBiException(AppConstants.Exceptions.UnknownTagType(tagType.ToString()));
       }
    }
 }

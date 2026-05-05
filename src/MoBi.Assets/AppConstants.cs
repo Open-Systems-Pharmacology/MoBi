@@ -1303,6 +1303,8 @@ namespace MoBi.Assets
 
          public static string UnknownDistributedFormula(Type type) => $"Unknown Distributed Formula Type '{type.Name}'";
 
+         public static string UnknownTagType(string tagType) => $"Unknown tag type '{tagType}'";
+
          public static string EmptyCollection(string collectionName) => $"{collectionName} contains no Elements";
 
          public static string NoInformationFoundException(string fileName, string lookForElementName, string rootElementName)
