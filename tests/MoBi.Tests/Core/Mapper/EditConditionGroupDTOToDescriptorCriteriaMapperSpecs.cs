@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FakeItEasy;
+using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -15,7 +17,7 @@ namespace MoBi.Core.Mapper
    {
       protected override void Context()
       {
-         sut = new EditConditionGroupDTOToConditionGroupMapper();
+         sut = new EditConditionGroupDTOToConditionGroupMapper(new TagTask(A.Fake<IMoBiContext>()));
       }
 
       //the DTO ctor seeds two default rows for the modal's initial state; clear them so each spec

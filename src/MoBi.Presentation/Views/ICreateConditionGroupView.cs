@@ -7,5 +7,6 @@ namespace MoBi.Presentation.Views
    public interface ICreateConditionGroupView : IModalView<ICreateConditionGroupPresenter>
    {
       void BindTo(EditConditionGroupDTO dto);
+      void InitializeTagTypes();
    }
 }

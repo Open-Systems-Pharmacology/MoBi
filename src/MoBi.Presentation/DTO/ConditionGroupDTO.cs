@@ -14,8 +14,8 @@ public class ConditionGroupDTO : DescriptorConditionDTO
       : base(conditionGroup?.Condition ?? string.Empty, TagType.ConditionGroup, AppConstants.ConditionGroup)
    {
       ConditionGroup = conditionGroup;
-      ConditionDTOs = conditionDTOs ?? new List<DescriptorConditionDTO>();
+      ConditionDTOs = conditionDTOs;
    }
 
-   public CriteriaOperator InnerOperator => ConditionGroup?.Operator ?? CriteriaOperator.And;
+   public CriteriaOperator InnerOperator => ConditionGroup.Operator;
 }

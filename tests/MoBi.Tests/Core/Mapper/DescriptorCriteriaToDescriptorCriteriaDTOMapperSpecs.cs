@@ -1,3 +1,5 @@
+using FakeItEasy;
+using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -12,7 +14,7 @@ namespace MoBi.Core.Mapper
    {
       protected override void Context()
       {
-         sut = new DescriptorCriteriaToDescriptorCriteriaDTOMapper(new DescriptorConditionToDescriptorConditionDTOMapper());
+         sut = new DescriptorCriteriaToDescriptorCriteriaDTOMapper(new DescriptorConditionToDescriptorConditionDTOMapper(new TagTask(A.Fake<IMoBiContext>())));
       }
    }
 

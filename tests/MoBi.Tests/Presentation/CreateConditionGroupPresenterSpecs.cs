@@ -1,5 +1,6 @@
 using System.Linq;
 using FakeItEasy;
+using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -16,6 +17,7 @@ namespace MoBi.Presentation
    {
       protected ICreateConditionGroupView _view;
       protected ITagVisitor _tagVisitor;
+      protected ITagTask _tagTask;
       protected IEditConditionGroupDTOToConditionGroupMapper _criteriaMapper;
       protected EditConditionGroupDTO _capturedDTO;
 
@@ -24,12 +26,13 @@ namespace MoBi.Presentation
          _view = A.Fake<ICreateConditionGroupView>();
          _tagVisitor = A.Fake<ITagVisitor>();
          A.CallTo(() => _tagVisitor.AllTags()).Returns(new[] { "Liver", "Plasma", "VenousBlood" });
-         //real mapper: it has no external dependencies and exercises the actual DTO -> criteria mapping
-         _criteriaMapper = new EditConditionGroupDTOToConditionGroupMapper();
+         //real TagTask + mapper: DisplayNameFor / CreateCondition are pure, faked context is sufficient
+         _tagTask = new TagTask(A.Fake<IMoBiContext>());
+         _criteriaMapper = new EditConditionGroupDTOToConditionGroupMapper(_tagTask);
          //capture the DTO the presenter binds to so each spec can inspect/mutate it as the user would
          A.CallTo(() => _view.BindTo(A<EditConditionGroupDTO>._))
             .Invokes((EditConditionGroupDTO dto) => _capturedDTO = dto);
-         sut = new CreateConditionGroupPresenter(_view, _tagVisitor, _criteriaMapper);
+         sut = new CreateConditionGroupPresenter(_view, _tagVisitor, _tagTask, _criteriaMapper);
       }
    }
 

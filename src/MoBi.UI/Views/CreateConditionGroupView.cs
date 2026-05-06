@@ -4,7 +4,6 @@ using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Base;
 using MoBi.Assets;
-using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
@@ -54,6 +53,12 @@ namespace MoBi.UI.Views
          _tagComboBoxRepository.FillComboBoxRepositoryWith(dto.AvailableTags);
       }
 
+      public void InitializeTagTypes()
+      {
+         foreach (var tagType in _presenter.SelectableTagTypes)
+            _typeRepository.Items.Add(new ImageComboBoxItem(_presenter.DisplayNameFor(tagType), tagType, -1));
+      }
+
       public override void InitializeResources()
       {
          base.InitializeResources();
@@ -70,9 +75,6 @@ namespace MoBi.UI.Views
          _screenBinder.Bind(x => x.Operator)
             .To(operatorComboBoxEdit)
             .WithValues(EnumHelper.AllValuesFor<CriteriaOperator>());
-
-         foreach (var tagType in _presenter.SelectableTagTypes)
-            _typeRepository.Items.Add(new ImageComboBoxItem(_presenter.DisplayNameFor(tagType), tagType, -1));
 
          _gridViewBinder.Bind(dto => dto.TagType)
             .WithCaption(AppConstants.Captions.Type)
@@ -95,7 +97,7 @@ namespace MoBi.UI.Views
 
       private RepositoryItem repositoryForTag(EditConditionGroupOperandDTO operand)
       {
-         return operand.IsTagless ? (RepositoryItem) _disabledTagRepository : _tagComboBoxRepository;
+         return operand.IsTagless ? (RepositoryItem)_disabledTagRepository : _tagComboBoxRepository;
       }
 
       private void onShowingEditor(object sender, CancelEventArgs e)

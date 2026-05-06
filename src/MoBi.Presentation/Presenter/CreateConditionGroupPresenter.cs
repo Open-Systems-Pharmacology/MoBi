@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using MoBi.Core.Exceptions;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -27,6 +26,7 @@ public interface ICreateConditionGroupPresenter : IDisposablePresenter
 public class CreateConditionGroupPresenter : AbstractDisposablePresenter<ICreateConditionGroupView, ICreateConditionGroupPresenter>, ICreateConditionGroupPresenter
 {
    private readonly ITagVisitor _tagVisitor;
+   private readonly ITagTask _tagTask;
 
    private readonly IEditConditionGroupDTOToConditionGroupMapper _criteriaMapper;
 
@@ -47,10 +47,13 @@ public class CreateConditionGroupPresenter : AbstractDisposablePresenter<ICreate
    public CreateConditionGroupPresenter(
       ICreateConditionGroupView view,
       ITagVisitor tagVisitor,
+      ITagTask tagTask,
       IEditConditionGroupDTOToConditionGroupMapper criteriaMapper) : base(view)
    {
       _tagVisitor = tagVisitor;
+      _tagTask = tagTask;
       _criteriaMapper = criteriaMapper;
+      _view.InitializeTagTypes();
    }
 
    public ConditionGroup CreateConditionGroup()
@@ -80,28 +83,5 @@ public class CreateConditionGroupPresenter : AbstractDisposablePresenter<ICreate
       _view.BindTo(_dto);
    }
 
-   public string DisplayNameFor(TagType tagType)
-   {
-      switch (tagType)
-      {
-         case TagType.Match:
-            return AppConstants.Match;
-         case TagType.NotMatch:
-            return AppConstants.NotMatch;
-         case TagType.InContainer:
-            return AppConstants.InContainer;
-         case TagType.NotInContainer:
-            return AppConstants.NotInContainer;
-         case TagType.MatchAll:
-            return AppConstants.MatchAll;
-         case TagType.InParent:
-            return AppConstants.InParent;
-         case TagType.InChildren:
-            return AppConstants.InChildren;
-         case TagType.ConditionGroup:
-            return AppConstants.ConditionGroup;
-         default:
-            throw new MoBiException(AppConstants.Exceptions.UnknownTagType(tagType.ToString()));
-      }
-   }
+   public string DisplayNameFor(TagType tagType) => _tagTask.DisplayNameFor(tagType);
 }
