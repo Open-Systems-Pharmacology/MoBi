@@ -27,7 +27,6 @@
 	</ItemGroup>
 	<ItemGroup>
       <ProjectReference Include="..\MoBi.Assets\MoBi.Assets.csproj" />
-      <ProjectReference Include="..\MoBi.Core\MoBi.Core.csproj" />
       <ProjectReference Include="..\MoBi.Presentation\MoBi.Presentation.csproj" />
       <ProjectReference Include="..\MoBi.Core\MoBi.Core.csproj" />
 	</ItemGroup>
