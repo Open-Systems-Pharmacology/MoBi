@@ -40,7 +40,7 @@ jobs:
     # - either the workflow was triggered manually (on 'workflow_dispatch')
     # - or the workflow was triggered on schedule and last repository commit is not older than 24h (=86400 sec)
     if: needs.get-latest-commit-timespan.outputs.LATEST_COMMIT_TIMESPAN < 86400 || github.event_name == 'workflow_dispatch'
-    runs-on: windows-latest
+    runs-on: ${{ vars.GHA_DEFAULT_RUNNER_WINDOWS || 'windows-latest' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -56,6 +56,8 @@ jobs:
           echo "APP_VERSION=13.0.${{ github.run_number }}" | Out-File -FilePath $env:GITHUB_ENV -Append
 
       - name: Build
+        env:
+          DevExpress_License: ${{ secrets.DEV_EXPRESS_KEY }}
         run: |
           rake "update_go_license[ApplicationStartup.cs, ${{ secrets.GO_DIAGRAM_KEY }}]"
           dotnet build MoBi.sln /p:Version=${{env.APP_VERSION}} -p:ExcludeDesigner=true
@@ -71,7 +73,7 @@ jobs:
           ES_CREDENTIAL_ID: ${{ secrets.ES_CREDENTIAL_ID }}
           ES_TOTP_SECRET: ${{ secrets.ES_TOTP_SECRET }}
         with:
-          file_path: ./src/MoBi/bin/Debug/net8.0-windows/MoBi.exe
+          file_path: ./src/MoBi/bin/Debug/net10.0-windows/MoBi.exe
 
       - name: Create Setup
         run: |
@@ -89,6 +91,7 @@ jobs:
           file_path: ./setup/deploy/MoBi.${{ env.APP_VERSION }}.msi
 
       - name: Push test log as artifact
+        if: always()
         uses: actions/upload-artifact@v7
         with:
           name: testLog_Windows

@@ -1,6 +1,6 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>NET8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <PackageTags>open-systems-pharmacology, ospsuite-components</PackageTags>
@@ -28,16 +28,16 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="FluentNHibernate" Version="3.4.0" />
-    <PackageReference Include="NHibernate.Extensions.Sqlite" Version="8.0.14" />
+    <PackageReference Include="NHibernate.Extensions.Sqlite" Version="10.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="OSPSuite.Utility" Version="4.1.1.5" />
-    <PackageReference Include="OSPSuite.Core" Version="13.0.107" />
-    <PackageReference Include="OSPSuite.Assets" Version="13.0.107" />
-    <PackageReference Include="OSPSuite.Assets.Images" Version="13.0.107" />
-    <PackageReference Include="OSPSuite.Infrastructure.Export" Version="13.0.107" />
-    <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="13.0.107" />
-    <PackageReference Include="OSPSuite.Infrastructure.Import" Version="13.0.107" />
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0" />
+    <PackageReference Include="OSPSuite.Utility" Version="5.0.0.7" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.108" />
+    <PackageReference Include="OSPSuite.Assets" Version="13.0.108" />
+    <PackageReference Include="OSPSuite.Assets.Images" Version="13.0.108" />
+    <PackageReference Include="OSPSuite.Infrastructure.Export" Version="13.0.108" />
+    <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="13.0.108" />
+    <PackageReference Include="OSPSuite.Infrastructure.Import" Version="13.0.108" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.7" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\LICENSE">
