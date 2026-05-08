@@ -10,10 +10,10 @@ permissions:
 
 jobs:
   cover:
-    runs-on: windows-latest
+    runs-on: ${{ vars.GHA_DEFAULT_RUNNER_WINDOWS }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: 'true'
 
@@ -23,9 +23,8 @@ jobs:
           dotnet restore
 
       - name: Build
-        run: dotnet build MoBi.sln /p:Version=13.0.9999
+        run: dotnet build MoBi.sln /p:Version=13.0.9999 -p:ExcludeDesigner=true
 
-        
       - name: Cover and report
         uses: Open-Systems-Pharmacology/Workflows/.github/actions/dotCover@main
         with:

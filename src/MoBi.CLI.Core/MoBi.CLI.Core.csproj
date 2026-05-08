@@ -1,7 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-	  <TargetFramework>NET8.0</TargetFramework>
+	  <TargetFramework>net10.0</TargetFramework>
       <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
       <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
       <PackageTags>open-systems-pharmacology, ospsuite-components</PackageTags>
@@ -16,14 +16,14 @@
 
 
 	<ItemGroup>
-      <PackageReference Include="OSPSuite.Assets" Version="13.0.107" />
-      <PackageReference Include="OSPSuite.Infrastructure.Autofac" Version="13.0.107" />
-      <PackageReference Include="OSPSuite.Utility" Version="4.1.1.5" />
-      <PackageReference Include="OSPSuite.Core" Version="13.0.107" />
-      <PackageReference Include="OSPSuite.Presentation" Version="13.0.107" />
-      <PackageReference Include="OSPSuite.R" Version="13.0.107" />
-      <PackageReference Include="OSPSuite.Infrastructure" Version="13.0.107" />
-      <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="13.0.107" />
+      <PackageReference Include="OSPSuite.Assets" Version="13.0.108" />
+      <PackageReference Include="OSPSuite.Infrastructure.Autofac" Version="13.0.108" />
+      <PackageReference Include="OSPSuite.Utility" Version="5.0.0.7" />
+      <PackageReference Include="OSPSuite.Core" Version="13.0.108" />
+      <PackageReference Include="OSPSuite.Presentation" Version="13.0.108" />
+      <PackageReference Include="OSPSuite.R" Version="13.0.108" />
+      <PackageReference Include="OSPSuite.Infrastructure" Version="13.0.108" />
+      <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="13.0.108" />
 	</ItemGroup>
 	<ItemGroup>
       <ProjectReference Include="..\MoBi.Assets\MoBi.Assets.csproj" />
