@@ -15,17 +15,15 @@ namespace MoBi.Presentation.Mapper
    internal class concern_for_IndividualParameterToParameterDTOMapper : ContextSpecification<IndividualParameterToParameterDTOMapper>
    {
       protected ICloneManagerForBuildingBlock _cloneManagerForBuildingBlock;
-      protected IFormulaFactory _formulaFactory;
       protected IParameterValueToParameterMapper _parameterValueToParameterMapper;
       protected IParameterToParameterDTOMapper _parameterToParameterDTOMapper;
 
       protected override void Context()
       {
          _cloneManagerForBuildingBlock = A.Fake<ICloneManagerForBuildingBlock>();
-         _formulaFactory = A.Fake<IFormulaFactory>();
          _parameterValueToParameterMapper = A.Fake<IParameterValueToParameterMapper>();
          _parameterToParameterDTOMapper = A.Fake<IParameterToParameterDTOMapper>();
-         sut = new IndividualParameterToParameterDTOMapper(_parameterToParameterDTOMapper, _parameterValueToParameterMapper, _formulaFactory, _cloneManagerForBuildingBlock);
+         sut = new IndividualParameterToParameterDTOMapper(_parameterToParameterDTOMapper, _parameterValueToParameterMapper, _cloneManagerForBuildingBlock);
 
          A.CallTo(() => _parameterToParameterDTOMapper.MapFrom(A<IParameter>._)).ReturnsLazily(x => new ParameterDTO(x.GetArgument<IParameter>(0)));
       }
@@ -69,12 +67,6 @@ namespace MoBi.Presentation.Mapper
       protected override IndividualParameter GetParameter()
       {
          return new IndividualParameter { Value = 4 };
-      }
-
-      [Observation]
-      public void the_formula_factory_creates_a_formula_from_the_value()
-      {
-         A.CallTo(() => _formulaFactory.ConstantFormula(_individualParameter.Value.Value, _individualParameter.Dimension)).MustHaveHappened();
       }
    }
 
