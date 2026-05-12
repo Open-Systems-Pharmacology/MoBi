@@ -29,7 +29,6 @@ namespace MoBi.UI.Views
       private readonly GridViewBinder<NotificationMessageDTO> _gridViewBinder;
       private readonly RepositoryItemPictureEdit _statusIconRepository;
       private readonly IStartOptions _runOptions;
-      private IGridViewColumn _iconColumn;
 
       public NotificationView(IImageListRetriever imageListRetriever, IToolTipCreator toolTipCreator, IStartOptions runOptions)
       {
@@ -60,27 +59,6 @@ namespace MoBi.UI.Views
          //handle filter only if we explicitly hide the record
          if (!e.Visible)
             e.Handled = true;
-      }
-
-      private void updateImage(object sender, CustomColumnDataEventArgs e)
-      {
-         if (!shouldUpdateColumn(e)) 
-            return;
-
-         var notification = _gridViewBinder.SourceElementAt(e.ListSourceRowIndex);
-         if (notification == null) 
-            return;
-
-         e.Value = notification.Icon.ToImage();
-      }
-
-      private bool shouldUpdateColumn(CustomColumnDataEventArgs e)
-      {
-         if (!ReferenceEquals(e.Column, _iconColumn.XtraColumn)) 
-            return false;
-         if (!e.IsGetData) 
-            return false;
-         return true;
       }
 
       private void onGridViewMouseDown(MouseEventArgs e)
@@ -118,12 +96,10 @@ namespace MoBi.UI.Views
 
       public override void InitializeBinding()
       {
-         _iconColumn = _gridViewBinder.AddUnboundColumn()
+         _gridViewBinder.Bind(x => x.Image)
             .WithCaption(AppConstants.Captions.EmptyColumn)
             .WithRepository(x => _statusIconRepository)
             .WithFixedWidth(OSPSuite.UI.UIConstants.Size.EMBEDDED_BUTTON_WIDTH);
-
-         gridViewMessages.CustomUnboundColumnData += updateImage;
 
          _gridViewBinder.AutoBind(x => x.ObjectType)
             .WithCaption(AppConstants.Captions.ObjectType)
