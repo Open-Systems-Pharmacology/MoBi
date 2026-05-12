@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 using DevExpress.Utils;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
@@ -11,25 +11,28 @@ using OSPSuite.UI.Extensions;
 
 namespace MoBi.UI.Views
 {
-   public partial class EditReactionInSimulationView : BaseUserControl, IEditReactionInSimulationView
+   public partial class EditTransportInSimulationView : BaseUserControl, IEditTransportInSimulationView
    {
-      private IEditReactionInSimulationPresenter _presenter;
+      private IEditTransportInSimulationPresenter _presenter;
 
-      public EditReactionInSimulationView()
+      public EditTransportInSimulationView()
       {
          InitializeComponent();
       }
 
-      public void AttachPresenter(IEditReactionInSimulationPresenter presenter)
+      public void AttachPresenter(IEditTransportInSimulationPresenter presenter)
       {
          _presenter = presenter;
       }
 
-      public void BindTo(ReactionDTO dtoReaction)
+      public void BindTo(TransportDTO dtoTransport)
       {
-         lblStoichiometric.Text = dtoReaction.Stoichiometric;
-         txtName.Text = dtoReaction.Name;
-         htmlEditor.Text = dtoReaction.Description;
+         txtName.Text = dtoTransport.Name;
+         txtSource.Text = dtoTransport.Source;
+         txtTarget.Text = dtoTransport.Target;
+         txtMolecule.Text = dtoTransport.Molecule;
+         txtDimension.Text = dtoTransport.Dimension?.DisplayName;
+         htmlEditor.Text = dtoTransport.Description;
       }
 
       public void SetParameterView(IView view)
@@ -54,9 +57,16 @@ namespace MoBi.UI.Views
          layoutControlKinetic.Text = AppConstants.Captions.Kinetic.FormatForLabel();
          layoutControlKinetic.TextLocation = Locations.Top;
          layoutControlKinetic.MinSize = new Size(3 * OSPSuite.UI.UIConstants.Size.BUTTON_HEIGHT, 2 * OSPSuite.UI.UIConstants.Size.BUTTON_WIDTH);
-         layoutControlStoichiometrie.Text = AppConstants.Captions.Stoichiometry.FormatForLabel();
          layoutItemName.Text = AppConstants.Captions.Name.FormatForLabel();
+         layoutItemSource.Text = AppConstants.Captions.Source.FormatForLabel();
+         layoutItemTarget.Text = AppConstants.Captions.Target.FormatForLabel();
+         layoutItemMolecule.Text = AppConstants.Captions.Molecule.FormatForLabel();
+         layoutItemDimension.Text = AppConstants.Captions.Dimension.FormatForLabel();
          txtName.Properties.ReadOnly = true;
+         txtSource.Properties.ReadOnly = true;
+         txtTarget.Properties.ReadOnly = true;
+         txtMolecule.Properties.ReadOnly = true;
+         txtDimension.Properties.ReadOnly = true;
          htmlEditor.Properties.ReadOnly = true;
       }
    }

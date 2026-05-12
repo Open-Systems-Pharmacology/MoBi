@@ -114,7 +114,7 @@ namespace MoBi.UI.Views
          set
          {
             _readOnly = value;
-            txtFormulaString.Enabled = !_readOnly;
+            txtFormulaString.ReadOnly = _readOnly;
          }
       }
    }
