@@ -31,13 +31,21 @@
     <PackageReference Include="NHibernate.Extensions.Sqlite" Version="10.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="OSPSuite.Utility" Version="5.0.0.7" />
-    <PackageReference Include="OSPSuite.Core" Version="13.0.108" />
-    <PackageReference Include="OSPSuite.Assets" Version="13.0.108" />
-    <PackageReference Include="OSPSuite.Assets.Images" Version="13.0.108" />
-    <PackageReference Include="OSPSuite.Infrastructure.Export" Version="13.0.108" />
-    <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="13.0.108" />
-    <PackageReference Include="OSPSuite.Infrastructure.Import" Version="13.0.108" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.109" />
+    <PackageReference Include="OSPSuite.Assets" Version="13.0.109" />
+    <PackageReference Include="OSPSuite.Assets.Images" Version="13.0.109" />
+    <PackageReference Include="OSPSuite.Infrastructure.Export" Version="13.0.109" />
+    <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="13.0.109" />
+    <PackageReference Include="OSPSuite.Infrastructure.Import" Version="13.0.109" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.7" />
+    <!--
+      Required by IDiagramModelToImageTask (System.Drawing.Bitmap). Previously pulled in transitively
+      via OSPSuite.Assets.Images's DevExpress.Utils dependency, which was removed as part of the
+      ApplicationIcon cross-platform refactor. Long-term: the interface should be redesigned to
+      return a byte[] (PNG) so MoBi.Core can stay honestly cross-platform without referencing
+      System.Drawing.
+    -->
+    <PackageReference Include="System.Drawing.Common" Version="9.0.0" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\LICENSE">

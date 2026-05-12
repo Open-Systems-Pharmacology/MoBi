@@ -1,15 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <!--
+      Temporary: MoBi.R is meant to be cross-platform net10.0, but transitively pulls
+      OSPSuite.Presentation (Windows-only) via MoBi.CLI.Core / MoBi.Infrastructure,
+      and also pulls a System.Drawing surface from MoBi.Core (IDiagramModelToImageTask
+      returns Bitmap, ChartOptions has Color properties, etc.). Once both are addressed,
+      this TFM returns to net10.0 and the assembly loads honestly on Linux / macOS .NET 10.
+      Tracked in https://github.com/Open-Systems-Pharmacology/MoBi/issues/2388.
+    -->
+    <TargetFramework>net10.0-windows</TargetFramework>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Core" Version="13.0.108" />
-    <PackageReference Include="OSPSuite.Infrastructure" Version="13.0.108" />
-    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="13.0.108" />
-    <PackageReference Include="OSPSuite.R" Version="13.0.108" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.109" />
+    <PackageReference Include="OSPSuite.Infrastructure" Version="13.0.109" />
+    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="13.0.109" />
+    <PackageReference Include="OSPSuite.R" Version="13.0.109" />
   </ItemGroup>
 
   <ItemGroup>

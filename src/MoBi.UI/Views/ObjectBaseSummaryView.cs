@@ -8,6 +8,7 @@ using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
 
 namespace MoBi.UI.Views
 {
@@ -32,7 +33,7 @@ namespace MoBi.UI.Views
       {
          _screenBinder.BindToSource(objectBaseDTO);
          _gridViewBinder.BindToSource(objectBaseDTO.Dictionary.OrderBy(x => x.Key));
-         svgImageBox.SvgImage = objectBaseDTO.ApplicationIcon;
+         svgImageBox.SvgImage = objectBaseDTO.ApplicationIcon.ToSvgImage();
       }
 
       public override void InitializeBinding()

@@ -34,7 +34,7 @@ namespace MoBi.UI.Views
          {
             //Required because this might be set before the component is actually fully initialized
             if(tabEditBuildingBlock != null)
-               tabEditBuildingBlock.Image = value.ToImage(IconSizes.Size16x16);
+               tabEditBuildingBlock.SetImage(value, IconSizes.Size16x16);
          }
       }
 
@@ -67,7 +67,7 @@ namespace MoBi.UI.Views
       public override void InitializeResources()
       {
          base.InitializeResources();
-         tabFormulaCache.Image = ApplicationIcons.Formula.ToImage(IconSizes.Size16x16);
+         tabFormulaCache.SetImage(ApplicationIcons.Formula, IconSizes.Size16x16);
       }
    }
 }

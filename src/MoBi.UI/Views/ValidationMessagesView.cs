@@ -72,7 +72,7 @@ namespace MoBi.UI.Views
          chkError.Text = AppConstants.Captions.Error;
          chkWarning.Text = AppConstants.Captions.Warning;
          btnSaveLog.Text = AppConstants.Captions.SaveLog;
-         btnSaveLog.Image = ApplicationIcons.Save.ToImage(IconSizes.Size16x16);
+         btnSaveLog.ImageOptions.SetImage(ApplicationIcons.Save, IconSizes.Size16x16);
          btnSaveLog.ImageLocation = ImageLocation.MiddleLeft;
          layoutItemSaveLog.AdjustButtonSize(layoutControl);
       }

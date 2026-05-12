@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using MoBi.Assets;
 using MoBi.Core;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Events;
@@ -112,10 +114,10 @@ namespace MoBi.Presentation.Presenter.Main
          if (!notification.Object.IsAnImplementationOf<ObserverBuilder>())
             return false;
 
-         if (DefaultNames.PKSimStaticObservers.Contains(notification.ObjectName))
+         if (AppConstants.DefaultNames.PKSimStaticObservers.Contains(notification.ObjectName))
             return true;
 
-         return DefaultNames.PKSimDynamicObservers.Any(notification.ObjectName.StartsWith);
+         return AppConstants.DefaultNames.PKSimDynamicObservers.Any(notification.ObjectName.StartsWith);
       }
 
       public void ClearNotifications(MessageOrigin messageOrigin)
@@ -138,30 +140,30 @@ namespace MoBi.Presentation.Presenter.Main
 
       public void ExportToFile()
       {
-         var file = _dialogCreator.AskForFileToSave(Captions.SaveLogToFile, Constants.Filter.CSV_FILE_FILTER, Constants.DirectoryKey.REPORT);
+         var file = _dialogCreator.AskForFileToSave(AppConstants.Captions.SaveLogToFile, Constants.Filter.CSV_FILE_FILTER, Constants.DirectoryKey.REPORT);
          if (string.IsNullOrEmpty(file)) return;
 
          var dataTable = new DataTable();
 
-         dataTable.Columns.Add(Captions.Type, typeof(string));
-         dataTable.Columns.Add(Captions.ObjectType, typeof(string));
-         dataTable.Columns.Add(Captions.ObjectName, typeof(string));
-         dataTable.Columns.Add(Captions.BuildingBlockType, typeof(string));
-         dataTable.Columns.Add(Captions.BuildingBlockName, typeof(string));
-         dataTable.Columns.Add(Captions.Message, typeof(string));
-         dataTable.Columns.Add(Captions.MessageOrigin, typeof(string));
+         dataTable.Columns.Add(AppConstants.Captions.Type, typeof(string));
+         dataTable.Columns.Add(AppConstants.Captions.ObjectType, typeof(string));
+         dataTable.Columns.Add(AppConstants.Captions.ObjectName, typeof(string));
+         dataTable.Columns.Add(AppConstants.Captions.BuildingBlockType, typeof(string));
+         dataTable.Columns.Add(AppConstants.Captions.BuildingBlockName, typeof(string));
+         dataTable.Columns.Add(AppConstants.Captions.Message, typeof(string));
+         dataTable.Columns.Add(AppConstants.Captions.MessageOrigin, typeof(string));
 
 
          foreach (var message in _allNotifications.Where(x => isShowing(x.Type)))
          {
             var newRow = dataTable.NewRow();
-            newRow[Captions.Type] = message.Type;
-            newRow[Captions.ObjectType] = message.ObjectType;
-            newRow[Captions.ObjectName] = message.ObjectName;
-            newRow[Captions.BuildingBlockType] = message.BuildingBlockType;
-            newRow[Captions.BuildingBlockName] = message.BuildingBlockName;
-            newRow[Captions.Message] = message.NotificationMessage + Environment.NewLine + message.Details.ToString(Environment.NewLine);
-            newRow[Captions.MessageOrigin] = Enum.GetName(typeof(MessageOrigin), message.MessageOrigin);
+            newRow[AppConstants.Captions.Type] = message.Type;
+            newRow[AppConstants.Captions.ObjectType] = message.ObjectType;
+            newRow[AppConstants.Captions.ObjectName] = message.ObjectName;
+            newRow[AppConstants.Captions.BuildingBlockType] = message.BuildingBlockType;
+            newRow[AppConstants.Captions.BuildingBlockName] = message.BuildingBlockName;
+            newRow[AppConstants.Captions.Message] = message.NotificationMessage + Environment.NewLine + message.Details.ToString(Environment.NewLine);
+            newRow[AppConstants.Captions.MessageOrigin] = Enum.GetName(typeof(MessageOrigin), message.MessageOrigin);
             dataTable.Rows.Add(newRow);
          }
 
@@ -265,7 +267,7 @@ namespace MoBi.Presentation.Presenter.Main
          if (!simulationsWithUntraceableChanges.Any())
             return;
 
-         _dialogCreator.MessageBoxInfo(Captions.ProjectConversionResultedInSimulationsWithUntraceableChanges(simulationsWithUntraceableChanges.AllNames()));
+         _dialogCreator.MessageBoxInfo(AppConstants.Captions.ProjectConversionResultedInSimulationsWithUntraceableChanges(simulationsWithUntraceableChanges.AllNames()));
       }
 
       public void Handle(RemovedEvent eventToHandle)
@@ -292,7 +294,7 @@ namespace MoBi.Presentation.Presenter.Main
          NotificationMessage = notificationMessage;
       }
 
-      public Image Image => NotificationMessage.Image.ToImage();
+      public ApplicationIcon Icon => NotificationMessage.Image;
       public NotificationType Type => NotificationMessage.Type;
       public NotificationMessage NotificationMessage { get; }
 
