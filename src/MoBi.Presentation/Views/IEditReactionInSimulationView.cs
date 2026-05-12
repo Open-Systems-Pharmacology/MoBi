@@ -1,14 +1,10 @@
-﻿using MoBi.Presentation.DTO;
+using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
-using OSPSuite.Presentation.Views;
 
 namespace MoBi.Presentation.Views
 {
-   public interface IEditReactionInSimulationView : IView<IEditReactionInSimulationPresenter>
+   public interface IEditReactionInSimulationView : IEditProcessInSimulationView<IEditReactionInSimulationPresenter>
    {
       void BindTo(ReactionDTO reactionDTO);
-      void SetParameterView(IView view);
-      void SetFormulaView(IView view);
-      void ShowParameters();
    }
 }
