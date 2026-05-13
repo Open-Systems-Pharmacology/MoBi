@@ -138,6 +138,9 @@ namespace MoBi.Presentation.Tasks
             }
          }
 
+         if (formula is DynamicFormula dynamicFormula)
+            checkDescriptorCriteria(dynamicFormula, x => x.Criteria);
+
          var explicitFormula = formula as ExplicitFormula;
          if (explicitFormula == null)
             return;
