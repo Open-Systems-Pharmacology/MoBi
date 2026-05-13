@@ -31,7 +31,7 @@ namespace MoBi.UI.Views
       {
          tabEditInitialConditions.FillWith(baseView);
          tabEditInitialConditions.Text = AppConstants.Captions.InitialConditions;
-         tabEditInitialConditions.SetImage(ApplicationIcons.InitialConditions);
+         tabEditInitialConditions.SetImage(ApplicationIcons.InitialConditions, IconSizes.Size16x16);
       }
 
       public override void InitializeResources()
