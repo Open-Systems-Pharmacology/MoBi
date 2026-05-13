@@ -289,6 +289,13 @@ namespace MoBi.Core.Events
       }
    }
 
+   public class TagChangedEvent : TagConditionEvent
+   {
+      public TagChangedEvent(IObjectBase taggedObject) : base(taggedObject)
+      {
+      }
+   }
+
    public class ChartAddedEvent
    {
       public CurveChart Chart { get; }

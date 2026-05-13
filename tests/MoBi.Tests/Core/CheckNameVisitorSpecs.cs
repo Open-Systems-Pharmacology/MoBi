@@ -695,4 +695,41 @@ namespace MoBi.Core
          _resultChanges.Count.ShouldBeEqualTo(3);
       }
    }
+
+   internal class When_visiting_a_dynamic_formula_with_a_tag_condition_matching_the_renamed_molecule : concern_for_CheckNameVisitor
+   {
+      private SumFormula _sumFormula;
+      private MoBiReactionBuildingBlock _reactionBuildingBlock;
+      private IEnumerable<IStringChange> _changes;
+      private MatchTagCondition _tagCondition;
+
+      protected override void Context()
+      {
+         base.Context();
+         _sumFormula = new SumFormula().WithName("drugSum");
+         _tagCondition = new MatchTagCondition(_changedName);
+         _sumFormula.Criteria.Add(_tagCondition);
+         _reactionBuildingBlock = new MoBiReactionBuildingBlock().WithName("R").WithId("R");
+         _reactionBuildingBlock.AddFormula(_sumFormula);
+      }
+
+      protected override void Because()
+      {
+         _changes = sut.GetPossibleChangesFrom(_changedObject, _newName, _reactionBuildingBlock, _changedName);
+      }
+
+      [Observation]
+      public void should_emit_an_EditTagCommand_for_the_dynamic_formula_criteria()
+      {
+         _changes.Count(x => x.ChangeCommand.IsAnImplementationOf<EditTagCommand<DynamicFormula>>()).ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void executing_the_emitted_command_should_replace_the_tag_on_the_dynamic_formula()
+      {
+         var change = _changes.First(x => x.ChangeCommand.IsAnImplementationOf<EditTagCommand<DynamicFormula>>());
+         change.ChangeCommand.Execute(_context);
+         _sumFormula.Criteria.OfType<ITagCondition>().Single().Tag.ShouldBeEqualTo(_newName);
+      }
+   }
 }
