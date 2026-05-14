@@ -3,10 +3,9 @@
   <PropertyGroup>
     <!--
       Temporary: MoBi.R is meant to be cross-platform net10.0, but transitively pulls
-      OSPSuite.Presentation (Windows-only) via MoBi.CLI.Core / MoBi.Infrastructure,
-      and also pulls a System.Drawing surface from MoBi.Core (IDiagramModelToImageTask
-      returns Bitmap, ChartOptions has Color properties, etc.). Once both are addressed,
-      this TFM returns to net10.0 and the assembly loads honestly on Linux / macOS .NET 10.
+      OSPSuite.Presentation (Windows-only) via MoBi.CLI.Core / MoBi.Infrastructure /
+      MoBi.Presentation. Once that chain is broken, this TFM returns to net10.0 and the
+      assembly loads honestly on Linux / macOS .NET 10.
       Tracked in https://github.com/Open-Systems-Pharmacology/MoBi/issues/2388.
     -->
     <TargetFramework>net10.0-windows</TargetFramework>
