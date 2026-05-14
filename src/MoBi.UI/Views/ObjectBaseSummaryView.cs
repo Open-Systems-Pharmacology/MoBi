@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
+using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI.Controls;
 
 namespace MoBi.UI.Views
@@ -32,7 +33,7 @@ namespace MoBi.UI.Views
       {
          _screenBinder.BindToSource(objectBaseDTO);
          _gridViewBinder.BindToSource(objectBaseDTO.Dictionary.OrderBy(x => x.Key));
-         svgImageBox.SvgImage = objectBaseDTO.ApplicationIcon;
+         svgImageBox.SvgImage = objectBaseDTO.ApplicationIcon.ToSvgImage();
       }
 
       public override void InitializeBinding()

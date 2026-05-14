@@ -25,11 +25,11 @@
     <PackageReference Include="OSPSuite.DataBinding" Version="4.0.0.5" />
     <PackageReference Include="OSPSuite.DataBinding.DevExpress" Version="7.0.0.6" />
     <PackageReference Include="OSPSuite.Utility" Version="5.0.0.7" />
-    <PackageReference Include="OSPSuite.Infrastructure" Version="13.0.108" />
-    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="13.0.108" />
-    <PackageReference Include="OSPSuite.Presentation" Version="13.0.108" />
-    <PackageReference Include="OSPSuite.UI" Version="13.0.108" />
-    <PackageReference Include="OSPSuite.Core" Version="13.0.108" />
+    <PackageReference Include="OSPSuite.Infrastructure" Version="13.0.110" />
+    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="13.0.110" />
+    <PackageReference Include="OSPSuite.Presentation" Version="13.0.110" />
+    <PackageReference Include="OSPSuite.UI" Version="13.0.110" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.110" />
    </ItemGroup>
   <ItemGroup>
     <None Include="..\..\LICENSE">
