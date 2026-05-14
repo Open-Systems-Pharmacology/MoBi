@@ -31,12 +31,12 @@
     <PackageReference Include="NHibernate.Extensions.Sqlite" Version="10.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="OSPSuite.Utility" Version="5.0.0.7" />
-    <PackageReference Include="OSPSuite.Core" Version="13.0.110" />
-    <PackageReference Include="OSPSuite.Assets" Version="13.0.110" />
-    <PackageReference Include="OSPSuite.Assets.Images" Version="13.0.110" />
-    <PackageReference Include="OSPSuite.Infrastructure.Export" Version="13.0.110" />
-    <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="13.0.110" />
-    <PackageReference Include="OSPSuite.Infrastructure.Import" Version="13.0.110" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.111" />
+    <PackageReference Include="OSPSuite.Assets" Version="13.0.111" />
+    <PackageReference Include="OSPSuite.Assets.Images" Version="13.0.111" />
+    <PackageReference Include="OSPSuite.Infrastructure.Export" Version="13.0.111" />
+    <PackageReference Include="OSPSuite.Infrastructure.Serialization" Version="13.0.111" />
+    <PackageReference Include="OSPSuite.Infrastructure.Import" Version="13.0.111" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.7" />
     <!--
       Required by IDiagramModelToImageTask (System.Drawing.Bitmap). Previously pulled in transitively
