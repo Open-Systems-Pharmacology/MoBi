@@ -8,7 +8,9 @@ using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
-using ISerializationTask = MoBi.Presentation.Tasks.ISerializationTask;
+using OSPSuite.Core.Serialization;
+using ISerializationTask = MoBi.Core.Serialization.Services.ICoreSerializationTask;
+
 
 namespace MoBi.R.Services;
 

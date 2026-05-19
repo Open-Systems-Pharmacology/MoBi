@@ -12,6 +12,7 @@ using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Presenter.BaseDiagram;
 using MoBi.Presentation.Presenter.Main;
 using MoBi.Presentation.Presenter.ModelDiagram;
+using MoBi.Core.Serialization.Xml;
 using MoBi.Presentation.Presenter.SpaceDiagram;
 using MoBi.Presentation.Serialization.Xml;
 using MoBi.Presentation.Serialization.Xml.Serializer;
