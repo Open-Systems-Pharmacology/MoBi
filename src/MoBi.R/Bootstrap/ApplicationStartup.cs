@@ -1,5 +1,5 @@
-﻿using MoBi.Core.Services;
-using MoBi.Presentation.Serialization;
+using MoBi.Core.Serialization.Xml.Services;
+using MoBi.Core.Services;
 using OSPSuite.CLI.Core;
 using OSPSuite.Infrastructure;
 using OSPSuite.R;
@@ -14,7 +14,7 @@ namespace MoBi.R.Bootstrap
       public static void Initialize(ApiConfig apiConfig)
       {
          OSPSuite.R.Api.InitializeOnce(apiConfig, registerAction);
-         new SerializerRegister().PerformMappingForMoBiSerializerRepository(OSPSuite.R.Api.Container);
+         OSPSuite.R.Api.Container.Resolve<IMoBiXmlSerializerRepository>().PerformMapping();
          CalculationMethodRepositoryInitialization.Initialize(OSPSuite.R.Api.Container);
       }
 

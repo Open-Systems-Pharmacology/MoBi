@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 using MoBi.Core;
-using MoBi.Presentation.Serialization.Xml;
+using MoBi.Core.Serialization.Xml;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Tasks;
 using MoBi.Presentation.UICommand;

@@ -10,7 +10,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Serialization;
 using OSPSuite.R.Domain;
-using ISerializationTask = MoBi.Presentation.Tasks.ISerializationTask;
+using ISerializationTask = MoBi.Core.Serialization.Services.ICoreSerializationTask;
 
 namespace MoBi.R.Services;
 

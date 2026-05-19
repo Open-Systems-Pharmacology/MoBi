@@ -1,13 +1,16 @@
-﻿using System.Collections.Generic;
-using MoBi.Core;
+using System.Collections.Generic;
 using MoBi.Core.Serialization.Services;
 using MoBi.Core.Serialization.Xml.Services;
 
-namespace MoBi.Presentation.Serialization.Xml
+namespace MoBi.Core.Serialization.Xml
 {
    public class ApplicationSettingsPersistor : SettingsPersistor<IApplicationSettings>
    {
-      public ApplicationSettingsPersistor(IMoBiXmlSerializerRepository serializerRepository, IMoBiConfiguration configuration, ISerializationContextFactory serializationContextFactory, IApplicationSettings settings) :
+      public ApplicationSettingsPersistor(
+         IMoBiXmlSerializerRepository serializerRepository, 
+         IMoBiConfiguration configuration, 
+         ISerializationContextFactory serializationContextFactory, 
+         IApplicationSettings settings) :
          base(serializerRepository, configuration, serializationContextFactory, settings)
       {
       }

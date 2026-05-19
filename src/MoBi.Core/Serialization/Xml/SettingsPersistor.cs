@@ -1,13 +1,12 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using MoBi.Core;
 using MoBi.Core.Serialization.Services;
 using MoBi.Core.Serialization.Xml.Services;
 using OSPSuite.Utility;
 
-namespace MoBi.Presentation.Serialization.Xml
+namespace MoBi.Core.Serialization.Xml
 {
    public interface ISettingsPersistor<TSettings>
    {
