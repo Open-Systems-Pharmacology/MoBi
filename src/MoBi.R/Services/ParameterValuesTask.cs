@@ -13,7 +13,7 @@ using OSPSuite.Core.Serialization;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using static MoBi.Assets.AppConstants;
-using ISerializationTask = MoBi.Presentation.Tasks.ISerializationTask;
+using ISerializationTask = MoBi.Core.Serialization.Services.ICoreSerializationTask;
 
 namespace MoBi.R.Services;
 

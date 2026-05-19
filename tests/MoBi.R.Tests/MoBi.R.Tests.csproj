@@ -1,11 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!--
-      Temporary: tracks the TFM of MoBi.R. See note in src/Mobi.R/MoBi.R.csproj and
-      https://github.com/Open-Systems-Pharmacology/MoBi/issues/2388.
-    -->
-    <TargetFramework>net10.0-windows</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>

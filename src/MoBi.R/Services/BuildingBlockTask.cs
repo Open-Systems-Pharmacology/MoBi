@@ -1,7 +1,7 @@
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Exceptions;
-using ISerializationTask = MoBi.Presentation.Tasks.ISerializationTask;
+using ISerializationTask = MoBi.Core.Serialization.Services.ICoreSerializationTask;
 
 namespace MoBi.R.Services;
 

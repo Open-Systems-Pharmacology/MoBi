@@ -4,6 +4,7 @@ using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Chart;
 using MoBi.Core.Domain.Model;
+using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Tasks;
@@ -81,6 +82,8 @@ public class concern_for_SimulationChartPresenter : ContextSpecification<Simulat
       };
 
       var observedDataNode = new ObservedDataNode(classifiableObservedData);
+      var rootNode = new RootNode(RootNodeTypes.ObservedDataFolder);
+      rootNode.AddChild(observedDataNode);
       _treeNodes = new List<ITreeNode>
       {
          observedDataNode

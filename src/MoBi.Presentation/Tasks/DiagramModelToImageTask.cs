@@ -1,11 +1,16 @@
 ﻿using System.Drawing;
 using System.Drawing.Imaging;
-using MoBi.Core.Services;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Presentation.Presenters.Diagram;
 
 namespace MoBi.Presentation.Tasks
 {
+   public interface IDiagramModelToImageTask
+   {
+      Bitmap CreateFor<T>(T withDiagramModel) where T : IWithDiagramFor<T>;
+      void ExportTo<T>(T withDiagramModel, string imageFilePath) where T : IWithDiagramFor<T>;
+   }
+
    public class DiagramModelToImageTask : IDiagramModelToImageTask
    {
       private readonly IMoBiApplicationController _applicationController;
