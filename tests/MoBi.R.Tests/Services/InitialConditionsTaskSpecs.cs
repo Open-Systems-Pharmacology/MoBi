@@ -1739,3 +1739,21 @@ internal class When_loading_initial_conditions_from_pkml : concern_for_InitialCo
       _result.Name.ShouldBeEqualTo("M2");
    }
 }
+
+internal class When_creating_an_empty_initial_conditions_building_block : concern_for_InitialConditionsTask
+{
+   private InitialConditionsBuildingBlock _result;
+
+   protected override void Because()
+   {
+      _result = sut.CreateBuildingBlock("My IC BB");
+   }
+
+   [Observation]
+   public void should_return_a_named_empty_building_block()
+   {
+      _result.ShouldNotBeNull();
+      _result.Name.ShouldBeEqualTo("My IC BB");
+      _result.Count().ShouldBeEqualTo(0);
+   }
+}
