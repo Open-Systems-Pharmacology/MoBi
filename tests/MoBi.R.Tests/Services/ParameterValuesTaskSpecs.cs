@@ -1943,3 +1943,21 @@ internal class When_loading_parameter_values_from_pkml_that_contains_multiple : 
       File.Delete(_tempFile);
    }
 }
+
+internal class When_creating_an_empty_parameter_values_building_block : concern_for_ParameterValuesTask
+{
+   private ParameterValuesBuildingBlock _result;
+
+   protected override void Because()
+   {
+      _result = sut.CreateBuildingBlock("My PV BB");
+   }
+
+   [Observation]
+   public void should_return_a_named_empty_building_block()
+   {
+      _result.ShouldNotBeNull();
+      _result.Name.ShouldBeEqualTo("My PV BB");
+      _result.Count().ShouldBeEqualTo(0);
+   }
+}

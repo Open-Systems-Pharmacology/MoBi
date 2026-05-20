@@ -4,6 +4,7 @@ using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Extensions;
+using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -13,20 +14,29 @@ using ISerializationTask = MoBi.Core.Serialization.Services.ICoreSerializationTa
 
 namespace MoBi.R.Services;
 
-public abstract class ExtendablePathAndValuesTask<TBuildingBlock, TBuilder> : PathAndValuesBuildingBlockTask<TBuildingBlock, TBuilder>
+public interface IExtendablePathAndValuesTask<TBuildingBlock, TBuilder> : IPathAndValuesTask<TBuildingBlock, TBuilder>
    where TBuildingBlock : ILookupBuildingBlock<TBuilder>
+   where TBuilder : PathAndValueEntity
+{
+   TBuildingBlock CreateBuildingBlock(string name);
+}
+
+public abstract class ExtendablePathAndValuesTask<TBuildingBlock, TBuilder> : PathAndValuesBuildingBlockTask<TBuildingBlock, TBuilder>, IExtendablePathAndValuesTask<TBuildingBlock, TBuilder>
+   where TBuildingBlock : class, ILookupBuildingBlock<TBuilder>
    where TBuilder : PathAndValueEntity
 {
    private readonly IObjectTypeResolver _objectTypeResolver;
    private readonly IExtendPathAndValuesManager<TBuilder> _extendManager;
    protected readonly IMoBiContext _context;
 
-   protected ExtendablePathAndValuesTask(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IExtendPathAndValuesManager<TBuilder> extendManager, ISerializationTask serializationTask) : base(serializationTask)
+   protected ExtendablePathAndValuesTask(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IExtendPathAndValuesManager<TBuilder> extendManager, ISerializationTask serializationTask, IXmlSerializationService xmlSerializationService) : base(serializationTask, xmlSerializationService)
    {
       _objectTypeResolver = objectTypeResolver;
       _extendManager = extendManager;
       _context = context;
    }
+
+   public TBuildingBlock CreateBuildingBlock(string name) => _context.Create<TBuildingBlock>().WithName(name);
 
    protected void Delete(TBuildingBlock buildingBlock, string[] pathsToDelete)
    {

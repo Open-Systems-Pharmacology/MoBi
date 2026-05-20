@@ -9,7 +9,6 @@ using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Serialization;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 using static MoBi.Assets.AppConstants;
@@ -17,7 +16,7 @@ using ISerializationTask = MoBi.Core.Serialization.Services.ICoreSerializationTa
 
 namespace MoBi.R.Services;
 
-public interface IParameterValuesTask : IPathAndValuesTask<ParameterValuesBuildingBlock, ParameterValue>
+public interface IParameterValuesTask : IExtendablePathAndValuesTask<ParameterValuesBuildingBlock, ParameterValue>
 {
    void SetParameterValues(ParameterValuesBuildingBlock buildingBlock, string[] quantityPaths, double[] quantityValues, string[] dimensionNames);
 
@@ -35,21 +34,17 @@ public interface IParameterValuesTask : IPathAndValuesTask<ParameterValuesBuildi
       string moleculeName,
       SpatialStructure spatialStructure,
       params string[] organPaths);
-
-   void ExportToPKML(ParameterValuesBuildingBlock buildingBlock, string filePath);
 }
 
 public class ParameterValuesTask : ExtendablePathAndValuesTask<ParameterValuesBuildingBlock, ParameterValue>, IParameterValuesTask
 {
    private readonly IParameterValueBuildingBlockExtendManager _extendManager;
-   private readonly IXmlSerializationService _xmlSerializationService;
    private readonly IParameterValuesCreator _parameterValuesCreator;
    private readonly IContainerTask _containerTask;
 
-   public ParameterValuesTask(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IParameterValueBuildingBlockExtendManager extendManager, IXmlSerializationService xmlSerializationService, IParameterValuesCreator parameterValuesCreator, IContainerTask containerTask, ISerializationTask serializationTask) : base(context, objectTypeResolver, extendManager, serializationTask)
+   public ParameterValuesTask(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IParameterValueBuildingBlockExtendManager extendManager, IXmlSerializationService xmlSerializationService, IParameterValuesCreator parameterValuesCreator, IContainerTask containerTask, ISerializationTask serializationTask) : base(context, objectTypeResolver, extendManager, serializationTask, xmlSerializationService)
    {
       _extendManager = extendManager;
-      _xmlSerializationService = xmlSerializationService;
       _parameterValuesCreator = parameterValuesCreator;
       _containerTask = containerTask;
    }
@@ -163,9 +158,6 @@ public class ParameterValuesTask : ExtendablePathAndValuesTask<ParameterValuesBu
    /// </summary>
    private static bool anyOrganPathUnder(string[] organPaths, string topContainerPath) =>
       organPaths.Any(p => p == topContainerPath || p.StartsWith(topContainerPath + ObjectPath.PATH_DELIMITER));
-
-   public void ExportToPKML(ParameterValuesBuildingBlock buildingBlock, string filePath) =>
-      _xmlSerializationService.SerializeModelPart(buildingBlock).PermissiveSave(filePath);
 
    protected override string RemoveCommandDescription() => Commands.RemoveManyParameterValues;
 

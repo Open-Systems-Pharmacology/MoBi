@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
+using MoBi.Core.Serialization.Xml.Services;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Serialization;
 using ISerializationTask = MoBi.Core.Serialization.Services.ICoreSerializationTask;
 
 namespace MoBi.R.Services;
@@ -16,15 +18,22 @@ public interface IPathAndValuesTask<TBuildingBlock, TBuilder> : IBuildingBlockTa
    string[] AllDimensionsFrom(ILookupBuildingBlock<TBuilder> buildingBlock, params string[] paths);
    string[] AllUnitsFrom(ILookupBuildingBlock<TBuilder> buildingBlock, params string[] paths);
    string[] AllValueOriginsFrom(ILookupBuildingBlock<TBuilder> buildingBlock, params string[] paths);
+   void ExportToPKML(TBuildingBlock buildingBlock, string filePath);
 }
 
 public abstract class PathAndValuesBuildingBlockTask<TBuildingBlock, TBuilder> : BuildingBlockTask<TBuildingBlock>, IPathAndValuesTask<TBuildingBlock, TBuilder>
    where TBuildingBlock : ILookupBuildingBlock<TBuilder>
    where TBuilder : PathAndValueEntity
 {
-   protected PathAndValuesBuildingBlockTask(ISerializationTask serializationTask) : base(serializationTask)
+   protected readonly IXmlSerializationService _xmlSerializationService;
+
+   protected PathAndValuesBuildingBlockTask(ISerializationTask serializationTask, IXmlSerializationService xmlSerializationService) : base(serializationTask)
    {
+      _xmlSerializationService = xmlSerializationService;
    }
+
+   public void ExportToPKML(TBuildingBlock buildingBlock, string filePath) =>
+      _xmlSerializationService.SerializeModelPart(buildingBlock).PermissiveSave(filePath);
 
    public string[] AllPathsFrom(ILookupBuildingBlock<TBuilder> buildingBlock) => AllFrom(buildingBlock, paths: null, x => x.Path.PathAsString);
 

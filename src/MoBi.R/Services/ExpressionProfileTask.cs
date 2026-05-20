@@ -8,7 +8,6 @@ using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Serialization;
 using ISerializationTask = MoBi.Core.Serialization.Services.ICoreSerializationTask;
 
 namespace MoBi.R.Services;
@@ -18,19 +17,16 @@ public interface IExpressionProfileTask : IPathAndValuesTask<ExpressionProfileBu
    ExpressionProfileBuildingBlock CreateExpressionProfile(string category, string moleculeName, string speciesName, string phenotype);
    void SetExpressionParameter(ExpressionProfileBuildingBlock buildingBlock, string[] quantityPaths, double[] quantityValues);
    void SetExpressionParameter(ExpressionProfileBuildingBlock buildingBlock, string quantityPath, double quantityValue);
-   void ExportToPKML(ExpressionProfileBuildingBlock buildingBlock, string filePath);
 }
 
 public class ExpressionProfileTask : PKSimPathAndValuesTask<ExpressionProfileBuildingBlock, ExpressionParameter>, IExpressionProfileTask
 {
-   private readonly IXmlSerializationService _xmlSerializationService;
    private readonly IMoBiProjectRetriever _projectRetriever;
    private readonly IMoBiContext _context;
    private readonly IObjectTypeResolver _objectTypeResolver;
 
-   public ExpressionProfileTask(IXmlSerializationService xmlSerializationService, IMoBiProjectRetriever projectRetriever, IMoBiContext context, IObjectTypeResolver objectTypeResolver, ISerializationTask serializationTask, IPKSimAssemblyLoader pkSimLoader) : base(serializationTask, pkSimLoader)
+   public ExpressionProfileTask(IXmlSerializationService xmlSerializationService, IMoBiProjectRetriever projectRetriever, IMoBiContext context, IObjectTypeResolver objectTypeResolver, ISerializationTask serializationTask, IPKSimAssemblyLoader pkSimLoader) : base(serializationTask, xmlSerializationService, pkSimLoader)
    {
-      _xmlSerializationService = xmlSerializationService;
       _projectRetriever = projectRetriever;
       _context = context;
       _objectTypeResolver = objectTypeResolver;
@@ -63,7 +59,4 @@ public class ExpressionProfileTask : PKSimPathAndValuesTask<ExpressionProfileBui
    }
 
    public void SetExpressionParameter(ExpressionProfileBuildingBlock buildingBlock, string quantityPath, double quantityValue) => SetExpressionParameter(buildingBlock, [quantityPath], [quantityValue]);
-
-   public void ExportToPKML(ExpressionProfileBuildingBlock buildingBlock, string filePath) =>
-      _xmlSerializationService.SerializeModelPart(buildingBlock).PermissiveSave(filePath);
 }

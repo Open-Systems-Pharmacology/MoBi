@@ -8,21 +8,18 @@ using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Serialization;
 using OSPSuite.Utility.Extensions;
 using ISerializationTask = MoBi.Core.Serialization.Services.ICoreSerializationTask;
 
 namespace MoBi.R.Services;
 
-public interface IInitialConditionsTask : IPathAndValuesTask<InitialConditionsBuildingBlock, InitialCondition>
+public interface IInitialConditionsTask : IExtendablePathAndValuesTask<InitialConditionsBuildingBlock, InitialCondition>
 {
    void DeleteInitialConditions(InitialConditionsBuildingBlock buildingBlock, params string[] pathsToDelete);
    string[] ExtendInitialConditions(InitialConditionsBuildingBlock buildingBlock, SpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock, params string[] moleculeNames);
    void SetInitialConditions(InitialConditionsBuildingBlock buildingBlock, string[] quantityPaths, string[] dimensionNames, double[] quantityValues, double[] scaleDivisors, bool[] isPresent, bool[] negativeAllowed);
 
    void SetInitialConditions(InitialConditionsBuildingBlock buildingBlock, string quantityPath, string dimensionName, double quantityValue, double scaleDivisor, bool isPresent, bool negativeAllowed);
-
-   void ExportToPKML(InitialConditionsBuildingBlock buildingBlock, string filePath);
 
    string[] AllMoleculeNamesFrom(ILookupBuildingBlock<InitialCondition> buildingBlock, params string[] paths);
 
@@ -36,12 +33,10 @@ public interface IInitialConditionsTask : IPathAndValuesTask<InitialConditionsBu
 public class InitialConditionsTask : ExtendablePathAndValuesTask<InitialConditionsBuildingBlock, InitialCondition>, IInitialConditionsTask
 {
    private readonly IInitialConditionsBuildingBlockExtendManager _extendManager;
-   private readonly IXmlSerializationService _xmlSerializationService;
 
-   public InitialConditionsTask(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IInitialConditionsBuildingBlockExtendManager extendManager, IXmlSerializationService xmlSerializationService, ISerializationTask serializationTask) : base(context, objectTypeResolver, extendManager, serializationTask)
+   public InitialConditionsTask(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IInitialConditionsBuildingBlockExtendManager extendManager, IXmlSerializationService xmlSerializationService, ISerializationTask serializationTask) : base(context, objectTypeResolver, extendManager, serializationTask, xmlSerializationService)
    {
       _extendManager = extendManager;
-      _xmlSerializationService = xmlSerializationService;
    }
 
    public void DeleteInitialConditions(InitialConditionsBuildingBlock buildingBlock, params string[] pathsToDelete) => Delete(buildingBlock, pathsToDelete);
@@ -90,9 +85,6 @@ public class InitialConditionsTask : ExtendablePathAndValuesTask<InitialConditio
    private static bool[] allNegativeValuesAllowedFrom(ILookupBuildingBlock<InitialCondition> buildingBlock, string[] paths) => AllFrom(buildingBlock, paths, x => x.NegativeValuesAllowed);
 
    protected override string RemoveCommandDescription() => AppConstants.Commands.RemoveMultipleInitialConditions;
-
-   public void ExportToPKML(InitialConditionsBuildingBlock buildingBlock, string filePath) =>
-      _xmlSerializationService.SerializeModelPart(buildingBlock).PermissiveSave(filePath);
 
    protected override IMoBiCommand RemoveCommandFor(InitialConditionsBuildingBlock buildingBlock, ObjectPath path) =>
       new RemoveInitialConditionFromBuildingBlockCommand(buildingBlock, path);

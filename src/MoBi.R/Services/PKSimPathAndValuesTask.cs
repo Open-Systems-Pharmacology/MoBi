@@ -3,6 +3,7 @@ using System.IO;
 using System.Reflection;
 using MoBi.Assets;
 using MoBi.Core.Commands;
+using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -17,7 +18,7 @@ public abstract class PKSimPathAndValuesTask<TBuildingBlock, TBuilder> : PathAnd
    private const string PKSIM_R_DLL = "PKSim.R.dll";
    protected readonly IPKSimAssemblyLoader _pkSimLoader;
 
-   protected PKSimPathAndValuesTask(ISerializationTask serializationTask, IPKSimAssemblyLoader pkSimLoader) : base(serializationTask)
+   protected PKSimPathAndValuesTask(ISerializationTask serializationTask, IXmlSerializationService xmlSerializationService, IPKSimAssemblyLoader pkSimLoader) : base(serializationTask, xmlSerializationService)
    {
       _pkSimLoader = pkSimLoader;
       _pkSimLoader.InitializePath(pkSimAssemblyPath());

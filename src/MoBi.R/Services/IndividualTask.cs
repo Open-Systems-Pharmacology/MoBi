@@ -8,7 +8,6 @@ using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Serialization;
 using OSPSuite.R.Domain;
 using ISerializationTask = MoBi.Core.Serialization.Services.ICoreSerializationTask;
 
@@ -19,19 +18,16 @@ public interface IIndividualTask : IPathAndValuesTask<IndividualBuildingBlock, I
    IndividualBuildingBlock CreateIndividual(IndividualCharacteristics individualCharacteristics, string name);
    void SetIndividualParameter(IndividualBuildingBlock buildingBlock, string[] quantityPaths, double[] quantityValues);
    void SetIndividualParameter(IndividualBuildingBlock buildingBlock, string quantityPath, double quantityValue);
-   void ExportToPKML(IndividualBuildingBlock buildingBlock, string filePath);
 }
 
 public class IndividualTask : PKSimPathAndValuesTask<IndividualBuildingBlock, IndividualParameter>, IIndividualTask
 {
-   private readonly IXmlSerializationService _xmlSerializationService;
    private readonly IMoBiProjectRetriever _projectRetriever;
    private readonly IMoBiContext _context;
    private readonly IObjectTypeResolver _objectTypeResolver;
 
-   public IndividualTask(IXmlSerializationService xmlSerializationService, IMoBiProjectRetriever projectRetriever, IMoBiContext context, IObjectTypeResolver objectTypeResolver, ISerializationTask serializationTask, IPKSimAssemblyLoader pkSimLoader) : base(serializationTask, pkSimLoader)
+   public IndividualTask(IXmlSerializationService xmlSerializationService, IMoBiProjectRetriever projectRetriever, IMoBiContext context, IObjectTypeResolver objectTypeResolver, ISerializationTask serializationTask, IPKSimAssemblyLoader pkSimLoader) : base(serializationTask, xmlSerializationService, pkSimLoader)
    {
-      _xmlSerializationService = xmlSerializationService;
       _projectRetriever = projectRetriever;
       _context = context;
       _objectTypeResolver = objectTypeResolver;
@@ -66,7 +62,4 @@ public class IndividualTask : PKSimPathAndValuesTask<IndividualBuildingBlock, In
    }
 
    public void SetIndividualParameter(IndividualBuildingBlock buildingBlock, string quantityPath, double quantityValue) => SetIndividualParameter(buildingBlock, [quantityPath], [quantityValue]);
-
-   public void ExportToPKML(IndividualBuildingBlock buildingBlock, string filePath) =>
-      _xmlSerializationService.SerializeModelPart(buildingBlock).PermissiveSave(filePath);
 }
