@@ -46,6 +46,8 @@ namespace MoBi.R
 
       public static IPassiveTransportsTask GetPassiveTransportsTask() => resolveTask<IPassiveTransportsTask>();
 
+      public static ISnapshotTask GetSnapshotTask() => resolveTask<ISnapshotTask>();
+
       private static T resolveTask<T>()
       {
          try
