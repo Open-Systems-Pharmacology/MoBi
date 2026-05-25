@@ -39,7 +39,7 @@ namespace MoBi.R.Services
 
       public MoBiSimulation[] LoadSimulationsFromSnapshot(string snapshotFile, params string[] simulationNames)
       {
-         var project = _snapshotTask.LoadProjectFromSnapshotFileAsync(snapshotFile).Result;
+         var project = _snapshotTask.LoadProjectFromSnapshotFileAsync(snapshotFile).GetAwaiter().GetResult();
          if (project == null)
             return Array.Empty<MoBiSimulation>();
 
@@ -64,7 +64,7 @@ namespace MoBi.R.Services
             Folders = folders
          };
 
-         _snapshotRunner.RunBatchAsync(runOptions).Wait();
+         _snapshotRunner.RunBatchAsync(runOptions).GetAwaiter().GetResult();
       }
    }
 }
