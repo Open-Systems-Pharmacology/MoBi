@@ -12,6 +12,7 @@ namespace MoBi.R.Services
       /// <summary>
       ///    Loads the simulations stored in the snapshot file at <paramref name="snapshotFile" />. If
       ///    <paramref name="simulationNames" /> is provided, only the simulations whose names match are returned.
+      ///    Matching is ordinal and case-sensitive, consistent with the rest of the OSP suite's name lookups.
       ///    When no name is supplied, every simulation contained in the snapshot is returned (equivalent to opening the
       ///    snapshot in MoBi).
       /// </summary>
