@@ -8,6 +8,7 @@ using MoBi.Core.Extensions;
 using MoBi.Core.Serialization.Xml;
 using MoBi.Core.Serialization.Xml.Serializer;
 using MoBi.Core.Serialization.Xml.Services;
+using MoBi.Core.Services;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -69,6 +70,8 @@ namespace MoBi.CLI.Core
          container.Register<IMoBiXmlSerializerRepository, MoBiCoreXmlSerializerRepository>(LifeStyle.Singleton);
          container.Register<ICoreUserSettings, OSPSuite.Core.ICoreUserSettings, CoreUserSettings>(LifeStyle.Singleton);
          container.Register<IApplicationSettings, OSPSuite.Core.IApplicationSettings, ApplicationSettings>(LifeStyle.Singleton);
+         // Desktop CLI uses the installed PK-Sim (PKSim.Starter.dll) for snapshot conversion.
+         container.Register<IPKSimStarter, IPKSimSnapshotConverter, PKSimStarter>(LifeStyle.Singleton);
          container.Register<ISpatialStructureDiagramManager, SpatialStructureDiagramManager>();
          container.Register<IMoBiReactionDiagramManager, MoBiReactionDiagramManager>();
          container.Register<ISimulationDiagramManager, SimulationDiagramManager>();

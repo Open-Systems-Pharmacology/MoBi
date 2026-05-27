@@ -51,6 +51,9 @@ namespace MoBi.Core
             scan.ExcludeType<GroupRepository>();
             scan.ExcludeType<ClipboardManager>();
             scan.ExcludeType<ApplicationSettings>();
+            // The PK-Sim snapshot converter is registered explicitly per host (PKSimStarter for the
+            // desktop app/CLI, PKSimSnapshotConverter for MoBi.R), so it is not auto-registered here.
+            scan.ExcludeType<PKSimStarter>();
             scan.ExcludeNamespaceContainingType<IMoBiObjectConverter>();
             scan.ExcludeNamespaceContainingType<MoBiSimulationDiffBuilder>();
             scan.ExcludeNamespaceContainingType<ProjectMapper>();
