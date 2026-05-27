@@ -90,7 +90,7 @@ namespace MoBi.Presentation
             scan.WithConvention<OSPSuiteRegistrationConvention>();
          });
 
-         container.Register<IPKSimStarter, PKSimStarter>(LifeStyle.Singleton);
+         container.Register<IPKSimStarter, IPKSimSnapshotConverter, PKSimStarter>(LifeStyle.Singleton);
          container.Register<IMenuBarItemRepository, MenuBarItemRepository>(LifeStyle.Singleton);
          container.Register<ISimulationRunner, SimulationRunner>(LifeStyle.Singleton);
          container.Register<IMoBiApplicationController, IApplicationController, MoBiApplicationController>(LifeStyle.Singleton);

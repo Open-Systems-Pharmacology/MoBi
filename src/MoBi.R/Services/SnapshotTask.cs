@@ -40,7 +40,7 @@ namespace MoBi.R.Services
 
       public MoBiSimulation[] LoadSimulationsFromSnapshot(string snapshotFile, params string[] simulationNames)
       {
-         var project = _snapshotTask.LoadProjectFromSnapshotFileAsync(snapshotFile).GetAwaiter().GetResult();
+         var project = _snapshotTask.LoadProjectFromSnapshotFileAsync(snapshotFile, runSimulations: false).GetAwaiter().GetResult();
          if (project == null)
             return Array.Empty<MoBiSimulation>();
 

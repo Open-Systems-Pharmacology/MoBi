@@ -33,8 +33,13 @@ namespace MoBi.R
          {
             scan.AssemblyContainingType<RRegister>();
             scan.IncludeNamespaceContainingType<IModuleTask>();
+            // Registered explicitly below so MoBi.R uses the headless PK-Sim snapshot converter.
+            scan.ExcludeType<PKSimSnapshotConverter>();
             scan.WithConvention<OSPSuiteRegistrationConvention>();
          });
+
+         // Headless snapshot conversion via PKSim.R.dll (no PK-Sim desktop install / PKSim.Starter.dll).
+         container.Register<IPKSimSnapshotConverter, PKSimSnapshotConverter>(LifeStyle.Singleton);
 
          registerMinimalTypes(container);
       }

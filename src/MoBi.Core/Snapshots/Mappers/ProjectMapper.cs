@@ -28,7 +28,7 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
 {
    private readonly IXmlSerializationService _xmlSerializationService;
    private readonly SimulationMapper _simulationMapper;
-   private readonly IPKSimStarter _pkSimStarter;
+   private readonly IPKSimSnapshotConverter _pkSimSnapshotConverter;
    private readonly ISimulationSettingsFactory _simulationSettingsFactory;
    private readonly ICoreSimulationRunner _simulationRunner;
    private readonly ICoreUserSettings _userSettings;
@@ -41,7 +41,7 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       IOSPSuiteLogger logger,
       ParameterIdentificationMapper parameterIdentificationMapper,
       SimulationMapper simulationMapper,
-      IPKSimStarter pkSimStarter,
+      IPKSimSnapshotConverter pkSimSnapshotConverter,
       ISimulationSettingsFactory simulationSettingsFactory,
       ICoreSimulationRunner simulationRunner,
       ICoreUserSettings userSettings,
@@ -49,7 +49,7 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
    {
       _xmlSerializationService = xmlSerializationService;
       _simulationMapper = simulationMapper;
-      _pkSimStarter = pkSimStarter;
+      _pkSimSnapshotConverter = pkSimSnapshotConverter;
       _simulationSettingsFactory = simulationSettingsFactory;
       _simulationRunner = simulationRunner;
       _userSettings = userSettings;
@@ -154,14 +154,14 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
 
    private ExpressionProfileBuildingBlock loadExpressionProfileFromSnapshotAndUpdateValues(ExpressionProfileSnapshot expressionProfileSnapshot, ModelProject project)
    {
-      var buildingBlock = _pkSimStarter.LoadExpressionProfileFromSnapshot(pkSimSnapshotToBase64String(expressionProfileSnapshot.PKSimSnapshot));
+      var buildingBlock = _pkSimSnapshotConverter.LoadExpressionProfileFromSnapshot(pkSimSnapshotToBase64String(expressionProfileSnapshot.PKSimSnapshot));
       expressionProfileSnapshot.UpdatedValues?.Each(x => _parameterValueUpdateManager.UpdateParameterValueIn<ExpressionProfileBuildingBlock, ExpressionParameter>(buildingBlock, x, formulaCacheFrom(expressionProfileSnapshot, project)));
       return buildingBlock;
    }
 
    private IndividualBuildingBlock loadIndividualFromSnapshotAndUpdateValues(IndividualSnapshot individualSnapshot, ModelProject project)
    {
-      var buildingBlock = _pkSimStarter.LoadIndividualFromSnapshot(pkSimSnapshotToBase64String(individualSnapshot.PKSimSnapshot));
+      var buildingBlock = _pkSimSnapshotConverter.LoadIndividualFromSnapshot(pkSimSnapshotToBase64String(individualSnapshot.PKSimSnapshot));
       individualSnapshot.UpdatedValues?.Each(x => _parameterValueUpdateManager.UpdateParameterValueIn<IndividualBuildingBlock, IndividualParameter>(buildingBlock, x, formulaCacheFrom(individualSnapshot, project)));
       return buildingBlock;
    }
@@ -204,7 +204,7 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
 
    private void loadModulesFromPKSimSnapshot(string snapshot, ModelProject project)
    {
-      var module = _pkSimStarter.LoadModuleFromSnapshot(snapshot);
+      var module = _pkSimSnapshotConverter.LoadModuleFromSnapshot(snapshot);
 
       loadModuleToProject(project, module);
    }
@@ -216,7 +216,7 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
 
    private InputMapping[] loadModulesAndExportInputsFromPKSimSnapshot(string snapshot, ModelProject project, QualificationConfiguration config)
    {
-      var (module, inputMappings) = _pkSimStarter.LoadModuleFromSnapshotAndExportInputs(snapshot, config);
+      var (module, inputMappings) = _pkSimSnapshotConverter.LoadModuleFromSnapshotAndExportInputs(snapshot, config);
 
       loadModuleToProject(project, module);
 
