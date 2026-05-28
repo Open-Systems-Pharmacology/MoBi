@@ -197,6 +197,7 @@ namespace MoBi.Presentation.Presenter
          {
             var historicalResultsNodes = e.Data<IList<ITreeNode>>().OfType<HistoricalResultsNode>();
             addHistoricalResults(historicalResultsNodes.Select(result => result.Tag).ToList());
+            _chartPresenterContext.Refresh();
          }
          else
          {
@@ -246,6 +247,7 @@ namespace MoBi.Presentation.Presenter
       {
          addDataRepositoriesToDataRepositoryCache(repositories);
          editorPresenter.AddDataRepositories(repositories);
+         addDataColumnsToEditorPresenter(repositories.SelectMany(x => x.AllButBaseGrid()));
          repositories.Each(repository => repository.SetPersistable(persistable: true));
       }
 
