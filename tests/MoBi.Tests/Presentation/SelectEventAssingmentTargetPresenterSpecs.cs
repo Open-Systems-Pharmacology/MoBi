@@ -42,6 +42,7 @@ namespace MoBi.Presentation
       private IBuildingBlockRepository _buildingBlockRepository;
       private MoBiReactionBuildingBlock _reactionBB;
       private MoleculeBuildingBlock _moleculeBB;
+      protected IPathAndValueContainerizingTask _containerizingTask;
 
       protected override void Context()
       {
@@ -57,9 +58,10 @@ namespace MoBi.Presentation
          _selectEntityInTreePresenter = A.Fake<ISelectEntityInTreePresenter>();
          _spatialStructureDTOMapper = new SpatialStructureToSpatialStructureDTOMapper(new ContainerToContainerDTOMapper(_objectPathFactory, A.Fake<IIconRepository>()));
          _buildingBlockRepository = new BuildingBlockRepository(new MoBiProjectRetriever(_context));
+         _containerizingTask = new PathAndValueContainerizingTask();
 
          sut = new SelectEventAssignmentTargetPresenter(_view, _context, _objectBaseDTOMapper, _containerDTOMapper, _reactionMapper,
-            _moleculeMapper, _objectPathFactory, _parameterMapper, _dimensionRetriever, _selectEntityInTreePresenter, _spatialStructureDTOMapper, _buildingBlockRepository);
+            _moleculeMapper, _objectPathFactory, _parameterMapper, _dimensionRetriever, _selectEntityInTreePresenter, _spatialStructureDTOMapper, _buildingBlockRepository, _containerizingTask);
 
          _mobiProject = DomainHelperForSpecs.NewProject();
          A.CallTo(() => _context.CurrentProject).Returns(_mobiProject);
@@ -275,6 +277,51 @@ namespace MoBi.Presentation
       {
          var dummyContainerDTO = _result.OfType<IDummyContainer>().ToList();
          dummyContainerDTO.ShouldOnlyContain(_dummyReactionDTO, _dummyMoleculeDTO);
+      }
+   }
+
+   internal class When_expanding_an_individual_building_block : concern_for_SelectEventAssignmentTargetPresenter
+   {
+      private IndividualBuildingBlock _individualBB;
+      private IReadOnlyList<ObjectBaseDTO> _firstLevelChildren;
+      private IReadOnlyList<ObjectBaseDTO> _secondLevelChildren;
+      private IReadOnlyList<ObjectBaseDTO> _thirdLevelChildren;
+
+      protected override void Context()
+      {
+         base.Context();
+         _individualBB = new IndividualBuildingBlock().WithName("IBB");
+         _individualBB.Add(new IndividualParameter { ContainerPath = new ObjectPath("Organism", "Liver") }.WithName("Volume"));
+         _individualBB.Add(new IndividualParameter { ContainerPath = new ObjectPath("Organism", "Kidney") }.WithName("Volume"));
+         A.CallTo(() => _objectBaseDTOMapper.MapFrom(A<IObjectBase>._)).ReturnsLazily(x => new ObjectBaseDTO(x.Arguments.Get<IObjectBase>(0)));
+      }
+
+      protected override void Because()
+      {
+         var individualBBDTO = _objectBaseDTOMapper.MapFrom(_individualBB);
+         _firstLevelChildren = sut.GetChildren(individualBBDTO);
+         _secondLevelChildren = sut.GetChildren(_firstLevelChildren[0]);
+         var liverDTO = _secondLevelChildren.First(x => x.ObjectBase.Name == "Liver");
+         _thirdLevelChildren = sut.GetChildren(liverDTO);
+      }
+
+      [Observation]
+      public void the_building_block_root_should_expand_to_show_organism()
+      {
+         _firstLevelChildren.Count.ShouldBeEqualTo(1);
+         _firstLevelChildren[0].ObjectBase.Name.ShouldBeEqualTo("Organism");
+      }
+
+      [Observation]
+      public void organism_should_expand_to_show_liver_and_kidney()
+      {
+         _secondLevelChildren.Select(x => x.ObjectBase.Name).ShouldOnlyContain("Liver", "Kidney");
+      }
+
+      [Observation]
+      public void liver_should_expand_to_show_the_volume_parameter()
+      {
+         _thirdLevelChildren.Select(x => x.ObjectBase.Name).ShouldOnlyContain("Volume");
       }
    }
 }

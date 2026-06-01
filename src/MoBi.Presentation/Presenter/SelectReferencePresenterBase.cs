@@ -14,6 +14,7 @@ using MoBi.Presentation.Views;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
@@ -96,7 +97,7 @@ namespace MoBi.Presentation.Presenter
 
          _view.Clear();
          addInitialObjects();
-         _view.Show(contextSpecificEntitiesToAddToReferenceTree.Where(x => !alreadyInView(x)).MapAllUsing(_referenceMapper), false);
+         _view.Show(contextSpecificEntitiesToAddToReferenceTree.Where(x => !alreadyInView(x)).MapAllUsing<IObjectBase, ITreeNode>(_referenceMapper), false);
 
          if (_refObject != null)
          {
@@ -145,7 +146,6 @@ namespace MoBi.Presentation.Presenter
             addChildrenFromSpatialStructure(children, objectBase as SpatialStructure);
             addChildrenFromContainer(children, objectBase as IContainer);
             addChildrenFromNeighborhood(children, objectBase as NeighborhoodBuilder);
-            addParametersFromParameterContainer(children, objectBase as IContainsParameters);
             addChildrenFromReaction(children, objectBase as MoBiReactionBuildingBlock);
          }
 
@@ -352,16 +352,6 @@ namespace MoBi.Presentation.Presenter
             return true;
 
          return SelectionPredicate(objectBase);
-      }
-
-      private void addParametersFromParameterContainer(List<ObjectBaseDTO> children, IContainsParameters parameterContainer)
-      {
-         if (parameterContainer == null)
-            return;
-
-         children.AddRange(parameterContainer.Parameters
-            .OrderBy(x => x.Name)
-            .MapAllUsing(_objectBaseDTOMapper));
       }
 
       private void addChildrenFromNeighborhood(List<ObjectBaseDTO> children, NeighborhoodBuilder neighborhood)

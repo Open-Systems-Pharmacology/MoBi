@@ -1,9 +1,11 @@
-﻿using MoBi.Presentation.Presenter;
+﻿using System.Collections.Generic;
+using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Presenter.BaseDiagram;
 using MoBi.Presentation.Presenter.BasePresenter;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
 using OSPSuite.Core;
+using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation.UICommand
@@ -11,6 +13,7 @@ namespace MoBi.Presentation.UICommand
    public interface IUserSettingsPresenter : IDisposablePresenter
    {
       void Edit(IUserSettings userSettings);
+      IReadOnlyList<ParameterGroupingModeForParameterAnalyzable> AllParameterGroupingMode();
    }
 
    public class UserSettingsPresenter : MoBiDisposablePresenter<IUserSettingsView, IUserSettingsPresenter>, IUserSettingsPresenter
@@ -25,7 +28,7 @@ namespace MoBi.Presentation.UICommand
 
       public UserSettingsPresenter(IUserSettingsView view, IDiagramOptionsPresenter diagramOptionsPresenter,
          IForceLayoutConfigurationPresenter forceLayoutConfigurationPresenter, IChartOptionsPresenter chartOptionsPresenter,
-         IValidationOptionsPresenter validationOptionsPresenter, IDisplayUnitsPresenter displayUnitsPresenter, 
+         IValidationOptionsPresenter validationOptionsPresenter, IDisplayUnitsPresenter displayUnitsPresenter,
          IStartOptions runOptions, IApplicationSettingsPresenter applicationSettingsPresenter) : base(view)
       {
          _diagramOptionsPresenter = diagramOptionsPresenter;
@@ -55,5 +58,7 @@ namespace MoBi.Presentation.UICommand
          _view.BindTo(userSettings);
          _view.Display();
       }
+
+      public IReadOnlyList<ParameterGroupingModeForParameterAnalyzable> AllParameterGroupingMode() => ParameterGroupingModesForParameterAnalyzable.All();
    }
 }

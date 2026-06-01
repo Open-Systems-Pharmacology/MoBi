@@ -13,14 +13,14 @@ namespace MoBi.Core.Commands
       public abstract Module Module { get; }
    }
 
-   public abstract class BuildingBlockChangeCommandBase<T> : BuildingBlockChangeCommandBase where T :  class, IBuildingBlock
+   public abstract class BuildingBlockChangeCommandBase<T> : BuildingBlockChangeCommandBase where T : class, IBuildingBlock
    {
       public bool ShouldIncrementVersion { get; set; }
       public bool HasChangedModuleType { get; private set; }
-      public PKSimModuleConversion ConversionOption { get; set; }  = PKSimModuleConversion.SetAsExtensionModule;
+      public PKSimModuleConversion ConversionOption { get; set; } = PKSimModuleConversion.SetAsExtensionModule;
 
       protected T _buildingBlock;
-      protected string _buildingBlockId;
+      protected readonly string _buildingBlockId;
 
       protected BuildingBlockChangeCommandBase(T buildingBlock)
       {
@@ -32,17 +32,17 @@ namespace MoBi.Core.Commands
 
       protected override void ExecuteWith(IMoBiContext context)
       {
+         if (_buildingBlock == null)
+            return;
+
          var originalPkSimModuleState = _buildingBlock.IsPkSimModule();
-         if (_buildingBlock == null) return;
          var buildingBlockVersionUpdater = context.Resolve<IBuildingBlockVersionUpdater>();
          buildingBlockVersionUpdater.UpdateBuildingBlockVersion(_buildingBlock, ShouldIncrementVersion, ConversionOption);
          HasChangedModuleType = originalPkSimModuleState != _buildingBlock.IsPkSimModule();
       }
 
-      protected override void ClearReferences()
-      {
+      protected override void ClearReferences() => 
          _buildingBlock = default;
-      }
 
       public override void RestoreExecutionData(IMoBiContext context)
       {

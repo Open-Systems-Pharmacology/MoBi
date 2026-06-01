@@ -205,6 +205,7 @@ namespace MoBi.Core.Domain.Model
 
          sourceSimulation.OriginalQuantityValues.Each(x => AddOriginalQuantityValue(new OriginalQuantityValue().WithPropertiesFrom(x)));
          HasUntraceableChanges = sourceSimulation.HasUntraceableChanges;
+         Chart = cloneManager.Clone(sourceSimulation.Chart);
 
          this.UpdateDiagramFrom(sourceSimulation);
       }

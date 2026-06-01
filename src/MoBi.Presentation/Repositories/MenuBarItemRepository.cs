@@ -260,15 +260,10 @@ namespace MoBi.Presentation.Repositories
 
          yield return newExpressionProfile;
 
-         yield return CreateSubMenu.WithCaption(AppConstants.MenuNames.ExportHistory)
+         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.ExportHistory)
             .WithId(MenuBarItemIds.HistoryReportGroup)
-            .WithIcon(ApplicationIcons.HistoryExport);
-
-         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.ExportHistoryToExcel)
-            .WithId(MenuBarItemIds.ExportHistoryToExcel)
-            .WithDescription(ToolTips.ExportRibbon.CreateReport)
-            .WithIcon(ApplicationIcons.Excel)
-            .WithCommand<ExportHistoryUICommand>(_container);
+            .WithIcon(ApplicationIcons.HistoryExport)
+            .WithCommand<ExportHistoryUICommand>(_container); 
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.NewMolecule)
             .WithId(MenuBarItemIds.NewMolecule)

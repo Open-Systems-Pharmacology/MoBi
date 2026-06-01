@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using MoBi.Assets;
 using MoBi.Core.Domain;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
@@ -36,7 +35,7 @@ namespace MoBi.Core.Services
          if (buildingBlock == null)
             return;
 
-         if (shouldConvertToExtensionModule(buildingBlock, conversionOption)) 
+         if (shouldConvertToExtensionModule(buildingBlock, conversionOption))
             buildingBlock.Module.IsPKSimModule = false;
 
          if (shouldConvertToPKSimModule(buildingBlock, conversionOption))
@@ -63,10 +62,8 @@ namespace MoBi.Core.Services
          refreshModule(buildingBlock.Module);
       }
 
-      private void refreshModule(Module module)
-      {
+      private void refreshModule(Module module) => 
          _eventPublisher.PublishEvent(new ModuleStatusChangedEvent(module));
-      }
 
       public void UpdateBuildingBlockVersion(IBuildingBlock buildingBlock, bool shouldIncrementVersion, PKSimModuleConversion conversionOption)
       {
@@ -87,9 +84,7 @@ namespace MoBi.Core.Services
          affectedSimulations.Each(refreshSimulation);
       }
 
-      private void refreshSimulation(IMoBiSimulation simulation)
-      {
+      private void refreshSimulation(IMoBiSimulation simulation) => 
          _eventPublisher.PublishEvent(new SimulationStatusChangedEvent(simulation));
-      }
    }
 }

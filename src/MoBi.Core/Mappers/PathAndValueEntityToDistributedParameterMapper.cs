@@ -1,7 +1,7 @@
-﻿using OSPSuite.Core.Domain;
+﻿using System.Collections.Generic;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
-using System.Collections.Generic;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Mappers
@@ -32,6 +32,16 @@ namespace MoBi.Core.Mappers
       {
          subParameters.Each(subParameter =>
          {
+            //the factory pre-creates the sub-parameters referenced by the distribution formula and a Percentile.
+            //If the caller provides a sub-parameter with the same name, just update the existing one's value.
+            var existing = distributedParameter.GetSingleChildByName<IParameter>(subParameter.Name);
+            if (existing != null)
+            {
+               if (subParameter.Value.HasValue)
+                  existing.Value = subParameter.Value.Value;
+               return;
+            }
+
             distributedParameter.Add(_parameterFactory.CreateParameter(subParameter.Name, subParameter.Value, subParameter.Dimension, formula: subParameter.Formula, displayUnit: subParameter.DisplayUnit));
          });
       }

@@ -1,22 +1,15 @@
-name: Build and Test 12.2
+name: Code Coverage 12.3
 
 on:
-  pull_request:
-    branches:
-    - develop
-
-env:
-  MAJOR: 12
-  MINOR: 2
-  RUN: ${{ github.run_number }}
+    schedule:
+      - cron: '0 1 * * 5'
 
 permissions:
   contents: read
   packages: read
 
 jobs:
-
-  build:
+  cover:
     runs-on: windows-latest
     steps:
       - name: Checkout code
@@ -30,13 +23,11 @@ jobs:
           dotnet restore
 
       - name: Build
-        run: dotnet build MoBi.sln /p:Version=12.2.9999
+        run: dotnet build MoBi.sln /p:Version=12.3.9999
 
-      - name: Test
-        run: dotnet test .\tests\**\bin\Debug\net472\MoBi*Tests.dll -v normal --no-build  --logger:"html;LogFileName=../testLog_Windows.html"
-
-      - name: Push test log as artifact
-        uses: actions/upload-artifact@v4
+        
+      - name: Cover and report
+        uses: Open-Systems-Pharmacology/Workflows/.github/actions/dotCover@main
         with:
-          name: testLog_Windows
-          path: ./testLog*.html
+          xml-configuration: dotcover.xml
+          token: ${{ secrets.CODECOV_TOKEN }}

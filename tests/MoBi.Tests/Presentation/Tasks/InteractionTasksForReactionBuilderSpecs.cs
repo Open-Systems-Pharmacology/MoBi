@@ -1,17 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.BDDHelper;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.UI.Diagram.DiagramManagers;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Diagram.Elements;
 using OSPSuite.UI.Diagram.Elements;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -34,6 +37,66 @@ namespace MoBi.Presentation.Tasks
          _multipleStringSelectionPresenter = A.Fake<IMultipleStringSelectionPresenter>();
          A.CallTo(() => _interactionTaskContext.ApplicationController).Returns(_moBiApplicationController);
          A.CallTo(() => _moBiApplicationController.Start<IMultipleStringSelectionPresenter>()).Returns(_multipleStringSelectionPresenter);
+      }
+   }
+
+   public class When_loading_a_reaction_that_is_renamed_and_parameter_formulas_reference_the_name : concern_for_InteractionTasksForReactionBuilder
+   {
+      private MoBiReactionBuildingBlock _buildingBlock;
+      private IReadOnlyCollection<ReactionBuilder> _itemsToAdd;
+      private Parameter _parameter;
+      private ReactionBuilder _reactionBuilder;
+
+      protected override void Context()
+      {
+         base.Context();
+         _buildingBlock = new MoBiReactionBuildingBlock
+         {
+            DiagramManager = new MoBiReactionDiagramManager()
+         };
+         _reactionBuilder = new ReactionBuilder
+         {
+            Formula = new ExplicitFormula("5"),
+            Name = "oldName"
+         };
+         _reactionBuilder.Formula.AddObjectPath(new FormulaUsablePath("oldName"));
+         _parameter = new Parameter
+         {
+            Formula = new ExplicitFormula("5")
+         };
+         _parameter.Formula.AddObjectPath(new FormulaUsablePath("oldName"));
+         _reactionBuilder.AddParameter(_parameter);
+
+         // add a parameter without a formula
+         _reactionBuilder.AddParameter(new Parameter().WithName("no_formula"));
+
+         _itemsToAdd = new List<ReactionBuilder>
+         {
+            _reactionBuilder,
+         };
+
+         A.CallTo(() => _interactionTaskContext.InteractionTask.CorrectName(_reactionBuilder, A<IEnumerable<string>>._)).Invokes(x => x.Arguments.Get<ReactionBuilder>(0).Name = "newName").Returns(true);
+      }
+
+      protected override void Because()
+      {
+         sut.AddTo(_itemsToAdd, _buildingBlock);
+      }
+
+      [Observation]
+      public void must_add_the_reaction_builders_to_the_building_block()
+      {
+         _itemsToAdd.Each(x => _buildingBlock.ShouldContain(x));
+      }
+
+      [Observation]
+      public void the_formulas_object_paths_should_be_adjusted()
+      {
+         _reactionBuilder.Formula.ObjectPaths.ShouldNotContain(new FormulaUsablePath { "oldName" });
+         _reactionBuilder.Formula.ObjectPaths.ShouldContain(new FormulaUsablePath { "newName" });
+
+         _parameter.Formula.ObjectPaths.ShouldNotContain(new FormulaUsablePath { "oldName" });
+         _parameter.Formula.ObjectPaths.ShouldContain(new FormulaUsablePath { "newName" });
       }
    }
 
@@ -64,7 +127,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         sut.SelectMoleculeNames(_reactionBuildingBlock, new List<string> {"unallowedMolecule"}, "reactionName", "Products");
+         sut.SelectMoleculeNames(_reactionBuildingBlock, new List<string> { "unallowedMolecule" }, "reactionName", "Products");
       }
 
       [Observation]

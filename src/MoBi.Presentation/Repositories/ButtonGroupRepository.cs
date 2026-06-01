@@ -169,8 +169,7 @@ namespace MoBi.Presentation.Repositories
          .WithId(ButtonGroupIds.Import);
 
       private IButtonGroup exportButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.ExportProject)
-         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.HistoryReportGroup))
-            .WithSubItem(_menuBarItemRepository.Find(MenuBarItemIds.ExportHistoryToExcel)))
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.HistoryReportGroup)))
          .WithId(ButtonGroupIds.Export);
 
       private IButtonGroup buildingBlocksButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.BuildingBlocks)
