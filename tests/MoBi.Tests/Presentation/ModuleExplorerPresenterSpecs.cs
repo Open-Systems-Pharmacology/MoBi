@@ -173,7 +173,7 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_invoke_the_first_element_of_the_context_menu()
+      public void should_edit_the_molecule_builder()
       {
          A.CallTo(() => _interactionTaskForMoleculeBuildingBlock.Edit(_moleculeBuildingBlock, _moleculeBuilder)).MustHaveHappened();
       }
