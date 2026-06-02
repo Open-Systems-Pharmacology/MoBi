@@ -200,8 +200,6 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
          }
       }
 
-      protected IDiagramModel LoadDiagramTemplate(string diagramTemplateXmlFilePath) => _diagramTask.LoadDiagramTemplate(diagramTemplateXmlFilePath);
-
       public void ApplyLayoutTemplateToSelection()
       {
          string diagramTemplateXmlFilePath = _dialogCreator.AskForFileToOpen("Open Named LayoutTemplate", AppConstants.Filter.MOBI_DIAGRAM_TEMPLATE_FILTER, AppConstants.DirectoryKey.LAYOUT);

@@ -9,6 +9,5 @@ namespace MoBi.Presentation.Views
    {
       void Show(IEnumerable<SpatialStructureDTO> dtoSpatialStructure);
       ObjectBaseDTO Selected { get;  }
-      void Show(List<ObjectBaseDTO> dtos);
    }
 }

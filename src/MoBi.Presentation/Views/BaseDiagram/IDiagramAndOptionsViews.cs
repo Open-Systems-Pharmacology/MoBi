@@ -17,7 +17,6 @@ namespace MoBi.Presentation.Views.BaseDiagram
 
    public interface ISimulationDiagramView : IView<ISimulationDiagramPresenter>, IMoBiBaseDiagramView
    {
-      void DisplayEductsRight(IDiagramModel reactionBlockDiagramModel);
       void ObserverLinksVisible(IDiagramModel diagramModel, bool visible);
    }
 

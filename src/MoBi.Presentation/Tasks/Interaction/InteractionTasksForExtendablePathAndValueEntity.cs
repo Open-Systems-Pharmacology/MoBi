@@ -118,14 +118,6 @@ namespace MoBi.Presentation.Tasks.Interaction
       /// <returns>The default dimension</returns>
       public abstract IDimension GetDefaultDimension();
 
-      protected T BuildingBlockById<T>(string buildingBlockId) where T : class, IBuildingBlock
-      {
-         if (!Context.ObjectRepository.ContainsObjectWithId(buildingBlockId))
-            throw new MoBiException(AppConstants.Exceptions.SourceBuildingBlockNotInProject(_objectTypeResolver.TypeFor<T>()));
-
-         return Context.Get<T>(buildingBlockId);
-      }
-
       public IEnumerable<string> GetContainerPathItemsForBuildingBlock(TBuildingBlock buildingBlock)
       {
          return buildingBlock.SelectMany(x => x.Path.Select(y => y)).Distinct();
@@ -148,12 +140,6 @@ namespace MoBi.Presentation.Tasks.Interaction
       protected bool HasEquivalentFormula(PathAndValueEntity pathAndValueEntity, IFormula targetFormula)
       {
          return _entityPathTask.HasEquivalentFormula(pathAndValueEntity, targetFormula);
-      }
-
-      protected static bool HasEquivalentPathAndValueEntity(PathAndValueEntity pathAndValueEntity, IParameter parameter)
-      {
-         var (value, _) = parameter.TryGetValue();
-         return HasEquivalentPathAndValueEntity(pathAndValueEntity, value);
       }
 
       protected static bool HasEquivalentPathAndValueEntity(PathAndValueEntity pathAndValueEntity, double? originalValue)

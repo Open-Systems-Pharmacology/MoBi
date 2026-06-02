@@ -9,7 +9,6 @@ namespace MoBi.Presentation.Tasks.Edit
 {
    public interface IEditTasksForBuilder
    {
-      IEnumerable<string> GetForbiddenNames(IBuildingBlock buildingBlock);
    }
 
    public abstract class EditTasksForBuilder<TBuilder, TBuildingBlock> : EditTaskFor<TBuilder>, IEditTasksForBuilder where TBuilder : class, IBuilder where TBuildingBlock : class
@@ -25,11 +24,6 @@ namespace MoBi.Presentation.Tasks.Edit
             return Enumerable.Empty<string>();
 
          return enumerableBuildingBlock.AllNames();
-      }
-
-      public virtual IEnumerable<string> GetForbiddenNames(IBuildingBlock buildingBlock)
-      {
-         return GetUnallowedNames(buildingBlock.DowncastTo<TBuildingBlock>()).Union(_interactionTask.ForbiddenNamesFor(buildingBlock));
       }
 
       protected override IEnumerable<string> GetUnallowedNames(TBuilder objectBase, IEnumerable<IObjectBase> existingObjectsInParent)

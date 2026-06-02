@@ -9,8 +9,4 @@ namespace MoBi.Presentation.Views.BaseDiagram
       VisibleGreatGrandChildren,
       AllVisibleDescendants
    }
-
-
-   public interface IGeneralDiagramLayouter : IContainerBaseLayouter
-   { }
 }

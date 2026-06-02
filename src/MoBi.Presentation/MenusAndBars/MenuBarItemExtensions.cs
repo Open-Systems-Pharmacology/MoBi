@@ -15,15 +15,6 @@ namespace MoBi.Presentation.MenusAndBars
       }
    }
 
-   public static class EntityUICommandExpressions
-   {
-      public static TCommand For<TCommand, T>(this TCommand command, T objectBase) where TCommand : IObjectUICommand<T> where T : class
-      {
-         command.Subject = objectBase;
-         return command;
-      }
-   }
-
    public static class RemoveCommandExpressions
    {
       public static TCommand For<TCommand, TParent, TChild>(this TCommand command, TParent parent, TChild child)

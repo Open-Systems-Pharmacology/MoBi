@@ -41,35 +41,6 @@ namespace MoBi.UI.Views
 
       public ObjectBaseDTO Selected => SelectedNode.TagAsObject as ObjectBaseDTO;
 
-      public void Show(List<ObjectBaseDTO> dtos)
-      {
-         foreach (var dto in dtos)
-         {
-            if (dto.IsAnImplementationOf<SpatialStructureDTO>())
-            {
-               AddNode(getSpatialStructureNode((SpatialStructureDTO) dto));
-            }
-            else
-            {
-               if (dto.IsAnImplementationOf<BuildingBlockDTO>())
-               {
-                  AddNode(getBuildingBlockNode((BuildingBlockDTO) dto));
-               }
-            }
-         }
-      }
-
-      private ITreeNode getBuildingBlockNode(BuildingBlockDTO dto)
-      {
-         var buildingBlockNode = _nodeMapper.MapFrom(dto);
-         foreach (var dtoBuilder in dto.Builder)
-         {
-            buildingBlockNode.AddChild(_nodeMapper.MapFrom(dtoBuilder));
-         }
-
-         return buildingBlockNode;
-      }
-
       private ITreeNode getSpatialStructureNode(SpatialStructureDTO dtoSpatialStructure)
       {
          var spatialStructureNode = _nodeMapper.MapFrom(dtoSpatialStructure);

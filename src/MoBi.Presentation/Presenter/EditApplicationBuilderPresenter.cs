@@ -34,7 +34,6 @@ namespace MoBi.Presentation.Presenter
       void AddApplicationMolecule();
       void RemoveApplicationMolecule(ApplicationMoleculeBuilderDTO dtoApplicationMoleculeBuilder);
       void SelectRelativeContainerPath(ApplicationMoleculeBuilderDTO applicationMoleculeBuilderDTO);
-      void SetPropertyValueFor<T>(ApplicationMoleculeBuilderDTO dto, string propertyName, T newValue, T oldValue);
       IEnumerable<string> GetMoleculeNamesWithSelf();
       void UpdateFormula(ApplicationMoleculeBuilderDTO applicationMoleculeBuilderDTO, FormulaBuilderDTO newFormulaDTO);
       void SetRelativeContainerPath(ApplicationMoleculeBuilderDTO applicationMoleculeBuilderDTO, string newRelativeContainerPath);
@@ -166,12 +165,6 @@ namespace MoBi.Presentation.Presenter
       {
          var applicationMoleculeBuilder = applicationMoleculeBuilderFrom(applicationMoleculeBuilderDTO);
          updateRelativeContainerPath(applicationMoleculeBuilder, new ObjectPath(newRelativeContainerPath.ToPathArray()));
-      }
-
-      public void SetPropertyValueFor<T>(ApplicationMoleculeBuilderDTO dto, string propertyName, T newValue, T oldValue)
-      {
-         var applicationMoleculeBuilder = applicationMoleculeBuilderFrom(dto);
-         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand(propertyName, newValue, oldValue, applicationMoleculeBuilder, BuildingBlock).RunCommand(_context));
       }
 
       private ApplicationMoleculeBuilder applicationMoleculeBuilderFrom(ApplicationMoleculeBuilderDTO dto)

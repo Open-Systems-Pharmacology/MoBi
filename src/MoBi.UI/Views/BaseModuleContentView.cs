@@ -81,8 +81,6 @@ namespace MoBi.UI.Views
 
       public virtual void AttachPresenter(TPresenter presenter) => _presenter = presenter;
 
-      public void DisableDefaultMergeBehavior() => mergeBehaviorItem.Enabled = false;
-
       public void HideMergeBehaviorGroup()
       {
          mergeBehaviorGroup.Visibility = LayoutVisibility.Never;

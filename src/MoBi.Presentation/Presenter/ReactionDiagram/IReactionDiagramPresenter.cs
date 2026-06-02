@@ -13,7 +13,6 @@ namespace MoBi.Presentation.Presenter.ReactionDiagram
       void SetDisplayEductsRightForDiagramSelection(bool displayEductsRight);
       void AddMoleculeNode();
       void LayerLayout(IContainerBase containerBase);
-      void LayerLayout();
       void Select(ReactionBuilder reactionBuilder);
       bool IsReactionNode(IBaseNode node);
       bool DisplayEductsRight(IBaseNode node);

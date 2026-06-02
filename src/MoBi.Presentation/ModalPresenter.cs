@@ -45,12 +45,6 @@ namespace MoBi.Presentation
 
       private void updateView() => _view.OkEnabled = CanClose;
 
-      public bool Show()
-      {
-         updateView();
-         return _view.Show();
-      }
-
       public string Text
       {
          get => _view.Caption;

@@ -22,7 +22,6 @@ namespace MoBi.Presentation.Tasks.Interaction
    public interface IInteractionTasksForSimulation : IInteractionTasksForChildren<MoBiProject, IMoBiSimulation>
    {
       IMoBiCommand CreateSimulation();
-      IMoBiCommand AddToProject(IMoBiSimulation simulation);
 
       /// <summary>
       ///    Removes <paramref name="simulations" /> from the current project
@@ -124,11 +123,6 @@ namespace MoBi.Presentation.Tasks.Interaction
          var command = addSimulationToProjectCommand(simulation).RunCommand(_interactionTaskContext.Context);
          _editTask.Edit(simulation);
          return command;
-      }
-
-      public IMoBiCommand AddToProject(IMoBiSimulation simulation)
-      {
-         return AddTo(simulation, _interactionTaskContext.Context.CurrentProject, null);
       }
 
       private IMoBiSimulation createSimulation()

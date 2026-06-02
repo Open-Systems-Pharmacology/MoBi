@@ -145,22 +145,6 @@ namespace MoBi.Presentation.Presenter
          return findSimulation(dataColumn.Repository);
       }
 
-      protected void AddMenuButtons()
-      {
-         AllMenuButtons().Each(editorPresenter.AddButton);
-         editorPresenter.AddUsedInMenuItem();
-      }
-
-      protected void ClearMenuButtons()
-      {
-         editorPresenter.ClearButtons();
-      }
-
-      protected virtual IEnumerable<IMenuBarItem> AllMenuButtons()
-      {
-         yield return _chartPresenterContext.EditorAndDisplayPresenter.ChartLayoutButton;
-      }
-
       private void initLayout()
       {
          _chartPresenterContext.EditorLayoutTask.InitFromUserSettings(_chartPresenterContext.EditorAndDisplayPresenter);
