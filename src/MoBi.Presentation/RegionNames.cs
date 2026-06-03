@@ -25,10 +25,5 @@ namespace MoBi.Presentation
          _allRegions.Add(newRegion);
          return newRegion;
       }
-
-      public static IEnumerable<RegionName> All()
-      {
-         return _allRegions.All();
-      }
    }
 }

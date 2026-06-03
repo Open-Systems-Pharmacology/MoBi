@@ -8,7 +8,6 @@ namespace MoBi.Presentation.Views
    public interface IAddContentToModuleView<TPresenter> : IBaseModuleContentView<TPresenter> where TPresenter : IAddContentToModulePresenter
    {
       void ShowInitialConditionsName();
-      void DisableDefaultMergeBehavior();
       void HideMergeBehaviorGroup();
    }
 

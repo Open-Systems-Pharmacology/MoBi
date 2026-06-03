@@ -165,11 +165,6 @@ namespace MoBi.Presentation.Presenter
          _spatialStructureDiagramPresenter.Zoom(AppConstants.Diagram.Base.ZoomFitToPageFactor);
       }
 
-      public void LayoutByForces()
-      {
-         _spatialStructureDiagramPresenter.Layout(null, AppConstants.Diagram.Base.LayoutDepthChildren, null);
-      }
-
       public void Handle(RemovedEvent eventToHandle)
       {
          if (!eventToHandle.RemovedObjects.Any(shouldHandleRemoved))

@@ -104,11 +104,6 @@ namespace MoBi.Presentation.Presenter
 
       public override object Subject => _eventGroupBuildingBlock;
 
-      public void InitializeWith(IEnumerable<EventGroupBuilder> initializer)
-      {
-         Edit(initializer);
-      }
-
       public void ShowContextMenu(IViewItem objectRequestingPopup, Point popupLocation)
       {
          var contextMenu = _viewItemContextMenuFactory.CreateFor(objectRequestingPopup, this);

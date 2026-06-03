@@ -41,11 +41,6 @@ namespace MoBi.Presentation.Tasks
          _context = context;
       }
 
-      public AddChartTemplateToSimulationSettingsCommand AddChartTemplateToSimulationSettings(CurveChartTemplate template, ISimulation withSimulationSettings)
-      {
-         return new AddChartTemplateToSimulationSettingsCommand(template, withSimulationSettings as IMoBiSimulation).RunCommand(_context);
-      }
-
       public ICommand ReplaceTemplatesInBuildingBlockCommand(SimulationSettings simulationSettings, IEnumerable<CurveChartTemplate> curveChartTemplates)
       {
          return new ReplaceBuildingBlockTemplatesCommand(simulationSettings, curveChartTemplates).RunCommand(_context);

@@ -212,8 +212,6 @@ namespace MoBi.UI.Views
          }
       }
 
-      protected virtual bool IsEditable(GridColumn column) => true;
-
       public override void InitializeBinding()
       {
          base.InitializeBinding();

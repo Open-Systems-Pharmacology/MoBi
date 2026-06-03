@@ -25,7 +25,6 @@ namespace MoBi.Presentation.Tasks.Interaction
       void CreateNewModuleWithBuildingBlocks();
       void AddBuildingBlocksToModule(Module module);
       void LoadBuildingBlocksToModule(Module module);
-      void LoadBuildingBlocksFromTemplateToModule(Module module);
       void AddCloneToProject(Module moduleToClone);
       void AddNewInitialConditionsBuildingBlock(Module module);
       void AddNewParameterValuesBuildingBlock(Module module);
@@ -149,8 +148,6 @@ namespace MoBi.Presentation.Tasks.Interaction
       public void AddNewInitialConditionsBuildingBlock(Module module) => addBuildingBlocksToModule(module, presenter => presenter.AddInitialConditionsToModule(module));
 
       public void LoadBuildingBlocksToModule(Module module) => loadBuildingBlocksToModule(module, AskForPKMLFileToOpen);
-
-      public void LoadBuildingBlocksFromTemplateToModule(Module module) => loadBuildingBlocksToModule(module, openTemplateFile);
 
       private IReadOnlyList<IMoBiSimulation> simulationsUsing(Module module) => Context.CurrentProject.SimulationsUsing(module).ToList();
 

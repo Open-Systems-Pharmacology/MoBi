@@ -265,8 +265,6 @@ namespace MoBi.Presentation.Presenter
 
       public void FitToPage() => _simulationDiagramPresenter.Zoom(AppConstants.Diagram.Base.ZoomFitToPageFactor);
 
-      public void LayoutByForces() => _simulationDiagramPresenter.Layout(null, AppConstants.Diagram.Base.LayoutDepthChildren, null);
-
       protected override void UpdateCaption() => _view.Caption = AppConstants.Captions.SimulationCaption(_simulation.Name);
 
       public void Handle(SimulationReloadEvent eventToHandle)

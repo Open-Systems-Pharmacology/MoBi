@@ -44,7 +44,7 @@ namespace MoBi.Presentation
       protected IObservedDataInExplorerPresenter _observedDataInExplorerPresenter;
       private IMultipleTreeNodeContextMenuFactory _multipleTreeNodeContextMenuFactory;
       protected IProjectRetriever _projectRetriever;
-      protected IEditBuildingBlockStarter _editBuildingBlockStarter;
+      protected IInteractionTasksForMoleculeBuildingBlock _interactionTaskForMoleculeBuildingBlock;
       protected IInteractionTasksForModule _interactionTaskForModule;
       private IObservedDataRepository _observedDataRepository;
       protected IModulesInExplorerPresenter _modulesInExplorerPresenter;
@@ -63,13 +63,12 @@ namespace MoBi.Presentation
          _toolTipPartCreator = A.Fake<IToolTipPartCreator>();
          _observedDataInExplorerPresenter = A.Fake<IObservedDataInExplorerPresenter>();
          _multipleTreeNodeContextMenuFactory = A.Fake<IMultipleTreeNodeContextMenuFactory>();
-         _editBuildingBlockStarter = A.Fake<IEditBuildingBlockStarter>();
-         _editBuildingBlockStarter = A.Fake<IEditBuildingBlockStarter>();
+         _interactionTaskForMoleculeBuildingBlock = A.Fake<IInteractionTasksForMoleculeBuildingBlock>();
          _treeNodeFactory = new TreeNodeFactory(_observedDataRepository, _toolTipPartCreator);
          _interactionTaskForModule = A.Fake<IInteractionTasksForModule>();
          _modulesInExplorerPresenter = new ModulesInExplorerPresenter(_treeNodeFactory);
          sut = new ModuleExplorerPresenter(_view, _regionResolver, _treeNodeFactory, _viewItemContextMenuFactory, _context,
-            _classificationPresenter, _toolTipPartCreator, _observedDataInExplorerPresenter, _multipleTreeNodeContextMenuFactory, _projectRetriever, _editBuildingBlockStarter, _interactionTaskForModule, _modulesInExplorerPresenter);
+            _classificationPresenter, _toolTipPartCreator, _observedDataInExplorerPresenter, _multipleTreeNodeContextMenuFactory, _projectRetriever, _interactionTaskForMoleculeBuildingBlock, _interactionTaskForModule, _modulesInExplorerPresenter);
       }
    }
 
@@ -174,9 +173,9 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_invoke_the_first_element_of_the_context_menu()
+      public void should_edit_the_molecule_builder()
       {
-         A.CallTo(() => _editBuildingBlockStarter.EditMolecule(_moleculeBuildingBlock, _moleculeBuilder)).MustHaveHappened();
+         A.CallTo(() => _interactionTaskForMoleculeBuildingBlock.Edit(_moleculeBuildingBlock, _moleculeBuilder)).MustHaveHappened();
       }
    }
 

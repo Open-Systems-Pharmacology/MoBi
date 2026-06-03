@@ -112,12 +112,6 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddNew(_objectTypeResolver.TypeFor<T>()))
             .WithCommandFor<AddNewCommandFor<EventGroupBuilder, T>, EventGroupBuilder>(container, _container);
       }
-
-      protected virtual IMenuBarItem CreateAddNewItemFor(EventGroupBuilder selectedObject)
-      {
-         return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddNew(ObjectTypes.EventGroupBuilder))
-            .WithCommandFor<AddNewCommandFor<EventGroupBuilder, EventGroupBuilder>, EventGroupBuilder>(selectedObject, _container);
-      }
    }
 
    internal class ContextMenuForApplicationBuilder : ContextMenuForEventGroupBuilder

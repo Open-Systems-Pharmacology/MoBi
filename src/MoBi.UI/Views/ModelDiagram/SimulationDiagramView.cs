@@ -20,14 +20,6 @@ namespace MoBi.UI.Views.ModelDiagram
          base.AttachPresenter(presenter);
       }
 
-      public void DisplayEductsRight(IDiagramModel reactionBlockDiagramModel)
-      {
-         foreach (var reactionNode in reactionBlockDiagramModel.GetAllChildren<ReactionNode>())
-         {
-            reactionNode.DisplayEductsRight = false;
-         }
-      }
-
       public void ObserverLinksVisible(IDiagramModel diagramModel, bool visible)
       {
          foreach (var observerLink in diagramModel.GetAllChildren<ObserverLink>())

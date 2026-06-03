@@ -37,15 +37,5 @@ namespace MoBi.Presentation.Formatters
       {
          return new ValueAllowingNaNFormatter(pathAndValueEntityDTO);
       }
- 
-      public static IFormatter<double> ValuePointXFormatter(this DTOValuePoint valuePointDTO)
-      {
-         return new ValuePointFormatter(valuePointDTO.X);
-      }
-
-      public static IFormatter<double> ValuePointYFormatter(this DTOValuePoint valuePointDTO)
-      {
-         return new ValuePointFormatter(valuePointDTO.Y);
-      }
    }
 }

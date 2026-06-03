@@ -34,7 +34,6 @@ namespace MoBi.Presentation.Presenter
       IReadOnlyList<IDimension> GetDimensions();
       IDimension PercentDimension { get; }
       IDimension NoDimension { get; }
-      void SetPercentile(double newValue);
       void UpdateDistributionFormula();
       void SetParameterValue(DistributionParameterDTO distributedParameter, double valueInGuiUnit);
       void SetParameterUnit(DistributionParameterDTO distributedParameter, Unit unit);
@@ -104,11 +103,6 @@ namespace MoBi.Presentation.Presenter
       public IDimension PercentDimension => _context.DimensionFactory.Dimension(AppConstants.DimensionNames.FRACTION);
 
       public IDimension NoDimension => _context.DimensionFactory.Dimension(Constants.Dimension.DIMENSIONLESS);
-
-      public void SetPercentile(double newValue)
-      {
-         SetPropertyValueFromView(_distributedParameter.PropertyName(x => x.Percentile), newValue, _distributedParameter.Percentile);
-      }
 
       public void UpdateDistributionFormula()
       {
