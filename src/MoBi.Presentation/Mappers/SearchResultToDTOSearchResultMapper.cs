@@ -1,11 +1,9 @@
-﻿using OSPSuite.Utility;
-using OSPSuite.Utility.Extensions;
-
-using MoBi.Core.Helper;
-using MoBi.Core.Services;
+﻿using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Mappers
 {

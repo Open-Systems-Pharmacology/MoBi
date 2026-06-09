@@ -1,13 +1,10 @@
-﻿using System.Drawing;
+﻿using FakeItEasy;
+using MoBi.Core;
+using OSPSuite.Assets;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
-using MoBi.Core;
-
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Assets;
 
 namespace MoBi.Presentation
 {

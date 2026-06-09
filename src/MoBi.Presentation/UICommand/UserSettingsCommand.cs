@@ -1,6 +1,5 @@
-using OSPSuite.Presentation.MenuAndBars;
-using MoBi.Core;
 using MoBi.Presentation.Settings;
+using OSPSuite.Presentation.MenuAndBars;
 
 namespace MoBi.Presentation.UICommand
 {

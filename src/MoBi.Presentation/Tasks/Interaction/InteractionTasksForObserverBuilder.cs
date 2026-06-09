@@ -1,9 +1,8 @@
 ﻿using System;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
-using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {

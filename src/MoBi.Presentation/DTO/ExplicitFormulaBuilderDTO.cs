@@ -1,5 +1,4 @@
-﻿using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Formulas;
+﻿using OSPSuite.Core.Domain.Formulas;
 
 namespace MoBi.Presentation.DTO
 {

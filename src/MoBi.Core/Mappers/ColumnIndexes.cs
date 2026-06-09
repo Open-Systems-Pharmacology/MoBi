@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MoBi.Core.Mappers
+﻿namespace MoBi.Core.Mappers
 {
    public static class ColumnIndexes
    {

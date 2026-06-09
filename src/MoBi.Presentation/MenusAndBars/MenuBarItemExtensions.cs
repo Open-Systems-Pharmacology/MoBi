@@ -1,7 +1,6 @@
+using MoBi.Presentation.UICommand;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Utility.Container;
-using MoBi.Presentation.UICommand;
-using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.MenusAndBars
 {

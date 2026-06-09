@@ -1,21 +1,20 @@
 using System;
+using System.Collections.Concurrent;
+using System.Linq;
 using MoBi.Assets;
-using OSPSuite.TeXReporting.Events;
-using OSPSuite.Presentation.MenuAndBars;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Events;
 using MoBi.Presentation.MenusAndBars;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
+using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Presenters.Main;
 using OSPSuite.Presentation.Views;
-using MoBi.Core.Events;
-using System.Collections.Generic;
-using System.Linq;
-using System.Collections.Concurrent;
+using OSPSuite.TeXReporting.Events;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter.Main
 {

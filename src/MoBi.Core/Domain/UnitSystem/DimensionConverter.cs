@@ -1,10 +1,9 @@
 ﻿using System;
-using MoBi.Assets;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Exceptions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Domain.UnitSystem
 {

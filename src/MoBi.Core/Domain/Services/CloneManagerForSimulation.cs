@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using MoBi.Core.Domain.Model;
+﻿using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;

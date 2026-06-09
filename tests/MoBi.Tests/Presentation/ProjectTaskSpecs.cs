@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using DevExpress.Utils.Extensions;
 using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Domain.Builder;

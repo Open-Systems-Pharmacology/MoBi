@@ -1,5 +1,4 @@
-﻿using OSPSuite.Utility;
-using MoBi.Presentation.DTO;
+﻿using MoBi.Presentation.DTO;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 

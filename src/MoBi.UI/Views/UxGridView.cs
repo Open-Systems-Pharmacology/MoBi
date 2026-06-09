@@ -1,5 +1,4 @@
 using DevExpress.XtraGrid;
-using MoBi.Presentation;
 
 namespace MoBi.UI.Views
 {

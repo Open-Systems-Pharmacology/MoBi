@@ -1,6 +1,5 @@
-﻿using OSPSuite.Presentation.MenuAndBars;
-using MoBi.Presentation.Presenter;
-using OSPSuite.Presentation.Presenters;
+﻿using MoBi.Presentation.Presenter;
+using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Presenters.Main;
 
 namespace MoBi.Presentation.UICommand.DiagramUICommands

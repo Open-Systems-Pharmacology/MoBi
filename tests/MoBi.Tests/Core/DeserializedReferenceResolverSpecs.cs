@@ -1,10 +1,7 @@
 ﻿using FakeItEasy;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Serialization.Services;
-using MoBi.Core.Services;
-using OSPSuite.Core.Domain;
+using OSPSuite.BDDHelper;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Services;

@@ -11,7 +11,6 @@ using OSPSuite.Core.Commands;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Events;
-using OSPSuite.Utility.Events;
 
 namespace MoBi.Core.Service
 {

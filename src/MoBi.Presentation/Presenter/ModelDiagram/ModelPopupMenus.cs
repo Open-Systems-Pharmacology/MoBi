@@ -1,11 +1,10 @@
 using MoBi.Core.Domain.Model;
-using OSPSuite.Core.Services;
 using MoBi.Presentation.Presenter.BaseDiagram;
 using OSPSuite.Core;
 using OSPSuite.Core.Diagram;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Views.ContextMenus;
-using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.Presenter.ModelDiagram
 {

@@ -1,11 +1,10 @@
-﻿using OSPSuite.BDDHelper;
+﻿using MoBi.Core.Helper;
+using OSPSuite.Assets;
+using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using MoBi.Core.Helper;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Assets;
 
 namespace MoBi.Core
 {

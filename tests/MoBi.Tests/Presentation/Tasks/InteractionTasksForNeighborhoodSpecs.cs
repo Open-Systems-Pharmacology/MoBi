@@ -1,13 +1,12 @@
-﻿using System.Linq;
-using FakeItEasy;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
+﻿using FakeItEasy;
 using MoBi.Core.Commands;
+using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using MoBi.Core.Domain.Model;
 
 namespace MoBi.Presentation.Tasks
 {
