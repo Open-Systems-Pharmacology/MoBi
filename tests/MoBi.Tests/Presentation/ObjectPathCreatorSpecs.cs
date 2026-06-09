@@ -1,5 +1,4 @@
-﻿using DevExpress.Utils.Extensions;
-using FakeItEasy;
+﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.UnitSystem;
 using MoBi.Presentation.DTO;

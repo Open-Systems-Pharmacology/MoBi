@@ -1,5 +1,4 @@
-﻿using MoBi.BatchTool.Presenters;
-using OSPSuite.Presentation.Views;
+﻿using OSPSuite.Presentation.Views;
 
 namespace MoBi.BatchTool.Views
 {

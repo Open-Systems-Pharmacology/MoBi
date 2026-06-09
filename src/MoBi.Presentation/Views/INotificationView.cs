@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using MoBi.Core;
-using MoBi.Presentation.Presenter.Main;
+﻿using MoBi.Presentation.Presenter.Main;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Collections;

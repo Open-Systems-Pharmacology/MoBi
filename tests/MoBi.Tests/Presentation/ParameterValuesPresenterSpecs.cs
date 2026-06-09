@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using FakeItEasy;
-using FakeItEasy.Core;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Mappers;

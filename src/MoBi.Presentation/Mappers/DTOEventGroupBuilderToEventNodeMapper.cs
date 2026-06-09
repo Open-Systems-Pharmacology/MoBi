@@ -1,10 +1,9 @@
 using System.Collections.Generic;
+using MoBi.Presentation.DTO;
+using MoBi.Presentation.Nodes;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
-using MoBi.Presentation.DTO;
-using MoBi.Presentation.Nodes;
-using OSPSuite.Assets;
 
 namespace MoBi.Presentation.Mappers
 {

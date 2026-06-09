@@ -1,8 +1,7 @@
-using System.Xml.Linq;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Serialization;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Serialization.Xml.Services
 {

@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Tasks.Interaction;
-using OSPSuite.Core.Services;
 using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.UICommand

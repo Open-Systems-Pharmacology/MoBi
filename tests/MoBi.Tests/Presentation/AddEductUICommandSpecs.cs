@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
-using OSPSuite.BDDHelper;
 using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.UICommand;
-using OSPSuite.Core.Diagram;
+using OSPSuite.BDDHelper;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
 

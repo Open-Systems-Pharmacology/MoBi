@@ -1,5 +1,4 @@
 ﻿using MoBi.Assets;
-using MoBi.Core.Domain.Extensions;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Presenters;

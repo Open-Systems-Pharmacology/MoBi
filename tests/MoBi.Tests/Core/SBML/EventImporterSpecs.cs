@@ -1,15 +1,14 @@
-﻿using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Utility.Container;
-using FakeItEasy;
+﻿using FakeItEasy;
 using libsbmlcs;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Engine.Sbml;
-using MoBi.HelpersForTests;
 using MoBi.IntegrationTests;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility.Container;
 using EventAssignment = libsbmlcs.EventAssignment;
 using Model = libsbmlcs.Model;
 

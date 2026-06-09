@@ -1,18 +1,16 @@
 ﻿using System.Linq;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 using libsbmlcs;
 using MoBi.Core.Commands;
-using MoBi.Core.Domain.Model;
+using MoBi.Core.Exceptions;
 using MoBi.Engine.Sbml;
+using NUnit.Framework;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Formulas;
 using Model = libsbmlcs.Model;
 using Reaction = libsbmlcs.Reaction;
-using MoBi.Core.Exceptions;
-using NUnit.Framework;
-using OSPSuite.Core.Domain.Formulas;
-using MoBi.HelpersForTests;
 
 namespace MoBi.Core.SBML
 {

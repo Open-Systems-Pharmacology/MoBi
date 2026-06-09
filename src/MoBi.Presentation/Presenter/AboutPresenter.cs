@@ -1,4 +1,3 @@
-using MoBi.Assets;
 using MoBi.Core;
 using MoBi.Presentation.Views;
 using OSPSuite.Presentation.Presenters;

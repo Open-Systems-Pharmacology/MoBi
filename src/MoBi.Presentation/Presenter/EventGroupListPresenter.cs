@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Linq;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;

@@ -1,5 +1,4 @@
 ﻿using FakeItEasy;
-using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using OSPSuite.Assets;

@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using MoBi.Assets;
 using OSPSuite.Assets;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Presentation.Regions;
 
 namespace MoBi.Presentation

@@ -3,7 +3,6 @@ using MoBi.Core.Chart;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Services;
-using MoBi.HelpersForTests;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Presenter.ModelDiagram;
 using MoBi.Presentation.Views;

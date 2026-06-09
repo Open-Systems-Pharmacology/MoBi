@@ -1,7 +1,6 @@
 using System.Linq;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Nodes;
-using OSPSuite.Assets;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;
 

@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using MoBi.Assets;
+﻿using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;

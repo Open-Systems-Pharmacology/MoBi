@@ -2,7 +2,6 @@
 using MoBi.Core.Events;
 using MoBi.Presentation.Core;
 using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Events;
 using OSPSuite.Presentation.Core;

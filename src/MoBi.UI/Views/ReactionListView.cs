@@ -1,18 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Forms;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using DevExpress.XtraBars;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Presentation;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.Core;
-using OSPSuite.UI.Controls;
-using OSPSuite.UI.Views;
 using OSPSuite.Presentation.Extensions;
+using OSPSuite.UI.Controls;
 using OSPSuite.UI.Services;
+using OSPSuite.UI.Views;
 
 namespace MoBi.UI.Views
 {

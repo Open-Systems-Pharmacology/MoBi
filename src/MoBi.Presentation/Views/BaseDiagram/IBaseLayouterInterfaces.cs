@@ -1,5 +1,3 @@
-using OSPSuite.Presentation.Diagram.Elements;
-
 namespace MoBi.Presentation.Views.BaseDiagram
 {
    public enum LayoutTarget

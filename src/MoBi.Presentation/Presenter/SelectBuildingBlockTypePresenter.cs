@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Views;

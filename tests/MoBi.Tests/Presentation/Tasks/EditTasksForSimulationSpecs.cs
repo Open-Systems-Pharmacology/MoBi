@@ -1,10 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using DevExpress.DataProcessing.InMemoryDataProcessor;
-using DevExpress.Utils.Extensions;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Helper;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.BDDHelper;
@@ -16,7 +13,6 @@ using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Serialization.SimModel.Services;
 using OSPSuite.Core.Services;
-using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation.Tasks
 {

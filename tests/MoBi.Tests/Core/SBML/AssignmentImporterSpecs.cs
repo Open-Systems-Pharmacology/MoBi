@@ -1,9 +1,7 @@
 ﻿using System.Linq;
+using MoBi.Engine.Sbml;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using MoBi.Engine.Sbml;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Core.Domain;
 
 namespace MoBi.Core.SBML
 {

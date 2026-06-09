@@ -1,11 +1,9 @@
-﻿using System.Collections.ObjectModel;
-using FakeItEasy;
-
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
+﻿using FakeItEasy;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Nodes;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 

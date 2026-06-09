@@ -9,7 +9,6 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Views.ContextMenus;
-using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.Presenter.ReactionDiagram
 {

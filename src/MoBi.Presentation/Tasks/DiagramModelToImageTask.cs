@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using System.Drawing.Imaging;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Presentation.Presenters.Diagram;
 

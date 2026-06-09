@@ -1,5 +1,3 @@
-using OSPSuite.UI;
-using OSPSuite.Utility.Extensions;
 using MoBi.Presentation.Presenter.ModelDiagram;
 using MoBi.Presentation.Views.BaseDiagram;
 using MoBi.UI.Views.BaseDiagram;

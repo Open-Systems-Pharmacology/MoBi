@@ -4,7 +4,6 @@ using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Chart;
 using MoBi.Core.Domain.Model;
-using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Tasks;

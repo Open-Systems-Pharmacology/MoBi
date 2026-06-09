@@ -1,11 +1,5 @@
-using System.Threading;
 using MoBi.Assets;
 using MoBi.Core;
-using OSPSuite.TeXReporting.Events;
-using OSPSuite.Utility.Collections;
-using OSPSuite.Utility.Events;
-using OSPSuite.Utility.Extensions;
-using MoBi.Core.Events;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.UICommand;
 using MoBi.Presentation.Views;
@@ -15,6 +9,10 @@ using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Main;
 using OSPSuite.Presentation.Services;
+using OSPSuite.TeXReporting.Events;
+using OSPSuite.Utility.Collections;
+using OSPSuite.Utility.Events;
+using OSPSuite.Utility.Extensions;
 using IProjectTask = MoBi.Presentation.Tasks.IProjectTask;
 
 namespace MoBi.Presentation.Presenter

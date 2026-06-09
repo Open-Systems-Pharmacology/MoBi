@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
