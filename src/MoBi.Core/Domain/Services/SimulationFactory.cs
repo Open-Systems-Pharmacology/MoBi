@@ -28,7 +28,7 @@ namespace MoBi.Core.Domain.Services
 
       SimulationAndValidationResult CreateSimulationAndValidate(SimulationConfiguration configurationReferencingBuildingBlocks, string simulationName);
 
-      CreationResult CreateModelAndValidate(SimulationConfiguration simulationConfiguration, string modelName, string message = AppConstants.Captions.ConfiguringSimulation);
+      CreationResult CreateModelAndValidate(SimulationConfiguration simulationConfiguration, string modelName);
    }
 
    public class SimulationFactory : ISimulationFactory
@@ -94,7 +94,7 @@ namespace MoBi.Core.Domain.Services
             .SecureContinueWith(t => showWarnings(t.Result));
       }
 
-      public CreationResult CreateModelAndValidate(SimulationConfiguration simulationConfiguration, string modelName, string message = AppConstants.Captions.ConfiguringSimulation)
+      public CreationResult CreateModelAndValidate(SimulationConfiguration simulationConfiguration, string modelName)
       {
          CreationResult results = null;
 
@@ -110,7 +110,7 @@ namespace MoBi.Core.Domain.Services
 
       public SimulationAndValidationResult CreateSimulationAndValidate(SimulationConfiguration configurationReferencingBuildingBlocks, string simulationName)
       {
-         var results = CreateModelAndValidate(configurationReferencingBuildingBlocks, simulationName, AppConstants.Captions.CreatingSimulation);
+         var results = CreateModelAndValidate(configurationReferencingBuildingBlocks, simulationName);
          var clonedConfiguration = _cloneManager.Clone(configurationReferencingBuildingBlocks);
          var simulation = CreateFrom(clonedConfiguration, results.Model, results.SimulationBuilder.EntitySources).WithName(simulationName);
          return new SimulationAndValidationResult(simulation, results.ValidationResult);

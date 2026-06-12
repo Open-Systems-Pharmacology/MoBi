@@ -861,6 +861,8 @@ namespace MoBi.Assets
          {
             return $"Set merge behavior to '{newMergeBehavior}' for module '{moduleName}'";
          }
+
+         public static string ConfigureSimulationsDescription(int count) => $"Configured {count} simulations";
       }
 
       public static class BarNames

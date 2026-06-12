@@ -97,7 +97,7 @@ namespace MoBi.Core.Service
 
       protected override void Because()
       {
-         sut.UpdateSimulation(_moBiSimulation);
+         sut.UpdateSimulations([_moBiSimulation]);
       }
 
       [Observation]
@@ -129,18 +129,18 @@ namespace MoBi.Core.Service
             Model = new Model()
          };
 
-         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._, A<string>._)).Returns(null);
+         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._)).Returns(null);
       }
 
       protected override void Because()
       {
-         _result = sut.UpdateSimulation(_simulation);
+         _result = sut.UpdateSimulations([_simulation]);
       }
 
       [Observation]
       public void the_command_to_update_should_be_empty()
       {
-         _result.ShouldBeAnInstanceOf<MoBiEmptyCommand>();
+         (_result as MoBiMacroCommand).Count.ShouldBeEqualTo(0);
       }
    }
 
@@ -164,7 +164,7 @@ namespace MoBi.Core.Service
          A.CallTo(() => simulationBuilder.EntitySources).Returns(new List<SimulationEntitySource> { _entitySource });
          var creationResults = new CreationResult(_model, simulationBuilder);
          _model.Root = new Container();
-         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._, A<string>._)).Returns(creationResults);
+         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._)).Returns(creationResults);
          A.CallTo(() => _context.CurrentProject).Returns(_moBiProject);
       }
 
@@ -230,7 +230,7 @@ namespace MoBi.Core.Service
 
          var simulationBuilder = new SimulationBuilder(_cloneManagerForModel, _containerMergeTask);
          var creationResults = new CreationResult(_model, simulationBuilder);
-         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._, A<string>._)).Returns(creationResults);
+         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._)).Returns(creationResults);
       }
 
       protected override void Because()

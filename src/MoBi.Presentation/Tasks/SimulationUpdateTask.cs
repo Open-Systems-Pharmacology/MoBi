@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using MoBi.Assets;
 using MoBi.Core;
 using MoBi.Core.Commands;
@@ -10,9 +12,9 @@ using MoBi.Presentation.Presenter;
 using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
+using SimulationConfiguration = OSPSuite.Core.Domain.Builder.SimulationConfiguration;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -28,7 +30,7 @@ namespace MoBi.Presentation.Tasks
       /// <returns></returns>
       ICommand ConfigureSimulation(IMoBiSimulation simulationToConfigure);
 
-      ICommand UpdateSimulation(IMoBiSimulation simulationToUpdate);
+      ICommand UpdateSimulations(IReadOnlyList<IMoBiSimulation> simulationsToUpdate);
 
       ICommand UpdateSimulationOutputSelections(IMoBiSimulation simulation);
 
@@ -60,11 +62,25 @@ namespace MoBi.Presentation.Tasks
          _heavyWorkManager = heavyWorkManager;
       }
 
-      public ICommand UpdateSimulation(IMoBiSimulation simulationToUpdate)
+      public ICommand UpdateSimulations(IReadOnlyList<IMoBiSimulation> simulationsToUpdate)
       {
-         var simulationConfiguration = _simulationConfigurationFactory.CreateFromProjectTemplatesBasedOn(simulationToUpdate.Configuration);
+         var macroCommand = new MoBiMacroCommand
+         {
+            ObjectType = ObjectTypes.Simulation,
+            CommandType = AppConstants.Commands.UpdateCommand,
+            Description = AppConstants.Commands.ConfigureSimulationsDescription(simulationsToUpdate.Count)
+         };
 
-         return updateSimulation(simulationToUpdate, simulationConfiguration, AppConstants.Captions.UpdatingSimulation);
+         _heavyWorkManager.Start(() =>
+         {
+            macroCommand.AddRange(simulationsToUpdate.Select(x =>
+            {
+               var simulationConfiguration = _simulationConfigurationFactory.CreateFromProjectTemplatesBasedOn(x.Configuration);
+               return updateSimulation(x, simulationConfiguration);
+            }));
+         }, AppConstants.Captions.UpdatingSimulation);
+
+         return macroCommand;
       }
 
       public ICommand UpdateSimulationSolverAndSchema(IMoBiSimulation simulationToUpdate)
@@ -103,22 +119,21 @@ namespace MoBi.Presentation.Tasks
          if (simulationConfiguration == null)
             return new MoBiEmptyCommand();
 
-         return updateSimulation(simulationToConfigure, simulationConfiguration);
+         ICommand command = null;
+         _heavyWorkManager.Start(() => { command = updateSimulation(simulationToConfigure, simulationConfiguration); }, AppConstants.Captions.ConfiguringSimulation);
+
+         return command;
       }
 
       private ICommand<IMoBiContext> updateSimulation(
          IMoBiSimulation simulationToUpdate,
-         SimulationConfiguration simulationConfigurationReferencingTemplates,
-         string message = AppConstants.Captions.ConfiguringSimulation)
+         SimulationConfiguration simulationConfigurationReferencingTemplates)
       {
          CreationResult results = null;
          _context.PublishEvent(new ClearNotificationsEvent(MessageOrigin.Simulation));
-         
+
          //create model using referencing templates
-         _heavyWorkManager.Start(() =>
-         {
-            results = _simulationFactory.CreateModelAndValidate(simulationConfigurationReferencingTemplates, simulationToUpdate.Model.Name, message);
-         }, message);
+         results = _simulationFactory.CreateModelAndValidate(simulationConfigurationReferencingTemplates, simulationToUpdate.Model.Name);
 
          if (results == null)
             return new MoBiEmptyCommand();

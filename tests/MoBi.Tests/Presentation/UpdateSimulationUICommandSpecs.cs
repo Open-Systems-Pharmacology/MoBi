@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System.Collections.Generic;
+using FakeItEasy;
 using OSPSuite.BDDHelper;
 using MoBi.Presentation.UICommand;
 using MoBi.Core.Domain.Model;
@@ -11,7 +12,7 @@ namespace MoBi.Presentation
    public class concern_for_UpdateSimulationUICommand : ContextSpecification<UpdateSimulationUICommand>
    {
       protected ISimulationUpdateTask _simulationUpdateTask;
-      protected IMoBiSimulation _simulation;
+      protected IReadOnlyList<IMoBiSimulation> _simulations;
       protected IActiveSubjectRetriever _activeSubjectRetriever;
       protected IMoBiContext _context;
 
@@ -22,8 +23,8 @@ namespace MoBi.Presentation
          _context = A.Fake<IMoBiContext>();
          sut = new UpdateSimulationUICommand(_simulationUpdateTask, _context, _activeSubjectRetriever);
 
-         _simulation = A.Fake<IMoBiSimulation>();
-         sut.Subject = _simulation;
+         _simulations = new List<IMoBiSimulation>();
+         sut.Subject = _simulations;
       }
    }
 
@@ -46,7 +47,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_call_the_expected_update_simulation_method_for_the_provided_simulation()
       {
-         A.CallTo(() => _simulationUpdateTask.UpdateSimulation(_simulation)).MustHaveHappened();
+         A.CallTo(() => _simulationUpdateTask.UpdateSimulations(_simulations)).MustHaveHappened();
       }
 
       [Observation]
