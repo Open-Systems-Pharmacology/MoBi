@@ -64,7 +64,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_reutrn_null()
       {
-         sut.CloneTemplate(_templateToClone, _existingTemplates).ShouldBeNull();
+         sut.CloneTemplate(_templateToClone, _existingTemplates.AllNames()).ShouldBeNull();
       }
    }
 
@@ -86,7 +86,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         _result = sut.CloneTemplate(_templateToClone, _existingTemplates);
+         _result = sut.CloneTemplate(_templateToClone, _existingTemplates.AllNames());
       }
 
       [Observation]
@@ -121,7 +121,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         _result = sut.LoadTemplateFromFile(_filePath, _existingTemplates);
+         _result = sut.LoadTemplateFromFile(_filePath, _existingTemplates.AllNames());
       }
 
       [Observation]

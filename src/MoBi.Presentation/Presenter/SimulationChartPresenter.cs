@@ -9,6 +9,7 @@ using MoBi.Presentation.Views;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Services.Charts;
@@ -75,7 +76,7 @@ namespace MoBi.Presentation.Presenter
             plottedData.Add(_simulation.ResultsDataRepository);
 
          if (_analysisChart.Curves.Count == 0)
-            defaultTemplate = _simulation.DefaultChartTemplate;
+            defaultTemplate = _simulation.DefaultChartTemplateFor(_analysisChart.CurveChartType);
 
          addObservedDataRepositories(plottedData, _analysisChart.Curves);
          var notPlottedData = mappedObservedDataExcept(plottedData);
