@@ -105,6 +105,7 @@ namespace MoBi.UI.Views.SimulationView
          page.Tag = analysisPresenter;
          page.ShowCloseButton = DefaultBoolean.True;
          page.InitializeFrom(analysisPresenter.BaseView);
+         analysisPresenter.BaseView.CaptionChanged += (o, e) => page.Text = analysisPresenter.BaseView.Caption;
 
          var changesIndex = tabs.TabPages.IndexOf(tabChanges);
          tabs.TabPages.Insert(changesIndex, page);

@@ -162,8 +162,8 @@ namespace MoBi.Presentation.Presenter
          var presenter = _simulationAnalysisPresenterFactory.PresenterFor(simulationAnalysis);
          _analysisPresenters.Add(presenter);
          registerObservedDataEvent(presenter);
-         presenter.InitializeAnalysis(simulationAnalysis, _simulation);
          _view.AddAnalysis(presenter);
+         presenter.InitializeAnalysis(simulationAnalysis, _simulation);
       }
 
       private void unRegisterObservedDataEvent(ISimulationAnalysisPresenter presenter)
