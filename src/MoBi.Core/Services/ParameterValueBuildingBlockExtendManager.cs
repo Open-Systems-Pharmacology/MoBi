@@ -17,12 +17,10 @@ public interface IParameterValueBuildingBlockExtendManager : IExtendPathAndValue
 public class ParameterValueBuildingBlockExtendManager : ExtendPathAndValuesManager<ParameterValue>, IParameterValueBuildingBlockExtendManager
 {
    private readonly IParameterValuesCreator _parameterValuesCreator;
-   private readonly IDimensionFactory _dimensionFactory;
 
-   public ParameterValueBuildingBlockExtendManager(IParameterValuesCreator parameterValuesCreator, IMoBiFormulaTask moBiFormulaTask, IObjectTypeResolver objectTypeResolver, IMoBiContext moBiContext, IDimensionFactory dimensionFactory) : base(moBiFormulaTask, objectTypeResolver, moBiContext)
+   public ParameterValueBuildingBlockExtendManager(IParameterValuesCreator parameterValuesCreator, IMoBiFormulaTask moBiFormulaTask, IObjectTypeResolver objectTypeResolver, IMoBiContext moBiContext, IDimensionFactory dimensionFactory) : base(moBiFormulaTask, objectTypeResolver, moBiContext, dimensionFactory)
    {
       _parameterValuesCreator = parameterValuesCreator;
-      _dimensionFactory = dimensionFactory;
    }
 
    protected override IReadOnlyList<ParameterValue> CreatePathAndValueEntitiesBasedOnUsedTemplates(SpatialStructure spatialStructure, IReadOnlyList<MoleculeBuilder> molecules, ILookupBuildingBlock<ParameterValue> buildingBlock) =>
@@ -36,7 +34,10 @@ public class ParameterValueBuildingBlockExtendManager : ExtendPathAndValuesManag
    {
       var pathAndValueEntity = buildingBlock[objectPath];
       if (pathAndValueEntity != null)
-         return new UpdateParameterValueInBuildingBlockCommand(buildingBlock, objectPath, valueInBaseUnit);
+      {
+         var updateValueCommand = new UpdateParameterValueInBuildingBlockCommand(buildingBlock, objectPath, valueInBaseUnit);
+         return UpdateValueAndDimension(updateValueCommand, buildingBlock, pathAndValueEntity, dimensionName);
+      }
 
       var dimension = _dimensionFactory.Dimension(dimensionName);
 

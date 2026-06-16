@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Visitor;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Repository;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Repositories;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Visitor;
 using IBuildingBlockRepository = MoBi.Core.Domain.Repository.IBuildingBlockRepository;
 
 namespace MoBi.Core.Services
@@ -26,7 +25,7 @@ namespace MoBi.Core.Services
    public interface IForbiddenNamesRetriever
    {
       IEnumerable<string> For(MoleculeBuilder moleculeBuilder);
-      IEnumerable<string> For(ReactionBuilder moleculeBuilder);
+      IEnumerable<string> For(ReactionBuilder reactionBuilder);
       IEnumerable<string> For(IParameter parameter);
       IEnumerable<string> For(ObserverBuilder parameter);
       IEnumerable<string> For(TransportBuilder transportBuilder);
@@ -63,12 +62,18 @@ namespace MoBi.Core.Services
          var nameHash = new HashSet<string>();
          addNamesToHash(nameHash, allParameterNamesFromSpatialStructureInProject());
          addNamesToHash(nameHash, allParametersFromMoleculesInProject());
-         addNamesToHash(nameHash, allMoleculeNamesFromInitialConditions(moleculeBuilder));
+         addNamesToHash(nameHash, allMoleculeNamesFromBuildingBlock(moleculeBuilder));
          addNamesToHash(nameHash, allReactionNamesFromProject());
          return nameHash;
       }
 
-      public IEnumerable<string> For(ReactionBuilder moleculeBuilder)
+      private static IReadOnlyList<string> allMoleculeNamesFromBuildingBlock(MoleculeBuilder builder)
+      {
+         var buildingBlock = builder.BuildingBlock as MoleculeBuildingBlock;
+         return buildingBlock == null ? Enumerable.Empty<string>().ToList() : buildingBlock.AllNames();
+      }
+
+      public IEnumerable<string> For(ReactionBuilder reactionBuilder)
       {
          var nameHash = new HashSet<string>();
          addNamesToHash(nameHash, allParameterNamesFromSpatialStructureInProject());
@@ -122,7 +127,7 @@ namespace MoBi.Core.Services
 
       private IEnumerable<string> allReactionNamesFromProject() => allNamesFrom<MoBiReactionBuildingBlock, ReactionBuilder>(_buildingBlockRepository.ReactionBlockCollection);
 
-      private IEnumerable<string> allNamesFrom<TBuildingBlock, TBuilder>(IEnumerable<TBuildingBlock> buildingBlock) where TBuildingBlock : IBuildingBlock<TBuilder> where TBuilder : class, IBuilder => 
+      private IEnumerable<string> allNamesFrom<TBuildingBlock, TBuilder>(IEnumerable<TBuildingBlock> buildingBlock) where TBuildingBlock : IBuildingBlock<TBuilder> where TBuilder : class, IBuilder =>
          buildingBlock.SelectMany(x => x.All()).Select(x => x.Name);
 
       private IEnumerable<string> allLocalParametersFromMoleculesInProject() => allParametersFromMoleculesInProject(ParameterBuildMode.Local);
@@ -142,37 +147,6 @@ namespace MoBi.Core.Services
             .SelectMany(x => x.All()).Each(m => addNamesToHash(nameHash, allParameterNamesFrom(m, x => x.BuildMode == buildMode)));
 
          return nameHash;
-      }
-
-      /// <summary>
-      ///    Retrieves all the molecule names from start values where a molecule is named like the molecule builder.
-      ///    The MoleculeBuilders Name is not returned
-      /// </summary>
-      /// <param name="moleculeBuilder">The molecule builder for which forbidden names are retrieved.</param>
-      /// <returns>molecule names that are forbidden for the moleculebuilder</returns>
-      /// <remarks>
-      ///    This is necessary when a molecule was removed and another molecule should be renamed. It
-      ///    should not be possible to rename to the removed named to prevent double definitions of InitialConditions
-      /// </remarks>
-      private IEnumerable<string> allMoleculeNamesFromInitialConditions(MoleculeBuilder moleculeBuilder)
-      {
-         var nameHash = new HashSet<string>();
-         // We need to retrieve Names from here if a removed Molecule is still in MSV
-         // to prevent double definitions in InitialConditions
-         getAllInitialConditionsFromBuildingBlocksFor(moleculeBuilder)
-            .Select(x => x.MoleculeName).Distinct()
-            .Where(x => !x.Equals(moleculeBuilder.Name))
-            .Each(x => nameHash.Add(x));
-
-         return nameHash;
-      }
-
-      private IEnumerable<InitialCondition> getAllInitialConditionsFromBuildingBlocksFor(MoleculeBuilder builder)
-      {
-         var builderName = builder.Name;
-         return _buildingBlockRepository.InitialConditionBlockCollection
-            .Where(x => x.Any(msv => msv.MoleculeName.Equals(builderName)))
-            .SelectMany(x => x.All());
       }
 
       private IEnumerable<string> allParameterNamesFromSpatialStructureInProject()

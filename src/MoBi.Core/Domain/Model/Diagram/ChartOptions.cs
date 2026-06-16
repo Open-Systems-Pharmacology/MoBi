@@ -22,5 +22,23 @@ namespace MoBi.Core.Domain.Model.Diagram
          DefaultChartDiagramBackColor = Color.White;
          ColorGroupObservedDataFromSameFolder = false;
       }
+
+      public ChartOptions Clone()
+      {
+         var clone = new ChartOptions();
+         clone.UpdatePropertiesFrom(this);
+         return clone;
+      }
+
+      public void UpdatePropertiesFrom(ChartOptions source)
+      {
+         SimulationInCurveName = source.SimulationInCurveName;
+         TopContainerInCurveName = source.TopContainerInCurveName;
+         DefaultLayoutName = source.DefaultLayoutName;
+         DefaultChartYScaling = source.DefaultChartYScaling;
+         DefaultChartBackColor = source.DefaultChartBackColor;
+         DefaultChartDiagramBackColor = source.DefaultChartDiagramBackColor;
+         ColorGroupObservedDataFromSameFolder = source.ColorGroupObservedDataFromSameFolder;
+      }
    }
 }

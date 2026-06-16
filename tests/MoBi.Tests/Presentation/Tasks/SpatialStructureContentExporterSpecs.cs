@@ -28,7 +28,6 @@ namespace MoBi.Presentation.Tasks
       private IMoBiApplicationController _applicationController;
       protected ISelectFolderAndIndividualAndExpressionFromProjectPresenter _selectIndividualAndExpressionFromProjectPresenter;
       protected ICloneManagerForBuildingBlock _cloneManager;
-      protected IFormulaFactory _formulaFactory;
       protected IPathAndValueEntityToParameterValueMapper _pathAndValueEntityToParameterValueMapper;
       private IObjectBaseFactory _objectBaseFactory;
       private IParameterValueToParameterMapper _individualParameterToParameterMapper;
@@ -36,7 +35,6 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Context()
       {
-         _formulaFactory = A.Fake<IFormulaFactory>();
          _spatialStructureFactory = A.Fake<IMoBiSpatialStructureFactory>();
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
          _applicationController = A.Fake<IMoBiApplicationController>();
@@ -57,7 +55,7 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _interactionTaskContext.InteractionTask).Returns(_interactionTask);
          A.CallTo(() => _individualParameterToParameterMapper.MapFrom(A<IndividualParameter>._)).ReturnsLazily(x => newParameter(x.Arguments.Get<IndividualParameter>(0)));
          A.CallTo(() => _spatialStructureFactory.Create()).Returns(_spatialStructure);
-         sut = new SpatialStructureContentExporter(_spatialStructureFactory, _cloneManager, _objectPathFactory, _pathAndValueEntityToParameterValueMapper, _formulaFactory, _individualParameterToParameterMapper, _interactionTaskContext, _applicationController);
+         sut = new SpatialStructureContentExporter(_spatialStructureFactory, _cloneManager, _objectPathFactory, _pathAndValueEntityToParameterValueMapper, _individualParameterToParameterMapper, _interactionTaskContext, _applicationController);
       }
 
       private static IParameter newParameter(IndividualParameter individualParameter)
@@ -226,7 +224,6 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _selectIndividualAndExpressionFromProjectPresenter.GetPathIndividualAndExpressionsForExport(_containerToSave)).Returns(("FilePath", _individual, _expressionProfiles));
          A.CallTo(() => _spatialStructureFactory.Create()).Returns(_tmpSpatialStructure);
          A.CallTo(() => _cloneManager.Clone(_containerToSave, _tmpSpatialStructure.FormulaCache)).Returns(_clonedContainer);
-         A.CallTo(() => _formulaFactory.ConstantFormula(replacementIndividualParameter.Value.Value, replacementIndividualParameter.Dimension)).ReturnsLazily(x => new ConstantFormula(x.Arguments.Get<double>(0)));
          A.CallTo(() => _interactionTaskContext.Context.Create<ParameterValuesBuildingBlock>()).Returns(_parameterValuesBuildingBlock);
          A.CallTo(() => _interactionTask.Save(A<SpatialStructureTransfer>._, A<string>._)).Invokes(x => _transfer = x.Arguments.Get<SpatialStructureTransfer>(0));
          A.CallTo(() => _cloneManager.Clone(A<InitialCondition>._, A<FormulaCache>._)).ReturnsLazily(x => newInitialCondition(x.Arguments.Get<InitialCondition>(0)));

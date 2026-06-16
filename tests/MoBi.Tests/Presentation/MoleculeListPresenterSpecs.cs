@@ -1,12 +1,11 @@
-﻿using OSPSuite.BDDHelper;
-using FakeItEasy;
+﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Presentation.Mappers;
-using MoBi.Presentation.MenusAndBars.ContextMenus;
 using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
+using OSPSuite.BDDHelper;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Presenters.ContextMenus;

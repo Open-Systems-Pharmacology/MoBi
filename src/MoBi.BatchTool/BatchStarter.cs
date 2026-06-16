@@ -8,7 +8,6 @@ using OSPSuite.Core;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Journal;
 using OSPSuite.Core.Serialization.Diagram;
-using OSPSuite.Infrastructure;
 using OSPSuite.Presentation;
 using OSPSuite.Utility.Container;
 using CoreRegister = MoBi.Core.CoreRegister;
@@ -33,7 +32,6 @@ namespace MoBi.BatchTool
                x.FromType<OSPSuite.Core.CoreRegister>();
                x.FromType<BatchRegister>();
                x.FromType<EngineRegister>();
-               x.FromType<InfrastructureRegister>();
                x.FromInstance(new PresentationRegister(false));
                x.FromInstance(register);
             });

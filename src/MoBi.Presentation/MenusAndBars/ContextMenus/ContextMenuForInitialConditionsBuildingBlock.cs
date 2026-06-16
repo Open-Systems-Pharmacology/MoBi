@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using MoBi.Assets;
-using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Tasks.Interaction;

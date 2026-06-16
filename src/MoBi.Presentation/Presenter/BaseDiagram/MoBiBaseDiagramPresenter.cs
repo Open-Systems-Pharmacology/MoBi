@@ -14,7 +14,6 @@ using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Diagram.Elements;
 using OSPSuite.Presentation.Presenters.Diagram;
 using OSPSuite.Presentation.Views;
-using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using IContainer = OSPSuite.Core.Domain.IContainer;
@@ -38,8 +37,6 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
 
       void ApplyLayoutTemplate(IContainerBase containerBase, string diagramTemplateXmlFilePath, bool recursive);
       void ApplyLayoutTemplateToSelection();
-
-      void ConfigureLayout();
    }
 
    public interface IMoBiBaseDiagramPresenter<T> : IMoBiBaseDiagramPresenter, IBaseDiagramPresenter<T>,
@@ -202,8 +199,6 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
          }
       }
 
-      protected IDiagramModel LoadDiagramTemplate(string diagramTemplateXmlFilePath) => _diagramTask.LoadDiagramTemplate(diagramTemplateXmlFilePath);
-
       public void ApplyLayoutTemplateToSelection()
       {
          string diagramTemplateXmlFilePath = _dialogCreator.AskForFileToOpen("Open Named LayoutTemplate", AppConstants.Filter.MOBI_DIAGRAM_TEMPLATE_FILTER, AppConstants.DirectoryKey.LAYOUT);
@@ -232,12 +227,6 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
          }
 
          _view.Refresh();
-      }
-
-      public void ConfigureLayout()
-      {
-         var forceLayoutConfigurationPresenter = IoC.Resolve<IForceLayoutConfigurationPresenter>();
-         forceLayoutConfigurationPresenter.Edit(LayoutConfiguration);
       }
 
       public void Undo() => DiagramModel.Undo();

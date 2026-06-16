@@ -9,7 +9,6 @@ using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility.Extensions;
 using IBuildingBlockRepository = MoBi.Core.Domain.Repository.IBuildingBlockRepository;

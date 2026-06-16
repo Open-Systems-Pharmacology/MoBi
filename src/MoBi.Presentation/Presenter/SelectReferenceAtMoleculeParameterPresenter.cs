@@ -24,11 +24,5 @@ namespace MoBi.Presentation.Presenter
          : base(view, objectBaseDTOMapper, context, userSettings, objectBaseToMoleculeDummyMapper, dummyParameterDTOMapper, referenceMapper, objectBaseCreator, buildingBlockRepository)
       {
       }
-
-      protected override void AddSpecificInitialObjects()
-      {
-         base.AddSpecificInitialObjects();
-         AddReactions();
-      }
    }
 }

@@ -1,7 +1,6 @@
+using MoBi.Presentation.UICommand;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Utility.Container;
-using MoBi.Presentation.UICommand;
-using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.MenusAndBars
 {
@@ -12,15 +11,6 @@ namespace MoBi.Presentation.MenusAndBars
          where TChild : class
       {
          return menuBarItem.WithCommand(IoC.Resolve<RemoveCommandFor<TParent, TChild>>().For(parent, child));
-      }
-   }
-
-   public static class EntityUICommandExpressions
-   {
-      public static TCommand For<TCommand, T>(this TCommand command, T objectBase) where TCommand : IObjectUICommand<T> where T : class
-      {
-         command.Subject = objectBase;
-         return command;
       }
    }
 

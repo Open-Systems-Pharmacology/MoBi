@@ -3,6 +3,7 @@ using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
+using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -26,6 +27,7 @@ namespace MoBi.Presentation
       private IObjectPathCreatorAtParameter _objectPathCreator;
       private IObjectBaseDTOToReferenceNodeMapper _referenceMapper;
       private IBuildingBlockRepository _buildingBlockRepository;
+      private IPathAndValueContainerizingTask _containerizingTask;
       protected ISelectReferenceView _referenceView;
 
       protected override void Context()
@@ -40,9 +42,10 @@ namespace MoBi.Presentation
          _objectPathCreator = A.Fake<IObjectPathCreatorAtParameter>();
          _referenceMapper = A.Fake<IObjectBaseDTOToReferenceNodeMapper>();
          _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
+         _containerizingTask = new PathAndValueContainerizingTask();
          A.CallTo(() => _referenceView.Shows(A<IEntity>.Ignored)).Returns(true);
          _selectReferencePresenter = new SelectReferenceAtParameterValuePresenter(_referenceView, _objectBaseDTOMapper, _context, _userSettings,
-            _moleculeMapper, _parameterMapper, _referenceMapper, _objectPathCreator, _buildingBlockRepository);
+            _moleculeMapper, _parameterMapper, _referenceMapper, _objectPathCreator, _buildingBlockRepository, _containerizingTask);
 
          sut = new CreateObjectPathsFromReferencesPresenter(_view, _selectReferencePresenter);
       }

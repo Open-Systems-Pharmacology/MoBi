@@ -1,9 +1,8 @@
-﻿using MoBi.Core;
-using MoBi.Core.Domain.Model;
-using MoBi.Presentation.Settings;
-using MoBi.Presentation.Mappers;
-using MoBi.Presentation.Views;
+﻿using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
+using MoBi.Presentation.Mappers;
+using MoBi.Presentation.Settings;
+using MoBi.Presentation.Views;
 
 namespace MoBi.Presentation.Presenter
 {

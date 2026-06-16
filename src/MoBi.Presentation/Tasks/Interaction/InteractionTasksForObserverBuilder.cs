@@ -1,9 +1,8 @@
 ﻿using System;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
-using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks.Interaction
 {
@@ -75,19 +74,12 @@ namespace MoBi.Presentation.Tasks.Interaction
       {
          return new AddObserverBuilderCommand(buildingBlock, builder);
       }
-
-      protected abstract IEditObserverBuilderPresenter GetEditObserverBuilder();
    }
 
    public class InteractionTasksForContainerObserverBuilder : InteractionTasksForObserverBuilder<ContainerObserverBuilder>
    {
       public InteractionTasksForContainerObserverBuilder(IInteractionTaskContext interactionTaskContext, IEditTaskFor<ContainerObserverBuilder> editTask) : base(interactionTaskContext, editTask)
       {
-      }
-
-      protected override IEditObserverBuilderPresenter GetEditObserverBuilder()
-      {
-         return ApplicationController.Start<IEditContainerObserverBuilderPresenter>();
       }
    }
 
@@ -96,11 +88,6 @@ namespace MoBi.Presentation.Tasks.Interaction
       public InteractionTasksForAmountObserverBuilder(IInteractionTaskContext interactionTaskContext, IEditTaskFor<AmountObserverBuilder> editTask)
          : base(interactionTaskContext, editTask)
       {
-      }
-
-      protected override IEditObserverBuilderPresenter GetEditObserverBuilder()
-      {
-         return ApplicationController.Start<IEditObserverBuilderPresenter>();
       }
    }
 }

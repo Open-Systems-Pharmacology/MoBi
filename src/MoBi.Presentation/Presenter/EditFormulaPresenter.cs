@@ -13,7 +13,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
-using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Views;

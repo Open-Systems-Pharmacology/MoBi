@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using MoBi.Assets;
 using OSPSuite.Assets;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Presentation.Regions;
 
 namespace MoBi.Presentation
@@ -24,11 +23,6 @@ namespace MoBi.Presentation
          var newRegion = new RegionName(name, caption, icon);
          _allRegions.Add(newRegion);
          return newRegion;
-      }
-
-      public static IEnumerable<RegionName> All()
-      {
-         return _allRegions.All();
       }
    }
 }

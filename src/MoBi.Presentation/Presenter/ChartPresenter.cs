@@ -15,7 +15,6 @@ using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Binders;
 using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Nodes;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.Charts;
@@ -145,22 +144,6 @@ namespace MoBi.Presentation.Presenter
          return findSimulation(dataColumn.Repository);
       }
 
-      protected void AddMenuButtons()
-      {
-         AllMenuButtons().Each(editorPresenter.AddButton);
-         editorPresenter.AddUsedInMenuItem();
-      }
-
-      protected void ClearMenuButtons()
-      {
-         editorPresenter.ClearButtons();
-      }
-
-      protected virtual IEnumerable<IMenuBarItem> AllMenuButtons()
-      {
-         yield return _chartPresenterContext.EditorAndDisplayPresenter.ChartLayoutButton;
-      }
-
       private void initLayout()
       {
          _chartPresenterContext.EditorLayoutTask.InitFromUserSettings(_chartPresenterContext.EditorAndDisplayPresenter);
@@ -197,6 +180,7 @@ namespace MoBi.Presentation.Presenter
          {
             var historicalResultsNodes = e.Data<IList<ITreeNode>>().OfType<HistoricalResultsNode>();
             addHistoricalResults(historicalResultsNodes.Select(result => result.Tag).ToList());
+            _chartPresenterContext.Refresh();
          }
          else
          {
@@ -246,6 +230,7 @@ namespace MoBi.Presentation.Presenter
       {
          addDataRepositoriesToDataRepositoryCache(repositories);
          editorPresenter.AddDataRepositories(repositories);
+         addDataColumnsToEditorPresenter(repositories.SelectMany(x => x.AllButBaseGrid()));
          repositories.Each(repository => repository.SetPersistable(persistable: true));
       }
 

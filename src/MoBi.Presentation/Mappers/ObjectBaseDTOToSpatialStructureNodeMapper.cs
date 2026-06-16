@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Nodes;
-using OSPSuite.Assets;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Extensions;

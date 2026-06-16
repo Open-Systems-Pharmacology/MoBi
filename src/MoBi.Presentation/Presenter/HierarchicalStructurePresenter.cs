@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -24,7 +25,7 @@ namespace MoBi.Presentation.Presenter
    public abstract class HierarchicalStructurePresenter : AbstractCommandCollectorPresenter<IHierarchicalStructureView, IHierarchicalStructurePresenter>
    {
       protected readonly IMoBiContext _context;
-      protected IObjectBaseToObjectBaseDTOMapper _objectBaseMapper;
+      protected readonly IObjectBaseToObjectBaseDTOMapper _objectBaseMapper;
 
       protected HierarchicalStructurePresenter(
          IHierarchicalStructureView view,
@@ -45,7 +46,7 @@ namespace MoBi.Presentation.Presenter
       {
          return container.GetChildren(predicate)
             .OrderBy(groupingTypeFor)
-            .ThenBy(x => x.Name)
+            .ThenBy(x => x.Name, new IndexedNameComparer())
             .MapAllUsing(_objectBaseMapper);
       }
 

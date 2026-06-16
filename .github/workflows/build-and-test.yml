@@ -4,9 +4,6 @@ on:
   pull_request:
     branches:
     - v13
-  push:
-    branches:
-    - v13
 
 permissions:
   contents: read

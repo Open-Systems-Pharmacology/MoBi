@@ -39,7 +39,6 @@ namespace MoBi.Presentation.Tasks.Edit
       void Rename(T objectToRename, IEnumerable<IObjectBase> existingObjectsInParent, IBuildingBlock buildingBlock);
       string ObjectName { get; }
       bool EditEntityModal(T newEntity, IEnumerable<IObjectBase> existingObjectsInParent, ICommandCollector commandCollector, IBuildingBlock buildingBlock);
-      string IconFor(IObjectBase objectBase);
       void SaveMultiple(IReadOnlyList<T> entitiesToSerialize);
 
       IContainer GetMoleculeProperties(IContainer container);
@@ -176,11 +175,6 @@ namespace MoBi.Presentation.Tasks.Edit
       {
          var unallowedNames = GetUnallowedNames(objectBase, existingObjectsInParent).ToList();
          return unallowedNames.Union(_interactionTask.ForbiddenNamesFor(objectBase));
-      }
-
-      public string IconFor(IObjectBase objectBase)
-      {
-         return _interactionTask.IconFor(objectBase);
       }
 
       protected virtual IEnumerable<string> GetUnallowedNames(T objectBase, IEnumerable<IObjectBase> existingObjectsInParent)

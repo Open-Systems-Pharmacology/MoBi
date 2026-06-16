@@ -82,12 +82,16 @@ namespace MoBi.Core.Services
          if (_canceled) return;
 
          parameter.Formula = checkFormula(_formulaCache, parameter.Formula);
+         if (_canceled) return;
          if (parameter.RHSFormula != null)
             parameter.RHSFormula = checkFormula(_formulaCache, parameter.RHSFormula);
       }
 
       private IFormula checkFormula(IFormulaCache formulaCache, IFormula formula)
       {
+         if (formula == null)
+            return formula;
+
          if (formula.IsExplicit())
             return checkFormulaByType(formulaCache, (ExplicitFormula) formula, AreEqualExplicitFormula);
 
@@ -108,16 +112,26 @@ namespace MoBi.Core.Services
 
       private T checkFormulaByType<T>(IFormulaCache formulaCache, T formula, Func<T, T, bool> areEqualFormula) where T : class, IFormula
       {
+         if (_canceled)
+            return formula;
+
          var alreadyUsedFormula = lookForSimilarFormula(formulaCache, formula, areEqualFormula);
          if (alreadyUsedFormula != null)
             return alreadyUsedFormula;
          if (formulaCache.ExistsByName(formula.Name))
          {
             correctName(formulaCache, formula);
+            if (_canceled)
+               return formula;
          }
 
+         // Safety net: if the name still conflicts after correctName (e.g. the rename dialog was not shown),
+         // auto-correct the name to ensure no duplicate names are added to the formula cache
+         if (formulaCache.ExistsByName(formula.Name))
+            _nameCorrector.AutoCorrectName(formulaCache.Select(f => f.Name), formula);
+
          checkId(formula);
-         //Run is required here so that the next time the same formula is found, it will be replaced automatically instead of being 
+         //Run is required here so that the next time the same formula is found, it will be replaced automatically instead of being
          //added again to the cache
          _allCommands.Add(new AddFormulaToFormulaCacheCommand(_buildingBlock, formula).RunCommand(_context));
          return formula;
@@ -125,7 +139,7 @@ namespace MoBi.Core.Services
 
       private T lookForSimilarFormula<T>(IEnumerable<IFormula> formulaCache, T formula, Func<T, T, bool> areEqualFormula) where T : class, IFormula
       {
-         return formulaCache.OfType<T>().FirstOrDefault(f => areEqualFormula(f, formula));
+         return formulaCache.OfType<T>().FirstOrDefault(f => string.Equals(f.Name, formula.Name) && areEqualFormula(f, formula));
       }
 
       private static T getFormulaFromCache<T>(IFormulaCache formulaCache, string formulaName) where T : class, IFormula

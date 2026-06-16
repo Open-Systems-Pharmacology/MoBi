@@ -299,10 +299,60 @@ namespace MoBi.CLI
       }
    }
 
+   public class When_running_the_qualification_runner_without_plot_definitions : concern_for_QualificationRunnerWithValidConfiguration
+   {
+      private SimulationPlot _simulationPlot;
+      private Simulation _simulation;
+      private QualificationMapping _mapping;
+      private string _simulationName;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+
+         _simulationName = "S1";
+
+         _simulation = new Simulation
+         {
+            Name = _simulationName,
+         };
+
+         _projectSnapshot.Simulations = [_simulation];
+
+         _simulationPlot = new SimulationPlot
+         {
+            Simulation = _simulationName,
+            SectionId = 123,
+            SectionReference = "REF456"
+         };
+
+         _qualificationConfiguration.SimulationPlots = [_simulationPlot];
+         _qualificationConfiguration.Simulations = [_simulationName];
+
+         A.CallTo(() => _jsonSerializer.Serialize(A<QualificationMapping>._, _qualificationConfiguration.MappingFile))
+            .Invokes(x => _mapping = x.GetArgument<QualificationMapping>(0));
+
+         _project = new MoBiProject().WithName(_qualificationConfiguration.Project);
+         A.CallTo(() => _snapshotTask.LoadProjectFromSnapshotAsync(_projectSnapshot, _runOptions.Run)).Returns(_project);
+      }
+
+      protected override Task Because()
+      {
+         return sut.RunBatchAsync(_runOptions);
+      }
+
+      [Observation]
+      public void should_not_include_any_charts()
+      {
+         _mapping.Plots.Length.ShouldBeEqualTo(0);
+      }
+   }
+
    public class When_running_the_qualification_runner_with_plot_definitions : concern_for_QualificationRunnerWithValidConfiguration
    {
       private SimulationPlot _simulationPlot;
       private CurveChart _mainChart;
+      private MoBi.Core.Snapshots.SimulationPredictedVsObservedChart _predictedVsObservedChart;
       private CurveChart _residualChart;
       private Simulation _simulation;
       private QualificationMapping _mapping;
@@ -315,16 +365,19 @@ namespace MoBi.CLI
          _simulationName = "S1";
 
          _mainChart = new CurveChart();
+         _predictedVsObservedChart = new MoBi.Core.Snapshots.SimulationPredictedVsObservedChart();
          _residualChart = new CurveChart();
 
          _mainChart.Name = "Main Chart";
+         _predictedVsObservedChart.Name = "PvO Chart";
          _residualChart.Name = "Residual Chart";
 
          _simulation = new Simulation
          {
             Name = _simulationName,
-            Chart = _mainChart,
-            SimulationResidualVsTimeChart = _residualChart
+            Charts = new[] { _mainChart },
+            PredictedVsObservedCharts = new[] { _predictedVsObservedChart },
+            ResidualVsTimeCharts = new[] { _residualChart }
          };
 
          _projectSnapshot.Simulations = [_simulation];
@@ -354,7 +407,7 @@ namespace MoBi.CLI
       [Observation]
       public void should_include_main_and_residual_charts_in_plot_mappings()
       {
-         _mapping.Plots.Length.ShouldBeEqualTo(2);
+         _mapping.Plots.Length.ShouldBeEqualTo(3);
       }
 
       [Observation]

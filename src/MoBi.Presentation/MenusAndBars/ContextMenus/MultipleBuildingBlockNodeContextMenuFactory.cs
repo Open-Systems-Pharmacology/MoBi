@@ -1,16 +1,15 @@
 ﻿using System.Collections.Generic;
+using MoBi.Assets;
+using MoBi.Core.Domain.Model;
+using MoBi.Presentation.UICommand;
+using OSPSuite.Assets;
+using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Nodes;
-using MoBi.Core.Domain.Model;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Utility.Container;
-using MoBi.Assets;
-using MoBi.Presentation.UICommand;
-using OSPSuite.Assets;
-using OSPSuite.Core.Domain.Data;
-using OSPSuite.Presentation.Core;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {

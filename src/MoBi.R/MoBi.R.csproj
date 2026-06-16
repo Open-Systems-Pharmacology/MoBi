@@ -1,22 +1,22 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>NET8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Version Condition="'$(Version)' == ''">13.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="OSPSuite.Core" Version="13.0.85" />
-    <PackageReference Include="OSPSuite.Infrastructure" Version="13.0.85" />
-    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="13.0.85" />
-    <PackageReference Include="OSPSuite.R" Version="13.0.85" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.123" />
+    <PackageReference Include="OSPSuite.Infrastructure" Version="13.0.123" />
+    <PackageReference Include="OSPSuite.Infrastructure.Castle" Version="13.0.123" />
+    <PackageReference Include="OSPSuite.R" Version="13.0.123" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MoBi.Assets\MoBi.Assets.csproj" />
     <ProjectReference Include="..\MoBi.CLI.Core\MoBi.CLI.Core.csproj" />
     <ProjectReference Include="..\MoBi.Core\MoBi.Core.csproj" />
-    <ProjectReference Include="..\MoBi.Presentation\MoBi.Presentation.csproj" />
   </ItemGroup>
 
   <ItemGroup>

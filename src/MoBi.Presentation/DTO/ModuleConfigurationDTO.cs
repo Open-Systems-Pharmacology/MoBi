@@ -34,11 +34,6 @@ namespace MoBi.Presentation.DTO
          return Equals(module.Name, ModuleConfiguration.Module.Name);
       }
 
-      public bool Uses(ModuleConfiguration moduleConfiguration)
-      {
-         return Equals(ModuleConfiguration, moduleConfiguration);
-      }
-
       public bool HasInitialConditions => !NullPathAndValueEntityBuildingBlocks.NullInitialConditions.Equals(SelectedInitialConditions);
 
       public bool HasParameterValues => !NullPathAndValueEntityBuildingBlocks.NullParameterValues.Equals(SelectedParameterValues);

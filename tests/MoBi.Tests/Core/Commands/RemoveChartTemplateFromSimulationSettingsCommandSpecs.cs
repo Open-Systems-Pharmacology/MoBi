@@ -1,10 +1,9 @@
 ﻿using System.Linq;
 using FakeItEasy;
+using MoBi.Core.Domain.Model;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Chart;
-using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands

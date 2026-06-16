@@ -18,7 +18,6 @@ namespace MoBi.Presentation.Presenter
       IListener<RemovedEvent>,
       IListener<EntitySelectedEvent>
    {
-      void LayoutInLayers();
       void AddReactionMoleculeNode();
       void UpdateUserDefinedParameters();
    }
@@ -95,11 +94,6 @@ namespace MoBi.Presentation.Presenter
          _reactionDiagramPresenter.Zoom(0F);
       }
 
-      public void LayoutByForces()
-      {
-         _reactionDiagramPresenter.Layout(null, 0, null);
-      }
-
       public void AddReactionMoleculeNode()
       {
          _reactionDiagramPresenter.AddMoleculeNode();
@@ -108,11 +102,6 @@ namespace MoBi.Presentation.Presenter
       public void UpdateUserDefinedParameters()
       {
          _userDefinedParametersPresenter.ShowUserDefinedParametersIn(_reactionBuildingBlock);
-      }
-
-      public void LayoutInLayers()
-      {
-         _reactionDiagramPresenter.LayerLayout();
       }
 
       public void Handle(RemovedEvent eventToHandle)

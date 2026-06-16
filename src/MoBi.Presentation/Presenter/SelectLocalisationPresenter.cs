@@ -4,7 +4,6 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Repository;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;

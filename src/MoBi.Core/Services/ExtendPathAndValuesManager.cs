@@ -8,6 +8,7 @@ using MoBi.Core.Domain.Services;
 using MoBi.Core.Extensions;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Domain.UnitSystem;
 
 namespace MoBi.Core.Services;
 
@@ -45,12 +46,14 @@ public abstract class ExtendPathAndValuesManager<T> : AbstractMergeManager<T>, I
    private readonly IMoBiFormulaTask _moBiFormulaTask;
    private readonly IObjectTypeResolver _objectTypeResolver;
    private readonly IMoBiContext _context;
+   protected readonly IDimensionFactory _dimensionFactory;
 
-   protected ExtendPathAndValuesManager(IMoBiFormulaTask moBiFormulaTask, IObjectTypeResolver objectTypeResolver, IMoBiContext context)
+   protected ExtendPathAndValuesManager(IMoBiFormulaTask moBiFormulaTask, IObjectTypeResolver objectTypeResolver, IMoBiContext context, IDimensionFactory dimensionFactory)
    {
       _moBiFormulaTask = moBiFormulaTask;
       _objectTypeResolver = objectTypeResolver;
       _context = context;
+      _dimensionFactory = dimensionFactory;
    }
 
    public Action<T> RemoveAction
@@ -112,6 +115,23 @@ public abstract class ExtendPathAndValuesManager<T> : AbstractMergeManager<T>, I
    protected abstract IMoBiCommand GenerateRemoveCommand(ILookupBuildingBlock<T> targetBuildingBlock, T entityToRemove);
 
    public abstract IMoBiCommand GenerateAddCommand(ILookupBuildingBlock<T> targetBuildingBlock, T entityToAdd);
+
+   protected IMoBiCommand UpdateValueAndDimension(IMoBiCommand updateValueCommand, ILookupBuildingBlock<T> buildingBlock, T pathAndValueEntity, string dimensionName)
+   {
+      var newDimension = _dimensionFactory.Dimension(dimensionName);
+      if (Equals(pathAndValueEntity.Dimension, newDimension))
+         return updateValueCommand;
+
+      var macroCommand = new MoBiMacroCommand
+      {
+         CommandType = AppConstants.Commands.UpdateCommand,
+         ObjectType = _objectTypeResolver.TypeFor<T>()
+      };
+
+      macroCommand.Add(updateValueCommand);
+      macroCommand.Add(new UpdateDimensionInPathAndValueEntityCommand<T>(pathAndValueEntity, newDimension, newDimension.DefaultUnit, buildingBlock));
+      return macroCommand;
+   }
 
    public IMoBiCommand Extend(IReadOnlyList<T> pathAndValueEntities, ILookupBuildingBlock<T> buildingBlockToExtend, bool retainConflictingEntities = true)
    {

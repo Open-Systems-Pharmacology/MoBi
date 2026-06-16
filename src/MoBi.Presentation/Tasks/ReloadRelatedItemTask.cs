@@ -1,11 +1,9 @@
-﻿using System;
-using MoBi.Assets;
-using OSPSuite.Core.Services;
-using OSPSuite.Utility.Visitor;
+﻿using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using MoBi.Presentation.Tasks.Interaction;
+using OSPSuite.Assets;
 using OSPSuite.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -16,8 +14,9 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Domain.Services.SensitivityAnalyses;
 using OSPSuite.Core.Journal;
-using OSPSuite.Assets;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility.Exceptions;
+using OSPSuite.Utility.Visitor;
 
 namespace MoBi.Presentation.Tasks
 {

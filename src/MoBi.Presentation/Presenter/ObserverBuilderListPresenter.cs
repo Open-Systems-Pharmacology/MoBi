@@ -29,7 +29,6 @@ namespace MoBi.Presentation.Presenter
       IListener<EntitySelectedEvent>,
       IPresenterWithFormulaCache
    {
-      void SetFormula(ObserverBuilderDTO dtoObserverBuilder, FormulaBuilderDTO newValue, FormulaBuilderDTO oldValue);
       IReadOnlyList<IDimension> GetDimensions();
       void SetPropertyValueFromViewFor<T>(ObjectBaseDTO dtoObjectBase, string propertyName, T newValue, T oldValue);
       IEditObserverBuildingBlockPresenter Parent { get; set; }
@@ -73,14 +72,6 @@ namespace MoBi.Presentation.Presenter
       public IBuildingBlock BuildingBlock { get; set; }
 
       public IFormulaCache FormulaCache => BuildingBlock.FormulaCache;
-
-      public void SetFormula(ObserverBuilderDTO dtoObserverBuilder, FormulaBuilderDTO newValue, FormulaBuilderDTO oldValue)
-      {
-         var newFormula = _buildingBlock.FormulaCache[newValue.Id];
-         var oldFormula = _buildingBlock.FormulaCache[oldValue.Id];
-         var observerBuilder = _context.Get<ObserverBuilder>(dtoObserverBuilder.Id);
-         AddCommand(new EditObjectBasePropertyInBuildingBlockCommand("Formula", newFormula, oldFormula, observerBuilder, BuildingBlock).RunCommand(_context)); //<IFormula>
-      }
 
       public IReadOnlyList<IDimension> GetDimensions() => _dimensionFactory.DimensionsSortedByName;
 
@@ -238,10 +229,6 @@ namespace MoBi.Presentation.Presenter
    }
 
    public class ContainerObserverBuilderRootItem : IRootViewItem<ContainerObserverBuilder>
-   {
-   }
-
-   public class NeighborhoodBuilderRootItem : IRootViewItem<AmountObserverBuilder>
    {
    }
 }

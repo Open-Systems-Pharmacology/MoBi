@@ -12,6 +12,7 @@ using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Presenter.BaseDiagram;
 using MoBi.Presentation.Presenter.Main;
 using MoBi.Presentation.Presenter.ModelDiagram;
+using MoBi.Core.Serialization.Xml;
 using MoBi.Presentation.Presenter.SpaceDiagram;
 using MoBi.Presentation.Serialization.Xml;
 using MoBi.Presentation.Serialization.Xml.Serializer;
@@ -89,7 +90,7 @@ namespace MoBi.Presentation
             scan.WithConvention<OSPSuiteRegistrationConvention>();
          });
 
-         container.Register<IPKSimStarter, PKSimStarter>(LifeStyle.Singleton);
+         container.Register<IPKSimStarter, IPKSimSnapshotConverter, PKSimStarter>(LifeStyle.Singleton);
          container.Register<IMenuBarItemRepository, MenuBarItemRepository>(LifeStyle.Singleton);
          container.Register<ISimulationRunner, SimulationRunner>(LifeStyle.Singleton);
          container.Register<IMoBiApplicationController, IApplicationController, MoBiApplicationController>(LifeStyle.Singleton);

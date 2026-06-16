@@ -1,9 +1,8 @@
-using MoBi.Core.Serialization.ORM;
+using System.IO;
 using MoBi.Core.Serialization.ORM.MetaData;
 using MoBi.HelpersForTests;
 using OSPSuite.BDDHelper;
 using OSPSuite.Infrastructure.Serialization.Services;
-using System.IO;
 
 namespace MoBi.Core
 {

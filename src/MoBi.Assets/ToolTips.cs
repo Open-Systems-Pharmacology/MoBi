@@ -1,6 +1,10 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Format;
 
 namespace MoBi.Assets
 {
@@ -106,6 +110,9 @@ namespace MoBi.Assets
          public static readonly string StopSimulation = "Stop the currently running simulation";
          public static readonly string CalculateScaleFactors = "Calculate scale factors";
          public static readonly string ConfigureSimulationDescription = "Configure simulation";
+         public static readonly string AddTimeProfileAnalysis = "Add a new time profile analysis chart to the simulation";
+         public static readonly string AddPredictedVsObservedAnalysis = "Add a new predicted vs. observed analysis chart to the simulation";
+         public static readonly string AddResidualsVsTimeAnalysis = "Add a new residuals vs. time analysis chart to the simulation";
       }
 
       public static class ImportRibbon
@@ -271,6 +278,14 @@ namespace MoBi.Assets
          public static string AddUnitMap = "Add new default unit for a specific dimension";
          public static string LoadUnits = "Load default units from file";
          public static string SaveUnits = "Save default units to file";
+      }
+
+      public static string CalculationMethodDescription(IReadOnlyList<UsedCalculationMethod> usedMethods, IFormatter<string> formatter)
+      {
+         var sb = new StringBuilder();
+
+         usedMethods.Each(x => sb.AppendLine($"{Environment.NewLine}{x.CalculationMethod} was used for the calculation of {formatter.Format(x.Category)}"));
+         return sb.ToString();
       }
    }
 }

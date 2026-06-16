@@ -1,7 +1,7 @@
 ﻿using MoBi.Assets;
-using OSPSuite.Core.Commands.Core;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Helper;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -21,7 +21,7 @@ namespace MoBi.Core.Commands
       protected string FormulaId { get; private set; }
 
       /// <summary>
-      /// Sets a constant value into a constant value formula
+      ///    Sets a constant value into a constant value formula
       /// </summary>
       /// <param name="constantFormula">The constant formula being edited</param>
       /// <param name="newValue">The new value being applied to the formula</param>
@@ -29,7 +29,7 @@ namespace MoBi.Core.Commands
       /// <param name="oldUnit">The old value display unit</param>
       /// <param name="buildingBlock">The building block that this formula is a member of</param>
       /// <param name="formulaOwner">The entity that owns the formula</param>
-      public SetConstantFormulaValueCommand(ConstantFormula constantFormula, double newValue, Unit displayUnit, Unit oldUnit, IBuildingBlock buildingBlock, IEntity formulaOwner):base(buildingBlock)
+      public SetConstantFormulaValueCommand(ConstantFormula constantFormula, double newValue, Unit displayUnit, Unit oldUnit, IBuildingBlock buildingBlock, IEntity formulaOwner) : base(buildingBlock)
       {
          _constantFormula = constantFormula;
          _newValue = newValue;
@@ -60,10 +60,10 @@ namespace MoBi.Core.Commands
          base.ExecuteWith(context);
 
          Description = AppConstants.Commands.SetConstantValueFormula(
-            ObjectType, 
-            formatForDisplay(_newValue, _displayUnit), 
+            ObjectType,
+            formatForDisplay(_newValue, _displayUnit),
             formatForDisplay(_constantFormula.Value, _oldDisplayUnit),
-            _owner == null? string.Empty : _owner.EntityPath());
+            _owner == null ? string.Empty : _owner.EntityPath());
 
          _constantFormula.Value = _newValue;
       }
@@ -75,6 +75,7 @@ namespace MoBi.Core.Commands
 
       public override void RestoreExecutionData(IMoBiContext context)
       {
+         base.RestoreExecutionData(context);
          _constantFormula = context.Get<ConstantFormula>(FormulaId);
          _owner = context.Get<IEntity>(_ownerId);
       }

@@ -1,11 +1,10 @@
-﻿using OSPSuite.Utility.Container;
-using OSPSuite.Utility.Extensions;
-using MoBi.Core.Domain.Model;
+﻿using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
+using OSPSuite.Utility.Container;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
 {

@@ -1,20 +1,19 @@
-﻿using MoBi.Core.Domain.Model;
-using MoBi.Core.Serialization.Exchange;
-using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Domain;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using MoBi.Assets;
+using MoBi.Core.Domain.Builder;
+using MoBi.Core.Domain.Model;
+using MoBi.Core.Serialization.Exchange;
+using MoBi.Presentation.Mappers;
+using MoBi.Presentation.Presenter;
+using MoBi.Presentation.Tasks.Interaction;
+using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Mappers;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Extensions;
-using MoBi.Core.Domain.Builder;
-using MoBi.Presentation.Mappers;
-using MoBi.Presentation.Tasks.Interaction;
-using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Core.Domain.Mappers;
-using MoBi.Presentation.Presenter;
-using MoBi.Assets;
-using OSPSuite.Assets;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -31,23 +30,20 @@ namespace MoBi.Presentation.Tasks
       private readonly IObjectPathFactory _objectPathFactory;
       private readonly ICloneManagerForBuildingBlock _cloneManager;
       private readonly IPathAndValueEntityToParameterValueMapper _pathAndValueEntityToParameterValueMapper;
-      private readonly IFormulaFactory _formulaFactory;
       private readonly IParameterValueToParameterMapper _individualParameterToParameterMapper;
       private readonly IInteractionTaskContext _interactionTaskContext;
       private readonly IMoBiApplicationController _applicationController;
 
-      public SpatialStructureContentExporter(IMoBiSpatialStructureFactory spatialStructureFactory, 
-         ICloneManagerForBuildingBlock cloneManager, 
-         IObjectPathFactory objectPathFactory, 
-         IPathAndValueEntityToParameterValueMapper pathAndValueEntityToParameterValueMapper, 
-         IFormulaFactory formulaFactory, 
+      public SpatialStructureContentExporter(IMoBiSpatialStructureFactory spatialStructureFactory,
+         ICloneManagerForBuildingBlock cloneManager,
+         IObjectPathFactory objectPathFactory,
+         IPathAndValueEntityToParameterValueMapper pathAndValueEntityToParameterValueMapper,
          IParameterValueToParameterMapper individualParameterToParameterMapper, IInteractionTaskContext interactionTaskContext, IMoBiApplicationController applicationController)
       {
          _spatialStructureFactory = spatialStructureFactory;
          _cloneManager = cloneManager;
          _objectPathFactory = objectPathFactory;
          _pathAndValueEntityToParameterValueMapper = pathAndValueEntityToParameterValueMapper;
-         _formulaFactory = formulaFactory;
          _individualParameterToParameterMapper = individualParameterToParameterMapper;
          _interactionTaskContext = interactionTaskContext;
          _applicationController = applicationController;
@@ -230,12 +226,13 @@ namespace MoBi.Presentation.Tasks
 
       private IParameter createParameter(IndividualParameter individualParameter)
       {
+         //the mapper already takes care of applying the value (constant formula for plain parameters,
+         //fixed value via the distributed parameter Value setter for distributed ones).
          var parameterToAdd = _individualParameterToParameterMapper.MapFrom(individualParameter);
 
-         // The mapper does not create a formula for the parameter. Caller must clone or create the formula based on how it will be used 
-         if (individualParameter.Value.HasValue)
-            parameterToAdd.Formula = _formulaFactory.ConstantFormula(individualParameter.Value.Value, individualParameter.Dimension);
-         else if (individualParameter.Formula != null)
+         //only clone an explicit formula here when no value was provided, because a value would already
+         //have been turned into a constant formula by the mapper above and would otherwise be overwritten.
+         if (individualParameter.Formula != null && !individualParameter.Value.HasValue)
             parameterToAdd.Formula = _cloneManager.Clone(individualParameter.Formula);
 
          return parameterToAdd;

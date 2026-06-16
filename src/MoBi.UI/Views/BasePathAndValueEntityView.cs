@@ -9,7 +9,6 @@ using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid;
-using DevExpress.XtraGrid.Columns;
 using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraLayout;
@@ -211,8 +210,6 @@ namespace MoBi.UI.Views
             gridView.FocusedRowHandle = _gridViewBinder.RowHandleFor(value);
          }
       }
-
-      protected virtual bool IsEditable(GridColumn column) => true;
 
       public override void InitializeBinding()
       {

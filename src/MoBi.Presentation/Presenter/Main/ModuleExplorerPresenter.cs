@@ -44,7 +44,7 @@ namespace MoBi.Presentation.Presenter.Main
 
    {
       private readonly IObservedDataInExplorerPresenter _observedDataInExplorerPresenter;
-      private readonly IEditBuildingBlockStarter _editBuildingBlockStarter;
+      private readonly IInteractionTasksForMoleculeBuildingBlock _interactionTaskForMoleculeBuildingBlock;
       private readonly IInteractionTasksForModule _interactionTaskForModule;
       private readonly IModulesInExplorerPresenter _modulesInExplorerPresenter;
       private bool _editSinglesOnLoad = true;
@@ -59,7 +59,7 @@ namespace MoBi.Presentation.Presenter.Main
          IObservedDataInExplorerPresenter observedDataInExplorerPresenter,
          IMultipleTreeNodeContextMenuFactory multipleTreeNodeContextMenuFactory,
          IProjectRetriever projectRetriever,
-         IEditBuildingBlockStarter editBuildingBlockStarter,
+         IInteractionTasksForMoleculeBuildingBlock interactionTaskForMoleculeBuildingBlock,
          IInteractionTasksForModule interactionTaskForModule,
          IModulesInExplorerPresenter modulesInExplorerPresenter) :
          base(view, regionResolver, treeNodeFactory, viewItemContextMenuFactory, context, RegionNames.ModuleExplorer,
@@ -69,7 +69,7 @@ namespace MoBi.Presentation.Presenter.Main
          _modulesInExplorerPresenter = modulesInExplorerPresenter;
          _observedDataInExplorerPresenter.InitializeWith(this, classificationPresenter, RootNodeTypes.ObservedDataFolder);
          _modulesInExplorerPresenter.InitializeWith(this, classificationPresenter, RootNodeTypes.ModulesFolder);
-         _editBuildingBlockStarter = editBuildingBlockStarter;
+         _interactionTaskForMoleculeBuildingBlock = interactionTaskForMoleculeBuildingBlock;
          _interactionTaskForModule = interactionTaskForModule;
       }
 
@@ -196,7 +196,7 @@ namespace MoBi.Presentation.Presenter.Main
          }
 
          var moleculeBuildingBlock = node.ParentNode.TagAsObject.DowncastTo<MoleculeBuildingBlock>();
-         _editBuildingBlockStarter.EditMolecule(moleculeBuildingBlock, moleculeBuilder);
+         _interactionTaskForMoleculeBuildingBlock.Edit(moleculeBuildingBlock, moleculeBuilder);
       }
 
       private void editSingleBuildingBlockModule(Module module)
@@ -358,7 +358,8 @@ namespace MoBi.Presentation.Presenter.Main
          switch (eventToHandle.AddedObject)
          {
             case IBuildingBlock buildingBlock:
-               var module = eventToHandle.Parent as Module;
+               if (!(eventToHandle.Parent is Module module))
+                  break;
                addBuildingBlockToModule(buildingBlock, module);
                refreshModuleIcon(module);
                break;
@@ -406,7 +407,10 @@ namespace MoBi.Presentation.Presenter.Main
 
       private void refreshModuleIcon(Module module)
       {
-         _view.NodeById(module.Id).Icon = ApplicationIcons.IconByName(module.Icon);
+         var node = _view.NodeById(module.Id);
+         if (node == null)
+            return;
+         node.Icon = ApplicationIcons.IconByName(module.Icon);
       }
 
       public void Handle(BulkUpdateStartedEvent eventToHandle)

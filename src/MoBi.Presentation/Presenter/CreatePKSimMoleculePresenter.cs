@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core;
-using MoBi.Core.Serialization.Services;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -14,6 +12,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -71,36 +70,22 @@ namespace MoBi.Presentation.Presenter
          return dto;
       }
 
-      public void SetParameterUnit(ParameterDTO parameterDTO, Unit unit)
-      {
+      public void SetParameterUnit(ParameterDTO parameterDTO, Unit unit) =>
          _quantityTask.SetQuantityDisplayUnit(parameterFrom(parameterDTO), unit, _moleculeBuildingBlock);
-      }
 
-      private IParameter parameterFrom(ParameterDTO parameterDTO)
-      {
-         return parameterDTO.Parameter;
-      }
+      private IParameter parameterFrom(ParameterDTO parameterDTO) => parameterDTO.Parameter;
 
-      public void SetParameterValue(ParameterDTO parameterDTO, double newDisplayValue)
-      {
+      public void SetParameterValue(ParameterDTO parameterDTO, double newDisplayValue) =>
          _quantityTask.SetQuantityDisplayValue(parameterFrom(parameterDTO), newDisplayValue, _moleculeBuildingBlock);
-      }
 
-      private IEnumerable<ParameterDTO> allTemplateParametersFor(MoleculeBuilder molecule)
-      {
-         var templateParameter = molecule.Parameters.Where(isTemplateParameter).ToList();
-         return templateParameter.MapAllUsing(_parameterDTOMapper).Cast<ParameterDTO>();
-      }
+      private IReadOnlyList<ParameterDTO> allTemplateParametersFor(MoleculeBuilder molecule) =>
+         molecule.Parameters.Where(isTemplateParameter).MapAllUsing(_parameterDTOMapper).ToList();
 
-      private bool isTemplateParameter(IParameter parameter)
-      {
-         return parameter.Visible && parameter.Formula.IsConstant() && double.IsNaN(parameter.Value);
-      }
+      private bool isTemplateParameter(IParameter parameter) =>
+         parameter.Visible && parameter.Formula.IsConstant() && double.IsNaN(parameter.Value);
 
-      private MoleculeBuilder loadMoleculeFromTemplate()
-      {
-         return _serializationTask.Load<MoleculeBuilder>(_configuration.StandardMoleculeTemplateFile, resetIds: true);
-      }
+      private MoleculeBuilder loadMoleculeFromTemplate() =>
+         _serializationTask.Load<MoleculeBuilder>(_configuration.StandardMoleculeTemplateFile, resetIds: true);
 
       public override void ViewChanged()
       {

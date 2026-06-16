@@ -28,9 +28,25 @@ namespace MoBi.R
 
       public static IIndividualTask GetIndividualTask() => resolveTask<IIndividualTask>();
 
+      public static IExpressionProfileTask GetExpressionProfileTask() => resolveTask<IExpressionProfileTask>();
+
       public static IParameterValuesTask GetParameterValuesTask() => resolveTask<IParameterValuesTask>();
 
       public static IInitialConditionsTask GetInitialConditionsTask() => resolveTask<IInitialConditionsTask>();
+
+      public static IMoleculesTask GetMoleculesTask() => resolveTask<IMoleculesTask>();
+
+      public static ISpatialStructureTask GetSpatialStructureTask() => resolveTask<ISpatialStructureTask>();
+
+      public static IReactionsTask GetReactionsTask() => resolveTask<IReactionsTask>();
+
+      public static IObserversTask GetObserversTask() => resolveTask<IObserversTask>();
+
+      public static IEventGroupsTask GetEventGroupsTask() => resolveTask<IEventGroupsTask>();
+
+      public static IPassiveTransportsTask GetPassiveTransportsTask() => resolveTask<IPassiveTransportsTask>();
+
+      public static ISnapshotTask GetSnapshotTask() => resolveTask<ISnapshotTask>();
 
       private static T resolveTask<T>()
       {

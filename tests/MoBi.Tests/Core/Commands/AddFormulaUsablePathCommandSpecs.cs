@@ -1,9 +1,7 @@
-﻿using System;
+﻿using FakeItEasy;
+using MoBi.Core.Domain.Model;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
-using MoBi.Core.Domain.Extensions;
-using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;

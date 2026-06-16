@@ -1,9 +1,12 @@
-﻿using FakeItEasy;
+﻿using System.Collections.Generic;
+using System.Linq;
+using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Services;
 using MoBi.HelpersForTests;
 using MoBi.IntegrationTests;
+using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Presenter.Simulation;
@@ -22,19 +25,16 @@ namespace MoBi.Presentation
    public abstract class concern_for_CreateSimulationConfigurationPresenter : ContextForIntegration<CreateSimulationConfigurationPresenter>
    {
       protected ICreateSimulationConfigurationView _view;
-      protected IModelConstructor _modelConstructor;
-      protected IDimensionValidator _validationVisitor;
+      private IModelConstructor _modelConstructor;
       protected IUserSettings _userSettings;
-      protected ISimulationFactory _simulationFactory;
-      protected IMoBiApplicationController _applicationController;
-      protected IHeavyWorkManager _heavyWorkManager;
-      private ISubPresenterItemManager<ISimulationConfigurationItemPresenter> _subPresenterManager;
+      private ISimulationFactory _simulationFactory;
+      protected ISubPresenterItemManager<ISimulationConfigurationItemPresenter> _subPresenterManager;
       private IDialogCreator _dialogCreator;
       protected IForbiddenNamesRetriever _forbiddenNameRetriever;
       protected IMoBiSimulation _simulation;
       protected SimulationConfiguration _simulationConfiguration;
       protected SimulationSettings _clonedSimulationSettings;
-      private IModuleConfigurationDTOToModuleConfigurationMapper _moduleConfigurationMapper;
+      protected IModuleConfigurationDTOToModuleConfigurationMapper _moduleConfigurationMapper;
       protected ISimulationConfigurationFactory _simulationConfigurationFactory;
       protected ICloneManagerForBuildingBlock _cloneManager;
 
@@ -50,11 +50,9 @@ namespace MoBi.Presentation
          A.CallTo(() => _modelConstructor.CreateModelFrom(A<SimulationConfiguration>._, A<string>._)).Returns(A.Fake<CreationResult>());
          _cloneManager = A.Fake<ICloneManagerForBuildingBlock>();
          _simulationConfigurationFactory = A.Fake<ISimulationConfigurationFactory>();
-         _validationVisitor = A.Fake<IDimensionValidator>();
          _userSettings = A.Fake<IUserSettings>();
          _userSettings.CheckCircularReference = true;
          _simulationFactory = A.Fake<ISimulationFactory>();
-         _heavyWorkManager = new HeavyWorkManagerForSpecs();
          _forbiddenNameRetriever = A.Fake<IForbiddenNamesRetriever>();
          sut = new CreateSimulationConfigurationPresenter(_view, _subPresenterManager, _dialogCreator,
             _forbiddenNameRetriever, _userSettings, _moduleConfigurationMapper, _simulationConfigurationFactory, _cloneManager);
@@ -159,6 +157,112 @@ namespace MoBi.Presentation
       public void should_set_the_check_circular_reference_according_to_value_in_user_settings()
       {
          _simulationConfiguration.PerformCircularReferenceCheck.ShouldBeEqualTo(_userSettings.CheckCircularReference);
+      }
+   }
+
+   public class When_creating_configuration_and_overriding_molecule_calculation_methods : concern_for_CreateSimulationConfigurationPresenter
+   {
+      private SimulationConfiguration _result;
+      private MoleculeBuilder _molecule;
+      private MoleculeBuildingBlock _moleculeBuildingBlock;
+      private IEditModuleConfigurationsPresenter _moduleConfigPresenter;
+      private IEditIndividualAndExpressionConfigurationsPresenter _individualPresenter;
+      private IEditMoleculeCalculationMethodsPresenter _calcMethodsPresenter;
+
+      protected override void Context()
+      {
+         base.Context();
+
+         _moduleConfigPresenter = A.Fake<IEditModuleConfigurationsPresenter>();
+         _individualPresenter = A.Fake<IEditIndividualAndExpressionConfigurationsPresenter>();
+         _calcMethodsPresenter = A.Fake<IEditMoleculeCalculationMethodsPresenter>();
+
+         A.CallTo(() => _subPresenterManager.PresenterAt(SimulationItems.ModuleConfiguration)).Returns(_moduleConfigPresenter);
+         A.CallTo(() => _subPresenterManager.PresenterAt(SimulationItems.IndividualAndExpressionConfiguration)).Returns(_individualPresenter);
+         A.CallTo(() => _subPresenterManager.PresenterAt(SimulationItems.MoleculeCalculationMethodsConfiguration)).Returns(_calcMethodsPresenter);
+
+         _molecule = new MoleculeBuilder().WithName("Drug");
+         _molecule.AddUsedCalculationMethod(new UsedCalculationMethod("Absorption", "OriginalAbsorption"));
+         _molecule.AddUsedCalculationMethod(new UsedCalculationMethod("Distribution", "OriginalDistribution"));
+
+         _moleculeBuildingBlock = new MoleculeBuildingBlock { _molecule };
+         var module = new Module { _moleculeBuildingBlock };
+         var moduleConfig = new ModuleConfiguration(module);
+
+         var moduleConfigDTO = new ModuleConfigurationDTO(moduleConfig);
+         A.CallTo(() => _moduleConfigPresenter.ModuleConfigurationDTOs).Returns(new List<ModuleConfigurationDTO> { moduleConfigDTO });
+         A.CallTo(() => _moduleConfigurationMapper.MapFrom(moduleConfigDTO)).Returns(moduleConfig);
+
+         A.CallTo(() => _individualPresenter.ExpressionProfiles).Returns(new List<ExpressionProfileBuildingBlock>());
+         A.CallTo(() => _individualPresenter.SelectedIndividual).Returns(null);
+
+
+         var usedCalculationMethodList = new List<UsedCalculationMethod>{
+            new UsedCalculationMethod("Absorption", "OverriddenAbsorption"),
+            new UsedCalculationMethod("Distribution", "OverriddenDistribution")
+         };
+
+         A.CallTo(() => _calcMethodsPresenter.MoleculeNames).Returns(new List<string> { _molecule.Name });
+         A.CallTo(() => _calcMethodsPresenter.AllUsedCalculationMethodsFor(_molecule.Name)).Returns(usedCalculationMethodList);
+         A.CallTo(() => _simulationConfigurationFactory.Create(A<SimulationSettings>._)).Returns(new SimulationConfiguration());
+         A.CallTo(() => _view.Canceled).Returns(false);
+      }
+
+      protected override void Because()
+      {
+         _result = sut.CreateBasedOn(_simulation);
+      }
+
+      [Observation]
+      public void should_update_absorption_calculation_method_to_overridden_value()
+      {
+         _result.CalculationMethodOverridesFor(_molecule.Name).UsedCalculationMethods.Single(x => x.Category == "Absorption").CalculationMethod.ShouldBeEqualTo("OverriddenAbsorption");
+      }
+
+      [Observation]
+      public void should_update_distribution_calculation_method_to_overridden_value()
+      {
+         _result.CalculationMethodOverridesFor(_molecule.Name).UsedCalculationMethods.Single(x => x.Category == "Distribution").CalculationMethod.ShouldBeEqualTo("OverriddenDistribution");
+      }
+
+      [Observation]
+      public void should_add_module_configuration_to_the_result()
+      {
+         _result.ModuleConfigurations.Count.ShouldBeEqualTo(1);
+      }
+   }
+
+   public class When_wizard_next_is_called_from_the_page_before_calculation_methods : concern_for_CreateSimulationConfigurationPresenter
+   {
+      private IEditModuleConfigurationsPresenter _moduleConfigPresenter;
+      private IEditMoleculeCalculationMethodsPresenter _calcMethodsPresenter;
+      private IReadOnlyList<ModuleConfigurationDTO> _moduleConfigurationDTOs;
+
+      protected override void Context()
+      {
+         base.Context();
+
+         _moduleConfigPresenter = A.Fake<IEditModuleConfigurationsPresenter>();
+         _calcMethodsPresenter = A.Fake<IEditMoleculeCalculationMethodsPresenter>();
+
+         A.CallTo(() => _subPresenterManager.PresenterAt(SimulationItems.ModuleConfiguration)).Returns(_moduleConfigPresenter);
+         A.CallTo(() => _subPresenterManager.PresenterAt(SimulationItems.MoleculeCalculationMethodsConfiguration)).Returns(_calcMethodsPresenter);
+
+         var module = new Module { new MoleculeBuildingBlock() };
+         var moduleConfig = new ModuleConfiguration(module);
+         _moduleConfigurationDTOs = new List<ModuleConfigurationDTO> { new ModuleConfigurationDTO(moduleConfig) };
+         A.CallTo(() => _moduleConfigPresenter.ModuleConfigurationDTOs).Returns(_moduleConfigurationDTOs);
+      }
+
+      protected override void Because()
+      {
+         sut.WizardNext(SimulationItems.MoleculeCalculationMethodsConfiguration.Index - 1);
+      }
+
+      [Observation]
+      public void should_refresh_the_calculation_methods_presenter_with_module_configuration_dtos()
+      {
+         A.CallTo(() => _calcMethodsPresenter.RefreshWith(_moduleConfigurationDTOs)).MustHaveHappened();
       }
    }
 }

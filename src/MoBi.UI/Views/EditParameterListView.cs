@@ -130,12 +130,6 @@ namespace MoBi.UI.Views
          _colNavigate.Visible = _colBuildingBlock.Visible;
       }
 
-      public void Select(ParameterDTO parameterDTO)
-      {
-         var rowHandle = _gridViewBinder.RowHandleFor(parameterDTO);
-         _gridView.FocusedRowHandle = rowHandle;
-      }
-
       public override void InitializeBinding()
       {
          base.InitializeBinding();

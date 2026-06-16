@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Events;
 using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
@@ -27,6 +28,7 @@ namespace MoBi.Core.Commands
       {
          base.ExecuteWith(context);
          editTagInCriteria(getCriteria());
+         context.PublishEvent(new TagChangedEvent(_taggedObject));
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)

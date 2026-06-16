@@ -1,5 +1,4 @@
-﻿using MoBi.Core.Domain.Extensions;
-using MoBi.Core.Domain.Model;
+﻿using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Core.Repositories;
 using MoBi.Core.Services;

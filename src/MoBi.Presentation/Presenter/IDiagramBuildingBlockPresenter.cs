@@ -5,6 +5,5 @@
       void ZoomIn();
       void ZoomOut();
       void FitToPage();
-      void LayoutByForces();
    }
 }

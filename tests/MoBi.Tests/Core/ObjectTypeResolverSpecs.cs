@@ -1,9 +1,9 @@
-﻿using FakeItEasy;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using MoBi.Core.Commands;
+﻿using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Helper;
+using OSPSuite.Assets;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Chart;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
@@ -11,7 +11,6 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Assets;
 
 namespace MoBi.Core
 {

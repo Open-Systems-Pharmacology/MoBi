@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using MoBi.Core.Chart;
 using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
@@ -7,7 +8,6 @@ using MoBi.Core.Snapshots.Mappers;
 using MoBi.HelpersForTests;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Chart;
 using OSPSuite.Core.Chart.Simulations;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
@@ -43,11 +43,11 @@ namespace MoBi.IntegrationTests.Snapshots
 
          container.Add(_parameter);
          _simulation.Model.Root.Add(container);
-         
+
          _simulation.AddOriginalQuantityValue(new OriginalQuantityValue
          {
-            Dimension = _parameter.Dimension, 
-            DisplayUnit = _parameter.DisplayUnit, 
+            Dimension = _parameter.Dimension,
+            DisplayUnit = _parameter.DisplayUnit,
             Path = new ObjectPath(container.Name, _parameter.Name),
             Type = OriginalQuantityValue.Types.Quantity,
             Value = _parameter.Value
@@ -78,9 +78,9 @@ namespace MoBi.IntegrationTests.Snapshots
             WeightedObservedData = new WeightedObservedData(_dataRepository)
          });
 
-         _simulation.Chart = new CurveChart();
-         _simulation.ResidualVsTimeChart = new SimulationResidualVsTimeChart();
-         _simulation.PredictedVsObservedChart = new SimulationPredictedVsObservedChart();
+         _simulation.AddAnalysis(new MoBiSimulationTimeProfileChart());
+         _simulation.AddAnalysis(new SimulationResidualVsTimeChart());
+         _simulation.AddAnalysis(new SimulationPredictedVsObservedChart());
          _simulation.ResultsDataRepository = DomainHelperForSpecs.ObservedData().WithName("results");
       }
    }
@@ -106,7 +106,9 @@ namespace MoBi.IntegrationTests.Snapshots
       [Observation]
       public void result_charts_are_mapped()
       {
-         _result.Chart.ShouldNotBeNull();
+         _result.Charts.Length.ShouldBeEqualTo(1);
+         _result.PredictedVsObservedCharts.Length.ShouldBeEqualTo(1);
+         _result.ResidualVsTimeCharts.Length.ShouldBeEqualTo(1);
       }
 
       [Observation]

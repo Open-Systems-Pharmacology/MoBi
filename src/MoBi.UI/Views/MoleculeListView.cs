@@ -1,19 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Forms;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Presentation.Nodes;
 using DevExpress.XtraBars;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
-using OSPSuite.Presentation;
 using OSPSuite.Presentation.Core;
-using OSPSuite.UI.Controls;
-using OSPSuite.UI.Views;
 using OSPSuite.Presentation.Extensions;
+using OSPSuite.Presentation.Nodes;
+using OSPSuite.UI.Controls;
 using OSPSuite.UI.Services;
+using OSPSuite.UI.Views;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.UI.Views
 {

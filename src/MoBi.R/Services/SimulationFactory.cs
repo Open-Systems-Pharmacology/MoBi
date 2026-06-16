@@ -20,6 +20,7 @@ namespace MoBi.R.Services
       SimulationCreationResult CreateSimulationFrom(string simulationName, RModuleConfiguration[] moduleConfigurations,
          ExpressionProfileBuildingBlock[] expressionProfiles,
          IndividualBuildingBlock individual,
+         IReadOnlyList<MoleculeCalculationMethodOverride> calculationMethodOverrides,
          bool createAllProcessRateParameters = false,
          SimulationSettings simulationSettings = null);
    }
@@ -43,6 +44,7 @@ namespace MoBi.R.Services
       public SimulationCreationResult CreateSimulationFrom(string simulationName, RModuleConfiguration[] moduleConfigurations,
          ExpressionProfileBuildingBlock[] expressionProfiles,
          IndividualBuildingBlock individual,
+         IReadOnlyList<MoleculeCalculationMethodOverride> calculationMethodOverrides,
          bool createAllProcessRateParameters = false,
          SimulationSettings simulationSettings = null)
       {
@@ -66,6 +68,8 @@ namespace MoBi.R.Services
          });
 
          typedExpressionProfiles.Each(simulationConfiguration.AddExpressionProfile);
+
+         addCalculationMethodOverrides(simulationConfiguration, calculationMethodOverrides);
 
          simulationConfiguration.Individual = individual;
          simulationConfiguration.ShouldValidate = true;
@@ -108,6 +112,9 @@ namespace MoBi.R.Services
 
          return new SimulationCreationResult(null, warnings, errors);
       }
+
+      private static void addCalculationMethodOverrides(SimulationConfiguration simulationConfiguration, IReadOnlyList<MoleculeCalculationMethodOverride> overrides) => 
+         overrides.Each(x => simulationConfiguration.AddCalculationMethodsOverridesFor(x.MoleculeName, x.UsedCalculationMethods));
 
       private static void addValidationMessage(ValidationMessage message, List<string> messageList)
       {

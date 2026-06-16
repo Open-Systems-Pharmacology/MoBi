@@ -29,147 +29,143 @@
       /// </summary>
       private void InitializeComponent()
       {
-         this.htmlEditor = new DevExpress.XtraEditors.MemoEdit();
-         this.uxLayoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
-         this.btnGoToSource = new OSPSuite.UI.Controls.UxSimpleButton();
-         this.tbSource = new DevExpress.XtraEditors.TextEdit();
-         this.tbName = new DevExpress.XtraEditors.TextEdit();
-         this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
-         this.nameLayoutControlItem = new DevExpress.XtraLayout.LayoutControlItem();
-         this.descriptionLayoutControlItem = new DevExpress.XtraLayout.LayoutControlItem();
-         this.layoutControlItemSource = new DevExpress.XtraLayout.LayoutControlItem();
-         this.layoutControlItemGoToSource = new DevExpress.XtraLayout.LayoutControlItem();
-         ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.htmlEditor.Properties)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.uxLayoutControl)).BeginInit();
-         this.uxLayoutControl.SuspendLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.tbSource.Properties)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.tbName.Properties)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.nameLayoutControlItem)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.descriptionLayoutControlItem)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemSource)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemGoToSource)).BeginInit();
-         this.SuspendLayout();
+         htmlEditor = new DevExpress.XtraEditors.MemoEdit();
+         uxLayoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
+         btnGoToSource = new OSPSuite.UI.Controls.UxSimpleButton();
+         tbSource = new DevExpress.XtraEditors.TextEdit();
+         tbName = new DevExpress.XtraEditors.TextEdit();
+         Root = new DevExpress.XtraLayout.LayoutControlGroup();
+         nameLayoutControlItem = new DevExpress.XtraLayout.LayoutControlItem();
+         descriptionLayoutControlItem = new DevExpress.XtraLayout.LayoutControlItem();
+         layoutControlItemSource = new DevExpress.XtraLayout.LayoutControlItem();
+         layoutControlItemGoToSource = new DevExpress.XtraLayout.LayoutControlItem();
+         ((System.ComponentModel.ISupportInitialize)errorProvider).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)htmlEditor.Properties).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)uxLayoutControl).BeginInit();
+         uxLayoutControl.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)tbSource.Properties).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)tbName.Properties).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)Root).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)nameLayoutControlItem).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)descriptionLayoutControlItem).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)layoutControlItemSource).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)layoutControlItemGoToSource).BeginInit();
+         SuspendLayout();
          // 
          // htmlEditor
          // 
-         this.htmlEditor.Location = new System.Drawing.Point(12, 78);
-         this.htmlEditor.Name = "htmlEditor";
-         this.htmlEditor.Size = new System.Drawing.Size(374, 144);
-         this.htmlEditor.StyleController = this.uxLayoutControl;
-         this.htmlEditor.TabIndex = 4;
+         htmlEditor.Location = new System.Drawing.Point(12, 78);
+         htmlEditor.Name = "htmlEditor";
+         htmlEditor.Size = new System.Drawing.Size(374, 253);
+         htmlEditor.StyleController = uxLayoutControl;
+         htmlEditor.TabIndex = 4;
          // 
-         // uxLayoutControl1
+         // uxLayoutControl
          // 
-         this.uxLayoutControl.AllowCustomization = false;
-         this.uxLayoutControl.Controls.Add(this.btnGoToSource);
-         this.uxLayoutControl.Controls.Add(this.tbSource);
-         this.uxLayoutControl.Controls.Add(this.htmlEditor);
-         this.uxLayoutControl.Controls.Add(this.tbName);
-         this.uxLayoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.uxLayoutControl.Location = new System.Drawing.Point(0, 0);
-         this.uxLayoutControl.Name = "uxLayoutControl";
-         this.uxLayoutControl.Root = this.Root;
-         this.uxLayoutControl.Size = new System.Drawing.Size(398, 234);
-         this.uxLayoutControl.TabIndex = 8;
-         this.uxLayoutControl.Text = "uxLayoutControl1";
+         uxLayoutControl.AllowCustomization = false;
+         uxLayoutControl.Controls.Add(btnGoToSource);
+         uxLayoutControl.Controls.Add(tbSource);
+         uxLayoutControl.Controls.Add(htmlEditor);
+         uxLayoutControl.Controls.Add(tbName);
+         uxLayoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
+         uxLayoutControl.Location = new System.Drawing.Point(0, 0);
+         uxLayoutControl.Name = "uxLayoutControl";
+         uxLayoutControl.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(1038, 283, 1317, 613);
+         uxLayoutControl.Root = Root;
+         uxLayoutControl.Size = new System.Drawing.Size(398, 343);
+         uxLayoutControl.TabIndex = 8;
+         uxLayoutControl.Text = "uxLayoutControl1";
          // 
          // btnGoToSource
          // 
-         this.btnGoToSource.Location = new System.Drawing.Point(299, 36);
-         this.btnGoToSource.Manager = null;
-         this.btnGoToSource.Name = "btnGoToSource";
-         this.btnGoToSource.Shortcut = System.Windows.Forms.Keys.None;
-         this.btnGoToSource.Size = new System.Drawing.Size(87, 22);
-         this.btnGoToSource.StyleController = this.uxLayoutControl;
-         this.btnGoToSource.TabIndex = 9;
-         this.btnGoToSource.Text = "btnGoToSource";
+         btnGoToSource.Location = new System.Drawing.Point(299, 36);
+         btnGoToSource.Manager = null;
+         btnGoToSource.Name = "btnGoToSource";
+         btnGoToSource.Shortcut = System.Windows.Forms.Keys.None;
+         btnGoToSource.Size = new System.Drawing.Size(87, 22);
+         btnGoToSource.StyleController = uxLayoutControl;
+         btnGoToSource.TabIndex = 9;
+         btnGoToSource.Text = "btnGoToSource";
          // 
          // tbSource
          // 
-         this.tbSource.Location = new System.Drawing.Point(166, 36);
-         this.tbSource.Name = "tbSource";
-         this.tbSource.Size = new System.Drawing.Size(129, 20);
-         this.tbSource.StyleController = this.uxLayoutControl;
-         this.tbSource.TabIndex = 5;
+         tbSource.Location = new System.Drawing.Point(166, 36);
+         tbSource.Name = "tbSource";
+         tbSource.Size = new System.Drawing.Size(129, 20);
+         tbSource.StyleController = uxLayoutControl;
+         tbSource.TabIndex = 5;
          // 
          // tbName
          // 
-         this.tbName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-         this.tbName.Location = new System.Drawing.Point(166, 12);
-         this.tbName.Name = "tbName";
-         this.tbName.Size = new System.Drawing.Size(220, 20);
-         this.tbName.StyleController = this.uxLayoutControl;
-         this.tbName.TabIndex = 0;
+         tbName.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+         tbName.Location = new System.Drawing.Point(166, 12);
+         tbName.Name = "tbName";
+         tbName.Size = new System.Drawing.Size(220, 20);
+         tbName.StyleController = uxLayoutControl;
+         tbName.TabIndex = 0;
          // 
          // Root
          // 
-         this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
-         this.Root.GroupBordersVisible = false;
-         this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.nameLayoutControlItem,
-            this.descriptionLayoutControlItem,
-            this.layoutControlItemSource,
-            this.layoutControlItemGoToSource});
-         this.Root.Name = "Root";
-         this.Root.Size = new System.Drawing.Size(398, 234);
-         this.Root.TextVisible = false;
+         Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
+         Root.GroupBordersVisible = false;
+         Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] { nameLayoutControlItem, descriptionLayoutControlItem, layoutControlItemSource, layoutControlItemGoToSource });
+         Root.Name = "Root";
+         Root.Size = new System.Drawing.Size(398, 343);
+         Root.TextVisible = false;
          // 
          // nameLayoutControlItem
          // 
-         this.nameLayoutControlItem.Control = this.tbName;
-         this.nameLayoutControlItem.Location = new System.Drawing.Point(0, 0);
-         this.nameLayoutControlItem.Name = "nameLayoutControlItem";
-         this.nameLayoutControlItem.Size = new System.Drawing.Size(378, 24);
-         this.nameLayoutControlItem.TextSize = new System.Drawing.Size(142, 13);
+         nameLayoutControlItem.Control = tbName;
+         nameLayoutControlItem.Location = new System.Drawing.Point(0, 0);
+         nameLayoutControlItem.Name = "nameLayoutControlItem";
+         nameLayoutControlItem.Size = new System.Drawing.Size(378, 24);
+         nameLayoutControlItem.TextSize = new System.Drawing.Size(142, 13);
          // 
          // descriptionLayoutControlItem
          // 
-         this.descriptionLayoutControlItem.Control = this.htmlEditor;
-         this.descriptionLayoutControlItem.Location = new System.Drawing.Point(0, 50);
-         this.descriptionLayoutControlItem.Name = "descriptionLayoutControlItem";
-         this.descriptionLayoutControlItem.Size = new System.Drawing.Size(378, 164);
-         this.descriptionLayoutControlItem.TextLocation = DevExpress.Utils.Locations.Top;
-         this.descriptionLayoutControlItem.TextSize = new System.Drawing.Size(142, 13);
+         descriptionLayoutControlItem.Control = htmlEditor;
+         descriptionLayoutControlItem.Location = new System.Drawing.Point(0, 50);
+         descriptionLayoutControlItem.Name = "descriptionLayoutControlItem";
+         descriptionLayoutControlItem.Size = new System.Drawing.Size(378, 273);
+         descriptionLayoutControlItem.TextLocation = DevExpress.Utils.Locations.Top;
+         descriptionLayoutControlItem.TextSize = new System.Drawing.Size(142, 13);
          // 
-         // sourceLayoutControlItem
+         // layoutControlItemSource
          // 
-         this.layoutControlItemSource.Control = this.tbSource;
-         this.layoutControlItemSource.Location = new System.Drawing.Point(0, 24);
-         this.layoutControlItemSource.Name = "layoutControlItemSource";
-         this.layoutControlItemSource.Size = new System.Drawing.Size(287, 26);
-         this.layoutControlItemSource.TextSize = new System.Drawing.Size(142, 13);
+         layoutControlItemSource.Control = tbSource;
+         layoutControlItemSource.Location = new System.Drawing.Point(0, 24);
+         layoutControlItemSource.Name = "layoutControlItemSource";
+         layoutControlItemSource.Size = new System.Drawing.Size(287, 26);
+         layoutControlItemSource.TextSize = new System.Drawing.Size(142, 13);
          // 
-         // goToSourceLayoutControlItem
+         // layoutControlItemGoToSource
          // 
-         this.layoutControlItemGoToSource.Control = this.btnGoToSource;
-         this.layoutControlItemGoToSource.Location = new System.Drawing.Point(287, 24);
-         this.layoutControlItemGoToSource.Name = "layoutControlItemGoToSource";
-         this.layoutControlItemGoToSource.Size = new System.Drawing.Size(91, 26);
-         this.layoutControlItemGoToSource.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutControlItemGoToSource.TextVisible = false;
+         layoutControlItemGoToSource.Control = btnGoToSource;
+         layoutControlItemGoToSource.Location = new System.Drawing.Point(287, 24);
+         layoutControlItemGoToSource.Name = "layoutControlItemGoToSource";
+         layoutControlItemGoToSource.Size = new System.Drawing.Size(91, 26);
+         layoutControlItemGoToSource.TextSize = new System.Drawing.Size(0, 0);
+         layoutControlItemGoToSource.TextVisible = false;
          // 
          // EditQuantityInfoInSimulationView
          // 
-         this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-         this.Controls.Add(this.uxLayoutControl);
-         this.Name = "EditQuantityInfoInSimulationView";
-         this.Size = new System.Drawing.Size(398, 234);
-         ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.htmlEditor.Properties)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.uxLayoutControl)).EndInit();
-         this.uxLayoutControl.ResumeLayout(false);
-         ((System.ComponentModel.ISupportInitialize)(this.tbSource.Properties)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.tbName.Properties)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.nameLayoutControlItem)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.descriptionLayoutControlItem)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemSource)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemGoToSource)).EndInit();
-         this.ResumeLayout(false);
+         AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+         AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+         Controls.Add(uxLayoutControl);
+         Name = "EditQuantityInfoInSimulationView";
+         Size = new System.Drawing.Size(398, 343);
+         ((System.ComponentModel.ISupportInitialize)errorProvider).EndInit();
+         ((System.ComponentModel.ISupportInitialize)htmlEditor.Properties).EndInit();
+         ((System.ComponentModel.ISupportInitialize)uxLayoutControl).EndInit();
+         uxLayoutControl.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)tbSource.Properties).EndInit();
+         ((System.ComponentModel.ISupportInitialize)tbName.Properties).EndInit();
+         ((System.ComponentModel.ISupportInitialize)Root).EndInit();
+         ((System.ComponentModel.ISupportInitialize)nameLayoutControlItem).EndInit();
+         ((System.ComponentModel.ISupportInitialize)descriptionLayoutControlItem).EndInit();
+         ((System.ComponentModel.ISupportInitialize)layoutControlItemSource).EndInit();
+         ((System.ComponentModel.ISupportInitialize)layoutControlItemGoToSource).EndInit();
+         ResumeLayout(false);
 
       }
 

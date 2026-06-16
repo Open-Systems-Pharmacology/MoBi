@@ -95,11 +95,5 @@ namespace MoBi.UI.Views
             _screenBinder.BindToSource(_valueEditDTO);
          }
       }
-
-      public void Rebind()
-      {
-         if (_valueEditDTO == null) return;
-         _screenBinder.BindToSource(_valueEditDTO);
-      }
    }
 }

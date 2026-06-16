@@ -1,15 +1,14 @@
 ﻿using System.Linq;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
 using MoBi.UI.Diagram.DiagramManagers;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Diagram.Elements;
 using OSPSuite.UI.Diagram.Elements;
-using OSPSuite.Core.Diagram;
 
 namespace MoBi.Core.Commands
 {

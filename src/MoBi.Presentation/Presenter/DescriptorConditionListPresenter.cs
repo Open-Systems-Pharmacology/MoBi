@@ -35,6 +35,7 @@ namespace MoBi.Presentation.Presenter
       void NewInParentCondition();
       void NewInChildrenCondition();
       void NewNotInContainerCondition();
+      void NewConditionGroup();
       void ChangeOperator(CriteriaOperator criteriaOperator);
    }
 
@@ -52,6 +53,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IDescriptorCriteriaToDescriptorCriteriaDTOMapper _descriptorCriteriaMapper;
       private readonly IObjectBaseNamingTask _namingTask;
       private readonly ITagVisitor _tagVisitor;
+      private readonly IMoBiApplicationController _applicationController;
       private DescriptorCriteria _descriptorCriteria;
       private DescriptorCriteriaDTO _descriptorCriteriaDTO;
       private T _taggedObject;
@@ -63,12 +65,13 @@ namespace MoBi.Presentation.Presenter
       public IViewItem ViewRootItem { get; set; }
 
       public DescriptorConditionListPresenter(
-         IDescriptorConditionListView view, 
+         IDescriptorConditionListView view,
          IViewItemContextMenuFactory viewItemContextMenuFactory,
          ITagTask tagTask,
          IDescriptorCriteriaToDescriptorCriteriaDTOMapper descriptorCriteriaMapper,
          IObjectBaseNamingTask namingTask,
-         ITagVisitor tagVisitor)
+         ITagVisitor tagVisitor,
+         IMoBiApplicationController applicationController)
          : base(view)
       {
          _viewItemContextMenuFactory = viewItemContextMenuFactory;
@@ -76,6 +79,7 @@ namespace MoBi.Presentation.Presenter
          _namingTask = namingTask;
          _tagVisitor = tagVisitor;
          _descriptorCriteriaMapper = descriptorCriteriaMapper;
+         _applicationController = applicationController;
          _defaultRootItem = new ContainerDescriptorRootItem();
       }
 
@@ -122,6 +126,12 @@ namespace MoBi.Presentation.Presenter
 
       public void RemoveCondition(DescriptorConditionDTO dto)
       {
+         if (dto is ConditionGroupDTO groupDTO)
+         {
+            AddCommand(_tagTask.RemoveConditionGroup(groupDTO.ConditionGroup, createCommandParameters()));
+            return;
+         }
+
          AddCommand(_tagTask.RemoveTagCondition(dto.Tag, dto.TagType, createCommandParameters()));
       }
 
@@ -184,6 +194,21 @@ namespace MoBi.Presentation.Presenter
       public void NewInParentCondition() => addCondition(TagType.InParent);
 
       public void NewInChildrenCondition() => addCondition(TagType.InChildren);
+
+      public void NewConditionGroup()
+      {
+         var groupToAdd = createConditionGroup();
+         if (groupToAdd == null)
+            return;
+
+         AddCommand(_tagTask.AddConditionGroup(groupToAdd, createCommandParameters()));
+      }
+
+      private ConditionGroup createConditionGroup()
+      {
+         using var presenter = _applicationController.Start<ICreateConditionGroupPresenter>();
+         return presenter.CreateConditionGroup();
+      }
 
       public void ChangeOperator(CriteriaOperator newOperator)
       {

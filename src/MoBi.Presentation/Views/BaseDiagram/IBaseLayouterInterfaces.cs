@@ -1,5 +1,3 @@
-using OSPSuite.Presentation.Diagram.Elements;
-
 namespace MoBi.Presentation.Views.BaseDiagram
 {
    public enum LayoutTarget
@@ -9,8 +7,4 @@ namespace MoBi.Presentation.Views.BaseDiagram
       VisibleGreatGrandChildren,
       AllVisibleDescendants
    }
-
-
-   public interface IGeneralDiagramLayouter : IContainerBaseLayouter
-   { }
 }

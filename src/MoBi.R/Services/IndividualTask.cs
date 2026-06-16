@@ -1,48 +1,65 @@
-﻿using MoBi.Assets;
-using MoBi.Core.Exceptions;
+using System;
+using System.Linq;
+using MoBi.Assets;
+using MoBi.Core.Commands;
+using MoBi.Core.Domain.Model;
+using MoBi.Core.Extensions;
 using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.R.Domain;
-using OSPSuite.Utility;
-using System.IO;
-using System.Reflection;
+using ISerializationTask = MoBi.Core.Serialization.Services.ICoreSerializationTask;
 
 namespace MoBi.R.Services;
 
-public interface IIndividualTask
+public interface IIndividualTask : IPathAndValuesTask<IndividualBuildingBlock, IndividualParameter>
 {
-   IndividualBuildingBlock CreateIndividual(IndividualCharacteristics individualCharacteristics);
+   IndividualBuildingBlock CreateIndividual(IndividualCharacteristics individualCharacteristics, string name);
+   void SetIndividualParameter(IndividualBuildingBlock buildingBlock, string[] quantityPaths, double[] quantityValues);
+   void SetIndividualParameter(IndividualBuildingBlock buildingBlock, string quantityPath, double quantityValue);
 }
 
-public class IndividualTask : PKSimAssemblyLoader, IIndividualTask
+public class IndividualTask : PKSimPathAndValuesTask<IndividualBuildingBlock, IndividualParameter>, IIndividualTask
 {
-   private readonly IXmlSerializationService _xmlSerializationService;
    private readonly IMoBiProjectRetriever _projectRetriever;
+   private readonly IMoBiContext _context;
+   private readonly IObjectTypeResolver _objectTypeResolver;
 
-   public IndividualTask(IXmlSerializationService xmlSerializationService, IMoBiProjectRetriever projectRetriever)
+   public IndividualTask(IXmlSerializationService xmlSerializationService, IMoBiProjectRetriever projectRetriever, IMoBiContext context, IObjectTypeResolver objectTypeResolver, ISerializationTask serializationTask, IPKSimAssemblyLoader pkSimLoader) : base(serializationTask, xmlSerializationService, pkSimLoader)
    {
-      _xmlSerializationService = xmlSerializationService;
       _projectRetriever = projectRetriever;
+      _context = context;
+      _objectTypeResolver = objectTypeResolver;
    }
 
-   private const string PKSIM_R_DLL = "PKSim.R.dll";
-
-   public IndividualBuildingBlock CreateIndividual(IndividualCharacteristics individualCharacteristics)
+   public IndividualBuildingBlock CreateIndividual(IndividualCharacteristics individualCharacteristics, string name)
    {
-      LoadPKSimAssembly();
+      _pkSimLoader.LoadPKSimAssembly();
 
-      var serializedIndividual = ExecuteMethod(GetMethod("PKSim.R.Exchange.BuildingBlockCreator", "CreateIndividual"), [individualCharacteristics]) as string;
+      var serializedIndividual = _pkSimLoader.ExecuteMethod("PKSim.R.Exchange.BuildingBlockCreator", "CreateIndividual", [individualCharacteristics]) as string;
 
-      return _xmlSerializationService.Deserialize<IndividualBuildingBlock>(serializedIndividual, _projectRetriever.Current);
+      var buildingBlock = _xmlSerializationService.Deserialize<IndividualBuildingBlock>(serializedIndividual, _projectRetriever.Current);
+      buildingBlock.Name = name;
+      return buildingBlock;
    }
 
-   protected override string RetrievePKSimAssemblyPath()
+   public void SetIndividualParameter(IndividualBuildingBlock buildingBlock, string[] quantityPaths, double[] quantityValues)
    {
-      var assemblyFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), PKSIM_R_DLL);
-      if (FileHelper.FileExists(assemblyFile))
-         return assemblyFile;
+      if (!quantityPaths.HasConsistentLengthWith(quantityValues))
+         throw new ArgumentException(AppConstants.Exceptions.AllArraysMustHaveTheSameLength);
 
-      throw new MoBiException(AppConstants.PKSim.CouldNotFindCompatiblePKSimAssemblies(assemblyFile));
+      var macroCommand = new MoBiMacroCommand
+      {
+         CommandType = AppConstants.Commands.ExtendCommand,
+         Description = AppConstants.Commands.ExtendDescription,
+         ObjectType = _objectTypeResolver.TypeFor<IndividualBuildingBlock>()
+      };
+
+      macroCommand.AddRange(quantityPaths.Select((quantityPath, i) => UpdateValueCommandFor(buildingBlock, quantityPath, quantityValues[i])));
+
+      _context.AddToHistory(macroCommand.RunCommand(_context));
    }
+
+   public void SetIndividualParameter(IndividualBuildingBlock buildingBlock, string quantityPath, double quantityValue) => SetIndividualParameter(buildingBlock, [quantityPath], [quantityValue]);
 }

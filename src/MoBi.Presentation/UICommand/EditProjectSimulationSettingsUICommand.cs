@@ -1,6 +1,5 @@
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Tasks.Interaction;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.MenuAndBars;
 
 namespace MoBi.Presentation.UICommand

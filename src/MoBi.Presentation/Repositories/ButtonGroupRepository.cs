@@ -44,6 +44,7 @@ namespace MoBi.Presentation.Repositories
          yield return runSensitivityAnalysisButtonGroup;
          yield return sensitivityAnalysisButtonGroup;
          yield return historyButtonGroup;
+         yield return simulationAnalysesButtonGroup;
       }
 
       private IButtonGroup parameterIdentificationButtonGroup => CreateButtonGroup.WithCaption(Ribbons.ParameterIdentification)
@@ -249,5 +250,11 @@ namespace MoBi.Presentation.Repositories
       private IButtonGroup historyButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.History)
          .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.ClearHistory)))
          .WithId(ButtonGroupIds.History);
+
+      private IButtonGroup simulationAnalysesButtonGroup => CreateButtonGroup.WithCaption(AppConstants.BarNames.Analyses)
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.AddTimeProfileAnalysis)))
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.AddPredictedVsObservedAnalysis)))
+         .WithButton(CreateRibbonButton.From(_menuBarItemRepository.Find(MenuBarItemIds.AddResidualsVsTimeAnalysis)))
+         .WithId(ButtonGroupIds.SimulationAnalyses);
    }
 }

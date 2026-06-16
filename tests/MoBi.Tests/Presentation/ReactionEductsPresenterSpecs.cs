@@ -1,26 +1,24 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Core.Commands.Core;
-using OSPSuite.Utility.Extensions;
 using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using MoBi.UI.Diagram.DiagramManagers;
-using OSPSuite.Core.Diagram;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Presentation.Diagram.Elements;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.UI.Diagram.Elements;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation
 {

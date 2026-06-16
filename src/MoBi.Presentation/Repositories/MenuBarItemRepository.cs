@@ -527,6 +527,24 @@ namespace MoBi.Presentation.Repositories
          yield return SensitivityAnalysisMenuBarButtons.RunSensitivityAnalysis(MenuBarItemIds.RunSensitivityAnalysis, _container);
          yield return SensitivityAnalysisMenuBarButtons.StopSensitivityAnalysis(MenuBarItemIds.StopSensitivityAnalysis, _container);
 
+         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.TimeProfile)
+            .WithId(MenuBarItemIds.AddTimeProfileAnalysis)
+            .WithDescription(ToolTips.SimulationRibbon.AddTimeProfileAnalysis)
+            .WithCommand<AddTimeProfileSimulationAnalysisUICommand>(_container)
+            .WithIcon(ApplicationIcons.TimeProfileAnalysis);
+
+         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.PredictedVsObserved)
+            .WithId(MenuBarItemIds.AddPredictedVsObservedAnalysis)
+            .WithDescription(ToolTips.SimulationRibbon.AddPredictedVsObservedAnalysis)
+            .WithCommand<AddPredictedVsObservedSimulationAnalysisUICommand>(_container)
+            .WithIcon(ApplicationIcons.PredictedVsObservedAnalysis);
+
+         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.ResidualsVsTime)
+            .WithId(MenuBarItemIds.AddResidualsVsTimeAnalysis)
+            .WithDescription(ToolTips.SimulationRibbon.AddResidualsVsTimeAnalysis)
+            .WithCommand<AddResidualsVsTimeSimulationAnalysisUICommand>(_container)
+            .WithIcon(ApplicationIcons.ResidualVsTimeAnalysis);
+
       }
    }
 }

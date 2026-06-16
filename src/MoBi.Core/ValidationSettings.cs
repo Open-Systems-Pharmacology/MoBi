@@ -60,5 +60,23 @@ namespace MoBi.Core
          get => _showUnresolvedEndosomesWarningsForInitialConditions;
          set => SetProperty(ref _showUnresolvedEndosomesWarningsForInitialConditions, value);
       }
+
+      public ValidationSettings Clone()
+      {
+         var clone = new ValidationSettings();
+         clone.UpdatePropertiesFrom(this);
+         return clone;
+      }
+
+      public void UpdatePropertiesFrom(ValidationSettings source)
+      {
+         CheckDimensions = source.CheckDimensions;
+         ShowPKSimDimensionProblemWarnings = source.ShowPKSimDimensionProblemWarnings;
+         ShowCannotCalcErrors = source.ShowCannotCalcErrors;
+         ShowPKSimObserverMessages = source.ShowPKSimObserverMessages;
+         CheckRules = source.CheckRules;
+         CheckCircularReference = source.CheckCircularReference;
+         ShowUnresolvedEndosomesWarningsForInitialConditions = source.ShowUnresolvedEndosomesWarningsForInitialConditions;
+      }
    }
 }

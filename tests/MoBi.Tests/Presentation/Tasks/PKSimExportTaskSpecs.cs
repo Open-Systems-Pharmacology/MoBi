@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Repositories;
-using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Journal;
 using OSPSuite.Core.Serialization.Exchange;
 

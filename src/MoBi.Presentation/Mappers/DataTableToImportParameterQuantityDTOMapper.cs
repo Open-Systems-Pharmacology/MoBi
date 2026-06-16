@@ -3,7 +3,6 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.UnitSystem;
 using MoBi.Presentation.DTO;
-using NPOI.SS.Formula.Functions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.UnitSystem;
 using static MoBi.Core.Mappers.ColumnIndexes;

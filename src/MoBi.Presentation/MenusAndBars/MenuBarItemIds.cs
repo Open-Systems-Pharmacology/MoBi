@@ -118,6 +118,9 @@ namespace MoBi.Presentation.MenusAndBars
       public static MenuBarItemId NewNeighborhood = createMenuBarItemId("NewNeighborhood");
       public static MenuBarItemId ExportProjectToSnapshot = createMenuBarItemId("ExportProjectToSnapshot");
       public static MenuBarItemId LoadProjectFromSnahpshot = createMenuBarItemId("LoadProjectFromSnahpshot");
+      public static MenuBarItemId AddTimeProfileAnalysis = createMenuBarItemId("AddTimeProfileAnalysis");
+      public static MenuBarItemId AddPredictedVsObservedAnalysis = createMenuBarItemId("AddPredictedVsObservedAnalysis");
+      public static MenuBarItemId AddResidualsVsTimeAnalysis = createMenuBarItemId("AddResidualsVsTimeAnalysis");
 
       private static MenuBarItemId createMenuBarItemId(string name)
       {

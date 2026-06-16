@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MoBi.Core.Chart;
 using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
@@ -14,13 +15,15 @@ using OSPSuite.Core.Services;
 using OSPSuite.Core.Snapshots;
 using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Extensions;
+using ModelSimulationPredictedVsObservedChart = OSPSuite.Core.Chart.Simulations.SimulationPredictedVsObservedChart;
+using ModelSimulationResidualVsTimeChart = OSPSuite.Core.Chart.Simulations.SimulationResidualVsTimeChart;
 
 namespace MoBi.Core.Snapshots.Mappers;
 
 public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Simulation, SimulationContext, MoBiProject>
 {
    private readonly OutputMappingMapper _outputMappingMapper;
-   private readonly CurveChartMapper _curveChartMapper;
+   private readonly MoBiSimulationTimeProfileChartMapper _timeProfileChartMapper;
    private readonly ISimulationFactory _simulationFactory;
    private readonly SimulationConfigurationMapper _simulationConfigurationMapper;
    private readonly OutputSelectionsMapper _outputSelectionsMapper;
@@ -35,7 +38,7 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
    public SimulationMapper(
       SimulationConfigurationMapper simulationConfigurationMapper,
       OutputMappingMapper outputMappingMapper,
-      CurveChartMapper curveChartMapper,
+      MoBiSimulationTimeProfileChartMapper timeProfileChartMapper,
       ISimulationFactory simulationFactory,
       OutputSelectionsMapper outputSelectionsMapper,
       SimulationPredictedVsObservedChartMapper predictedVsObservedChartMapper,
@@ -48,7 +51,7 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
    {
       _simulationConfigurationMapper = simulationConfigurationMapper;
       _outputMappingMapper = outputMappingMapper;
-      _curveChartMapper = curveChartMapper;
+      _timeProfileChartMapper = timeProfileChartMapper;
       _simulationFactory = simulationFactory;
       _outputSelectionsMapper = outputSelectionsMapper;
       _predictedVsObservedChartMapper = predictedVsObservedChartMapper;
@@ -72,14 +75,10 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
       mobiSimulation.Settings.OutputSelections = await _outputSelectionsMapper.MapToModel(snapshot.OutputSelections, snapshotContextWithSimulation);
 
       var simulationAnalysisContext = new SimulationAnalysisContext(context.Project.AllObservedData, context);
-      if (snapshot.Chart != null)
-         mobiSimulation.Chart = await _curveChartMapper.MapToModel(snapshot.Chart, simulationAnalysisContext);
 
-      if (snapshot.SimulationPredictedVsObservedChart != null)
-         mobiSimulation.PredictedVsObservedChart = await _predictedVsObservedChartMapper.MapToModel(snapshot.SimulationPredictedVsObservedChart, simulationAnalysisContext);
-
-      if (snapshot.SimulationResidualVsTimeChart != null)
-         mobiSimulation.ResidualVsTimeChart = await _residualsVsTimeChartMapper.MapToModel(snapshot.SimulationResidualVsTimeChart, simulationAnalysisContext);
+      snapshot.Charts?.Each(x => mobiSimulation.AddAnalysis(_timeProfileChartMapper.MapToModel(x, simulationAnalysisContext).Result));
+      snapshot.PredictedVsObservedCharts?.Each(x => mobiSimulation.AddAnalysis(_predictedVsObservedChartMapper.MapToModel(x, simulationAnalysisContext).Result));
+      snapshot.ResidualVsTimeCharts?.Each(x => mobiSimulation.AddAnalysis(_residualsVsTimeChartMapper.MapToModel(x, simulationAnalysisContext).Result));
 
       snapshot.OutputMappings?.Each(x => mobiSimulation.OutputMappings.Add(_outputMappingMapper.MapToModel(x, snapshotContextWithSimulation).Result));
 
@@ -97,13 +96,17 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
       snapshot.Configuration = await _simulationConfigurationMapper.MapToSnapshot(simulation.Configuration);
       snapshot.OutputSelections = await _outputSelectionsMapper.MapToSnapshot(simulation.OutputSelections);
 
-      if (simulation.Chart != null)
-         snapshot.Chart = await _curveChartMapper.MapToSnapshot(simulation.Chart);
+      var timeProfileCharts = simulation.Analyses.OfType<MoBiSimulationTimeProfileChart>().ToList();
+      if (timeProfileCharts.Any())
+         snapshot.Charts = await Task.WhenAll(timeProfileCharts.Select(c => _timeProfileChartMapper.MapToSnapshot(c)));
 
-      if (simulation.PredictedVsObservedChart != null)
-         snapshot.SimulationPredictedVsObservedChart = await _predictedVsObservedChartMapper.MapToSnapshot(simulation.PredictedVsObservedChart);
-      if (simulation.ResidualVsTimeChart != null)
-         snapshot.SimulationResidualVsTimeChart = await _residualsVsTimeChartMapper.MapToSnapshot(simulation.ResidualVsTimeChart);
+      var predictedVsObservedCharts = simulation.Analyses.OfType<ModelSimulationPredictedVsObservedChart>().ToList();
+      if (predictedVsObservedCharts.Any())
+         snapshot.PredictedVsObservedCharts = await Task.WhenAll(predictedVsObservedCharts.Select(c => _predictedVsObservedChartMapper.MapToSnapshot(c)));
+
+      var residualCharts = simulation.Analyses.OfType<ModelSimulationResidualVsTimeChart>().ToList();
+      if (residualCharts.Any())
+         snapshot.ResidualVsTimeCharts = await Task.WhenAll(residualCharts.Select(c => _residualsVsTimeChartMapper.MapToSnapshot(c)));
 
       snapshot.ParameterIdentificationWorkingDirectory = simulation.ParameterIdentificationWorkingDirectory;
 

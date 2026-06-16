@@ -6,7 +6,6 @@ using MoBi.Core.Domain.Repository;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Domain.UnitSystem;
 using MoBi.Core.Helper;
-using MoBi.Core.Reporting;
 using MoBi.Core.Serialization.Converter;
 using MoBi.Core.Services;
 using MoBi.Core.Snapshots.Mappers;
@@ -15,7 +14,6 @@ using OSPSuite.Core.Commands;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Comparison;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Domain.UnitSystem;
@@ -23,12 +21,9 @@ using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.FuncParser;
 using OSPSuite.Infrastructure.Export;
 using OSPSuite.Infrastructure.Import;
-using OSPSuite.Infrastructure.Reporting;
 using OSPSuite.Infrastructure.Serialization;
 using OSPSuite.Infrastructure.Serialization.ORM.History;
-using OSPSuite.TeXReporting;
 using OSPSuite.Utility.Container;
-using Constants = OSPSuite.Core.Domain.Constants;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 using ParameterIdentificationRunModeMapper = MoBi.Core.Snapshots.Mappers.ParameterIdentificationRunModeMapper;
 using IdentificationParameterMapper = MoBi.Core.Snapshots.Mappers.IdentificationParameterMapper;
@@ -56,8 +51,10 @@ namespace MoBi.Core
             scan.ExcludeType<GroupRepository>();
             scan.ExcludeType<ClipboardManager>();
             scan.ExcludeType<ApplicationSettings>();
+            // The PK-Sim snapshot converter is registered explicitly per host (PKSimStarter for the
+            // desktop app/CLI, PKSimSnapshotConverter for MoBi.R), so it is not auto-registered here.
+            scan.ExcludeType<PKSimStarter>();
             scan.ExcludeNamespaceContainingType<IMoBiObjectConverter>();
-            scan.ExcludeNamespaceContainingType<ProjectReporter>();
             scan.ExcludeNamespaceContainingType<MoBiSimulationDiffBuilder>();
             scan.ExcludeNamespaceContainingType<ProjectMapper>();
             scan.WithConvention(new OSPSuiteRegistrationConvention(registerConcreteType: true));
@@ -86,6 +83,7 @@ namespace MoBi.Core
          container.Register<IGroupRepository, GroupRepository>(LifeStyle.Singleton);
          container.Register<IClipboardManager, ClipboardManager>(LifeStyle.Singleton);
          container.Register<ICloneManager, CloneManagerForBuildingBlock>(LifeStyle.Singleton);
+         container.Register<IMoBiSimulationAnalysisCreator, ISimulationAnalysisCreator, MoBiSimulationAnalysisCreator>(LifeStyle.Singleton);
 
          container.Register<IProjectRetriever, MoBiProjectRetriever>();
          container.Register<IHistoryManager, MoBiHistoryManager>();
@@ -130,16 +128,7 @@ namespace MoBi.Core
 
       private static void registerReporters(IContainer container)
       {
-         container.AddRegister(x => x.FromType<ReportingRegister>());
-         container.AddRegister(x => x.FromType<InfrastructureReportingRegister>());
          container.AddRegister(x => x.FromType<InfrastructureExportRegister>());
-
-         container.AddScanner(scan =>
-         {
-            scan.AssemblyContainingType<CoreRegister>();
-            scan.IncludeNamespaceContainingType<ProjectReporter>();
-            scan.WithConvention<ReporterRegistrationConvention>();
-         });
       }
 
       private static void registerComparers(IContainer container)

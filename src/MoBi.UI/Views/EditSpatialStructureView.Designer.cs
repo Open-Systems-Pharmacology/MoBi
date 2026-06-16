@@ -38,7 +38,7 @@ namespace MoBi.UI.Views
          this.tabTree = new DevExpress.XtraTab.XtraTabPage();
          this.tabDiagram = new DevExpress.XtraTab.XtraTabPage();
          this.spliterDiagram = new DevExpress.XtraEditors.SplitContainerControl();
-         this._diagramOverview = new Northwoods.Go.GoOverview();
+         this._diagramOverview = new OSPSuite.UI.Views.Diagram.BaseDiagramOverview();
          ((System.ComponentModel.ISupportInitialize)(this.tabPagesControl)).BeginInit();
          this.tabPagesControl.SuspendLayout();
          this.tabEditBuildingBlock.SuspendLayout();
@@ -170,6 +170,6 @@ namespace MoBi.UI.Views
       private XtraTabPage tabTree;
       private XtraTabPage tabDiagram;
       private SplitContainerControl spliterDiagram;
-      private Northwoods.Go.GoOverview _diagramOverview;
+      private OSPSuite.UI.Views.Diagram.BaseDiagramOverview _diagramOverview;
    }
 }

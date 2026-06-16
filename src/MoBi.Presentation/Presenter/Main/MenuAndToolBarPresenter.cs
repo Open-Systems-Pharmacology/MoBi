@@ -144,6 +144,7 @@ namespace MoBi.Presentation.Presenter.Main
          _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.EditInitialConditions), AppConstants.RibbonPages.DynamicInitialConditions, AppConstants.RibbonCategories.InitialConditions);
          _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.EditParameterValues), AppConstants.RibbonPages.DynamicParameterValues, AppConstants.RibbonCategories.ParameterValues);
          _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.Simulation), AppConstants.RibbonPages.DynamicRunSimulation, AppConstants.RibbonCategories.Simulation);
+         _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.SimulationAnalyses), AppConstants.RibbonPages.DynamicRunSimulation, AppConstants.RibbonCategories.Simulation);
 
          _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.RunParameterIdentification), RibbonPages.RunParameterIdentification, RibbonCategories.ParameterIdentification);
          _view.AddDynamicPageGroupToPageCategory(_buttonGroupRepository.Find(ButtonGroupIds.ParameterIdentificationAnalyses), RibbonPages.RunParameterIdentification, RibbonCategories.ParameterIdentification);
@@ -278,6 +279,9 @@ namespace MoBi.Presentation.Presenter.Main
             _menuBarItemRepository[MenuBarItemIds.CreateSensitivityAnalysis].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.SensitivityAnalysisFeedbackView].Enabled = enabled;
             _menuBarItemRepository[MenuBarItemIds.ClearHistory].Enabled = enabled;
+            _menuBarItemRepository[MenuBarItemIds.AddTimeProfileAnalysis].Enabled = enabled;
+            _menuBarItemRepository[MenuBarItemIds.AddPredictedVsObservedAnalysis].Enabled = enabled;
+            _menuBarItemRepository[MenuBarItemIds.AddResidualsVsTimeAnalysis].Enabled = enabled;
          }
       }
 

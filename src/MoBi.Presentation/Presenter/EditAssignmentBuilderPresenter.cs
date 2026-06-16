@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Extensions;
@@ -17,7 +16,6 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Presenters;
-using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter

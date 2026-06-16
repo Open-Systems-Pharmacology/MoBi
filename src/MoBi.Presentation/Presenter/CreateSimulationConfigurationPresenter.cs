@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
@@ -96,15 +97,30 @@ namespace MoBi.Presentation.Presenter
          if (currentIndex == FirstIndex)
          {
             View.NextEnabled = PresenterAt(SimulationItems.ModuleConfiguration).CanClose;
+            // Any time the user visits the module configuration page, we force them to use 'Next' to move to
+            // the calculation methods page. That way the list of molecules represents all the selected modules
+            View.SetControlEnabled(SimulationItems.MoleculeCalculationMethodsConfiguration, false);
          }
 
          View.OkEnabled = CanClose;
       }
 
+      public override void WizardNext(int currentIndex)
+      {
+         base.WizardNext(currentIndex);
+
+         // Next will open the calculation methods page, refresh is needed
+         if (currentIndex == SimulationItems.MoleculeCalculationMethodsConfiguration.Index - 1) 
+            PresenterAt(SimulationItems.MoleculeCalculationMethodsConfiguration).RefreshWith(PresenterAt(SimulationItems.ModuleConfiguration).ModuleConfigurationDTOs);
+      }
+
+
       private void updateSimulationConfiguration(SimulationConfiguration simulationConfiguration)
       {
          var moduleConfigurations = PresenterAt(SimulationItems.ModuleConfiguration).ModuleConfigurationDTOs.MapAllUsing(_moduleConfigurationMapper);
          var individualAndExpressionPresenter = PresenterAt(SimulationItems.IndividualAndExpressionConfiguration);
+         var moleculeCalculationMethodsPresenter = PresenterAt(SimulationItems.MoleculeCalculationMethodsConfiguration);
+
          var selectedExpressions = individualAndExpressionPresenter.ExpressionProfiles;
          var selectedIndividual = individualAndExpressionPresenter.SelectedIndividual;
 
@@ -116,6 +132,13 @@ namespace MoBi.Presentation.Presenter
          simulationConfiguration.PerformCircularReferenceCheck = _userSettings.CheckCircularReference;
 
          simulationConfiguration.CreateAllProcessRateParameters = _simulationDTO.CreateAllProcessRateParameters;
+
+         moleculeCalculationMethodsPresenter.MoleculeNames.Each(moleculeName =>
+         {
+            var allUsedCalculationMethods = moleculeCalculationMethodsPresenter.AllUsedCalculationMethodsFor(moleculeName);
+            if(allUsedCalculationMethods.Any())
+               simulationConfiguration.AddCalculationMethodsOverridesFor(moleculeName, allUsedCalculationMethods);
+         });
       }
    }
 }

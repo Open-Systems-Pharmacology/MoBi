@@ -1,12 +1,7 @@
-﻿using System;
-using FakeItEasy;
-
+﻿using MoBi.Core.Domain.Repository;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using MoBi.Core.Domain.Repository;
-
 using OSPSuite.Core.Domain;
-
 
 namespace MoBi.Core
 {

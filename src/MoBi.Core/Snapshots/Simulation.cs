@@ -11,13 +11,13 @@ public class Simulation : SnapshotBase
 {
    public OutputMapping[] OutputMappings { get; set; }
 
-   public CurveChart Chart { get; set; }
+   public CurveChart[] Charts { get; set; }
    public SimulationConfiguration Configuration { get; set; }
    public OutputSelections OutputSelections { get; set; }
 
    public string ParameterIdentificationWorkingDirectory { get; set; }
-   public SimulationPredictedVsObservedChart SimulationPredictedVsObservedChart { get; set; }
-   public CurveChart SimulationResidualVsTimeChart { get; set; }
+   public SimulationPredictedVsObservedChart[] PredictedVsObservedCharts { get; set; }
+   public CurveChart[] ResidualVsTimeCharts { get; set; }
 
    public LocalizedParameter[] Parameters { get; set; }
 

@@ -71,6 +71,12 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithActionCommand(() => _presenter.NewNotInContainerCondition());
       }
 
+      protected virtual IMenuBarItem CreateAddNewConditionGroup()
+      {
+         return CreateMenuButton.WithCaption(AppConstants.Captions.NewConditionGroup)
+            .WithActionCommand(() => _presenter.NewConditionGroup());
+      }
+
 
       public override IEnumerable<IMenuBarItem> AllMenuItems()
       {
@@ -81,7 +87,8 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             CreateAddNewInContainerCondition().AsGroupStarter(),
             CreateAddNewNotInContainerCondition(),
             CreateAddInParentCondition().AsGroupStarter(),
-            CreateAddInChildrenCondition()
+            CreateAddInChildrenCondition(),
+            CreateAddNewConditionGroup().AsGroupStarter()
          };
 
          if (_allowAddAllCondition)

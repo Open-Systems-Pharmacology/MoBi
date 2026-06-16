@@ -10,6 +10,12 @@ using IMoBiCoreUserSettings = MoBi.Core.ICoreUserSettings;
 
 namespace MoBi.Presentation.Settings
 {
+   public interface ICloneableUserSettings : IUserSettings
+   {
+      IUserSettings Clone();
+      void UpdatePropertiesFrom(IUserSettings source);
+   }
+   
    public interface IUserSettings : IPresentationUserSettings, IMoBiCoreUserSettings
    {
       string IconSizeGeneral { get; set; }

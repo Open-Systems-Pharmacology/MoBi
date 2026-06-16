@@ -1,21 +1,20 @@
 ﻿using System.Collections.Generic;
 using MoBi.Assets;
-using OSPSuite.Presentation.MenuAndBars;
-using OSPSuite.Utility.Container;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.UICommand;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
-using OSPSuite.Assets;
-using OSPSuite.Assets.Extensions;
+using OSPSuite.Utility.Container;
+using OSPSuite.Utility.Extensions;
 using IContainer = OSPSuite.Core.Domain.IContainer;
 
 namespace MoBi.Presentation.MenusAndBars.ContextMenus
@@ -111,12 +110,6 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddNew(_objectTypeResolver.TypeFor<T>()))
             .WithCommandFor<AddNewCommandFor<EventGroupBuilder, T>, EventGroupBuilder>(container, _container);
-      }
-
-      protected virtual IMenuBarItem CreateAddNewItemFor(EventGroupBuilder selectedObject)
-      {
-         return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddNew(ObjectTypes.EventGroupBuilder))
-            .WithCommandFor<AddNewCommandFor<EventGroupBuilder, EventGroupBuilder>, EventGroupBuilder>(selectedObject, _container);
       }
    }
 

@@ -1,12 +1,8 @@
-﻿using FakeItEasy;
-
+﻿using MoBi.Core.Domain.Extensions;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using MoBi.Core.Domain.Extensions;
-using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-
 
 namespace MoBi.Core
 {

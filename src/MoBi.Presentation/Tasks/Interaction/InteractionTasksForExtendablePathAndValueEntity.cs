@@ -5,9 +5,7 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Extensions;
-using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
-using MoBi.Core.Exceptions;
 using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
 using MoBi.Core.Mappers;
@@ -118,14 +116,6 @@ namespace MoBi.Presentation.Tasks.Interaction
       /// <returns>The default dimension</returns>
       public abstract IDimension GetDefaultDimension();
 
-      protected T BuildingBlockById<T>(string buildingBlockId) where T : class, IBuildingBlock
-      {
-         if (!Context.ObjectRepository.ContainsObjectWithId(buildingBlockId))
-            throw new MoBiException(AppConstants.Exceptions.SourceBuildingBlockNotInProject(_objectTypeResolver.TypeFor<T>()));
-
-         return Context.Get<T>(buildingBlockId);
-      }
-
       public IEnumerable<string> GetContainerPathItemsForBuildingBlock(TBuildingBlock buildingBlock)
       {
          return buildingBlock.SelectMany(x => x.Path.Select(y => y)).Distinct();
@@ -148,12 +138,6 @@ namespace MoBi.Presentation.Tasks.Interaction
       protected bool HasEquivalentFormula(PathAndValueEntity pathAndValueEntity, IFormula targetFormula)
       {
          return _entityPathTask.HasEquivalentFormula(pathAndValueEntity, targetFormula);
-      }
-
-      protected static bool HasEquivalentPathAndValueEntity(PathAndValueEntity pathAndValueEntity, IParameter parameter)
-      {
-         var (value, _) = parameter.TryGetValue();
-         return HasEquivalentPathAndValueEntity(pathAndValueEntity, value);
       }
 
       protected static bool HasEquivalentPathAndValueEntity(PathAndValueEntity pathAndValueEntity, double? originalValue)
@@ -277,13 +261,6 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (moleculeBlockCollection.Count == 0 && spatialStructureCollection.Count == 0)
             return (null, Enumerable.Empty<MoleculeBuilder>().ToList());
 
-         // If there is only one option that could be selected for each required building block, then we just use those options and don't
-         // need to ask the user to make a selection
-         if (!shouldSelectBuildingBlocks(moleculeBlockCollection, spatialStructureCollection))
-         {
-            return (spatialStructureCollection.Single(), moleculeBlockCollection.Single().ToList());
-         }
-
          using (var selectorPresenter = Context.Resolve<ISelectSpatialStructureAndMoleculesPresenter>())
          {
             actionToSelectBuildingBlocks(selectorPresenter);
@@ -291,15 +268,6 @@ namespace MoBi.Presentation.Tasks.Interaction
          }
       }
 
-      private static bool shouldSelectBuildingBlocks(IReadOnlyList<MoleculeBuildingBlock> moleculeBlockCollection, IReadOnlyList<MoBiSpatialStructure> spatialStructureCollection)
-      {
-         return shouldSelectMolecules(moleculeBlockCollection) || spatialStructureCollection.Count > 1;
-      }
-
-      private static bool shouldSelectMolecules(IReadOnlyList<MoleculeBuildingBlock> moleculeBlockCollection)
-      {
-         return moleculeBlockCollection.Count > 1 || moleculeBlockCollection.Any(x => x.Count() > 1);
-      }
 
       public IMoBiCommand AddOrExtendWith(TBuildingBlock buildingBlock, Module module)
       {

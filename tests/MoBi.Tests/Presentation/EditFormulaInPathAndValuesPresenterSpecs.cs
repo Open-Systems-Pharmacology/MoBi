@@ -13,7 +13,6 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 
 namespace MoBi.Presentation

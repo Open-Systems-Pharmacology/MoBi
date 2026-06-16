@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FakeItEasy;
+using MoBi.Core.Chart;
 using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
@@ -144,6 +145,8 @@ namespace MoBi.Core
          sut.Model = new Model();
          sut.Model.Root = new Container();
 
+         _moBiSimulation.AddAnalysis(new MoBiSimulationTimeProfileChart());
+
          var originalQuantityValue = new OriginalQuantityValue
          {
             Path = "A|BC",
@@ -186,7 +189,7 @@ namespace MoBi.Core
       [Observation]
       public void the_chart_should_be_cloned()
       {
-         A.CallTo(() => _cloneManager.Clone(_moBiSimulation.Chart)).MustHaveHappened();
+         A.CallTo(() => _cloneManager.Clone(A<IUpdatable>.That.IsEqualTo(_moBiSimulation.Charts.First()))).MustHaveHappened();
       }
 
       [Observation]
@@ -194,6 +197,56 @@ namespace MoBi.Core
       {
          sut.OutputMappings.Count().ShouldBeEqualTo(1);
          sut.OutputMappings.ElementAt(0).Simulation.ShouldBeEqualTo(sut);
+      }
+   }
+
+   public class When_updating_properties_from_a_source_simulation_that_already_has_analyses : concern_for_MoBiSimulation
+   {
+      private ICloneManager _cloneManager;
+      private MoBiSimulation _sourceSimulation;
+      private MoBiSimulationTimeProfileChart _existingChart;
+      private MoBiSimulationTimeProfileChart _sourceChart;
+      private MoBiSimulationTimeProfileChart _clonedChart;
+
+      protected override void Context()
+      {
+         base.Context();
+         _cloneManager = A.Fake<ICloneManager>();
+         sut.Model = new Model();
+         sut.Model.Root = new Container();
+
+         _existingChart = new MoBiSimulationTimeProfileChart().WithName("Existing");
+         sut.AddAnalysis(_existingChart);
+
+         _sourceSimulation = new MoBiSimulation();
+         _sourceChart = new MoBiSimulationTimeProfileChart().WithName("Source");
+         _sourceSimulation.AddAnalysis(_sourceChart);
+
+         _clonedChart = new MoBiSimulationTimeProfileChart().WithName("Cloned");
+         A.CallTo(() => _cloneManager.Clone(A<IUpdatable>.That.IsEqualTo(_sourceChart))).Returns(_clonedChart);
+      }
+
+      protected override void Because()
+      {
+         sut.UpdatePropertiesFrom(_sourceSimulation, _cloneManager);
+      }
+
+      [Observation]
+      public void should_clear_existing_analyses_before_adding_cloned_ones()
+      {
+         sut.Analyses.Count().ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void should_contain_only_the_cloned_chart_from_the_source()
+      {
+         sut.Analyses.ShouldContain(_clonedChart);
+      }
+
+      [Observation]
+      public void should_not_contain_the_previously_existing_chart()
+      {
+         sut.Analyses.ShouldNotContain(_existingChart);
       }
    }
 
@@ -236,7 +289,7 @@ namespace MoBi.Core
 
    public class When_removing_observed_data_from_the_simulation : concern_for_MoBiSimulation
    {
-      private CurveChart _chart;
+      private MoBiSimulationTimeProfileChart _chart;
       private Curve _curve;
       private readonly DataRepository _dataRepository = new DataRepository();
       private DataColumn _dataColumn;
@@ -245,7 +298,7 @@ namespace MoBi.Core
       protected override void Context()
       {
          base.Context();
-         _chart = new CurveChart();
+         _chart = new MoBiSimulationTimeProfileChart();
          _curve = new Curve();
          _curve.SetxData(new DataColumn(), new MoBiDimensionFactory());
          _dataColumn = new DataColumn
@@ -256,10 +309,10 @@ namespace MoBi.Core
          _chart.AddCurve(_curve);
 
          sut.Update(A.Fake<SimulationConfiguration>(), A.Fake<IModel>(), _simulationEntitySources);
-         sut.Chart = _chart;
+         sut.AddAnalysis(_chart);
          sut.HasChanged = false;
          //make sure we do have curves initially
-         sut.Chart.Curves.ShouldNotBeEmpty();
+         sut.Charts.First().Curves.ShouldNotBeEmpty();
       }
 
       protected override void Because()
@@ -276,7 +329,7 @@ namespace MoBi.Core
       [Observation]
       public void the_observed_data_should_have_been_removed()
       {
-         sut.Chart.Curves.ShouldBeEmpty();
+         sut.Charts.First().Curves.ShouldBeEmpty();
       }
    }
 

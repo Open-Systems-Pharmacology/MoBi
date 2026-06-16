@@ -3,6 +3,7 @@ using System.Linq;
 using FakeItEasy;
 using FakeItEasy.Core;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -30,6 +31,7 @@ namespace MoBi.Presentation
       protected IObjectBaseDTOToReferenceNodeMapper _referenceMapper;
       protected IBuildingBlockRepository _buildingBlockRepository;
       protected IObjectPathFactory _objectPathFactory;
+      protected IPathAndValueContainerizingTask _containerizingTask;
 
       protected override void Context()
       {
@@ -43,10 +45,11 @@ namespace MoBi.Presentation
          _objectPathCreator = A.Fake<IObjectPathCreatorAtParameter>();
          _referenceMapper = A.Fake<IObjectBaseDTOToReferenceNodeMapper>();
          _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
+         _containerizingTask = new PathAndValueContainerizingTask();
          A.CallTo(() => _context.ObjectPathFactory).Returns(_objectPathFactory);
          A.CallTo(() => _view.Shows(A<IEntity>.Ignored)).Returns(true);
          sut = new SelectReferenceAtParameterValuePresenter(_view, _objectBaseDTOMapper, _context, _userSettings,
-            _moleculeMapper, _parameterMapper, _referenceMapper, _objectPathCreator, _buildingBlockRepository);
+            _moleculeMapper, _parameterMapper, _referenceMapper, _objectPathCreator, _buildingBlockRepository, _containerizingTask);
       }
    }
 
@@ -475,6 +478,53 @@ namespace MoBi.Presentation
             var distributedParameterContainer = container.Single() as IndividualParameter;
             distributedParameterContainer.Name.ShouldBeEqualTo("distributed parameter");
          }
+      }
+   }
+
+   public class When_getting_child_objects_of_a_reaction_builder : concern_for_SelectReferenceAtParameterValuePresenter
+   {
+      private ObjectBaseDTO _reactionDTO;
+      private ReactionBuilder _reactionBuilder;
+      private IParameter _globalParameter;
+      private IParameter _localParameter;
+      private List<ObjectBaseDTO> _children;
+
+      protected override void Context()
+      {
+         base.Context();
+         _reactionBuilder = new ReactionBuilder().WithName("reaction").WithId("reactionId");
+         _globalParameter = new Parameter().WithName("globalParam").WithId("globalId");
+         _globalParameter.BuildMode = ParameterBuildMode.Global;
+         _localParameter = new Parameter().WithName("localParam").WithId("localId");
+         _localParameter.BuildMode = ParameterBuildMode.Local;
+         _reactionBuilder.AddParameter(_globalParameter);
+         _reactionBuilder.AddParameter(_localParameter);
+
+         _reactionDTO = new ObjectBaseDTO(_reactionBuilder);
+
+         A.CallTo(() => _context.ObjectRepository.ContainsObjectWithId(_reactionBuilder.Id)).Returns(true);
+         A.CallTo(() => _context.Get<IObjectBase>(_reactionBuilder.Id)).Returns(_reactionBuilder);
+         A.CallTo(() => _context.Get<IndividualBuildingBlock>(A<string>._)).Returns(null);
+         A.CallTo(() => _context.Get<ExpressionProfileBuildingBlock>(A<string>._)).Returns(null);
+         A.CallTo(() => _context.Get<EventGroupBuildingBlock>(A<string>._)).Returns(null);
+         A.CallTo(() => _objectBaseDTOMapper.MapFrom(A<IObjectBase>._)).ReturnsLazily(x => new ObjectBaseDTO(x.Arguments.Get<IObjectBase>(0)));
+      }
+
+      protected override void Because()
+      {
+         _children = sut.GetChildObjects(_reactionDTO).ToList();
+      }
+
+      [Observation]
+      public void the_children_should_include_the_global_parameter()
+      {
+         _children.Select(x => x.ObjectBase).ShouldContain(_globalParameter);
+      }
+
+      [Observation]
+      public void the_children_should_not_include_the_local_parameter()
+      {
+         _children.Select(x => x.ObjectBase).ShouldNotContain(_localParameter);
       }
    }
 }

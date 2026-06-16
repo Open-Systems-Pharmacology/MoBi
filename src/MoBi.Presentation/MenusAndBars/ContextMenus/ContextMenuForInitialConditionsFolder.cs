@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using MoBi.Assets;
-using MoBi.Core.Domain.Extensions;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.UICommand;
 using OSPSuite.Assets;
@@ -8,8 +7,8 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
-using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Utility.Extensions;
 using IContainer = OSPSuite.Utility.Container.IContainer;
 

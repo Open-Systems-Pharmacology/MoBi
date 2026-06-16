@@ -1,5 +1,4 @@
 using MoBi.Core.Domain.Model;
-using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;

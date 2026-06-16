@@ -1,5 +1,4 @@
-﻿using MoBi.Assets;
-using MoBi.Presentation.DTO;
+﻿using MoBi.Presentation.DTO;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;

@@ -17,7 +17,6 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Nodes;
 
 namespace MoBi.Presentation
 {

@@ -89,11 +89,6 @@ namespace MoBi.UI.Presenters
          ResetViewSize();
       }
 
-      public void LayerLayout()
-      {
-         _diagramLayoutTask.LayoutReactionDiagram(DiagramModel);
-      }
-
       public override IDiagramPopupMenuBase GetPopupMenu(IBaseNode baseNode)
       {
          if (baseNode == null) return _diagramPopupMenu;
