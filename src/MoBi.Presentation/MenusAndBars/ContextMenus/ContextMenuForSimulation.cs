@@ -243,7 +243,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.UpdateFromBuildingBlocks)
             .WithEnabled(_simulationRunner.IsSimulationIdle(simulation))
             .WithIcon(ApplicationIcons.Update)
-            .WithCommandFor<UpdateSimulationUICommand, IMoBiSimulation>(simulation, _container);
+            .WithCommandFor<UpdateSimulationUICommand, IReadOnlyList<IMoBiSimulation>>([simulation], _container);
       }
 
       private IMenuBarItem createConfigure(IMoBiSimulation simulation)

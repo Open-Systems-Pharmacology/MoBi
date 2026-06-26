@@ -1,3 +1,9 @@
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using MoBi.Assets;
 using MoBi.Core;
 using MoBi.Core.Commands;
@@ -10,9 +16,10 @@ using MoBi.Presentation.Presenter;
 using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
+using OSPSuite.Utility.Extensions;
+using SimulationConfiguration = OSPSuite.Core.Domain.Builder.SimulationConfiguration;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -30,6 +37,9 @@ namespace MoBi.Presentation.Tasks
 
       ICommand UpdateSimulation(IMoBiSimulation simulationToUpdate);
 
+      Task<IReadOnlyList<ModelCreationAndValidationResult>> ConfigureSimulationsInParallel(
+         IReadOnlyList<IMoBiSimulation> simulationsToUpdate, CancellationToken cancellationToken);
+
       ICommand UpdateSimulationOutputSelections(IMoBiSimulation simulation);
 
       ICommand UpdateSimulationSolverAndSchema(IMoBiSimulation simulationToUpdate);
@@ -43,28 +53,98 @@ namespace MoBi.Presentation.Tasks
       private readonly IMoBiApplicationController _applicationController;
       private readonly ISimulationFactory _simulationFactory;
       private readonly ICloneManagerForBuildingBlock _cloneManager;
-      private readonly ISimulationConfigurationFactory _simulationConfigurationFactory;
       private readonly IHeavyWorkManager _heavyWorkManager;
+      private readonly IConcurrencyManager _concurrencyManager;
+      private readonly ICoreUserSettings _coreUserSettings;
 
       public SimulationUpdateTask(IMoBiContext context,
          IMoBiApplicationController applicationController,
          ISimulationFactory simulationFactory,
          ICloneManagerForBuildingBlock cloneManager,
-         ISimulationConfigurationFactory simulationConfigurationFactory, IHeavyWorkManager heavyWorkManager)
+         IHeavyWorkManager heavyWorkManager,
+         IConcurrencyManager concurrencyManager,
+         ICoreUserSettings coreUserSettings)
       {
          _context = context;
          _applicationController = applicationController;
          _simulationFactory = simulationFactory;
          _cloneManager = cloneManager;
-         _simulationConfigurationFactory = simulationConfigurationFactory;
          _heavyWorkManager = heavyWorkManager;
+         _concurrencyManager = concurrencyManager;
+         _coreUserSettings = coreUserSettings;
       }
 
       public ICommand UpdateSimulation(IMoBiSimulation simulationToUpdate)
       {
-         var simulationConfiguration = _simulationConfigurationFactory.CreateFromProjectTemplatesBasedOn(simulationToUpdate.Configuration);
+         var macroCommand = new MoBiMacroCommand
+         {
+            ObjectType = ObjectTypes.Simulation,
+            CommandType = AppConstants.Commands.UpdateCommand,
+            Description = AppConstants.Commands.ConfigureSimulationsDescription(1)
+         };
 
-         return updateSimulation(simulationToUpdate, simulationConfiguration, AppConstants.Captions.UpdatingSimulation);
+         _heavyWorkManager.Start(() =>
+         {
+            var simulationConfiguration = _context.Resolve<ISimulationConfigurationFactory>().CreateFromProjectTemplatesBasedOn(simulationToUpdate.Configuration);
+            macroCommand.Add(updateSimulation(simulationToUpdate, simulationConfiguration));
+         }, AppConstants.Captions.UpdatingSimulation);
+
+         return macroCommand;
+      }
+
+      public async Task<IReadOnlyList<ModelCreationAndValidationResult>> ConfigureSimulationsInParallel(
+         IReadOnlyList<IMoBiSimulation> simulationsToUpdate, CancellationToken cancellationToken)
+      {
+         //start with a not-configured result for every simulation so the returned list always has one per simulation
+         var results = new ConcurrentDictionary<IMoBiSimulation, ModelCreationAndValidationResult>();
+         simulationsToUpdate.Each(simulation => results[simulation] = new ModelCreationAndValidationResult(simulation));
+         
+         try
+         {
+            await _concurrencyManager.RunAsync(
+               simulationsToUpdate,
+               (simulation, token) =>
+               {
+                  _context.PublishEvent(new SimulationConfigurationStartedEvent(simulation));
+                  try
+                  {
+                     configureSimulation(results[simulation], token);
+                  }
+                  catch (Exception)
+                  {
+                     //leave the not-configured result already in place
+                  }
+                  finally
+                  {
+                     if (results[simulation].IsValid)
+                        _context.PublishEvent(new SimulationConfigurationSucceededEvent(simulation));
+                     else
+                        _context.PublishEvent(new SimulationConfigurationFailedEvent(simulation));
+                  }
+               },
+               cancellationToken,
+               Math.Max(1, _coreUserSettings.MaximumNumberOfCoresToUse));
+         }
+         catch (Exception)
+         {
+            //cancellation or an unexpected error just stops configuring; the simulations that ran keep their results
+         }
+
+         return simulationsToUpdate.Select(simulation => results[simulation]).ToList();
+      }
+
+      private void configureSimulation(ModelCreationAndValidationResult result, CancellationToken cancellationToken)
+      {
+         cancellationToken.ThrowIfCancellationRequested();
+
+         // resolve services per-instance because some services are not stateless
+         var configurationFactory = _context.Resolve<ISimulationConfigurationFactory>();
+         var simulationFactory = _context.Resolve<ISimulationFactory>();
+         var cloneManager = _context.Resolve<ICloneManagerForBuildingBlock>();
+
+         var templateConfiguration = configurationFactory.CreateFromProjectTemplatesBasedOn(result.Simulation.Configuration);
+         result.CreationResult = simulationFactory.CreateModelAndValidate(templateConfiguration, result.Simulation.Model.Name, throwOnInvalid: false);
+         result.ClonedConfiguration = cloneManager.Clone(templateConfiguration);
       }
 
       public ICommand UpdateSimulationSolverAndSchema(IMoBiSimulation simulationToUpdate)
@@ -103,22 +183,21 @@ namespace MoBi.Presentation.Tasks
          if (simulationConfiguration == null)
             return new MoBiEmptyCommand();
 
-         return updateSimulation(simulationToConfigure, simulationConfiguration);
+         ICommand command = null;
+         _heavyWorkManager.Start(() => { command = updateSimulation(simulationToConfigure, simulationConfiguration); }, AppConstants.Captions.ConfiguringSimulation);
+
+         return command ?? new MoBiEmptyCommand();
       }
 
       private ICommand<IMoBiContext> updateSimulation(
          IMoBiSimulation simulationToUpdate,
-         SimulationConfiguration simulationConfigurationReferencingTemplates,
-         string message = AppConstants.Captions.ConfiguringSimulation)
+         SimulationConfiguration simulationConfigurationReferencingTemplates)
       {
          CreationResult results = null;
          _context.PublishEvent(new ClearNotificationsEvent(MessageOrigin.Simulation));
-         
+
          //create model using referencing templates
-         _heavyWorkManager.Start(() =>
-         {
-            results = _simulationFactory.CreateModelAndValidate(simulationConfigurationReferencingTemplates, simulationToUpdate.Model.Name, message);
-         }, message);
+         results = _simulationFactory.CreateModelAndValidate(simulationConfigurationReferencingTemplates, simulationToUpdate.Model.Name);
 
          if (results == null)
             return new MoBiEmptyCommand();
