@@ -125,9 +125,9 @@ namespace MoBi.Presentation.Tasks
                cancellationToken,
                Math.Max(1, _coreUserSettings.MaximumNumberOfCoresToUse));
          }
-         catch (OperationCanceledException)
+         catch (Exception)
          {
-            //cancellation just stops configuring; the simulations that did not run keep their not-configured result
+            //cancellation or an unexpected error just stops configuring; the simulations that ran keep their results
          }
 
          return simulationsToUpdate.Select(simulation => results[simulation]).ToList();
