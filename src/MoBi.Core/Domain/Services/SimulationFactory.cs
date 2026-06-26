@@ -28,7 +28,13 @@ namespace MoBi.Core.Domain.Services
 
       SimulationAndValidationResult CreateSimulationAndValidate(SimulationConfiguration configurationReferencingBuildingBlocks, string simulationName);
 
-      CreationResult CreateModelAndValidate(SimulationConfiguration simulationConfiguration, string modelName);
+      /// <summary>
+      ///    Creates the model from <paramref name="simulationConfiguration" /> and validates its dimensions. With
+      ///    <paramref name="throwOnInvalid" /> <c>true</c> (the default) an invalid model throws
+      ///    <see cref="ValidationFailedMoBiException" />; pass <c>false</c> to get the (possibly invalid) result back
+      ///    instead.
+      /// </summary>
+      CreationResult CreateModelAndValidate(SimulationConfiguration simulationConfiguration, string modelName, bool throwOnInvalid = true);
    }
 
    public class SimulationFactory : ISimulationFactory
@@ -94,14 +100,17 @@ namespace MoBi.Core.Domain.Services
             .SecureContinueWith(t => showWarnings(t.Result));
       }
 
-      public CreationResult CreateModelAndValidate(SimulationConfiguration simulationConfiguration, string modelName)
+      public CreationResult CreateModelAndValidate(SimulationConfiguration simulationConfiguration, string modelName, bool throwOnInvalid = true)
       {
-         CreationResult results = null;
-
-         results = createModel(simulationConfiguration, modelName);
+         var results = createModel(simulationConfiguration, modelName);
 
          if (results == null || results.IsInvalid)
-            throw new ValidationFailedMoBiException(AppConstants.Exceptions.CouldNotCreateSimulation, results?.ValidationResult);
+         {
+            if (throwOnInvalid)
+               throw new ValidationFailedMoBiException(AppConstants.Exceptions.CouldNotCreateSimulation, results?.ValidationResult);
+
+            return results;
+         }
 
          validateDimensions(results.Model, results.SimulationBuilder);
 

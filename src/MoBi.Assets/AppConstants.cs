@@ -1624,6 +1624,13 @@ namespace MoBi.Assets
          public static readonly string BuildingBlockType = "Building Block Type";
          public static readonly string BuildingBlockName = "Building Block Name";
          public static readonly string Message = "Message";
+         public static readonly string UpdateStatus = "Status";
+         public static readonly string Close = "Close";
+         public static readonly string Waiting = "Waiting";
+         public static readonly string Updating = "Updating";
+         public static readonly string Pending = "Pending";
+         public static readonly string Updated = "Updated";
+         public static readonly string CancelSimulationUpdateClarification = "Cancel stops only simulations that have not started updating. Updates already in progress will finish.";
          public static readonly string SaveToFile = "Save...";
          public static readonly string DecimalPlace = "Decimal place";
          public static readonly string SelectDataToExport = "Select data to Export";

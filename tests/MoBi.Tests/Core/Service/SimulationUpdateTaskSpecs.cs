@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain;
@@ -6,6 +8,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Events;
 using MoBi.Core.Services;
+using MoBi.HelpersForTests;
 using MoBi.Presentation;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks;
@@ -29,6 +32,9 @@ namespace MoBi.Core.Service
       protected ICloneManagerForBuildingBlock _cloneManager;
       protected ISimulationConfigurationFactory _simulationConfigurationFactory;
       private IHeavyWorkManager _heavyWorkManager;
+      private IConcurrencyManager _concurrencyManager;
+      private ICoreUserSettings _coreUserSettings;
+      private SynchronizationContext _originalSynchronizationContext;
 
       protected override void Context()
       {
@@ -40,8 +46,24 @@ namespace MoBi.Core.Service
          _cloneManager = A.Fake<ICloneManagerForBuildingBlock>();
          _simulationConfigurationFactory = A.Fake<ISimulationConfigurationFactory>();
          _heavyWorkManager = new HeavyWorkManagerForSpecs();
+         _coreUserSettings = A.Fake<ICoreUserSettings>();
 
-         sut = new SimulationUpdateTask(_context, _applicationController, _simulationFactory, _cloneManager, _simulationConfigurationFactory, _heavyWorkManager);
+         _concurrencyManager = new ConcurrencyManagerForSpecs();
+
+         A.CallTo(() => _context.Resolve<ISimulationConfigurationFactory>()).Returns(_simulationConfigurationFactory);
+         A.CallTo(() => _context.Resolve<ISimulationFactory>()).Returns(_simulationFactory);
+         A.CallTo(() => _context.Resolve<ICloneManagerForBuildingBlock>()).Returns(_cloneManager);
+
+         _originalSynchronizationContext = SynchronizationContext.Current;
+         SynchronizationContext.SetSynchronizationContext(new SynchronousSynchronizationContextForSpecs());
+
+         sut = new SimulationUpdateTask(_context, _applicationController, _simulationFactory, _cloneManager, _heavyWorkManager, _concurrencyManager, _coreUserSettings);
+      }
+
+      public override void Cleanup()
+      {
+         base.Cleanup();
+         SynchronizationContext.SetSynchronizationContext(_originalSynchronizationContext);
       }
    }
 
@@ -97,7 +119,7 @@ namespace MoBi.Core.Service
 
       protected override void Because()
       {
-         sut.UpdateSimulations([_moBiSimulation]);
+         sut.UpdateSimulation(_moBiSimulation);
       }
 
       [Observation]
@@ -110,6 +132,13 @@ namespace MoBi.Core.Service
       public void the_notification_area_should_be_cleared()
       {
          A.CallTo(() => _context.PublishEvent(A<ClearNotificationsEvent>.That.Matches(x => x.MessageOrigin.Equals(MessageOrigin.Simulation)))).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_update_should_use_the_validating_create_path_that_throws_on_invalid()
+      {
+         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._, true)).MustHaveHappened();
+         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._, false)).MustNotHaveHappened();
       }
    }
 
@@ -134,13 +163,52 @@ namespace MoBi.Core.Service
 
       protected override void Because()
       {
-         _result = sut.UpdateSimulations([_simulation]);
+         _result = sut.UpdateSimulation(_simulation);
       }
 
       [Observation]
       public void the_command_to_update_should_be_empty()
       {
          (_result as MoBiMacroCommand).Count.ShouldBeEqualTo(0);
+      }
+   }
+
+   public class When_configuring_several_simulations_from_their_building_blocks_in_parallel : concern_for_SimulationUpdateTask
+   {
+      private MoBiSimulation _successfulSimulation;
+      private MoBiSimulation _failingSimulation;
+      private IReadOnlyList<ModelCreationAndValidationResult> _results;
+
+      protected override void Context()
+      {
+         base.Context();
+         _successfulSimulation = new MoBiSimulation { Id = "GOOD", Configuration = new SimulationConfiguration(), Model = new Model { Root = new Container() }.WithName("GOOD_MODEL") };
+         _failingSimulation = new MoBiSimulation { Id = "BAD", Configuration = new SimulationConfiguration(), Model = new Model { Root = new Container() }.WithName("BAD_MODEL") };
+
+         var model = new Model { Root = new Container() }.WithName("NEW_MODEL");
+         var simulationBuilder = A.Fake<SimulationBuilder>();
+         A.CallTo(() => simulationBuilder.EntitySources).Returns(new List<SimulationEntitySource>());
+         var creationResult = new CreationResult(model, simulationBuilder);
+
+         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, "GOOD_MODEL", false)).Returns(creationResult);
+         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, "BAD_MODEL", false)).Returns(null);
+      }
+
+      protected override void Because()
+      {
+         _results = sut.ConfigureSimulationsInParallel([_successfulSimulation, _failingSimulation], CancellationToken.None).Result;
+      }
+
+      [Observation]
+      public void should_return_a_valid_configuration_result_for_the_simulation_that_could_be_configured()
+      {
+         _results.Single(x => x.Simulation == _successfulSimulation).IsValid.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_return_an_invalid_configuration_result_for_the_simulation_that_could_not_be_configured()
+      {
+         _results.Single(x => x.Simulation == _failingSimulation).IsValid.ShouldBeFalse();
       }
    }
 

@@ -36,6 +36,26 @@ namespace MoBi.Core.Events
       public IMoBiSimulation Simulation { get; }
    }
 
+   public class SimulationConfigurationStartedEvent
+   {
+      public SimulationConfigurationStartedEvent(IMoBiSimulation simulation)
+      {
+         Simulation = simulation;
+      }
+
+      public IMoBiSimulation Simulation { get; }
+   }
+
+   public class SimulationConfigurationFinishedEvent
+   {
+      public SimulationConfigurationFinishedEvent(IMoBiSimulation simulation)
+      {
+         Simulation = simulation;
+      }
+
+      public IMoBiSimulation Simulation { get; }
+   }
+
    public class SimulationAddedEvent
    {
       public SimulationAddedEvent(IMoBiSimulation simulation)

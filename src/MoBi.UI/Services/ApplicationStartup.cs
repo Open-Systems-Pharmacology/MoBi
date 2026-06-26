@@ -57,9 +57,8 @@ namespace MoBi.UI.Services
       /// </summary>
       public void Start()
       {
-         var progressManager = IoC.Resolve<IProgressManager>();
          var container = IoC.Container;
-         using (var progress = progressManager.Create())
+         using (var progress = createSplashProgressUpdater(container))
          {
             progress.Initialize(8);
             using (container.OptimizeDependencyResolution())
@@ -89,6 +88,26 @@ namespace MoBi.UI.Services
                initUserProfileFileAppData(container);
             }
          }
+      }
+
+      //The splash runs on its own UI thread, so its progress updates must be dispatched to that thread. Bind a
+      //dedicated EventPublisher to the splash's own synchronization context and drive a ProgressUpdater through it, so
+      //the splash presenter handles the events on the splash thread - updating incrementally and without a cross-thread.
+      private static IProgressUpdater createSplashProgressUpdater(IContainer container)
+      {
+         var splashPresenter = container.Resolve<ISplashScreenPresenter>();
+         var splashControl = (Control) splashPresenter.View;
+
+         // Wait until the control is created, up to a maximum of 5 seconds
+         SpinWait.SpinUntil(() => splashControl.IsHandleCreated, TimeSpan.FromSeconds(5));
+         if (!splashControl.IsHandleCreated)
+            return container.Resolve<IProgressManager>().Create();
+
+         var splashContext = splashControl.Invoke(() => SynchronizationContext.Current);
+         var splashThread = splashControl.Invoke(() => Thread.CurrentThread);
+         var splashPublisher = new EventPublisher(splashContext, splashThread, container.Resolve<IExceptionManager>());
+         splashPublisher.AddListener(splashPresenter);
+         return new ProgressUpdater(splashPublisher);
       }
 
       private static void updateGoDiagramKey()
@@ -185,6 +204,12 @@ namespace MoBi.UI.Services
          initFacilities(container);
          initializeSynchronizationContext();
          container.RegisterImplementationOf(SynchronizationContext.Current);
+         // Register the UI thread so the EventPublisher singleton captures it (via its explicit-thread
+         // constructor) as its context thread. Events published from the UI thread then dispatch
+         // synchronously (Send) rather than deferred (Post) - which matters when a publish is followed
+         // immediately by teardown (e.g. closing the project on exit). Registering it as an instance
+         // lets the publisher resolve lazily with its other dependencies, without an early resolve here.
+         container.RegisterImplementationOf(Thread.CurrentThread);
 
          container.AddRegister(x => x.FromType<PresenterRegister>());
          container.AddRegister(x => x.FromType<UIRegister>());
@@ -197,8 +222,8 @@ namespace MoBi.UI.Services
 
          container.Register<IEventPublisher, EventPublisher>(LifeStyle.Singleton);
          container.Register<IFileLocker, FileLocker>(LifeStyle.Singleton);
-         container.Register<ISplashScreen, SplashScreen>();
-         container.Register<ISplashScreenPresenter, SplashScreenPresenter>();
+         container.Register<ISplashScreen, SplashScreen>(LifeStyle.Singleton);
+         container.Register<ISplashScreenPresenter, SplashScreenPresenter>(LifeStyle.Singleton);
          container.Register<IProgressUpdater, ProgressUpdater>();
          container.RegisterFactory<IProgressManager>();
 

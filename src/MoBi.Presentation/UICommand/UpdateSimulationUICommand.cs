@@ -8,21 +8,21 @@ namespace MoBi.Presentation.UICommand
 {
    public class UpdateSimulationUICommand : ActiveObjectUICommand<IReadOnlyList<IMoBiSimulation>>
    {
-      private readonly ISimulationUpdateTask _simulationUpdateTask;
+      private readonly IParallelSimulationUpdateTask _parallelSimulationUpdateTask;
       private readonly IMoBiContext _context;
 
-      public UpdateSimulationUICommand(ISimulationUpdateTask simulationUpdateTask,
+      public UpdateSimulationUICommand(IParallelSimulationUpdateTask parallelSimulationUpdateTask,
          IMoBiContext context,
          IActiveSubjectRetriever activeSubjectRetriever) :
          base(activeSubjectRetriever)
       {
-         _simulationUpdateTask = simulationUpdateTask;
+         _parallelSimulationUpdateTask = parallelSimulationUpdateTask;
          _context = context;
       }
 
       protected override void PerformExecute()
       {
-         _context.AddToHistory(_simulationUpdateTask.UpdateSimulations(Subject));
+         _context.AddToHistory(_parallelSimulationUpdateTask.UpdateSimulations(Subject));
       }
    }
 }
