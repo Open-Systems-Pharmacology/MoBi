@@ -20,14 +20,12 @@ namespace MoBi.UI.Views
    public partial class SimulationUpdateView : BaseModalView, ISimulationUpdateView
    {
       private readonly IImageListRetriever _imageListRetriever;
-      private readonly IToolTipCreator _toolTipCreator;
       private ISimulationUpdatePresenter _presenter;
       private readonly GridViewBinder<SimulationUpdateStatusDTO> _gridViewBinder;
 
-      public SimulationUpdateView(IShell shell, IImageListRetriever imageListRetriever, IToolTipCreator toolTipCreator) : base(shell)
+      public SimulationUpdateView(IShell shell, IImageListRetriever imageListRetriever) : base(shell)
       {
          _imageListRetriever = imageListRetriever;
-         _toolTipCreator = toolTipCreator;
          InitializeComponent();
          _gridViewBinder = new GridViewBinder<SimulationUpdateStatusDTO>(gridView);
          gridView.AllowsFiltering = false;

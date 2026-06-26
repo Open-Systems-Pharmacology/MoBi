@@ -105,6 +105,9 @@ namespace MoBi.Presentation.Tasks
                simulationsToUpdate,
                (simulation, token) =>
                {
+                  if (token.IsCancellationRequested)
+                     return;
+
                   _context.PublishEvent(new SimulationConfigurationStartedEvent(simulation));
                   try
                   {
@@ -144,7 +147,8 @@ namespace MoBi.Presentation.Tasks
 
          var templateConfiguration = configurationFactory.CreateFromProjectTemplatesBasedOn(result.Simulation.Configuration);
          result.CreationResult = simulationFactory.CreateModelAndValidate(templateConfiguration, result.Simulation.Model.Name, throwOnInvalid: false);
-         result.ClonedConfiguration = cloneManager.Clone(templateConfiguration);
+         if (result.IsValid)
+            result.ClonedConfiguration = cloneManager.Clone(templateConfiguration);
       }
 
       public ICommand UpdateSimulationSolverAndSchema(IMoBiSimulation simulationToUpdate)
@@ -193,14 +197,10 @@ namespace MoBi.Presentation.Tasks
          IMoBiSimulation simulationToUpdate,
          SimulationConfiguration simulationConfigurationReferencingTemplates)
       {
-         CreationResult results = null;
          _context.PublishEvent(new ClearNotificationsEvent(MessageOrigin.Simulation));
 
          //create model using referencing templates
-         results = _simulationFactory.CreateModelAndValidate(simulationConfigurationReferencingTemplates, simulationToUpdate.Model.Name);
-
-         if (results == null)
-            return new MoBiEmptyCommand();
+         var results = _simulationFactory.CreateModelAndValidate(simulationConfigurationReferencingTemplates, simulationToUpdate.Model.Name);
 
          //create a clone then that will be saved in the simulation
          var simulationBuildConfiguration = _cloneManager.Clone(simulationConfigurationReferencingTemplates);
