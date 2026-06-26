@@ -199,16 +199,30 @@ public class When_a_simulation_configuration_starts : concern_for_a_running_simu
    }
 }
 
-public class When_a_simulation_configuration_finishes : concern_for_a_running_simulation_update
+public class When_a_simulation_configuration_succeeds : concern_for_a_running_simulation_update
 {
    protected override void Because()
    {
-      sut.Handle(new SimulationConfigurationFinishedEvent(_simulation));
+      sut.Handle(new SimulationConfigurationSucceededEvent(_simulation));
    }
 
    [Observation]
    public void should_show_the_simulation_as_pending()
    {
       statusOfSimulation.ShouldBeEqualTo(RunStatus.Created);
+   }
+}
+
+public class When_a_simulation_configuration_fails : concern_for_a_running_simulation_update
+{
+   protected override void Because()
+   {
+      sut.Handle(new SimulationConfigurationFailedEvent(_simulation));
+   }
+
+   [Observation]
+   public void should_show_the_simulation_as_faulted()
+   {
+      statusOfSimulation.ShouldBeEqualTo(RunStatus.Faulted);
    }
 }

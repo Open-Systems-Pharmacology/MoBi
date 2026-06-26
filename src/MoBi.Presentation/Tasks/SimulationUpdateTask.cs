@@ -109,11 +109,17 @@ namespace MoBi.Presentation.Tasks
                   try
                   {
                      configureSimulation(results[simulation], token);
-                     _context.PublishEvent(new SimulationConfigurationFinishedEvent(simulation));
                   }
                   catch (Exception)
                   {
                      //leave the not-configured result already in place
+                  }
+                  finally
+                  {
+                     if (results[simulation].IsValid)
+                        _context.PublishEvent(new SimulationConfigurationSucceededEvent(simulation));
+                     else
+                        _context.PublishEvent(new SimulationConfigurationFailedEvent(simulation));
                   }
                },
                cancellationToken,

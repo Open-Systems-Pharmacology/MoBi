@@ -23,7 +23,8 @@ namespace MoBi.Presentation.Presenter;
 
 public interface ISimulationUpdatePresenter : IDisposablePresenter,
    IListener<SimulationConfigurationStartedEvent>,
-   IListener<SimulationConfigurationFinishedEvent>
+   IListener<SimulationConfigurationSucceededEvent>,
+   IListener<SimulationConfigurationFailedEvent>
 {
 
    /// <summary>
@@ -88,7 +89,9 @@ public class SimulationUpdatePresenter : AbstractDisposablePresenter<ISimulation
 
    public void Handle(SimulationConfigurationStartedEvent eventToHandle) => updateStatus(eventToHandle.Simulation.Id, RunStatus.Running);
 
-   public void Handle(SimulationConfigurationFinishedEvent eventToHandle) => updateStatus(eventToHandle.Simulation.Id, RunStatus.Created);
+   public void Handle(SimulationConfigurationSucceededEvent eventToHandle) => updateStatus(eventToHandle.Simulation.Id, RunStatus.Created);
+
+   public void Handle(SimulationConfigurationFailedEvent eventToHandle) => updateStatus(eventToHandle.Simulation.Id, RunStatus.Faulted);
 
    protected override void Cleanup()
    {
