@@ -1630,6 +1630,7 @@ namespace MoBi.Assets
          public static readonly string Updating = "Updating";
          public static readonly string Pending = "Pending";
          public static readonly string Updated = "Updated";
+         public static readonly string Failed = "Failed";
          public static readonly string CancelSimulationUpdateClarification = "Cancel stops only simulations that have not started updating. Updates already in progress will finish.";
          public static readonly string SaveToFile = "Save...";
          public static readonly string DecimalPlace = "Decimal place";

@@ -18,6 +18,7 @@ public class SimulationUpdateStatusDTO
       RunStatusId.Running => AppConstants.Captions.Updating,
       RunStatusId.Created => AppConstants.Captions.Pending,
       RunStatusId.RanToCompletion => AppConstants.Captions.Updated,
+      RunStatusId.Faulted => AppConstants.Captions.Failed,
       _ => Status?.DisplayName
    };
 }
