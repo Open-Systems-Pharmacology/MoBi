@@ -40,7 +40,6 @@ public interface ISimulationUpdatePresenter : IDisposablePresenter,
 public class SimulationUpdatePresenter : AbstractDisposablePresenter<ISimulationUpdateView, ISimulationUpdatePresenter>, ISimulationUpdatePresenter
 {
    private readonly IMoBiContext _context;
-   private readonly IEventPublisher _eventPublisher;
    private readonly ISimulationUpdateTask _simulationUpdateTask;
    private readonly ISimulationToSimulationUpdateStatusDTOMapper _statusMapper;
    private readonly Cache<string, SimulationUpdateStatusDTO> _statusDTOsCache = new(getKey: x => x.SimulationId);
@@ -48,12 +47,10 @@ public class SimulationUpdatePresenter : AbstractDisposablePresenter<ISimulation
 
    public SimulationUpdatePresenter(ISimulationUpdateView view,
       IMoBiContext context,
-      IEventPublisher eventPublisher,
       ISimulationUpdateTask simulationUpdateTask,
       ISimulationToSimulationUpdateStatusDTOMapper statusMapper) : base(view)
    {
       _context = context;
-      _eventPublisher = eventPublisher;
       _simulationUpdateTask = simulationUpdateTask;
       _statusMapper = statusMapper;
       _view.AttachPresenter(this);
@@ -92,12 +89,6 @@ public class SimulationUpdatePresenter : AbstractDisposablePresenter<ISimulation
    public void Handle(SimulationConfigurationSucceededEvent eventToHandle) => updateStatus(eventToHandle.Simulation.Id, RunStatus.Created);
 
    public void Handle(SimulationConfigurationFailedEvent eventToHandle) => updateStatus(eventToHandle.Simulation.Id, RunStatus.Faulted);
-
-   protected override void Cleanup()
-   {
-      _eventPublisher.RemoveListener(this);
-      base.Cleanup();
-   }
 
    private void applyConfigurations(IReadOnlyList<ModelCreationAndValidationResult> results, MoBiMacroCommand macroCommand)
    {

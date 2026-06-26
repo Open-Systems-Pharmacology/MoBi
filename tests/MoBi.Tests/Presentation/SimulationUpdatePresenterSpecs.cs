@@ -19,7 +19,6 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.ParameterIdentifications;
-using OSPSuite.Utility.Events;
 
 namespace MoBi.Presentation;
 
@@ -27,7 +26,6 @@ public abstract class concern_for_SimulationUpdatePresenter : ContextSpecificati
 {
    protected ISimulationUpdateView _view;
    protected IMoBiContext _context;
-   protected IEventPublisher _eventPublisher;
    protected ISimulationUpdateTask _simulationUpdateTask;
    private SynchronizationContext _originalSynchronizationContext;
 
@@ -35,13 +33,12 @@ public abstract class concern_for_SimulationUpdatePresenter : ContextSpecificati
    {
       _view = A.Fake<ISimulationUpdateView>();
       _context = A.Fake<IMoBiContext>();
-      _eventPublisher = A.Fake<IEventPublisher>();
       _simulationUpdateTask = A.Fake<ISimulationUpdateTask>();
 
       _originalSynchronizationContext = SynchronizationContext.Current;
       SynchronizationContext.SetSynchronizationContext(new SynchronousSynchronizationContextForSpecs());
 
-      sut = new SimulationUpdatePresenter(_view, _context, _eventPublisher, _simulationUpdateTask, new SimulationToSimulationUpdateStatusDTOMapper());
+      sut = new SimulationUpdatePresenter(_view, _context, _simulationUpdateTask, new SimulationToSimulationUpdateStatusDTOMapper());
    }
 
    public override void Cleanup()
