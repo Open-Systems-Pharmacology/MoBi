@@ -74,7 +74,7 @@ public class SimulationUpdatePresenter : AbstractDisposablePresenter<ISimulation
 
       _simulationUpdateTask
          .ConfigureSimulationsInParallel(simulationsToUpdate, _cancellationTokenSource.Token)
-         .ContinueWith(configurationTask => applyConfigurations(configurationTask.Result, macroCommand), TaskScheduler.FromCurrentSynchronizationContext());
+         .ContinueWith(configurationTask => applyConfigurations(configurationTask, macroCommand), TaskScheduler.FromCurrentSynchronizationContext());
 
       _view.Caption = AppConstants.Captions.UpdatingSimulation;
       _view.Display();
@@ -90,11 +90,12 @@ public class SimulationUpdatePresenter : AbstractDisposablePresenter<ISimulation
 
    public void Handle(SimulationConfigurationFailedEvent eventToHandle) => updateStatus(eventToHandle.Simulation.Id, RunStatus.Faulted);
 
-   private void applyConfigurations(IReadOnlyList<ModelCreationAndValidationResult> results, MoBiMacroCommand macroCommand)
+   private void applyConfigurations(Task<IReadOnlyList<ModelCreationAndValidationResult>> configurationTask, MoBiMacroCommand macroCommand)
    {
       try
       {
-         results.Each(result => applyConfiguration(result, macroCommand));
+         if (configurationTask.Status == TaskStatus.RanToCompletion)
+            configurationTask.Result.Each(result => applyConfiguration(result, macroCommand));
       }
       finally
       {
