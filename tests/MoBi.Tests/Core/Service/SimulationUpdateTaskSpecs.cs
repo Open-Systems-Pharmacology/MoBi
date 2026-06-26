@@ -190,8 +190,12 @@ namespace MoBi.Core.Service
          A.CallTo(() => simulationBuilder.EntitySources).Returns(new List<SimulationEntitySource>());
          var creationResult = new CreationResult(model, simulationBuilder);
 
+         //CreateModelAndValidate(throwOnInvalid: false) returns a non-null invalid result when the model can't be created
+         var invalidCreationResult = A.Fake<CreationResult>();
+         A.CallTo(() => invalidCreationResult.IsInvalid).Returns(true);
+
          A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, "GOOD_MODEL", false)).Returns(creationResult);
-         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, "BAD_MODEL", false)).Returns(null);
+         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, "BAD_MODEL", false)).Returns(invalidCreationResult);
       }
 
       protected override void Because()

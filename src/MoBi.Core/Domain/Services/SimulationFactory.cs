@@ -31,8 +31,8 @@ namespace MoBi.Core.Domain.Services
       /// <summary>
       ///    Creates the model from <paramref name="simulationConfiguration" /> and validates its dimensions. With
       ///    <paramref name="throwOnInvalid" /> <c>true</c> (the default) an invalid model throws
-      ///    <see cref="ValidationFailedMoBiException" />; pass <c>false</c> to get the (possibly invalid) result back
-      ///    instead.
+      ///    <see cref="ValidationFailedMoBiException" />; pass <c>false</c> to get the result back instead — always
+      ///    non-null, with <c>IsInvalid</c> set when the model could not be created.
       /// </summary>
       CreationResult CreateModelAndValidate(SimulationConfiguration simulationConfiguration, string modelName, bool throwOnInvalid = true);
    }
@@ -104,10 +104,10 @@ namespace MoBi.Core.Domain.Services
       {
          var results = createModel(simulationConfiguration, modelName);
 
-         if (results == null || results.IsInvalid)
+         if (results.IsInvalid)
          {
             if (throwOnInvalid)
-               throw new ValidationFailedMoBiException(AppConstants.Exceptions.CouldNotCreateSimulation, results?.ValidationResult);
+               throw new ValidationFailedMoBiException(AppConstants.Exceptions.CouldNotCreateSimulation, results.ValidationResult);
 
             return results;
          }
@@ -127,12 +127,9 @@ namespace MoBi.Core.Domain.Services
 
       private CreationResult createModel(SimulationConfiguration simulationConfiguration, string name)
       {
+         //CreateModelFrom always returns a result - an invalid one carrying the validation messages when the build fails - never null
          var result = _modelConstructor.CreateModelFrom(simulationConfiguration, name);
-         if (result == null)
-            return null;
-
          showWarnings(result.ValidationResult);
-
          return result;
       }
 
