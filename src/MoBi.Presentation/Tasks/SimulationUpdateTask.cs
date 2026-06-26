@@ -186,7 +186,7 @@ namespace MoBi.Presentation.Tasks
          ICommand command = null;
          _heavyWorkManager.Start(() => { command = updateSimulation(simulationToConfigure, simulationConfiguration); }, AppConstants.Captions.ConfiguringSimulation);
 
-         return command;
+         return command ?? new MoBiEmptyCommand();
       }
 
       private ICommand<IMoBiContext> updateSimulation(
