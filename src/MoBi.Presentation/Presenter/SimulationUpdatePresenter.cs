@@ -106,10 +106,12 @@ public class SimulationUpdatePresenter : AbstractDisposablePresenter<ISimulation
    private void applyConfiguration(ModelCreationAndValidationResult result, MoBiMacroCommand macroCommand)
    {
       var command = createCommand(result);
-      macroCommand.Add(command);
 
       if (!(command is MoBiEmptyCommand))
+      {
+         macroCommand.Add(command);
          updateStatus(result.Simulation.Id, RunStatus.RanToCompletion);
+      }
       else
       {
          var canceledBeforeConfiguring = !result.WasConfigured && _cancellationTokenSource.IsCancellationRequested;
