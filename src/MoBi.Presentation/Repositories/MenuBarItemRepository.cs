@@ -501,7 +501,13 @@ namespace MoBi.Presentation.Repositories
          yield return JournalMenuBarButtons.JournalView(MenuBarItemIds.JournalView, _container);
          yield return JournalMenuBarButtons.CreateJournalPage(MenuBarItemIds.CreateJournalPage, _container);
          yield return JournalMenuBarButtons.SelectJournal(MenuBarItemIds.SelectJournal, _container);
-         yield return JournalMenuBarButtons.JournalEditorView(MenuBarItemIds.JournalEditorView, _container);
+         //Initialize JournalEditorVisibiliyUICommand on demand because it constructs expensive DevExpress components
+         yield return CreateMenuButton.WithCaption(OSPSuite.Assets.Captions.Journal.JournalEditorView)
+            .WithId(MenuBarItemIds.JournalEditorView)
+            .WithDescription(OSPSuite.Assets.Captions.Journal.JournalEditorViewDescription)
+            .WithActionCommand(() => _container.Resolve<JournalEditorVisibiliyUICommand>().Execute())
+            .WithIcon(ApplicationIcons.PageEdit);
+
          yield return CommonMenuBarButtons.JournalDiagramView(MenuBarItemIds.JournalDiagramView, _container);
          yield return JournalMenuBarButtons.SearchJournal(MenuBarItemIds.SearchJournal, _container);
          yield return JournalMenuBarButtons.ExportJournal(MenuBarItemIds.ExportJournal, _container);
