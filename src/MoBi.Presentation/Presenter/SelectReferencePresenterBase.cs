@@ -9,6 +9,7 @@ using MoBi.Core.Events;
 using MoBi.Core.Helper;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
+using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
 using OSPSuite.Assets;
@@ -477,16 +478,17 @@ namespace MoBi.Presentation.Presenter
 
       public void Handle(AddedEvent eventToHandle)
       {
-         if (_view.Shows(eventToHandle.Parent))
-         {
-            var parentNodes = _view.GetNodes(eventToHandle.Parent);
-            parentNodes.Each(parentNode =>
+         // Only add nodes when the parent has had children loaded already.
+         // If it has not been expanded yet, then do not add nodes.
+         _view.GetNodes(eventToHandle.Parent)
+            .OfType<HierarchicalStructureNode>()
+            .Where(parentNode => parentNode.ChildrenLoaded)
+            .Each(parentNode =>
             {
                var node = _referenceMapper.MapFrom(eventToHandle.AddedObject);
                parentNode.AddChild(node);
                _view.AddNode(node);
             });
-         }
       }
    }
 }
