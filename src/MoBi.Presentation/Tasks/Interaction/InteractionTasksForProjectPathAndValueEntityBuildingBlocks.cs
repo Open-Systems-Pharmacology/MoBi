@@ -49,10 +49,13 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (string.IsNullOrEmpty(name))
             return new MoBiEmptyCommand();
 
-         var clone = InteractionTask.Clone(buildingBlockToClone).WithName(name);
+         var clone = InteractionTask.Clone(buildingBlockToClone);
+         RenameClone(clone, name);
 
          return AddToProject(clone);
       }
+
+      protected virtual void RenameClone(TBuildingBlock clone, string newName) => clone.WithName(newName);
 
       public void ExportBuildingBlockSnapshot(TBuildingBlock buildingBlock)
       {
