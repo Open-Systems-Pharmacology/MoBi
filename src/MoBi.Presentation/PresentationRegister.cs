@@ -82,6 +82,7 @@ namespace MoBi.Presentation
             scan.ExcludeType<MoBiApplicationController>();
             scan.ExcludeType<MoBiXmlSerializerRepository>();
             scan.ExcludeType<MoBiMainViewPresenter>();
+            scan.ExcludeType<JournalPageEditorActivator>();
             scan.Exclude(t => t.IsAnImplementationOf<IMoBiBaseDiagramPresenter>());
 
             //exclude presenter already registered at startup
@@ -92,6 +93,7 @@ namespace MoBi.Presentation
 
          container.Register<IPKSimStarter, IPKSimSnapshotConverter, PKSimStarter>(LifeStyle.Singleton);
          container.Register<IMenuBarItemRepository, MenuBarItemRepository>(LifeStyle.Singleton);
+         container.Register<IJournalPageEditorActivator, JournalPageEditorActivator>(LifeStyle.Singleton);
          container.Register<ISimulationRunner, SimulationRunner>(LifeStyle.Singleton);
          container.Register<IMoBiApplicationController, IApplicationController, MoBiApplicationController>(LifeStyle.Singleton);
 
@@ -128,6 +130,8 @@ namespace MoBi.Presentation
          //Create one instance of the invoker so that the object is available
          //since it is not created anywhere and is only used as event listener
          container.RegisterImplementationOf(container.Resolve<ICloseSubjectPresenterInvoker>());
+         //Activates the journal page editor on first use
+         container.Resolve<IJournalPageEditorActivator>();
          container.Register<IWithWorkspaceLayout, Workspace>(LifeStyle.Singleton);
 
          container.Register<IQuantityPathToQuantityDisplayPathMapper, MoBiQuantityPathToQuantityDisplayPathMapper>();
