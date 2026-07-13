@@ -30,6 +30,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       private readonly IEditTasksForExpressionProfileBuildingBlock _editTaskForExpressionProfileBuildingBlock;
       private readonly IPKSimStarter _pkSimStarter;
       private readonly IContainerTask _containerTask;
+      private readonly IExpressionProfileRenamingTask _expressionProfileRenamingTask;
 
       public InteractionTasksForExpressionProfileBuildingBlock(IInteractionTaskContext interactionTaskContext,
          IEditTasksForExpressionProfileBuildingBlock editTask,
@@ -39,7 +40,8 @@ namespace MoBi.Presentation.Tasks.Interaction
          IPathAndValueEntityToDistributedParameterMapper pathAndValueEntityToDistributedParameterMapper,
          IExportDataTableToExcelTask exportDataTableToExcelTask,
          ICloneManagerForBuildingBlock cloneManager,
-         IExpressionProfileBuildingBlockToDataTableMapper mapper) :
+         IExpressionProfileBuildingBlockToDataTableMapper mapper,
+         IExpressionProfileRenamingTask expressionProfileRenamingTask) :
          base(interactionTaskContext,
             editTask,
             formulaTask,
@@ -51,7 +53,10 @@ namespace MoBi.Presentation.Tasks.Interaction
          _editTaskForExpressionProfileBuildingBlock = editTask;
          _pkSimStarter = pkSimStarter;
          _containerTask = containerTask;
+         _expressionProfileRenamingTask = expressionProfileRenamingTask;
       }
+
+      protected override void RenameClone(ExpressionProfileBuildingBlock clone, string newName) => _expressionProfileRenamingTask.Rename(clone, newName);
 
       public IMoBiCommand UpdateExpressionProfileFromDatabase(ExpressionProfileBuildingBlock buildingBlock)
       {

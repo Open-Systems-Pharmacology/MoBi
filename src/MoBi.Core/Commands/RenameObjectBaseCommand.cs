@@ -53,6 +53,10 @@ namespace MoBi.Core.Commands
 
          switch (_objectBase)
          {
+            case ExpressionProfileBuildingBlock expressionProfile:
+               context.Resolve<IExpressionProfileRenamingTask>().Rename(expressionProfile, _newName);
+               renameInSimulationTask.RenameInSimulationUsingTemplateBuildingBlock(OldName, expressionProfile);
+               break;
             case IBuildingBlock buildingBlock:
                _objectBase.Name = _newName;
                renameInSimulationTask.RenameInSimulationUsingTemplateBuildingBlock(OldName, buildingBlock);

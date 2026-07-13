@@ -35,6 +35,7 @@ namespace MoBi.Presentation.Tasks
       private IContainerTask _containerTask;
       private ICloneManagerForBuildingBlock _cloneManager;
       private IPathAndValueEntityToDistributedParameterMapper _pathAndValueEntityToDistributedParameterMapper;
+      protected IExpressionProfileRenamingTask _expressionProfileRenamingTask;
 
       protected override void Context()
       {
@@ -45,8 +46,9 @@ namespace MoBi.Presentation.Tasks
          _containerTask = new ContainerTask(A.Fake<IObjectBaseFactory>(), A.Fake<IEntityPathResolver>(), A.Fake<IObjectPathFactory>());
          _cloneManager = A.Fake<ICloneManagerForBuildingBlock>();
          _pathAndValueEntityToDistributedParameterMapper = A.Fake<IPathAndValueEntityToDistributedParameterMapper>();
+         _expressionProfileRenamingTask = new ExpressionProfileRenamingTask();
 
-         sut = new InteractionTasksForExpressionProfileBuildingBlock(_interactionTaskContext, _editTask, _formulaTask, _pkSimStarter, _containerTask, _pathAndValueEntityToDistributedParameterMapper, A.Fake<IExportDataTableToExcelTask>(), _cloneManager, A.Fake<IExpressionProfileBuildingBlockToDataTableMapper>());
+         sut = new InteractionTasksForExpressionProfileBuildingBlock(_interactionTaskContext, _editTask, _formulaTask, _pkSimStarter, _containerTask, _pathAndValueEntityToDistributedParameterMapper, A.Fake<IExportDataTableToExcelTask>(), _cloneManager, A.Fake<IExpressionProfileBuildingBlockToDataTableMapper>(), _expressionProfileRenamingTask);
 
          _formula = new ExplicitFormula("y=mx+b");
          _expressionParameter = GetExpressionParameter();
@@ -175,6 +177,58 @@ namespace MoBi.Presentation.Tasks
          {
             // Ignore the Category because it will contain a suggested name change due to cloning
             A.CallTo(() => _editTask.NewNameFromSuggestions(_buildingBlock.MoleculeName, _buildingBlock.Species, A<string>._, _buildingBlock.Type, A<IReadOnlyList<string>>._, A<bool>._)).MustHaveHappened();
+         }
+      }
+
+      public class When_cloning_an_expression_profile_that_changes_the_molecule_name : concern_for_InteractionTasksForExpressionProfileBuildingBlock
+      {
+         private ExpressionProfileBuildingBlock _clone;
+         private IInteractionTask _interactionTask;
+         private IMoBiContext _context;
+
+         protected override void Context()
+         {
+            base.Context();
+            _interactionTask = A.Fake<IInteractionTask>();
+            _context = A.Fake<IMoBiContext>();
+            A.CallTo(() => _interactionTaskContext.InteractionTask).Returns(_interactionTask);
+            A.CallTo(() => _interactionTaskContext.Context).Returns(_context);
+            A.CallTo(() => _context.CurrentProject).Returns(new MoBiProject());
+
+            _buildingBlock = new ExpressionProfileBuildingBlock().WithName("OldMolecule|Species|Category");
+
+            // The clone returned by the interaction task is a deep copy that still references the old molecule name in its paths
+            _clone = new ExpressionProfileBuildingBlock().WithName("OldMolecule|Species|Category");
+            _clone.Add(new ExpressionParameter { Path = new ObjectPath("Organism", "Liver", "OldMolecule", "RelExp") });
+            _clone.AddInitialCondition(new InitialCondition { Path = new ObjectPath("Organism", "OldMolecule", "IC") });
+
+            A.CallTo(() => _interactionTask.Clone(_buildingBlock)).Returns(_clone);
+            A.CallTo(() => _editTask.NewNameFromSuggestions(_buildingBlock.MoleculeName, _buildingBlock.Species, A<string>._, _buildingBlock.Type, A<IReadOnlyList<string>>._, A<bool>._)).Returns("NewMolecule|Species|Category");
+         }
+
+         protected override void Because()
+         {
+            sut.Clone(_buildingBlock);
+         }
+
+         [Observation]
+         public void should_rename_the_clone_to_the_new_name()
+         {
+            _clone.Name.ShouldBeEqualTo("NewMolecule|Species|Category");
+         }
+
+         [Observation]
+         public void should_update_the_molecule_name_in_the_cloned_expression_parameter_paths()
+         {
+            _clone.Any<ExpressionParameter>(x => x.Path.Contains("OldMolecule")).ShouldBeFalse();
+            _clone.All<ExpressionParameter>(x => x.Path.Contains("NewMolecule")).ShouldBeTrue();
+         }
+
+         [Observation]
+         public void should_update_the_molecule_name_in_the_cloned_initial_condition_paths()
+         {
+            _clone.Any<InitialCondition>(x => x.Path.Contains("OldMolecule")).ShouldBeFalse();
+            _clone.All<InitialCondition>(x => x.Path.Contains("NewMolecule")).ShouldBeTrue();
          }
       }
 
