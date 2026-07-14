@@ -22,6 +22,7 @@ namespace MoBi.UI.Views
    {
       private IEditParameterPresenter _presenter;
       private readonly ScreenBinder<ParameterDTO> _screenBinder;
+      private ParameterDTO _parameterDTO;
 
       public EditParameterView()
       {
@@ -156,9 +157,17 @@ namespace MoBi.UI.Views
 
       public void Show(ParameterDTO parameterDTO)
       {
+         _parameterDTO = parameterDTO;
          _screenBinder.BindToSource(parameterDTO);
          initNameControl(parameterDTO);
          initRHSControl(parameterDTO);
+      }
+
+      public void RefreshData()
+      {
+         _screenBinder.Update();
+         initNameControl(_parameterDTO);
+         initRHSControl(_parameterDTO);
       }
 
       private void initRHSControl(ParameterDTO parameterDTO)

@@ -341,7 +341,7 @@ namespace MoBi.Presentation.Presenter
       public void Handle(ParameterChangedEvent eventToHandle)
       {
          if(canHandle(eventToHandle))
-            _view.Show(_parameterDTO);
+            _view.RefreshData();
       }
 
       private bool canHandle(ParameterChangedEvent eventToHandle)
