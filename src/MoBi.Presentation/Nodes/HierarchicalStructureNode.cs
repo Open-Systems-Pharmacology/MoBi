@@ -17,6 +17,13 @@ namespace MoBi.Presentation.Nodes
          _childrenLoaded = false;
       }
 
+      /// <summary>
+      ///    Returns <c>true</c> once the children have been enumerated (lazily loaded) into this node, even if that
+      ///    enumeration produced no children. Unlike <see cref="AbstractNode.HasChildren" /> this distinguishes an
+      ///    enumerated-but-empty node from one whose children were never loaded, and it does not trigger the loading.
+      /// </summary>
+      public bool ChildrenLoaded => _childrenLoaded;
+
       public override IEnumerable<ITreeNode> Children
       {
          get
