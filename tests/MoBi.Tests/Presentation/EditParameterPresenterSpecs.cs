@@ -285,9 +285,10 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void the_view_should_be_refreshed()
+      public void the_view_should_be_refreshed_without_rebinding_the_lists()
       {
-         A.CallTo(() => _view.Show(_parameterDTO)).MustHaveHappened(2, Times.Exactly);
+         A.CallTo(() => _view.RefreshData()).MustHaveHappened();
+         A.CallTo(() => _view.Show(_parameterDTO)).MustHaveHappened(1, Times.Exactly);
       }
    }
 
@@ -307,7 +308,7 @@ namespace MoBi.Presentation
       [Observation]
       public void the_view_should_not_be_refreshed()
       {
-         A.CallTo(() => _view.Show(_parameterDTO)).MustHaveHappened(1, Times.Exactly);
+         A.CallTo(() => _view.RefreshData()).MustNotHaveHappened();
       }
    }
 }
