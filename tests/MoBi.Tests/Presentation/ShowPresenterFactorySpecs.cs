@@ -13,6 +13,7 @@ namespace MoBi.Presentation
       protected IEditContainerInSimulationPresenter _showContainerPresenter;
       protected IEditQuantityInSimulationPresenter _editQuantityPresenter;
       protected IEditReactionInSimulationPresenter _showReactionPresenter;
+      protected IEditTransportInSimulationPresenter _showTransportPresenter;
 
       protected override void Context()
       {
@@ -20,8 +21,10 @@ namespace MoBi.Presentation
          _showContainerPresenter = A.Fake<IEditContainerInSimulationPresenter>();
          _editQuantityPresenter = A.Fake<IEditQuantityInSimulationPresenter>();
          _showReactionPresenter = A.Fake<IEditReactionInSimulationPresenter>();
+         _showTransportPresenter = A.Fake<IEditTransportInSimulationPresenter>();
          A.CallTo(() => _ioc.Resolve<IEditQuantityInSimulationPresenter>()).Returns(_editQuantityPresenter);
          A.CallTo(() => _ioc.Resolve<IEditReactionInSimulationPresenter>()).Returns(_showReactionPresenter);
+         A.CallTo(() => _ioc.Resolve<IEditTransportInSimulationPresenter>()).Returns(_showTransportPresenter);
          A.CallTo(() => _ioc.Resolve<IEditContainerInSimulationPresenter>()).Returns(_showContainerPresenter);
          sut = new EditInSimulationPresenterFactory(_ioc);
       }
@@ -39,6 +42,12 @@ namespace MoBi.Presentation
       public void should_return_the_registered_presenter_for_a_neighbhorhood()
       {
          sut.PresenterFor(new Reaction()).ShouldBeEqualTo(_showReactionPresenter);
+      }
+
+      [Observation]
+      public void should_return_the_registered_presenter_for_a_transport()
+      {
+         sut.PresenterFor(new Transport()).ShouldBeEqualTo(_showTransportPresenter);
       }
 
       [Observation]

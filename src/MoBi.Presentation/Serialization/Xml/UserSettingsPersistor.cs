@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using MoBi.Core;
 using MoBi.Core.Serialization.Services;
+using MoBi.Core.Serialization.Xml;
 using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Presentation.Settings;
 

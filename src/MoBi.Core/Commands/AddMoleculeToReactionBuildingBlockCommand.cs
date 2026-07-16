@@ -1,10 +1,9 @@
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
-using OSPSuite.Core.Commands.Core;
 using OSPSuite.Assets;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Extensions;
-using MoBi.Core.Services;
 
 namespace MoBi.Core.Commands
 {

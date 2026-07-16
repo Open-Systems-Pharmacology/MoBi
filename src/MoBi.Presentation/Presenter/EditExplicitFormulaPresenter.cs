@@ -62,6 +62,12 @@ namespace MoBi.Presentation.Presenter
             _view.SetFormulaCaption(caption);
       }
 
+      private void updateFormulaUnit(IFormula formula)
+      {
+         var unitName = formula?.Dimension?.BaseUnit?.Name;
+         _view.SetFormulaUnit(unitName);
+      }
+
       public override IBuildingBlock BuildingBlock
       {
          set
@@ -104,6 +110,7 @@ namespace MoBi.Presentation.Presenter
             _view.Enabled = false;
 
          updateFormulaCaption();
+         updateFormulaUnit(formula);
       }
 
       public void SetFormulaString(string newFormulaString)

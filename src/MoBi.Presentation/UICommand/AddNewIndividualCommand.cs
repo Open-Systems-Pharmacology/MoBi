@@ -2,7 +2,6 @@
 using MoBi.Core.Services;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Presentation.UICommands;
 
 namespace MoBi.Presentation.UICommand
 {

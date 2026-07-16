@@ -3,13 +3,14 @@ using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Tool.hbm2ddl;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Infrastructure.Serialization.Extensions;
 using OSPSuite.Infrastructure.Serialization.Services;
 
 namespace MoBi.Core.Serialization.ORM
 {
    public class SessionFactoryProvider : ISessionFactoryProvider
    {
-      public ISessionFactory InitalizeSessionFactoryFor(string dataSource)
+      public ISessionFactory InitializeSessionFactoryFor(string dataSource)
       {
          var cfg = createSqlLiteConfigurationFor(dataSource);
          //Create schema for database
@@ -20,10 +21,7 @@ namespace MoBi.Core.Serialization.ORM
 
       public ISessionFactory OpenSessionFactoryFor(string dataSource)
       {
-         var cfg = createSqlLiteConfigurationFor(dataSource);
-         var update = new SchemaUpdate(cfg);
-         update.Execute(useStdOut: false, doUpdate: true);
-         return cfg.BuildSessionFactory();
+         return createSqlLiteConfigurationFor(dataSource).BuildSessionFactory();
       }
 
       public SchemaExport GetSchemaExport(string dataSource)
@@ -38,11 +36,11 @@ namespace MoBi.Core.Serialization.ORM
          var configuration = new Configuration();
          var path = dataSource.ToUNCPath();
          configuration.SetProperty("connection.provider", "NHibernate.Connection.DriverConnectionProvider");
-         configuration.SetProperty("connection.driver_class", "NHibernate.Driver.SQLite20Driver");
-         configuration.SetProperty("dialect", "NHibernate.Dialect.SQLiteDialect");
+         configuration.SetProperty("connection.driver_class", typeof(NHibernate.Extensions.Sqlite.SqliteDriver).AssemblyQualifiedName);
+         configuration.SetProperty("dialect", typeof(NHibernate.Extensions.Sqlite.SqliteDialect).AssemblyQualifiedName);
          configuration.SetProperty("query.substitutions", "true=1;false=0");
          configuration.SetProperty("show_sql", "false");
-         configuration.SetProperty("connection.connection_string", $"Data Source={path};Version=3;New=False;Compress=True;");
+         configuration.SetProperty("connection.connection_string", ConnectionStringHelper.ConnectionStringFor(path));
 
          return Fluently.Configure(configuration)
             .Mappings(cfg => cfg.FluentMappings.AddFromAssemblyOf<SessionFactoryProvider>()).BuildConfiguration();

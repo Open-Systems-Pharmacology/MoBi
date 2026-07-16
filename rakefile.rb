@@ -59,7 +59,11 @@ task :create_portable_setup, [:product_version, :configuration, :package_name] d
    relative_src_dir = relative_src_dir_for(args.configuration)
    
    copy_templates_files src_dir
-   
+
+   dst_dir = File.join(setup_temp_dir, 'runtimes', 'win-x64', 'native')
+   FileUtils.mkdir_p(dst_dir)
+   FileUtils.copy_entry File.join(src_dir, 'runtimes', 'win-x64', 'native'), dst_dir
+
    #Files required for setup creation only and that will not be harvested automatically
    setup_files	 = [
       'Open Systems Pharmacology Suite License.pdf',
@@ -89,9 +93,19 @@ task :create_portable_setup, [:product_version, :configuration, :package_name] d
 end
 
 
+task :create_local_nuget_r do
+  nuget_repo = "../OSPSuite.Core/nuget_repo"
+  FileUtils.rm_f Dir.glob("#{nuget_repo}/MoBi.*.nupkg")
+  version_id = "13.0.0-" + generate_code(5)
+  puts("Your MoBi version is " + version_id.red)
+  abort("dotnet pack failed") unless system("dotnet", "pack", "MoBi.sln", "--no-build", "--no-restore", "-o", nuget_repo, "-p:PackageVersion=" + version_id, "--configuration", "Debug")
+  update_ospsuite_r_mobi(version_id)
+  build_dependency_manager
+end
+
 task :update_go_license, [:file_path, :license] do |t, args|
    Utils.update_go_diagram_license args.file_path, args.license
-end	
+end
 
 def copy_templates_files(source_dir)
    FileUtils.mkdir_p setup_temp_dir
@@ -101,7 +115,7 @@ def copy_templates_files(source_dir)
 end
 
 def relative_src_dir_for(configuration)
-   File.join('src', 'MoBi', 'bin', configuration, 'net472')
+   File.join('src', 'MoBi', 'bin', configuration, 'net10.0-windows')
 end
 
 def src_dir_for(configuration)
@@ -112,7 +126,7 @@ task :postclean do |t, args|
    packages_dir =  src_dir_for("Debug")
    
    all_users_dir = ENV['ALLUSERSPROFILE']
-   all_users_application_dir = File.join(all_users_dir, manufacturer, product_name, '12.3')
+   all_users_application_dir = File.join(all_users_dir, manufacturer, product_name, '13.0')
    
    copy_dependencies solution_dir,  all_users_application_dir do
       copy_files 'Data', ['xml', 'mbdt']
@@ -158,4 +172,29 @@ end
 
 def setup_temp_dir
    File.join(setup_dir, 'temp')
+end
+
+def generate_code(number)
+  charset = Array('A'..'Z') + Array('a'..'z')
+  Array.new(number) { charset.sample }.join
+end
+
+def find_token(file, regex)
+  file_content = File.read(file)
+  matches = file_content.match(regex)
+  return nil if matches.nil?
+  matches[1]
+end
+
+def update_ospsuite_r_mobi(version_id)
+  puts("updating OSPSuite-R with MoBi.R")
+  csproj = "../OSPSuite-R/shared/DependencyManager/src/DependencyManager.csproj"
+  token = find_token(csproj, /<PackageReference Include="MoBi.R" Version="([^"]*)"/)
+  return if token.nil?
+  Utils.replace_tokens({token => version_id}, csproj)
+end
+
+def build_dependency_manager
+  puts("building DependencyManager")
+  abort("dotnet build failed") unless system("dotnet", "build", "../OSPSuite-R/shared/DependencyManager/DependencyManager.sln", "--configuration", "Debug")
 end

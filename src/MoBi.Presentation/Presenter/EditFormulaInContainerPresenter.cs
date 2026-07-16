@@ -1,11 +1,13 @@
+using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Events;
 using MoBi.Core.Helper;
+using MoBi.Core.Services;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Views;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
@@ -49,11 +51,13 @@ namespace MoBi.Presentation.Presenter
       IListener<RemovedEvent>,
       IListener<FormulaChangedEvent>
    {
+      private readonly IObjectBaseNamingTask _namingTask;
+
       public EditFormulaInContainerPresenter(IEditFormulaInContainerView view, IFormulaPresenterCache formulaPresenterCache, IMoBiContext context,
          IFormulaToFormulaInfoDTOMapper formulaDTOMapper, FormulaTypeCaptionRepository formulaTypeCaptionRepository,
-         IMoBiFormulaTask formulaTask, ICircularReferenceChecker circularReferenceChecker) : base(view, formulaPresenterCache, context, formulaDTOMapper, formulaTask, formulaTypeCaptionRepository, circularReferenceChecker)
+         IMoBiFormulaTask formulaTask, ICircularReferenceChecker circularReferenceChecker, IObjectBaseNamingTask namingTask) : base(view, formulaPresenterCache, context, formulaDTOMapper, formulaTask, formulaTypeCaptionRepository, circularReferenceChecker)
       {
-
+         _namingTask = namingTask;
       }
 
       public void Init<TObjectWithFormula>(TObjectWithFormula formulaOwner, IBuildingBlock buildingBlock, FormulaDecoder<TObjectWithFormula> formulaDecoder)
@@ -75,7 +79,13 @@ namespace MoBi.Presentation.Presenter
       public void AddNewFormula()
       {
          var formulaType = _formulaDTO == null ? DefaultFormulaType : _formulaDTO.Type;
-         var (command, formula) = _formulaTask.CreateNewFormulaInBuildingBlock(formulaType, FormulaDimension, AllFormulaNames, _buildingBlock);
+
+         var newFormulaName = _namingTask.NewName(AppConstants.Captions.NewName, AppConstants.Captions.EnterNewFormulaName, string.Empty, AllFormulaNames);
+
+         if (string.IsNullOrEmpty(newFormulaName))
+            return;
+
+         var (command, formula) = _formulaTask.CreateNewFormulaInBuildingBlock(formulaType, FormulaDimension, _buildingBlock, newFormulaName);
          if (formula == null)
             return;
 

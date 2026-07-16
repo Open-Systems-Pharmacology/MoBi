@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Linq;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
@@ -103,11 +102,6 @@ namespace MoBi.Presentation.Presenter
       }
 
       public override object Subject => _eventGroupBuildingBlock;
-
-      public void InitializeWith(IEnumerable<EventGroupBuilder> initializer)
-      {
-         Edit(initializer);
-      }
 
       public void ShowContextMenu(IViewItem objectRequestingPopup, Point popupLocation)
       {

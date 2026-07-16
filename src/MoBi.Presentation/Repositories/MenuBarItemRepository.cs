@@ -78,6 +78,17 @@ namespace MoBi.Presentation.Repositories
             .WithIcon(ApplicationIcons.CloseProject)
             .WithCommand<CloseProjectCommand>(_container);
 
+         yield return CreateMenuButton.WithCaption(MenuNames.ExportProjectToSnapshot)
+            .WithId(MenuBarItemIds.ExportProjectToSnapshot)
+            .WithCommand<ExportProjectToSnapshotUICommand>(_container)
+            .WithDescription(Captions.ExportProjectToSnapshotDescription)
+            .WithIcon(ApplicationIcons.SnapshotExport);
+
+         yield return CreateMenuButton.WithCaption(MenuNames.LoadProjectFromSnapshot)
+            .WithId(MenuBarItemIds.LoadProjectFromSnahpshot)
+            .WithCommand<LoadProjectFromSnapshotUICommand>(_container)
+            .WithDescription(Captions.LoadProjectFromSnapshotDescription)
+            .WithIcon(ApplicationIcons.SnapshotImport);
 
          yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.GarbageCollection)
             .WithId(MenuBarItemIds.GarbageCollection)
@@ -490,7 +501,13 @@ namespace MoBi.Presentation.Repositories
          yield return JournalMenuBarButtons.JournalView(MenuBarItemIds.JournalView, _container);
          yield return JournalMenuBarButtons.CreateJournalPage(MenuBarItemIds.CreateJournalPage, _container);
          yield return JournalMenuBarButtons.SelectJournal(MenuBarItemIds.SelectJournal, _container);
-         yield return JournalMenuBarButtons.JournalEditorView(MenuBarItemIds.JournalEditorView, _container);
+         //Initialize JournalEditorVisibiliyUICommand on demand because it constructs expensive DevExpress components
+         yield return CreateMenuButton.WithCaption(OSPSuite.Assets.Captions.Journal.JournalEditorView)
+            .WithId(MenuBarItemIds.JournalEditorView)
+            .WithDescription(OSPSuite.Assets.Captions.Journal.JournalEditorViewDescription)
+            .WithActionCommand(() => _container.Resolve<JournalEditorVisibiliyUICommand>().Execute())
+            .WithIcon(ApplicationIcons.PageEdit);
+
          yield return CommonMenuBarButtons.JournalDiagramView(MenuBarItemIds.JournalDiagramView, _container);
          yield return JournalMenuBarButtons.SearchJournal(MenuBarItemIds.SearchJournal, _container);
          yield return JournalMenuBarButtons.ExportJournal(MenuBarItemIds.ExportJournal, _container);
@@ -515,6 +532,24 @@ namespace MoBi.Presentation.Repositories
          yield return SensitivityAnalysisMenuBarButtons.SensitivityAnalysisFeedbackView(MenuBarItemIds.SensitivityAnalysisFeedbackView, _container);
          yield return SensitivityAnalysisMenuBarButtons.RunSensitivityAnalysis(MenuBarItemIds.RunSensitivityAnalysis, _container);
          yield return SensitivityAnalysisMenuBarButtons.StopSensitivityAnalysis(MenuBarItemIds.StopSensitivityAnalysis, _container);
+
+         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.TimeProfile)
+            .WithId(MenuBarItemIds.AddTimeProfileAnalysis)
+            .WithDescription(ToolTips.SimulationRibbon.AddTimeProfileAnalysis)
+            .WithCommand<AddTimeProfileSimulationAnalysisUICommand>(_container)
+            .WithIcon(ApplicationIcons.TimeProfileAnalysis);
+
+         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.PredictedVsObserved)
+            .WithId(MenuBarItemIds.AddPredictedVsObservedAnalysis)
+            .WithDescription(ToolTips.SimulationRibbon.AddPredictedVsObservedAnalysis)
+            .WithCommand<AddPredictedVsObservedSimulationAnalysisUICommand>(_container)
+            .WithIcon(ApplicationIcons.PredictedVsObservedAnalysis);
+
+         yield return CreateMenuButton.WithCaption(AppConstants.MenuNames.ResidualsVsTime)
+            .WithId(MenuBarItemIds.AddResidualsVsTimeAnalysis)
+            .WithDescription(ToolTips.SimulationRibbon.AddResidualsVsTimeAnalysis)
+            .WithCommand<AddResidualsVsTimeSimulationAnalysisUICommand>(_container)
+            .WithIcon(ApplicationIcons.ResidualVsTimeAnalysis);
 
       }
    }

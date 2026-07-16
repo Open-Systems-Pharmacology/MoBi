@@ -66,11 +66,6 @@ namespace MoBi.Presentation.Presenter.Main
 
       protected abstract void AddProjectToTree(MoBiProject project);
 
-      protected void ReloadProject()
-      {
-         AddProjectToTree(_context.CurrentProject);
-      }
-
       protected override void AddProjectToTree(IProject project)
       {
          AddProjectToTree(project.DowncastTo<MoBiProject>());

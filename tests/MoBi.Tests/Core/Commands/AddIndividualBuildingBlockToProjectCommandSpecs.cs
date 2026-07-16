@@ -1,7 +1,7 @@
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -102,7 +102,7 @@ namespace MoBi.Core.Commands
          A.CallTo(() => _context.CurrentProject).Returns(_project);
          A.CallTo(() => _context.PublishEvent(A<RemovedEvent>._))
             .Invokes(x => _event = x.GetArgument<RemovedEvent>(0));
-         
+
          _project.AddIndividualBuildingBlock(_bb);
       }
 

@@ -2,7 +2,6 @@
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
-using OSPSuite.Presentation;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI.Controls;
 

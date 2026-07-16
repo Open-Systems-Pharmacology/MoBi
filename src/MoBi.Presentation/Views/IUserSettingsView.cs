@@ -8,11 +8,9 @@ namespace MoBi.Presentation.Views
    {
       void BindTo(IUserSettings userSettings);
       void SetDiagramOptionsView(IView view);
-      void SetLayoutView(IView forceLayoutConfigurationView);
       void SetChartOptionsView(IView view);
       void SetValidationOptionsView(IView view);
       void SetDisplayUnitsView(IView view);
       void SetApplicationSettingsView(IView view);
-      bool LayoutViewVisible { get; set; }
    }
 }

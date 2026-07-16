@@ -1,8 +1,7 @@
 ﻿using System;
-using FakeItEasy;
+using MoBi.Core.Services;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using MoBi.Core.Services;
 using OSPSuite.Core.Domain.Formulas;
 
 namespace MoBi.Core.Service

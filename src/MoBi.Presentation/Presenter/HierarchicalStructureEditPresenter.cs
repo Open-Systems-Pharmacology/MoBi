@@ -1,4 +1,3 @@
-using MoBi.Core;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Presentation.DTO;

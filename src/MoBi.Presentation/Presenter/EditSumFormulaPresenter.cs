@@ -12,7 +12,8 @@ namespace MoBi.Presentation.Presenter
 {
    public interface IEditSumFormulaPresenter :
       IEditTypedFormulaPresenter,
-      IListener<FormulaChangedEvent>
+      IListener<FormulaChangedEvent>,
+      IListener<TagChangedEvent>
    {
       void ChangeVariableName(string newVariableName);
       void Validate(string formula);
@@ -79,6 +80,14 @@ namespace MoBi.Presentation.Presenter
       public void Handle(FormulaChangedEvent eventToHandle)
       {
          if (!canHandle(eventToHandle))
+            return;
+
+         refreshView();
+      }
+
+      public void Handle(TagChangedEvent eventToHandle)
+      {
+         if (!Equals(eventToHandle.TaggedObject, _formula))
             return;
 
          refreshView();

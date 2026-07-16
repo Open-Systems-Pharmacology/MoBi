@@ -1,16 +1,14 @@
 ﻿using FakeItEasy;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 using MoBi.Core;
-using MoBi.Core.Helper;
 using MoBi.Core.Services;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.Main;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
-
 
 namespace MoBi.Presentation
 {

@@ -19,9 +19,11 @@ namespace MoBi.Core.Commands
       protected IFormula _newFormula;
       protected IFormula _oldFormula;
       protected T _changedPathAndValueEntity;
+      private readonly bool _shouldResetInitialStateOnUndo;
+      private bool _shouldResetInitialState;
       protected ObjectPath Path { get; set; }
 
-      public ChangeValueFormulaCommand(IBuildingBlock<T> buildingBlock, T pathAndValueEntity, IFormula newFormula, IFormula oldFormula): base(buildingBlock)
+      public ChangeValueFormulaCommand(IBuildingBlock<T> buildingBlock, T pathAndValueEntity, IFormula newFormula, IFormula oldFormula) : base(buildingBlock)
       {
          _newFormula = newFormula;
          _oldFormula = oldFormula;
@@ -36,6 +38,7 @@ namespace MoBi.Core.Commands
          _oldFormulaId = GetFormulaId(_oldFormula);
          _newFormulaId = GetFormulaId(_newFormula);
 
+         _shouldResetInitialStateOnUndo = pathAndValueEntity is ParameterValueWithInitialState { HasInitialState: false };
       }
 
       protected string GetFormulaId(IFormula formula)
@@ -50,7 +53,7 @@ namespace MoBi.Core.Commands
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return new ChangeValueFormulaCommand<T>(_buildingBlock, _changedPathAndValueEntity, _oldFormula, _newFormula).AsInverseFor(this);
+         return new ChangeValueFormulaCommand<T>(_buildingBlock, _changedPathAndValueEntity, _oldFormula, _newFormula) { _shouldResetInitialState = _shouldResetInitialStateOnUndo }.AsInverseFor(this);
       }
 
       protected override void ClearReferences()
@@ -65,6 +68,24 @@ namespace MoBi.Core.Commands
       protected override void ExecuteWith(IMoBiContext context)
       {
          base.ExecuteWith(context);
+
+         if (_changedPathAndValueEntity is ParameterValueWithInitialState  parameterValue)
+         {
+            // We can set an initial state when the parameter does not already have one
+            if (_shouldResetInitialState)
+            {
+               parameterValue.InitialValue = null;
+               parameterValue.InitialFormulaId = null;
+               parameterValue.InitialUnit = null;
+            }
+            else if (!parameterValue.HasInitialState)
+            {
+               parameterValue.InitialValue = _changedPathAndValueEntity.Value;
+               parameterValue.InitialFormulaId = parameterValue.Formula?.Id;
+               parameterValue.InitialUnit = _changedPathAndValueEntity.DisplayUnit;
+            }
+         }
+
          _changedPathAndValueEntity.Formula = _newFormula;
          Path = _changedPathAndValueEntity.Path;
       }

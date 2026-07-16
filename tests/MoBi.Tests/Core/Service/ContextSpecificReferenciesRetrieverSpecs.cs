@@ -1,14 +1,10 @@
 ﻿using System.Collections.Generic;
-using OSPSuite.Utility.Validation;
 using FakeItEasy;
-
+using MoBi.Core.Services;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
-using MoBi.Core.Services;
-
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-
 
 namespace MoBi.Core.Service
 {

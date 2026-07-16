@@ -24,10 +24,12 @@ namespace MoBi.Assets
       public static readonly string InParent = "in parent";
       public static readonly string InChildren = "in children";
       public static readonly string NotInContainer = "not in container";
+      public static readonly string ConditionGroup = "condition group";
       public static readonly string NullFormulaDescription = "No Formula";
       public static readonly string DefaultSkin = "Office 2013 Light Gray";
       public static readonly string NewFormulaDescription = "Create New Formula";
       public static readonly string NewFormulaName = "New Formula";
+      public static readonly string TableFormula = "Table Formula";
       public static readonly string SimulationRun = "Simulation(s) Running";
       public static readonly string ParameterType = "Type";
       public static readonly string NaN = "<NaN>";
@@ -243,6 +245,7 @@ namespace MoBi.Assets
          public static readonly string InParentCondition = "In Parent Condition";
          public static readonly string InChildrenCondition = "In Children Condition";
          public static readonly string NotInContainerCondition = "Not In Container Condition";
+         public static readonly string ConditionGroup = "Condition Group";
          public static readonly string Name = "Name";
          public static readonly string UpdateDimensionsAndUnits = "Changing dimensions and units";
          public static readonly string RefreshParameterValuesFromBuildingBlocks = "Refreshing parameter values from original building blocks";
@@ -858,6 +861,8 @@ namespace MoBi.Assets
          {
             return $"Set merge behavior to '{newMergeBehavior}' for module '{moduleName}'";
          }
+
+         public static string ConfigureSimulationsDescription(int count) => $"Configured {count} {"simulation".PluralizeIf(count)}";
       }
 
       public static class BarNames
@@ -880,6 +885,7 @@ namespace MoBi.Assets
          public static readonly string Journal = "Journal";
          public static readonly string File = "File";
          public static readonly string Favorites = "Favorites";
+         public static readonly string Analyses = "Analyses";
       }
 
       public static class RibbonButtonNames
@@ -1175,6 +1181,15 @@ namespace MoBi.Assets
          public static readonly string ImportFromExcel = "Import from Excel®...";
          public static readonly string ShowChanges = "Show Changes";
          public static readonly string StopAllRunningSimulations = "Stop all running simulations";
+         public static readonly string TimeProfile = "Time Profile";
+         public static readonly string PredictedVsObserved = "Predicted vs. Observed";
+         public static readonly string ResidualsVsTime = "Residuals vs. Time";
+         public static readonly string ReloadModule = "Reload module";
+         public static readonly string Snapshot = "Snapshot";
+         public static readonly string Export = "Export";
+         public static readonly string ReloadExpressionProfile = "Reload Expression Profile";
+         public static readonly string ReloadIndividual = "Reload Individual";
+
          public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
 
          public static string AddExistingAs(string objectTypeName, string targetTypeName) => $"Load {objectTypeName} as {targetTypeName}...";
@@ -1245,6 +1260,10 @@ namespace MoBi.Assets
          public static readonly string MissingName = "Name missing";
          public static readonly string DeserializationFailed = "Deserialization failed";
          public static readonly string TheStartTimeMustBeEarlierThanTheEndTimeOfTheInterval = "The start time must be earlier than the end time of the interval";
+         public static readonly string AllArraysMustHaveTheSameLength = "All arrays must have the same length";
+         public static readonly string SimulationNameIsRequired = "Simulation name is required";
+         public static readonly string NameContainsIllegalCharacters = "Name contains illegal characters";
+         public static readonly string SimulationRequestCannotBeNull = "Simulation request cannot be null";
 
          public static string SourceBuildingBlockNotInProject(string entityType) => $"Building Block used to create {entityType} is not present in project";
          public static readonly string ShouldNeverHappen = "Should never happen";
@@ -1326,6 +1345,11 @@ namespace MoBi.Assets
             return $"A module is allowed to have only one Building Block of type {buildingBlockType}. The file you are trying to load contains multiple.";
          }
 
+         public static string NoBuildingBlocksOfTypeFound(string buildingBlockType)
+         {
+            return $"The file you are trying to load contains no Building Block of type {buildingBlockType}.";
+         }
+
          public static string FormulaInUse(IFormula formula) => $"Unable to remove Formula '{formula.Name}' still in use.";
 
          public static string NotSupportedFormulaType(Type type) => $"Formula type {type} is not supported";
@@ -1369,10 +1393,35 @@ namespace MoBi.Assets
 
          public static string CannotFindReactionForParameter(string parameterName) => $"Cannot find reaction for parameter {parameterName}";
          public static string CannotFindTransportForParameter(string parameterName) => $"Cannot find transport for parameter {parameterName}";
+
+         public static string CannotFindObjectWithName(string namedObjectToSelect, IReadOnlyList<string> allNames, string objectType)
+         {
+            var sb = new StringBuilder();
+            sb.AppendLine();
+            sb.Append($"Could not find '{objectType}' named '{namedObjectToSelect}' among:");
+            sb.AppendLine();
+            sb.Append(NamesList(allNames));
+
+            return sb.ToString();
+         }
+
+         public static string NotAllPathsFoundInBuildingBlock(int pathCount, int entityCount) => $"Not all paths were found in the building block. {pathCount} distinct paths were given and {entityCount} were found.";
+
+         public static string DuplicatePathsInInput(int allPaths, int distinctPaths) => $"There were duplicate paths with {allPaths} total and {distinctPaths} distinct.";
+
+         public static string ParameterNotFoundForPath(string path, string buildingBlockName) => $"No parameter was found for path '{path}' in building block '{buildingBlockName}'";
+
+         public static string ExpressionProfileMoleculeNameMismatch(string expressionMoleculeName, string moleculeName) => $"The expression profile molecule name '{expressionMoleculeName}' does not match the specified molecule name '{moleculeName}'.";
+
+         public static string MoleculeNotFoundInBuildingBlock(string moleculeName) => $"Molecule '{moleculeName}' was not found in the molecule building block.";
+
+         public static string OrganNotFoundInSpatialStructure(string organPath) => $"Organ with path '{organPath}' was not found in the spatial structure.";
       }
 
       public static class Captions
       {
+         public static readonly string PredictedVsObserved = "Predicted vs. Observed";
+         public static readonly string ResidualsVsTime = "Residuals vs. Time";
          public static readonly string Modifiers = "Modifiers";
          public static readonly string Dimension = "Dimension";
          public static readonly string Unit = "Unit";
@@ -1396,6 +1445,7 @@ namespace MoBi.Assets
          public static readonly string FormulaType = "Formula Type";
          public static readonly string FormulaName = "Formula Name";
          public static readonly string Formula = "Formula";
+         public static string FormulaUnit(string unitName) => $"[{unitName}]";
          public static readonly string ExplicitFormula = "Formula (an explicit formula)";
          public static readonly string ConstantFormula = "Constant (a single numeric value)";
          public static readonly string TableFormula = "Table (multiple time discrete and piecewise constant numeric values)";
@@ -1535,6 +1585,9 @@ namespace MoBi.Assets
          public static readonly string AddMatchAllCondition = "Add \"Match all tag\" condition";
          public static readonly string AddInParentCondition = "Add \"In parent\" condition";
          public static readonly string AddInChildrenCondition = "Add \"In children\" condition";
+         public static readonly string NewConditionGroup = "New condition group (AND/OR)";
+         public static readonly string CreateConditionGroup = "Create condition group";
+         public static readonly string AddCondition = "Add condition";
          public static readonly string Persistable = "Plot parameter";
          public static readonly string Properties = "Properties";
          public static readonly string Tags = "Tags";
@@ -1571,6 +1624,14 @@ namespace MoBi.Assets
          public static readonly string BuildingBlockType = "Building Block Type";
          public static readonly string BuildingBlockName = "Building Block Name";
          public static readonly string Message = "Message";
+         public static readonly string UpdateStatus = "Status";
+         public static readonly string Close = "Close";
+         public static readonly string Waiting = "Waiting";
+         public static readonly string Updating = "Updating";
+         public static readonly string Pending = "Pending";
+         public static readonly string Updated = "Updated";
+         public static readonly string Failed = "Failed";
+         public static readonly string CancelSimulationUpdateClarification = "Cancel stops only simulations that have not started updating. Updates already in progress will finish.";
          public static readonly string SaveToFile = "Save...";
          public static readonly string DecimalPlace = "Decimal place";
          public static readonly string SelectDataToExport = "Select data to Export";
@@ -1684,11 +1745,18 @@ namespace MoBi.Assets
          public static readonly string ShowParametersFromIndividual = "Show parameters from Individual";
          public static readonly string ConvertToConstantValue = "Convert to constant value";
          public static readonly string GoToSource = "Go to Source";
+         public static readonly string Loading = "Loading";
+         public static readonly string SaveModuleSnapshot = "Save module snapshot";
+
          public static readonly string AddOutputSelection = "Add Output";
          public static readonly string AddingParametersToASimulationIsNotSupported = "Adding parameters to a simulation is not supported";
          public static readonly string DefaultParameterView = "Default parameter view";
          public static readonly string RenameDependentObjects = "Rename dependent objects";
          public static readonly string WarnForNonFiniteQuantities = "Warn for non-finite quantities";
+         public static readonly string CalculationMethods = "Calculation Methods";
+         public static readonly string CellularPermeabilities = "Cellular Permeabilities";
+         public static readonly string PartitionCoefficients = "Partition Coefficients";
+
          public static string SelectTheBuildingBlockWhereEntitiesWillBeAddedOrUpdated(string typeBeingAdded) => $"Select the building block where {typeBeingAdded} will be added or updated";
          public static readonly string SelectBuildingBlock = "Select Building Block";
          public static readonly string MakeDefault = "Make defaults";
@@ -2042,6 +2110,16 @@ namespace MoBi.Assets
             return sb.ToString();
          }
 
+         public static string PKSimModulesWithoutSnapshots(IReadOnlyList<string> moduleNames)
+         {
+            var sb = new StringBuilder();
+            sb.AppendLine();
+            sb.Append($"The following PK-Sim modules will be exported as extension modules (PKML) and not PK-Sim modules (snapshots) because they are too old");
+            sb.AppendLine();
+            sb.Append(NamesList(moduleNames));
+            return OSPSuite.Assets.Captions.DoYouWantToProceed(sb.ToString());
+         }
+
          public static string CouldNotAddExpressionProfilesDuplicatingProtein(IReadOnlyList<string> proteinNames)
          {
             var sb = new StringBuilder();
@@ -2096,7 +2174,8 @@ namespace MoBi.Assets
 
          public static string ThisWillConvertPkSimModuleToExtensionModule(string moduleName)
          {
-            return $"This will convert PK-Sim module '{moduleName}' to an extension module {Environment.NewLine} Continue?";
+            return $"This will convert PK-Sim module '{moduleName}' to an extension module.{Environment.NewLine}" +
+                   $"Once converted, the module will not be rebuilt in PK-Sim during requalification.{Environment.NewLine}Continue?";
          }
 
          public static string ObjectCannotBeSelected(string forbiddenReason)
@@ -2152,6 +2231,10 @@ namespace MoBi.Assets
          public static readonly string ExtendingRequiresSpatialStructure = "Extending requires a spatial structure";
          public static readonly string CannotAssignAFormulaThatReferencesTheAssignmentTarget = "Cannot assign a formula that references the assignment target";
          public static readonly string CannotCreateANeighborhoodThatConnectsAContainerToItself = "Cannot create a neighborhood that connects a container to itself";
+         public static readonly string InputsAreNotSupportedInMoBiQualification = "Inputs are not supported in a MoBi qualification";
+         public static readonly string CannotCreateANeighborhoodFromLogicalContainers = "Cannot create a neighborhood with logical containers";
+         public static readonly string DecimalPlaceMustBeBetween0And15 = "Number of decimal places must be between 0 and 15";
+
          public static string AnotherMoleculeNamedIsSelected(string moleculeName) => $"Another molecule named {moleculeName} is selected";
 
          public static string XDimensionColumnMustNotHaveRepeatedValues(string dimensionName)
@@ -2394,6 +2477,17 @@ namespace MoBi.Assets
          public static readonly string IncompatibleVersionInstalled = "PK-Sim was found on the system, but it was not compatible with this feature. Please make sure that a compatible version of PK-Sim was installed using the provided setup.\n" +
                                                                       "Alternatively, you can specify where PK-Sim is installed on your system under Utilities -> Options -> Application tab\n" +
                                                                       "After changing the PK-Sim installation path, please restart MoBi.";
+
+         public static string CouldNotFindCompatiblePKSimAssemblies(string path) => $"Could not find compatible PK-Sim assemblies {path}";
+
+         public static string CouldNotFindTypeInAssembly(string type, string assemblyLocation) => $"Could not find type '{type}' in '{assemblyLocation}'";
+
+         public static string CouldNotFindMethodInAssembly(string methodName, string type, string assemblyLocation)
+         {
+            return $"Could not find method '{methodName}' on type '{type}' in '{assemblyLocation}'";
+         }
+
+         public static readonly string PKSimAssemblyLoaderNotInitialized = "PKSimAssemblyLoader has no path configured. Call InitializePath before loading the assembly.";
       }
 
       public static string DefaultFileNameForBuildingBlockExport(string projectName, IBuildingBlock buildingBlock)
@@ -2463,5 +2557,19 @@ namespace MoBi.Assets
       }
 
       public static string PathCannotContainIllegalCharacters(IEnumerable<string> illegalCharacters) => "Path cannot contain any of the following characters:\n" + illegalCharacters.ToString<string>(", ", "'");
+
+      public static class UsedCalculationMethods
+      {
+         public static class Categories
+         {
+            public const string DiffusionIntCell = "DiffusionIntCell";
+            public const string DistributionCellular = "DistributionCellular";
+         }
+
+         public static class Names
+         {
+            public static string EmptyCalculationMethod => DefaultNames.EmptyCalculationMethod;
+         }
+      }
    }
 }

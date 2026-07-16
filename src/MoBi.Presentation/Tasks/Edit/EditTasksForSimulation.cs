@@ -25,7 +25,6 @@ namespace MoBi.Presentation.Tasks.Edit
    public interface IEditTasksForSimulation : IEditTaskFor<IMoBiSimulation>
    {
       void CreateReport(IModelCoreSimulation simulation);
-      void ExportResultsToExcel(IMoBiSimulation simulation);
       void ExportResultsToExcel(IMoBiSimulation simulation, DataRepository dataRepository);
       void RenameResults(IMoBiSimulation simulation, DataRepository dataRepository);
       void ExportODEForMatlab(IMoBiSimulation simulation);
@@ -85,11 +84,6 @@ namespace MoBi.Presentation.Tasks.Edit
          _interactionTaskContext.Context.Register(simulation);
          base.Edit(simulation);
          _context.CurrentProject.HasChanged = hasChanged;
-      }
-
-      public void ExportResultsToExcel(IMoBiSimulation simulation)
-      {
-         ExportResultsToExcel(simulation, simulation.ResultsDataRepository);
       }
 
       public void ExportResultsToExcel(IMoBiSimulation simulation, DataRepository dataRepository)

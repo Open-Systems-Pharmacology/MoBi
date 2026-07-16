@@ -1,19 +1,19 @@
-using OSPSuite.Core.Services;
-using OSPSuite.Utility.Extensions;
+using System.Linq;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
-using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Import.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
    public interface IImportStartValuesForStartValueBuildingBlockPresenter : IImportQuantitiesPresenter
    {
       /// <summary>
-      /// Displays a user interface to aid a user in importing parameter start values
+      ///    Displays a user interface to aid a user in importing parameter start values
       /// </summary>
       /// <param name="buildingBlock"></param>
       /// <returns>The imported parameter start values</returns>
@@ -57,7 +57,7 @@ namespace MoBi.Presentation.Presenter
 
       public override void TransferImportedQuantities()
       {
-         AddCommand(_interactionTasksForExtendablePathAndValueEntity.ImportPathAndValueEntitiesToBuildingBlock(_buildingBlock, _quantityDTOs));
+         AddCommand(_interactionTasksForExtendablePathAndValueEntity.ImportPathAndValueEntitiesToBuildingBlock(_buildingBlock, _quantityDTOs.ToList()));
       }
    }
 }

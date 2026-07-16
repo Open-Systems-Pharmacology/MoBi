@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Windows.Forms;
-using OSPSuite.Utility.Container;
-using OSPSuite.Utility.Extensions;
 using MoBi.BatchTool.Presenters;
 using OSPSuite.Core.Extensions;
-using OSPSuite.Presentation.Services;
+using OSPSuite.Utility.Container;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.BatchTool
 {

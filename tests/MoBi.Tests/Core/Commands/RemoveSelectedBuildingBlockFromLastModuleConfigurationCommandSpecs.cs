@@ -2,7 +2,6 @@
 using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Events;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;

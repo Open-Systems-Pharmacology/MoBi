@@ -49,8 +49,6 @@ namespace MoBi.UI.Views
 
       public void SetDiagramOptionsView(IView view) => tabDiagramOptions.FillWith(view);
 
-      public void SetLayoutView(IView forceLayoutConfigurationView) => tabFlowLayout.FillWith(forceLayoutConfigurationView);
-
       public void SetChartOptionsView(IView view) => tabChartOptions.FillWith(view);
 
       public void SetValidationOptionsView(IView view) => pnlValidationOptions.FillWith(view);
@@ -58,12 +56,6 @@ namespace MoBi.UI.Views
       public void SetDisplayUnitsView(IView view) => tabDisplayUnits.FillWith(view);
 
       public void SetApplicationSettingsView(IView view) => tabApplicationSettings.FillWith(view);
-
-      public bool LayoutViewVisible
-      {
-         get => tabFlowLayout.PageVisible;
-         set => tabFlowLayout.PageVisible = value;
-      }
 
       public void AttachPresenter(IUserSettingsPresenter presenter) => _presenter = presenter;
 
@@ -74,7 +66,7 @@ namespace MoBi.UI.Views
          layoutItemDecimalPlace.Text = AppConstants.Captions.DecimalPlace.FormatForLabel();
          layoutGroupValidationItems.Text = AppConstants.Captions.ValidationOptions;
          layoutItemNumberOfRecentProjects.Text = AppConstants.Captions.MRUListItemCount.FormatForLabel();
-         CancelVisible = false;
+         CancelVisible = true;
          tabDisplayUnits.Text = AppConstants.Captions.DefaultDisplayUnits;
          tabApplicationSettings.Text = AppConstants.Captions.ApplicationSettings;
          ApplicationIcon = ApplicationIcons.Settings;

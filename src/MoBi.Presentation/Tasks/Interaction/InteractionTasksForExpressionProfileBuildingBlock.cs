@@ -8,6 +8,7 @@ using MoBi.Core.Mappers;
 using MoBi.Core.Services;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Assets;
+using OSPSuite.Assets.Extensions;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -21,6 +22,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       IInteractionTasksForProjectBuildingBlock
    {
       IMoBiCommand UpdateExpressionProfileFromDatabase(ExpressionProfileBuildingBlock buildingBlock);
+      IMoBiCommand ResetToInitialState(ExpressionParameter expressionParameter, ExpressionProfileBuildingBlock buildingBlock);
    }
 
    public class InteractionTasksForExpressionProfileBuildingBlock : InteractionTasksForProjectPathAndValueEntityBuildingBlocks<ExpressionProfileBuildingBlock, ExpressionParameter>, IInteractionTasksForExpressionProfileBuildingBlock
@@ -28,6 +30,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       private readonly IEditTasksForExpressionProfileBuildingBlock _editTaskForExpressionProfileBuildingBlock;
       private readonly IPKSimStarter _pkSimStarter;
       private readonly IContainerTask _containerTask;
+      private readonly IExpressionProfileRenamingTask _expressionProfileRenamingTask;
 
       public InteractionTasksForExpressionProfileBuildingBlock(IInteractionTaskContext interactionTaskContext,
          IEditTasksForExpressionProfileBuildingBlock editTask,
@@ -37,19 +40,23 @@ namespace MoBi.Presentation.Tasks.Interaction
          IPathAndValueEntityToDistributedParameterMapper pathAndValueEntityToDistributedParameterMapper,
          IExportDataTableToExcelTask exportDataTableToExcelTask,
          ICloneManagerForBuildingBlock cloneManager,
-         IExpressionProfileBuildingBlockToDataTableMapper mapper) :
-         base(interactionTaskContext, 
-            editTask, 
-            formulaTask,  
-            exportDataTableToExcelTask, 
-            cloneManager, 
-            pathAndValueEntityToDistributedParameterMapper, 
+         IExpressionProfileBuildingBlockToDataTableMapper mapper,
+         IExpressionProfileRenamingTask expressionProfileRenamingTask) :
+         base(interactionTaskContext,
+            editTask,
+            formulaTask,
+            exportDataTableToExcelTask,
+            cloneManager,
+            pathAndValueEntityToDistributedParameterMapper,
             mapper)
       {
          _editTaskForExpressionProfileBuildingBlock = editTask;
          _pkSimStarter = pkSimStarter;
          _containerTask = containerTask;
+         _expressionProfileRenamingTask = expressionProfileRenamingTask;
       }
+
+      protected override void RenameClone(ExpressionProfileBuildingBlock clone, string newName) => _expressionProfileRenamingTask.Rename(clone, newName);
 
       public IMoBiCommand UpdateExpressionProfileFromDatabase(ExpressionProfileBuildingBlock buildingBlock)
       {
@@ -65,19 +72,26 @@ namespace MoBi.Presentation.Tasks.Interaction
             Description = AppConstants.Commands.UpdateRelativeExpressions
          };
 
-         macroCommand.AddRange(expressionProfileUpdate.Select(parameter => updateCommandFor(buildingBlock, parameter.Path, parameter.UpdatedValue)));
+         macroCommand.AddRange(expressionProfileUpdate.Select(parameter => updateCommandFor(buildingBlock, parameter)));
 
          return macroCommand.RunCommand(Context);
       }
 
-      private static ICommand updateCommandFor(ExpressionProfileBuildingBlock buildingBlock, ObjectPath path, double? value)
+      public IMoBiCommand ResetToInitialState(ExpressionParameter expressionParameter, ExpressionProfileBuildingBlock buildingBlock) => 
+         new ResetInitialStateCommand<ExpressionParameter, ExpressionProfileBuildingBlock>(expressionParameter, buildingBlock).RunCommand(Context);
+
+      public ExpressionProfileBuildingBlock LoadFromSnapshot(string snapshot) =>
+         // Cloning required to reset object ids
+         _cloneManagerForBuildingBlock.Clone(_pkSimStarter.LoadExpressionProfileFromSnapshot(snapshot));
+
+      private static ICommand updateCommandFor(ExpressionProfileBuildingBlock buildingBlock, ExpressionParameterValueUpdate expressionParameterValueUpdate)
       {
-         var parameterToUpdate = buildingBlock[path];
+         var parameterToUpdate = buildingBlock[expressionParameterValueUpdate.Path];
 
          if (parameterToUpdate == null)
             return new MoBiEmptyCommand();
 
-         return new PathAndValueEntityValueOrUnitChangedCommand<ExpressionParameter, ExpressionProfileBuildingBlock>(parameterToUpdate, value, parameterToUpdate.DisplayUnit, buildingBlock);
+         return new ExpressionParameterValueOrUnitUpdateCommand(parameterToUpdate, expressionParameterValueUpdate, buildingBlock);
       }
 
       protected override string GetNewNameForClone(ExpressionProfileBuildingBlock buildingBlockToClone)
@@ -95,10 +109,8 @@ namespace MoBi.Presentation.Tasks.Interaction
          return _editTaskForExpressionProfileBuildingBlock.NewNameFromSuggestions(buildingBlockToClone.MoleculeName, buildingBlockToClone.Species, suggestedCategory, buildingBlockToClone.Type, forbiddenValues);
       }
 
-      public override IMoBiCommand GetRemoveCommand(ExpressionProfileBuildingBlock expressionProfileToRemove, MoBiProject parent, IBuildingBlock buildingBlock)
-      {
-         return new RemoveExpressionProfileBuildingBlockFromProjectCommand(expressionProfileToRemove);
-      }
+      public override IMoBiCommand GetRemoveCommand(ExpressionProfileBuildingBlock expressionProfileToRemove, MoBiProject parent, IBuildingBlock buildingBlock) => 
+         new RemoveExpressionProfileBuildingBlockFromProjectCommand(expressionProfileToRemove);
 
       public override bool CorrectName(ExpressionProfileBuildingBlock expressionProfile, MoBiProject project)
       {
@@ -116,9 +128,9 @@ namespace MoBi.Presentation.Tasks.Interaction
          return true;
       }
 
-      public override IMoBiCommand GetAddCommand(ExpressionProfileBuildingBlock expressionProfileToAdd, MoBiProject parent, IBuildingBlock buildingBlock)
-      {
-         return new AddExpressionProfileBuildingBlockToProjectCommand(expressionProfileToAdd);
-      }
+      public override IMoBiCommand GetAddCommand(ExpressionProfileBuildingBlock expressionProfileToAdd, MoBiProject parent, IBuildingBlock buildingBlock) => 
+         new AddExpressionProfileBuildingBlockToProjectCommand(expressionProfileToAdd);
+
+      protected override string SnapshotFrom(ExpressionProfileBuildingBlock buildingBlock) => buildingBlock.Snapshot.FromBase64String();
    }
 }

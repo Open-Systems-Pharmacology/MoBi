@@ -11,7 +11,14 @@ namespace MoBi.Presentation.DTO
    public class NeighborhoodObjectPathDTO : DxValidatableDTO, IViewItem
    {
       private readonly Func<NeighborhoodObjectPathDTO> _myNeighbor;
+      private ContainerMode? _myMode;
       private string _path;
+
+      public virtual ContainerMode? Mode
+      {
+         get => _myMode;
+         set => SetProperty(ref _myMode, value);
+      }
 
       public virtual string Path
       {
@@ -47,11 +54,17 @@ namespace MoBi.Presentation.DTO
             .WithRule((dto, path) => !Equals(path, dto._myNeighbor().Path))
             .WithError((dto, path) => AppConstants.Validation.CannotCreateANeighborhoodThatConnectsAContainerToItself);
 
+         private static IBusinessRule neighborsArePhysical { get; } = CreateRule.For<NeighborhoodObjectPathDTO>()
+               .Property(x => x.Path) 
+               .WithRule((dto, path) => dto.Mode != ContainerMode.Logical)
+               .WithError((dto, _) => AppConstants.Validation.CannotCreateANeighborhoodFromLogicalContainers);
+
          public static IReadOnlyList<IBusinessRule> All { get; } = new[]
          {
             notEmptyPathRule,
             noEquivalentNeighborhood,
-            neighborsAreNotEqual
+            neighborsAreNotEqual,
+            neighborsArePhysical
          };
       }
    }

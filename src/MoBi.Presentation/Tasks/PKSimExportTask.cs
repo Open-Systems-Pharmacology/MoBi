@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using OSPSuite.Utility;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
@@ -9,6 +7,7 @@ using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Repositories;
 using OSPSuite.Core.Journal;
 using OSPSuite.Core.Serialization.Exchange;
+using OSPSuite.Utility;
 
 namespace MoBi.Presentation.Tasks
 {

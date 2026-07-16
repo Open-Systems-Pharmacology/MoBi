@@ -10,6 +10,7 @@ namespace MoBi.Core.Services
    public interface IQuantityValueInSimulationChangeTracker
    {
       void TrackQuantityChange(IQuantity quantity, IMoBiSimulation simulation, Action<IQuantity> actionModifyingQuantity);
+
       void TrackScaleChange(MoleculeAmount moleculeAmount, IMoBiSimulation simulation, Action<MoleculeAmount> actionModifyingScaleDivisor);
    }
 
@@ -47,6 +48,7 @@ namespace MoBi.Core.Services
             return;
 
          simulation.AddOriginalQuantityValue(originalQuantityValue);
+
          _eventPublisher.PublishEvent(new SimulationStatusChangedEvent(simulation));
       }
 
@@ -57,6 +59,7 @@ namespace MoBi.Core.Services
             return;
 
          simulation.AddOriginalQuantityValue(originalQuantityValue);
+
          _eventPublisher.PublishEvent(new SimulationStatusChangedEvent(simulation));
       }
 
@@ -97,6 +100,7 @@ namespace MoBi.Core.Services
             return;
 
          simulation.RemoveOriginalQuantityValue(oldParameterValue);
+
          _eventPublisher.PublishEvent(new SimulationStatusChangedEvent(simulation));
       }
    }

@@ -1,5 +1,6 @@
 ﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Events;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain.Builder;
@@ -49,6 +50,12 @@ namespace MoBi.Core.Commands
       public void should_should_have_changed_Tag_at_condition()
       {
          _tagCondition.Tag.ShouldBeEqualTo(_newTag);
+      }
+
+      [Observation]
+      public void should_publish_a_TagChangedEvent_for_the_tagged_object()
+      {
+         A.CallTo(() => _context.PublishEvent(A<TagChangedEvent>.That.Matches(x => x.TaggedObject == _sumFormula))).MustHaveHappened();
       }
    }
 }

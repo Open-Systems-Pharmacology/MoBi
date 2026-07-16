@@ -1,15 +1,14 @@
 ﻿using MoBi.Assets;
-using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
+using OSPSuite.DataBinding.DevExpress.XtraGrid;
 using OSPSuite.Presentation.DTO;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI.Controls;
-using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Views;
 
 namespace MoBi.UI.Views

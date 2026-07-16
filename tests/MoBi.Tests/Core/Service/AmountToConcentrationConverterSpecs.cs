@@ -1,19 +1,17 @@
-﻿using System;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Utility.Exceptions;
-using OSPSuite.Utility.Extensions;
-using FakeItEasy;
+﻿using FakeItEasy;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Helper;
 using MoBi.Core.Services;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Service
 {
@@ -39,11 +37,11 @@ namespace MoBi.Core.Service
          _amountToConcentrationFormulaMapper = A.Fake<IAmoutToConcentrationFormulaMapper>();
          _objectBaseFactory = A.Fake<IObjectBaseFactory>();
          _formulaTask = A.Fake<IFormulaTask>();
-         _displayUnitRetriever= A.Fake<IDisplayUnitRetriever>();
-         _formulaFactory= A.Fake<IFormulaFactory>();
-         _constantZeroFormula= new ConstantFormula(0);
+         _displayUnitRetriever = A.Fake<IDisplayUnitRetriever>();
+         _formulaFactory = A.Fake<IFormulaFactory>();
+         _constantZeroFormula = new ConstantFormula(0);
          _formulaCache = new FormulaCache();
-         _objectTypeResolver=new ObjectTypeResolver();
+         _objectTypeResolver = new ObjectTypeResolver();
          A.CallTo(() => _formulaTask.AddParentVolumeReferenceToFormula(A<IFormula>._)).Returns(Constants.VOLUME_ALIAS);
          A.CallTo(() => _dimensionFactory.Dimension(Constants.Dimension.MOLAR_AMOUNT)).Returns(DomainHelperForSpecs.AmountDimension);
          A.CallTo(() => _dimensionFactory.Dimension(Constants.Dimension.AMOUNT_PER_TIME)).Returns(DomainHelperForSpecs.AmountPerTimeDimension);
@@ -52,7 +50,7 @@ namespace MoBi.Core.Service
          A.CallTo(() => _objectBaseFactory.Create<ExplicitFormula>()).Returns(new ExplicitFormula());
          A.CallTo(() => _formulaFactory.ConstantFormula(0, DomainHelperForSpecs.ConcentrationDimension)).Returns(_constantZeroFormula);
          sut = new AmountToConcentrationConverter(_reactionDimensionRetriever, _dimensionFactory, _amountToConcentrationFormulaMapper,
-            _objectBaseFactory, _formulaTask,_displayUnitRetriever,_objectTypeResolver,_formulaFactory);
+            _objectBaseFactory, _formulaTask, _displayUnitRetriever, _objectTypeResolver, _formulaFactory);
       }
    }
 
@@ -103,7 +101,6 @@ namespace MoBi.Core.Service
          _moleculeBuilder.Dimension.ShouldBeEqualTo(DomainHelperForSpecs.ConcentrationDimension);
       }
 
-
       [Observation]
       public void should_have_used_th_formula_factory_to_create_a_new_constnat_formula_with_the_expected_dimension()
       {
@@ -135,7 +132,7 @@ namespace MoBi.Core.Service
       [Observation]
       public void should_have_added_the_converted_formula_to_the_formula_cache()
       {
-        _formulaCache.Contains(_moleculeBuilder.DefaultStartFormula).ShouldBeTrue();
+         _formulaCache.Contains(_moleculeBuilder.DefaultStartFormula).ShouldBeTrue();
       }
 
       [Observation]
@@ -170,7 +167,6 @@ namespace MoBi.Core.Service
          _explicitFormula.FormulaString.ShouldBeEqualTo("C+D");
          _explicitFormula.Dimension.ShouldBeEqualTo(DomainHelperForSpecs.ConcentrationDimension);
       }
-
 
       [Observation]
       public void should_have_updated_the_dimension_to_concentration_dimension()
@@ -211,7 +207,7 @@ namespace MoBi.Core.Service
       }
    }
 
-   public class When_converting_a_reaction_builder_from_amount_to_concentration: concern_for_AmountToConcentrationConverter
+   public class When_converting_a_reaction_builder_from_amount_to_concentration : concern_for_AmountToConcentrationConverter
    {
       private ReactionBuilder _reactionBuilder;
       private ExplicitFormula _explicitFormula;
@@ -221,11 +217,12 @@ namespace MoBi.Core.Service
          base.Context();
          _explicitFormula = new ExplicitFormula("A+B");
          A.CallTo(() => _reactionDimensionRetriever.SelectedDimensionMode).Returns(ReactionDimensionMode.ConcentrationBased);
-         _reactionBuilder = new ReactionBuilder{ Formula = _explicitFormula, Dimension = DomainHelperForSpecs.AmountPerTimeDimension };
+         _reactionBuilder = new ReactionBuilder { Formula = _explicitFormula, Dimension = DomainHelperForSpecs.AmountPerTimeDimension };
       }
+
       protected override void Because()
       {
-         sut.Convert(_reactionBuilder,_formulaCache);
+         sut.Convert(_reactionBuilder, _formulaCache);
       }
 
       [Observation]
@@ -244,7 +241,6 @@ namespace MoBi.Core.Service
 
    public class When_converting_a_molecule_start_value_that_is_already_in_concentration_in_concentration : concern_for_AmountToConcentrationConverter
    {
-
       protected override void Context()
       {
          base.Context();
@@ -271,7 +267,7 @@ namespace MoBi.Core.Service
       protected override void Context()
       {
          base.Context();
-         _unit= A.Fake<Unit>();
+         _unit = A.Fake<Unit>();
          A.CallTo(() => _reactionDimensionRetriever.SelectedDimensionMode).Returns(ReactionDimensionMode.ConcentrationBased);
          _initialCondition = new InitialCondition { Value = 5, Dimension = DomainHelperForSpecs.AmountDimension };
          A.CallTo(() => _displayUnitRetriever.PreferredUnitFor(_initialCondition)).Returns(_unit);
@@ -326,7 +322,7 @@ namespace MoBi.Core.Service
       protected override void Context()
       {
          base.Context();
-         _reactionBuilder= new ReactionBuilder { Dimension = DomainHelperForSpecs.ConcentrationPerTimeDimension };
+         _reactionBuilder = new ReactionBuilder { Dimension = DomainHelperForSpecs.ConcentrationPerTimeDimension };
          A.CallTo(() => _reactionDimensionRetriever.SelectedDimensionMode).Returns(ReactionDimensionMode.AmountBased);
       }
 

@@ -18,6 +18,7 @@ namespace MoBi.Presentation.Presenter
    {
       void Edit(ExpressionProfileBuildingBlock expressionProfileBuildingBlock);
       void LoadExpressionFromPKSimDatabaseQuery();
+      void ResetInitialState(ExpressionParameterDTO dto);
    }
 
    public class ExpressionProfileBuildingBlockPresenter :
@@ -53,6 +54,17 @@ namespace MoBi.Presentation.Presenter
       public void LoadExpressionFromPKSimDatabaseQuery()
       {
          AddCommand(_interactionTasksForExpressionProfile.UpdateExpressionProfileFromDatabase(_buildingBlock));
+      }
+
+      public void ResetInitialState(ExpressionParameterDTO dto)
+      {
+         AddCommand(_interactionTasksForExpressionProfile.ResetToInitialState(dto.PathWithValueObject, _buildingBlock));
+         refreshDTO(dto);
+      }
+
+      private void refreshDTO(ExpressionParameterDTO parameterDTO)
+      {
+         RefreshDTO(parameterDTO, parameterDTO.PathWithValueObject.Formula, parameterDTO.PathWithValueObject);
       }
 
       private void rebind()

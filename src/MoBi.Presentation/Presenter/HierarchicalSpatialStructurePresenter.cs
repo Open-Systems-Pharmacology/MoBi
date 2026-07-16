@@ -25,7 +25,6 @@ namespace MoBi.Presentation.Presenter
       IListener<RemovedEvent>,
       IListener<EntitySelectedEvent>
    {
-      void Select(IEntity entity);
       void Refresh(IEntity entity);
    }
 
@@ -122,8 +121,6 @@ namespace MoBi.Presentation.Presenter
          if (_spatialStructure == null) return;
          eventToHandle.RemovedObjects.OfType<IEntity>().Each(remove);
       }
-
-      public void Select(IEntity entity) => _view.Select(entity);
 
       public void Refresh(IEntity entity)
       {

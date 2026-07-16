@@ -1,0 +1,93 @@
+using System.Collections.Generic;
+using System.Linq;
+using MoBi.Assets;
+using MoBi.Core.Commands;
+using MoBi.Core.Domain.Model;
+using MoBi.Core.Extensions;
+using MoBi.Core.Serialization.Xml.Services;
+using MoBi.Core.Services;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Extensions;
+using ISerializationTask = MoBi.Core.Serialization.Services.ICoreSerializationTask;
+
+namespace MoBi.R.Services;
+
+public interface IExtendablePathAndValuesTask<TBuildingBlock, TBuilder> : IPathAndValuesTask<TBuildingBlock, TBuilder>
+   where TBuildingBlock : ILookupBuildingBlock<TBuilder>
+   where TBuilder : PathAndValueEntity
+{
+   TBuildingBlock CreateBuildingBlock(string name);
+}
+
+public abstract class ExtendablePathAndValuesTask<TBuildingBlock, TBuilder> : PathAndValuesBuildingBlockTask<TBuildingBlock, TBuilder>, IExtendablePathAndValuesTask<TBuildingBlock, TBuilder>
+   where TBuildingBlock : class, ILookupBuildingBlock<TBuilder>
+   where TBuilder : PathAndValueEntity
+{
+   private readonly IObjectTypeResolver _objectTypeResolver;
+   private readonly IExtendPathAndValuesManager<TBuilder> _extendManager;
+   protected readonly IMoBiContext _context;
+
+   protected ExtendablePathAndValuesTask(IMoBiContext context, IObjectTypeResolver objectTypeResolver, IExtendPathAndValuesManager<TBuilder> extendManager, ISerializationTask serializationTask, IXmlSerializationService xmlSerializationService) : base(serializationTask, xmlSerializationService)
+   {
+      _objectTypeResolver = objectTypeResolver;
+      _extendManager = extendManager;
+      _context = context;
+   }
+
+   public TBuildingBlock CreateBuildingBlock(string name) => _context.Create<TBuildingBlock>().WithName(name);
+
+   protected void Delete(TBuildingBlock buildingBlock, string[] pathsToDelete)
+   {
+      var foundPaths = pathsToDelete.Where(x => buildingBlock.ByPath(x.ToObjectPath()) != null).ToList();
+      if (!foundPaths.Any())
+         return;
+
+      var macroCommand = new MoBiMacroCommand
+      {
+         Description = RemoveCommandDescription(),
+         CommandType = AppConstants.Commands.DeleteCommand,
+         ObjectType = _objectTypeResolver.TypeFor<TBuilder>()
+      };
+
+      macroCommand.AddRange(foundPaths.Select(x => RemoveCommandFor(buildingBlock, x.ToObjectPath())));
+
+      _context.AddToHistory(macroCommand.RunCommand(_context));
+   }
+
+   protected abstract string RemoveCommandDescription();
+
+   protected string[] Extend(TBuildingBlock buildingBlock, SpatialStructure spatialStructure, MoleculeBuildingBlock moleculeBuildingBlock, string[] moleculeNames)
+   {
+      var molecules = moleculesFor(moleculeNames, moleculeBuildingBlock);
+
+      var existingPaths = new HashSet<string>(buildingBlock.Select(x => x.Path.PathAsString));
+
+      _context.AddToHistory(_extendManager.ExtendPathAndValueEntitiesBasedOnUsedTemplates(spatialStructure, molecules, buildingBlock));
+
+      return buildingBlock.Where(x => !existingPaths.Contains(x.Path.PathAsString)).Select(x => x.Path.PathAsString).ToArray();
+   }
+
+   private static IReadOnlyList<MoleculeBuilder> moleculesFor(string[] moleculeNames, MoleculeBuildingBlock moleculeBuildingBlock)
+   {
+      IReadOnlyList<MoleculeBuilder> molecules;
+      if (moleculeNames == null || !moleculeNames.Any())
+         molecules = moleculeBuildingBlock.All().ToList();
+      else
+         molecules = moleculeBuildingBlock.Where(x => moleculeNames.Contains(x.Name)).ToList();
+      return molecules;
+   }
+
+   protected abstract IMoBiCommand RemoveCommandFor(TBuildingBlock buildingBlock, ObjectPath path);
+
+   protected MoBiMacroCommand MacroCommandForUpdateAndInsert()
+   {
+      return new MoBiMacroCommand
+      {
+         CommandType = AppConstants.Commands.ExtendCommand,
+         Description = AppConstants.Commands.ExtendDescription,
+         ObjectType = _objectTypeResolver.TypeFor<TBuildingBlock>()
+      };
+   }
+}

@@ -37,7 +37,7 @@ namespace MoBi.Presentation
          throw new NotImplementedException();
       }
 
-      protected override void Unlink(IBaseNode node1, IBaseNode node2, object portObject1, object portObject2)
+      public override void Unlink(IBaseNode node1, IBaseNode node2, object portObject1, object portObject2)
       {
          throw new NotImplementedException();
       }

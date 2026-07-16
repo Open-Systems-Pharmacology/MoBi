@@ -1,8 +1,10 @@
 ﻿using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Presenter.ReactionDiagram;
+using MoBi.Presentation.UICommand;
 using MoBi.Presentation.Views;
 using MoBi.UI.Presenters;
 using MoBi.UI.Services;
+using MoBi.UI.UICommands;
 using MoBi.UI.Views;
 using OSPSuite.Assets;
 using OSPSuite.Core;
@@ -40,6 +42,8 @@ namespace MoBi.UI
             scan.WithConvention<OSPSuiteRegistrationConvention>();
          });
 
+         container.Register<ICopyTextCommand, CopyTextCommand>();
+         container.Register<IExitCommand, ExitCommand>();
          container.Register<IMoBiMainView, IShell, IMainView, MoBiMainView>(LifeStyle.Singleton);
 
          container.Register<IContainerModalView, ModalForm>(LifeStyle.Transient);

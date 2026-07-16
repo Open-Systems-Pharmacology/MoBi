@@ -4,7 +4,7 @@ using OSPSuite.Core.Domain;
 
 namespace MoBi.Presentation.Mappers
 {
-   internal interface ITransportToTransportDTOMapper : IMapper<Transport, TransportDTO>
+   public interface ITransportToTransportDTOMapper : IMapper<Transport, TransportDTO>
    {
    }
 

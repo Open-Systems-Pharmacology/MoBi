@@ -3,7 +3,6 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Services;
 using MoBi.Presentation.Tasks;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Presentation.Presenters.Diagram;

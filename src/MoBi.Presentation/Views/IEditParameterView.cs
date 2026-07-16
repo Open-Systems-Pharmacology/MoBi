@@ -7,6 +7,7 @@ namespace MoBi.Presentation.Views
    public interface IEditParameterView : IView<IEditParameterPresenter>, IViewWithFormula, IActivatableView
    {
       void Show(ParameterDTO parameterDTO);
+      void RefreshData();
       void AddRHSView(IView rhsView);
       bool ShowBuildMode { set; }
       void AddValueOriginView(IView view);

@@ -1,7 +1,7 @@
 ﻿using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Services;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -59,7 +59,7 @@ namespace MoBi.Presentation
          // start = 10 minutes, end = 20 minutes
          _outputInterval.StartTimeParameter.Parameter.Value = _outputInterval.StartTimeParameter.Parameter.ConvertToBaseUnit(10, minutes);
          _outputInterval.EndTimeParameter.Parameter.Value = _outputInterval.EndTimeParameter.Parameter.ConvertToBaseUnit(20, minutes);
-         
+
          sut.InitializeWith(A.Fake<ICommandCollector>());
          sut.Edit(_simulationSettings);
       }

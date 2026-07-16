@@ -1,12 +1,11 @@
-﻿using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
-using FakeItEasy;
+﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Events;
+using MoBi.Core.Services;
+using MoBi.HelpersForTests;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
-using MoBi.Core.Services;
-using MoBi.Helpers;
 using OSPSuite.Utility.Events;
 
 namespace MoBi.Core.Commands

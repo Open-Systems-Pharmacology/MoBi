@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
-using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Nodes;

@@ -14,6 +14,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Main;

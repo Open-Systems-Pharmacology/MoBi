@@ -3,7 +3,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Extensions;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;

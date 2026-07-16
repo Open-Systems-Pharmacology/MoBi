@@ -5,7 +5,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Extensions;
 using MoBi.Assets;
 using MoBi.Core.Mappers;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;

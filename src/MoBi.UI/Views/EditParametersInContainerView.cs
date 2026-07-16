@@ -107,7 +107,7 @@ namespace MoBi.UI.Views
          return new DXMenuItem(
             AppConstants.Captions.CopyPath,
             (s, args) => copyPath(),
-            ApplicationIcons.Copy
+            ApplicationIcons.Copy.ToImage()
          );
       }
 

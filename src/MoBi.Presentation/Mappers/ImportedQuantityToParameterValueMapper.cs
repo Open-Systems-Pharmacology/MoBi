@@ -20,12 +20,6 @@ namespace MoBi.Presentation.Mappers
          _psvCreator = psvCreator;
       }
 
-      public ParameterValue MapFrom(ImportedQuantityDTO input)
-      {
-         var psv = _psvCreator.CreateParameterValue(input.Path, input.QuantityInBaseUnit, input.Dimension);
-         psv.DisplayUnit = input.DisplayUnit;
-
-         return psv;
-      }
+      public ParameterValue MapFrom(ImportedQuantityDTO input) => _psvCreator.CreateParameterValue(input.Path, input.QuantityInBaseUnit, input.Dimension, input.DisplayUnit);
    }
 }

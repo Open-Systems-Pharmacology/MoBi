@@ -1,10 +1,6 @@
 using System.Collections.Generic;
 using FakeItEasy;
-using MoBi.Core.Events;
-using MoBi.Presentation;
-using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
-using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.UICommand;
 using OSPSuite.BDDHelper;
 using OSPSuite.Core.Domain;

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CoverageParams>
   <TargetArguments>
-    tests\MoBi.Tests\bin\Debug\net472\MoBi.Tests.dll
-    tests\MoBi.UI.Tests\bin\Debug\net472\MoBi.UI.Tests.dll
+    tests\MoBi.Tests\bin\Debug\net8.0-windows\MoBi.Tests.dll
+    tests\MoBi.UI.Tests\bin\Debug\net8.0-windows\MoBi.UI.Tests.dll
+    tests\MoBi.R.Tests\bin\Debug\net8.0\MoBi.R.Tests.dll
   </TargetArguments>
   <TargetWorkingDir>./</TargetWorkingDir>
  

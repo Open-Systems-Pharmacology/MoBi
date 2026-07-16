@@ -1,38 +1,56 @@
-﻿using MoBi.Core;
+using MoBi.Core;
 using OSPSuite.Presentation.DTO;
 
 namespace MoBi.Presentation.DTO
 {
    public class ApplicationSettingsDTO : ValidatableDTO
    {
-      private readonly IApplicationSettings _applicationSettings;
+      private string _pkSimPath;
+      private bool _useWatermark;
+      private string _watermarkText;
 
       public ApplicationSettingsDTO(IApplicationSettings applicationSettings)
       {
-         _applicationSettings = applicationSettings;
+         _pkSimPath = applicationSettings.PKSimPath;
+         _useWatermark = applicationSettings.UseWatermark.GetValueOrDefault(false);
+         _watermarkText = applicationSettings.WatermarkText;
       }
 
       public virtual string PKSimPath
       {
-         get => _applicationSettings.PKSimPath;
+         get => _pkSimPath;
          set
          {
-            _applicationSettings.PKSimPath = value;
+            _pkSimPath = value;
             OnPropertyChanged();
          }
       }
 
       public bool UseWatermark
       {
-         get => _applicationSettings.UseWatermark.GetValueOrDefault(false);
-         set => _applicationSettings.UseWatermark = value;
+         get => _useWatermark;
+         set
+         {
+            _useWatermark = value;
+            OnPropertyChanged();
+         }
       }
 
       public string WatermarkText
       {
-         get => _applicationSettings.WatermarkText;
-         set => _applicationSettings.WatermarkText = value;
+         get => _watermarkText;
+         set
+         {
+            _watermarkText = value;
+            OnPropertyChanged();
+         }
       }
 
+      public void UpdateApplicationSettings(IApplicationSettings applicationSettings)
+      {
+         applicationSettings.PKSimPath = PKSimPath;
+         applicationSettings.UseWatermark = UseWatermark;
+         applicationSettings.WatermarkText = WatermarkText;
+      }
    }
 }

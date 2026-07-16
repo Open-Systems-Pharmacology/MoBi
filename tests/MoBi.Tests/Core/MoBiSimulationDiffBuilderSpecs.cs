@@ -1,5 +1,4 @@
-﻿using FakeItEasy;
-using MoBi.Core.Domain.Model;
+﻿using MoBi.Core.Domain.Model;
 using MoBi.IntegrationTests;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;

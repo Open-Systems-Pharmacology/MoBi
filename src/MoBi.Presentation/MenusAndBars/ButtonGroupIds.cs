@@ -34,5 +34,6 @@ namespace MoBi.Presentation.MenusAndBars
       public static ButtonGroupId SensitivityAnalysisPKParameterAnalyses = new ButtonGroupId("SensitivityAnalysisPKParameterAnalysis");
       public static ButtonGroupId History = new ButtonGroupId("History");
       public static ButtonGroupId ProjectSimulationSettings = new ButtonGroupId("ProjectSimulationSettings");
+      public static ButtonGroupId SimulationAnalyses = new ButtonGroupId("SimulationAnalyses");
    }
 }

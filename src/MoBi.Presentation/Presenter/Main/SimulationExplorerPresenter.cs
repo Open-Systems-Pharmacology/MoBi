@@ -182,6 +182,9 @@ namespace MoBi.Presentation.Presenter.Main
       {
          var simulationNode = _view.NodeById(simulation.Id);
 
+         if(simulationNode == null) 
+            return;
+
          var changedTemplateBuildingBlocks = _interactionTasksForSimulation.FindChangedBuildingBlocks(simulation).ToList();
          var changedModules = _interactionTasksForSimulation.FindChangedModules(simulation).ToList();
 

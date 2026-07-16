@@ -19,7 +19,6 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Presenters;
-using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 

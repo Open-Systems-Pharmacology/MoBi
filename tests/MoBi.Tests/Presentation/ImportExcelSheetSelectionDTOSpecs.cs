@@ -1,11 +1,10 @@
 ﻿using System;
-using FakeItEasy;
+using MoBi.Presentation.DTO;
+using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Validation;
-using MoBi.Presentation.DTO;
-using NUnit.Framework;
 
 namespace MoBi.Presentation
 {

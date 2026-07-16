@@ -5,7 +5,7 @@ using System.Xml;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Serialization.Diagram;
 
-namespace MoBi.Helpers
+namespace MoBi.HelpersForTests
 {
    public class DiagramModelToXmlMapperForSpecs : IDiagramModelToXmlMapper
    {

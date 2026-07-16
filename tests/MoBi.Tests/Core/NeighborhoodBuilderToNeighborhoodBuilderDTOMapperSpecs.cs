@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using FakeItEasy;
 using MoBi.Core.Repositories;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using OSPSuite.BDDHelper;

@@ -1,7 +1,7 @@
 ﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -128,6 +128,38 @@ namespace MoBi.Core.Commands
       public void the_renaming_task_is_used_to_rename_the_module()
       {
          A.CallTo(() => _renameInSimulationTask.RenameInSimulationUsingTemplateModule("oldName", _module)).MustHaveHappened();
+      }
+   }
+
+   public class When_renaming_an_expression_profile : concern_for_RenameObjectBaseCommand
+   {
+      private ExpressionProfileBuildingBlock _expressionProfile;
+      private IExpressionProfileRenamingTask _expressionProfileRenamingTask;
+
+      protected override void Context()
+      {
+         _expressionProfile = new ExpressionProfileBuildingBlock().WithName("OldMolecule|Species|Category").WithId("id");
+         base.Context();
+         _expressionProfileRenamingTask = A.Fake<IExpressionProfileRenamingTask>();
+         A.CallTo(() => _context.Resolve<IExpressionProfileRenamingTask>()).Returns(_expressionProfileRenamingTask);
+      }
+
+      protected override void Because() => sut.Execute(_context);
+
+      protected override IBuildingBlock GetBuildingBlock() => null;
+
+      protected override IObjectBase GetObject() => _expressionProfile;
+
+      [Observation]
+      public void the_expression_profile_renaming_task_renames_the_building_block_and_updates_its_paths()
+      {
+         A.CallTo(() => _expressionProfileRenamingTask.Rename(_expressionProfile, "newName")).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_rename_is_propagated_to_simulations()
+      {
+         A.CallTo(() => _renameInSimulationTask.RenameInSimulationUsingTemplateBuildingBlock("OldMolecule|Species|Category", _expressionProfile)).MustHaveHappened();
       }
    }
 }

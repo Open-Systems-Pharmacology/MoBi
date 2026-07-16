@@ -8,10 +8,10 @@ using OSPSuite.Core;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Journal;
 using OSPSuite.Core.Serialization.Diagram;
-using OSPSuite.Infrastructure;
 using OSPSuite.Presentation;
 using OSPSuite.Utility.Container;
 using CoreRegister = MoBi.Core.CoreRegister;
+using IMoBiCoreUserSettings = MoBi.Core.ICoreUserSettings;
 
 namespace MoBi.BatchTool
 {
@@ -24,7 +24,7 @@ namespace MoBi.BatchTool
          using (container.OptimizeDependencyResolution())
          {
             var register = new SerializerRegister();
-            container.Register<IPresentationUserSettings, IUserSettings, ICoreUserSettings, BatchUserSettings>(LifeStyle.Transient);
+            container.Register<IPresentationUserSettings, IUserSettings, ICoreUserSettings, IMoBiCoreUserSettings, BatchUserSettings>(LifeStyle.Transient);
 
             container.AddRegister(x =>
             {
@@ -32,7 +32,6 @@ namespace MoBi.BatchTool
                x.FromType<OSPSuite.Core.CoreRegister>();
                x.FromType<BatchRegister>();
                x.FromType<EngineRegister>();
-               x.FromType<InfrastructureRegister>();
                x.FromInstance(new PresentationRegister(false));
                x.FromInstance(register);
             });

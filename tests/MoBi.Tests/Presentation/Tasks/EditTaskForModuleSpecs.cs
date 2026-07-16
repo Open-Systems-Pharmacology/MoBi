@@ -2,7 +2,7 @@
 using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.BDDHelper;

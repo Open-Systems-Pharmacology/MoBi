@@ -2,13 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
-using OSPSuite.Utility;
-using OSPSuite.Utility.Extensions;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Extensions;
-using MoBi.Core.Helper;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
@@ -22,6 +19,8 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Presenter
 {
@@ -34,7 +33,6 @@ namespace MoBi.Presentation.Presenter
       IReadOnlyList<IDimension> GetDimensions();
       IDimension PercentDimension { get; }
       IDimension NoDimension { get; }
-      void SetPercentile(double newValue);
       void UpdateDistributionFormula();
       void SetParameterValue(DistributionParameterDTO distributedParameter, double valueInGuiUnit);
       void SetParameterUnit(DistributionParameterDTO distributedParameter, Unit unit);
@@ -104,11 +102,6 @@ namespace MoBi.Presentation.Presenter
       public IDimension PercentDimension => _context.DimensionFactory.Dimension(AppConstants.DimensionNames.FRACTION);
 
       public IDimension NoDimension => _context.DimensionFactory.Dimension(Constants.Dimension.DIMENSIONLESS);
-
-      public void SetPercentile(double newValue)
-      {
-         SetPropertyValueFromView(_distributedParameter.PropertyName(x => x.Percentile), newValue, _distributedParameter.Percentile);
-      }
 
       public void UpdateDistributionFormula()
       {

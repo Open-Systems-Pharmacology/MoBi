@@ -4,7 +4,7 @@ using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
 using MoBi.Core.Services;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Nodes;

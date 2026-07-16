@@ -1,10 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.Core.Commands.Core;
 using FakeItEasy;
-using OSPSuite.BDDHelper;
 using MoBi.Core.Commands;
-using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
@@ -13,14 +10,12 @@ using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
+using OSPSuite.BDDHelper;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Utility.Collections;
-using System.Runtime.InteropServices;
-using OSPSuite.BDDHelper.Extensions;
-using OSPSuite.Utility.Extensions;
-using OSPSuite.Utility.Validation;
 
 namespace MoBi.Presentation
 {

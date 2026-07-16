@@ -9,7 +9,6 @@ namespace MoBi.Presentation.Views
    public interface IEditParameterListView : IView<IEditParameterListPresenter>
    {
       void BindTo(IReadOnlyList<ParameterDTO> parameters);
-      void Select(ParameterDTO parameterDTO);
       void SetCaptions(IDictionary<PathElementId, string> captions);
       void SetVisibility(PathElementId pathElement, bool isVisible);
       IReadOnlyList<ParameterDTO> SelectedParameters { get; set; }

@@ -26,9 +26,15 @@ namespace MoBi.Core.Domain.Services
       /// </summary>
       IMoBiSimulation Create();
 
-      IMoBiSimulation CreateSimulationAndValidate(SimulationConfiguration configurationReferencingBuildingBlocks, string simulationName);
+      SimulationAndValidationResult CreateSimulationAndValidate(SimulationConfiguration configurationReferencingBuildingBlocks, string simulationName);
 
-      CreationResult CreateModelAndValidate(SimulationConfiguration simulationConfiguration, string modelName, string message = AppConstants.Captions.ConfiguringSimulation);
+      /// <summary>
+      ///    Creates the model from <paramref name="simulationConfiguration" /> and validates its dimensions. With
+      ///    <paramref name="throwOnInvalid" /> <c>true</c> (the default) an invalid model throws
+      ///    <see cref="ValidationFailedMoBiException" />; pass <c>false</c> to get the result back instead — always
+      ///    non-null, with <c>IsInvalid</c> set when the model could not be created.
+      /// </summary>
+      CreationResult CreateModelAndValidate(SimulationConfiguration simulationConfiguration, string modelName, bool throwOnInvalid = true);
    }
 
    public class SimulationFactory : ISimulationFactory
@@ -39,7 +45,6 @@ namespace MoBi.Core.Domain.Services
       private readonly IDiagramManagerFactory _diagramManagerFactory;
       private readonly ISimulationConfigurationFactory _simulationConfigurationFactory;
       private readonly IDimensionValidator _dimensionValidator;
-      private readonly IHeavyWorkManager _heavyWorkManager;
       private readonly IModelConstructor _modelConstructor;
       private readonly IMoBiContext _context;
       private readonly ICloneManagerForBuildingBlock _cloneManager;
@@ -50,7 +55,6 @@ namespace MoBi.Core.Domain.Services
          IDiagramManagerFactory diagramManagerFactory,
          ISimulationConfigurationFactory simulationConfigurationFactory,
          IDimensionValidator dimensionValidator,
-         IHeavyWorkManager heavyWorkManager,
          IModelConstructor modelConstructor,
          IMoBiContext context,
          ICloneManagerForBuildingBlock cloneManager)
@@ -61,7 +65,6 @@ namespace MoBi.Core.Domain.Services
          _diagramManagerFactory = diagramManagerFactory;
          _simulationConfigurationFactory = simulationConfigurationFactory;
          _dimensionValidator = dimensionValidator;
-         _heavyWorkManager = heavyWorkManager;
          _modelConstructor = modelConstructor;
          _context = context;
          _cloneManager = cloneManager;
@@ -97,35 +100,36 @@ namespace MoBi.Core.Domain.Services
             .SecureContinueWith(t => showWarnings(t.Result));
       }
 
-      public CreationResult CreateModelAndValidate(SimulationConfiguration simulationConfiguration, string modelName, string message = AppConstants.Captions.ConfiguringSimulation)
+      public CreationResult CreateModelAndValidate(SimulationConfiguration simulationConfiguration, string modelName, bool throwOnInvalid = true)
       {
-         CreationResult results = null;
+         var results = createModel(simulationConfiguration, modelName);
 
-         _heavyWorkManager.Start(() => results = createModel(simulationConfiguration, modelName), message);
+         if (results.IsInvalid)
+         {
+            if (throwOnInvalid)
+               throw new ValidationFailedMoBiException(AppConstants.Exceptions.CouldNotCreateSimulation, results.ValidationResult);
 
-         if (results == null || results.IsInvalid)
-            throw new MoBiException(AppConstants.Exceptions.CouldNotCreateSimulation);
+            return results;
+         }
 
          validateDimensions(results.Model, results.SimulationBuilder);
 
          return results;
       }
 
-      public IMoBiSimulation CreateSimulationAndValidate(SimulationConfiguration configurationReferencingBuildingBlocks, string simulationName)
+      public SimulationAndValidationResult CreateSimulationAndValidate(SimulationConfiguration configurationReferencingBuildingBlocks, string simulationName)
       {
-         var results = CreateModelAndValidate(configurationReferencingBuildingBlocks, simulationName, AppConstants.Captions.CreatingSimulation);
+         var results = CreateModelAndValidate(configurationReferencingBuildingBlocks, simulationName);
          var clonedConfiguration = _cloneManager.Clone(configurationReferencingBuildingBlocks);
-         return CreateFrom(clonedConfiguration, results.Model, results.SimulationBuilder.EntitySources).WithName(simulationName);
+         var simulation = CreateFrom(clonedConfiguration, results.Model, results.SimulationBuilder.EntitySources).WithName(simulationName);
+         return new SimulationAndValidationResult(simulation, results.ValidationResult);
       }
 
       private CreationResult createModel(SimulationConfiguration simulationConfiguration, string name)
       {
+         //CreateModelFrom always returns a result - an invalid one carrying the validation messages when the build fails - never null
          var result = _modelConstructor.CreateModelFrom(simulationConfiguration, name);
-         if (result == null)
-            return null;
-
          showWarnings(result.ValidationResult);
-
          return result;
       }
 

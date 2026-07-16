@@ -1,13 +1,12 @@
 ﻿using System.Linq;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 using libsbmlcs;
 using MoBi.Engine.Sbml;
 using MoBi.IntegrationTests;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
 using IContainer = OSPSuite.Core.Domain.IContainer;
 using Model = libsbmlcs.Model;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Formulas;
 
 namespace MoBi.Core.SBML
 {

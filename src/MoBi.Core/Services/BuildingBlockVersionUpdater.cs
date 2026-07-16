@@ -43,6 +43,10 @@ namespace MoBi.Core.Services
 
          buildingBlock.Version = newVersion;
 
+         // We can use commands that use the building block updater outside of a project context as in MoBi.R
+         if (_projectRetriever.Current == null)
+            return;
+
          publishSimulationStatusChangedEvents(buildingBlock);
          publishModuleStatusChangedEvents(buildingBlock);
       }

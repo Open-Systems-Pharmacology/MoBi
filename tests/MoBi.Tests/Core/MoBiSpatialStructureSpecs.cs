@@ -2,7 +2,7 @@
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -33,7 +33,7 @@ namespace MoBi.Core
          base.Context();
          _cloneManager = A.Fake<ICloneManager>();
          _diagramManager = A.Fake<ISpatialStructureDiagramManager>();
-         _spatialStructure = new MoBiSpatialStructure {DiagramManager = _diagramManager};
+         _spatialStructure = new MoBiSpatialStructure { DiagramManager = _diagramManager };
       }
 
       protected override void Because()
@@ -97,7 +97,7 @@ namespace MoBi.Core
 
       protected override void Because()
       {
-         _result = sut.GetConnectingNeighborhoods(new[] {_parentContainer1, _container2, _container3}, _objectPathFactory);
+         _result = sut.GetConnectingNeighborhoods(new[] { _parentContainer1, _container2, _container3 }, _objectPathFactory);
       }
 
       [Observation]
@@ -133,7 +133,7 @@ namespace MoBi.Core
 
       protected override void Because()
       {
-         _result = sut.GetConnectingNeighborhoods(new[] {_container}, _objectPathFactory);
+         _result = sut.GetConnectingNeighborhoods(new[] { _container }, _objectPathFactory);
       }
 
       [Observation]

@@ -3,7 +3,7 @@ using FakeItEasy;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Chart;
@@ -78,7 +78,7 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         _charts = new List<CurveChart> {new CurveChart()};
+         _charts = new List<CurveChart> { new CurveChart() };
          _charts.Each(_currentProject.AddChart);
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.Yes);
       }
@@ -102,7 +102,7 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         _charts = new List<CurveChart> {new CurveChart()};
+         _charts = new List<CurveChart> { new CurveChart() };
          _charts.Each(_currentProject.AddChart);
          A.CallTo(_dialogCreator).WithReturnType<ViewResult>().Returns(ViewResult.No);
       }

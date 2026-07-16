@@ -1,9 +1,8 @@
-using System.Linq;
-using OSPSuite.Utility;
-using OSPSuite.Utility.Extensions;
 using MoBi.Presentation.DTO;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Mappers
 {

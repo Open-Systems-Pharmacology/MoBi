@@ -1,9 +1,12 @@
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Services;
+using MoBi.Core.Snapshots.Services;
+using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
@@ -15,6 +18,7 @@ using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Utility.Extensions;
+using static MoBi.Assets.AppConstants.Captions;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -44,6 +48,8 @@ namespace MoBi.Presentation.Tasks
       private readonly ISbmlTask _sbmlTask;
       private readonly IParameterIdentificationRunner _parameterIdentificationRunner;
       private readonly ISimulationRunner _simulationRunner;
+      private readonly ISnapshotTask _snapshotTask;
+      private readonly IMoBiApplicationController _applicationController;
 
       public ProjectTask(
          IMoBiContext context,
@@ -54,11 +60,15 @@ namespace MoBi.Presentation.Tasks
          ISimulationLoader simulationLoader,
          ISbmlTask sbmlTask,
          IParameterIdentificationRunner parameterIdentificationRunner,
-         ISimulationRunner simulationRunner)
+         ISimulationRunner simulationRunner,
+         ISnapshotTask snapshotTask,
+         IMoBiApplicationController applicationController)
       {
          _context = context;
          _simulationLoader = simulationLoader;
          _sbmlTask = sbmlTask;
+         _snapshotTask = snapshotTask;
+         _applicationController = applicationController;
          _heavyWorkManager = heavyWorkManager;
          _mruProvider = mruProvider;
          _serializationTask = serializationTask;
@@ -146,6 +156,49 @@ namespace MoBi.Presentation.Tasks
          {
             return loadSimulationTransferFromFileUsingDimensionMode(fileName, ReactionDimensionMode.ConcentrationBased);
          }
+      }
+
+      public Task ExportCurrentProjectToSnapshot()
+      {
+         var project = _context.CurrentProject;
+
+         var anySimulationInChangedState = project.All<MoBiSimulation>().Any(x => x.OriginalQuantityValues.Any());
+
+         var pkSimModulesWithoutSnapshots = project.Modules.Where(x => x.IsPKSimModule && !x.HasSnapshot).AllNames();
+
+         if (exitIf(anySimulationInChangedState, Captions.SnapshotOfProjectWithChangedSimulation))
+            return Task.CompletedTask;
+
+         if (exitIf(pkSimModulesWithoutSnapshots.Any(), PKSimModulesWithoutSnapshots(pkSimModulesWithoutSnapshots)))
+            return Task.CompletedTask;
+
+         return _snapshotTask.ExportModelToSnapshotAsync(project);
+      }
+
+      public void LoadProjectFromSnapshot()
+      {
+         if (!CloseProject())
+            return;
+
+         using (var presenter = _applicationController.Start<ILoadProjectFromSnapshotPresenter>())
+         {
+            var project = presenter.LoadProject();
+            // //Action was canceled, do not change anything
+            if (project == null)
+               return;
+
+            _context.Register(project);
+            notifyProjectLoaded();
+         }
+      }
+
+      private bool exitIf(bool condition, string message)
+      {
+         if (!condition)
+            return false;
+
+         var proceed = _dialogCreator.MessageBoxYesNo(message);
+         return (proceed == ViewResult.No);
       }
 
       private SimulationTransfer loadSimulationTransferFromFileUsingDimensionMode(string fileName, ReactionDimensionMode dimensionMode)

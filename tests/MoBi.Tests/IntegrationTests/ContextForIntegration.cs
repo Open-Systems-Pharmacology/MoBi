@@ -12,7 +12,7 @@ using MoBi.Core.Domain.Services;
 using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
 using MoBi.Engine;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using MoBi.Presentation;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Serialization;
@@ -39,6 +39,7 @@ using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.FileLocker;
 using CoreRegister = OSPSuite.Core.CoreRegister;
 using IContainer = OSPSuite.Utility.Container.IContainer;
+using IMoBiCoreUserSettings = MoBi.Core.ICoreUserSettings;
 
 namespace MoBi.IntegrationTests
 {
@@ -62,7 +63,8 @@ namespace MoBi.IntegrationTests
             container.Register<IExceptionManager, ExceptionManagerForSpecs>(LifeStyle.Singleton);
             var userSettings = A.Fake<IUserSettings>();
             container.RegisterImplementationOf(userSettings);
-            container.RegisterImplementationOf<ICoreUserSettings>(userSettings);
+            container.RegisterImplementationOf<OSPSuite.Core.ICoreUserSettings>(userSettings);
+            container.RegisterImplementationOf(A.Fake<IMoBiCoreUserSettings>());
             container.RegisterImplementationOf(A.Fake<IDialogCreator>());
             container.RegisterImplementationOf(A.Fake<IProgressUpdater>());
             container.RegisterImplementationOf(A.Fake<IMoBiHistoryManager>());
@@ -82,6 +84,9 @@ namespace MoBi.IntegrationTests
             container.RegisterImplementationOf(A.Fake<ILayerLayouter>());
             container.RegisterImplementationOf(A.Fake<IEntityValidationTask>());
             container.RegisterImplementationOf(A.Fake<IDiagramLayoutTask>());
+            var pkSimStarter = A.Fake<IPKSimStarter>();
+            container.RegisterImplementationOf(pkSimStarter);
+            container.RegisterImplementationOf<IPKSimSnapshotConverter>(pkSimStarter);
 
             container.Register<IDiagramModelToXmlMapper, DiagramModelToXmlMapperForSpecs>();
             container.Register<IMoBiConfiguration, MoBiConfiguration>(LifeStyle.Singleton);

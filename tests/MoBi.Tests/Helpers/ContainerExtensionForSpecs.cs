@@ -1,6 +1,6 @@
 ﻿using OSPSuite.Core.Domain;
 
-namespace MoBi.Helpers
+namespace MoBi.HelpersForTests
 {
    public static class ContainerExtensionForSpecs
    {

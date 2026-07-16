@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Repository;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -11,7 +11,6 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Utility;
-using System.Linq;
 using OSPSuite.Utility.Extensions;
 using IBuildingBlockRepository = MoBi.Core.Domain.Repository.IBuildingBlockRepository;
 

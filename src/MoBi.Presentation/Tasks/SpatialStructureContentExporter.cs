@@ -1,20 +1,19 @@
-﻿using MoBi.Core.Domain.Model;
-using MoBi.Core.Serialization.Exchange;
-using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Domain;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using MoBi.Assets;
+using MoBi.Core.Domain.Builder;
+using MoBi.Core.Domain.Model;
+using MoBi.Core.Serialization.Exchange;
+using MoBi.Presentation.Mappers;
+using MoBi.Presentation.Presenter;
+using MoBi.Presentation.Tasks.Interaction;
+using OSPSuite.Assets;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Mappers;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Utility.Extensions;
-using MoBi.Core.Domain.Builder;
-using MoBi.Presentation.Mappers;
-using MoBi.Presentation.Tasks.Interaction;
-using OSPSuite.Core.Domain.Formulas;
-using OSPSuite.Core.Domain.Mappers;
-using MoBi.Presentation.Presenter;
-using MoBi.Assets;
-using OSPSuite.Assets;
 
 namespace MoBi.Presentation.Tasks
 {

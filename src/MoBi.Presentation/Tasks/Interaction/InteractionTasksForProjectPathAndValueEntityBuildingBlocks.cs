@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data;
+using System.IO;
+using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
@@ -29,13 +31,13 @@ namespace MoBi.Presentation.Tasks.Interaction
          IExportDataTableToExcelTask exportDataTableToExcelTask,
          ICloneManagerForBuildingBlock cloneManager,
          IPathAndValueEntityToDistributedParameterMapper pathAndValueEntityToDistributedParameterMapper,
-         IMapper<TBuildingBlock, List<DataTable>> dataTableMapper) : 
-         base(interactionTaskContext, 
-            editTask, 
-            moBiFormulaTask, 
-            exportDataTableToExcelTask, 
+         IMapper<TBuildingBlock, List<DataTable>> dataTableMapper) :
+         base(interactionTaskContext,
+            editTask,
+            moBiFormulaTask,
+            exportDataTableToExcelTask,
             dataTableMapper,
-            pathAndValueEntityToDistributedParameterMapper, 
+            pathAndValueEntityToDistributedParameterMapper,
             cloneManager)
       {
       }
@@ -47,10 +49,27 @@ namespace MoBi.Presentation.Tasks.Interaction
          if (string.IsNullOrEmpty(name))
             return new MoBiEmptyCommand();
 
-         var clone = InteractionTask.Clone(buildingBlockToClone).WithName(name);
+         var clone = InteractionTask.Clone(buildingBlockToClone);
+         RenameClone(clone, name);
 
          return AddToProject(clone);
       }
+
+      protected virtual void RenameClone(TBuildingBlock clone, string newName) => clone.WithName(newName);
+
+      public void ExportBuildingBlockSnapshot(TBuildingBlock buildingBlock)
+      {
+         var filePath = InteractionTask.AskForFileToSave(AppConstants.Captions.SaveModuleSnapshot, Constants.Filter.JSON_FILE_FILTER, Constants.DirectoryKey.MODEL_PART, buildingBlock.Name);
+         if (string.IsNullOrEmpty(filePath))
+            return;
+
+         using (var writer = new StreamWriter(filePath))
+         {
+            writer.Write(SnapshotFrom(buildingBlock));
+         }
+      }
+
+      protected abstract string SnapshotFrom(TBuildingBlock buildingBlock);
 
       public IMoBiCommand AddToProject(TBuildingBlock buildingBlockToAdd) => AddTo(buildingBlockToAdd, Context.CurrentProject, null);
 

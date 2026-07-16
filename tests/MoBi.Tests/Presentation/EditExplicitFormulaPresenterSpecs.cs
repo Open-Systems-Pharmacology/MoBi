@@ -176,4 +176,31 @@ namespace MoBi.Presentation
          A.CallTo(() => _view.SetFormulaCaption("THE_RHS_CAPTION")).MustHaveHappened();
       }
    }
+
+   public class When_editing_a_formula_with_a_dimension : concern_for_EditExplicitFormulaPresenter
+   {
+      private ExplicitFormula _formula;
+      private IUsingFormula _parameter;
+      private IDimension _dimension;
+
+      protected override void Context()
+      {
+         base.Context();
+         _dimension = A.Fake<IDimension>();
+         A.CallTo(() => _dimension.BaseUnit).Returns(new Unit("µmol/l", 1, 0));
+         _formula = new ExplicitFormula("TOTO") { Dimension = _dimension };
+         _parameter = A.Fake<IParameter>().WithName("PARA");
+      }
+
+      protected override void Because()
+      {
+         sut.Edit(_formula, _parameter);
+      }
+
+      [Observation]
+      public void should_set_the_formula_unit_to_the_base_unit_of_the_formula_dimension()
+      {
+         A.CallTo(() => _view.SetFormulaUnit("µmol/l")).MustHaveHappened();
+      }
+   }
 }

@@ -1,17 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using OSPSuite.BDDHelper;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
-using MoBi.Helpers;
-using MoBi.Presentation.Tasks.Edit;
-using MoBi.Presentation.Tasks.Interaction;
-using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Core.Domain.Services;
-using OSPSuite.Presentation.Presenters;
-using OSPSuite.Core.Domain;
 using MoBi.Core.Domain.Repository;
 using MoBi.Core.Services;
+using MoBi.HelpersForTests;
+using MoBi.Presentation.Tasks.Edit;
+using MoBi.Presentation.Tasks.Interaction;
+using OSPSuite.BDDHelper;
+using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -35,8 +33,8 @@ namespace MoBi.Presentation.Tasks
          _context = A.Fake<IMoBiContext>();
          _project = DomainHelperForSpecs.NewProject();
          _amountObserver = A.Fake<AmountObserverBuilder>();
-         _amountObserverBuilderWithForbiddenName = new AmountObserverBuilder {Name = "forbidden name"};
-         _buildingBlock = new ObserverBuildingBlock {_amountObserverBuilderWithForbiddenName, _amountObserver};
+         _amountObserverBuilderWithForbiddenName = new AmountObserverBuilder { Name = "forbidden name" };
+         _buildingBlock = new ObserverBuildingBlock { _amountObserverBuilderWithForbiddenName, _amountObserver };
          _interactionTask = A.Fake<IInteractionTask>();
          _applicationController = A.Fake<IMoBiApplicationController>();
          _moBiProjectRetriever = new MoBiProjectRetriever(_context);
@@ -52,7 +50,7 @@ namespace MoBi.Presentation.Tasks
          {
             _buildingBlock
          });
-         
+
          sut = new EditTasksForAmountObserverBuilder(_interactionTaskContext);
       }
    }

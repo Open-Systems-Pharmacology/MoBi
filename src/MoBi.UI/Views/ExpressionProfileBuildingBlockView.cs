@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using DevExpress.XtraEditors;
 using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraEditors.Repository;
+using DevExpress.XtraGrid.Views.Base;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Formatters;
 using MoBi.Presentation.Presenter;
@@ -36,6 +37,7 @@ namespace MoBi.UI.Views
       private readonly PopupContainerControl _popupControl = new PopupContainerControl();
       private readonly RepositoryItemPopupContainerEdit _repositoryItemPopupContainerEdit = new RepositoryItemPopupContainerEdit();
       private IGridViewBoundColumn<ExpressionParameterDTO, double?> _valueColumn;
+      private RepositoryItemButtonEdit _isFixedParameterEditRepository;
 
       public ExpressionProfileBuildingBlockView(ValueOriginBinder<ExpressionParameterDTO> valueOriginBinder)
       {
@@ -61,6 +63,21 @@ namespace MoBi.UI.Views
          initializeBinders();
          initializeValueOriginBinding();
          gridView.ShowColumnChooser = true;
+         createResetButtonItem();
+
+         _isFixedParameterEditRepository.ButtonClick += (_, _) => OnEvent(() => onResetValue(_gridViewBinder.FocusedElement));
+      }
+
+      private void onResetValue(ExpressionParameterDTO dto)
+      {
+         _presenter.ResetInitialState(dto);
+         gridView.CloseEditor();
+      }
+
+      private void createResetButtonItem()
+      {
+         _isFixedParameterEditRepository = new UxRepositoryItemButtonImage(ApplicationIcons.Reset, Assets.ToolTips.ResetParameterToolTip) { TextEditStyle = TextEditStyles.Standard };
+         _isFixedParameterEditRepository.Buttons[0].IsLeft = true;
       }
 
       private void initializeValueOriginBinding()
@@ -124,6 +141,7 @@ namespace MoBi.UI.Views
             .WithOnValueUpdating(onExpressionParameterValueSet)
             .WithFormat(dto => dto.ExpressionParameterFormatter())
             .WithRepository(valueRepositoryFor)
+            .WithShowButton(ShowButtonModeEnum.ShowAlways)
             .WithEditorConfiguration(configureRepository);
 
          _unitControl.ParameterUnitSet += setParameterUnit;
@@ -222,6 +240,9 @@ namespace MoBi.UI.Views
       {
          if (parameterDTO.IsDistributed)
             return _repositoryItemPopupContainerEdit;
+
+         if (parameterDTO.HasInitialState)
+            return _isFixedParameterEditRepository;
 
          return _valueColumn.DefaultRepository();
       }

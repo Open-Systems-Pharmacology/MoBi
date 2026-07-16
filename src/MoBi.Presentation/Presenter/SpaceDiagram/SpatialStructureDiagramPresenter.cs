@@ -102,7 +102,7 @@ namespace MoBi.Presentation.Presenter.SpaceDiagram
          return container != null ? _context.ObjectPathFactory.CreateAbsoluteObjectPath(container) : DiagramManager.PathForNodeWithoutEntity(containerNode);
       }
 
-      protected override void Unlink(IBaseNode node1, IBaseNode node2, object portObject1, object portObject2)
+      public override void Unlink(IBaseNode node1, IBaseNode node2, object portObject1, object portObject2)
       {
          //because cannot undo this action, reset undo stack
          DiagramModel.ClearUndoStack();

@@ -32,6 +32,9 @@ namespace MoBi.Presentation.Presenter
          if (entity.IsAnImplementationOf<Reaction>())
             return _container.Resolve<IEditReactionInSimulationPresenter>();
 
+         if (entity.IsAnImplementationOf<Transport>())
+            return _container.Resolve<IEditTransportInSimulationPresenter>();
+
          if (entity.IsAnImplementationOf<IContainer>())
             return _container.Resolve<IEditContainerInSimulationPresenter>();
 

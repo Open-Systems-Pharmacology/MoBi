@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using MoBi.Core;
+﻿using MoBi.Core;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;

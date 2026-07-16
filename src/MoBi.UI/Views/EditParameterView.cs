@@ -1,20 +1,19 @@
-﻿using System.Windows.Forms;
-using OSPSuite.DataBinding;
-using OSPSuite.DataBinding.DevExpress;
-using OSPSuite.UI.Extensions;
-using OSPSuite.Utility.Extensions;
-using DevExpress.XtraEditors.Controls;
+﻿using DevExpress.XtraEditors.Controls;
 using DevExpress.XtraLayout.Utils;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using MoBi.UI.Extensions;
+using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
-using OSPSuite.Assets;
 using OSPSuite.UI.Controls;
+using OSPSuite.UI.Extensions;
+using OSPSuite.Utility.Extensions;
 using ToolTips = MoBi.Assets.ToolTips;
 
 namespace MoBi.UI.Views
@@ -23,6 +22,7 @@ namespace MoBi.UI.Views
    {
       private IEditParameterPresenter _presenter;
       private readonly ScreenBinder<ParameterDTO> _screenBinder;
+      private ParameterDTO _parameterDTO;
 
       public EditParameterView()
       {
@@ -157,9 +157,17 @@ namespace MoBi.UI.Views
 
       public void Show(ParameterDTO parameterDTO)
       {
+         _parameterDTO = parameterDTO;
          _screenBinder.BindToSource(parameterDTO);
          initNameControl(parameterDTO);
          initRHSControl(parameterDTO);
+      }
+
+      public void RefreshData()
+      {
+         _screenBinder.Update();
+         initNameControl(_parameterDTO);
+         initRHSControl(_parameterDTO);
       }
 
       private void initRHSControl(ParameterDTO parameterDTO)

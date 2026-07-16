@@ -1,4 +1,3 @@
-using System.Linq;
 using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;

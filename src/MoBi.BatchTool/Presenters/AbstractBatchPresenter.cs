@@ -3,10 +3,9 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MoBi.BatchTool.Services;
-using OSPSuite.Core.Services;
 using MoBi.BatchTool.Views;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
-using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Extensions;
 

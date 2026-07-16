@@ -1,12 +1,11 @@
 using System.Collections.Generic;
 using System.Data;
 using MoBi.Assets;
-using OSPSuite.Utility;
-using OSPSuite.Utility.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Extensions;
+using OSPSuite.Utility;
+using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Mappers
 {

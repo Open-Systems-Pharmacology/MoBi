@@ -1,6 +1,5 @@
 ﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
-using MoBi.Presentation.Presenter.Main;
 using MoBi.Presentation.Tasks;
 using MoBi.Presentation.UICommand;
 using OSPSuite.BDDHelper;

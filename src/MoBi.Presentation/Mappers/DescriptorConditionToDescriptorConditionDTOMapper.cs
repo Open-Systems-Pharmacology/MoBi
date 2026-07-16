@@ -1,5 +1,5 @@
-﻿using System;
-using MoBi.Assets;
+using System;
+using System.Linq;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using OSPSuite.Core.Domain.Descriptors;
@@ -11,29 +11,41 @@ namespace MoBi.Presentation.Mappers
    {
    }
 
-   internal class DescriptorConditionToDescriptorConditionDTOMapper : IDescriptorConditionToDescriptorConditionDTOMapper
+   public class DescriptorConditionToDescriptorConditionDTOMapper : IDescriptorConditionToDescriptorConditionDTOMapper
    {
+      private readonly ITagTask _tagTask;
+
+      public DescriptorConditionToDescriptorConditionDTOMapper(ITagTask tagTask)
+      {
+         _tagTask = tagTask;
+      }
+
       public DescriptorConditionDTO MapFrom(ITagCondition descriptorCondition)
       {
          switch (descriptorCondition)
          {
+            case ConditionGroup conditionGroup:
+               return new ConditionGroupDTO(conditionGroup, conditionGroup.Select(MapFrom).ToList());
             case InContainerCondition inContainerCondition:
-               return new DescriptorConditionDTO(inContainerCondition.Tag, TagType.InContainer, AppConstants.InContainer);
+               return descriptorConditionDTO(inContainerCondition.Tag, TagType.InContainer);
             case MatchAllCondition _:
-               return new DescriptorConditionDTO(string.Empty, TagType.MatchAll, AppConstants.MatchAll);
+               return descriptorConditionDTO(string.Empty, TagType.MatchAll);
             case MatchTagCondition matchTagCondition:
-               return new DescriptorConditionDTO(matchTagCondition.Tag, TagType.Match, AppConstants.Match);
+               return descriptorConditionDTO(matchTagCondition.Tag, TagType.Match);
             case NotMatchTagCondition notMatchTagCondition:
-               return new DescriptorConditionDTO(notMatchTagCondition.Tag, TagType.NotMatch, AppConstants.NotMatch);
+               return descriptorConditionDTO(notMatchTagCondition.Tag, TagType.NotMatch);
             case NotInContainerCondition notInContainerCondition:
-               return new DescriptorConditionDTO(notInContainerCondition.Tag, TagType.NotInContainer, AppConstants.NotInContainer);
+               return descriptorConditionDTO(notInContainerCondition.Tag, TagType.NotInContainer);
             case InParentCondition _:
-               return new DescriptorConditionDTO(string.Empty, TagType.InParent, AppConstants.InParent);
+               return descriptorConditionDTO(string.Empty, TagType.InParent);
             case InChildrenCondition _:
-               return new DescriptorConditionDTO(string.Empty, TagType.InChildren, AppConstants.InChildren);
+               return descriptorConditionDTO(string.Empty, TagType.InChildren);
             default:
                throw new ArgumentException($"Cannot create descriptor condition for {descriptorCondition.GetType().Name}");
          }
       }
+
+      private DescriptorConditionDTO descriptorConditionDTO(string tag, TagType tagType) =>
+         new DescriptorConditionDTO(tag, tagType, _tagTask.DisplayNameFor(tagType));
    }
 }

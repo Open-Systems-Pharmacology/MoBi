@@ -4,7 +4,6 @@ using MoBi.BatchTool.Services;
 using MoBi.BatchTool.Views;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
-using OSPSuite.Presentation.Services;
 
 namespace MoBi.BatchTool.Presenters
 {

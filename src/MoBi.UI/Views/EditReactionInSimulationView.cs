@@ -56,7 +56,7 @@ namespace MoBi.UI.Views
          layoutControlKinetic.MinSize = new Size(3 * OSPSuite.UI.UIConstants.Size.BUTTON_HEIGHT, 2 * OSPSuite.UI.UIConstants.Size.BUTTON_WIDTH);
          layoutControlStoichiometrie.Text = AppConstants.Captions.Stoichiometry.FormatForLabel();
          layoutItemName.Text = AppConstants.Captions.Name.FormatForLabel();
-         txtName.Enabled = false;
+         txtName.Properties.ReadOnly = true;
          htmlEditor.Properties.ReadOnly = true;
       }
    }

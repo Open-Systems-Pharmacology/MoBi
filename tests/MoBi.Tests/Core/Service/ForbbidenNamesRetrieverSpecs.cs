@@ -5,7 +5,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
 using MoBi.Core.Repositories;
 using MoBi.Core.Services;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -45,7 +45,7 @@ namespace MoBi.Core.Service
          var molecule = new MoleculeBuilder().WithName(_moleculeName);
          var moleculeParameter = new Parameter().WithName(_moleculeParameterName);
          molecule.Add(moleculeParameter);
-         var molecules = new MoleculeBuildingBlock { molecule };
+         var molecules = new MoleculeBuildingBlock() { molecule };
 
          var parameter = new Parameter().WithName(_parameterName);
          var root = new Container().WithName("Root");

@@ -42,11 +42,5 @@ namespace MoBi.Presentation.Presenter
          view.SetCaptions(captions);
          view.SetVisibility(PathElementId.Molecule, isVisible: false);
       }
-
-      public static void ShowNameColumn(this IEditParameterListPresenter presenter)
-      {
-         var view = presenter.View;
-         view.SetVisibility(PathElementId.Name, isVisible: true);
-      }
    }
 }

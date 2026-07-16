@@ -1,15 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
+﻿using System.Linq;
 using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Helper;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
+using OSPSuite.Assets;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using OSPSuite.Assets;
 
 namespace MoBi.Presentation.Mapper
 {

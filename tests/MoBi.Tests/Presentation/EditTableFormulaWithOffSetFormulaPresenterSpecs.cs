@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
-using MoBi.Helpers;
+using MoBi.HelpersForTests;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -17,7 +17,6 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
-using OSPSuite.Presentation.Nodes;
 
 namespace MoBi.Presentation
 {

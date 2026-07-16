@@ -1,4 +1,6 @@
-﻿using FakeItEasy;
+﻿using System.Collections.Generic;
+using System.Linq;
+using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
@@ -8,10 +10,7 @@ using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Nodes;
-using System.Collections.Generic;
-using System.Linq;
 using IBuildingBlockRepository = MoBi.Core.Domain.Repository.IBuildingBlockRepository;
 
 

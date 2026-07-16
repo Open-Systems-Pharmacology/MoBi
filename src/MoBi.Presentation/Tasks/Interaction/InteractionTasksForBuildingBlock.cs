@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
@@ -24,13 +23,15 @@ namespace MoBi.Presentation.Tasks.Interaction
    public interface IInteractionTasksForBuildingBlock<TParent, T> : IInteractionTasksForChildren<TParent, T>,
       IInteractionTasksForBuildingBlock where T : class, IObjectBase where TParent : class
    {
-
+      
    }
 
    public interface IInteractionTasksForProjectBuildingBlock<T> : IInteractionTasksForBuildingBlock<MoBiProject, T> where T : class, IObjectBase
    {
       IMoBiCommand Clone(T buildingBlockToClone);
       IMoBiCommand AddToProject(T buildingBlockToAdd);
+      void ExportBuildingBlockSnapshot(T buildingBlock);
+      T LoadFromSnapshot(string snapshot);
    }
 
    public abstract class InteractionTasksForBuildingBlock<TParent, TBuildingBlock> :

@@ -1,14 +1,12 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Services;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views.BaseDiagram;
-using Northwoods.Go;
 using OSPSuite.Core;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
@@ -16,7 +14,6 @@ using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Diagram.Elements;
 using OSPSuite.Presentation.Presenters.Diagram;
 using OSPSuite.Presentation.Views;
-using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using IContainer = OSPSuite.Core.Domain.IContainer;
@@ -30,6 +27,7 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
       //Model manipulation
       void ModelSelect(string id);
       void Link(IBaseNode node1, IBaseNode node2, object portObject1, object portObject2);
+      void Unlink(IBaseNode node1, IBaseNode node2, object portObject1, object portObject2);
 
       void SaveContainerToXml(IContainerBase containerBase, string diagramTemplateXmlFilePath);
 
@@ -39,9 +37,6 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
 
       void ApplyLayoutTemplate(IContainerBase containerBase, string diagramTemplateXmlFilePath, bool recursive);
       void ApplyLayoutTemplateToSelection();
-
-      void ConfigureLayout();
-      void RemoveLinks(GoSelection links);
    }
 
    public interface IMoBiBaseDiagramPresenter<T> : IMoBiBaseDiagramPresenter, IBaseDiagramPresenter<T>,
@@ -143,7 +138,7 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
       }
 
       public abstract void Link(IBaseNode node1, IBaseNode node2, object portObject1, object portObject2);
-      protected abstract void Unlink(IBaseNode node1, IBaseNode node2, object portObject1, object portObject2);
+      public abstract void Unlink(IBaseNode node1, IBaseNode node2, object portObject1, object portObject2);
 
       public override void ShowContextMenu(IBaseNode baseNode, Point popupLocation, PointF locationInDiagramView)
       {
@@ -204,8 +199,6 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
          }
       }
 
-      protected IDiagramModel LoadDiagramTemplate(string diagramTemplateXmlFilePath) => _diagramTask.LoadDiagramTemplate(diagramTemplateXmlFilePath);
-
       public void ApplyLayoutTemplateToSelection()
       {
          string diagramTemplateXmlFilePath = _dialogCreator.AskForFileToOpen("Open Named LayoutTemplate", AppConstants.Filter.MOBI_DIAGRAM_TEMPLATE_FILTER, AppConstants.DirectoryKey.LAYOUT);
@@ -234,35 +227,6 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
          }
 
          _view.Refresh();
-      }
-
-      public void ConfigureLayout()
-      {
-         var forceLayoutConfigurationPresenter = IoC.Resolve<IForceLayoutConfigurationPresenter>();
-         forceLayoutConfigurationPresenter.Edit(LayoutConfiguration);
-      }
-
-      public void RemoveLinks(GoSelection links)
-      {
-         links.ToList().Each(link =>
-         {
-            if (isBaseLink(link) && isGoLink(link))
-               unlinkBaseNodes(link as IBaseLink, link as GoLink);
-            else if (link.IsAnImplementationOf<INeighborhoodNode>())
-               unlinkNeighborhoodNode(link);
-         });
-      }
-
-      private static bool isGoLink(GoObject goLink) => goLink is GoLink;
-
-      private static bool isBaseLink(GoObject baseLink) => baseLink is IBaseLink;
-
-      private void unlinkBaseNodes(IBaseLink baseLink, GoLink goLink) => Unlink(baseLink.GetFromNode(), baseLink.GetToNode(), goLink.FromPort.UserObject, goLink.ToPort.UserObject);
-
-      private void unlinkNeighborhoodNode(GoObject itemToDelete)
-      {
-         var neighborhoodNode = (INeighborhoodNode)itemToDelete;
-         Unlink(neighborhoodNode.FirstNeighbor, neighborhoodNode.SecondNeighbor, null, null);
       }
 
       public void Undo() => DiagramModel.Undo();

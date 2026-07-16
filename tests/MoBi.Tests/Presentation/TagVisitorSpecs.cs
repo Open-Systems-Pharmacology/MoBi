@@ -1,15 +1,15 @@
 using System.Collections.Generic;
-using OSPSuite.BDDHelper;
-using OSPSuite.BDDHelper.Extensions;
 using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
 using MoBi.Core.Services;
+using MoBi.HelpersForTests;
 using MoBi.Presentation.Presenter;
+using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
-using MoBi.Helpers;
 using IBuildingBlockRepository = MoBi.Core.Domain.Repository.IBuildingBlockRepository;
 
 namespace MoBi.Presentation

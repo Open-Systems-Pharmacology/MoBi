@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Input;
 using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;

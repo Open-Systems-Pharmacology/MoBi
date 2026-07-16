@@ -6,7 +6,6 @@ using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Repository;
 using MoBi.Core.Extensions;
-using MoBi.Core.Helper;
 using MoBi.Core.Services;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Assets;
@@ -365,7 +364,8 @@ namespace MoBi.Presentation.Tasks
 
       private IEnumerable<IContainer> allMolecules()
       {
-         return _buildingBlockRepository.MoleculeBlockCollection.SelectMany(buildingBlock => { return buildingBlock.Select(builder => builder); }).DistinctBy(builder => builder.Name);
+         return _buildingBlockRepository.MoleculeBlockCollection.SelectMany(buildingBlock => { return buildingBlock.Select(builder => builder); })
+            .DistinctBy(builder => builder.Name);
       }
 
       private static void addUndefinedValueTo(MetaDataCategory metaDataCategory)

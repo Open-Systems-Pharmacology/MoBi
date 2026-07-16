@@ -36,6 +36,36 @@ namespace MoBi.Core.Events
       public IMoBiSimulation Simulation { get; }
    }
 
+   public class SimulationConfigurationStartedEvent
+   {
+      public SimulationConfigurationStartedEvent(IMoBiSimulation simulation)
+      {
+         Simulation = simulation;
+      }
+
+      public IMoBiSimulation Simulation { get; }
+   }
+
+   public class SimulationConfigurationSucceededEvent
+   {
+      public SimulationConfigurationSucceededEvent(IMoBiSimulation simulation)
+      {
+         Simulation = simulation;
+      }
+
+      public IMoBiSimulation Simulation { get; }
+   }
+
+   public class SimulationConfigurationFailedEvent
+   {
+      public SimulationConfigurationFailedEvent(IMoBiSimulation simulation)
+      {
+         Simulation = simulation;
+      }
+
+      public IMoBiSimulation Simulation { get; }
+   }
+
    public class SimulationAddedEvent
    {
       public SimulationAddedEvent(IMoBiSimulation simulation)
@@ -285,6 +315,13 @@ namespace MoBi.Core.Events
    public class RemoveTagConditionEvent : TagConditionEvent
    {
       public RemoveTagConditionEvent(IObjectBase taggedObject) : base(taggedObject)
+      {
+      }
+   }
+
+   public class TagChangedEvent : TagConditionEvent
+   {
+      public TagChangedEvent(IObjectBase taggedObject) : base(taggedObject)
       {
       }
    }
