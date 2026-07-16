@@ -59,7 +59,11 @@ task :create_portable_setup, [:product_version, :configuration, :package_name] d
    relative_src_dir = relative_src_dir_for(args.configuration)
    
    copy_templates_files src_dir
-   
+
+   dst_dir = File.join(setup_temp_dir, 'runtimes', 'win-x64', 'native')
+   FileUtils.mkdir_p(dst_dir)
+   FileUtils.copy_entry File.join(src_dir, 'runtimes', 'win-x64', 'native'), dst_dir
+
    #Files required for setup creation only and that will not be harvested automatically
    setup_files	 = [
       'Open Systems Pharmacology Suite License.pdf',
