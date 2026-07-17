@@ -26,7 +26,7 @@ namespace MoBi.Core.Domain.Extensions
          var needsGlobalParameter = container.IsAnImplementationOf<TransporterMoleculeContainer>() ||
                                     container.IsAnImplementationOf<ReactionBuilder>() ||
                                     container.IsAnImplementationOf<InteractionContainer>() ||
-                                    container.IsMoleculeProperties();
+                                    container.IsGlobalMoleculeProperties();
 
          return needsGlobalParameter ? ParameterBuildMode.Global : ParameterBuildMode.Local;
       }

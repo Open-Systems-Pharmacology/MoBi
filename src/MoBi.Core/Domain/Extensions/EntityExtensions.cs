@@ -16,6 +16,16 @@ namespace MoBi.Core.Domain.Extensions
          return container.IsNamed(Constants.MOLECULE_PROPERTIES);
       }
 
+      /// <summary>
+      ///    Returns <c>true</c> for the global <c>MoleculeProperties</c> container that is a special member of a
+      ///    <see cref="OSPSuite.Core.Domain.Builder.SpatialStructure" /> (created with <see cref="ContainerType.Molecule" />),
+      ///    as opposed to the local <c>MoleculeProperties</c> containers nested in physical containers.
+      /// </summary>
+      public static bool IsGlobalMoleculeProperties(this IContainer container)
+      {
+         return container.IsMoleculeProperties() && container.ContainerType == ContainerType.Molecule;
+      }
+
       public static bool IsAtMoleculeBuilder(this IEntity entity)
       {
          return entity.RootContainer.IsAnImplementationOf<MoleculeBuilder>();

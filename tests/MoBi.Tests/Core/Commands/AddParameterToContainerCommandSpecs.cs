@@ -75,16 +75,29 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class When_adding_a_new_parameter_to_molecule_properties_container : When_testing_for_appropriate_parameter_build_modes
+   public class When_adding_a_new_parameter_to_the_global_molecule_properties_container : When_testing_for_appropriate_parameter_build_modes
    {
       protected override IContainer GetContainer()
       {
-         return new Container().WithName(Constants.MOLECULE_PROPERTIES);
+         return new Container().WithName(Constants.MOLECULE_PROPERTIES).WithContainerType(ContainerType.Molecule);
       }
 
       protected override ParameterBuildMode GetBuildModeType()
       {
          return ParameterBuildMode.Global;
+      }
+   }
+
+   public class When_adding_a_new_parameter_to_a_local_molecule_properties_container : When_testing_for_appropriate_parameter_build_modes
+   {
+      protected override IContainer GetContainer()
+      {
+         return new Container().WithName(Constants.MOLECULE_PROPERTIES).WithContainerType(ContainerType.Compartment);
+      }
+
+      protected override ParameterBuildMode GetBuildModeType()
+      {
+         return ParameterBuildMode.Local;
       }
    }
 
