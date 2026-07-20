@@ -16,6 +16,11 @@ namespace MoBi.Core.Domain.Extensions
          return container.IsNamed(Constants.MOLECULE_PROPERTIES);
       }
 
+      public static bool IsGlobalMoleculeProperties(this IContainer container)
+      {
+         return container.IsMoleculeProperties() && container.ContainerType == ContainerType.Molecule;
+      }
+
       public static bool IsAtMoleculeBuilder(this IEntity entity)
       {
          return entity.RootContainer.IsAnImplementationOf<MoleculeBuilder>();
