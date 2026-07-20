@@ -39,6 +39,9 @@ public class MoBiProject : Project
       parameterIdentification.IsLoaded = true;
    }
 
+   /// <summary>
+   /// Returns all simulations or building blocks matching <typeparamref name="T"/>
+   /// </summary>
    public override IReadOnlyCollection<T> All<T>() => get<T>();
 
    public IEnumerable<CurveChart> Charts => _charts;
@@ -57,7 +60,7 @@ public class MoBiProject : Project
 
    public IReadOnlyList<IMoBiSimulation> Simulations => _allSimulations;
 
-   private IReadOnlyList<T> get<T>() => _buildingBlocks.OfType<T>().ToList();
+   private IReadOnlyList<T> get<T>() => _buildingBlocks.OfType<T>().Concat(_allSimulations.OfType<T>()).ToList();
 
    public IReadOnlyList<ExpressionProfileBuildingBlock> ExpressionProfileCollection => get<ExpressionProfileBuildingBlock>();
 
@@ -104,7 +107,7 @@ public class MoBiProject : Project
 
    public IReadOnlyList<IMoBiSimulation> SimulationsUsing(IBuildingBlock templateBuildingBlock) => Simulations.Where(simulation => simulation.Uses(templateBuildingBlock)).ToList();
 
-   public IEnumerable<IObjectBase> All() => All<IObjectBase>().Union(Simulations);
+   public IEnumerable<IObjectBase> All() => All<IObjectBase>();
 
    /// <summary>
    ///    Returns a list of simulations that have a module where the name matches <paramref name="module" />

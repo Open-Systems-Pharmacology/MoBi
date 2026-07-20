@@ -116,9 +116,6 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       var observedData = await ObservedDataFrom(projectSnapshot.ObservedData, snapshotContext);
       observedData?.Each(repository => AddObservedDataToProject(project, repository));
 
-      var parameterIdentifications = await AllParameterIdentificationsFrom(projectSnapshot.ParameterIdentifications, snapshotContext);
-      parameterIdentifications?.Each(pi => AddParameterIdentificationToProject(project, pi));
-
       var simulationContext = new SimulationContext(context.RunSimulations, snapshotContext)
       {
          NumberOfSimulationsToLoad = projectSnapshot.Simulations?.Length ?? 0,
@@ -141,6 +138,9 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
             }
          }
       }
+
+      var parameterIdentifications = await AllParameterIdentificationsFrom(projectSnapshot.ParameterIdentifications, snapshotContext);
+      parameterIdentifications?.Each(pi => AddParameterIdentificationToProject(project, pi));
 
       if (simulationContext.Run && project.Simulations.Any())
       {
