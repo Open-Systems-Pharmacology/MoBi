@@ -149,7 +149,42 @@
   "ParameterIdentifications": [
     {
       "Name": "Parameter Identification 1",
-      "Simulations": [],
+      "Simulations": [
+        "test"
+      ],
+      "OutputMappings": [
+        {
+          "Scaling": "Log",
+          "Path": "test|Organism|PeripheralVenousBlood|Theophylline|Plasma (Peripheral Venous Blood)",
+          "ObservedData": "Human.Plasma.IV.Subj 1.Human.Plasma.IV.Subj 1"
+        }
+      ],
+      "IdentificationParameters": [
+        {
+          "Name": "Fraction vascular",
+          "Scaling": "Linear",
+          "LinkedParameters": [
+            "test|Organism|ArterialBlood|Fraction vascular"
+          ],
+          "Parameters": [
+            {
+              "Name": "Start value",
+              "Value": 1.0,
+              "ValueOrigin": {}
+            },
+            {
+              "Name": "MinValue",
+              "Value": 0.0,
+              "ValueOrigin": {}
+            },
+            {
+              "Name": "MaxValue",
+              "Value": 1.0,
+              "ValueOrigin": {}
+            }
+          ]
+        }
+      ],
       "Configuration": {
         "LLOQMode": "SimulationOutputAsObservedDataLLOQ",
         "RemoveLLOQMode": "Never",
