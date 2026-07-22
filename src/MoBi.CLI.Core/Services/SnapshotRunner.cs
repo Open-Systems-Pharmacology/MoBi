@@ -67,6 +67,7 @@ namespace MoBi.CLI.Core.Services
       private async Task startSnapshotRun(IReadOnlyList<FileMap> fileMaps, Func<FileMap, Task> exportFunc)
       {
          var begin = DateTime.UtcNow;
+         var failedCount = 0;
          foreach (var fileMap in fileMaps)
          {
             try
@@ -75,6 +76,7 @@ namespace MoBi.CLI.Core.Services
             }
             catch (Exception e)
             {
+               failedCount++;
                _logger.AddException(e);
             }
             finally
@@ -87,7 +89,11 @@ namespace MoBi.CLI.Core.Services
          var end = DateTime.UtcNow;
          var timeSpent = end - begin;
 
-         _logger.AddInfo($"{fileMaps.Count} {"project".PluralizeIf(fileMaps)} loaded and exported in {timeSpent.ToDisplay()}");
+         var exportedCount = fileMaps.Count - failedCount;
+         _logger.AddInfo($"{exportedCount} {"project".PluralizeIf(exportedCount)} loaded and exported in {timeSpent.ToDisplay()}");
+
+         if (failedCount > 0)
+            throw new OSPSuiteException($"{failedCount} {"project".PluralizeIf(failedCount)} failed to load and export. See the log for details.");
       }
 
       private async Task createProjectFromSnapshotFile(FileMap file, bool runSimulations)
@@ -95,7 +101,7 @@ namespace MoBi.CLI.Core.Services
          _logger.AddInfo($"Starting project export for '{file.SnapshotFile}'");
          var project = await _snapshotTask.LoadProjectFromSnapshotFileAsync(file.SnapshotFile, runSimulations);
          if (project == null)
-            return;
+            throw new OSPSuiteException($"Failed to load snapshot '{file.SnapshotFile}'.");
 
          _logger.AddDebug($"Snapshot loaded successfully from '{file.SnapshotFile}'");
          _moBiContext.Project.FilePath = file.ProjectFile;
