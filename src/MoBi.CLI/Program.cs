@@ -4,6 +4,9 @@ using CommandLine;
 using Microsoft.Extensions.Logging;
 using MoBi.Assets;
 using MoBi.CLI.Commands;
+using MoBi.CLI.Core;
+using MoBi.CLI.Core.RunOptions;
+using MoBi.Core;
 using OSPSuite.CLI.Core.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Services;
@@ -24,7 +27,7 @@ namespace MoBi.CLI
 
       static int Main(string[] args)
       {
-         Core.ApplicationStartup.Initialize();
+         ApplicationStartup.Initialize();
 
          Parser.Default.ParseArguments<SnapshotRunCommand, QualificationRunCommand>(args)
             .WithParsed<SnapshotRunCommand>(startCommand)
@@ -37,20 +40,24 @@ namespace MoBi.CLI
          return (int)ExitCodes.Success;
       }
 
-      private static void startCommand<TRunOptions>(CLICommand<TRunOptions> command)
+      private static void startCommand<TRunOptions>(CLICommand<TRunOptions> command) where TRunOptions : IProvidePKSimPath
       {
-         Core.ApplicationStartup.Start();
+         ApplicationStartup.Start();
+         var runOptions = command.ToRunOptions();
+
+         if (!string.IsNullOrEmpty(runOptions.PKSimPath))
+            IoC.Resolve<IApplicationSettings>().PKSimPath = runOptions.PKSimPath;
 
          var logger = initializeLogger(command);
          if (command.LogCommandName)
             logger.AddInfo($"Starting {command.Name.ToLower()} run");
 
          logger.AddDebug($"Arguments:\n{command}");
-         
+
          var runner = IoC.Resolve<IBatchRunner<TRunOptions>>();
          try
          {
-            runner.RunBatchAsync(command.ToRunOptions()).Wait();
+            runner.RunBatchAsync(runOptions).Wait();
          }
          catch (Exception e)
          {

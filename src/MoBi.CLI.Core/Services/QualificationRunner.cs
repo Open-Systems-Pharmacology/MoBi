@@ -34,7 +34,6 @@ namespace MoBi.CLI.Core.Services
       private readonly IProjectPersistor _projectPersistor;
       private readonly ISimulationPersistor _simulationPersistor;
       private readonly ISessionManager _sessionManager;
-      private readonly IApplicationSettings _applicationSettings;
       private readonly ISnapshotTask _moBiSnapshotTask;
 
       public QualificationRunner(IMoBiContext context,
@@ -44,29 +43,18 @@ namespace MoBi.CLI.Core.Services
          IJsonSerializer jsonSerializer,
          ISnapshotTask snapshotTask,
          ISimulationPersistor simulationPersistor,
-         ISessionManager sessionManager,
-         IApplicationSettings applicationSettings) : base(logger, dataRepositoryExportTask, jsonSerializer, snapshotTask)
+         ISessionManager sessionManager) : base(logger, dataRepositoryExportTask, jsonSerializer, snapshotTask)
       {
          _context = context;
          _projectPersistor = projectPersistor;
          _simulationPersistor = simulationPersistor;
          _sessionManager = sessionManager;
-         _applicationSettings = applicationSettings;
          _moBiSnapshotTask = snapshotTask;
       }
 
       protected override void LoadProjectContext(ModelProject project)
       {
          _context.LoadFrom(project);
-      }
-
-      public override Task RunBatchAsync(MoBiQualificationRunOptions runOptions)
-      {
-         // For any process that will access PK-Sim services, use the path from the command line if specified
-         if (!string.IsNullOrEmpty(runOptions.PKSimPath))
-            _applicationSettings.PKSimPath = runOptions.PKSimPath;
-
-         return base.RunBatchAsync(runOptions);
       }
 
       protected override IEnumerable<PlotMapping> RetrievePlotDefinitionsForSimulation(SimulationPlot simulationPlot, SnapshotProject snapshotProject)

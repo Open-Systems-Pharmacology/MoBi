@@ -2,7 +2,7 @@
 
 namespace MoBi.CLI.Core.RunOptions
 {
-   public class MoBiQualificationRunOptions : QualificationRunOptions
+   public class MoBiQualificationRunOptions : QualificationRunOptions, IProvidePKSimPath
    {
       public string PKSimPath { get; set; }
    }
