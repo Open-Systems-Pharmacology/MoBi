@@ -109,7 +109,7 @@ public class When_dropping_historical_results_on_the_comparison_chart : concern_
    [Observation]
    public void a_curve_is_added_for_each_output_column_of_the_dropped_historical_results()
    {
-      A.CallTo(() => _chartPresenterContext.EditorPresenter.AddCurveForColumn(_outputColumn, A<CurveOptions>._, A<bool>._)).MustHaveHappened();
+      A.CallTo(() => _chartPresenterContext.EditorPresenter.AddCurveForColumn(_outputColumn, A<CurveOptions>._, A<string>._)).MustHaveHappened();
    }
 
    [Observation]
