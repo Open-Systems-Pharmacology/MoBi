@@ -21,7 +21,7 @@ namespace MoBi.CLI.Core
             x.WithConvention<OSPSuiteRegistrationConvention>();
          });
 
-         container.Register<IBatchRunner<SnapshotRunOptions>, SnapshotRunner>();
+         container.Register<IBatchRunner<MoBiSnapshotRunOptions>, SnapshotRunner>();
          container.Register<IBatchRunner<MoBiQualificationRunOptions>, QualificationRunner>();
          container.Register<IPathToPathElementsMapper, PathToPathElementsMapper>();
          container.Register<IDataColumnToPathElementsMapper, DataColumnToPathElementsMapper>();

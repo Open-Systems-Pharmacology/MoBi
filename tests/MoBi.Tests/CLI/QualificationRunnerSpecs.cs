@@ -45,7 +45,6 @@ namespace MoBi.CLI
       protected readonly List<string> _createdDirectories = [];
       protected MoBiQualificationRunOptions _runOptions;
       protected QualificationConfiguration _qualificationConfiguration;
-      protected IApplicationSettings _applicationSettings;
       protected ISessionManager _sessionManager;
 
       public override async Task GlobalContext()
@@ -60,7 +59,6 @@ namespace MoBi.CLI
             _createdDirectories.Add(s);
             return s;
          };
-         _applicationSettings = new ApplicationSettings();
       }
 
       protected override Task Context()
@@ -82,7 +80,7 @@ namespace MoBi.CLI
 
          _qualificationConfiguration = new QualificationConfiguration();
 
-         sut = new QualificationRunner(_context, _projectPersistor, _logger, _dataRepositoryTask, _jsonSerializer, _snapshotTask, _simulationPersistor, _sessionManager, _applicationSettings);
+         sut = new QualificationRunner(_context, _projectPersistor, _logger, _dataRepositoryTask, _jsonSerializer, _snapshotTask, _simulationPersistor, _sessionManager);
 
          return _completed;
       }
@@ -218,12 +216,6 @@ namespace MoBi.CLI
          A.CallTo(() => _session.BeginTransaction()).MustHaveHappened();
          A.CallTo(() => _transaction.Commit()).MustHaveHappened();
          A.CallTo(() => _projectPersistor.Save(_context.CurrentProject, _context)).MustHaveHappened();
-      }
-
-      [Observation]
-      public void the_application_settings_pk_sim_path_is_overridden()
-      {
-         _applicationSettings.PKSimPath.ShouldBeEqualTo(_runOptions.PKSimPath);
       }
 
       [Observation]

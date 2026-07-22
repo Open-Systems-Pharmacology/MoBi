@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using MoBi.CLI.Core.RunOptions;
 using OSPSuite.CLI.Core.RunOptions;
 using OSPSuite.CLI.Core.Services;
 using MoBiSimulation = MoBi.R.Domain.MoBiSimulation;
@@ -30,9 +31,9 @@ namespace MoBi.R.Services
    public class SnapshotTask : ISnapshotTask
    {
       private readonly CoreSnapshotTask _snapshotTask;
-      private readonly IBatchRunner<SnapshotRunOptions> _snapshotRunner;
+      private readonly IBatchRunner<MoBiSnapshotRunOptions> _snapshotRunner;
 
-      public SnapshotTask(CoreSnapshotTask snapshotTask, IBatchRunner<SnapshotRunOptions> snapshotRunner)
+      public SnapshotTask(CoreSnapshotTask snapshotTask, IBatchRunner<MoBiSnapshotRunOptions> snapshotRunner)
       {
          _snapshotTask = snapshotTask;
          _snapshotRunner = snapshotRunner;
@@ -56,7 +57,7 @@ namespace MoBi.R.Services
       public void RunSnapshot(string inputFolder, string outputFolder, bool runSimulations = true,
          SnapshotExportMode exportMode = SnapshotExportMode.Snapshot, params string[] folders)
       {
-         var runOptions = new SnapshotRunOptions
+         var runOptions = new MoBiSnapshotRunOptions
          {
             InputFolder = inputFolder,
             OutputFolder = outputFolder,

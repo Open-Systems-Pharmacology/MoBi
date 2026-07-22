@@ -8,7 +8,6 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Serialization.ORM;
 using MoBi.Core.Snapshots.Services;
 using OSPSuite.Assets.Extensions;
-using OSPSuite.CLI.Core.RunOptions;
 using OSPSuite.CLI.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
@@ -16,6 +15,7 @@ using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Exceptions;
 using OSPSuite.Utility.Extensions;
+using SnapshotRunOptions = MoBi.CLI.Core.RunOptions.MoBiSnapshotRunOptions;
 
 namespace MoBi.CLI.Core.Services
 {

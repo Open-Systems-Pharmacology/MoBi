@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using MoBi.Core.Domain.Model;
+using MoBi.CLI.Core.RunOptions;
 using MoBi.Core.Serialization.ORM;
 using MoBi.HelpersForTests;
 using OSPSuite.BDDHelper;
@@ -10,13 +11,13 @@ using OSPSuite.Utility.Container;
 
 namespace MoBi.IntegrationTests
 {
-   public abstract class concern_for_SnapshotRunner : concern_for_BatchRunnerSpecs<SnapshotRunOptions>
+   public abstract class concern_for_SnapshotRunner : concern_for_BatchRunnerSpecs<MoBiSnapshotRunOptions>
    {
    }
 
    public class when_exporting_a_snapshot_from_project : concern_for_SnapshotRunner
    {
-      private SnapshotRunOptions _snapshotRunOptions;
+      private MoBiSnapshotRunOptions _snapshotRunOptions;
       private string _projectDirectory;
       private string _jsonDirectory;
       private readonly string _jsonFileName = "snapshot_no_pksim_modules.json";
@@ -36,7 +37,7 @@ namespace MoBi.IntegrationTests
          createProjectFromSnapshot();
 
          File.Delete(_jsonPath);
-         _snapshotRunOptions = new SnapshotRunOptions
+         _snapshotRunOptions = new MoBiSnapshotRunOptions
          {
             ExportMode = SnapshotExportMode.Snapshot,
             InputFolder = _projectDirectory,
@@ -48,7 +49,7 @@ namespace MoBi.IntegrationTests
 
       private void createProjectFromSnapshot()
       {
-         _snapshotRunOptions = new SnapshotRunOptions
+         _snapshotRunOptions = new MoBiSnapshotRunOptions
          {
             ExportMode = SnapshotExportMode.Project,
             InputFolder = _jsonDirectory,
@@ -97,7 +98,7 @@ namespace MoBi.IntegrationTests
 
    public class when_loading_a_project_from_snapshot : concern_for_SnapshotRunner
    {
-      private SnapshotRunOptions _snapshotRunOptions;
+      private MoBiSnapshotRunOptions _snapshotRunOptions;
       private string _projectDirectory;
       private string _jsonDirectory;
       private readonly string _jsonFileName = "snapshot_no_pksim_modules.json";
@@ -114,7 +115,7 @@ namespace MoBi.IntegrationTests
          _inputPath = Path.Combine(_jsonDirectory, _jsonFileName);
          _outputPath = Path.Combine(_projectDirectory, _projectFileName);
 
-         _snapshotRunOptions = new SnapshotRunOptions
+         _snapshotRunOptions = new MoBiSnapshotRunOptions
          {
             ExportMode = SnapshotExportMode.Project,
             InputFolder = _jsonDirectory,

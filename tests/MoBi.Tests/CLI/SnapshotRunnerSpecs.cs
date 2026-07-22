@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using FakeItEasy;
 using MoBi.Assets;
+using MoBi.CLI.Core.RunOptions;
 using MoBi.CLI.Core.Services;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Serialization.ORM;
@@ -21,7 +22,7 @@ namespace MoBi.CLI
    {
       protected ISnapshotTask _snapshotTask;
       protected IOSPSuiteLogger _logger;
-      protected SnapshotRunOptions _runOptions;
+      protected MoBiSnapshotRunOptions _runOptions;
       protected string _createdDirectory;
       private Func<string, string> _oldCreateDirectory;
       protected readonly string _inputFolder = @"C:\Input\";
@@ -46,7 +47,7 @@ namespace MoBi.CLI
          _contextPersistor = A.Fake<IContextPersistor>();
          sut = new SnapshotRunner(_snapshotTask, _logger, _moBiContext, _projectTask, _contextPersistor);
 
-         _runOptions = new SnapshotRunOptions();
+         _runOptions = new MoBiSnapshotRunOptions();
          return _completed;
       }
 

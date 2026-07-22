@@ -3,6 +3,7 @@ using CommandLine;
 using CommandLine.Text;
 using Microsoft.Extensions.Logging;
 using MoBi.CLI.Commands;
+using MoBi.CLI.Core.RunOptions;
 using OSPSuite.CLI.Core.RunOptions;
 using OSPSuite.CLI.Core.Services;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Collections.Generic;
 namespace MoBi.CLI
 {
    [Verb("snap", HelpText = "Start snapshot workflow by loading a set of project (or snapshot) files and creating the corresponding snapshot (or project) file automatically.")]
-   public class SnapshotRunCommand : CLICommand<SnapshotRunOptions>, IWithInputAndOutputFolders
+   public class SnapshotRunCommand : CLICommand<MoBiSnapshotRunOptions>, IWithInputAndOutputFolders
    {
       public override string Name { get; } = "Snapshot";
 
@@ -21,6 +22,9 @@ namespace MoBi.CLI
 
       [Option('o', "output", Required = true, HelpText = "Output folder where project or snapshot files will be exported.")]
       public string OutputFolder { get; set; }
+
+      [Option("pksim", Required = false, HelpText = "The file path where PK-Sim can be found, required when loading snapshots that use PK-Sim modules. Default is to use the value from user settings in MoBi.")]
+      public string PKSimPath { get; set; }
 
       [Option('p', "project", HelpText = "Create project files from snapshot files.")]
       public bool ExportProject
@@ -62,13 +66,14 @@ namespace MoBi.CLI
          return sb.ToString();
       }
 
-      public override SnapshotRunOptions ToRunOptions()
+      public override MoBiSnapshotRunOptions ToRunOptions()
       {
-         return new SnapshotRunOptions
+         return new MoBiSnapshotRunOptions
          {
             OutputFolder = OutputFolder,
             InputFolder = InputFolder,
-            ExportMode = ExportMode
+            ExportMode = ExportMode,
+            PKSimPath = PKSimPath
          };
       }
    }
