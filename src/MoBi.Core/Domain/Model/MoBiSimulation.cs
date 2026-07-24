@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Core.Chart;
@@ -63,6 +64,12 @@ public interface IMoBiSimulation : IWithDiagramFor<IMoBiSimulation>, ISimulation
    void RemoveOriginalQuantityValue(OriginalQuantityValue quantityValue);
    OriginalQuantityValue OriginalQuantityValueFor(OriginalQuantityValue quantityValue);
    void ClearOriginalQuantities();
+
+   /// <summary>
+   ///    Whether the model has been constructed. Reading this does NOT trigger lazy materialization of a
+   ///    simulation loaded as a shell, so it is safe to use to decide whether model-dependent work is needed.
+   /// </summary>
+   bool IsModelLoaded { get; }
 }
 
 public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
@@ -83,10 +90,56 @@ public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
 
    private readonly ICache<string, OriginalQuantityValue> _quantityValueCache = new Cache<string, OriginalQuantityValue>(onMissingKey: key => null);
    private bool _hasChanged;
+   private bool _modelMaterialized;
+   private Action _lazyModelLoader;
 
    public MoBiSimulation()
    {
       HistoricResults = new Cache<string, DataRepository>(x => x.Id, x => null);
+   }
+
+   /// <summary>
+   ///    When the project is loaded, a simulation is created as a "shell" whose <see cref="Model" /> is not yet
+   ///    constructed. The lazy loader passed here deserializes and assigns the model the first time
+   ///    <see cref="Model" /> is accessed. This keeps model construction (the expensive part of loading a
+   ///    project) deferred until the model is actually needed.
+   /// </summary>
+   public void SetLazyModelLoader(Action lazyModelLoader) => _lazyModelLoader = lazyModelLoader;
+
+   /// <summary>
+   ///    Whether the model has been constructed/assigned. Reading this does NOT trigger lazy materialization,
+   ///    so it can be used to decide whether work that depends on the model is necessary (e.g. unregistration).
+   /// </summary>
+   public bool IsModelLoaded => _modelMaterialized;
+
+   /// <summary>
+   ///    When set, the <see cref="Model" /> getter returns the (possibly null) backing model WITHOUT triggering
+   ///    lazy materialization. Used only while serializing a changed shell on save, so that the retained model
+   ///    bytes can be reused instead of building the model just to re-serialize it unchanged.
+   /// </summary>
+   public bool SuppressModelMaterialization { get; set; }
+
+   public override IModel Model
+   {
+      get
+      {
+         // A shell was loaded without a model. Materialize it on first access.
+         if (!SuppressModelMaterialization && !_modelMaterialized && _lazyModelLoader != null)
+         {
+            // Guard against re-entrancy: registering the materialized model re-reads Model via AcceptVisitor.
+            _modelMaterialized = true;
+            var loader = _lazyModelLoader;
+            _lazyModelLoader = null;
+            loader();
+         }
+
+         return base.Model;
+      }
+      set
+      {
+         base.Model = value;
+         _modelMaterialized = true;
+      }
    }
 
    public bool HasChanged

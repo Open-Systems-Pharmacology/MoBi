@@ -50,6 +50,7 @@ namespace MoBi.Core
             scan.ExcludeType<FormulaTypeCaptionRepository>();
             scan.ExcludeType<GroupRepository>();
             scan.ExcludeType<ClipboardManager>();
+            scan.ExcludeType<SimulationContentRepository>();
             scan.ExcludeType<ApplicationSettings>();
             // The PK-Sim snapshot converter is registered explicitly per host (PKSimStarter for the
             // desktop app/CLI, PKSimSnapshotConverter for MoBi.R), so it is not auto-registered here.
@@ -82,6 +83,7 @@ namespace MoBi.Core
          container.Register<FormulaTypeCaptionRepository, FormulaTypeCaptionRepository>(LifeStyle.Singleton);
          container.Register<IGroupRepository, GroupRepository>(LifeStyle.Singleton);
          container.Register<IClipboardManager, ClipboardManager>(LifeStyle.Singleton);
+         container.Register<ISimulationContentRepository, SimulationContentRepository>(LifeStyle.Singleton);
          container.Register<ICloneManager, CloneManagerForBuildingBlock>(LifeStyle.Singleton);
          container.Register<IMoBiSimulationAnalysisCreator, ISimulationAnalysisCreator, MoBiSimulationAnalysisCreator>(LifeStyle.Singleton);
 

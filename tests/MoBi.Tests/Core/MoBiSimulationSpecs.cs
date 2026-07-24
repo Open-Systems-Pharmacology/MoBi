@@ -422,4 +422,79 @@ namespace MoBi.Core
          _moduleConfiguration.SelectedParameterValues = null;
       }
    }
+
+   public abstract class concern_for_MoBiSimulation_lazy_model : concern_for_MoBiSimulation
+   {
+      protected IModel _model;
+      protected int _loaderCallCount;
+
+      protected override void Context()
+      {
+         base.Context();
+         _model = A.Fake<IModel>();
+         _loaderCallCount = 0;
+         // Simulate the shell wiring done by the mapper: the loader constructs and assigns the model.
+         sut.SetLazyModelLoader(() =>
+         {
+            _loaderCallCount++;
+            sut.Model = _model;
+         });
+      }
+   }
+
+   public class When_a_shell_simulation_has_not_been_accessed : concern_for_MoBiSimulation_lazy_model
+   {
+      [Observation]
+      public void should_report_that_the_model_is_not_loaded_without_triggering_materialization()
+      {
+         sut.IsModelLoaded.ShouldBeFalse();
+         _loaderCallCount.ShouldBeEqualTo(0);
+      }
+   }
+
+   public class When_the_model_of_a_shell_simulation_is_accessed : concern_for_MoBiSimulation_lazy_model
+   {
+      private IModel _result;
+
+      protected override void Because()
+      {
+         _result = sut.Model;
+      }
+
+      [Observation]
+      public void should_materialize_and_return_the_model()
+      {
+         _result.ShouldBeEqualTo(_model);
+      }
+
+      [Observation]
+      public void should_report_the_model_as_loaded()
+      {
+         sut.IsModelLoaded.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_only_invoke_the_lazy_loader_once_even_on_repeated_access()
+      {
+         var unused = sut.Model;
+         unused = sut.Model;
+         _loaderCallCount.ShouldBeEqualTo(1);
+      }
+   }
+
+   public class When_the_model_is_assigned_directly_on_a_simulation : concern_for_MoBiSimulation_lazy_model
+   {
+      protected override void Because()
+      {
+         sut.Model = _model;
+      }
+
+      [Observation]
+      public void should_be_considered_loaded_and_not_invoke_the_lazy_loader()
+      {
+         sut.IsModelLoaded.ShouldBeTrue();
+         var unused = sut.Model;
+         _loaderCallCount.ShouldBeEqualTo(0);
+      }
+   }
 }

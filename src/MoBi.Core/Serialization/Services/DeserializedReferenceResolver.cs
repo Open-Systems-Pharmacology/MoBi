@@ -30,7 +30,6 @@ namespace MoBi.Core.Serialization.Services
          {
             case MoBiProject proj:
                proj.All<SpatialStructure>().Each(resolveReferences);
-               proj.Simulations.Each(resolveReferences);
                break;
             case IMoBiSimulation simulation:
                resolveReferences(simulation);
