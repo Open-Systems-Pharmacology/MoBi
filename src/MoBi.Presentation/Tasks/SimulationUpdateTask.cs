@@ -155,13 +155,15 @@ namespace MoBi.Presentation.Tasks
 
       public ICommand ConfigureSimulationAndAddToProject(IMoBiSimulation clonedSimulation)
       {
+         if (ConfigureSimulation(clonedSimulation).IsEmpty())
+            return new MoBiEmptyCommand();
+
          var macroCommand = new MoBiMacroCommand
          {
             ObjectType = ObjectTypes.Simulation,
             CommandType = AppConstants.Commands.AddCommand,
             Description = AppConstants.Commands.AddToProjectDescription(ObjectTypes.Simulation, clonedSimulation.Name)
          };
-         ConfigureSimulation(clonedSimulation);
          macroCommand.Add(new AddSimulationCommand(clonedSimulation).RunCommand(_context));
 
          return macroCommand;
