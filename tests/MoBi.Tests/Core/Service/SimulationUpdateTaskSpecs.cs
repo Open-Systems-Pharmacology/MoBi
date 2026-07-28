@@ -7,6 +7,7 @@ using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Events;
+using MoBi.Core.Exceptions;
 using MoBi.Core.Services;
 using MoBi.HelpersForTests;
 using MoBi.Presentation;
@@ -31,7 +32,6 @@ namespace MoBi.Core.Service
       protected ISimulationFactory _simulationFactory;
       protected ICloneManagerForBuildingBlock _cloneManager;
       protected ISimulationConfigurationFactory _simulationConfigurationFactory;
-      private IHeavyWorkManager _heavyWorkManager;
       private IConcurrencyManager _concurrencyManager;
       private ICoreUserSettings _coreUserSettings;
       private SynchronizationContext _originalSynchronizationContext;
@@ -45,7 +45,6 @@ namespace MoBi.Core.Service
          A.CallTo(() => _applicationController.Start<ICreateSimulationConfigurationPresenter>()).Returns(_configurePresenter);
          _cloneManager = A.Fake<ICloneManagerForBuildingBlock>();
          _simulationConfigurationFactory = A.Fake<ISimulationConfigurationFactory>();
-         _heavyWorkManager = new HeavyWorkManagerForSpecs();
          _coreUserSettings = A.Fake<ICoreUserSettings>();
 
          _concurrencyManager = new ConcurrencyManagerForSpecs();
@@ -57,8 +56,10 @@ namespace MoBi.Core.Service
          _originalSynchronizationContext = SynchronizationContext.Current;
          SynchronizationContext.SetSynchronizationContext(new SynchronousSynchronizationContextForSpecs());
 
-         sut = new SimulationUpdateTask(_context, _applicationController, _simulationFactory, _cloneManager, _heavyWorkManager, _concurrencyManager, _coreUserSettings);
+         sut = new SimulationUpdateTask(_context, _applicationController, _simulationFactory, _cloneManager, createHeavyWorkManager(), _concurrencyManager, _coreUserSettings);
       }
+
+      protected virtual IHeavyWorkManager createHeavyWorkManager() => new HeavyWorkManagerForSpecs();
 
       public override void Cleanup()
       {
@@ -279,6 +280,85 @@ namespace MoBi.Core.Service
       public void should_update_the_entity_source_in_the_simulation()
       {
          _simulationToConfigure.EntitySources.ShouldContain(_entitySource);
+      }
+   }
+
+   public class When_configuring_and_adding_a_simulation_whose_model_cannot_be_created : concern_for_SimulationUpdateTask
+   {
+      private IMoBiSimulation _clonedSimulation;
+      private MoBiProject _moBiProject;
+      private ICommand _result;
+
+      protected override IHeavyWorkManager createHeavyWorkManager() => new ExceptionSwallowingHeavyWorkManagerForSpecs();
+
+      protected override void Context()
+      {
+         base.Context();
+         _moBiProject = new MoBiProject();
+         _clonedSimulation = new MoBiSimulation
+         {
+            Model = new Model { Root = new Container() }.WithName("CLONED_MODEL"),
+            Configuration = new SimulationConfiguration()
+         };
+
+         A.CallTo(() => _context.CurrentProject).Returns(_moBiProject);
+         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._, true))
+            .Throws(new ValidationFailedMoBiException("Could not create simulation", new ValidationResult()));
+      }
+
+      protected override void Because()
+      {
+         _result = sut.ConfigureSimulationAndAddToProject(_clonedSimulation);
+      }
+
+      [Observation]
+      public void the_simulation_should_not_be_added_to_the_project()
+      {
+         _moBiProject.Simulations.ShouldNotContain(_clonedSimulation);
+      }
+
+      [Observation]
+      public void the_returned_command_should_be_empty()
+      {
+         _result.IsEmpty().ShouldBeTrue();
+      }
+   }
+
+   public class When_configuring_and_adding_a_simulation_and_the_user_cancels_the_configuration : concern_for_SimulationUpdateTask
+   {
+      private IMoBiSimulation _clonedSimulation;
+      private MoBiProject _moBiProject;
+      private ICommand _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         _moBiProject = new MoBiProject();
+         _clonedSimulation = new MoBiSimulation
+         {
+            Model = new Model { Root = new Container() }.WithName("CLONED_MODEL"),
+            Configuration = new SimulationConfiguration()
+         };
+
+         A.CallTo(() => _context.CurrentProject).Returns(_moBiProject);
+         A.CallTo(() => _configurePresenter.CreateBasedOn(_clonedSimulation, false)).Returns(null);
+      }
+
+      protected override void Because()
+      {
+         _result = sut.ConfigureSimulationAndAddToProject(_clonedSimulation);
+      }
+
+      [Observation]
+      public void the_simulation_should_not_be_added_to_the_project()
+      {
+         _moBiProject.Simulations.ShouldNotContain(_clonedSimulation);
+      }
+
+      [Observation]
+      public void the_returned_command_should_be_empty()
+      {
+         _result.IsEmpty().ShouldBeTrue();
       }
    }
 
