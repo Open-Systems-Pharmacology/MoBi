@@ -1,4 +1,5 @@
-﻿using DevExpress.Utils;
+﻿using System.Diagnostics;
+using DevExpress.Utils;
 using DevExpress.XtraLayout;
 using DevExpress.XtraLayout.Utils;
 using MoBi.Assets;
@@ -59,7 +60,7 @@ namespace MoBi.UI.Views
 
       private void handleLink(HyperlinkClickEventArgs e)
       {
-         System.Diagnostics.Process.Start(e.Link);
+         Process.Start(new ProcessStartInfo(e.Link) {UseShellExecute = true});
       }
 
       public void SetBehaviorDescription(string description)
