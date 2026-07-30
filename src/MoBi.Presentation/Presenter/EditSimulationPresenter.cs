@@ -130,9 +130,10 @@ namespace MoBi.Presentation.Presenter
       private void removeAndReleaseAnalysisPresenter(ISimulationAnalysisPresenter presenter)
       {
          unRegisterObservedDataEvent(presenter);
-         _view.RemoveAnalysis(presenter.Analysis);
+         //the presenter needs to be cleared before the view removes and disposes the analysis tab
          presenter.Clear();
          presenter.ReleaseFrom(_eventPublisher);
+         _view.RemoveAnalysis(presenter.Analysis);
          _analysisPresenters.Remove(presenter);
       }
 

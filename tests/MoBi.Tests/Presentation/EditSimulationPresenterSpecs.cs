@@ -321,9 +321,10 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_clear_the_presenter()
+      public void should_clear_the_presenter_before_removing_the_tab_from_the_view()
       {
-         A.CallTo(() => _analysisPresenter.Clear()).MustHaveHappened();
+         A.CallTo(() => _analysisPresenter.Clear()).MustHaveHappened()
+            .Then(A.CallTo(() => _view.RemoveAnalysis(_chart)).MustHaveHappened());
       }
 
       [Observation]

@@ -105,7 +105,9 @@ namespace MoBi.UI.Views.SimulationView
          page.Tag = analysis;
          page.ShowCloseButton = DefaultBoolean.True;
          page.InitializeFrom(analysisView);
-         analysisView.CaptionChanged += (o, e) => page.Text = analysisView.Caption;
+         EventHandler captionChanged = (o, e) => page.Text = analysisView.Caption;
+         analysisView.CaptionChanged += captionChanged;
+         page.Disposed += (o, e) => analysisView.CaptionChanged -= captionChanged;
 
          var changesIndex = tabs.TabPages.IndexOf(tabChanges);
          tabs.TabPages.Insert(changesIndex, page);
@@ -118,6 +120,7 @@ namespace MoBi.UI.Views.SimulationView
             return;
 
          tabs.TabPages.Remove(tab);
+         tab.Dispose();
       }
 
       public void SelectAnalysis(ISimulationAnalysis analysis)
