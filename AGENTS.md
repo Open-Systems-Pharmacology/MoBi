@@ -43,9 +43,9 @@ dotnet test MoBi.sln --no-build -v normal
 `ExcludeDesigner=true` avoids the licensed DevExpress design-time package and is used by all build workflows. Run the most relevant test project while iterating, for example:
 
 ```shell
-dotnet test tests/MoBi.R.Tests/MoBi.R.Tests.csproj
-dotnet test tests/MoBi.UI.Tests/MoBi.UI.Tests.csproj
-dotnet test tests/MoBi.Tests/MoBi.Tests.csproj
+dotnet test tests/MoBi.R.Tests/MoBi.R.Tests.csproj --no-build -v normal
+dotnet test tests/MoBi.UI.Tests/MoBi.UI.Tests.csproj --no-build -v normal
+dotnet test tests/MoBi.Tests/MoBi.Tests.csproj --no-build -v normal
 ```
 
 Use `rake cover` when coverage is required; coverage settings are in `coverage.runsettings`. Installer, portable package, signing, and publishing tasks in `rakefile.rb` and `.github/workflows` are release operations and may require additional tools and secrets.
