@@ -69,6 +69,16 @@ namespace MoBi.Presentation.Presenter
       bool HasModules();
       bool HasBuildingBlocks();
       void NavigateToParameter(ParameterDTO parameterDTO);
+
+      /// <summary>
+      ///    Returns <c>true</c> if parameter references can be searched for, i.e. when editing a simulation
+      /// </summary>
+      bool CanFindReferences { get; }
+
+      /// <summary>
+      ///    Shows all formulas in the simulation where <paramref name="parameterDTO" /> is referenced
+      /// </summary>
+      void FindReferencesFor(ParameterDTO parameterDTO);
    }
 
    public class EditParametersInContainerPresenter : AbstractParameterBasePresenter<IEditParametersInContainerView, IEditParametersInContainerPresenter>, IEditParametersInContainerPresenter
@@ -492,6 +502,16 @@ namespace MoBi.Presentation.Presenter
       }
 
       public void EnableSimulationTracking(TrackableSimulation trackableSimulation) => _trackableSimulation = trackableSimulation;
+
+      public bool CanFindReferences => _trackableSimulation != null;
+
+      public void FindReferencesFor(ParameterDTO parameterDTO)
+      {
+         using (var referencesPresenter = _interactionTaskContext.ApplicationController.Start<IParameterReferencesPresenter>())
+         {
+            referencesPresenter.ShowReferencesTo(ParameterFrom(parameterDTO), _trackableSimulation.Simulation);
+         }
+      }
 
       public bool HasBuildingBlocks() => _allParametersDTO.Any(parameterDTO => !string.IsNullOrEmpty(parameterDTO.BuildingBlockName));
 
