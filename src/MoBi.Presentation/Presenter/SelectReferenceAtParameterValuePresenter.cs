@@ -130,7 +130,22 @@ namespace MoBi.Presentation.Presenter
             return returnPath;
          }
 
-         return CreatePathFor(item);
+         var itemPath = CreatePathFor(item);
+         prependEventsContainerIfMissing(item, itemPath);
+         return itemPath;
+      }
+
+      private static void prependEventsContainerIfMissing(IEntity item, ObjectPath objectPath)
+      {
+         // Entities selected from an event group building block are rooted at their top
+         // EventGroupBuilder, but in the built model these live under the "Events" top container.
+         if (isAbsolutePathRootedAtEventGroup(item, objectPath))
+            objectPath.AddAtFront(Constants.EVENTS);
+      }
+
+      private static bool isAbsolutePathRootedAtEventGroup(IEntity item, ObjectPath objectPath)
+      {
+         return item.RootContainer is EventGroupBuilder eventGroupRoot && string.Equals(objectPath.FirstOrDefault(), eventGroupRoot.Name);
       }
 
       private bool shouldUseParameterPath(IEntity item, DummyParameterDTO matchingDto)

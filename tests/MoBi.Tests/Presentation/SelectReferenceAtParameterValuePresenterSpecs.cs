@@ -248,6 +248,43 @@ namespace MoBi.Presentation
       }
    }
 
+   internal class When_selecting_an_event_group_parameter : concern_for_SelectReferenceAtParameterValuePresenter
+   {
+      private ObjectBaseDTO _doseDTO;
+      private Parameter _dose;
+      private IReadOnlyList<ObjectPath> _selectedSections;
+
+      protected override void Context()
+      {
+         base.Context();
+         var eventGroup = new EventGroupBuilder().WithName("200mg iv");
+         var application = new EventGroupBuilder().WithName("Application_1");
+         var protocolSchemaItem = new Container().WithName("ProtocolSchemaItem");
+         _dose = new Parameter().WithName("Dose").WithId("doseId");
+         protocolSchemaItem.Add(_dose);
+         application.Add(protocolSchemaItem);
+         eventGroup.Add(application);
+
+         _doseDTO = new ObjectBaseDTO(_dose);
+
+         A.CallTo(() => _context.Get<IEntity>(_dose.Id)).Returns(_dose);
+         A.CallTo(() => _view.AllSelectedDTOs).Returns(new[] { _doseDTO });
+         A.CallTo(() => _objectPathFactory.CreateAbsoluteObjectPath(_dose))
+            .Returns(new ObjectPath("200mg iv", "Application_1", "ProtocolSchemaItem", "Dose"));
+      }
+
+      protected override void Because()
+      {
+         _selectedSections = sut.GetAllSelections();
+      }
+
+      [Observation]
+      public void the_path_should_be_prefixed_with_the_events_top_container()
+      {
+         _selectedSections.Single().PathAsString.ShouldBeEqualTo($"{Constants.EVENTS}|200mg iv|Application_1|ProtocolSchemaItem|Dose");
+      }
+   }
+
    internal class When_selecting_multiple_references_and_not_all_are_parameters : concern_for_SelectReferenceAtParameterValuePresenter
    {
       private ObjectBaseDTO _parameterDTO2;
