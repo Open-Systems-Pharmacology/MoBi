@@ -132,8 +132,14 @@ namespace MoBi.Presentation
       [Observation]
       public void should_add_each_analysis_to_the_view()
       {
-         A.CallTo(() => _view.AddAnalysis(_timeProfilePresenter)).MustHaveHappened();
-         A.CallTo(() => _view.AddAnalysis(_predictedVsObservedPresenter)).MustHaveHappened();
+         A.CallTo(() => _view.AddAnalysis(_timeProfileChart, _timeProfilePresenter.BaseView)).MustHaveHappened();
+         A.CallTo(() => _view.AddAnalysis(_predictedVsObservedChart, _predictedVsObservedPresenter.BaseView)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_not_select_any_analysis_tab()
+      {
+         A.CallTo(() => _view.SelectAnalysis(A<ISimulationAnalysis>._)).MustNotHaveHappened();
       }
    }
 
@@ -156,7 +162,48 @@ namespace MoBi.Presentation
       [Observation]
       public void should_not_add_any_analysis_to_the_view()
       {
-         A.CallTo(() => _view.AddAnalysis(A<ISimulationAnalysisPresenter>._)).MustNotHaveHappened();
+         A.CallTo(() => _view.AddAnalysis(A<ISimulationAnalysis>._, A<IView>._)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_editing_the_simulation_that_is_already_edited : concern_for_EditSimulationPresenter
+   {
+      private IMoBiSimulation _simulation;
+      private ISimulationAnalysisPresenter _analysisPresenter;
+      private MoBiSimulationTimeProfileChart _chart;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = A.Fake<IMoBiSimulation>();
+         _chart = new MoBiSimulationTimeProfileChart();
+         A.CallTo(() => _simulation.Analyses).Returns(new ISimulationAnalysis[] { _chart });
+         _analysisPresenter = A.Fake<ISimulationAnalysisPresenter>();
+         A.CallTo(() => _simulationAnalysisPresenterFactory.PresenterFor(_chart)).Returns(_analysisPresenter);
+         sut.Edit(_simulation);
+      }
+
+      protected override void Because()
+      {
+         sut.Edit(_simulation);
+      }
+
+      [Observation]
+      public void should_not_reset_the_view_by_reloading_the_analyses()
+      {
+         A.CallTo(() => _view.AddAnalysis(_chart, _analysisPresenter.BaseView)).MustHaveHappenedOnceExactly();
+      }
+
+      [Observation]
+      public void should_not_rebuild_the_simulation_hierarchy()
+      {
+         A.CallTo(() => _hierarchicalSimulationPresenter.Edit(_simulation)).MustHaveHappenedOnceExactly();
+      }
+
+      [Observation]
+      public void should_still_display_the_view()
+      {
+         A.CallTo(() => _view.Display()).MustHaveHappenedTwiceExactly();
       }
    }
 
@@ -198,7 +245,13 @@ namespace MoBi.Presentation
       [Observation]
       public void should_add_the_analysis_to_the_view()
       {
-         A.CallTo(() => _view.AddAnalysis(_analysisPresenter)).MustHaveHappened();
+         A.CallTo(() => _view.AddAnalysis(_chart, _analysisPresenter.BaseView)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_select_the_tab_of_the_new_analysis()
+      {
+         A.CallTo(() => _view.SelectAnalysis(_chart)).MustHaveHappened();
       }
    }
 
@@ -226,7 +279,7 @@ namespace MoBi.Presentation
       [Observation]
       public void should_not_add_any_analysis_to_the_view()
       {
-         A.CallTo(() => _view.AddAnalysis(A<ISimulationAnalysisPresenter>._)).MustNotHaveHappened();
+         A.CallTo(() => _view.AddAnalysis(A<ISimulationAnalysis>._, A<IView>._)).MustNotHaveHappened();
       }
    }
 
@@ -252,7 +305,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.RemoveAnalysis(_analysisPresenter);
+         sut.RemoveAnalysis(_chart);
       }
 
       [Observation]
@@ -264,13 +317,14 @@ namespace MoBi.Presentation
       [Observation]
       public void should_remove_the_analysis_from_the_view()
       {
-         A.CallTo(() => _view.RemoveAnalysis(_analysisPresenter)).MustHaveHappened();
+         A.CallTo(() => _view.RemoveAnalysis(_chart)).MustHaveHappened();
       }
 
       [Observation]
-      public void should_clear_the_presenter()
+      public void should_clear_the_presenter_before_removing_the_tab_from_the_view()
       {
-         A.CallTo(() => _analysisPresenter.Clear()).MustHaveHappened();
+         A.CallTo(() => _analysisPresenter.Clear()).MustHaveHappened()
+            .Then(A.CallTo(() => _view.RemoveAnalysis(_chart)).MustHaveHappened());
       }
 
       [Observation]

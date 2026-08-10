@@ -100,6 +100,9 @@ namespace MoBi.UI.Views
             return;
 
          e.Menu.Items.Add(copyPathMenuItem());
+
+         if (_presenter.CanFindReferences)
+            e.Menu.Items.Add(findReferencesMenuItem());
       }
 
       private DXMenuItem copyPathMenuItem()
@@ -111,7 +114,18 @@ namespace MoBi.UI.Views
          );
       }
 
+      private DXMenuItem findReferencesMenuItem()
+      {
+         return new DXMenuItem(
+            AppConstants.Captions.FindReferences,
+            (s, args) => findReferences(),
+            ApplicationIcons.Search.ToImage()
+         );
+      }
+
       private void copyPath() => _presenter.CopyPathForParameter(_gridViewBinder.FocusedElement);
+
+      private void findReferences() => _presenter.FindReferencesFor(_gridViewBinder.FocusedElement);
 
       private void hideEditor() => _unitControl.Hide();
 

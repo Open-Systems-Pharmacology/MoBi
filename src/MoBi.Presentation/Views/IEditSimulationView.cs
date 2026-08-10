@@ -1,6 +1,6 @@
 ﻿using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views.BaseDiagram;
-using OSPSuite.Presentation.Presenters;
+using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Views;
 
 namespace MoBi.Presentation.Views
@@ -31,13 +31,18 @@ namespace MoBi.Presentation.Views
       void SetParametersTabEnabled(bool enabled);
 
       /// <summary>
-      ///    Adds a new analysis tab for the given presenter
+      ///    Adds a new tab for the given analysis showing <paramref name="analysisView" />
       /// </summary>
-      void AddAnalysis(ISimulationAnalysisPresenter analysisPresenter);
+      void AddAnalysis(ISimulationAnalysis analysis, IView analysisView);
 
       /// <summary>
-      ///    Removes the analysis tab for the given presenter
+      ///    Removes the tab of the given analysis
       /// </summary>
-      void RemoveAnalysis(ISimulationAnalysisPresenter analysisPresenter);
+      void RemoveAnalysis(ISimulationAnalysis analysis);
+
+      /// <summary>
+      ///    Selects the tab of the given analysis
+      /// </summary>
+      void SelectAnalysis(ISimulationAnalysis analysis);
    }
 }

@@ -10,7 +10,7 @@ using MoBi.Presentation.Views;
 using MoBi.Presentation.Views.BaseDiagram;
 using MoBi.UI.Extensions;
 using OSPSuite.Assets;
-using OSPSuite.Presentation.Presenters;
+using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Views;
@@ -64,10 +64,10 @@ namespace MoBi.UI.Views.SimulationView
       private void closeButtonClick(ClosePageButtonEventArgs e)
       {
          var closingTab = e.Page as XtraTabPage;
-         if (closingTab?.Tag is not ISimulationAnalysisPresenter analysisPresenter)
+         if (closingTab?.Tag is not ISimulationAnalysis analysis)
             return;
 
-         simulationPresenter.RemoveAnalysis(analysisPresenter);
+         simulationPresenter.RemoveAnalysis(analysis);
       }
 
       public void SetEditView(IView view)
@@ -90,36 +90,49 @@ namespace MoBi.UI.Views.SimulationView
          spliterDiagram.Panel2.FillWith(subView);
       }
 
-      public bool ShowsResults => tabs.SelectedTabPage?.Tag is ISimulationAnalysisPresenter;
+      public bool ShowsResults => tabs.SelectedTabPage?.Tag is ISimulationAnalysis;
 
       public void ShowResultsTab()
       {
-         var firstAnalysisTab = tabs.TabPages.FirstOrDefault(x => x.Tag is ISimulationAnalysisPresenter);
+         var firstAnalysisTab = tabs.TabPages.FirstOrDefault(x => x.Tag is ISimulationAnalysis);
          if (firstAnalysisTab != null)
             tabs.SelectedTabPage = firstAnalysisTab;
       }
 
-      public void AddAnalysis(ISimulationAnalysisPresenter analysisPresenter)
+      public void AddAnalysis(ISimulationAnalysis analysis, IView analysisView)
       {
          var page = new XtraTabPage();
-         page.Tag = analysisPresenter;
+         page.Tag = analysis;
          page.ShowCloseButton = DefaultBoolean.True;
-         page.InitializeFrom(analysisPresenter.BaseView);
-         analysisPresenter.BaseView.CaptionChanged += (o, e) => page.Text = analysisPresenter.BaseView.Caption;
+         page.InitializeFrom(analysisView);
+         EventHandler captionChanged = (o, e) => page.Text = analysisView.Caption;
+         analysisView.CaptionChanged += captionChanged;
+         page.Disposed += (o, e) => analysisView.CaptionChanged -= captionChanged;
 
          var changesIndex = tabs.TabPages.IndexOf(tabChanges);
          tabs.TabPages.Insert(changesIndex, page);
-         tabs.SelectedTabPage = page;
       }
 
-      public void RemoveAnalysis(ISimulationAnalysisPresenter analysisPresenter)
+      public void RemoveAnalysis(ISimulationAnalysis analysis)
       {
-         var tab = tabs.TabPages.FirstOrDefault(x => Equals(x.Tag, analysisPresenter));
+         var tab = tabPageFor(analysis);
          if (tab == null)
             return;
 
          tabs.TabPages.Remove(tab);
+         tab.Dispose();
       }
+
+      public void SelectAnalysis(ISimulationAnalysis analysis)
+      {
+         var tab = tabPageFor(analysis);
+         if (tab == null)
+            return;
+
+         tabs.SelectedTabPage = tab;
+      }
+
+      private XtraTabPage tabPageFor(ISimulationAnalysis analysis) => tabs.TabPages.FirstOrDefault(x => Equals(x.Tag, analysis));
 
       public void ShowChangesTab()
       {

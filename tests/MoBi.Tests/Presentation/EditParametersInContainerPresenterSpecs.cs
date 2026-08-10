@@ -661,4 +661,48 @@ namespace MoBi.Presentation
          A.CallTo(() => _sourceReferenceNavigator.GoTo(_parameterDTO.SourceReference)).MustHaveHappened();
       }
    }
+
+   public class When_checking_if_references_can_be_found : concern_for_EditParametersInContainerPresenter
+   {
+      [Observation]
+      public void should_not_allow_the_reference_search_when_not_editing_a_simulation()
+      {
+         sut.CanFindReferences.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_allow_the_reference_search_when_editing_a_simulation()
+      {
+         sut.EnableSimulationTracking(new TrackableSimulation(A.Fake<IMoBiSimulation>(), new SimulationEntitySourceReferenceCache()));
+         sut.CanFindReferences.ShouldBeTrue();
+      }
+   }
+
+   public class When_finding_the_references_for_a_parameter : concern_for_EditParametersInContainerPresenter
+   {
+      private ParameterDTO _parameterDTO;
+      private IParameterReferencesPresenter _referencesPresenter;
+      private TrackableSimulation _trackableSimulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _parameterDTO = new ParameterDTO(_parameter);
+         _referencesPresenter = A.Fake<IParameterReferencesPresenter>();
+         A.CallTo(() => _interactionTaskContext.ApplicationController.Start<IParameterReferencesPresenter>()).Returns(_referencesPresenter);
+         _trackableSimulation = new TrackableSimulation(A.Fake<IMoBiSimulation>(), new SimulationEntitySourceReferenceCache());
+         sut.EnableSimulationTracking(_trackableSimulation);
+      }
+
+      protected override void Because()
+      {
+         sut.FindReferencesFor(_parameterDTO);
+      }
+
+      [Observation]
+      public void should_show_the_references_to_the_parameter_in_the_simulation()
+      {
+         A.CallTo(() => _referencesPresenter.ShowReferencesTo(_parameter, _trackableSimulation.Simulation)).MustHaveHappened();
+      }
+   }
 }

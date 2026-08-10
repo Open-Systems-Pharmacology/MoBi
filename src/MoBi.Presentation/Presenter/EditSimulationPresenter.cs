@@ -33,7 +33,7 @@ namespace MoBi.Presentation.Presenter
    {
       void LoadDiagram();
       void LoadChanges();
-      void RemoveAnalysis(ISimulationAnalysisPresenter analysisPresenter);
+      void RemoveAnalysis(ISimulationAnalysis analysis);
    }
 
    public class EditSimulationPresenter : SingleStartPresenter<IEditSimulationView, IEditSimulationPresenter>, IEditSimulationPresenter, IListener<ObservedDataRemovedFromAnalysableEvent>
@@ -130,13 +130,25 @@ namespace MoBi.Presentation.Presenter
       private void removeAndReleaseAnalysisPresenter(ISimulationAnalysisPresenter presenter)
       {
          unRegisterObservedDataEvent(presenter);
-         _view.RemoveAnalysis(presenter);
+         //the presenter needs to be cleared before the view removes and disposes the analysis tab
          presenter.Clear();
          presenter.ReleaseFrom(_eventPublisher);
+         _view.RemoveAnalysis(presenter.Analysis);
          _analysisPresenters.Remove(presenter);
       }
 
       public void Edit(IMoBiSimulation simulation)
+      {
+         if (Equals(_simulation, simulation))
+         {
+            _view.Display();
+            return;
+         }
+
+         edit(simulation);
+      }
+
+      private void edit(IMoBiSimulation simulation)
       {
          _simulation = simulation;
          _hierarchicalPresenter.Edit(simulation);
@@ -162,7 +174,7 @@ namespace MoBi.Presentation.Presenter
          var presenter = _simulationAnalysisPresenterFactory.PresenterFor(simulationAnalysis);
          _analysisPresenters.Add(presenter);
          registerObservedDataEvent(presenter);
-         _view.AddAnalysis(presenter);
+         _view.AddAnalysis(simulationAnalysis, presenter.BaseView);
          presenter.InitializeAnalysis(simulationAnalysis, _simulation);
       }
 
@@ -178,11 +190,17 @@ namespace MoBi.Presentation.Presenter
             chartPresenter.OnObservedDataAddedToChart += onObservedDataAddedToChart;
       }
 
-      public void RemoveAnalysis(ISimulationAnalysisPresenter analysisPresenter)
+      public void RemoveAnalysis(ISimulationAnalysis analysis)
       {
-         _simulation.RemoveAnalysis(analysisPresenter.Analysis);
+         var analysisPresenter = analysisPresenterFor(analysis);
+         if (analysisPresenter == null)
+            return;
+
+         _simulation.RemoveAnalysis(analysis);
          removeAndReleaseAnalysisPresenter(analysisPresenter);
       }
+
+      private ISimulationAnalysisPresenter analysisPresenterFor(ISimulationAnalysis analysis) => _analysisPresenters.FirstOrDefault(x => Equals(x.Analysis, analysis));
 
       public override void Edit(object subject) => Edit(subject.DowncastTo<IMoBiSimulation>());
 
@@ -277,7 +295,7 @@ namespace MoBi.Presentation.Presenter
       {
          _hierarchicalPresenter.Clear();
          _diagramLoaded = false;
-         Edit(_simulation);
+         edit(_simulation);
       }
 
       public void Handle(FavoritesSelectedEvent eventToHandle)
@@ -329,6 +347,7 @@ namespace MoBi.Presentation.Presenter
             return;
 
          addAnalysis(eventToHandle.SimulationAnalysis);
+         _view.SelectAnalysis(eventToHandle.SimulationAnalysis);
       }
 
       private bool canHandle(IObjectBaseEvent objectBaseEvent) => Equals(_simulation, objectBaseEvent.ObjectBase);
