@@ -47,14 +47,14 @@ namespace MoBi.Presentation.Mappers
          if (formula == null)
             return;
 
-         var referencingPaths = formula.ObjectPaths.Where(path => Equals(path.TryResolve<IEntity>(usingFormula), target));
-         referencingPaths.Each(path => references.Add(new ParameterReferenceDTO
+         var referencesToTarget = formula.ObjectReferences.Where(x => Equals(x.Object, target));
+         referencesToTarget.Each(objectReference => references.Add(new ParameterReferenceDTO
          {
             UsedByObject = usingFormula,
             UsedBy = _entityPathResolver.PathFor(usingFormula),
             Type = _objectTypeResolver.TypeFor(usingFormula),
             UsedAs = usedAs,
-            Alias = path.Alias,
+            Alias = objectReference.Alias,
             FormulaName = formula.Name,
             Formula = formulaDisplayFor(formula)
          }));

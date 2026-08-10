@@ -60,7 +60,7 @@ namespace MoBi.Presentation
          var organism = new Container().WithName("Organism");
          root.Add(organism);
 
-         _parameter = new Parameter().WithName("P");
+         _parameter = new Parameter().WithName("P").WithFormula(new ConstantFormula(1));
          organism.Add(_parameter);
 
          //references the parameter with an absolute path
@@ -80,6 +80,8 @@ namespace MoBi.Presentation
          var indirectFormula = new ExplicitFormula("P2 * 3").WithName("F4");
          indirectFormula.AddObjectPath(new FormulaUsablePath("Sim", "Organism", "P2").WithAlias("P2"));
          organism.Add(new Parameter().WithName("P5").WithFormula(indirectFormula));
+
+         new ReferencesResolver().ResolveReferencesIn(root);
 
          _simulation = A.Fake<IMoBiSimulation>();
          A.CallTo(() => _simulation.Model).Returns(new Model { Root = root });

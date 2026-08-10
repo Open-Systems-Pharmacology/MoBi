@@ -30,7 +30,7 @@ namespace MoBi.Presentation.Mapper
          var organism = new Container().WithName("Organism");
          root.Add(organism);
 
-         _parameter = new Parameter().WithName("P");
+         _parameter = new Parameter().WithName("P").WithFormula(new ConstantFormula(1));
          organism.Add(_parameter);
 
          //references the parameter with an absolute path
@@ -47,9 +47,12 @@ namespace MoBi.Presentation.Mapper
          organism.Add(parameterWithRHS);
 
          //references another parameter
+         organism.Add(new Parameter().WithName("Q").WithFormula(new ConstantFormula(2)));
          var otherFormula = new ExplicitFormula("Q * 2").WithName("F3");
          otherFormula.AddObjectPath(new FormulaUsablePath("Sim", "Organism", "Q").WithAlias("Q"));
          organism.Add(new Parameter().WithName("P4").WithFormula(otherFormula));
+
+         new ReferencesResolver().ResolveReferencesIn(root);
 
          _simulation = A.Fake<IMoBiSimulation>();
          A.CallTo(() => _simulation.Model).Returns(new Model { Root = root });
