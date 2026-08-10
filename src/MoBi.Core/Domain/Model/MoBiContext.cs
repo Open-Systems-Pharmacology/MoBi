@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
+using MoBi.Core.Domain.Repository;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Domain.UnitSystem;
 using MoBi.Core.Extensions;
@@ -70,6 +71,7 @@ namespace MoBi.Core.Domain.Model
       private readonly ILazyLoadTask _lazyLoadTask;
       private readonly IDialogCreator _dialogCreator;
       private readonly IJournalSession _journalSession;
+      private readonly ISimulationContentRepository _simulationContentRepository;
 
       public IContainer Container { get; }
       public IMoBiHistoryManager HistoryManager { get; set; }
@@ -84,7 +86,7 @@ namespace MoBi.Core.Domain.Model
          IHistoryManagerFactory historyManagerFactory, IRegisterTask registerTask, IUnregisterTask unregisterTask,
          IClipboardManager clipboardManager, IContainer container, IObjectTypeResolver objectTypeResolver,
          ICloneManagerForBuildingBlock cloneManager, IJournalSession journalSession, IFileLocker fileLocker, ILazyLoadTask lazyLoadTask,
-         IDialogCreator dialogCreator) : base(eventPublisher, fileLocker)
+         IDialogCreator dialogCreator, ISimulationContentRepository simulationContentRepository) : base(eventPublisher, fileLocker)
       {
          ObjectBaseFactory = objectBaseFactory;
          ObjectRepository = objectBaseRepository;
@@ -97,6 +99,7 @@ namespace MoBi.Core.Domain.Model
          _cloneManager = cloneManager;
          _lazyLoadTask = lazyLoadTask;
          _dialogCreator = dialogCreator;
+         _simulationContentRepository = simulationContentRepository;
          _historyManagerFactory = historyManagerFactory;
          _registerTask = registerTask;
          _unregisterTask = unregisterTask;
@@ -168,6 +171,7 @@ namespace MoBi.Core.Domain.Model
          HistoryManager = null;
          ObjectRepository.Clear();
          _clipboardManager.Clear();
+         _simulationContentRepository.Clear();
          _journalSession.Close();
          base.Clear();
       }
@@ -259,6 +263,11 @@ namespace MoBi.Core.Domain.Model
 
       public void UnregisterSimulation(IMoBiSimulation simulation)
       {
+         // If the simulation is not registered there is nothing to unregister, and reading its model to
+         // unregister would needlessly build a deferred (never-accessed) simulation just to delete it.
+         if (!ObjectRepository.ContainsObjectWithId(simulation.Id))
+            return;
+
          Unregister(simulation);
          unregisterCachedFormulaInModel(simulation.Model);
       }

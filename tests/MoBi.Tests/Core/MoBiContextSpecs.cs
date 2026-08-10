@@ -1,6 +1,7 @@
 using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Domain.UnitSystem;
 using MoBi.Core.Serialization.Xml.Services;
@@ -39,6 +40,7 @@ namespace MoBi.Core
       private IFileLocker _fileLocker;
       private ILazyLoadTask _lazyLoadTask;
       protected IDialogCreator _dialogCreator;
+      protected ISimulationContentRepository _simulationContentRepository;
 
       protected override void Context()
       {
@@ -59,13 +61,14 @@ namespace MoBi.Core
          _fileLocker = A.Fake<IFileLocker>();
          _lazyLoadTask = A.Fake<ILazyLoadTask>();
          _dialogCreator = A.Fake<IDialogCreator>();
+         _simulationContentRepository = A.Fake<ISimulationContentRepository>();
 
          sut = new MoBiContext(_objectBaseFactory, _dimensionFactory, _eventPublisher,
             _serializationService, _objectPathFactory, _objectBaseRepository,
             _moBiHistoryManagerFactory, _registerTask, _unregisterTask,
             _clipboardManager, _container,
             _objectTypeResolver, _cloneManager,
-            _journalSession, _fileLocker, _lazyLoadTask, _dialogCreator);
+            _journalSession, _fileLocker, _lazyLoadTask, _dialogCreator, _simulationContentRepository);
 
          A.CallTo(() => _moBiHistoryManagerFactory.Create()).Returns(A.Fake<MoBiHistoryManager>());
       }
@@ -99,6 +102,12 @@ namespace MoBi.Core
       public void should_clear_the_object_base_repository()
       {
          A.CallTo(() => _objectBaseRepository.Clear()).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_clear_the_simulation_content_repository()
+      {
+         A.CallTo(() => _simulationContentRepository.Clear()).MustHaveHappened();
       }
    }
 
@@ -230,6 +239,7 @@ namespace MoBi.Core
       {
          base.Context();
          _simulation = A.Fake<IMoBiSimulation>();
+         A.CallTo(() => _objectBaseRepository.ContainsObjectWithId(A<string>._)).Returns(true);
          _simulation.Model = A.Fake<IModel>();
          _explicitFormula = new ExplicitFormula("1+2");
          _explicitFormulaInNeighborhood = new ExplicitFormula("1+2");
@@ -253,6 +263,35 @@ namespace MoBi.Core
       {
          A.CallTo(() => _unregisterTask.UnregisterAllIn(_explicitFormula)).MustHaveHappened();
          A.CallTo(() => _unregisterTask.UnregisterAllIn(_explicitFormulaInNeighborhood)).MustHaveHappened();
+      }
+   }
+
+   public class When_unregistering_a_simulation_that_is_not_registered : concern_for_MoBiContext
+   {
+      private IMoBiSimulation _simulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = A.Fake<IMoBiSimulation>();
+         A.CallTo(() => _objectBaseRepository.ContainsObjectWithId(A<string>._)).Returns(false);
+      }
+
+      protected override void Because()
+      {
+         sut.UnregisterSimulation(_simulation);
+      }
+
+      [Observation]
+      public void should_not_unregister_anything()
+      {
+         A.CallTo(() => _unregisterTask.UnregisterAllIn(A<IWithId>._)).MustNotHaveHappened();
+      }
+
+      [Observation]
+      public void should_not_read_the_model_and_so_not_materialize_a_deferred_simulation()
+      {
+         A.CallTo(() => _simulation.Model).MustNotHaveHappened();
       }
    }
 

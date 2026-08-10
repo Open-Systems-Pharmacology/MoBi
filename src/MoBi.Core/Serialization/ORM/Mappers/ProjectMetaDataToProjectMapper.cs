@@ -4,6 +4,8 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
+using MoBi.Core.Domain.Services;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Serialization.ORM.MetaData;
 using MoBi.Core.Serialization.Services;
@@ -32,6 +34,8 @@ namespace MoBi.Core.Serialization.ORM.Mappers
       private readonly ISerializationContextFactory _serializationContextFactory;
       private readonly IDeserializedReferenceResolver _deserializedReferenceResolver;
       private readonly IModuleFactory _moduleFactory;
+      private readonly ISimulationContentRepository _simulationContentRepository;
+      private readonly ISimulationModelLoader _simulationModelLoader;
 
       private MoBiProject _project;
 
@@ -39,12 +43,16 @@ namespace MoBi.Core.Serialization.ORM.Mappers
          IXmlSerializationService serializationService,
          ISerializationContextFactory serializationContextFactory,
          IDeserializedReferenceResolver deserializedReferenceResolver,
-         IModuleFactory moduleFactory)
+         IModuleFactory moduleFactory,
+         ISimulationContentRepository simulationContentRepository,
+         ISimulationModelLoader simulationModelLoader)
       {
          _serializationService = serializationService;
          _serializationContextFactory = serializationContextFactory;
          _deserializedReferenceResolver = deserializedReferenceResolver;
          _moduleFactory = moduleFactory;
+         _simulationContentRepository = simulationContentRepository;
+         _simulationModelLoader = simulationModelLoader;
       }
 
       public MoBiProject MapFrom(ProjectMetaData projectMetaData)
@@ -136,7 +144,17 @@ namespace MoBi.Core.Serialization.ORM.Mappers
 
       private void addSimulationToProject(SimulationMetaData simulationMetaData, SerializationContext serializationContext)
       {
-         var simulation = deserializeContent<IMoBiSimulation>(simulationMetaData.Content, serializationContext);
+         var content = simulationMetaData.Content;
+         var simulation = _serializationService.DeserializeSimulationDeferringModel(content.Data, _project, serializationContext);
+
+         // A shell was returned (its model was deferred). Keep the compressed content so the model can be
+         // constructed on first access, and wire the lazy trigger.
+         if (!simulation.IsModelLoaded)
+         {
+            _simulationContentRepository.Register(simulation.Id, content.Data);
+            _simulationModelLoader.ConfigureLazyModelLoad(simulation);
+         }
+
          _project.AddSimulation(simulation);
          deserializeResults(simulation, simulationMetaData, serializationContext);
          //Ensure that all references to simulations (Simulation itself, results etc) are available in the serialization context

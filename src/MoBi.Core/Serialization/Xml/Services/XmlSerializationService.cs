@@ -25,6 +25,30 @@ namespace MoBi.Core.Serialization.Xml.Services
       T Deserialize<T>(XElement element, MoBiProject project, int version);
       T Deserialize<T>(string xmlString, MoBiProject project);
       T Deserialize<T>(byte[] compressedBytes, MoBiProject project, SerializationContext serializationContext = null);
+
+      /// <summary>
+      ///    Deserializes a simulation from its compressed bytes, but leaves the model unconstructed when the
+      ///    content is at the current project version. The returned simulation is then a "shell"
+      ///    (<see cref="IMoBiSimulation.IsModelLoaded" /> is <c>false</c>): everything except the model is
+      ///    deserialized eagerly. Older content is deserialized in full (converted) exactly as before. Use
+      ///    <see cref="DeserializeSimulationModel" /> to build a deferred model later.
+      /// </summary>
+      IMoBiSimulation DeserializeSimulationDeferringModel(byte[] compressedBytes, MoBiProject project, SerializationContext serializationContext);
+
+      /// <summary>
+      ///    Deserializes only the model contained in a simulation's compressed <paramref name="compressedBytes" />.
+      ///    Returns <c>null</c> if the content has no model element.
+      /// </summary>
+      IModel DeserializeSimulationModel(byte[] compressedBytes, MoBiProject project);
+
+      /// <summary>
+      ///    Serializes a changed <paramref name="simulation" /> for save while REUSING the model element from
+      ///    <paramref name="retainedSimulationContent" /> instead of building a deferred model. Use only when the
+      ///    simulation has changes but its model was never materialized, so the model is unchanged and does not
+      ///    need to be constructed just to be re-serialized.
+      /// </summary>
+      byte[] SerializeSimulationReusingModel(IMoBiSimulation simulation, byte[] retainedSimulationContent);
+
       string ElementNameFor(Type type);
       string SerializeAsString<T>(T entityToSerialize);
       byte[] SerializeAsBytes<T>(T entityToSerialize);
@@ -101,6 +125,62 @@ namespace MoBi.Core.Serialization.Xml.Services
          var element = XmlHelper.ElementFromBytes(decompressesBytes);
          return deserialize(element, project, VersionFrom(element), parentSerializationContext: serializationContext).DowncastTo<T>();
       }
+
+      public IMoBiSimulation DeserializeSimulationDeferringModel(byte[] compressedBytes, MoBiProject project, SerializationContext serializationContext)
+      {
+         var element = elementFrom(compressedBytes);
+         var version = VersionFrom(element);
+
+         // Only defer the model for current-version content. Older content needs conversion, which may span
+         // the model and the rest of the simulation together, so it is deserialized in full as before. When the
+         // model element is removed, the resulting simulation is a shell (IsModelLoaded == false).
+         if (version == ProjectVersions.Current)
+            modelElementIn(element)?.Remove();
+
+         return deserialize(element, project, version, parentSerializationContext: serializationContext).DowncastTo<IMoBiSimulation>();
+      }
+
+      public IModel DeserializeSimulationModel(byte[] compressedBytes, MoBiProject project)
+      {
+         var element = elementFrom(compressedBytes);
+         var modelElement = modelElementIn(element);
+         if (modelElement == null)
+            return null;
+
+         return deserialize(modelElement, project, VersionFrom(element)).DowncastTo<IModel>();
+      }
+
+      public byte[] SerializeSimulationReusingModel(IMoBiSimulation simulation, byte[] retainedSimulationContent)
+      {
+         XElement element;
+         var moBiSimulation = simulation as MoBiSimulation;
+
+         // Serialize everything but the model: while suppressed, the Model getter returns the (null) backing
+         // field instead of materializing, so no real model is built.
+         if (moBiSimulation != null)
+            moBiSimulation.SuppressModelMaterialization = true;
+         try
+         {
+            element = SerializeModelPart(simulation);
+         }
+         finally
+         {
+            if (moBiSimulation != null)
+               moBiSimulation.SuppressModelMaterialization = false;
+         }
+
+         // Splice in the original (unchanged) model element from the retained content.
+         modelElementIn(element)?.Remove();
+         var originalModelElement = modelElementIn(elementFrom(retainedSimulationContent));
+         if (originalModelElement != null)
+            element.Add(originalModelElement);
+
+         return _compression.Compress(XmlHelper.XmlContentToByte(element));
+      }
+
+      private XElement elementFrom(byte[] compressedBytes) => XmlHelper.ElementFromBytes(_compression.Decompress(compressedBytes));
+
+      private XElement modelElementIn(XElement simulationElement) => simulationElement.Element(ElementNameFor(typeof(OSPSuite.Core.Domain.Model)));
 
       private object deserialize(XElement element, MoBiProject project, int version, Type type = null, SerializationContext parentSerializationContext = null)
       {

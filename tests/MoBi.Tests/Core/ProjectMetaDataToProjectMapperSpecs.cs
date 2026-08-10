@@ -1,6 +1,8 @@
 ﻿using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
+using MoBi.Core.Domain.Services;
 using MoBi.Core.Serialization.ORM.Mappers;
 using MoBi.Core.Serialization.ORM.MetaData;
 using MoBi.Core.Serialization.Services;
@@ -23,6 +25,8 @@ namespace MoBi.Core
       protected MoBiProject _project;
       protected ProjectMetaData _projectMetaData;
       private IModuleFactory _moduleFactory;
+      private ISimulationContentRepository _simulationContentRepository;
+      private ISimulationModelLoader _simulationModelLoader;
 
       protected override void Context()
       {
@@ -34,7 +38,9 @@ namespace MoBi.Core
          A.CallTo(() => _serializationService.Deserialize<MoBiProject>(_projectMetaData.Content.Data, A<MoBiProject>._, A<SerializationContext>._)).Returns(_project);
 
          _moduleFactory = A.Fake<IModuleFactory>();
-         sut = new ProjectMetaDataToProjectMapper(_serializationService, _serializationContextFactory, _deserializedReferenceResolver, _moduleFactory);
+         _simulationContentRepository = A.Fake<ISimulationContentRepository>();
+         _simulationModelLoader = A.Fake<ISimulationModelLoader>();
+         sut = new ProjectMetaDataToProjectMapper(_serializationService, _serializationContextFactory, _deserializedReferenceResolver, _moduleFactory, _simulationContentRepository, _simulationModelLoader);
       }
    }
 

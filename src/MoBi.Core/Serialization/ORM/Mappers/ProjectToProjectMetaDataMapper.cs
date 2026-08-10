@@ -1,6 +1,7 @@
 using System.Linq;
 using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Domain.Repository;
 using MoBi.Core.Serialization.ORM.MetaData;
 using MoBi.Core.Serialization.Xml.Services;
 using OSPSuite.Core.Chart;
@@ -21,10 +22,12 @@ namespace MoBi.Core.Serialization.ORM.Mappers
    public class ProjectToProjectMetaDataMapper : IProjectToProjectMetaDataMapper
    {
       private readonly IXmlSerializationService _serializationService;
+      private readonly ISimulationContentRepository _simulationContentRepository;
 
-      public ProjectToProjectMetaDataMapper(IXmlSerializationService serializationService)
+      public ProjectToProjectMetaDataMapper(IXmlSerializationService serializationService, ISimulationContentRepository simulationContentRepository)
       {
          _serializationService = serializationService;
+         _simulationContentRepository = simulationContentRepository;
       }
 
       public ProjectMetaData MapFrom(MoBiProject project)
@@ -62,7 +65,16 @@ namespace MoBi.Core.Serialization.ORM.Mappers
          if (!simulation.HasChanged)
             return simulationMetaData;
 
-         serialize(simulationMetaData, simulation);
+         // The simulation has changes but its model was never materialized: the model is therefore unchanged, so
+         // reuse its retained bytes rather than building the model just to re-serialize it.
+         if (!simulation.IsModelLoaded && _simulationContentRepository.Contains(simulation.Id))
+         {
+            simulationMetaData.Discriminator = simulation.GetType().Name;
+            simulationMetaData.Content.Data = _serializationService.SerializeSimulationReusingModel(simulation, _simulationContentRepository.ContentFor(simulation.Id));
+         }
+         else
+            serialize(simulationMetaData, simulation);
+
          simulation.HistoricResults.Where(x => x.IsPersistable()).Each(res => simulationMetaData.AddHistoricalResults(mapFrom(res)));
          return simulationMetaData;
       }
