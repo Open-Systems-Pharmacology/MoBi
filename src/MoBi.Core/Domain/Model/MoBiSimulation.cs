@@ -91,6 +91,7 @@ public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
    private readonly ICache<string, OriginalQuantityValue> _quantityValueCache = new Cache<string, OriginalQuantityValue>(onMissingKey: key => null);
    private bool _hasChanged;
    private bool _modelMaterialized;
+   private bool _materializingModel;
    private Action _lazyModelLoader;
 
    public MoBiSimulation()
@@ -124,13 +125,18 @@ public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
       get
       {
          // A shell was loaded without a model. Materialize it on first access.
-         if (!SuppressModelMaterialization && !_modelMaterialized && _lazyModelLoader != null)
+         if (!SuppressModelMaterialization && !_modelMaterialized && !_materializingModel && _lazyModelLoader != null)
          {
-            // Guard against re-entrancy: registering the materialized model re-reads Model via AcceptVisitor.
-            _modelMaterialized = true;
-            var loader = _lazyModelLoader;
-            _lazyModelLoader = null;
-            loader();
+            // _materializingModel guards re-entrancy: registering the materialized model re-reads Model via AcceptVisitor.
+            _materializingModel = true;
+            try
+            {
+               _lazyModelLoader();
+            }
+            finally
+            {
+               _materializingModel = false;
+            }
          }
 
          return base.Model;

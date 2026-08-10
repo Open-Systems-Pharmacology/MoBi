@@ -76,27 +76,6 @@ namespace MoBi.Core
       }
    }
 
-   public class When_materializing_a_simulation_without_deferred_content : concern_for_SimulationModelLoader
-   {
-      protected override void Context()
-      {
-         base.Context();
-         A.CallTo(() => _contentRepository.ContentFor("sim-1")).Returns(null);
-      }
-
-      protected override void Because()
-      {
-         sut.MaterializeModel(_simulation);
-      }
-
-      [Observation]
-      public void should_not_deserialize_or_register_anything()
-      {
-         A.CallTo(() => _serializationService.DeserializeSimulationModel(A<byte[]>._, A<MoBiProject>._)).MustNotHaveHappened();
-         A.CallTo(() => _registerTask.RegisterAllIn(A<IWithId>._)).MustNotHaveHappened();
-      }
-   }
-
    public class When_configuring_lazy_model_load_on_a_shell_simulation : concern_for_SimulationModelLoader
    {
       private IModel _result;

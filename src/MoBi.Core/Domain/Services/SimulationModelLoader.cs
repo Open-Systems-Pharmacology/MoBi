@@ -47,13 +47,11 @@ namespace MoBi.Core.Domain.Services
       public void MaterializeModel(IMoBiSimulation simulation)
       {
          var content = _simulationContentRepository.ContentFor(simulation.Id);
-         if (content == null)
-            return;
-
+         
          simulation.Model = _serializationService.DeserializeSimulationModel(content, _projectRetriever.Current);
 
          // The model's own references are resolved during deserialization; the origin simulation id of the
-         // model parameters can only be set now that the model exists (it is a no-op on a shell).
+         // model parameters can only be set now that the model exists.
          _simulationParameterOriginIdUpdater.UpdateSimulationId(simulation);
 
          // Registers the now-materialized model and the rest of the simulation graph, which was not registered

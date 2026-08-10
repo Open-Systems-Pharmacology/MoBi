@@ -497,4 +497,21 @@ namespace MoBi.Core
          _loaderCallCount.ShouldBeEqualTo(0);
       }
    }
+
+   public class When_the_lazy_model_loader_fails_before_assigning_a_model : concern_for_MoBiSimulation_lazy_model
+   {
+      protected override void Context()
+      {
+         base.Context();
+         // a materialization that fails (e.g. corrupt content) before a model is assigned
+         sut.SetLazyModelLoader(() => throw new System.InvalidOperationException("materialization failed"));
+      }
+
+      [Observation]
+      public void should_leave_the_simulation_as_an_unloaded_shell_so_it_stays_retryable_and_save_safe()
+      {
+         The.Action(() => { var unused = sut.Model; }).ShouldThrowAn<System.InvalidOperationException>();
+         sut.IsModelLoaded.ShouldBeFalse();
+      }
+   }
 }
