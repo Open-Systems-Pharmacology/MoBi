@@ -248,6 +248,81 @@ namespace MoBi.Presentation
       }
    }
 
+   public class When_the_notification_list_presenter_is_being_notified_that_neighborhoods_are_defined_between_logical_containers : concern_for_NotificationPresenter
+   {
+      private ValidationResult _validationResult;
+      private Neighborhood _liverNeighborhood;
+      private Neighborhood _liverNeighborhoodWithOneLogicalNeighborWarning;
+      private Neighborhood _liverNeighborhoodWithAnotherWarning;
+      private Neighborhood _kidneyNeighborhood;
+
+      protected override void Context()
+      {
+         base.Context();
+         _validationResult = new ValidationResult();
+
+         _liverNeighborhood = createNeighborhoodBetweenLogicalCompartments(AppConstants.Liver, "Liver_pls_Liver_int", "1");
+         _liverNeighborhoodWithOneLogicalNeighborWarning = createNeighborhoodBetweenLogicalCompartments(AppConstants.Liver, "Liver_int_Liver_cell", "2");
+         _liverNeighborhoodWithAnotherWarning = createNeighborhoodBetweenLogicalCompartments(AppConstants.Liver, "Liver_pls_Liver_bc", "3");
+         _kidneyNeighborhood = createNeighborhoodBetweenLogicalCompartments("Kidney", "Kidney_pls_Kidney_int", "4");
+
+         // those warnings are always hidden because the neighborhood is defined between the logical compartments of the liver
+         addLogicalNeighborWarningsFor(_liverNeighborhood);
+         addLogicalNeighborWarningFor(_liverNeighborhoodWithOneLogicalNeighborWarning, _liverNeighborhoodWithOneLogicalNeighborWarning.FirstNeighbor);
+
+         // those warnings should be displayed because the neighborhood is not defined between the compartments of the liver
+         addLogicalNeighborWarningsFor(_kidneyNeighborhood);
+
+         // this warning should be displayed because it is not a warning created for a logical neighbor
+         addLogicalNeighborWarningFor(_liverNeighborhoodWithAnotherWarning, _liverNeighborhoodWithAnotherWarning.FirstNeighbor);
+         _validationResult.AddMessage(NotificationType.Warning, _liverNeighborhoodWithAnotherWarning, "Another warning");
+      }
+
+      private Neighborhood createNeighborhoodBetweenLogicalCompartments(string organName, string neighborhoodName, string id)
+      {
+         var organ = new Container().WithName(organName);
+         return new Neighborhood
+         {
+            FirstNeighbor = new Container().WithName("Plasma").WithMode(ContainerMode.Logical).WithParentContainer(organ),
+            SecondNeighbor = new Container().WithName("Interstitial").WithMode(ContainerMode.Logical).WithParentContainer(organ)
+         }.WithName(neighborhoodName).WithId(id);
+      }
+
+      private void addLogicalNeighborWarningsFor(Neighborhood neighborhood)
+      {
+         addLogicalNeighborWarningFor(neighborhood, neighborhood.FirstNeighbor);
+         addLogicalNeighborWarningFor(neighborhood, neighborhood.SecondNeighbor);
+      }
+
+      private void addLogicalNeighborWarningFor(Neighborhood neighborhood, IContainer neighbor)
+      {
+         _validationResult.AddMessage(NotificationType.Warning, neighborhood, Error.NeighborIsLogical(neighbor.Name, neighborhood.Name));
+      }
+
+      protected override void Because()
+      {
+         sut.Handle(new ShowValidationResultsEvent(_validationResult));
+      }
+
+      [Observation]
+      public void should_not_display_the_warnings_created_for_the_logical_compartments_of_the_liver()
+      {
+         _allNotifications.Select(x => x.ObjectName).ShouldNotContain(_liverNeighborhood.Name, _liverNeighborhoodWithOneLogicalNeighborWarning.Name);
+      }
+
+      [Observation]
+      public void should_display_the_warnings_created_for_the_logical_compartments_of_another_organ()
+      {
+         _allNotifications.Select(x => x.ObjectName).ShouldContain(_kidneyNeighborhood.Name);
+      }
+
+      [Observation]
+      public void should_display_the_other_warnings_created_for_a_neighborhood_of_the_liver()
+      {
+         _allNotifications.Select(x => x.ObjectName).ShouldContain(_liverNeighborhoodWithAnotherWarning.Name);
+      }
+   }
+
    public class When_the_notification_presenter_is_asked_if_a_notification_should_be_displayed : concern_for_NotificationPresenter
    {
       private NotificationMessageDTO _visibleNotification;

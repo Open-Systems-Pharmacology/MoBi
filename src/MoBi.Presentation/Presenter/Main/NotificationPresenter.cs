@@ -23,6 +23,7 @@ using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using static MoBi.Assets.AppConstants;
+using Error = OSPSuite.Assets.Error;
 using Validation = OSPSuite.Assets.Validation;
 
 namespace MoBi.Presentation.Presenter.Main
@@ -199,8 +200,37 @@ namespace MoBi.Presentation.Presenter.Main
          if (isPKSimObserverMessage(message))
             return _userSettings.ShowPKSimObserverMessages;
 
+         if (isLogicalNeighborMessageForLiverNeighborhood(message))
+            return false;
+
          return true;
       }
+
+      /// <summary>
+      ///    Neighborhoods between the logical compartments of the liver are created by PK-Sim on purpose (zonated liver). The
+      ///    warnings created for those neighborhoods are always filtered out
+      /// </summary>
+      private bool isLogicalNeighborMessageForLiverNeighborhood(NotificationMessageDTO message)
+      {
+         if (!(message.Object is Neighborhood neighborhood))
+            return false;
+
+         if (!isLogicalLiverCompartment(neighborhood.FirstNeighbor) || !isLogicalLiverCompartment(neighborhood.SecondNeighbor))
+            return false;
+
+         var logicalNeighborMessages = new[]
+         {
+            Error.NeighborIsLogical(neighborhood.FirstNeighbor.Name, neighborhood.Name),
+            Error.NeighborIsLogical(neighborhood.SecondNeighbor.Name, neighborhood.Name)
+         };
+
+         //details are only defined when more than one message was created for the neighborhood. Other messages should still be displayed
+         IEnumerable<string> messages = message.Details.Any() ? message.Details : new[] { message.NotificationMessage.Message };
+         return messages.All(x => logicalNeighborMessages.Contains(x));
+      }
+
+      private bool isLogicalLiverCompartment(IContainer container) =>
+         container != null && container.Mode == ContainerMode.Logical && string.Equals(container.ParentContainer?.Name, Liver);
 
       private bool isUnresolvedEndosomeForInitialConditionMessage(NotificationMessageDTO message)
       {
