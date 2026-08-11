@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
@@ -12,6 +13,7 @@ using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
@@ -29,11 +31,13 @@ namespace MoBi.Presentation.Presenter
       IListener<UserDefinedSelectedEvent>,
       IListener<ShowSimulationChangesEvent>,
       IListener<SimulationRunStartedEvent>,
-      IListener<SimulationAnalysisCreatedEvent>
+      IListener<SimulationAnalysisCreatedEvent>,
+      IPresenterWithAnalyses
    {
       void LoadDiagram();
       void LoadChanges();
       void RemoveAnalysis(ISimulationAnalysis analysis);
+      void ShowContextMenu(ISimulationAnalysis analysis, Point popupLocation);
    }
 
    public class EditSimulationPresenter : SingleStartPresenter<IEditSimulationView, IEditSimulationPresenter>, IEditSimulationPresenter, IListener<ObservedDataRemovedFromAnalysableEvent>, IListener<ObservedDataAddedToAnalysableEvent>
@@ -58,6 +62,8 @@ namespace MoBi.Presentation.Presenter
       private readonly ISimulationRunner _simulationRunner;
       private readonly ISimulationAnalysisPresenterFactory _simulationAnalysisPresenterFactory;
       private readonly IEventPublisher _eventPublisher;
+      private readonly IMoBiSimulationAnalysisCreator _simulationAnalysisCreator;
+      private readonly ISimulationAnalysisPresenterContextMenuFactory _contextMenuFactory;
       private readonly IList<ISimulationAnalysisPresenter> _analysisPresenters = new List<ISimulationAnalysisPresenter>();
 
       public EditSimulationPresenter(
@@ -77,7 +83,9 @@ namespace MoBi.Presentation.Presenter
          ISimulationEntitySourceReferenceFactory entitySourceReferenceFactory,
          ISimulationRunner simulationRunner,
          ISimulationAnalysisPresenterFactory simulationAnalysisPresenterFactory,
-         IEventPublisher eventPublisher)
+         IEventPublisher eventPublisher,
+         IMoBiSimulationAnalysisCreator simulationAnalysisCreator,
+         ISimulationAnalysisPresenterContextMenuFactory contextMenuFactory)
          : base(view)
       {
          _simulationChangesPresenter = changesPresenter;
@@ -95,6 +103,8 @@ namespace MoBi.Presentation.Presenter
          _simulationRunner = simulationRunner;
          _simulationAnalysisPresenterFactory = simulationAnalysisPresenterFactory;
          _eventPublisher = eventPublisher;
+         _simulationAnalysisCreator = simulationAnalysisCreator;
+         _contextMenuFactory = contextMenuFactory;
          _outputMappingMatchingTask = outputMappingMatchingTask;
          _view.SetTreeView(hierarchicalPresenter.BaseView);
          _view.SetModelDiagram(_simulationDiagramPresenter.View);
@@ -198,6 +208,27 @@ namespace MoBi.Presentation.Presenter
 
          _simulation.RemoveAnalysis(analysis);
          removeAndReleaseAnalysisPresenter(analysisPresenter);
+      }
+
+      public void RemoveAnalysis(ISimulationAnalysisPresenter simulationAnalysisPresenter) => RemoveAnalysis(simulationAnalysisPresenter.Analysis);
+
+      public void RemoveAllAnalyses() => _analysisPresenters.ToList().Each(RemoveAnalysis);
+
+      public void CloneAnalysis(ISimulationAnalysis analysis)
+      {
+         var clonedAnalysis = _simulationAnalysisCreator.CreateAnalysisBasedOn(analysis);
+         _simulationAnalysisCreator.AddSimulationAnalysisTo(_simulation, clonedAnalysis);
+      }
+
+      public void ShowContextMenu(ISimulationAnalysis analysis, Point popupLocation) => ShowContextMenu(analysisPresenterFor(analysis), popupLocation);
+
+      public void ShowContextMenu(ISimulationAnalysisPresenter analysisPresenter, Point popupLocation)
+      {
+         if (analysisPresenter == null)
+            return;
+
+         var contextMenu = _contextMenuFactory.CreateFor(analysisPresenter, this);
+         contextMenu.Show(_view, popupLocation);
       }
 
       private ISimulationAnalysisPresenter analysisPresenterFor(ISimulationAnalysis analysis) => _analysisPresenters.FirstOrDefault(x => Equals(x.Analysis, analysis));

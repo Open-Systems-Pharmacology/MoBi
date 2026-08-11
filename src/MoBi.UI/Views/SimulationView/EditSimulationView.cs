@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
+using System.Windows.Forms;
 using DevExpress.Utils;
+using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
 using DevExpress.XtraTab;
 using DevExpress.XtraTab.ViewInfo;
@@ -13,20 +15,25 @@ using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Extensions;
+using OSPSuite.UI.Services;
 using OSPSuite.UI.Views;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.UI.Views.SimulationView
 {
-   public partial class EditSimulationView : BaseMdiChildView, IEditSimulationView
+   public partial class EditSimulationView : BaseMdiChildView, IEditSimulationView, IViewWithPopup
    {
-      public EditSimulationView(IMainView mainView) : base(mainView)
+      public BarManager PopupBarManager { get; }
+
+      public EditSimulationView(IMainView mainView, IImageListRetriever imageListRetriever) : base(mainView)
       {
          InitializeComponent();
          spliterDiagram.CollapsePanel = SplitCollapsePanel.Panel1;
          splitSimulationParameters.CollapsePanel = SplitCollapsePanel.Panel1;
          tabs.ClosePageButtonShowMode = ClosePageButtonShowMode.InActiveTabPageHeader;
          tabs.CloseButtonClick += (o, e) => OnEvent(closeButtonClick, e as ClosePageButtonEventArgs);
+         tabs.MouseDown += (o, e) => OnEvent(onTabsMouseDown, e);
+         PopupBarManager = new BarManager { Form = this, Images = imageListRetriever.AllImagesForContextMenu };
       }
 
       public void AttachPresenter(IEditSimulationPresenter presenter)
@@ -68,6 +75,21 @@ namespace MoBi.UI.Views.SimulationView
             return;
 
          simulationPresenter.RemoveAnalysis(analysis);
+      }
+
+      private void onTabsMouseDown(MouseEventArgs e)
+      {
+         if (e.Button != MouseButtons.Right)
+            return;
+
+         var hitInfo = tabs.CalcHitInfo(e.Location);
+         if (hitInfo == null || hitInfo.HitTest != XtraTabHitTest.PageHeader)
+            return;
+
+         if (hitInfo.Page?.Tag is not ISimulationAnalysis analysis)
+            return;
+
+         simulationPresenter.ShowContextMenu(analysis, PointToClient(Cursor.Position));
       }
 
       public void SetEditView(IView view)

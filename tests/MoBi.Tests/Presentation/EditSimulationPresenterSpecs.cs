@@ -1,3 +1,4 @@
+using System.Drawing;
 using FakeItEasy;
 using MoBi.Core.Chart;
 using MoBi.Core.Domain.Model;
@@ -14,6 +15,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters;
+using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Views;
 using OSPSuite.Utility.Events;
 
@@ -36,6 +38,8 @@ namespace MoBi.Presentation
       protected ISimulationRunner _simulationRunner;
       protected ISimulationAnalysisPresenterFactory _simulationAnalysisPresenterFactory;
       protected IEventPublisher _eventPublisher;
+      protected IMoBiSimulationAnalysisCreator _simulationAnalysisCreator;
+      protected ISimulationAnalysisPresenterContextMenuFactory _contextMenuFactory;
       private ISimulationChangesPresenter _simulationChangesPresenter;
 
       protected override void Context()
@@ -56,12 +60,15 @@ namespace MoBi.Presentation
          _simulationRunner = A.Fake<ISimulationRunner>();
          _simulationAnalysisPresenterFactory = A.Fake<ISimulationAnalysisPresenterFactory>();
          _eventPublisher = A.Fake<IEventPublisher>();
+         _simulationAnalysisCreator = A.Fake<IMoBiSimulationAnalysisCreator>();
+         _contextMenuFactory = A.Fake<ISimulationAnalysisPresenterContextMenuFactory>();
 
          sut = new EditSimulationPresenter(_view, _hierarchicalSimulationPresenter, _diagramPresenter,
             _solverSettings, _outputSchemaPresenter, _presenterFactory, new HeavyWorkManagerForSpecs(),
             _editFavoritePresenter, _userDefinedParametersPresenter, _simulationOutputMappingPresenter,
             _context, _outputMappingMatchingTask, _simulationChangesPresenter, _entitySourceReferenceFactory,
-            _simulationRunner, _simulationAnalysisPresenterFactory, _eventPublisher);
+            _simulationRunner, _simulationAnalysisPresenterFactory, _eventPublisher,
+            _simulationAnalysisCreator, _contextMenuFactory);
       }
    }
 
@@ -331,6 +338,138 @@ namespace MoBi.Presentation
       public void should_release_the_presenter_from_events()
       {
          A.CallTo(() => _analysisPresenter.ReleaseFrom(_eventPublisher)).MustHaveHappened();
+      }
+   }
+
+   public abstract class concern_for_EditSimulationPresenterWithEditedAnalysis : concern_for_EditSimulationPresenter
+   {
+      protected IMoBiSimulation _simulation;
+      protected MoBiSimulationTimeProfileChart _chart;
+      protected ISimulationAnalysisPresenter _analysisPresenter;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = A.Fake<IMoBiSimulation>();
+         _chart = new MoBiSimulationTimeProfileChart();
+         A.CallTo(() => _simulation.Analyses).Returns(new ISimulationAnalysis[] { _chart });
+
+         _analysisPresenter = A.Fake<ISimulationAnalysisPresenter>();
+         A.CallTo(() => _analysisPresenter.Analysis).Returns(_chart);
+         A.CallTo(() => _simulationAnalysisPresenterFactory.PresenterFor(_chart)).Returns(_analysisPresenter);
+
+         sut.Edit(_simulation);
+      }
+   }
+
+   public class When_removing_an_analysis_via_its_presenter : concern_for_EditSimulationPresenterWithEditedAnalysis
+   {
+      protected override void Because()
+      {
+         sut.RemoveAnalysis(_analysisPresenter);
+      }
+
+      [Observation]
+      public void should_remove_the_analysis_from_the_simulation_and_the_view()
+      {
+         A.CallTo(() => _simulation.RemoveAnalysis(_chart)).MustHaveHappened();
+         A.CallTo(() => _view.RemoveAnalysis(_chart)).MustHaveHappened();
+      }
+   }
+
+   public class When_removing_all_analyses : concern_for_EditSimulationPresenterWithEditedAnalysis
+   {
+      private MoBiSimulationTimeProfileChart _otherChart;
+      private ISimulationAnalysisPresenter _otherAnalysisPresenter;
+
+      protected override void Context()
+      {
+         base.Context();
+         _otherChart = new MoBiSimulationTimeProfileChart();
+         _otherAnalysisPresenter = A.Fake<ISimulationAnalysisPresenter>();
+         A.CallTo(() => _otherAnalysisPresenter.Analysis).Returns(_otherChart);
+         A.CallTo(() => _simulationAnalysisPresenterFactory.PresenterFor(_otherChart)).Returns(_otherAnalysisPresenter);
+         sut.Handle(new SimulationAnalysisCreatedEvent(_simulation, _otherChart));
+      }
+
+      protected override void Because()
+      {
+         sut.RemoveAllAnalyses();
+      }
+
+      [Observation]
+      public void should_remove_all_analyses_from_the_simulation()
+      {
+         A.CallTo(() => _simulation.RemoveAnalysis(_chart)).MustHaveHappened();
+         A.CallTo(() => _simulation.RemoveAnalysis(_otherChart)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_remove_all_analyses_from_the_view()
+      {
+         A.CallTo(() => _view.RemoveAnalysis(_chart)).MustHaveHappened();
+         A.CallTo(() => _view.RemoveAnalysis(_otherChart)).MustHaveHappened();
+      }
+   }
+
+   public class When_cloning_an_analysis : concern_for_EditSimulationPresenterWithEditedAnalysis
+   {
+      private MoBiSimulationTimeProfileChart _clonedChart;
+
+      protected override void Context()
+      {
+         base.Context();
+         _clonedChart = new MoBiSimulationTimeProfileChart();
+         A.CallTo(() => _simulationAnalysisCreator.CreateAnalysisBasedOn(_chart)).Returns(_clonedChart);
+      }
+
+      protected override void Because()
+      {
+         sut.CloneAnalysis(_chart);
+      }
+
+      [Observation]
+      public void should_add_the_cloned_analysis_to_the_simulation()
+      {
+         A.CallTo(() => _simulationAnalysisCreator.AddSimulationAnalysisTo(_simulation, _clonedChart)).MustHaveHappened();
+      }
+   }
+
+   public class When_showing_the_context_menu_for_the_tab_of_an_analysis : concern_for_EditSimulationPresenterWithEditedAnalysis
+   {
+      private IContextMenu _contextMenu;
+      private readonly Point _popupLocation = new Point(10, 20);
+
+      protected override void Context()
+      {
+         base.Context();
+         _contextMenu = A.Fake<IContextMenu>();
+         A.CallTo(() => _contextMenuFactory.CreateFor(_analysisPresenter, sut)).Returns(_contextMenu);
+      }
+
+      protected override void Because()
+      {
+         sut.ShowContextMenu(_chart, _popupLocation);
+      }
+
+      [Observation]
+      public void should_show_the_context_menu_created_for_the_analysis_presenter()
+      {
+         A.CallTo(() => _contextMenu.Show(_view, _popupLocation)).MustHaveHappened();
+      }
+   }
+
+   public class When_showing_the_context_menu_for_the_tab_of_an_unknown_analysis : concern_for_EditSimulationPresenterWithEditedAnalysis
+   {
+      protected override void Because()
+      {
+         sut.ShowContextMenu(new MoBiSimulationTimeProfileChart(), new Point(10, 20));
+      }
+
+      [Observation]
+      public void should_not_show_any_context_menu()
+      {
+         A.CallTo(() => _contextMenuFactory.CreateFor(A<ISimulationAnalysisPresenter>._, A<IPresenterWithContextMenu<ISimulationAnalysisPresenter>>._)).MustNotHaveHappened();
       }
    }
 
