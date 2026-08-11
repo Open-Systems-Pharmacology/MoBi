@@ -79,7 +79,7 @@ namespace MoBi.Presentation.Presenter
             defaultTemplate = _simulation.DefaultChartTemplateFor(_analysisChart.CurveChartType);
 
          addObservedDataRepositories(plottedData, _analysisChart.Curves);
-         var notPlottedData = mappedObservedDataExcept(plottedData);
+         var notPlottedData = usedObservedDataExcept(plottedData);
 
          Show(_analysisChart, plottedData, notPlottedData, defaultTemplate);
       }
@@ -93,9 +93,14 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
-      private IReadOnlyList<DataRepository> mappedObservedDataExcept(IReadOnlyList<DataRepository> plottedData)
+      private IReadOnlyList<DataRepository> usedObservedDataExcept(IReadOnlyList<DataRepository> plottedData)
       {
-         return _simulation.OutputMappings.AllDataRepositoryMappedFor(_simulation).Except(plottedData).ToList();
+         var mappedObservedData = _simulation.OutputMappings.AllDataRepositoryMappedFor(_simulation);
+         var trackedObservedData = _simulation.UsedObservedData
+            .Select(x => _context.CurrentProject.ObservedDataBy(x.Id))
+            .Where(x => x != null);
+
+         return mappedObservedData.Union(trackedObservedData).Except(plottedData).ToList();
       }
    }
 }

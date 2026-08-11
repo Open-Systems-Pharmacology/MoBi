@@ -89,6 +89,7 @@ public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
    public bool HasUntraceableChanges { get; set; }
 
    private readonly ICache<string, OriginalQuantityValue> _quantityValueCache = new Cache<string, OriginalQuantityValue>(onMissingKey: key => null);
+   private readonly ICache<string, UsedObservedData> _usedObservedData = new Cache<string, UsedObservedData>(x => x.Id);
    private bool _hasChanged;
    private bool _modelMaterialized;
    private bool _materializingModel;
@@ -222,9 +223,22 @@ public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
 
    public SolverSettings Solver => Settings.Solver;
 
+   public IEnumerable<UsedObservedData> UsedObservedData => _usedObservedData;
+
+   public void AddUsedObservedData(DataRepository dataRepository) => AddUsedObservedData(OSPSuite.Core.Domain.UsedObservedData.From(dataRepository));
+
+   public void AddUsedObservedData(UsedObservedData usedObservedData)
+   {
+      if (_usedObservedData.Contains(usedObservedData.Id))
+         return;
+
+      usedObservedData.Simulation = this;
+      _usedObservedData.Add(usedObservedData);
+   }
+
    public bool UsesObservedData(DataRepository dataRepository)
    {
-      return OutputMappings.Any(x => x.UsesObservedData(dataRepository)) || Charts.Any(x => chartUsesObservedData(dataRepository, x));
+      return _usedObservedData.Contains(dataRepository.Id) || OutputMappings.Any(x => x.UsesObservedData(dataRepository)) || Charts.Any(x => chartUsesObservedData(dataRepository, x));
    }
 
    private bool chartUsesObservedData(DataRepository dataRepository, CurveChart curveChart) => curveChart != null && curveChart.Curves.Any(c => Equals(c.yData.Repository, dataRepository));
@@ -258,6 +272,8 @@ public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
       OutputMappings.SwapSimulation(sourceSimulation, this);
 
       sourceSimulation.OriginalQuantityValues.Each(x => AddOriginalQuantityValue(new OriginalQuantityValue().WithPropertiesFrom(x)));
+      _usedObservedData.Clear();
+      sourceSimulation.UsedObservedData.Each(x => AddUsedObservedData(x.Clone()));
       HasUntraceableChanges = sourceSimulation.HasUntraceableChanges;
 
       this.UpdateDiagramFrom(sourceSimulation);
@@ -274,6 +290,8 @@ public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
    {
       if (!UsesObservedData(dataRepository))
          return;
+
+      _usedObservedData.Remove(dataRepository.Id);
 
       Charts.Each(chart =>
       {

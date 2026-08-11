@@ -158,6 +158,7 @@ namespace MoBi.Core
             OutputSelection = new SimulationQuantitySelection(_moBiSimulation, new QuantitySelection("A|BC", QuantityType.Enzyme)),
             WeightedObservedData = new WeightedObservedData(DomainHelperForSpecs.ObservedData())
          });
+         _moBiSimulation.AddUsedObservedData(DomainHelperForSpecs.ObservedData("usedData"));
          _moBiSimulation.HasUntraceableChanges = true;
       }
 
@@ -197,6 +198,15 @@ namespace MoBi.Core
       {
          sut.OutputMappings.Count().ShouldBeEqualTo(1);
          sut.OutputMappings.ElementAt(0).Simulation.ShouldBeEqualTo(sut);
+      }
+
+      [Observation]
+      public void should_have_copied_the_used_observed_data_referencing_the_target_simulation()
+      {
+         sut.UsedObservedData.Count().ShouldBeEqualTo(1);
+         sut.UsedObservedData.ElementAt(0).Id.ShouldBeEqualTo("usedData");
+         sut.UsedObservedData.ElementAt(0).Simulation.ShouldBeEqualTo(sut);
+         sut.UsedObservedData.ElementAt(0).ShouldNotBeEqualTo(_moBiSimulation.UsedObservedData.First());
       }
    }
 
@@ -514,4 +524,73 @@ namespace MoBi.Core
          sut.IsModelLoaded.ShouldBeFalse();
       }
    }
+
+   public class When_adding_used_observed_data_to_a_simulation : concern_for_MoBiSimulation
+   {
+      private DataRepository _observedData;
+
+      protected override void Context()
+      {
+         base.Context();
+         _observedData = DomainHelperForSpecs.ObservedData();
+      }
+
+      protected override void Because()
+      {
+         sut.AddUsedObservedData(_observedData);
+         //adding the same observed data twice should not create a second entry
+         sut.AddUsedObservedData(_observedData);
+      }
+
+      [Observation]
+      public void the_simulation_should_track_the_observed_data_only_once()
+      {
+         sut.UsedObservedData.Count().ShouldBeEqualTo(1);
+         sut.UsedObservedData.ElementAt(0).Id.ShouldBeEqualTo(_observedData.Id);
+      }
+
+      [Observation]
+      public void the_tracked_observed_data_should_reference_the_simulation()
+      {
+         sut.UsedObservedData.ElementAt(0).Simulation.ShouldBeEqualTo(sut);
+      }
+
+      [Observation]
+      public void the_simulation_should_indicate_that_it_uses_the_observed_data()
+      {
+         sut.UsesObservedData(_observedData).ShouldBeTrue();
+      }
+   }
+
+   public class When_removing_used_observed_data_from_a_simulation : concern_for_MoBiSimulation
+   {
+      private DataRepository _observedData;
+
+      protected override void Context()
+      {
+         base.Context();
+         _observedData = DomainHelperForSpecs.ObservedData();
+         sut.AddUsedObservedData(_observedData);
+         sut.HasChanged = false;
+      }
+
+      protected override void Because()
+      {
+         sut.RemoveUsedObservedData(_observedData);
+      }
+
+      [Observation]
+      public void the_simulation_should_not_track_the_observed_data_anymore()
+      {
+         sut.UsedObservedData.Any().ShouldBeFalse();
+         sut.UsesObservedData(_observedData).ShouldBeFalse();
+      }
+
+      [Observation]
+      public void the_simulation_should_be_marked_as_changed()
+      {
+         sut.HasChanged.ShouldBeTrue();
+      }
+   }
+
 }

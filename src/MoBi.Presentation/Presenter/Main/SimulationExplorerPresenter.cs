@@ -39,7 +39,9 @@ namespace MoBi.Presentation.Presenter.Main
       IListener<ChartAddedEvent>,
       IListener<ChartDeletedEvent>,
       IListener<SimulationStatusChangedEvent>,
-      IListener<SimulationReloadEvent>
+      IListener<SimulationReloadEvent>,
+      IListener<ObservedDataAddedToAnalysableEvent>,
+      IListener<ObservedDataRemovedFromAnalysableEvent>
    {
    }
 
@@ -137,10 +139,36 @@ namespace MoBi.Presentation.Presenter.Main
 
       public void Handle(SimulationStatusChangedEvent eventToHandle) => refreshDisplayedSimulation(eventToHandle.Simulation);
 
+      public void Handle(ObservedDataAddedToAnalysableEvent eventToHandle) => updateUsedObservedDataFor(eventToHandle.Analysable);
+
+      public void Handle(ObservedDataRemovedFromAnalysableEvent eventToHandle) => updateUsedObservedDataFor(eventToHandle.Analysable);
+
+      private void updateUsedObservedDataFor(IAnalysable analysable)
+      {
+         if (!(analysable is IMoBiSimulation simulation))
+            return;
+
+         var simulationNode = _view.NodeById(simulation.Id);
+         if (simulationNode == null)
+            return;
+
+         var usedObservedDataNodes = simulationNode.Children.Where(x => x.IsAnImplementationOf<UsedObservedDataNode>()).ToList();
+         usedObservedDataNodes.Each(_view.DestroyNode);
+
+         var project = _projectRetriever.CurrentProject;
+         simulation.UsedObservedData
+            .Where(x => project.ObservedDataBy(x.Id) != null)
+            .OrderBy(x => project.ObservedDataBy(x.Id).Name)
+            .Each(x => _view.AddNode(_treeNodeFactory.CreateFor(x).Under(simulationNode)));
+      }
+
       protected override IContextMenu ContextMenuFor(ITreeNode treeNode)
       {
          if (treeNode.TagAsObject is ClassifiableSimulation simulation)
             return ContextMenuFor(new SimulationViewItem(simulation.Simulation));
+
+         if (treeNode.TagAsObject is UsedObservedData usedObservedData)
+            return ContextMenuFor(new UsedObservedDataViewItem(usedObservedData));
 
          // Order is important here because SimulationSettings is also an IBuildingBlock
          if (treeNode.TagAsObject is SimulationSettingsDTO settingsDTO)
@@ -150,6 +178,15 @@ namespace MoBi.Presentation.Presenter.Main
             return ContextMenuFor(new SimulationBuildingBlockViewItem(buildingBlock));
 
          return base.ContextMenuFor(treeNode);
+      }
+
+      public override void NodeDoubleClicked(ITreeNode node)
+      {
+         //double-clicking a leaf activates its first context menu entry, which would remove the used observed data
+         if (node.TagAsObject is UsedObservedData)
+            return;
+
+         base.NodeDoubleClicked(node);
       }
 
       public void Handle(SimulationReloadEvent eventToHandle) => reCreateSimulationNode(eventToHandle.Simulation);

@@ -36,7 +36,7 @@ namespace MoBi.Presentation.Presenter
       void RemoveAnalysis(ISimulationAnalysis analysis);
    }
 
-   public class EditSimulationPresenter : SingleStartPresenter<IEditSimulationView, IEditSimulationPresenter>, IEditSimulationPresenter, IListener<ObservedDataRemovedFromAnalysableEvent>
+   public class EditSimulationPresenter : SingleStartPresenter<IEditSimulationView, IEditSimulationPresenter>, IEditSimulationPresenter, IListener<ObservedDataRemovedFromAnalysableEvent>, IListener<ObservedDataAddedToAnalysableEvent>
    {
       private IMoBiSimulation _simulation;
       private readonly IHierarchicalSimulationPresenter _hierarchicalPresenter;
@@ -317,6 +317,8 @@ namespace MoBi.Presentation.Presenter
 
       private void onObservedDataAddedToChart(object sender, ObservedDataAddedToChartEventArgs e)
       {
+         addUsedObservedDataToSimulation(e.AddedDataRepositories);
+
          var observedDataToAdd = observedDataNotMappedInTheSimulation(e);
 
          if (!observedDataToAdd.Any())
@@ -329,6 +331,23 @@ namespace MoBi.Presentation.Presenter
          }
       }
 
+      private void addUsedObservedDataToSimulation(IReadOnlyList<DataRepository> addedDataRepositories)
+      {
+         var trackedObservedDataIds = _simulation.UsedObservedData.Select(x => x.Id).ToList();
+         var newlyUsedObservedData = addedDataRepositories
+            .Where(isProjectObservedData)
+            .Where(x => !trackedObservedDataIds.Contains(x.Id))
+            .ToList();
+
+         if (!newlyUsedObservedData.Any())
+            return;
+
+         newlyUsedObservedData.Each(_simulation.AddUsedObservedData);
+         _context.PublishEvent(new ObservedDataAddedToAnalysableEvent(_simulation, newlyUsedObservedData, false));
+      }
+
+      private bool isProjectObservedData(DataRepository dataRepository) => _context.CurrentProject.ObservedDataBy(dataRepository.Id) != null;
+
       private List<DataRepository> observedDataNotMappedInTheSimulation(ObservedDataAddedToChartEventArgs e)
       {
          return e.AddedDataRepositories
@@ -337,6 +356,15 @@ namespace MoBi.Presentation.Presenter
 
       public void Handle(ObservedDataRemovedFromAnalysableEvent e)
       {
+         if (_simulation == e.Analysable.DowncastTo<IMoBiSimulation>())
+            _analysisPresenters.Each(x => x.UpdateAnalysisBasedOn(_simulation));
+      }
+
+      public void Handle(ObservedDataAddedToAnalysableEvent e)
+      {
+         if (!e.ShowData)
+            return;
+
          if (_simulation == e.Analysable.DowncastTo<IMoBiSimulation>())
             _analysisPresenters.Each(x => x.UpdateAnalysisBasedOn(_simulation));
       }

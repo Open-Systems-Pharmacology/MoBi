@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using MoBi.Assets;
+using MoBi.Core.Domain.Model;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Utility.Extensions;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.UICommand;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.ContextMenus;
@@ -19,17 +21,19 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
    internal class ContextMenuSpecificationFactoryForDataRepository : IContextMenuSpecificationFactory<IViewItem>
    {
       private readonly IContainer _container;
+      private readonly IActiveSubjectRetriever _activeSubjectRetriever;
 
-      public ContextMenuSpecificationFactoryForDataRepository(IContainer container)
+      public ContextMenuSpecificationFactoryForDataRepository(IContainer container, IActiveSubjectRetriever activeSubjectRetriever)
       {
          _container = container;
+         _activeSubjectRetriever = activeSubjectRetriever;
       }
 
       public IContextMenu CreateFor(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter)
       {
          var contextMenu = new ContextMenuForDataRepository(_container);
          var repository = dataRepositoryFrom(viewItem);
-         return contextMenu.InitializeWith(repository);
+         return contextMenu.InitializeWith(repository, _activeSubjectRetriever.Active<IMoBiSimulation>());
       }
 
       public bool IsSatisfiedBy(IViewItem viewItem, IPresenterWithContextMenu<IViewItem> presenter)
@@ -60,7 +64,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return _allMenuItems;
       }
 
-      public IContextMenu InitializeWith(DataRepository dataRepository)
+      public IContextMenu InitializeWith(DataRepository dataRepository, IMoBiSimulation activeSimulation = null)
       {
          _allMenuItems = new List<IMenuBarItem>
          {
@@ -73,7 +77,18 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             addToJournalMenuItemFor(dataRepository),
          };
 
+         if (activeSimulation != null && !activeSimulation.UsesObservedData(dataRepository))
+            _allMenuItems.Add(addToSimulationMenuItemFor(dataRepository, activeSimulation));
+
          return this;
+      }
+
+      private IMenuBarItem addToSimulationMenuItemFor(DataRepository dataRepository, IMoBiSimulation activeSimulation)
+      {
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddToSimulation(activeSimulation.Name))
+            .WithCommand(_container.Resolve<AddObservedDataToSimulationUICommand>().For(dataRepository).For(activeSimulation))
+            .WithIcon(ApplicationIcons.Simulation)
+            .AsGroupStarter();
       }
 
       private IMenuBarItem exportToExcel(DataRepository dataRepository)

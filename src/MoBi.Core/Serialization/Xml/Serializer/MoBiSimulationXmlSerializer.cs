@@ -28,6 +28,7 @@ namespace MoBi.Core.Serialization.Xml.Serializer
          Map(x => x.OutputMappings);
          Map(x => x.HasUntraceableChanges);
          MapEnumerable(x => x.OriginalQuantityValues, x => x.AddOriginalQuantityValue);
+         MapEnumerable(x => x.UsedObservedData, x => x.AddUsedObservedData);
       }
 
       public override MoBiSimulation CreateObject(XElement element, SerializationContext serializationContext)

@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System.Linq;
+using System.Xml.Linq;
 using MoBi.Core.Chart;
 using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Chart.Simulations;
@@ -28,7 +29,27 @@ public class Converter121To130 : IMoBiObjectConverter, IVisitor<MoBiProject>
    {
       (_, bool converted) = _coreConverter.Convert(objectToUpdate);
       this.Visit(objectToUpdate);
+
+      if (objectToUpdate is IMoBiSimulation simulation && project != null)
+         converted |= initializeUsedObservedDataFor(simulation, project);
+
       return (ProjectVersions.V13_0, converted);
+   }
+
+   /// <summary>
+   ///    Observed data usage was not tracked before v13: derive it from the chart curves and output mappings
+   /// </summary>
+   private bool initializeUsedObservedDataFor(IMoBiSimulation simulation, MoBiProject project)
+   {
+      if (simulation.UsedObservedData.Any())
+         return false;
+
+      var usedObservedData = project.AllObservedData.Where(simulation.UsesObservedData).ToList();
+      if (!usedObservedData.Any())
+         return false;
+
+      usedObservedData.Each(simulation.AddUsedObservedData);
+      return true;
    }
 
    public (int convertedToVersion, bool conversionHappened) ConvertXml(XElement element, MoBiProject project)
