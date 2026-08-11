@@ -191,7 +191,6 @@ namespace MoBi.IntegrationTests
          _observedData = DomainHelperForSpecs.ObservedData("roundTripObservedData");
          project.AddObservedData(_observedData);
          simulation.AddUsedObservedData(_observedData);
-         simulation.HasChanged = true;
 
          serializationTask.SaveProject();
          serializationTask.CloseProject();

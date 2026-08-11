@@ -234,6 +234,7 @@ public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
 
       usedObservedData.Simulation = this;
       _usedObservedData.Add(usedObservedData);
+      HasChanged = true;
    }
 
    public bool UsesObservedData(DataRepository dataRepository)

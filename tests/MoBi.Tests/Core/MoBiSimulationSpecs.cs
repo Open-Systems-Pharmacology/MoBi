@@ -533,6 +533,7 @@ namespace MoBi.Core
       {
          base.Context();
          _observedData = DomainHelperForSpecs.ObservedData();
+         sut.HasChanged = false;
       }
 
       protected override void Because()
@@ -559,6 +560,12 @@ namespace MoBi.Core
       public void the_simulation_should_indicate_that_it_uses_the_observed_data()
       {
          sut.UsesObservedData(_observedData).ShouldBeTrue();
+      }
+
+      [Observation]
+      public void the_simulation_should_be_marked_as_changed()
+      {
+         sut.HasChanged.ShouldBeTrue();
       }
    }
 
