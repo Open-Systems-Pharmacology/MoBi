@@ -1,15 +1,15 @@
+using System.Collections.Generic;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.Tasks;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Presentation.UICommands;
-using OSPSuite.Utility.Reflection;
 
 namespace MoBi.Presentation.UICommand
 {
    public class AddObservedDataToSimulationUICommand : ObjectUICommand<IMoBiSimulation>
    {
       private readonly IObservedDataTask _observedDataTask;
-      private WeakRef<DataRepository> _observedDataReference;
+      private IReadOnlyList<DataRepository> _observedData;
 
       public AddObservedDataToSimulationUICommand(IObservedDataTask observedDataTask)
       {
@@ -18,12 +18,14 @@ namespace MoBi.Presentation.UICommand
 
       protected override void PerformExecute()
       {
-         _observedDataTask.AddObservedDataToAnalysable(new[] {_observedDataReference.Target}, Subject, showData: true);
+         _observedDataTask.AddObservedDataToAnalysable(_observedData, Subject, showData: true);
       }
 
-      public AddObservedDataToSimulationUICommand For(DataRepository observedData)
+      public AddObservedDataToSimulationUICommand For(DataRepository observedData) => For(new[] {observedData});
+
+      public AddObservedDataToSimulationUICommand For(IReadOnlyList<DataRepository> observedData)
       {
-         _observedDataReference = new WeakRef<DataRepository>(observedData);
+         _observedData = observedData;
          return this;
       }
    }
