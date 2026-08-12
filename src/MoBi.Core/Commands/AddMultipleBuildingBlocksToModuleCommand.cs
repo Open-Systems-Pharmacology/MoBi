@@ -8,7 +8,7 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Commands
 {
-   public class AddMultipleBuildingBlocksToModuleCommand : MoBiMacroCommand
+   public class AddMultipleBuildingBlocksToModuleCommand : MoBiMacroCommand, IWillConvertPKSimModuleToExtensionModule
    {
       private Module _existingModule;
       private IReadOnlyList<IBuildingBlock> _listOfNewBuildingBlocks;
@@ -21,6 +21,10 @@ namespace MoBi.Core.Commands
          _listOfNewBuildingBlocks = listOfNewBuildingBlocks;
          Description = AppConstants.Commands.AddBuildingBlocksToModule(_existingModule.Name);
       }
+
+      public bool WillConvertPKSimModuleToExtensionModule => _existingModule.IsPKSimModule;
+
+      public Module Module => _existingModule;
 
       public override void Execute(IMoBiContext context)
       {

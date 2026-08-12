@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using FakeItEasy;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
@@ -329,6 +330,66 @@ namespace MoBi.Core
       public void the_user_should_be_prompted()
       {
          A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, A<ViewResult>._)).MustHaveHappenedOnceExactly();
+      }
+   }
+
+   public class When_running_a_command_adding_multiple_building_blocks_to_a_pksim_module : concern_for_MoBiContext
+   {
+      private AddMultipleBuildingBlocksToModuleCommand _command;
+      private Module _module;
+
+      protected override void Context()
+      {
+         base.Context();
+         sut.CurrentProject = new MoBiProject();
+         _module = new Module
+         {
+            IsPKSimModule = true
+         };
+         sut.CurrentProject.AddModule(_module);
+         _command = new AddMultipleBuildingBlocksToModuleCommand(_module, new List<IBuildingBlock> {new ParameterValuesBuildingBlock()});
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, A<ViewResult>._)).Returns(ViewResult.Yes);
+      }
+
+      protected override void Because()
+      {
+         sut.PromptForCancellation(_command);
+      }
+
+      [Observation]
+      public void the_user_should_be_prompted()
+      {
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, A<ViewResult>._)).MustHaveHappenedOnceExactly();
+      }
+   }
+
+   public class When_running_a_command_adding_multiple_building_blocks_to_an_extension_module : concern_for_MoBiContext
+   {
+      private AddMultipleBuildingBlocksToModuleCommand _command;
+      private Module _module;
+
+      protected override void Context()
+      {
+         base.Context();
+         sut.CurrentProject = new MoBiProject();
+         _module = new Module
+         {
+            IsPKSimModule = false
+         };
+         sut.CurrentProject.AddModule(_module);
+         _command = new AddMultipleBuildingBlocksToModuleCommand(_module, new List<IBuildingBlock> {new ParameterValuesBuildingBlock()});
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, A<ViewResult>._)).Returns(ViewResult.Yes);
+      }
+
+      protected override void Because()
+      {
+         sut.PromptForCancellation(_command);
+      }
+
+      [Observation]
+      public void the_user_should_not_be_prompted()
+      {
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(A<string>._, A<ViewResult>._)).MustNotHaveHappened();
       }
    }
 
