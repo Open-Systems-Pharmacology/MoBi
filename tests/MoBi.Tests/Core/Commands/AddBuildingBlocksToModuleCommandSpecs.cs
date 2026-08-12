@@ -57,4 +57,34 @@ namespace MoBi.Core.Commands
          _existingModule.EventGroups.ShouldBeEqualTo(_newEventGroupBuildingBlock);
       }
    }
+
+   public class When_checking_if_adding_building_blocks_converts_a_pksim_module : concern_for_AddBuildingBlocksToModuleCommand
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _existingModule.IsPKSimModule = true;
+      }
+
+      [Observation]
+      public void the_command_should_convert_the_module_to_an_extension_module()
+      {
+         sut.WillConvertPKSimModuleToExtensionModule.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void the_module_should_be_the_module_being_changed()
+      {
+         sut.Module.ShouldBeEqualTo(_existingModule);
+      }
+   }
+
+   public class When_checking_if_adding_building_blocks_converts_an_extension_module : concern_for_AddBuildingBlocksToModuleCommand
+   {
+      [Observation]
+      public void the_command_should_not_convert_the_module()
+      {
+         sut.WillConvertPKSimModuleToExtensionModule.ShouldBeFalse();
+      }
+   }
 }
