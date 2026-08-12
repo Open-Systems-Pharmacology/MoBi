@@ -166,8 +166,6 @@ namespace MoBi.UI.Views
             btParentPath.Enabled = enabled;
             htmlEditor.Enabled = enabled;
             panelTags.Enabled = enabled;
-
-            tabProperties.Enabled = enabled;
          }
       }
 
