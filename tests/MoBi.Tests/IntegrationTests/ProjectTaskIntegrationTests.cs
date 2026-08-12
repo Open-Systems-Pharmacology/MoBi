@@ -1,12 +1,17 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using MoBi.Core;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Helper;
 using MoBi.Core.Serialization.Converter;
+using MoBi.HelpersForTests;
+using MoBi.Presentation.Tasks;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Data;
+using OSPSuite.Utility;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
 
@@ -161,6 +166,58 @@ namespace MoBi.IntegrationTests
          {
             return notificationMessage.Object is IMoBiSimulation moBiSimulation && warningSimulations.Contains(moBiSimulation.Name);
          }
+      }
+   }
+
+   public class When_saving_and_reloading_a_project_with_used_observed_data : concern_for_LoadProjectIntegrationTest
+   {
+      private MoBiProject _reloadedProject;
+      private string _tempProjectFile;
+      private DataRepository _observedData;
+      private string _simulationName;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _tempProjectFile = Path.Combine(Path.GetTempPath(), $"UsedObservedDataRoundTrip_{ShortGuid.NewGuid()}.mbp3");
+         File.Copy(DomainHelperForSpecs.TestFileFullPath("PK_Manual_Diclofenac.mbp3"), _tempProjectFile, overwrite: true);
+
+         var serializationTask = IoC.Resolve<ISerializationTask>();
+         serializationTask.LoadProject(_tempProjectFile);
+         var project = _context.CurrentProject;
+
+         var simulation = project.Simulations.First();
+         _simulationName = simulation.Name;
+         _observedData = DomainHelperForSpecs.ObservedData("roundTripObservedData");
+         project.AddObservedData(_observedData);
+         simulation.AddUsedObservedData(_observedData);
+
+         serializationTask.SaveProject();
+         serializationTask.CloseProject();
+
+         serializationTask.LoadProject(_tempProjectFile);
+         _reloadedProject = _context.CurrentProject;
+      }
+
+      [Observation]
+      public void the_used_observed_data_should_still_be_tracked_after_reload()
+      {
+         var simulation = _reloadedProject.Simulations.First(x => x.Name.Equals(_simulationName));
+         simulation.UsedObservedData.Select(x => x.Id).ShouldContain(_observedData.Id);
+      }
+
+      [Observation]
+      public void the_tracked_observed_data_should_reference_its_simulation()
+      {
+         var simulation = _reloadedProject.Simulations.First(x => x.Name.Equals(_simulationName));
+         simulation.UsedObservedData.First(x => x.Id == _observedData.Id).Simulation.ShouldBeEqualTo(simulation);
+      }
+
+      public override void GlobalCleanup()
+      {
+         base.GlobalCleanup();
+         IoC.Resolve<ISerializationTask>().CloseProject();
+         FileHelper.DeleteFile(_tempProjectFile);
       }
    }
 }

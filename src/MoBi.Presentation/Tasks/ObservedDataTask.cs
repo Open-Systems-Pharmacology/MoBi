@@ -63,7 +63,8 @@ namespace MoBi.Presentation.Tasks
          IBuildingBlockRepository buildingBlockRepository,
          IObjectBaseNamingTask namingTask,
          IConfirmationManager confirmationManager,
-         IParameterIdentificationTask parameterIdentificationTask) : base(dialogCreator, context, dataRepositoryTask, containerTask, objectTypeResolver, confirmationManager)
+         IParameterIdentificationTask parameterIdentificationTask,
+         IOutputMappingMatchingTask outputMappingMatchingTask) : base(dialogCreator, context, dataRepositoryTask, containerTask, objectTypeResolver, confirmationManager, outputMappingMatchingTask)
       {
          _dataImporter = dataImporter;
          _interactionTask = interactionTask;

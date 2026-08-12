@@ -36,8 +36,11 @@ namespace MoBi.Presentation.Nodes
 
    public class TreeNodeFactory : OSPSuite.Presentation.Nodes.TreeNodeFactory, ITreeNodeFactory
    {
+      private readonly IObservedDataRepository _observedDataRepository;
+
       public TreeNodeFactory(IObservedDataRepository observedDataRepository, IToolTipPartCreator toolTipPartCreator) : base(observedDataRepository, toolTipPartCreator)
       {
+         _observedDataRepository = observedDataRepository;
       }
 
       public ITreeNode<RootNodeType> CreateFor(RootNodeType rootNode) => new RootNode(rootNode);
@@ -68,7 +71,17 @@ namespace MoBi.Presentation.Nodes
 
          //uses reverse so that the first result is the last node
          simulation.HistoricResults.Reverse().Each(res => simNode.AddChild(CreateFor(res)));
+
+         addUsedObservedDataNodesTo(simNode, simulation);
          return simNode;
+      }
+
+      private void addUsedObservedDataNodesTo(ITreeNode simulationNode, IMoBiSimulation simulation)
+      {
+         simulation.UsedObservedData
+            .Where(usedObservedData => _observedDataRepository.FindFor(usedObservedData) != null)
+            .OrderBy(usedObservedData => _observedDataRepository.FindFor(usedObservedData).Name)
+            .Each(usedObservedData => simulationNode.AddChild(CreateFor(usedObservedData)));
       }
 
       public ITreeNode CreateFor(ClassifiableModule classifiableModule)

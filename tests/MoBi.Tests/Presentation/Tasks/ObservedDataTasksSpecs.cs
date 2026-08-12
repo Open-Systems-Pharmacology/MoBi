@@ -41,6 +41,7 @@ namespace MoBi.Presentation.Tasks
       protected IObjectBaseNamingTask _namingTask;
       private IConfirmationManager _confirmationManager;
       protected IParameterIdentificationTask _parameterIdentificationTask;
+      protected IOutputMappingMatchingTask _outputMappingMatchingTask;
 
       protected override void Context()
       {
@@ -57,7 +58,8 @@ namespace MoBi.Presentation.Tasks
          _namingTask = A.Fake<IObjectBaseNamingTask>();
          _confirmationManager = A.Fake<IConfirmationManager>();
          _parameterIdentificationTask = A.Fake<IParameterIdentificationTask>();
-         sut = new ObservedDataTask(_dataImporter, _context, _dialogCreator, _interactionTask, _dataRepositoryTask, _containerTask, _objectTypeResolver, _buildingBlockRepository, _namingTask, _confirmationManager, _parameterIdentificationTask);
+         _outputMappingMatchingTask = A.Fake<IOutputMappingMatchingTask>();
+         sut = new ObservedDataTask(_dataImporter, _context, _dialogCreator, _interactionTask, _dataRepositoryTask, _containerTask, _objectTypeResolver, _buildingBlockRepository, _namingTask, _confirmationManager, _parameterIdentificationTask, _outputMappingMatchingTask);
 
          _project = DomainHelperForSpecs.NewProject();
          A.CallTo(() => _context.Project).Returns(_project);

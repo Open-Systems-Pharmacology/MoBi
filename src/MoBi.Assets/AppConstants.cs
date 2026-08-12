@@ -1150,6 +1150,7 @@ namespace MoBi.Assets
          public static readonly string GoTo = "Go To...";
          public static readonly string DiscardResults = "Discard";
          public static readonly string KeepResults = "Keep";
+         public static string AddToSimulation(string simulationName) => $"Add to Simulation '{simulationName}'";
          public static readonly string UpdateFromBuildingBlocks = "Update from building blocks";
          public static readonly string CommitToBuildingBlocks = "Commit to building blocks";
          public static readonly string RemoveAll = "Remove All";

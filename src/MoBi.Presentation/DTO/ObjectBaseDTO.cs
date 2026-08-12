@@ -143,6 +143,16 @@ namespace MoBi.Presentation.DTO
       }
    }
 
+   public class UsedObservedDataViewItem : IViewItem
+   {
+      public UsedObservedData UsedObservedData { get; }
+
+      public UsedObservedDataViewItem(UsedObservedData usedObservedData)
+      {
+         UsedObservedData = usedObservedData;
+      }
+   }
+
    public class SimulationBuildingBlockViewItem : IViewItem
    {
       public IBuildingBlock BuildingBlock { get; }
