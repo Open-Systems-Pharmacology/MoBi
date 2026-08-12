@@ -101,6 +101,8 @@ namespace MoBi.Presentation.Presenter
             // the calculation methods page. That way the list of molecules represents all the selected modules
             View.SetControlEnabled(SimulationItems.MoleculeCalculationMethodsConfiguration, false);
          }
+         else
+            View.NextEnabled = true;
 
          View.OkEnabled = CanClose;
       }
