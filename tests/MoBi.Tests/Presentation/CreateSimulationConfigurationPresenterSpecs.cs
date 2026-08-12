@@ -232,6 +232,26 @@ namespace MoBi.Presentation
       }
    }
 
+   public class When_wizard_previous_is_called_from_the_calculation_methods_page : concern_for_CreateSimulationConfigurationPresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _view.IsControlVisible(A<ISubPresenterItem>._)).Returns(true);
+      }
+
+      protected override void Because()
+      {
+         sut.WizardPrevious(SimulationItems.MoleculeCalculationMethodsConfiguration.Index);
+      }
+
+      [Observation]
+      public void should_enable_the_next_button()
+      {
+         _view.NextEnabled.ShouldBeTrue();
+      }
+   }
+
    public class When_wizard_next_is_called_from_the_page_before_calculation_methods : concern_for_CreateSimulationConfigurationPresenter
    {
       private IEditModuleConfigurationsPresenter _moduleConfigPresenter;
