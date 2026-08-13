@@ -42,21 +42,26 @@ namespace MoBi.Presentation.DTO
 
       private static class AllRules
       {
-         private static IBusinessRule notEmptyPathRule { get; } = GenericRules.NonEmptyRule<NeighborhoodObjectPathDTO>(x => x.Path, AppConstants.Validation.EmptyPath);
+         //A neighborhood defined without neighbors removes the neighborhood with the same name from the simulation
+         //when merging modules. An empty path is therefore allowed as long as the other path is also empty
+         private static IBusinessRule notEmptyPathRule { get; } = CreateRule.For<NeighborhoodObjectPathDTO>()
+            .Property(x => x.Path)
+            .WithRule((dto, path) => !string.IsNullOrEmpty(path) || string.IsNullOrEmpty(dto._myNeighbor().Path))
+            .WithError((dto, _) => AppConstants.Validation.EmptyPath);
 
          private static IBusinessRule noEquivalentNeighborhood { get; } = CreateRule.For<NeighborhoodObjectPathDTO>()
             .Property(x => x.Path)
-            .WithRule((dto, path) => !dto.Neighborhood.HasConnectionBetween(path, dto._myNeighbor().Path))
+            .WithRule((dto, path) => string.IsNullOrEmpty(path) || !dto.Neighborhood.HasConnectionBetween(path, dto._myNeighbor().Path))
             .WithError((dto, path) => AppConstants.Validation.HasEquivalentNeighborhood(path, dto._myNeighbor().Path));
 
          private static IBusinessRule neighborsAreNotEqual { get; } = CreateRule.For<NeighborhoodObjectPathDTO>()
             .Property(x => x.Path)
-            .WithRule((dto, path) => !Equals(path, dto._myNeighbor().Path))
+            .WithRule((dto, path) => string.IsNullOrEmpty(path) || !Equals(path, dto._myNeighbor().Path))
             .WithError((dto, path) => AppConstants.Validation.CannotCreateANeighborhoodThatConnectsAContainerToItself);
 
          private static IBusinessRule neighborsArePhysical { get; } = CreateRule.For<NeighborhoodObjectPathDTO>()
-               .Property(x => x.Path) 
-               .WithRule((dto, path) => dto.Mode != ContainerMode.Logical)
+               .Property(x => x.Path)
+               .WithRule((dto, path) => string.IsNullOrEmpty(path) || dto.Mode != ContainerMode.Logical)
                .WithError((dto, _) => AppConstants.Validation.CannotCreateANeighborhoodFromLogicalContainers);
 
          public static IReadOnlyList<IBusinessRule> All { get; } = new[]

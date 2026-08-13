@@ -34,6 +34,7 @@ namespace MoBi.Core.Service
       protected ISimulationConfigurationFactory _simulationConfigurationFactory;
       private IConcurrencyManager _concurrencyManager;
       private ICoreUserSettings _coreUserSettings;
+      protected IRemovedNeighborhoodsDialogTask _removedNeighborhoodsDialogTask;
       private SynchronizationContext _originalSynchronizationContext;
 
       protected override void Context()
@@ -56,7 +57,9 @@ namespace MoBi.Core.Service
          _originalSynchronizationContext = SynchronizationContext.Current;
          SynchronizationContext.SetSynchronizationContext(new SynchronousSynchronizationContextForSpecs());
 
-         sut = new SimulationUpdateTask(_context, _applicationController, _simulationFactory, _cloneManager, createHeavyWorkManager(), _concurrencyManager, _coreUserSettings);
+         _removedNeighborhoodsDialogTask = A.Fake<IRemovedNeighborhoodsDialogTask>();
+
+         sut = new SimulationUpdateTask(_context, _applicationController, _simulationFactory, _cloneManager, createHeavyWorkManager(), _concurrencyManager, _coreUserSettings, _removedNeighborhoodsDialogTask);
       }
 
       protected virtual IHeavyWorkManager createHeavyWorkManager() => new HeavyWorkManagerForSpecs();

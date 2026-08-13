@@ -32,9 +32,9 @@ namespace MoBi.Presentation.Mappers
 
       private IEnumerable<NeighborDTO> createDTOFromNeighborhoodPaths(string parentId, ObjectPath firstNeighborPath, ObjectPath secondNeighborPath)
       {
-         if(firstNeighborPath != null)
+         if(!string.IsNullOrEmpty(firstNeighborPath.PathAsString))
             yield return new NeighborDTO(firstNeighborPath) { Icon = ApplicationIcons.Neighbor, Id = createNeighborhoodId(parentId, firstNeighborPath) };
-         if(secondNeighborPath != null)
+         if(!string.IsNullOrEmpty(secondNeighborPath.PathAsString))
             yield return new NeighborDTO(secondNeighborPath) { Icon = ApplicationIcons.Neighbor, Id = createNeighborhoodId(parentId, secondNeighborPath) };
       }
 

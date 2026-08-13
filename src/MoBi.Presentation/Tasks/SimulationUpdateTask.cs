@@ -56,6 +56,7 @@ namespace MoBi.Presentation.Tasks
       private readonly IHeavyWorkManager _heavyWorkManager;
       private readonly IConcurrencyManager _concurrencyManager;
       private readonly ICoreUserSettings _coreUserSettings;
+      private readonly IRemovedNeighborhoodsDialogTask _removedNeighborhoodsDialogTask;
 
       public SimulationUpdateTask(IMoBiContext context,
          IMoBiApplicationController applicationController,
@@ -63,7 +64,8 @@ namespace MoBi.Presentation.Tasks
          ICloneManagerForBuildingBlock cloneManager,
          IHeavyWorkManager heavyWorkManager,
          IConcurrencyManager concurrencyManager,
-         ICoreUserSettings coreUserSettings)
+         ICoreUserSettings coreUserSettings,
+         IRemovedNeighborhoodsDialogTask removedNeighborhoodsDialogTask)
       {
          _context = context;
          _applicationController = applicationController;
@@ -72,6 +74,7 @@ namespace MoBi.Presentation.Tasks
          _heavyWorkManager = heavyWorkManager;
          _concurrencyManager = concurrencyManager;
          _coreUserSettings = coreUserSettings;
+         _removedNeighborhoodsDialogTask = removedNeighborhoodsDialogTask;
       }
 
       public ICommand UpdateSimulation(IMoBiSimulation simulationToUpdate)
@@ -83,11 +86,17 @@ namespace MoBi.Presentation.Tasks
             Description = AppConstants.Commands.ConfigureSimulationsDescription(1)
          };
 
+         ValidationResult validationResult = null;
          _heavyWorkManager.Start(() =>
          {
             var simulationConfiguration = _context.Resolve<ISimulationConfigurationFactory>().CreateFromProjectTemplatesBasedOn(simulationToUpdate.Configuration);
-            macroCommand.Add(updateSimulation(simulationToUpdate, simulationConfiguration));
+            var (command, result) = updateSimulation(simulationToUpdate, simulationConfiguration);
+            macroCommand.Add(command);
+            validationResult = result;
          }, AppConstants.Captions.UpdatingSimulation);
+
+         //shown once the heavy work completes so that the dialog is displayed from the UI thread
+         _removedNeighborhoodsDialogTask.ShowRemovedNeighborhoodsFrom(validationResult);
 
          return macroCommand;
       }
@@ -186,12 +195,19 @@ namespace MoBi.Presentation.Tasks
             return new MoBiEmptyCommand();
 
          ICommand command = null;
-         _heavyWorkManager.Start(() => { command = updateSimulation(simulationToConfigure, simulationConfiguration); }, AppConstants.Captions.ConfiguringSimulation);
+         ValidationResult validationResult = null;
+         _heavyWorkManager.Start(() =>
+         {
+            (command, validationResult) = updateSimulation(simulationToConfigure, simulationConfiguration);
+         }, AppConstants.Captions.ConfiguringSimulation);
+
+         //shown once the heavy work completes so that the dialog is displayed from the UI thread
+         _removedNeighborhoodsDialogTask.ShowRemovedNeighborhoodsFrom(validationResult);
 
          return command ?? new MoBiEmptyCommand();
       }
 
-      private ICommand<IMoBiContext> updateSimulation(
+      private (ICommand<IMoBiContext> command, ValidationResult validationResult) updateSimulation(
          IMoBiSimulation simulationToUpdate,
          SimulationConfiguration simulationConfigurationReferencingTemplates)
       {
@@ -202,7 +218,7 @@ namespace MoBi.Presentation.Tasks
          results = _simulationFactory.CreateModelAndValidate(simulationConfigurationReferencingTemplates, simulationToUpdate.Model.Name);
 
          if (results == null)
-            return new MoBiEmptyCommand();
+            return (new MoBiEmptyCommand(), null);
 
          //create a clone then that will be saved in the simulation
          var simulationBuildConfiguration = _cloneManager.Clone(simulationConfigurationReferencingTemplates);
@@ -211,7 +227,7 @@ namespace MoBi.Presentation.Tasks
 
          updateSimulationCommand.RunCommand(_context);
 
-         return updateSimulationCommand;
+         return (updateSimulationCommand, results.ValidationResult);
       }
    }
 }

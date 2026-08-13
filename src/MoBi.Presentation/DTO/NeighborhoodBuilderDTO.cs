@@ -21,8 +21,8 @@ namespace MoBi.Presentation.DTO
       public NeighborhoodBuilderDTO(NeighborhoodBuilder neighborhoodBuilder, IReadOnlyList<NeighborhoodBuilder> existingNeighborhoods) : base(neighborhoodBuilder)
       {
          Icon = ApplicationIcons.Neighborhood;
-         FirstNeighborDTO = new NeighborhoodObjectPathDTO(this, () => SecondNeighborDTO) { Path = neighborhoodBuilder.FirstNeighborPath?.ToPathString() };
-         SecondNeighborDTO = new NeighborhoodObjectPathDTO(this, () => FirstNeighborDTO) { Path = neighborhoodBuilder.SecondNeighborPath?.ToPathString() };
+         FirstNeighborDTO = new NeighborhoodObjectPathDTO(this, () => SecondNeighborDTO) { Path = neighborhoodBuilder.FirstNeighborPath.ToPathString() };
+         SecondNeighborDTO = new NeighborhoodObjectPathDTO(this, () => FirstNeighborDTO) { Path = neighborhoodBuilder.SecondNeighborPath.ToPathString() };
          addExistingNeighborhoods(existingNeighborhoods);
 
          Rules.AddRange(AllRules.All);
@@ -42,7 +42,7 @@ namespace MoBi.Presentation.DTO
 
       private static void connectPaths(Cache<string, List<string>> connections, ObjectPath path1, ObjectPath path2)
       {
-         if (isNullPath(path1) || isNullPath(path2))
+         if (isEmptyPath(path1) || isEmptyPath(path2))
             return;
 
          if (!connections.Contains(path1))
@@ -51,9 +51,9 @@ namespace MoBi.Presentation.DTO
          connections[path1].Add(path2);
       }
 
-      private static bool isNullPath(ObjectPath path1)
+      private static bool isEmptyPath(ObjectPath path)
       {
-         return path1 == null || string.IsNullOrEmpty(path1.PathAsString);
+         return string.IsNullOrEmpty(path.PathAsString);
       }
 
       public bool HasConnectionBetween(string path, string secondNeighborPath)
@@ -66,24 +66,26 @@ namespace MoBi.Presentation.DTO
 
       private static class AllRules
       {
+         //A neighborhood defined without neighbors removes the neighborhood with the same name from the simulation
+         //when merging modules. The rules do not apply to an empty path (emptiness itself is validated per path)
          private static IBusinessRule noEquivalentForFirstNeighbor { get; } = CreateRule.For<NeighborhoodBuilderDTO>()
             .Property(x => x.FirstNeighborPath)
-            .WithRule((dto, path) => !dto.HasConnectionBetween(path, dto.SecondNeighborPath))
+            .WithRule((dto, path) => string.IsNullOrEmpty(path) || !dto.HasConnectionBetween(path, dto.SecondNeighborPath))
             .WithError((dto, path) => AppConstants.Validation.HasEquivalentNeighborhood(path, dto.SecondNeighborPath));
 
          private static IBusinessRule noEquivalentForSecondNeighbor { get; } = CreateRule.For<NeighborhoodBuilderDTO>()
             .Property(x => x.SecondNeighborPath)
-            .WithRule((dto, path) => !dto.HasConnectionBetween(path, dto.FirstNeighborPath))
+            .WithRule((dto, path) => string.IsNullOrEmpty(path) || !dto.HasConnectionBetween(path, dto.FirstNeighborPath))
             .WithError((dto, path) => AppConstants.Validation.HasEquivalentNeighborhood(path, dto.FirstNeighborPath));
 
          private static IBusinessRule notEqualToSecondNeighbor { get; } = CreateRule.For<NeighborhoodBuilderDTO>()
             .Property(x => x.FirstNeighborPath)
-            .WithRule((dto, path) => !Equals(path, dto.SecondNeighborPath))
+            .WithRule((dto, path) => string.IsNullOrEmpty(path) || !Equals(path, dto.SecondNeighborPath))
             .WithError((dto, path) => AppConstants.Validation.CannotCreateANeighborhoodThatConnectsAContainerToItself);
 
          private static IBusinessRule notEqualToFirstNeighbor { get; } = CreateRule.For<NeighborhoodBuilderDTO>()
             .Property(x => x.SecondNeighborPath)
-            .WithRule((dto, path) => !Equals(path, dto.FirstNeighborPath))
+            .WithRule((dto, path) => string.IsNullOrEmpty(path) || !Equals(path, dto.FirstNeighborPath))
             .WithError((dto, path) => AppConstants.Validation.CannotCreateANeighborhoodThatConnectsAContainerToItself);
 
          public static IReadOnlyList<IBusinessRule> All { get; } = new[]
