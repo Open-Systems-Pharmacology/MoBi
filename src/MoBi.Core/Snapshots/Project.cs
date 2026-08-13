@@ -10,6 +10,8 @@ public class Project : SnapshotBase
    [Required]
    public int Version { get; set; }
 
+   public string ApplicationName { get; set; }
+
    public object[] PKSimModules { set; get; }
 
    public string[] ExtensionModules { set; get; }

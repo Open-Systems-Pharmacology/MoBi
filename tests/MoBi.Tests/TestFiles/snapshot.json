@@ -1,5 +1,6 @@
 {
   "Version": 19,
+  "ApplicationName": "MoBi",
   "PKSimModules": [
     {
       "Name": "Henrist oral Hot stage extrusion as table",

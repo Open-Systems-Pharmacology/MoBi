@@ -249,6 +249,7 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       var snapshot = await SnapshotFrom(project, x =>
       {
          x.Version = ProjectVersions.Current;
+         x.ApplicationName = Origins.MoBi.DisplayName;
          x.Description = SnapshotValueFor(project.Description);
       });
 
