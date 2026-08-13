@@ -21,6 +21,7 @@ using OSPSuite.Presentation.Presenters.Charts;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Services.Charts;
 using OSPSuite.Presentation.Views.Charts;
+using OSPSuite.Utility.Events;
 using IApplicationSettings = OSPSuite.Core.IApplicationSettings;
 using IChartTemplatingTask = MoBi.Presentation.Tasks.IChartTemplatingTask;
 
@@ -83,7 +84,7 @@ public class concern_for_ComparisonChartPresenter : ContextSpecification<Compari
    protected virtual IChartDisplayPresenter CreateDisplayPresenter()
    {
       return new ChartDisplayPresenter(_chartDisplayView, _curveBinderFactory, _contextMenuFactoryForProjectItem,
-         _axisBinderFactory, _dataModeMapper, _chartExportTask, _applicationSettings, _applicationController, _dialogCreator);
+         _axisBinderFactory, _dataModeMapper, _chartExportTask, _applicationSettings, _applicationController, _dialogCreator, A.Fake<IEventPublisher>());
    }
 }
 

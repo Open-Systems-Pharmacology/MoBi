@@ -52,19 +52,22 @@ namespace MoBi.Presentation.Tasks.Interaction
       private readonly ISimulationFactory _simulationFactory;
       private readonly ITemplateResolverTask _templateResolverTask;
       private readonly ICloneManagerForSimulation _cloneManager;
+      private readonly IRemovedNeighborhoodsDialogTask _removedNeighborhoodsDialogTask;
 
       public InteractionTasksForSimulation(IInteractionTaskContext interactionTaskContext,
          IEditTasksForSimulation editTask,
          ISimulationReferenceUpdater simulationReferenceUpdater,
          ISimulationFactory simulationFactory,
          ITemplateResolverTask templateResolverTask,
-         ICloneManagerForSimulation cloneManager)
+         ICloneManagerForSimulation cloneManager,
+         IRemovedNeighborhoodsDialogTask removedNeighborhoodsDialogTask)
          : base(interactionTaskContext, editTask)
       {
          _simulationReferenceUpdater = simulationReferenceUpdater;
          _simulationFactory = simulationFactory;
          _templateResolverTask = templateResolverTask;
          _cloneManager = cloneManager;
+         _removedNeighborhoodsDialogTask = removedNeighborhoodsDialogTask;
       }
 
       protected override string ObjectName => ObjectTypes.Simulation;
@@ -136,7 +139,9 @@ namespace MoBi.Presentation.Tasks.Interaction
             if (simulationConfiguration == null)
                return null;
 
-            return _simulationFactory.CreateSimulationAndValidate(simulationConfiguration, presenter.SimulationName).Simulation;
+            var (simulation, validationResult) = _simulationFactory.CreateSimulationAndValidate(simulationConfiguration, presenter.SimulationName);
+            _removedNeighborhoodsDialogTask.ShowRemovedNeighborhoodsFrom(validationResult);
+            return simulation;
          }
       }
 

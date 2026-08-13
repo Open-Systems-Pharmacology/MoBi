@@ -23,8 +23,8 @@ using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 using static MoBi.Assets.AppConstants;
-using Error = OSPSuite.Assets.Error;
 using Validation = OSPSuite.Assets.Validation;
+using Warning = OSPSuite.Assets.Warning;
 
 namespace MoBi.Presentation.Presenter.Main
 {
@@ -220,8 +220,8 @@ namespace MoBi.Presentation.Presenter.Main
 
          var logicalNeighborMessages = new[]
          {
-            Error.NeighborIsLogical(neighborhood.FirstNeighbor.Name, neighborhood.Name),
-            Error.NeighborIsLogical(neighborhood.SecondNeighbor.Name, neighborhood.Name)
+            Warning.NeighborIsLogical(neighborhood.FirstNeighbor.Name, neighborhood.Name),
+            Warning.NeighborIsLogical(neighborhood.SecondNeighbor.Name, neighborhood.Name)
          };
 
          //details are only defined when more than one message was created for the neighborhood. Other messages should still be displayed

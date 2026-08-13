@@ -69,9 +69,10 @@ namespace MoBi.Core.Commands
       }
 
       [Observation]
-      public void should_set_the_path_as_expected()
+      public void should_set_the_path_to_an_empty_path()
       {
-         _neighborhoodBuilder.FirstNeighborPath.ShouldBeNull();
+         //the neighbor path is never null: an empty path indicates that the neighbor is not defined
+         _neighborhoodBuilder.FirstNeighborPath.PathAsString.ShouldBeEqualTo(string.Empty);
       }
    }
 }

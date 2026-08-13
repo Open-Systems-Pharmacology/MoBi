@@ -296,7 +296,7 @@ namespace MoBi.Presentation
 
       private void addLogicalNeighborWarningFor(Neighborhood neighborhood, IContainer neighbor)
       {
-         _validationResult.AddMessage(NotificationType.Warning, neighborhood, Error.NeighborIsLogical(neighbor.Name, neighborhood.Name));
+         _validationResult.AddMessage(NotificationType.Warning, neighborhood, Warning.NeighborIsLogical(neighbor.Name, neighborhood.Name));
       }
 
       protected override void Because()

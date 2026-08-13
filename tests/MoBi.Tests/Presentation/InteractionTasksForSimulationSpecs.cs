@@ -6,6 +6,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Services;
 using MoBi.Presentation.Presenter;
+using MoBi.Presentation.Tasks;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.BDDHelper;
@@ -33,6 +34,7 @@ namespace MoBi.Presentation
       protected MoBiProject _moBiProject;
       protected ITemplateResolverTask _templateResolver;
       protected ICloneManagerForSimulation _cloneManager;
+      protected IRemovedNeighborhoodsDialogTask _removedNeighborhoodsDialogTask;
 
       protected override void Context()
       {
@@ -56,8 +58,9 @@ namespace MoBi.Presentation
          A.CallTo(() => _interactionTaskContext.Context).Returns(_moBiContext);
 
          _templateResolver = A.Fake<ITemplateResolverTask>();
+         _removedNeighborhoodsDialogTask = A.Fake<IRemovedNeighborhoodsDialogTask>();
 
-         sut = new InteractionTasksForSimulation(_interactionTaskContext, _editTask, _simulationReferenceUpdater, _simulationFactory, _templateResolver, _cloneManager);
+         sut = new InteractionTasksForSimulation(_interactionTaskContext, _editTask, _simulationReferenceUpdater, _simulationFactory, _templateResolver, _cloneManager, _removedNeighborhoodsDialogTask);
       }
    }
 

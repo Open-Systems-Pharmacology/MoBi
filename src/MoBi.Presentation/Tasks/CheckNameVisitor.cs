@@ -174,13 +174,13 @@ namespace MoBi.Presentation.Tasks
          }
 
          //check first and second neighbors
-         if (neighborhoodBuilder.FirstNeighborPath?.Contains(_oldName) ?? false)
+         if (neighborhoodBuilder.FirstNeighborPath.Contains(_oldName))
          {
             var modifiedPath = renamedPathFrom(neighborhoodBuilder.FirstNeighborPath);
             _changes.Add(neighborhoodBuilder, new ChangeFirstNeighborPathCommand(modifiedPath, neighborhoodBuilder, spatialStructure));
          }
 
-         if (neighborhoodBuilder.SecondNeighborPath?.Contains(_oldName) ?? false)
+         if (neighborhoodBuilder.SecondNeighborPath.Contains(_oldName))
          {
             var modifiedPath = renamedPathFrom(neighborhoodBuilder.SecondNeighborPath);
             _changes.Add(neighborhoodBuilder, new ChangeSecondNeighborPathCommand(modifiedPath, neighborhoodBuilder, spatialStructure));

@@ -69,6 +69,32 @@ namespace MoBi.Presentation
       }
    }
 
+   public class When_validating_a_neighborhood_without_neighbors : concern_for_NeighborhoodBuilderDTO
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _neighborhoodBuilderDTO.Name = "NeighborhoodName";
+         //both neighbor paths remain empty: such a neighborhood removes the neighborhood with the same name when merging modules
+      }
+
+      protected override List<NeighborhoodBuilder> GetExistingNeighborhoods()
+      {
+         return new List<NeighborhoodBuilder>
+         {
+            new NeighborhoodBuilder { FirstNeighborPath = new ObjectPath("FirstNeighborPath1"), SecondNeighborPath = new ObjectPath("SecondNeighborPath1") },
+         };
+      }
+
+      [Observation]
+      public void should_be_valid()
+      {
+         _neighborhoodBuilderDTO.Validate().IsEmpty.ShouldBeTrue();
+         _neighborhoodBuilderDTO.FirstNeighborDTO.Validate().IsEmpty.ShouldBeTrue();
+         _neighborhoodBuilderDTO.SecondNeighborDTO.Validate().IsEmpty.ShouldBeTrue();
+      }
+   }
+
    public class When_validating_a_neighborhood_with_colliding_neighborhoods_with_a_name : concern_for_NeighborhoodBuilderDTO
    {
       protected override void Context()

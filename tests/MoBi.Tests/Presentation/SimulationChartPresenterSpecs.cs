@@ -23,6 +23,7 @@ using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Nodes;
 using OSPSuite.Presentation.Services.Charts;
 using OSPSuite.Presentation.Views.Charts;
+using OSPSuite.Utility.Events;
 using IApplicationSettings = OSPSuite.Core.IApplicationSettings;
 using IChartTemplatingTask = MoBi.Presentation.Tasks.IChartTemplatingTask;
 
@@ -100,7 +101,7 @@ public class concern_for_SimulationChartPresenter : ContextSpecification<Simulat
 
    protected virtual IChartDisplayPresenter CreateDisplayPresenter()
    {
-      return new ChartDisplayPresenter(_chartDisplayView, _curveBinderFactory, _contextMenuFactoryForProjectItem, _axisBinderFactory, _dataModeMapper, _chartExportTask, _applicationSettings, _applicationController, _dialogCreator);
+      return new ChartDisplayPresenter(_chartDisplayView, _curveBinderFactory, _contextMenuFactoryForProjectItem, _axisBinderFactory, _dataModeMapper, _chartExportTask, _applicationSettings, _applicationController, _dialogCreator, A.Fake<IEventPublisher>());
    }
 }
 

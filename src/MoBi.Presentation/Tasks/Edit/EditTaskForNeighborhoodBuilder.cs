@@ -36,8 +36,7 @@ namespace MoBi.Presentation.Tasks.Edit
          return base.EditEntityModal(neighborhood, existingObjectsInParent, commandCollector, buildingBlock);
       }
 
-      private bool neighborhoodIsConnected(NeighborhoodBuilder neighborhood) =>
-         neighborhood.FirstNeighborPath != null && neighborhood.SecondNeighborPath != null;
+      private bool neighborhoodIsConnected(NeighborhoodBuilder neighborhood) => neighborhood.HasDefinedNeighborPaths;
 
       private bool editConnectedNeighborhood(NeighborhoodBuilder neighborhood, IEnumerable<IObjectBase> existingObjectsInParent)
       {
