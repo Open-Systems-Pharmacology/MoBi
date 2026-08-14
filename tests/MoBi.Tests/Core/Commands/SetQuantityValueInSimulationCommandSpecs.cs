@@ -96,6 +96,33 @@ namespace MoBi.Core.Commands
       }
    }
 
+   public class When_executing_the_inverse_of_setting_a_value_in_a_quantity_that_was_already_fixed : concern_for_SetQuantityValueInSimulationCommand
+   {
+      protected override IQuantity CreateQuantity()
+      {
+         var quantity = new Parameter().WithFormula(new ConstantFormula(_oldValue));
+         quantity.Value = 7;
+         return quantity;
+      }
+
+      protected override void Because()
+      {
+         sut.ExecuteAndInvokeInverse(_context);
+      }
+
+      [Observation]
+      public void should_have_restored_the_previously_fixed_value()
+      {
+         _quantity.Value.ShouldBeEqualTo(7);
+      }
+
+      [Observation]
+      public void the_quantity_should_still_be_marked_as_fixed()
+      {
+         _quantity.IsFixedValue.ShouldBeTrue();
+      }
+   }
+
    public class When_setting_a_value_in_a_quantity_with_explicit_formula : concern_for_SetQuantityValueInSimulationCommand
    {
       protected override IQuantity CreateQuantity()
