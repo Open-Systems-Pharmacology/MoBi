@@ -1,5 +1,6 @@
 ﻿using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.HelpersForTests;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
@@ -18,7 +19,7 @@ namespace MoBi.Core.Commands
       private Unit _displayUnit1;
       protected Unit _displayUnit2;
       protected IMoBiContext _context;
-      private IMoBiSimulation _simulation;
+      protected IMoBiSimulation _simulation;
 
       protected override void Context()
       {
@@ -150,6 +151,46 @@ namespace MoBi.Core.Commands
       public void should_update_the_start_value()
       {
          _initialCondition.Value.ShouldBeEqualTo(5);
+      }
+   }
+
+   public class When_synchronizing_an_initial_condition_that_already_had_a_value_and_getting_reverse_command : concern_for_SynchronizeInitialConditionCommand
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _initialCondition.Dimension = _dimension1;
+         _initialCondition.DisplayUnit = _displayUnit2;
+         _initialCondition.Value = 20;
+         _initialCondition.ScaleDivisor = 3;
+
+         var project = DomainHelperForSpecs.NewProject();
+         project.AddSimulation(_simulation);
+         A.CallTo(() => _context.CurrentProject).Returns(project);
+         A.CallTo(() => _context.Get<IQuantity>(_moleculeAmount.Id)).Returns(_moleculeAmount);
+      }
+
+      protected override void Because()
+      {
+         sut.ExecuteAndInvokeInverse(_context);
+      }
+
+      [Observation]
+      public void should_have_restored_the_previous_value_of_the_initial_condition()
+      {
+         _initialCondition.Value.ShouldBeEqualTo(20);
+      }
+
+      [Observation]
+      public void should_have_restored_the_previous_scale_divisor()
+      {
+         _initialCondition.ScaleDivisor.ShouldBeEqualTo(3);
+      }
+
+      [Observation]
+      public void should_have_restored_the_previous_display_unit()
+      {
+         _initialCondition.DisplayUnit.ShouldBeEqualTo(_displayUnit2);
       }
    }
 }

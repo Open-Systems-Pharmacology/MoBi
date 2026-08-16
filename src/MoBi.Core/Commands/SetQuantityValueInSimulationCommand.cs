@@ -32,8 +32,9 @@ namespace MoBi.Core.Commands
             resetQuantity();
          else
          {
+            var wasFixedValue = _quantity.IsFixedValue;
             _quantity.Value = _valueToSet;
-            _fixedValueSetHere = true;
+            _fixedValueSetHere = !wasFixedValue;
 
             if (formulaIsConstantEqualsToTheNewValue)
                resetQuantity();
