@@ -12,7 +12,6 @@ using OSPSuite.Core.Events;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Presenters.Main;
 using OSPSuite.Presentation.Views;
-using OSPSuite.TeXReporting.Events;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
 
@@ -25,8 +24,6 @@ namespace MoBi.Presentation.Presenter.Main
       IListener<ProgressDoneEvent>,
       IListener<ProjectClosedEvent>,
       IListener<ProjectSavedEvent>,
-      IListener<ReportCreationStartedEvent>,
-      IListener<ReportCreationFinishedEvent>,
       IListener<SimulationRunCanceledEvent>,
       IListener<SimulationRunFinishedEvent>,
       IListener<SimulationRunStartedEvent>,
@@ -39,8 +36,7 @@ namespace MoBi.Presentation.Presenter.Main
       private readonly IStatusBarView _view;
       private readonly IMoBiConfiguration _moBiConfiguration;
       public event EventHandler StatusChanged = delegate { };
-      private int _numberOfReportsBeingCreated;
-      private readonly ConcurrentDictionary<string, bool> _simulations = new ConcurrentDictionary<string, bool>(); 
+      private readonly ConcurrentDictionary<string, bool> _simulations = new ConcurrentDictionary<string, bool>();
 
       private int activeSimulations => _simulations.Count(x => x.Value);
       
@@ -92,18 +88,6 @@ namespace MoBi.Presentation.Presenter.Main
             .WithCaption(reactionDimensionMode)
             .And.ToolTipText($"Reaction Rate Base: {reactionDimensionMode}")
             .And.Enabled(enabled);
-      }
-
-      private void updateReportInfo()
-      {
-         string caption = "";
-         if (_numberOfReportsBeingCreated == 1)
-            caption = "1 report is being created...";
-         else if (_numberOfReportsBeingCreated > 1)
-            caption = $"{_numberOfReportsBeingCreated} reports are being created...";
-
-         update(StatusBarElements.Report)
-            .WithCaption(caption);
       }
 
       private IStatusBarElementExpression update(StatusBarElement statusBarElement)
@@ -200,18 +184,6 @@ namespace MoBi.Presentation.Presenter.Main
       public void ReleaseFrom(IEventPublisher eventPublisher)
       {
          eventPublisher.RemoveListener(this);
-      }
-
-      public void Handle(ReportCreationStartedEvent eventToHandle)
-      {
-         _numberOfReportsBeingCreated++;
-         updateReportInfo();
-      }
-
-      public void Handle(ReportCreationFinishedEvent eventToHandle)
-      {
-         _numberOfReportsBeingCreated--;
-         updateReportInfo();
       }
 
       public void Handle(SimulationRunFinishedEvent eventToHandle)

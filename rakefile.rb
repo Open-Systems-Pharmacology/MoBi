@@ -29,7 +29,6 @@ task :create_setup, [:product_version, :configuration] do |t, args|
 #Files required for setup creation only
 setup_files	 = [
    "#{relative_src_dir}/ChartLayouts/**/*.{wxs,xml}",
-   "#{relative_src_dir}/TeXTemplates/**/*.*",
    'examples/**/*.{wxs,pkml,mbp3}',
    'src/Data/**/*.*',
    'src/MoBi.Assets/Resources/*.ico',
@@ -109,7 +108,6 @@ end
 
 def copy_templates_files(source_dir)
    FileUtils.mkdir_p setup_temp_dir
-   FileUtils.copy_entry File.join(source_dir, 'TeXTemplates'), File.join(setup_temp_dir, 'TeXTemplates')
    FileUtils.copy_entry File.join(source_dir, 'ChartLayouts'), File.join(setup_temp_dir, 'ChartLayouts')
    FileUtils.copy_entry File.join(source_dir, 'Templates'), File.join(setup_temp_dir, 'Templates')
 end
@@ -141,10 +139,6 @@ task :postclean do |t, args|
    
    copy_dependencies packages_dir,   File.join(all_users_application_dir, 'ChartLayouts') do
       copy_files 'ChartLayouts', 'xml'
-   end
-   
-   copy_dependencies packages_dir,   File.join(all_users_application_dir, 'TeXTemplates', 'StandardTemplate') do
-      copy_files 'StandardTemplate', '*'
    end
 end
 
