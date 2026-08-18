@@ -446,6 +446,12 @@ namespace MoBi.IntegrationTests.Snapshots
       }
 
       [Observation]
+      public void the_snapshot_should_identify_MoBi_as_the_application_that_created_it()
+      {
+         _snapshot.ApplicationName.ShouldBeEqualTo("MoBi");
+      }
+
+      [Observation]
       public void there_should_be_classifications_for_each_type()
       {
          _snapshot.ModuleClassifications.Length.ShouldBeEqualTo(1);

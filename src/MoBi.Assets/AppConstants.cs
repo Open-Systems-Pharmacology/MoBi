@@ -1382,6 +1382,10 @@ namespace MoBi.Assets
             return $"The imported dimension is not correct. The dimension must be {dimensionName}. The possible units are: {unitNames.ToString(",")}";
          }
 
+         public static string ProjectSnapshotCannotBeLoaded(string snapshotApplicationName) => $"This file contains a {snapshotApplicationName} project snapshot and cannot be loaded in {Origins.MoBi.DisplayName}. Please load it in {snapshotApplicationName}.";
+
+         public static readonly string ProjectSnapshotApplicationNotSpecified = $"This file does not specify the application it was created with and is most likely a {Origins.PKSim.DisplayName} project snapshot. It cannot be loaded in {Origins.MoBi.DisplayName}.";
+
          public static string CannotLoadRelatedItemAsObjectAlreadyExistInProject(string objectType, string objectName)
          {
             return $"Cannot load related item into project. A {objectType.ToLower()} named '{objectName}' already exists.";
