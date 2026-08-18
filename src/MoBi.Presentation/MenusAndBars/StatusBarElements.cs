@@ -13,7 +13,6 @@ namespace MoBi.Presentation.MenusAndBars
       public static StatusBarElement ProjectName = createStatusBarElement(StatusBarElementType.Text, StatusBarElementSize.Content, StatusBarElementAlignment.Left, 150);
       public static StatusBarElement ProjectPath = createStatusBarElement(StatusBarElementType.Text, StatusBarElementSize.Content, StatusBarElementAlignment.Left, 150);
       public static StatusBarElement ProjectReactionDimensionMode = createStatusBarElement(StatusBarElementType.Text, StatusBarElementSize.Content, StatusBarElementAlignment.Left, 150);
-      public static StatusBarElement Report = createStatusBarElement(StatusBarElementType.Text, StatusBarElementSize.Content, StatusBarElementAlignment.Right, 150);
       public static StatusBarElement ProgressStatus = createStatusBarElement(StatusBarElementType.Text, StatusBarElementSize.Content, StatusBarElementAlignment.Right, 250);
       public static StatusBarElement ProgressBar = createStatusBarElement(StatusBarElementType.ProgressBar, StatusBarElementSize.None, StatusBarElementAlignment.Right, 150);
       public static StatusBarElement Version = createStatusBarElement(StatusBarElementType.Text, StatusBarElementSize.Content, StatusBarElementAlignment.Right, 0);
