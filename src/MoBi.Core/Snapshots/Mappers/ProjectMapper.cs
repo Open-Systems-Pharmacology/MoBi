@@ -122,6 +122,7 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
          NumberOfSimulationsLoaded = 0
       };
 
+      var simulationsWithSnapshots = new List<(MoBiSimulation simulation, Simulation snapshot)>();
       if (projectSnapshot.Simulations != null)
       {
          foreach (var x in projectSnapshot.Simulations)
@@ -130,6 +131,7 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
             {
                var simulation = await _simulationMapper.MapToModel(x, simulationContext);
                addSimulations(project, simulation);
+               simulationsWithSnapshots.Add((simulation, x));
                simulationContext.NumberOfSimulationsLoaded++;
             }
             catch (Exception e)
@@ -146,6 +148,9 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       {
          await runParallelSimulations(project);
       }
+
+      //map analyses after the run so that simulation result columns are available to resolve the curves
+      simulationsWithSnapshots.Each(x => _simulationMapper.MapAnalysesToSimulation(x.simulation, x.snapshot, simulationContext));
 
       await updateProjectClassifications(projectSnapshot, snapshotContext);
 
