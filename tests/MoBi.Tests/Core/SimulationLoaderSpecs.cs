@@ -56,6 +56,9 @@ namespace MoBi.Core
          _simulation.Name = "Sim1";
 
          A.CallTo(() => _cloneManager.CloneSimulationConfiguration(A<SimulationConfiguration>._)).Returns(_simulationConfiguration);
+
+         //the simulation name is unique so CorrectName leaves it unchanged and returns true
+         A.CallTo(_nameCorrector).WithReturnType<bool>().Returns(true);
       }
 
       protected override void Because()
@@ -157,6 +160,67 @@ namespace MoBi.Core
       {
          _simulation.Modules[1].Name.ShouldBeEqualTo($"new SimName 1");
          _simulation.Modules[2].Name.ShouldBeEqualTo($"new SimName 2");
+      }
+   }
+
+   public class When_adding_a_simulation_whose_name_and_module_both_collide_with_existing_project_entities : concern_for_SimulationLoader
+   {
+      private Module _collidingModule;
+
+      protected override void Context()
+      {
+         base.Context();
+         //the project already contains a simulation and a module named "table"
+         _project.AddModule(new Module().WithName("table"));
+         _project.AddSimulation(new MoBiSimulation().WithName("table").WithId("existingSim"));
+
+         //the imported simulation is named "table" and carries a module named after it
+         _simulation.Name = "table";
+         _simulation.Model = new Model { Neighborhoods = new Container() };
+         _simulation.Model.Root = new Container();
+         _simulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(new Module().WithName("table")));
+
+         A.CallTo(() => _cloneManager.CloneSimulationConfiguration(A<SimulationConfiguration>._)).Returns(_simulationConfiguration);
+
+         //the simulation name collides, so it is deduplicated to "table 1"
+         A.CallTo(_nameCorrector).WithReturnType<bool>()
+            .Invokes(() => _simulation.Name = "table 1").Returns(true);
+
+         //AutoCorrectName appends a suffix while the name is already taken (mirrors the real corrector)
+         A.CallTo(() => _nameCorrector.AutoCorrectName(A<IEnumerable<string>>._, A<Module>._))
+            .Invokes((IEnumerable<string> usedNames, Module objectForRename) =>
+            {
+               var used = usedNames.ToList();
+               while (used.Contains(objectForRename.Name))
+                  objectForRename.Name += " 1";
+            });
+
+         _collidingModule = _simulation.Modules.First(x => x.Name.StartsWith("table"));
+      }
+
+      protected override void Because()
+      {
+         sut.AddSimulationToProject(_simulation);
+      }
+
+      [Observation]
+      public void the_module_named_after_the_simulation_should_carry_a_single_suffix()
+      {
+         _collidingModule.Name.ShouldBeEqualTo("table 1");
+      }
+
+      [Observation]
+      public void all_module_names_should_remain_unique()
+      {
+         var moduleNames = _project.Modules.Select(x => x.Name).ToList();
+         moduleNames.Distinct().Count().ShouldBeEqualTo(moduleNames.Count);
+      }
+
+      [Observation]
+      public void all_simulation_names_should_remain_unique()
+      {
+         var simulationNames = _project.Simulations.Select(x => x.Name).ToList();
+         simulationNames.Distinct().Count().ShouldBeEqualTo(simulationNames.Count);
       }
    }
 

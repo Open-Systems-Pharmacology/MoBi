@@ -65,20 +65,16 @@ namespace MoBi.Core.Services
          if (moBiSimulation.Configuration.Individual != null)
             renameCollidingEntities(new[] { moBiSimulation.Configuration.Individual }, project.IndividualsCollection);
 
-         renameCollidingEntities(moBiSimulation.Modules, project.Modules);
-
          moBiSimulation.ResultsDataRepository = simulation.ResultsDataRepository;
 
          var originalSimulationName = moBiSimulation.Name;
          if (!_nameCorrector.CorrectName(project.Simulations, moBiSimulation))
             return;
 
-         if (originalSimulationName != moBiSimulation.Name) //has been renamed
-         {
-            correctModuleNames(moBiSimulation.Modules, moBiSimulation.Name, project.Modules, originalSimulationName);
-            loadCommand.Add(new RenameModelCommand(moBiSimulation.Model, moBiSimulation.Name));
-         }
+         correctModuleNames(moBiSimulation.Modules, moBiSimulation.Name, project.Modules, originalSimulationName);
 
+         if (originalSimulationName != moBiSimulation.Name) //has been renamed
+            loadCommand.Add(new RenameModelCommand(moBiSimulation.Model, moBiSimulation.Name));
 
          addSimulationConfigurationToProject(moBiSimulation, loadCommand);
 
