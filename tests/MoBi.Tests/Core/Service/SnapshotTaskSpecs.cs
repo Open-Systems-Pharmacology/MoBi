@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Exceptions;
 using MoBi.Core.Services;
 using MoBi.Core.Snapshots.Mappers;
 using MoBi.Core.Snapshots.Services;
@@ -202,10 +203,10 @@ namespace MoBi.Core.Service
       protected override async Task Context()
       {
          await base.Context();
-         var projectSnapshot = new SnapshotProject();
+         var projectSnapshot = new SnapshotProject { ApplicationName = Origins.MoBi.DisplayName };
          var project = new ModelProject();
 
-         A.CallTo(() => _jsonSerializer.DeserializeAsArray(_fileName, typeof(Project))).Returns(new object[] { projectSnapshot, });
+         A.CallTo(() => _jsonSerializer.DeserializeAsArray(_fileName, typeof(SnapshotProject))).Returns(new object[] { projectSnapshot, });
          A.CallTo(() => _projectMapper.MapToModel(projectSnapshot, A<ProjectContext>._)).Returns(project);
       }
 
@@ -224,6 +225,46 @@ namespace MoBi.Core.Service
       public void should_have_marked_the_project_has_changed()
       {
          _project.HasChanged.ShouldBeTrue();
+      }
+   }
+
+   public class When_loading_a_project_from_a_snapshot_file_that_does_not_specify_the_application : concern_for_SnapshotTask
+   {
+      private readonly string _fileName = @"C:\test\SuperProject.json";
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         A.CallTo(() => _jsonSerializer.DeserializeAsArray(_fileName, typeof(SnapshotProject))).Returns(new object[] { new SnapshotProject() });
+      }
+
+      [Observation]
+      public void should_throw_an_exception()
+      {
+         The.Action(() => sut.LoadProjectFromSnapshotFileAsync(_fileName)).ShouldThrowAn<MoBiException>();
+      }
+
+      [Observation]
+      public void should_not_have_created_a_new_project()
+      {
+         A.CallTo(() => _moBiContext.NewProject()).MustNotHaveHappened();
+      }
+   }
+
+   public class When_loading_a_project_from_a_snapshot_file_created_with_another_application : concern_for_SnapshotTask
+   {
+      private readonly string _fileName = @"C:\test\SuperProject.json";
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         A.CallTo(() => _jsonSerializer.DeserializeAsArray(_fileName, typeof(SnapshotProject))).Returns(new object[] { new SnapshotProject { ApplicationName = Origins.PKSim.DisplayName } });
+      }
+
+      [Observation]
+      public void should_throw_an_exception()
+      {
+         The.Action(() => sut.LoadProjectFromSnapshotFileAsync(_fileName)).ShouldThrowAn<MoBiException>();
       }
    }
 }

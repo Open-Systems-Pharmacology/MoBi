@@ -11,8 +11,10 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Chart.Simulations;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
+using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Container;
 using SimulationPredictedVsObservedChart = OSPSuite.Core.Chart.Simulations.SimulationPredictedVsObservedChart;
+using SnapshotSimulation = MoBi.Core.Snapshots.Simulation;
 
 namespace MoBi.IntegrationTests.Snapshots
 {
@@ -130,6 +132,102 @@ namespace MoBi.IntegrationTests.Snapshots
       {
          _result.OutputSelections.Count().ShouldBeEqualTo(1);
          _result.OutputSelections.First().ShouldBeEqualTo("sim|container|quantity");
+      }
+   }
+
+   public abstract class concern_for_mapping_analyses_to_simulation : concern_for_SimulationMapper
+   {
+      protected MoBiSimulation _simulationWithAnalyses;
+      protected SnapshotSimulation _snapshot;
+      protected SimulationContext _context;
+      protected bool _run;
+
+      protected override void Context()
+      {
+         base.Context();
+
+         _simulationWithAnalyses = new MoBiSimulation().WithName("sim");
+         SetupResults();
+
+         _snapshot = new SnapshotSimulation
+         {
+            Charts = new[]
+            {
+               new OSPSuite.Core.Snapshots.CurveChart
+               {
+                  Curves = new[]
+                  {
+                     new OSPSuite.Core.Snapshots.Curve
+                     {
+                        Name = "simulation output curve",
+                        X = "Time",
+                        Y = "sim|Comp|Liver|Cell|Concentration",
+                        CurveOptions = new OSPSuite.Core.Snapshots.CurveOptions()
+                     }
+                  }
+               }
+            }
+         };
+
+         _context = new SimulationContext(_run, new SnapshotContext(_project, OSPSuite.Core.Snapshots.SnapshotVersions.Current));
+      }
+
+      protected abstract void SetupResults();
+
+      protected override void Because()
+      {
+         sut.MapAnalysesToSimulation(_simulationWithAnalyses, _snapshot, _context);
+      }
+   }
+
+   public class When_mapping_analyses_to_a_simulation_that_has_results : concern_for_mapping_analyses_to_simulation
+   {
+      protected override void Context()
+      {
+         _run = true;
+         base.Context();
+      }
+
+      protected override void SetupResults()
+      {
+         _simulationWithAnalyses.ResultsDataRepository = DomainHelperForSpecs.IndividualSimulationDataRepositoryFor("sim");
+      }
+
+      [Observation]
+      public void the_time_profile_chart_should_be_added_to_the_simulation()
+      {
+         _simulationWithAnalyses.Charts.Count().ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void the_curve_referencing_the_simulation_output_should_be_created_from_the_result_data()
+      {
+         _simulationWithAnalyses.Charts.Single().Curves.Count.ShouldBeEqualTo(1);
+      }
+   }
+
+   public class When_mapping_analyses_to_a_simulation_that_has_no_results : concern_for_mapping_analyses_to_simulation
+   {
+      protected override void Context()
+      {
+         _run = false;
+         base.Context();
+      }
+
+      protected override void SetupResults()
+      {
+      }
+
+      [Observation]
+      public void the_time_profile_chart_should_be_added_to_the_simulation()
+      {
+         _simulationWithAnalyses.Charts.Count().ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void the_curve_referencing_the_simulation_output_cannot_be_resolved_without_results()
+      {
+         _simulationWithAnalyses.Charts.Single().Curves.Count.ShouldBeEqualTo(0);
       }
    }
 }

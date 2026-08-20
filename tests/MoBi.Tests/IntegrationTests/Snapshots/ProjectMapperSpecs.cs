@@ -446,6 +446,12 @@ namespace MoBi.IntegrationTests.Snapshots
       }
 
       [Observation]
+      public void the_snapshot_should_identify_MoBi_as_the_application_that_created_it()
+      {
+         _snapshot.ApplicationName.ShouldBeEqualTo("MoBi");
+      }
+
+      [Observation]
       public void there_should_be_classifications_for_each_type()
       {
          _snapshot.ModuleClassifications.Length.ShouldBeEqualTo(1);
@@ -459,6 +465,125 @@ namespace MoBi.IntegrationTests.Snapshots
       {
          A.CallTo(() => _parameterValueUpdateManager.MapFrom(_individualParameter)).MustHaveHappened();
          A.CallTo(() => _parameterValueUpdateManager.MapFrom(_expressionParameter)).MustHaveHappened();
+      }
+   }
+
+   internal class When_mapping_project_to_snapshot_with_renamed_pksim_building_blocks : concern_for_ProjectMapper
+   {
+      private SnapshotProject _snapshot;
+
+      protected override void Context()
+      {
+         base.Context();
+         _snapshotIndividualBuildingBlock.Name = "Walker 1979 Volunteer 6 1";
+         _snapshotExpressionProfile.Name = "CYP3A4|Human|Healthy 1";
+      }
+
+      protected override void Because()
+      {
+         _snapshot = sut.MapToSnapshot(_project).Result;
+      }
+
+      [Observation]
+      public void the_individual_snapshot_should_carry_the_current_building_block_name()
+      {
+         _snapshot.IndividualBuildingBlockSnapshots.Single().MoBiName.ShouldBeEqualTo("Walker 1979 Volunteer 6 1");
+      }
+
+      [Observation]
+      public void the_expression_profile_snapshot_should_carry_the_current_building_block_name()
+      {
+         _snapshot.ExpressionProfileSnapshots.Single().MoBiName.ShouldBeEqualTo("CYP3A4|Human|Healthy 1");
+      }
+   }
+
+   internal class When_mapping_snapshot_to_project_with_renamed_pksim_building_blocks : concern_for_ProjectMapper
+   {
+      private SnapshotProject _snapshot;
+      private MoBiProject _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         _snapshotIndividualBuildingBlock.Name = "Walker 1979 Volunteer 6 1";
+         _snapshotExpressionProfile.Name = "CYP3A4|Human|Healthy 1";
+
+         //PK-Sim always recreates the building blocks with their original (colliding) names
+         A.CallTo(() => _pkSimStarter.LoadIndividualFromSnapshot(A<string>._)).ReturnsLazily(() => new IndividualBuildingBlock().WithName("Walker 1979 Volunteer 6"));
+         A.CallTo(() => _pkSimStarter.LoadExpressionProfileFromSnapshot(A<string>._)).ReturnsLazily(() => new ExpressionProfileBuildingBlock { Type = ExpressionTypes.MetabolizingEnzyme, Name = "CYP3A4|Human|Healthy" });
+
+         _snapshot = sut.MapToSnapshot(_project).Result;
+      }
+
+      protected override void Because()
+      {
+         _result = sut.MapToModel(_snapshot, new ProjectContext(new MoBiProject(), runSimulations: false)).Result;
+      }
+
+      [Observation]
+      public void the_loaded_individual_should_keep_the_name_stored_in_the_snapshot()
+      {
+         _result.IndividualsCollection.Select(x => x.Name).ShouldContain("Walker 1979 Volunteer 6 1");
+      }
+
+      [Observation]
+      public void the_loaded_expression_profile_should_keep_the_name_stored_in_the_snapshot()
+      {
+         _result.ExpressionProfileCollection.Select(x => x.Name).ShouldContain("CYP3A4|Human|Healthy 1");
+      }
+   }
+
+   internal class When_mapping_project_to_snapshot_with_renamed_pksim_modules : concern_for_ProjectMapper
+   {
+      private SnapshotProject _snapshot;
+
+      protected override void Context()
+      {
+         base.Context();
+         _project.Modules.Single(x => x.Id == "pksimmodule").Name = "Henrist oral Hot stage extrusion as table";
+         var secondPKSimModule = new Module { IsPKSimModule = true, Snapshot = "{ \"JSON\":true }".ToBase64String(), Id = "pksimmodule2" }.WithName("Henrist oral Hot stage extrusion as table 1 1");
+         _project.AddModule(secondPKSimModule);
+      }
+
+      protected override void Because()
+      {
+         _snapshot = sut.MapToSnapshot(_project).Result;
+      }
+
+      [Observation]
+      public void the_snapshot_should_carry_the_current_module_names_in_the_same_order_as_the_pksim_modules()
+      {
+         _snapshot.PKSimModuleNames.ShouldOnlyContainInOrder("Henrist oral Hot stage extrusion as table", "Henrist oral Hot stage extrusion as table 1 1");
+      }
+   }
+
+   internal class When_mapping_snapshot_to_project_with_renamed_pksim_modules : concern_for_ProjectMapper
+   {
+      private SnapshotProject _snapshot;
+      private MoBiProject _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         _project.Modules.Single(x => x.Id == "pksimmodule").Name = "Henrist oral Hot stage extrusion as table";
+         var secondPKSimModule = new Module { IsPKSimModule = true, Snapshot = "{ \"JSON\":true }".ToBase64String(), Id = "pksimmodule2" }.WithName("Henrist oral Hot stage extrusion as table 1 1");
+         _project.AddModule(secondPKSimModule);
+
+         //PK-Sim always recreates the module with the (colliding) simulation name captured in the snapshot
+         A.CallTo(() => _pkSimStarter.LoadModuleFromSnapshot(A<string>._)).ReturnsLazily(() => new Module { IsPKSimModule = true }.WithName("Henrist oral Hot stage extrusion as table"));
+
+         _snapshot = sut.MapToSnapshot(_project).Result;
+      }
+
+      protected override void Because()
+      {
+         _result = sut.MapToModel(_snapshot, new ProjectContext(new MoBiProject(), runSimulations: false)).Result;
+      }
+
+      [Observation]
+      public void the_loaded_modules_should_keep_the_names_stored_in_the_snapshot()
+      {
+         _result.Modules.Select(x => x.Name).ShouldContain("Henrist oral Hot stage extrusion as table", "Henrist oral Hot stage extrusion as table 1 1");
       }
    }
 }

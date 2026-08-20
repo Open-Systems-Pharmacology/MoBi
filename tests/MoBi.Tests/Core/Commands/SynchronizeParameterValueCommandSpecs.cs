@@ -98,4 +98,34 @@ namespace MoBi.Core.Commands
          A.CallTo(() => _context.CurrentProject).MustHaveHappened();
       }
    }
+
+   public class synchronizing_a_parameter_value_that_already_had_a_value_and_getting_reverse_command : concern_for_SynchronizeParameterValueCommand
+   {
+      private MoBiProject _project;
+
+      protected override void Context()
+      {
+         base.Context();
+         _parameter.Dimension = A.Fake<IDimension>();
+         _parameter.DisplayUnit = A.Fake<Unit>();
+         _parameter.Value = 32;
+         _parameterStartValue.Value = 31;
+         A.CallTo(() => _context.Get<IParameter>(_parameter.Id)).Returns(_parameter);
+
+         _project = DomainHelperForSpecs.NewProject();
+         _project.AddSimulation(_simulation);
+         A.CallTo(() => _context.CurrentProject).Returns(_project);
+      }
+
+      protected override void Because()
+      {
+         sut.ExecuteAndInvokeInverse(_context);
+      }
+
+      [Observation]
+      public void should_have_restored_the_previous_value_of_the_parameter_value()
+      {
+         _parameterStartValue.Value.ShouldBeEqualTo(31);
+      }
+   }
 }

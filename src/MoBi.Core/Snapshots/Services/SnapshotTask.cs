@@ -1,7 +1,10 @@
 ﻿using System.Threading.Tasks;
+using MoBi.Assets;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Exceptions;
 using MoBi.Core.Services;
 using MoBi.Core.Snapshots.Mappers;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Qualification;
 using OSPSuite.Core.Services;
@@ -54,8 +57,20 @@ public class SnapshotTask : SnapshotTask<MoBiProject, Project>, ISnapshotTask
 
    protected override Task<MoBiProject> ProjectFrom(Project snapshot, bool runSimulations)
    {
+      validateApplication(snapshot);
       _moBiContext.NewProject();
       return _projectMapper.MapToModel(snapshot, new ProjectContext(_moBiContext.CurrentProject, runSimulations));
+   }
+
+   private static void validateApplication(Project snapshot)
+   {
+      var applicationName = snapshot?.ApplicationName;
+      if (string.Equals(applicationName, Origins.MoBi.DisplayName))
+         return;
+
+      throw new MoBiException(string.IsNullOrEmpty(applicationName)
+         ? AppConstants.Exceptions.ProjectSnapshotApplicationNotSpecified
+         : AppConstants.Exceptions.ProjectSnapshotCannotBeLoaded(applicationName));
    }
 
    protected override SnapshotContext GetSnapshotContext() => new(_projectRetriever.Current, SnapshotVersions.Current);
@@ -64,6 +79,7 @@ public class SnapshotTask : SnapshotTask<MoBiProject, Project>, ISnapshotTask
 
    public Task<(MoBiProject, InputMapping[])> LoadProjectFromSnapshotAndExportInputsAsync(Project snapshot, bool runSimulations, QualificationConfiguration qualificationConfiguration)
    {
+      validateApplication(snapshot);
       _moBiContext.NewProject();
       return _projectMapper.MapToModelAndExportInputs(snapshot, new ProjectContext(_moBiContext.CurrentProject, runSimulations), qualificationConfiguration);
    }

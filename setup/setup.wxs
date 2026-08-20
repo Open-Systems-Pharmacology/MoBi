@@ -113,14 +113,6 @@
                   </CreateFolder>
                 </Component>
               </Directory>
-
-              <Directory Id="TeXTemplatesFolder" Name="TeXTemplates">
-                <Component Id="TeXTemplatesFolder" Guid="B53F252A-675F-442F-B539-239A210F594A">
-                  <CreateFolder Directory="TeXTemplatesFolder">
-                    <Permission User="Everyone" GenericAll="yes" />
-                  </CreateFolder>
-                </Component>
-              </Directory>
             </Directory>
           </Directory>
         </Directory>
@@ -153,7 +145,6 @@
     <Feature Id="Main" Title="$(var.ProductName)" Level="1" Absent="disallow" AllowAdvertise="no">
       <ComponentGroupRef Id="App" />
       <ComponentGroupRef Id="ChartLayouts" />
-      <ComponentGroupRef Id="OSPSuite.TeXReporting" />
       <ComponentGroupRef Id="Examples" />
       <ComponentGroupRef Id="Templates" />
 
@@ -169,7 +160,6 @@
       <ComponentRef Id="GroupRepository.xml" />
       <ComponentRef Id="MoBiCommonDataFolder" />
       <ComponentRef Id="MoBiCommonDataVersionFolder" />
-      <ComponentRef Id="TeXTemplatesFolder" />
       <ComponentRef Id="ExamplesFolder" />
       <ComponentRef Id="ExampleFolderShortCut" />
       <ComponentRef Id="TemplatesFolder" />

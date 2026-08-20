@@ -9,7 +9,6 @@ using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 using OSPSuite.Presentation.Presenters.Main;
 using OSPSuite.Presentation.Services;
-using OSPSuite.TeXReporting.Events;
 using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Events;
 using OSPSuite.Utility.Extensions;
@@ -18,8 +17,6 @@ using IProjectTask = MoBi.Presentation.Tasks.IProjectTask;
 namespace MoBi.Presentation.Presenter
 {
    public interface IMoBiMainViewPresenter : IMainViewPresenter,
-      IListener<ReportCreationStartedEvent>,
-      IListener<ReportCreationFinishedEvent>,
       IListener<ProjectLoadedEvent>,
       IListener<ProjectClosedEvent>,
       IListener<ProjectSavedEvent>
@@ -107,18 +104,6 @@ namespace MoBi.Presentation.Presenter
             default:
                return;
          }
-      }
-
-      public void Handle(ReportCreationStartedEvent reportStartedEvent)
-      {
-         _view.DisplayNotification(AppConstants.Captions.ReportCreationStarted,
-            AppConstants.Captions.ReportCreationStartedMessage(reportStartedEvent.ReportFullPath), string.Empty);
-      }
-
-      public void Handle(ReportCreationFinishedEvent reportFinishedEvent)
-      {
-         _view.DisplayNotification(AppConstants.Captions.ReportCreationFinished,
-            AppConstants.Captions.ReportCreationFinishedMessage(reportFinishedEvent.ReportFullPath), reportFinishedEvent.ReportFullPath);
       }
 
       public bool FormClosing()

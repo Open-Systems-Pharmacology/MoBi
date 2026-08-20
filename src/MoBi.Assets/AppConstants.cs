@@ -74,8 +74,6 @@ namespace MoBi.Assets
       {
          public static readonly string EmptyColumn = " ";
 
-         public static readonly string ReportCreationStarted = "Report creation started...";
-         public static readonly string ReportCreationFinished = "Report created!";
          public static readonly string Concentration = "Concentration";
       }
 
@@ -1131,7 +1129,6 @@ namespace MoBi.Assets
          public static readonly string ZoomOut = "Zoom Out";
          public static readonly string FitToPage = "Fit to Page";
          public static readonly string ExportHistoryToExcel = "Export to Excel®...";
-         public static readonly string ProjectReport = "Project Report";
          public static readonly string SimulationReport = "Create Simulation Report...";
          public static readonly string SetToDefault = "Set to Default";
          public static readonly string Extend = "Extend";
@@ -1384,6 +1381,10 @@ namespace MoBi.Assets
          {
             return $"The imported dimension is not correct. The dimension must be {dimensionName}. The possible units are: {unitNames.ToString(",")}";
          }
+
+         public static string ProjectSnapshotCannotBeLoaded(string snapshotApplicationName) => $"This file contains a {snapshotApplicationName} project snapshot and cannot be loaded in {Origins.MoBi.DisplayName}. Please load it in {snapshotApplicationName}.";
+
+         public static readonly string ProjectSnapshotApplicationNotSpecified = $"This file does not specify the application it was created with and is most likely a {Origins.PKSim.DisplayName} project snapshot. It cannot be loaded in {Origins.MoBi.DisplayName}.";
 
          public static string CannotLoadRelatedItemAsObjectAlreadyExistInProject(string objectType, string objectName)
          {
@@ -1677,8 +1678,6 @@ namespace MoBi.Assets
          public static readonly string ExportModelAsTables = "Export Model as Tables...";
          public static readonly string SelectProjectRateDimension = "Select Reaction Rate Base for Project";
          public static readonly string EmptyColumn = " ";
-         public static readonly string ReportCreationStarted = "Report creation started...";
-         public static readonly string ReportCreationFinished = "Report created!";
          public static readonly string NoValuesFound = "No values imported";
          public static readonly string SelectProjectRateDimensionDescription = "Reactions and their formulas can either compute amount (µmol) or concentration (µmol/l) changes. Please select:";
          public static readonly string AmountBasedModel = "Amount based reactions";
@@ -1885,10 +1884,6 @@ namespace MoBi.Assets
          public static string ManageDisplayUnits(string type) => $"Manage {type} Display Units";
 
          public static string ParameterRightHandSide(string name) => $"d{name}/dt = ";
-
-         public static string ReportCreationStartedMessage(string reportFullPath) => "This might take a while...";
-
-         public static string ReportCreationFinishedMessage(string reportFullPath) => $"Report can be found at {reportFullPath}";
 
          public static string ConvertingExcelSheetToQuantities(string tableName) => $"Converting Excel sheet {tableName}";
 
