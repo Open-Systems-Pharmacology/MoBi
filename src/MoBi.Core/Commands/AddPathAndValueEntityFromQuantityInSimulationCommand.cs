@@ -3,6 +3,7 @@ using MoBi.Core.Domain.Model;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Extensions;
 using MoBi.Assets;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Helper;
@@ -41,6 +42,7 @@ namespace MoBi.Core.Commands
             return;
 
          var pathAndValueEntity = CreateNewEntity(context);
+         removeSimulationRootFromFormulaReferences(pathAndValueEntity);
          ObjectType = _objectTypeResolver.TypeFor(pathAndValueEntity);
          Description = AppConstants.Commands.AddedPathAndValueEntity(pathAndValueEntity, _buildingBlock.Name, ObjectType);
          _buildingBlock.Add(pathAndValueEntity);
@@ -48,6 +50,20 @@ namespace MoBi.Core.Commands
          var entitySourceUpdater = context.Resolve<ISimulationEntitySourceUpdater>();
          _originalSource = _simulation.EntitySources.SourceByPath(_objectPath);
          entitySourceUpdater.UpdateSourcesForNewPathAndValueEntity(_buildingBlock, _objectPath, _simulation);
+      }
+
+      //Reverse of TopContainerPathReplacer: strip the model root (simulation) name from formula references so they resolve in a new simulation
+      private void removeSimulationRootFromFormulaReferences(TPathAndValueEntity pathAndValueEntity)
+      {
+         var rootContainer = _simulation.Model?.Root;
+         if (pathAndValueEntity.Formula == null || rootContainer == null)
+            return;
+
+         pathAndValueEntity.Formula.ObjectPaths.Each(path =>
+         {
+            if (path.Count > 0 && string.Equals(path[0], rootContainer.Name))
+               path.RemoveFirst();
+         });
       }
 
       protected abstract TPathAndValueEntity CreateNewEntity(IMoBiContext context);

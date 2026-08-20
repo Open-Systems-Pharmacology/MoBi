@@ -6,6 +6,7 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Core.Commands
@@ -80,6 +81,45 @@ namespace MoBi.Core.Commands
       public void the_source_must_be_updated_in_the_simulation()
       {
          A.CallTo(() => _entitySourceUpdater.UpdateSourcesForNewPathAndValueEntity(_parameterValuesBuildingBlock, _objectPath, _simulation)).MustHaveHappened();
+      }
+   }
+
+   public class adding_a_parameter_value_whose_formula_references_the_simulation_root : concern_for_AddParameterValueFromQuantityInSimulationCommand
+   {
+      private ParameterValue _parameterValue;
+      private FormulaUsablePath _absolutePath;
+      private FormulaUsablePath _relativePath;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation.Model.Root.Name = "S1";
+
+         var formula = new ExplicitFormula("A + B");
+         _absolutePath = new FormulaUsablePath(new[] { "S1", "Organism", "Lumen", "Effective surface area variability factor" }) { Alias = "A" };
+         _relativePath = new FormulaUsablePath(new[] { ObjectPath.PARENT_CONTAINER, "Geometric surface area" }) { Alias = "B" };
+         formula.AddObjectPath(_absolutePath);
+         formula.AddObjectPath(_relativePath);
+
+         _parameterValue = new ParameterValue { Path = _objectPath, Formula = formula };
+         A.CallTo(() => _parameterValuesCreator.CreateParameterValue(_objectPath, _parameter)).Returns(_parameterValue);
+      }
+
+      protected override void Because()
+      {
+         sut.Execute(_context);
+      }
+
+      [Observation]
+      public void should_remove_the_simulation_root_from_absolute_formula_references()
+      {
+         _absolutePath.PathAsString.ShouldBeEqualTo("Organism|Lumen|Effective surface area variability factor");
+      }
+
+      [Observation]
+      public void should_leave_relative_formula_references_unchanged()
+      {
+         _relativePath.PathAsString.ShouldBeEqualTo("..|Geometric surface area");
       }
    }
 
