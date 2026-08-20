@@ -547,8 +547,7 @@ namespace MoBi.IntegrationTests.Snapshots
       [Observation]
       public void the_snapshot_should_carry_the_current_module_names_in_the_same_order_as_the_pksim_modules()
       {
-         _snapshot.PKSimModuleNames.Length.ShouldBeEqualTo(_snapshot.PKSimModules.Length);
-         _snapshot.PKSimModuleNames.ShouldContain("Henrist oral Hot stage extrusion as table", "Henrist oral Hot stage extrusion as table 1 1");
+         _snapshot.PKSimModuleNames.ShouldOnlyContainInOrder("Henrist oral Hot stage extrusion as table", "Henrist oral Hot stage extrusion as table 1 1");
       }
    }
 
