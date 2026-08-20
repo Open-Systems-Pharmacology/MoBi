@@ -14,6 +14,14 @@ public class Project : SnapshotBase
 
    public object[] PKSimModules { set; get; }
 
+   /// <summary>
+   ///    The MoBi project names of the modules in <see cref="PKSimModules" />, in the same order. Each PK-Sim snapshot
+   ///    carries the name it had in PK-Sim, but the MoBi module may have been renamed on import to avoid a collision (for
+   ///    example when importing two simulations that share the same individual). Preserving the MoBi name keeps the module
+   ///    resolvable by simulations after the snapshot is loaded. Null for snapshots written before this was introduced.
+   /// </summary>
+   public string[] PKSimModuleNames { set; get; }
+
    public string[] ExtensionModules { set; get; }
 
    public string[] ExpressionProfileBuildingBlocks { set; get; }
