@@ -1187,6 +1187,7 @@ namespace MoBi.Assets
          public static readonly string Export = "Export";
          public static readonly string ReloadExpressionProfile = "Reload Expression Profile";
          public static readonly string ReloadIndividual = "Reload Individual";
+         public static readonly string AddMoleculeProperties = "Add MoleculeProperties";
 
          public static string AddNew(string objectTypeName) => $"Create {objectTypeName}...";
 

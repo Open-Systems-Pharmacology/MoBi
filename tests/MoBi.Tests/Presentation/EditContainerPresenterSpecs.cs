@@ -252,46 +252,7 @@ namespace MoBi.Presentation
       }
    }
 
-   internal class When_setting_container_mode_to_physical_in_new_container : concern_for_EditContainerPresenter
-   {
-      private IContainer _muscle;
-      private MoBiSpatialStructure _spatialStructure;
-
-      protected override void Context()
-      {
-         base.Context();
-         _muscle = new Container { ParentPath = new ObjectPath("A", "B") };
-         _spatialStructure = new MoBiSpatialStructure
-         {
-            NeighborhoodsContainer = new Container(),
-            DiagramManager = A.Fake<IDiagramManager<MoBiSpatialStructure>>()
-         };
-         _spatialStructure.AddTopContainer(_muscle);
-         _muscle.Mode = ContainerMode.Logical;
-         A.CallTo(() => _context.Get(_muscle.Id)).Returns(null);
-         sut.Edit(_muscle);
-         sut.BuildingBlock = _spatialStructure;
-      }
-
-      protected override void Because()
-      {
-         sut.ConfirmAndSetContainerMode(ContainerMode.Physical);
-      }
-
-      [Observation]
-      public void should_change_mode()
-      {
-         _muscle.Mode.ShouldBeEqualTo(ContainerMode.Physical);
-      }
-
-      [Observation]
-      public void should_add_molecule_properties()
-      {
-         _muscle.Children.FindByName(Constants.MOLECULE_PROPERTIES).ShouldNotBeNull();
-      }
-   }
-
-   internal class When_setting_container_mode_to_logical_in_new_container : concern_for_EditContainerPresenter
+   internal class When_setting_container_mode_to_new_container : concern_for_EditContainerPresenter
    {
       private IContainer _muscle;
       private MoBiSpatialStructure _spatialStructure;
@@ -307,10 +268,6 @@ namespace MoBi.Presentation
          };
          _spatialStructure.AddTopContainer(_muscle);
          _muscle.Mode = ContainerMode.Physical;
-         var moleculeProperties = _context.Create<IContainer>()
-            .WithName(Constants.MOLECULE_PROPERTIES)
-            .WithMode(ContainerMode.Logical);
-         _muscle.Add(moleculeProperties);
          A.CallTo(() => _context.Get(_muscle.Id)).Returns(null);
          sut.Edit(_muscle);
          sut.BuildingBlock = _spatialStructure;
@@ -328,7 +285,7 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_remove_molecule_properties()
+      public void should_not_add_molecule_properties()
       {
          _muscle.Children.FindByName(Constants.MOLECULE_PROPERTIES).ShouldBeNull();
       }
@@ -365,11 +322,11 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_add_molecule_properties_when_not_present_already()
+      public void should_not_add_molecule_properties()
       {
          _commandCollector.All().Any(x => x.IsAnImplementationOf<MoBiMacroCommand>()).ShouldBeTrue();
          var macroCommand = _commandCollector.All().FirstOrDefault() as MoBiMacroCommand;
-         macroCommand.All().Any(x => x.IsAnImplementationOf<AddContainerToSpatialStructureCommand>()).ShouldBeTrue();
+         macroCommand.All().Any(x => x.IsAnImplementationOf<AddContainerToSpatialStructureCommand>()).ShouldBeFalse();
       }
 
       [Observation]

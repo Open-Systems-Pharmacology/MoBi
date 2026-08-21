@@ -100,10 +100,20 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          {
             _allMenuItems.Add(CreateAddNewItemFor(container));
             _allMenuItems.Add(CreateAddExistingItemFor(container));
+
+            if (container.Mode == ContainerMode.Physical && container.Container(Constants.MOLECULE_PROPERTIES) == null)
+               _allMenuItems.Add(createAddMoleculePropertiesItemFor(container));
          }
 
          _allMenuItems.Add(CreateAddNewChild<IDistributedParameter>(container));
          return this;
+      }
+
+      private IMenuBarItem createAddMoleculePropertiesItemFor(IContainer container)
+      {
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddMoleculeProperties)
+            .WithIcon(ApplicationIcons.Add)
+            .WithCommandFor<AddMoleculePropertiesToContainerUICommand, IContainer>(container, _container);
       }
 
       protected override void AddSaveItems(IContainer container)

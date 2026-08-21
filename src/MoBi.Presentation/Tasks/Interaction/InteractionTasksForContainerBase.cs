@@ -34,20 +34,6 @@ namespace MoBi.Presentation.Tasks.Interaction
          _initialConditionsTask = initialConditionsTask;
       }
 
-      public override IContainer CreateNewEntity(TParent parent)
-      {
-         var newContainer = base.CreateNewEntity(parent);
-
-         if (newContainer.Mode != ContainerMode.Physical) 
-            return newContainer;
-
-         var moleculeProperties = Context.Create<IContainer>()
-            .WithName(Constants.MOLECULE_PROPERTIES)
-            .WithMode(ContainerMode.Logical);
-         newContainer.Add(moleculeProperties);
-         return newContainer;
-      }
-
       private MoBiSpatialStructure getSpatialStructure(IBuildingBlock buildingBlockWithFormulaCache)
       {
          return buildingBlockWithFormulaCache as MoBiSpatialStructure ?? _interactionTaskContext.Active<MoBiSpatialStructure>();
