@@ -20,6 +20,9 @@ namespace MoBi.Presentation.UICommand
 
       protected override void PerformExecute()
       {
+         if (Subject.Container(Constants.MOLECULE_PROPERTIES) != null)
+            return;
+
          var spatialStructure = _activeSubjectRetriever.Active<MoBiSpatialStructure>();
          var moleculeProperties = _context.Create<IContainer>()
             .WithName(Constants.MOLECULE_PROPERTIES)

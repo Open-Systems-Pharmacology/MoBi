@@ -54,4 +54,24 @@ namespace MoBi.Presentation
          A.CallTo(() => _context.AddToHistory(A<OSPSuite.Core.Commands.Core.ICommand>._)).MustHaveHappened();
       }
    }
+
+   public class When_adding_molecule_properties_to_a_container_that_already_has_them : concern_for_AddMoleculePropertiesToContainerUICommand
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _container.Add(new Container().WithName(Constants.MOLECULE_PROPERTIES).WithMode(ContainerMode.Logical));
+      }
+
+      protected override void Because()
+      {
+         sut.Execute();
+      }
+
+      [Observation]
+      public void should_not_add_another_molecule_properties_container()
+      {
+         A.CallTo(() => _context.AddToHistory(A<OSPSuite.Core.Commands.Core.ICommand>._)).MustNotHaveHappened();
+      }
+   }
 }
