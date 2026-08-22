@@ -48,7 +48,9 @@ namespace MoBi.CLI
          if (!string.IsNullOrEmpty(runOptions.PKSimPath))
             IoC.Resolve<IApplicationSettings>().PKSimPath = runOptions.PKSimPath;
 
-         var logger = initializeLogger(command);
+         var errorCounter = command is QualificationRunCommand ? new ErrorCountingLoggerProvider() : null;
+
+         var logger = initializeLogger(command, errorCounter);
          if (command.LogCommandName)
             logger.AddInfo($"Starting {command.Name.ToLower()} run");
 
@@ -65,11 +67,17 @@ namespace MoBi.CLI
             _valid = false;
          }
 
+         if (errorCounter != null && errorCounter.HasErrors)
+         {
+            logger.AddError("Qualification run finished with errors. See the log for details.");
+            _valid = false;
+         }
+
          if (command.LogCommandName)
             logger.AddInfo($"{command.Name} run finished");
       }
 
-      private static IOSPSuiteLogger initializeLogger(CLICommand runCommand)
+      private static IOSPSuiteLogger initializeLogger(CLICommand runCommand, ErrorCountingLoggerProvider errorCounter)
       {
          var loggerCreator = IoC.Resolve<ILoggerCreator>();
 
@@ -87,6 +95,9 @@ namespace MoBi.CLI
                builder
                   .SetMinimumLevel(runCommand.LogLevel)
                   .AddFile(runCommand.LogFilesFullPath.ToArray(), runCommand.LogLevel, true));
+
+         if (errorCounter != null)
+            loggerCreator.AddLoggingBuilderConfiguration(builder => builder.AddProvider(errorCounter));
 
          return logger;
       }
