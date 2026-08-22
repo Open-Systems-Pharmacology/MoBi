@@ -48,6 +48,7 @@ namespace MoBi.CLI
          if (!string.IsNullOrEmpty(runOptions.PKSimPath))
             IoC.Resolve<IApplicationSettings>().PKSimPath = runOptions.PKSimPath;
 
+         // If a qualification workflow logs errors, the return code should be non-zero
          var errorCounter = command is QualificationRunCommand ? new ErrorCountingLoggerProvider() : null;
 
          var logger = initializeLogger(command, errorCounter);
