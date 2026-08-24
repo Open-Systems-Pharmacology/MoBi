@@ -77,6 +77,7 @@ namespace MoBi.BatchTool.Services
       public ValidationSettings ValidationSettings { get; private set; }
       public OutputSelections OutputSelections { get; set; }
       public bool GroupParameters { get; set; }
+      public bool V13ConversionInfoShown { get; set; }
 
       public BatchUserSettings()
       {
