@@ -90,6 +90,7 @@ namespace MoBi.UI.Settings
       private readonly INumericFormatterOptions _numericFormatterOptions;
       public bool ShowAdvancedParameters { get; set; }
       public bool GroupParameters { get; set; }
+      public bool V13ConversionInfoShown { get; set; }
       public string ChartEditorLayout { get; set; }
       public int MaximumNumberOfCoresToUse { get; set; }
       public int NumberOfBins { get; set; }
@@ -119,6 +120,7 @@ namespace MoBi.UI.Settings
          DirectoryMapSettings.AddUsedDirectory(AppConstants.DirectoryKey.LAYOUT, configuration.CurrentUserFolderPath);
          ShowAdvancedParameters = true;
          GroupParameters = false;
+         V13ConversionInfoShown = false;
          VisibleNotification = NotificationType.Warning | NotificationType.Error;
          ValidationSettings = new ValidationSettings { CheckDimensions = true, CheckCircularReference = true };
          DisplayUnits = new DisplayUnitsManager();
