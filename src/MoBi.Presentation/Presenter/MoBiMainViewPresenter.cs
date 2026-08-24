@@ -37,7 +37,8 @@ namespace MoBi.Presentation.Presenter
       private readonly IUserSettings _userSettings;
       private readonly IMoBiConfiguration _configuration;
       private readonly IWatermarkStatusChecker _watermarkStatusChecker;
-        
+      private readonly IDialogCreator _dialogCreator;
+
       public MoBiMainViewPresenter(
          IMoBiMainView view,
          IRepository<IMainViewItemPresenter> allMainViewItemPresenters,
@@ -48,13 +49,15 @@ namespace MoBi.Presentation.Presenter
          IUserSettings userSettings,
          ITabbedMdiChildViewContextMenuFactory contextMenuFactory,
          IMoBiConfiguration configuration,
-         IWatermarkStatusChecker watermarkStatusChecker) : base(view, eventPublisher, contextMenuFactory)
+         IWatermarkStatusChecker watermarkStatusChecker,
+         IDialogCreator dialogCreator) : base(view, eventPublisher, contextMenuFactory)
       {
          _skinManager = skinManager;
          _exitCommand = exitCommand;
          _userSettings = userSettings;
          _configuration = configuration;
          _watermarkStatusChecker = watermarkStatusChecker;
+         _dialogCreator = dialogCreator;
          _allMainViewItemPresenters = allMainViewItemPresenters;
          _projectTask = projectTask;
          _view.AttachPresenter(this);
@@ -72,6 +75,16 @@ namespace MoBi.Presentation.Presenter
       public override void Run()
       {
          _watermarkStatusChecker.CheckWatermarkStatus();
+         showV13ConversionNoticeIfRequired();
+      }
+
+      private void showV13ConversionNoticeIfRequired()
+      {
+         if (_userSettings.V13ConversionInfoShown)
+            return;
+
+         _dialogCreator.MessageBoxInfo(AppConstants.Captions.V13ConversionNoticeDescription);
+         _userSettings.V13ConversionInfoShown = true;
       }
 
       public override void RemoveAlert()

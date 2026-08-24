@@ -47,6 +47,7 @@ namespace MoBi.Assets
       public static readonly string Website = "www.open-systems-pharmacology.org";
       public static readonly string ProductSiteDownload = "http://setup.open-systems-pharmacology.org";
       public static readonly string IssueTrackerUrl = "https://github.com/open-systems-pharmacology/mobi/issues";
+      public static readonly string V13ConversionDocumentationUrl = "https://docs.open-systems-pharmacology.org/v13/working-with-mobi/mobi-documentation/reuse-of-project-information-from-previous-versions/converting-v12-projects-to-v13";
       public static readonly string Persitable = "Persitable";
       public static readonly string CVODE_1002_2_SOLVER = "CVODE1002_2";
       public static readonly int MAX_PATH_DEPTH = 10;
@@ -1433,6 +1434,7 @@ namespace MoBi.Assets
          public static readonly string ProjectExplorer = "Project Explorer";
          public static readonly string BuildingBlockExplorer = "Building Block Explorer";
          public static readonly string WarningsCaption = "Solver Warnings";
+         public static readonly string V13ConversionNoticeDescription = $"<b>Changes in MoBi v13</b>{Environment.NewLine}{Environment.NewLine}The merge behavior of several building-block types changed when modules are combined —{Environment.NewLine}specifically the difference between the <b>Extend</b> and <b>Overwrite</b> merge modes.{Environment.NewLine}{Environment.NewLine}See <a href='{V13ConversionDocumentationUrl}'>Converting v12 projects to v13</a> for details.";
          public static readonly string HistoryBrowser = "History";
          public static readonly string RenameRelatedEntities = "Rename related entities";
          public static readonly string AddReactionMolecule = "Molecule Name";

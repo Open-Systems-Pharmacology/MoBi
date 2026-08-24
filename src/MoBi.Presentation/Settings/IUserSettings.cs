@@ -52,6 +52,7 @@ namespace MoBi.Presentation.Settings
       bool ShowUnresolvedEndosomeMessagesForInitialConditions { get; set; }
       bool CheckCircularReference { get; set; }
       bool GroupParameters { get; set; }
+      bool V13ConversionInfoShown { get; set; }
 
       ValidationSettings ValidationSettings { get; }
       OutputSelections OutputSelections { get; set; }
