@@ -16,7 +16,7 @@ namespace MoBi.Assets
 {
    public static class AppConstants
    {
-      public static readonly int LayoutVersion = 25;
+      public static readonly int LayoutVersion = 26;
       public static readonly string NotMatch = "not tagged with";
       public static readonly string Match = "tagged with";
       public static readonly string MatchAll = "in all containers";
