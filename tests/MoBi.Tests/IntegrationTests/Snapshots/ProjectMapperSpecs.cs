@@ -367,6 +367,43 @@ namespace MoBi.IntegrationTests.Snapshots
       }
    }
 
+   internal class When_mapping_a_snapshot_with_multiple_simulations_to_project : concern_for_ProjectMapper
+   {
+      private SnapshotProject _snapshot;
+      private MoBiProject _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         var module = _project.Modules.First(x => !x.IsPKSimModule);
+         addSimulation("simulation-2", module);
+         addSimulation("simulation-3", module);
+         _snapshot = sut.MapToSnapshot(_project).Result;
+      }
+
+      private void addSimulation(string name, Module module)
+      {
+         var simulation = new MoBiSimulation().WithId(name).WithName(name);
+         simulation.Configuration = new SimulationConfiguration
+         {
+            SimulationSettings = IoC.Resolve<ISimulationSettingsFactory>().CreateDefault()
+         };
+         simulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(module));
+         _project.AddSimulation(simulation);
+      }
+
+      protected override void Because()
+      {
+         _result = sut.MapToModel(_snapshot, new ProjectContext(new MoBiProject(), runSimulations: false)).Result;
+      }
+
+      [Observation]
+      public void should_add_the_simulations_to_the_project_in_the_snapshot_order()
+      {
+         _result.Simulations.AllNames().ShouldOnlyContainInOrder("simulation", "simulation-2", "simulation-3");
+      }
+   }
+
    internal class When_mapping_project_to_snapshot_and_pksim_module_does_not_have_snapshot : concern_for_ProjectMapper
    {
       private SnapshotProject _snapshot;

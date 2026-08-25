@@ -1503,6 +1503,8 @@ namespace MoBi.Assets
          public const string CreatingSimulation = "Creating...";
          public const string ConfiguringSimulation = "Configuring...";
          public const string UpdatingSimulation = "Updating...";
+         public static string LoadingSimulationsMessage(int simulationCount) => $"Loading {simulationCount} {"simulation".PluralizeIf(simulationCount)}...";
+         public static string SimulationsLoadedMessage(int loadedCount, int simulationCount) => $"{loadedCount}/{simulationCount} {"simulation".PluralizeIf(simulationCount)} loaded";
          public static readonly string AddParameter = "Add Parameter ";
          public static readonly string AddMolecule = "Add Molecule";
          public static readonly string LoadParameter = "Load Parameter ";

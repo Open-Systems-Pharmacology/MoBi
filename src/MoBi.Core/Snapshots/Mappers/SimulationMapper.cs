@@ -8,7 +8,6 @@ using MoBi.Core.Domain.Services;
 using MoBi.Core.Domain.UnitSystem;
 using MoBi.Core.Extensions;
 using MoBi.Core.Services;
-using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
 using OSPSuite.Core.Services;
@@ -65,8 +64,10 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
 
    public override async Task<MoBiSimulation> MapToModel(Simulation snapshot, SimulationContext context)
    {
-      _logger.AddInfo(Captions.LoadingSimulation(snapshot.Name, context.NumberOfSimulationsLoaded + 1, context.NumberOfSimulationsToLoad), context.Project.Name);
       var configuration = await _simulationConfigurationMapper.MapToModel(snapshot.Configuration, context);
+
+      //the snapshot load reports per-simulation progress itself; the core progress stream would interleave across parallel constructions
+      configuration.ShowProgress = false;
 
       var (simulation, _) = _simulationFactory.CreateSimulationAndValidate(configuration, snapshot.Name);
       var mobiSimulation = simulation as MoBiSimulation;

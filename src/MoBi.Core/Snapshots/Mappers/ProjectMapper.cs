@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MoBi.Assets;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Serialization.Xml.Services;
@@ -116,28 +117,49 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       var observedData = await ObservedDataFrom(projectSnapshot.ObservedData, snapshotContext);
       observedData?.Each(repository => AddObservedDataToProject(project, repository));
 
-      var simulationContext = new SimulationContext(context.RunSimulations, snapshotContext)
-      {
-         NumberOfSimulationsToLoad = projectSnapshot.Simulations?.Length ?? 0,
-         NumberOfSimulationsLoaded = 0
-      };
+      var simulationContext = new SimulationContext(context.RunSimulations, snapshotContext);
 
       var simulationsWithSnapshots = new List<(MoBiSimulation simulation, Simulation snapshot)>();
-      if (projectSnapshot.Simulations != null)
+      if (projectSnapshot.Simulations != null && projectSnapshot.Simulations.Length > 0)
       {
-         foreach (var x in projectSnapshot.Simulations)
+         var snapshots = projectSnapshot.Simulations;
+         var mappedSimulations = new MoBiSimulation[snapshots.Length];
+         var numberOfSimulationsLoaded = 0;
+
+         _logger.AddInfo(AppConstants.Captions.LoadingSimulationsMessage(snapshots.Length), projectSnapshot.Name);
+
+         async Task mapSimulationAt(int index)
          {
             try
             {
-               var simulation = await _simulationMapper.MapToModel(x, simulationContext);
-               addSimulations(project, simulation);
-               simulationsWithSnapshots.Add((simulation, x));
-               simulationContext.NumberOfSimulationsLoaded++;
+               mappedSimulations[index] = await _simulationMapper.MapToModel(snapshots[index], simulationContext);
+               var loadedCount = System.Threading.Interlocked.Increment(ref numberOfSimulationsLoaded);
+               _logger.AddInfo(AppConstants.Captions.SimulationsLoadedMessage(loadedCount, snapshots.Length), projectSnapshot.Name);
             }
             catch (Exception e)
             {
                _logger.AddException(e);
             }
+         }
+
+         //the first simulation is mapped alone so that lazily initialized services warm up before the parallel phase
+         await mapSimulationAt(0);
+
+         var options = new ParallelOptions
+         {
+            MaxDegreeOfParallelism = Math.Max(1, _userSettings.MaximumNumberOfCoresToUse)
+         };
+
+         //model construction is thread-safe. Results are collected per index and the project is updated sequentially below, in snapshot order
+         await Parallel.ForEachAsync(Enumerable.Range(1, snapshots.Length - 1), options, (index, _) => new ValueTask(mapSimulationAt(index)));
+
+         for (var i = 0; i < snapshots.Length; i++)
+         {
+            if (mappedSimulations[i] == null)
+               continue;
+
+            addSimulations(project, mappedSimulations[i]);
+            simulationsWithSnapshots.Add((mappedSimulations[i], snapshots[i]));
          }
       }
 
