@@ -61,7 +61,6 @@ namespace MoBi.Core.Services
       {
          return Task.Run(() =>
          {
-            //per-run state lives in a visitor created per call so that concurrent validations on this instance stay independent
             var validationRun = new ValidationRun(_dimensionParser, _objectPathFactory, _userSettings, _hiddenNotifications, simulationBuilder);
             containers.Each(c => c.AcceptVisitor(validationRun));
             return validationRun.Result;
