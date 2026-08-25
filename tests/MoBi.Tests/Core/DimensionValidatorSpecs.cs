@@ -1,4 +1,6 @@
+using System;
 using System.Linq;
+using System.Threading;
 using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Domain.Services;
@@ -13,6 +15,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Visitor;
 using OSPSuite.FuncParser;
 
 namespace MoBi.Core
@@ -34,6 +37,88 @@ namespace MoBi.Core
       }
    }
 
+   public class When_running_two_validations_concurrently_on_the_same_validator : concern_for_DimensionValidator
+   {
+      private IContainer _slowContainer;
+      private IContainer _fastContainer;
+      private IParameter _firstParameter;
+      private IParameter _secondParameter;
+      private IParameter _thirdParameter;
+      private SimulationBuilder _simulationBuilder;
+      private ManualResetEventSlim _firstVisitDone;
+      private ManualResetEventSlim _secondValidationDone;
+      private ValidationResult _firstResult;
+      private ValidationResult _secondResult;
+
+      protected override void Context()
+      {
+         base.Context();
+         _firstVisitDone = new ManualResetEventSlim();
+         _secondValidationDone = new ManualResetEventSlim();
+
+         //parameters whose formula has no dimension: each visit adds exactly one dimension mismatch warning
+         var topContainer = _buildConfiguration.All<SpatialStructure>().First().TopContainers.First();
+         addParameterWithDimensionlessFormula("NODIM_P1", topContainer);
+         addParameterWithDimensionlessFormula("NODIM_P2", topContainer);
+         addParameterWithDimensionlessFormula("NODIM_P3", topContainer);
+
+         var creationResult = DomainFactoryForSpecs.CreateModelFor(_buildConfiguration, "thename");
+         _simulationBuilder = creationResult.SimulationBuilder;
+
+         //visit the built model parameters: only entities tracked by the simulation builder can carry validation messages
+         _firstParameter = modelParameterNamed(creationResult, "NODIM_P1");
+         _secondParameter = modelParameterNamed(creationResult, "NODIM_P2");
+         _thirdParameter = modelParameterNamed(creationResult, "NODIM_P3");
+
+         //the slow container pauses its traversal until the second validation has completed on the same validator instance
+         _slowContainer = A.Fake<IContainer>();
+         A.CallTo(() => _slowContainer.AcceptVisitor(A<IVisitor>._)).Invokes(call =>
+         {
+            var visitor = call.GetArgument<IVisitor>(0);
+            visit(visitor, _firstParameter);
+            _firstVisitDone.Set();
+            _secondValidationDone.Wait(TimeSpan.FromSeconds(5));
+            visit(visitor, _secondParameter);
+         });
+
+         _fastContainer = A.Fake<IContainer>();
+         A.CallTo(() => _fastContainer.AcceptVisitor(A<IVisitor>._)).Invokes(call => visit(call.GetArgument<IVisitor>(0), _thirdParameter));
+      }
+
+      private static void addParameterWithDimensionlessFormula(string name, IContainer topContainer) =>
+         new Parameter().WithName(name).WithParentContainer(topContainer)
+            .WithFormula(new ExplicitFormula().WithFormulaString("111"))
+            .WithDimension(new Dimension(new BaseDimensionRepresentation(), "Dimensionless", ""));
+
+      private static IParameter modelParameterNamed(CreationResult creationResult, string name) =>
+         creationResult.Model.Root.GetAllChildren<IParameter>().First(x => x.Name.Equals(name));
+
+      private static void visit(IVisitor visitor, IParameter parameter) => visitor.DowncastTo<IVisitor<IUsingFormula>>().Visit(parameter);
+
+      protected override void Because()
+      {
+         var firstValidation = sut.Validate(new[] {_slowContainer}, _simulationBuilder);
+         _firstVisitDone.Wait(TimeSpan.FromSeconds(5));
+
+         _secondResult = sut.Validate(new[] {_fastContainer}, _simulationBuilder).Result;
+         _secondValidationDone.Set();
+
+         _firstResult = firstValidation.Result;
+      }
+
+      [Observation]
+      public void the_first_validation_should_report_the_messages_of_its_own_run()
+      {
+         _firstResult.Messages.Count().ShouldBeEqualTo(2);
+      }
+
+      [Observation]
+      public void the_second_validation_should_report_the_messages_of_its_own_run()
+      {
+         _secondResult.Messages.Count().ShouldBeEqualTo(1);
+      }
+   }
+
    internal class When_validating_a_parameter_from_pksim_that_should_not_be_shown_in_the_default_validation : concern_for_DimensionValidator
    {
       private IContainer _root;
@@ -46,7 +131,7 @@ namespace MoBi.Core
 
          var lengthDimension = new Dimension(new BaseDimensionRepresentation {LengthExponent = 1}, AppConstants.DimensionNames.LENGTH, "cm");
          var molWeightDimension = new Dimension(new BaseDimensionRepresentation { AmountExponent = 1, MassExponent = -1 }, "MW", "mol/g");
-         var areaDimension = new Dimension(new BaseDimensionRepresentation { LengthExponent = 2,}, AppConstants.DimensionNames.AREA, "cm²");
+         var areaDimension = new Dimension(new BaseDimensionRepresentation { LengthExponent = 2,}, AppConstants.DimensionNames.AREA, "cmï¿½");
 
          var radiusFormula = new ExplicitFormula()
             .WithFormulaString("0,0333 * (MW * 1E9) ^ 0,4226 * 1E-8")

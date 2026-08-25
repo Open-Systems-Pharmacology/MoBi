@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,6 +11,7 @@ using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.FuncParser;
 using OSPSuite.Utility.Extensions;
+using OSPSuite.Utility.Visitor;
 using IMoBiCoreUserSettings = MoBi.Core.ICoreUserSettings;
 
 namespace MoBi.Core.Services
@@ -20,11 +21,7 @@ namespace MoBi.Core.Services
       private readonly DimensionParser _dimensionParser;
       private readonly IObjectPathFactory _objectPathFactory;
       private readonly IMoBiCoreUserSettings _userSettings;
-      private bool _checkDimensions;
-      private SimulationBuilder _simulationBuilder;
-      private ValidationResult _result;
       private readonly IDictionary<string, string> _hiddenNotifications;
-      private bool _checkRules;
 
       public DimensionValidator(DimensionParser dimensionParser, IObjectPathFactory objectPathFactory, IMoBiCoreUserSettings userSettings)
       {
@@ -64,164 +61,179 @@ namespace MoBi.Core.Services
       {
          return Task.Run(() =>
          {
-            try
-            {
-               _result = new ValidationResult();
-               _checkDimensions = _userSettings.CheckDimensions;
-               _checkRules = _userSettings.CheckRules;
-               _simulationBuilder = simulationBuilder;
-               containers.Each(c => c.AcceptVisitor(this));
-               return _result;
-            }
-            finally
-            {
-               _simulationBuilder = null;
-               _result = null;
-            }
+            //per-run state lives in a visitor created per call so that concurrent validations on this instance stay independent
+            var validationRun = new ValidationRun(_dimensionParser, _objectPathFactory, _userSettings, _hiddenNotifications, simulationBuilder);
+            containers.Each(c => c.AcceptVisitor(validationRun));
+            return validationRun.Result;
          });
       }
 
-      public void Visit(IEntity entity)
+      private class ValidationRun : IVisitor<IEntity>, IVisitor<IUsingFormula>
       {
-         if (!_checkRules) return;
+         private readonly DimensionParser _dimensionParser;
+         private readonly IObjectPathFactory _objectPathFactory;
+         private readonly IMoBiCoreUserSettings _userSettings;
+         private readonly IDictionary<string, string> _hiddenNotifications;
+         private readonly SimulationBuilder _simulationBuilder;
+         private readonly bool _checkDimensions;
+         private readonly bool _checkRules;
 
-         entity.Rules.BrokenBy(entity).Messages.Each(x => addNotification(NotificationType.Warning, entity, x));
-      }
+         public ValidationResult Result { get; } = new ValidationResult();
 
-      public void Visit(IUsingFormula entityUsingFormula)
-      {
-         try
+         public ValidationRun(DimensionParser dimensionParser, IObjectPathFactory objectPathFactory, IMoBiCoreUserSettings userSettings,
+            IDictionary<string, string> hiddenNotifications, SimulationBuilder simulationBuilder)
          {
-            Visit(entityUsingFormula as IEntity);
+            _dimensionParser = dimensionParser;
+            _objectPathFactory = objectPathFactory;
+            _userSettings = userSettings;
+            _hiddenNotifications = hiddenNotifications;
+            _simulationBuilder = simulationBuilder;
+            _checkDimensions = userSettings.CheckDimensions;
+            _checkRules = userSettings.CheckRules;
+         }
 
-            if (!_checkDimensions) return;
+         public void Visit(IEntity entity)
+         {
+            if (!_checkRules) return;
 
-            var formula = entityUsingFormula.Formula;
-            if (formula.IsConstant()) return; //do not need to check constants
+            entity.Rules.BrokenBy(entity).Messages.Each(x => addNotification(NotificationType.Warning, entity, x));
+         }
 
-            var displayPath = _objectPathFactory.CreateAbsoluteObjectPath(entityUsingFormula).PathAsString;
-            if (entityUsingFormula.Dimension == null)
+         public void Visit(IUsingFormula entityUsingFormula)
+         {
+            try
             {
-               addWarning(entityUsingFormula, AppConstants.Validation.NoDimensionSet(displayPath));
+               Visit(entityUsingFormula as IEntity);
+
+               if (!_checkDimensions) return;
+
+               var formula = entityUsingFormula.Formula;
+               if (formula.IsConstant()) return; //do not need to check constants
+
+               var displayPath = _objectPathFactory.CreateAbsoluteObjectPath(entityUsingFormula).PathAsString;
+               if (entityUsingFormula.Dimension == null)
+               {
+                  addWarning(entityUsingFormula, AppConstants.Validation.NoDimensionSet(displayPath));
+                  return;
+               }
+
+               checkFormula(entityUsingFormula, displayPath);
+               checkRHSFormula(entityUsingFormula as IParameter, displayPath);
+            }
+            catch (Exception exception)
+            {
+               addNotification(NotificationType.Error, entityUsingFormula, exception.Message);
+            }
+         }
+
+         private void checkRHSFormula(IParameter parameter, string displayPath)
+         {
+            var rhsFormula = parameter?.RHSFormula;
+            if (rhsFormula == null) return;
+
+            var rhsDimBaseRep = new BaseDimensionRepresentation(parameter.Dimension.BaseRepresentation);
+            rhsDimBaseRep.TimeExponent = rhsDimBaseRep.TimeExponent - 1;
+
+            if (!Equals(rhsDimBaseRep, rhsFormula.Dimension.BaseRepresentation))
+               addWarning(parameter, AppConstants.Validation.RHSDimensionMismatch(displayPath, rhsFormula.Name));
+
+            checkExplicitFormula(parameter, displayPath, rhsDimBaseRep, rhsFormula as ExplicitFormula);
+         }
+
+         private void addWarning(IEntity entityToValidate, string warning) => addNotification(NotificationType.Warning, entityToValidate, warning);
+
+         private void addNotification(NotificationType notificationType, IEntity entityToValidate, string notification)
+         {
+            var builder = _simulationBuilder.BuilderFor(entityToValidate);
+            if (!shouldShowNotification(entityToValidate, notification))
+               return;
+
+            Result.AddMessage(notificationType, builder, notification);
+         }
+
+         private bool shouldShowNotification(IObjectBase entityToValidate, string notification)
+         {
+            if (_userSettings.ShowPKSimDimensionProblemWarnings)
+               return true;
+
+            if (!_hiddenNotifications.Keys.Contains(entityToValidate.Name))
+               return true;
+
+            var messageEnd = _hiddenNotifications[entityToValidate.Name];
+            if (notification.EndsWith(messageEnd))
+               return false;
+
+            return true;
+         }
+
+         private void checkFormula(IUsingFormula entityUsingFormula, string displayPath)
+         {
+            if (!Equals(entityUsingFormula.Dimension, entityUsingFormula.Formula.Dimension))
+               addWarning(entityUsingFormula, AppConstants.Validation.DimensionMismatch(displayPath, entityUsingFormula.Formula.Name));
+
+            checkExplicitFormula(entityUsingFormula, displayPath, entityUsingFormula.Dimension.BaseRepresentation, entityUsingFormula.Formula as ExplicitFormula);
+         }
+
+         private void checkExplicitFormula(IUsingFormula entityUsingFormula, string displayPath, BaseDimensionRepresentation baseDimensionRepresentation, ExplicitFormula explicitFormula)
+         {
+            if (explicitFormula == null) return;
+
+            var dimensionInfos = new List<QuantityDimensionInformation>();
+            if (isDoubleString(explicitFormula.FormulaString))
+               return;
+
+            foreach (var objectReference in explicitFormula.ObjectReferences.Where(x => x.Object.Dimension != null))
+            {
+               var pathDim = explicitFormula.ObjectPaths.Where(path => path.Alias.Equals(objectReference.Alias)).Select(path => path.Dimension).FirstOrDefault();
+               if (!Equals(objectReference.Object.Dimension, pathDim))
+                  addWarning(entityUsingFormula, AppConstants.Validation.ReferenceDimensionMissmatch(displayPath, objectReference, pathDim));
+
+               dimensionInfos.Add(new QuantityDimensionInformation(objectReference.Alias, createDimensionInfoFromBaseRepresentation(objectReference.Object.Dimension.BaseRepresentation)));
+            }
+
+            var (dimInfo, parseSuccess, calculateDimensionSuccess, errorMessage) = _dimensionParser.GetDimensionInformationFor(explicitFormula.FormulaString, dimensionInfos);
+
+            if (!parseSuccess)
+            {
+               addNotification(NotificationType.Error, entityUsingFormula, errorMessage);
                return;
             }
 
-            checkFormula(entityUsingFormula, displayPath);
-            checkRHSFormula(entityUsingFormula as IParameter, displayPath);
-         }
-         catch (Exception exception)
-         {
-            addNotification(NotificationType.Error, entityUsingFormula, exception.Message);
-         }
-      }
 
-      private void checkRHSFormula(IParameter parameter, string displayPath)
-      {
-         var rhsFormula = parameter?.RHSFormula;
-         if (rhsFormula == null) return;
-
-         var rhsDimBaseRep = new BaseDimensionRepresentation(parameter.Dimension.BaseRepresentation);
-         rhsDimBaseRep.TimeExponent = rhsDimBaseRep.TimeExponent - 1;
-
-         if (!Equals(rhsDimBaseRep, rhsFormula.Dimension.BaseRepresentation))
-            addWarning(parameter, AppConstants.Validation.RHSDimensionMismatch(displayPath, rhsFormula.Name));
-
-         checkExplicitFormula(parameter, displayPath, rhsDimBaseRep, rhsFormula as ExplicitFormula);
-      }
-
-      private void addWarning(IEntity entityToValidate, string warning) => addNotification(NotificationType.Warning, entityToValidate, warning);
-
-      private void addNotification(NotificationType notificationType, IEntity entityToValidate, string notification)
-      {
-         var builder = _simulationBuilder.BuilderFor(entityToValidate);
-         if (!shouldShowNotification(entityToValidate, notification))
-            return;
-
-         _result.AddMessage(notificationType, builder, notification);
-      }
-
-      private bool shouldShowNotification(IObjectBase entityToValidate, string notification)
-      {
-         if (_userSettings.ShowPKSimDimensionProblemWarnings)
-            return true;
-
-         if (!_hiddenNotifications.Keys.Contains(entityToValidate.Name))
-            return true;
-
-         var messageEnd = _hiddenNotifications[entityToValidate.Name];
-         if (notification.EndsWith(messageEnd))
-            return false;
-
-         return true;
-      }
-
-      private void checkFormula(IUsingFormula entityUsingFormula, string displayPath)
-      {
-         if (!Equals(entityUsingFormula.Dimension, entityUsingFormula.Formula.Dimension))
-            addWarning(entityUsingFormula, AppConstants.Validation.DimensionMismatch(displayPath, entityUsingFormula.Formula.Name));
-
-         checkExplicitFormula(entityUsingFormula, displayPath, entityUsingFormula.Dimension.BaseRepresentation, entityUsingFormula.Formula as ExplicitFormula);
-      }
-
-      private void checkExplicitFormula(IUsingFormula entityUsingFormula, string displayPath, BaseDimensionRepresentation baseDimensionRepresentation, ExplicitFormula explicitFormula)
-      {
-         if (explicitFormula == null) return;
-
-         var dimensionInfos = new List<QuantityDimensionInformation>();
-         if (isDoubleString(explicitFormula.FormulaString))
-            return;
-
-         foreach (var objectReference in explicitFormula.ObjectReferences.Where(x => x.Object.Dimension != null))
-         {
-            var pathDim = explicitFormula.ObjectPaths.Where(path => path.Alias.Equals(objectReference.Alias)).Select(path => path.Dimension).FirstOrDefault();
-            if (!Equals(objectReference.Object.Dimension, pathDim))
-               addWarning(entityUsingFormula, AppConstants.Validation.ReferenceDimensionMissmatch(displayPath, objectReference, pathDim));
-
-            dimensionInfos.Add(new QuantityDimensionInformation(objectReference.Alias, createDimensionInfoFromBaseRepresentation(objectReference.Object.Dimension.BaseRepresentation)));
-         }
-
-         var (dimInfo, parseSuccess, calculateDimensionSuccess, errorMessage) = _dimensionParser.GetDimensionInformationFor(explicitFormula.FormulaString, dimensionInfos);
-
-         if (!parseSuccess)
-         {
-            addNotification(NotificationType.Error, entityUsingFormula, errorMessage);
-            return;
-         }
-
-
-         if (calculateDimensionSuccess)
-         {
-            if (!dimInfo.AreEquals(createDimensionInfoFromBaseRepresentation(baseDimensionRepresentation)))
+            if (calculateDimensionSuccess)
             {
-               addWarning(entityUsingFormula, AppConstants.Validation.FormulaDimensionMismatch(displayPath, explicitFormula.Dimension.Name));
+               if (!dimInfo.AreEquals(createDimensionInfoFromBaseRepresentation(baseDimensionRepresentation)))
+               {
+                  addWarning(entityUsingFormula, AppConstants.Validation.FormulaDimensionMismatch(displayPath, explicitFormula.Dimension.Name));
+               }
+
+               return;
             }
 
-            return;
+            //ignore some dimension check errors.
+            //Reason: some formulas are written so that dimension exponents cannot be calculated, e.g.
+            //x^y where y is not dimensionless.
+            if (_userSettings.ShowCannotCalcErrors)
+            {
+               addWarning(entityUsingFormula, errorMessage);
+            }
          }
 
-         //ignore some dimension check errors.
-         //Reason: some formulas are written so that dimension exponents cannot be calculated, e.g.
-         //x^y where y is not dimensionless. 
-         if (_userSettings.ShowCannotCalcErrors)
+         private bool isDoubleString(string stringToCheck)
          {
-            addWarning(entityUsingFormula, errorMessage);
+            return double.TryParse(stringToCheck, out _);
          }
-      }
 
-      private bool isDoubleString(string stringToCheck)
-      {
-         return double.TryParse(stringToCheck, out _);
-      }
-
-      private DimensionInformation createDimensionInfoFromBaseRepresentation(BaseDimensionRepresentation baseRepresentation)
-      {
-         return new DimensionInformation(baseRepresentation.LengthExponent,
-            baseRepresentation.MassExponent,
-            baseRepresentation.TimeExponent,
-            baseRepresentation.ElectricCurrentExponent,
-            baseRepresentation.TemperatureExponent,
-            baseRepresentation.AmountExponent,
-            baseRepresentation.LuminousIntensityExponent);
+         private DimensionInformation createDimensionInfoFromBaseRepresentation(BaseDimensionRepresentation baseRepresentation)
+         {
+            return new DimensionInformation(baseRepresentation.LengthExponent,
+               baseRepresentation.MassExponent,
+               baseRepresentation.TimeExponent,
+               baseRepresentation.ElectricCurrentExponent,
+               baseRepresentation.TemperatureExponent,
+               baseRepresentation.AmountExponent,
+               baseRepresentation.LuminousIntensityExponent);
+         }
       }
    }
 }

@@ -2,7 +2,6 @@ using MoBi.CLI.Core;
 using MoBi.CLI.Core.MinimalImplementations;
 using MoBi.Core;
 using MoBi.Core.Domain.Model.Diagram;
-using MoBi.Core.Domain.Services;
 using MoBi.Core.Serialization.Converter;
 using MoBi.Core.Serialization.ORM;
 using MoBi.Core.Serialization.Services;
@@ -61,7 +60,6 @@ namespace MoBi.R
          container.Register<IMoBiXmlSerializerRepository, MoBiCoreXmlSerializerRepository>(LifeStyle.Singleton);
          container.Register<IHistoryManagerFactory, HistoryManagerFactory>(LifeStyle.Singleton);
          container.Register<IDiagramManagerFactory, DiagramManagerFactory>(LifeStyle.Singleton);
-         container.Register<IDimensionValidator, DimensionValidator>(LifeStyle.Singleton);
          container.Register<ICoreUserSettings, OSPSuite.Core.ICoreUserSettings, CoreUserSettings>(LifeStyle.Singleton);
       }
    }
