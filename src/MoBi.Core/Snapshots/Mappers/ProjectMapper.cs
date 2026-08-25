@@ -150,7 +150,6 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
             MaxDegreeOfParallelism = Math.Max(1, _userSettings.MaximumNumberOfCoresToUse)
          };
 
-         //model construction is thread-safe. Results are collected per index and the project is updated sequentially below, in snapshot order
          await Parallel.ForEachAsync(Enumerable.Range(1, snapshots.Length - 1), options, (index, _) => new ValueTask(mapSimulationAt(index)));
 
          for (var i = 0; i < snapshots.Length; i++)

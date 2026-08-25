@@ -66,7 +66,6 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
    {
       var configuration = await _simulationConfigurationMapper.MapToModel(snapshot.Configuration, context);
 
-      //the snapshot load reports per-simulation progress itself; the core progress stream would interleave across parallel constructions
       configuration.ShowProgress = false;
 
       var (simulation, _) = _simulationFactory.CreateSimulationAndValidate(configuration, snapshot.Name);
