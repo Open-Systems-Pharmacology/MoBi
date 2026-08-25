@@ -117,7 +117,6 @@ namespace MoBi.Core.Domain.Services
       public SimulationAndValidationResult CreateSimulationAndValidate(SimulationConfiguration configurationReferencingBuildingBlocks, string simulationName)
       {
          var results = CreateModelAndValidate(configurationReferencingBuildingBlocks, simulationName);
-         //resolved per call: the clone manager holds per-operation state and this method may run on parallel workers
          var cloneManager = _context.Resolve<ICloneManagerForBuildingBlock>();
          var clonedConfiguration = cloneManager.Clone(configurationReferencingBuildingBlocks);
          var simulation = CreateFrom(clonedConfiguration, results.Model, results.SimulationBuilder.EntitySources).WithName(simulationName);
