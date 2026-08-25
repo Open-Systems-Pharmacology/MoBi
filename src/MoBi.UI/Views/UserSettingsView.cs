@@ -12,6 +12,7 @@ using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Views;
+using ToolTips = MoBi.Assets.ToolTips;
 
 namespace MoBi.UI.Views
 {
@@ -75,6 +76,7 @@ namespace MoBi.UI.Views
 
          chkRenameDependent.Text = AppConstants.Captions.RenameDependentObjects;
          chkWarnForNonFiniteQUantities.Text = AppConstants.Captions.WarnForNonFiniteQuantities;
+         chkWarnForNonFiniteQUantities.ToolTip = ToolTips.WarnForNonFiniteQuantities;
       }
 
       public override bool HasError => _screenBinder.HasError;
