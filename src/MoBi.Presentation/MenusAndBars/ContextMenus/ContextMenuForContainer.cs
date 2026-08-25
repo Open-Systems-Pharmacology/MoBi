@@ -109,6 +109,12 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          return this;
       }
 
+      protected override void AddMenuItemsForSpecialName(IContainer container)
+      {
+         if (container.IsMoleculeProperties() && container.ParentContainer != null)
+            _allMenuItems.Add(CreateDeleteItemFor(container));
+      }
+
       private IMenuBarItem createAddMoleculePropertiesItemFor(IContainer container)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddMoleculeProperties)
