@@ -55,5 +55,11 @@ namespace MoBi.Core
       {
          _result.TopContainers.Single().Name.ShouldBeEqualTo(Constants.EVENTS);
       }
+
+      [Observation]
+      public void should_not_create_the_global_molecule_properties_container()
+      {
+         _result.GlobalMoleculeDependentProperties.ShouldBeNull();
+      }
    }
 }
