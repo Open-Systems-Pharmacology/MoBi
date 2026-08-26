@@ -115,7 +115,7 @@ namespace MoBi.Core.Services
       /// <returns>The property if found, otherwise null</returns>
       private IParameter resolveMoleculePropertiesInSpatialStructure(string parameterName)
       {
-         return _spatialStructure.GlobalMoleculeDependentProperties.GetSingleChildByName<IParameter>(parameterName);
+         return _spatialStructure.GlobalMoleculeDependentProperties?.GetSingleChildByName<IParameter>(parameterName);
       }
 
       /// <summary>

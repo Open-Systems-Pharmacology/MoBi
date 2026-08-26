@@ -7,6 +7,7 @@ using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.MenuAndBars;
 using OSPSuite.Presentation.Presenters;
@@ -85,10 +86,12 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
    public class ContextMenuForContainer : ContextMenuForContainerBase<IContainer>
    {
       private readonly IEntityPathResolver _entityPathResolver;
+      private readonly IActiveSubjectRetriever _activeSubjectRetriever;
 
-      public ContextMenuForContainer(IMoBiContext context, IObjectTypeResolver objectTypeResolver, OSPSuite.Utility.Container.IContainer container, IEntityPathResolver entityPathResolver) : base(context, objectTypeResolver, container)
+      public ContextMenuForContainer(IMoBiContext context, IObjectTypeResolver objectTypeResolver, OSPSuite.Utility.Container.IContainer container, IEntityPathResolver entityPathResolver, IActiveSubjectRetriever activeSubjectRetriever) : base(context, objectTypeResolver, container)
       {
          _entityPathResolver = entityPathResolver;
+         _activeSubjectRetriever = activeSubjectRetriever;
       }
 
       public override IContextMenu InitializeWith(ObjectBaseDTO dto, IPresenter presenter)
@@ -113,13 +116,25 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       {
          if (container.IsMoleculeProperties() && container.ParentContainer != null)
             _allMenuItems.Add(CreateDeleteItemFor(container));
+         else if (isGlobalMoleculeProperties(container))
+            _allMenuItems.Add(createRemoveGlobalMoleculePropertiesItemFor(container));
       }
+
+      private bool isGlobalMoleculeProperties(IContainer container) =>
+         container != null && Equals(_activeSubjectRetriever.Active<MoBiSpatialStructure>()?.GlobalMoleculeDependentProperties, container);
 
       private IMenuBarItem createAddMoleculePropertiesItemFor(IContainer container)
       {
          return CreateMenuButton.WithCaption(AppConstants.MenuNames.AddMoleculeProperties)
             .WithIcon(ApplicationIcons.Add)
             .WithCommandFor<AddMoleculePropertiesToContainerUICommand, IContainer>(container, _container);
+      }
+
+      private IMenuBarItem createRemoveGlobalMoleculePropertiesItemFor(IContainer container)
+      {
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
+            .WithIcon(ApplicationIcons.Delete)
+            .WithCommandFor<RemoveGlobalMoleculePropertiesUICommand, IContainer>(container, _container);
       }
 
       protected override void AddSaveItems(IContainer container)
