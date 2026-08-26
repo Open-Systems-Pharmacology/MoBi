@@ -52,8 +52,11 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
             _allMenuItems = new List<IMenuBarItem> {CreateEditItemFor(objectBase)};
 
-            if (dto.Name.IsSpecialName()) 
+            if (dto.Name.IsSpecialName())
+            {
+               AddMenuItemsForSpecialName(objectBase);
                return this;
+            }
 
             _allMenuItems.Add(CreateRenameItemFor(objectBase));
             AddSaveItems(objectBase);
@@ -64,6 +67,10 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
          {
             return new EmptyContextMenu();
          }
+      }
+
+      protected virtual void AddMenuItemsForSpecialName(TObjectBase objectBase)
+      {
       }
 
       protected virtual void AddSaveItems(TObjectBase objectBase)
