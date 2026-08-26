@@ -51,7 +51,10 @@ namespace MoBi.Presentation.Presenter
          _view.AddNode(_favoritesNode);
          _view.AddNode(_userDefinedNode);
 
-         var roots = new List<ObjectBaseDTO> { _objectBaseMapper.MapFrom(spatialStructure.GlobalMoleculeDependentProperties) };
+         var roots = new List<ObjectBaseDTO>();
+         if (spatialStructure.GlobalMoleculeDependentProperties != null)
+            roots.Add(_objectBaseMapper.MapFrom(spatialStructure.GlobalMoleculeDependentProperties));
+
          spatialStructure.TopContainers.Each(x => roots.Add(_objectBaseMapper.MapFrom(x)));
 
          var neighborhood = _objectBaseMapper.MapFrom(spatialStructure.NeighborhoodsContainer);
@@ -131,13 +134,15 @@ namespace MoBi.Presentation.Presenter
       private void remove(IEntity entity) => _view.Remove(entity);
 
       /// <summary>
-      ///    Entity is in spatial structure when its root container is either one of top container or the neighborhood container
+      ///    Entity is in spatial structure when its root container is either one of top container, the neighborhood container
+      ///    or the global molecule properties container
       /// </summary>
       private bool entityIsInSpatialStructure(IEntity entity)
       {
          var rootContainer = entity.RootContainer;
          return _spatialStructure.TopContainers.Contains(rootContainer) ||
-                Equals(_spatialStructure.NeighborhoodsContainer, rootContainer);
+                Equals(_spatialStructure.NeighborhoodsContainer, rootContainer) ||
+                Equals(_spatialStructure.GlobalMoleculeDependentProperties, rootContainer);
       }
 
       public void Handle(EntitySelectedEvent eventToHandle)

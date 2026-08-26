@@ -39,6 +39,27 @@ namespace MoBi.Presentation
       }
    }
 
+   public class When_showing_a_spatial_structure_without_global_molecule_properties : concern_for_HierarchicalSpatialStructurePresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _spatialStructure.NeighborhoodsContainer = new Container().WithName(Constants.NEIGHBORHOODS);
+         Fake.ClearRecordedCalls(_objectBaseToObjectBaseDTOMapper);
+      }
+
+      protected override void Because()
+      {
+         sut.Edit(_spatialStructure);
+      }
+
+      [Observation]
+      public void should_not_create_a_root_node_for_the_missing_container()
+      {
+         A.CallTo(() => _objectBaseToObjectBaseDTOMapper.MapFrom(null)).MustNotHaveHappened();
+      }
+   }
+
    public class When_adding_a_non_root_node_to_the_spatial_structure : concern_for_HierarchicalSpatialStructurePresenter
    {
       private IContainer _addedObject;
