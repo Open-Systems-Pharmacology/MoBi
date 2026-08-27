@@ -1271,6 +1271,7 @@ namespace MoBi.Assets
          public static readonly string AppliedMoleculeNotInProject = "Applied Molecule is not in Project";
          public static readonly string CouldNotCreateSimulation = "Unable to create the simulation. Please check warnings or errors in the notification view.";
          public static string CannotLoadSimulation(string simulationName) => $"Cannot load simulation '{simulationName}'";
+         public static string ModuleNotFound(string moduleName) => $"Module '{moduleName}' not found in project";
          public static readonly string TemplateShouldContainAtLeastOneCurve = "Template should contain at least one curve.";
          public static readonly string FrameworkExceptionOccurred = "An exception occurred";
          public static readonly string MergingSpatialStructuresIsNotSupported = "Merging Spatial Structures is not supported.";
@@ -1506,6 +1507,7 @@ namespace MoBi.Assets
          public const string UpdatingSimulation = "Updating...";
          public static string LoadingSimulationsMessage(int simulationCount) => $"Loading {simulationCount} {"simulation".PluralizeIf(simulationCount)}...";
          public static string SimulationsLoadedMessage(string simulationName, int loadedCount, int simulationCount) => $"Simulation '{simulationName}' loaded ({loadedCount}/{simulationCount})";
+         public static string OnlySomeSimulationsLoadedMessage(int loadedCount, int simulationCount) => $"Only {loadedCount}/{simulationCount} {"simulation".PluralizeIf(simulationCount)} loaded";
          public static readonly string AddParameter = "Add Parameter ";
          public static readonly string AddMolecule = "Add Molecule";
          public static readonly string LoadParameter = "Load Parameter ";

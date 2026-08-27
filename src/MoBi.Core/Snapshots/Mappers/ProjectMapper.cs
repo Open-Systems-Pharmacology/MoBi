@@ -140,8 +140,8 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
             }
             catch (Exception e)
             {
-               _logger.AddException(e);
-               _logger.AddError(AppConstants.Exceptions.CannotLoadSimulation(snapshot.Name));
+               _logger.AddException(e, projectSnapshot.Name);
+               _logger.AddError(AppConstants.Exceptions.CannotLoadSimulation(snapshot.Name), projectSnapshot.Name);
             }
          }
 
@@ -159,6 +159,9 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
             addSimulations(project, mappedSimulations[i]);
             simulationsWithSnapshots.Add((mappedSimulations[i], snapshots[i]));
          }
+
+         if (numberOfSimulationsLoaded < snapshots.Length)
+            _logger.AddWarning(AppConstants.Captions.OnlySomeSimulationsLoadedMessage(numberOfSimulationsLoaded, snapshots.Length), projectSnapshot.Name);
       }
 
       var parameterIdentifications = await AllParameterIdentificationsFrom(projectSnapshot.ParameterIdentifications, snapshotContext);
@@ -201,10 +204,12 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
    private static object base64StringToPKSimSnapshot(string base64String) => JsonConvert.DeserializeObject<object>(base64String.FromBase64String());
    private static string pkSimSnapshotToBase64String(object pkSimSnapshot) => JsonConvert.SerializeObject(pkSimSnapshot).ToBase64String();
 
-   private ParallelOptions parallelOptions() => new ParallelOptions
+   private ParallelOptions parallelOptions()
    {
-      MaxDegreeOfParallelism = Math.Max(1, _userSettings.MaximumNumberOfCoresToUse)
-   };
+      var maxDegreeOfParallelism = Math.Max(1, _userSettings.MaximumNumberOfCoresToUse);
+      _logger.AddDebug($"Parallel operations limited to {maxDegreeOfParallelism} core(s)");
+      return new ParallelOptions {MaxDegreeOfParallelism = maxDegreeOfParallelism};
+   }
 
    private async Task runParallelSimulations(ModelProject project)
    {

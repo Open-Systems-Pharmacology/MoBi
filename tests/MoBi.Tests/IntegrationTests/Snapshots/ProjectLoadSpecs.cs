@@ -1,15 +1,17 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using FakeItEasy;
-using MoBi.HelpersForTests;
-using Newtonsoft.Json.Linq;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
+using MoBi.HelpersForTests;
+using Newtonsoft.Json.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Utility.Container;
@@ -121,6 +123,7 @@ namespace MoBi.IntegrationTests.Snapshots
    {
       private MoBiProject _parallelProject;
       private MoBiProject _sequentialProject;
+      private string _snapshotFile;
 
       public override void GlobalContext()
       {
@@ -129,25 +132,31 @@ namespace MoBi.IntegrationTests.Snapshots
          var validationTask = IoC.Resolve<IEntityValidationTask>();
          A.CallTo(() => validationTask.Validate(A<MoBiSimulation>._)).Returns(true);
 
-         var snapshotFile = snapshotWithSimulationCopies(DomainHelperForSpecs.TestFileFullPath("snapshot_no_pksim_modules.json"), numberOfCopies: 3);
+         _snapshotFile = snapshotWithSimulationCopies(DomainHelperForSpecs.TestFileFullPath("snapshot_no_pksim_modules.json"), numberOfSimulations: 4);
          var userSettings = IoC.Resolve<ICoreUserSettings>();
 
          A.CallTo(() => userSettings.MaximumNumberOfCoresToUse).Returns(4);
-         LoadSnapshot(snapshotFile, isFullPath: true, runSimulations: false);
+         LoadSnapshot(_snapshotFile, isFullPath: true, runSimulations: false);
          _parallelProject = _project;
 
          A.CallTo(() => userSettings.MaximumNumberOfCoresToUse).Returns(1);
-         LoadSnapshot(snapshotFile, isFullPath: true, runSimulations: false);
+         LoadSnapshot(_snapshotFile, isFullPath: true, runSimulations: false);
          _sequentialProject = _project;
       }
 
+      public override void Cleanup()
+      {
+         base.Cleanup();
+         File.Delete(_snapshotFile);
+      }
+
       //the copies all reference the same module instances of the project, so the parallel constructions share building blocks
-      private static string snapshotWithSimulationCopies(string snapshotFile, int numberOfCopies)
+      private static string snapshotWithSimulationCopies(string snapshotFile, int numberOfSimulations)
       {
          var json = JObject.Parse(File.ReadAllText(snapshotFile));
          var simulations = (JArray) json["Simulations"];
          var template = (JObject) simulations[0];
-         for (var i = 2; i <= numberOfCopies + 1; i++)
+         for (var i = 2; i <= numberOfSimulations; i++)
          {
             var copy = (JObject) template.DeepClone();
             copy["Name"] = $"{template["Name"]}-{i}";
@@ -159,14 +168,23 @@ namespace MoBi.IntegrationTests.Snapshots
          return file;
       }
 
-      //sorted entity paths with the name of the formula they use: catches a race that attaches entities
-      //or formulas to the wrong nodes, without depending on ids
+      //sorted entity paths with the formula, dimension and value they carry: catches a race that attaches
+      //entities or formulas to the wrong nodes or mixes up their content, without depending on ids
       private static string fingerprintOf(IMoBiSimulation simulation)
       {
          return simulation.Model.Root.GetAllChildren<IEntity>()
-            .Select(entity => $"{entity.EntityPath()}|{(entity as IUsingFormula)?.Formula?.Name}")
+            .Select(entityFingerprint)
             .OrderBy(x => x)
             .ToString("\n");
+      }
+
+      private static string entityFingerprint(IEntity entity)
+      {
+         var formula = (entity as IUsingFormula)?.Formula;
+         var formulaString = (formula as ExplicitFormula)?.FormulaString;
+         var dimension = (entity as IWithDimension)?.Dimension?.Name;
+         var value = (entity as IParameter)?.Value.ToString(NumberFormatInfo.InvariantInfo);
+         return $"{entity.EntityPath()}|{formula?.Name}|{formulaString}|{dimension}|{value}";
       }
 
       [Observation]
@@ -179,6 +197,13 @@ namespace MoBi.IntegrationTests.Snapshots
       public void should_create_models_that_are_not_empty()
       {
          _parallelProject.Simulations.Each(simulation => simulation.Model.Root.GetAllChildren<IEntity>().Count.ShouldBeGreaterThan(100));
+      }
+
+      [Observation]
+      public void should_not_create_duplicate_entity_ids_within_a_model()
+      {
+         _parallelProject.Simulations.Each(simulation =>
+            simulation.Model.Root.GetAllChildren<IEntity>().GroupBy(x => x.Id).Count(group => group.Count() > 1).ShouldBeEqualTo(0));
       }
 
       //the flag is disabled only while the model is constructed and must not survive on the simulation:

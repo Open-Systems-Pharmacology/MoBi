@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Linq;
 using FakeItEasy;
+using Microsoft.Extensions.Logging;
 using MoBi.Core;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
 using MoBi.Core.Snapshots.Mappers;
-using Microsoft.Extensions.Logging;
 using MoBi.HelpersForTests;
 using OSPSuite.Assets.Extensions;
 using OSPSuite.BDDHelper;
@@ -439,6 +439,19 @@ namespace MoBi.IntegrationTests.Snapshots
       public void should_log_an_error_naming_the_simulation_that_could_not_be_loaded()
       {
          A.CallTo(() => _ospSuiteLogger.AddToLog(A<string>.That.Contains("simulation-2"), LogLevel.Error, A<string>._)).MustHaveHappened();
+      }
+
+      //an OSPSuite exception is logged as a warning with its clean message, without a stack trace
+      [Observation]
+      public void should_log_a_message_naming_the_missing_module()
+      {
+         A.CallTo(() => _ospSuiteLogger.AddToLog(A<string>.That.Contains("does-not-exist"), LogLevel.Warning, A<string>._)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_warn_that_not_all_simulations_were_loaded()
+      {
+         A.CallTo(() => _ospSuiteLogger.AddToLog(A<string>.That.Contains("2/3"), LogLevel.Warning, A<string>._)).MustHaveHappened();
       }
    }
 

@@ -66,15 +66,16 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
    {
       var configuration = await _simulationConfigurationMapper.MapToModel(snapshot.Configuration, context);
 
-      //disabled for this construction only so parallel constructions do not interleave the core progress stream
+      //suppressed for this construction only so parallel constructions do not interleave the core progress stream
+      var showProgress = configuration.ShowProgress;
       configuration.ShowProgress = false;
 
       var (simulation, _) = _simulationFactory.CreateSimulationAndValidate(configuration, snapshot.Name);
       var mobiSimulation = simulation as MoBiSimulation;
 
-      //the simulation keeps a clone of the configuration: restore the default there so the simulation
+      //the simulation keeps a clone of the configuration: restore the flag there so the simulation
       //behaves like one loaded from a project file
-      mobiSimulation.Configuration.ShowProgress = true;
+      mobiSimulation.Configuration.ShowProgress = showProgress;
 
       var snapshotContextWithSimulation = new SnapshotContextWithSimulation(mobiSimulation, context);
       mobiSimulation.Settings.OutputSelections = await _outputSelectionsMapper.MapToModel(snapshot.OutputSelections, snapshotContextWithSimulation);
