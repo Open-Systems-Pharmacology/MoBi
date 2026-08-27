@@ -142,6 +142,8 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
             }
          }
 
+         //the first simulation is mapped on its own so that lazily initialized services are warmed up
+         //before the remaining simulations are mapped in parallel
          await mapSimulationAt(0);
 
          var options = new ParallelOptions
