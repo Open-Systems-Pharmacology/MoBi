@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using MoBi.Assets;
 using MoBi.Core.Domain.Builder;
@@ -130,15 +131,17 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
 
          async Task mapSimulationAt(int index)
          {
+            var snapshot = snapshots[index];
             try
             {
-               mappedSimulations[index] = await _simulationMapper.MapToModel(snapshots[index], simulationContext);
-               var loadedCount = System.Threading.Interlocked.Increment(ref numberOfSimulationsLoaded);
-               _logger.AddInfo(AppConstants.Captions.SimulationsLoadedMessage(loadedCount, snapshots.Length), projectSnapshot.Name);
+               mappedSimulations[index] = await _simulationMapper.MapToModel(snapshot, simulationContext);
+               var loadedCount = Interlocked.Increment(ref numberOfSimulationsLoaded);
+               _logger.AddInfo(AppConstants.Captions.SimulationsLoadedMessage(snapshot.Name, loadedCount, snapshots.Length), projectSnapshot.Name);
             }
             catch (Exception e)
             {
                _logger.AddException(e);
+               _logger.AddError(AppConstants.Exceptions.CannotLoadSimulation(snapshot.Name));
             }
          }
 
@@ -146,12 +149,7 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
          //before the remaining simulations are mapped in parallel
          await mapSimulationAt(0);
 
-         var options = new ParallelOptions
-         {
-            MaxDegreeOfParallelism = Math.Max(1, _userSettings.MaximumNumberOfCoresToUse)
-         };
-
-         await Parallel.ForEachAsync(Enumerable.Range(1, snapshots.Length - 1), options, (index, _) => new ValueTask(mapSimulationAt(index)));
+         await Parallel.ForEachAsync(Enumerable.Range(1, snapshots.Length - 1), parallelOptions(), (index, _) => new ValueTask(mapSimulationAt(index)));
 
          for (var i = 0; i < snapshots.Length; i++)
          {
@@ -203,14 +201,14 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
    private static object base64StringToPKSimSnapshot(string base64String) => JsonConvert.DeserializeObject<object>(base64String.FromBase64String());
    private static string pkSimSnapshotToBase64String(object pkSimSnapshot) => JsonConvert.SerializeObject(pkSimSnapshot).ToBase64String();
 
+   private ParallelOptions parallelOptions() => new ParallelOptions
+   {
+      MaxDegreeOfParallelism = Math.Max(1, _userSettings.MaximumNumberOfCoresToUse)
+   };
+
    private async Task runParallelSimulations(ModelProject project)
    {
-      var options = new ParallelOptions
-      {
-         MaxDegreeOfParallelism = Math.Max(1, _userSettings.MaximumNumberOfCoresToUse)
-      };
-
-      await Parallel.ForEachAsync(project.Simulations, options, async (sim, ct) =>
+      await Parallel.ForEachAsync(project.Simulations, parallelOptions(), async (sim, ct) =>
       {
          try
          {

@@ -7,6 +7,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
 using MoBi.Core.Snapshots.Mappers;
+using Microsoft.Extensions.Logging;
 using MoBi.HelpersForTests;
 using OSPSuite.Assets.Extensions;
 using OSPSuite.BDDHelper;
@@ -39,13 +40,13 @@ namespace MoBi.IntegrationTests.Snapshots
       private Classification _simulationClassification;
       private Classification _parameterIdentificationClassification;
       private IMoBiContext _context;
-      private IOSPSuiteLogger _ospSuiteLogger;
+      protected IOSPSuiteLogger _ospSuiteLogger;
       private ParameterIdentificationMapper _parameterIdentificationMapper;
       protected IPKSimStarter _pkSimStarter;
       private ISimulationSettingsFactory _simulationSettingsFactory;
       private SimulationMapper _simulationMapper;
       private ICoreSimulationRunner _coreSimulationRunner;
-      private ICoreUserSettings _coreUserSettings;
+      protected ICoreUserSettings _coreUserSettings;
       protected IParameterValueUpdateManager _parameterValueUpdateManager;
       protected IndividualBuildingBlock _snapshotIndividualBuildingBlock;
       protected ExpressionProfileBuildingBlock _snapshotExpressionProfile;
@@ -143,6 +144,17 @@ namespace MoBi.IntegrationTests.Snapshots
          _project.AddClassifiable(new ClassifiableObservedData { Subject = dataRepository, Parent = _observedDataClassification });
          _project.AddClassifiable(new ClassifiableSimulation { Subject = simulation, Parent = _simulationClassification });
          _project.AddClassifiable(new ClassifiableParameterIdentification { Subject = parameterIdentification, Parent = _parameterIdentificationClassification });
+      }
+
+      protected void AddSimulation(string name, Module module)
+      {
+         var simulation = new MoBiSimulation().WithId(name).WithName(name);
+         simulation.Configuration = new SimulationConfiguration
+         {
+            SimulationSettings = IoC.Resolve<ISimulationSettingsFactory>().CreateDefault()
+         };
+         simulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(module));
+         _project.AddSimulation(simulation);
       }
    }
 
@@ -375,21 +387,11 @@ namespace MoBi.IntegrationTests.Snapshots
       protected override void Context()
       {
          base.Context();
+         A.CallTo(() => _coreUserSettings.MaximumNumberOfCoresToUse).Returns(4);
          var module = _project.Modules.First(x => !x.IsPKSimModule);
-         addSimulation("simulation-2", module);
-         addSimulation("simulation-3", module);
+         AddSimulation("simulation-2", module);
+         AddSimulation("simulation-3", module);
          _snapshot = sut.MapToSnapshot(_project).Result;
-      }
-
-      private void addSimulation(string name, Module module)
-      {
-         var simulation = new MoBiSimulation().WithId(name).WithName(name);
-         simulation.Configuration = new SimulationConfiguration
-         {
-            SimulationSettings = IoC.Resolve<ISimulationSettingsFactory>().CreateDefault()
-         };
-         simulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(module));
-         _project.AddSimulation(simulation);
       }
 
       protected override void Because()
@@ -401,6 +403,42 @@ namespace MoBi.IntegrationTests.Snapshots
       public void should_add_the_simulations_to_the_project_in_the_snapshot_order()
       {
          _result.Simulations.AllNames().ShouldOnlyContainInOrder("simulation", "simulation-2", "simulation-3");
+      }
+   }
+
+   internal class When_mapping_a_snapshot_where_a_simulation_cannot_be_loaded : concern_for_ProjectMapper
+   {
+      private SnapshotProject _snapshot;
+      private MoBiProject _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _coreUserSettings.MaximumNumberOfCoresToUse).Returns(4);
+         var module = _project.Modules.First(x => !x.IsPKSimModule);
+         AddSimulation("simulation-2", module);
+         AddSimulation("simulation-3", module);
+         _snapshot = sut.MapToSnapshot(_project).Result;
+
+         //a module that does not exist in the project makes the mapping of this simulation fail
+         _snapshot.Simulations[1].Configuration.ModuleConfigurations[0].Module = "does-not-exist";
+      }
+
+      protected override void Because()
+      {
+         _result = sut.MapToModel(_snapshot, new ProjectContext(new MoBiProject(), runSimulations: false)).Result;
+      }
+
+      [Observation]
+      public void should_add_the_simulations_that_could_be_loaded_in_the_snapshot_order()
+      {
+         _result.Simulations.AllNames().ShouldOnlyContainInOrder("simulation", "simulation-3");
+      }
+
+      [Observation]
+      public void should_log_an_error_naming_the_simulation_that_could_not_be_loaded()
+      {
+         A.CallTo(() => _ospSuiteLogger.AddToLog(A<string>.That.Contains("simulation-2"), LogLevel.Error, A<string>._)).MustHaveHappened();
       }
    }
 

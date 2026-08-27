@@ -1,5 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.IO;
+using System.Linq;
 using FakeItEasy;
+using MoBi.HelpersForTests;
+using Newtonsoft.Json.Linq;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using OSPSuite.BDDHelper;
@@ -9,6 +13,8 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Utility.Container;
+using OSPSuite.Utility.Extensions;
+using ICoreUserSettings = MoBi.Core.ICoreUserSettings;
 
 namespace MoBi.IntegrationTests.Snapshots
 {
@@ -108,6 +114,86 @@ namespace MoBi.IntegrationTests.Snapshots
       public void the_user_created_formula_is_used_from_the_serialized_formula_cache()
       {
          _individualParameterWithUserFormula.Formula.Name.ShouldBeEqualTo("ClonedTableFormulaWithXArgument_OntogenyFactorAlbumin");
+      }
+   }
+
+   public class When_loading_a_snapshot_with_simulations_sharing_modules_in_parallel : ContextWithLoadedSnapshot
+   {
+      private MoBiProject _parallelProject;
+      private MoBiProject _sequentialProject;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+
+         var validationTask = IoC.Resolve<IEntityValidationTask>();
+         A.CallTo(() => validationTask.Validate(A<MoBiSimulation>._)).Returns(true);
+
+         var snapshotFile = snapshotWithSimulationCopies(DomainHelperForSpecs.TestFileFullPath("snapshot_no_pksim_modules.json"), numberOfCopies: 3);
+         var userSettings = IoC.Resolve<ICoreUserSettings>();
+
+         A.CallTo(() => userSettings.MaximumNumberOfCoresToUse).Returns(4);
+         LoadSnapshot(snapshotFile, isFullPath: true, runSimulations: false);
+         _parallelProject = _project;
+
+         A.CallTo(() => userSettings.MaximumNumberOfCoresToUse).Returns(1);
+         LoadSnapshot(snapshotFile, isFullPath: true, runSimulations: false);
+         _sequentialProject = _project;
+      }
+
+      //the copies all reference the same module instances of the project, so the parallel constructions share building blocks
+      private static string snapshotWithSimulationCopies(string snapshotFile, int numberOfCopies)
+      {
+         var json = JObject.Parse(File.ReadAllText(snapshotFile));
+         var simulations = (JArray) json["Simulations"];
+         var template = (JObject) simulations[0];
+         for (var i = 2; i <= numberOfCopies + 1; i++)
+         {
+            var copy = (JObject) template.DeepClone();
+            copy["Name"] = $"{template["Name"]}-{i}";
+            simulations.Add(copy);
+         }
+
+         var file = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.json");
+         File.WriteAllText(file, json.ToString());
+         return file;
+      }
+
+      //sorted entity paths with the name of the formula they use: catches a race that attaches entities
+      //or formulas to the wrong nodes, without depending on ids
+      private static string fingerprintOf(IMoBiSimulation simulation)
+      {
+         return simulation.Model.Root.GetAllChildren<IEntity>()
+            .Select(entity => $"{entity.EntityPath()}|{(entity as IUsingFormula)?.Formula?.Name}")
+            .OrderBy(x => x)
+            .ToString("\n");
+      }
+
+      [Observation]
+      public void should_add_all_simulations_in_the_snapshot_order()
+      {
+         _parallelProject.Simulations.AllNames().ShouldOnlyContainInOrder("test", "test-2", "test-3", "test-4");
+      }
+
+      [Observation]
+      public void should_create_models_that_are_not_empty()
+      {
+         _parallelProject.Simulations.Each(simulation => simulation.Model.Root.GetAllChildren<IEntity>().Count.ShouldBeGreaterThan(100));
+      }
+
+      //the flag is disabled only while the model is constructed and must not survive on the simulation:
+      //it would suppress core progress in later updates and show up in configuration comparisons
+      [Observation]
+      public void should_not_keep_the_construction_progress_suppression_on_the_loaded_simulations()
+      {
+         _parallelProject.Simulations.Each(simulation => simulation.Configuration.ShowProgress.ShouldBeTrue());
+      }
+
+      [Observation]
+      public void should_create_the_same_models_in_parallel_as_sequentially()
+      {
+         _parallelProject.Simulations.Each(simulation =>
+            fingerprintOf(simulation).ShouldBeEqualTo(fingerprintOf(_sequentialProject.Simulations.FindByName(simulation.Name))));
       }
    }
 }
