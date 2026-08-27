@@ -71,11 +71,12 @@ namespace MoBi.Core.Services
       {
          private readonly DimensionParser _dimensionParser;
          private readonly IObjectPathFactory _objectPathFactory;
-         private readonly IMoBiCoreUserSettings _userSettings;
          private readonly IDictionary<string, string> _hiddenNotifications;
          private readonly SimulationBuilder _simulationBuilder;
          private readonly bool _checkDimensions;
          private readonly bool _checkRules;
+         private readonly bool _showPKSimDimensionProblemWarnings;
+         private readonly bool _showCannotCalcErrors;
 
          public ValidationResult Result { get; } = new ValidationResult();
 
@@ -84,11 +85,12 @@ namespace MoBi.Core.Services
          {
             _dimensionParser = dimensionParser;
             _objectPathFactory = objectPathFactory;
-            _userSettings = userSettings;
             _hiddenNotifications = hiddenNotifications;
             _simulationBuilder = simulationBuilder;
             _checkDimensions = userSettings.CheckDimensions;
             _checkRules = userSettings.CheckRules;
+            _showPKSimDimensionProblemWarnings = userSettings.ShowPKSimDimensionProblemWarnings;
+            _showCannotCalcErrors = userSettings.ShowCannotCalcErrors;
          }
 
          public void Visit(IEntity entity)
@@ -152,7 +154,7 @@ namespace MoBi.Core.Services
 
          private bool shouldShowNotification(IObjectBase entityToValidate, string notification)
          {
-            if (_userSettings.ShowPKSimDimensionProblemWarnings)
+            if (_showPKSimDimensionProblemWarnings)
                return true;
 
             if (!_hiddenNotifications.Keys.Contains(entityToValidate.Name))
@@ -212,7 +214,7 @@ namespace MoBi.Core.Services
             //ignore some dimension check errors.
             //Reason: some formulas are written so that dimension exponents cannot be calculated, e.g.
             //x^y where y is not dimensionless.
-            if (_userSettings.ShowCannotCalcErrors)
+            if (_showCannotCalcErrors)
             {
                addWarning(entityUsingFormula, errorMessage);
             }
