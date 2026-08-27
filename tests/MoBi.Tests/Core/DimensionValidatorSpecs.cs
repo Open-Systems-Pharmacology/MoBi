@@ -77,7 +77,7 @@ namespace MoBi.Core
             var visitor = call.GetArgument<IVisitor>(0);
             visit(visitor, _firstParameter);
             _firstVisitDone.Set();
-            _secondValidationDone.Wait(TimeSpan.FromSeconds(5));
+            _secondValidationDone.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
             visit(visitor, _secondParameter);
          });
 
@@ -98,7 +98,7 @@ namespace MoBi.Core
       protected override void Because()
       {
          var firstValidation = sut.Validate(new[] {_slowContainer}, _simulationBuilder);
-         _firstVisitDone.Wait(TimeSpan.FromSeconds(5));
+         _firstVisitDone.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
 
          _secondResult = sut.Validate(new[] {_fastContainer}, _simulationBuilder).Result;
          _secondValidationDone.Set();
@@ -131,7 +131,7 @@ namespace MoBi.Core
 
          var lengthDimension = new Dimension(new BaseDimensionRepresentation {LengthExponent = 1}, AppConstants.DimensionNames.LENGTH, "cm");
          var molWeightDimension = new Dimension(new BaseDimensionRepresentation { AmountExponent = 1, MassExponent = -1 }, "MW", "mol/g");
-         var areaDimension = new Dimension(new BaseDimensionRepresentation { LengthExponent = 2,}, AppConstants.DimensionNames.AREA, "cmï¿½");
+         var areaDimension = new Dimension(new BaseDimensionRepresentation { LengthExponent = 2,}, AppConstants.DimensionNames.AREA, "cm²");
 
          var radiusFormula = new ExplicitFormula()
             .WithFormulaString("0,0333 * (MW * 1E9) ^ 0,4226 * 1E-8")
