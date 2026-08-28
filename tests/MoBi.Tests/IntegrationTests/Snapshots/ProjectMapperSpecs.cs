@@ -158,6 +158,43 @@ namespace MoBi.IntegrationTests.Snapshots
       }
    }
 
+   internal class When_mapping_a_snapshot_where_the_first_simulation_cannot_be_loaded : concern_for_ProjectMapper
+   {
+      private SnapshotProject _snapshot;
+      private MoBiProject _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _coreUserSettings.MaximumNumberOfCoresToUse).Returns(4);
+         var module = _project.Modules.First(x => !x.IsPKSimModule);
+         AddSimulation("simulation-2", module);
+         AddSimulation("simulation-3", module);
+         _snapshot = sut.MapToSnapshot(_project).Result;
+
+         //the corrupted simulation comes first: mapping keeps going sequentially until one simulation
+         //succeeds, so the parallel phase never starts without warmed-up services
+         _snapshot.Simulations[0].Configuration.ModuleConfigurations[0].Module = "does-not-exist";
+      }
+
+      protected override void Because()
+      {
+         _result = sut.MapToModel(_snapshot, new ProjectContext(new MoBiProject(), runSimulations: false)).Result;
+      }
+
+      [Observation]
+      public void should_add_the_simulations_that_could_be_loaded_in_the_snapshot_order()
+      {
+         _result.Simulations.AllNames().ShouldOnlyContainInOrder("simulation-2", "simulation-3");
+      }
+
+      [Observation]
+      public void should_warn_that_not_all_simulations_were_loaded()
+      {
+         A.CallTo(() => _ospSuiteLogger.AddToLog(A<string>.That.Contains("2/3"), LogLevel.Warning, A<string>._)).MustHaveHappened();
+      }
+   }
+
    internal class When_mapping_snapshot_to_project_and_exporting_inputs : concern_for_ProjectMapper
    {
       private SnapshotProject _snapshot;
