@@ -416,6 +416,69 @@ namespace MoBi.IntegrationTests.Snapshots
       }
    }
 
+   internal class When_mapping_a_snapshot_where_a_simulation_run_runs_out_of_memory_while_another_is_in_flight : concern_for_ProjectMapper
+   {
+      private SnapshotProject _snapshot;
+      private ManualResetEventSlim _firstRunStarted;
+      private ManualResetEventSlim _releaseFirstRun;
+
+      protected override void Context()
+      {
+         base.Context();
+         _firstRunStarted = new ManualResetEventSlim();
+         _releaseFirstRun = new ManualResetEventSlim();
+         A.CallTo(() => _coreUserSettings.MaximumNumberOfCoresToUse).Returns(2);
+         var module = _project.Modules.First(x => !x.IsPKSimModule);
+         AddSimulation("simulation-2", module);
+         _snapshot = sut.MapToSnapshot(_project).Result;
+         //the parameter identification references the real 'simulation' and cannot map against the bare stub below
+         _snapshot.ParameterIdentifications = null;
+
+         _simulationMapper = A.Fake<SimulationMapper>();
+         CreateSut();
+
+         A.CallTo(() => _simulationMapper.MapToModel(_snapshot.Simulations[0], A<SimulationContext>._)).Returns(new MoBiSimulation().WithId("S1").WithName("simulation"));
+         A.CallTo(() => _simulationMapper.MapToModel(_snapshot.Simulations[1], A<SimulationContext>._)).Returns(new MoBiSimulation().WithId("S2").WithName("simulation-2"));
+
+         void blockUntilStopped()
+         {
+            _firstRunStarted.Set();
+            _releaseFirstRun.Wait(TimeSpan.FromSeconds(5));
+         }
+
+         Task failWhenFirstRunStarted()
+         {
+            _firstRunStarted.Wait(TimeSpan.FromSeconds(5));
+            return Task.FromException(new OutOfMemoryException());
+         }
+
+         A.CallTo(() => _coreSimulationRunner.RunSimulationAsync(A<IMoBiSimulation>.That.Matches(x => x.Name == "simulation"), A<bool>._))
+            .ReturnsLazily(() => Task.Run(blockUntilStopped));
+         A.CallTo(() => _coreSimulationRunner.StopSimulation(A<IMoBiSimulation>.That.Matches(x => x.Name == "simulation"))).Invokes(() => _releaseFirstRun.Set());
+         A.CallTo(() => _coreSimulationRunner.RunSimulationAsync(A<IMoBiSimulation>.That.Matches(x => x.Name == "simulation-2"), A<bool>._))
+            .ReturnsLazily(() => failWhenFirstRunStarted());
+      }
+
+      protected override void Because()
+      {
+         sut.MapToModel(_snapshot, new ProjectContext(new MoBiProject(), runSimulations: true)).GetAwaiter().GetResult();
+      }
+
+      public override void Cleanup()
+      {
+         base.Cleanup();
+         _firstRunStarted.Dispose();
+         _releaseFirstRun.Dispose();
+      }
+
+      //the runner does not observe the loop's cancellation token: the in-flight sibling must be stopped explicitly
+      [Observation]
+      public void should_stop_the_sibling_run_that_was_still_in_flight()
+      {
+         A.CallTo(() => _coreSimulationRunner.StopSimulation(A<IMoBiSimulation>.That.Matches(x => x.Name == "simulation"))).MustHaveHappened();
+      }
+   }
+
    internal class When_mapping_a_snapshot_where_a_simulation_run_is_cancelled : concern_for_ProjectMapper
    {
       private SnapshotProject _snapshot;

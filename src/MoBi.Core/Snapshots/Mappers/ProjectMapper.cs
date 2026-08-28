@@ -253,7 +253,11 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       {
          try
          {
-            await _simulationRunner.RunSimulationAsync(sim);
+            //the runner does not take a token; stop this run when another one fails hard and cancels the loop
+            using (ct.Register(() => _simulationRunner.StopSimulation(sim)))
+            {
+               await _simulationRunner.RunSimulationAsync(sim);
+            }
          }
          catch (OperationCanceledException)
          {
