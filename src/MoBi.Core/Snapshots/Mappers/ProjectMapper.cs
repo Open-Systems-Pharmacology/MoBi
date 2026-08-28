@@ -134,13 +134,19 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
             var snapshot = snapshots[index];
             try
             {
-               _logger.AddDebug($"Constructing simulation '{snapshot.Name}'...", projectSnapshot.Name);
-               mappedSimulations[index] = await _simulationMapper.MapToModel(snapshot, simulationContext);
+               _logger.AddDebug(AppConstants.Captions.ConstructingSimulationMessage(snapshot.Name), projectSnapshot.Name);
+               var simulation = await _simulationMapper.MapToModel(snapshot, simulationContext);
+               mappedSimulations[index] = simulation;
+
+               //a null mapping is skipped when the project is filled and must not count as loaded
+               if (simulation == null)
+                  return false;
+
                var loadedCount = Interlocked.Increment(ref numberOfSimulationsLoaded);
                _logger.AddInfo(AppConstants.Captions.SimulationsLoadedMessage(snapshot.Name, loadedCount, snapshots.Length), projectSnapshot.Name);
-               return mappedSimulations[index] != null;
+               return true;
             }
-            catch (Exception e) when (e is not OutOfMemoryException)
+            catch (Exception e) when (!isOutOfMemory(e))
             {
                _logger.AddException(e, projectSnapshot.Name);
                _logger.AddError(AppConstants.Exceptions.CannotLoadSimulation(snapshot.Name), projectSnapshot.Name);
@@ -162,7 +168,7 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
          if (snapshots.Length > warmupCount)
          {
             var options = parallelOptions();
-            _logger.AddDebug($"Constructing simulations with up to {options.MaxDegreeOfParallelism} core(s)", projectSnapshot.Name);
+            _logger.AddDebug(AppConstants.Captions.ConstructingSimulationsWithCoresMessage(options.MaxDegreeOfParallelism), projectSnapshot.Name);
             await Parallel.ForEachAsync(Enumerable.Range(warmupCount, snapshots.Length - warmupCount), options, (index, _) => new ValueTask(mapSimulationAt(index)));
          }
 
@@ -184,7 +190,16 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
 
       if (simulationContext.Run && project.Simulations.Any())
       {
-         await runParallelSimulations(project);
+         try
+         {
+            await runParallelSimulations(project);
+         }
+         catch (Exception e) when (isOutOfMemory(e))
+         {
+            //running the simulations is optional, reloading the project is not: keep the loaded project
+            _logger.AddException(e, project.Name);
+            _logger.AddError(AppConstants.Exceptions.SimulationRunsAbortedAfterOutOfMemory, project.Name);
+         }
       }
 
       //map analyses after the run so that simulation result columns are available to resolve the curves
@@ -219,6 +234,23 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
    private static object base64StringToPKSimSnapshot(string base64String) => JsonConvert.DeserializeObject<object>(base64String.FromBase64String());
    private static string pkSimSnapshotToBase64String(object pkSimSnapshot) => JsonConvert.SerializeObject(pkSimSnapshot).ToBase64String();
 
+   //an out-of-memory failure must fail the load rather than degrade it silently, also when an
+   //intermediate layer wrapped it (AggregateException from a blocking wait, reflection invocation, ...)
+   private static bool isOutOfMemory(Exception e)
+   {
+      switch (e)
+      {
+         case null:
+            return false;
+         case OutOfMemoryException:
+            return true;
+         case AggregateException aggregateException:
+            return aggregateException.InnerExceptions.Any(isOutOfMemory);
+         default:
+            return isOutOfMemory(e.InnerException);
+      }
+   }
+
    private ParallelOptions parallelOptions() => new ParallelOptions
    {
       MaxDegreeOfParallelism = Math.Max(1, _userSettings.MaximumNumberOfCoresToUse)
@@ -227,14 +259,18 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
    private async Task runParallelSimulations(ModelProject project)
    {
       var options = parallelOptions();
-      _logger.AddDebug($"Running simulations with up to {options.MaxDegreeOfParallelism} core(s)", project.Name);
+      _logger.AddDebug(AppConstants.Captions.RunningSimulationsWithCoresMessage(options.MaxDegreeOfParallelism), project.Name);
       await Parallel.ForEachAsync(project.Simulations, options, async (sim, ct) =>
       {
          try
          {
             await _simulationRunner.RunSimulationAsync(sim);
          }
-         catch (Exception ex) when (ex is not OutOfMemoryException)
+         catch (OperationCanceledException)
+         {
+            //cancelled because another run failed hard; not a failure of this simulation
+         }
+         catch (Exception ex) when (!isOutOfMemory(ex))
          {
             _logger.AddException(ex);
          }

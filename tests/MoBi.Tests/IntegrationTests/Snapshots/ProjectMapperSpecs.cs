@@ -209,7 +209,8 @@ namespace MoBi.IntegrationTests.Snapshots
       private ManualResetEventSlim _secondMappingStarted;
       private ManualResetEventSlim _releaseSecondMapping;
       private ManualResetEventSlim _thirdMappingStarted;
-      private bool _thirdStartedWhileSecondWasRunning;
+      private volatile bool _secondMappingCompleted;
+      private bool _thirdStartedBeforeSecondCompleted;
 
       protected override void Context()
       {
@@ -234,6 +235,7 @@ namespace MoBi.IntegrationTests.Snapshots
          {
             _secondMappingStarted.Set();
             _releaseSecondMapping.Wait(TimeSpan.FromSeconds(5));
+            _secondMappingCompleted = true;
             throw new Exception();
          }
 
@@ -241,6 +243,8 @@ namespace MoBi.IntegrationTests.Snapshots
          A.CallTo(() => _simulationMapper.MapToModel(_snapshot.Simulations[1], A<SimulationContext>._)).ReturnsLazily(() => Task.Run(failWhenReleased));
          A.CallTo(() => _simulationMapper.MapToModel(_snapshot.Simulations[2], A<SimulationContext>._)).ReturnsLazily(() =>
          {
+            //under an early fan-out the third mapping starts while the second still blocks, so the flag reads false
+            _thirdStartedBeforeSecondCompleted = !_secondMappingCompleted;
             _thirdMappingStarted.Set();
             return Task.FromResult(new MoBiSimulation().WithId("S3").WithName("simulation-3"));
          });
@@ -251,8 +255,9 @@ namespace MoBi.IntegrationTests.Snapshots
          var mapping = sut.MapToModel(_snapshot, new ProjectContext(new MoBiProject(), runSimulations: false));
          _secondMappingStarted.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
 
-         //no other mapping may begin while the second one - not yet successful - is still running
-         _thirdStartedWhileSecondWasRunning = _thirdMappingStarted.Wait(TimeSpan.FromMilliseconds(500));
+         //an early fan-out would start the third mapping within this window (it returns immediately in that
+         //case); the guard was verified by mutation - an immediate fan-out fails the observation below
+         _thirdMappingStarted.Wait(TimeSpan.FromMilliseconds(500));
 
          _releaseSecondMapping.Set();
          _result = mapping.Result;
@@ -266,16 +271,88 @@ namespace MoBi.IntegrationTests.Snapshots
          _thirdMappingStarted.Dispose();
       }
 
+      //no other mapping may begin while the second one - not yet successful - is still running
       [Observation]
       public void should_map_sequentially_until_a_simulation_succeeds()
       {
-         _thirdStartedWhileSecondWasRunning.ShouldBeFalse();
+         _thirdStartedBeforeSecondCompleted.ShouldBeFalse();
       }
 
       [Observation]
       public void should_add_the_simulation_that_could_be_loaded()
       {
          _result.Simulations.AllNames().ShouldOnlyContainInOrder("simulation-3");
+      }
+   }
+
+   internal class When_mapping_a_snapshot_where_a_simulation_maps_to_nothing : concern_for_ProjectMapper
+   {
+      private SnapshotProject _snapshot;
+      private MoBiProject _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _coreUserSettings.MaximumNumberOfCoresToUse).Returns(4);
+         var module = _project.Modules.First(x => !x.IsPKSimModule);
+         AddSimulation("simulation-2", module);
+         AddSimulation("simulation-3", module);
+         _snapshot = sut.MapToSnapshot(_project).Result;
+
+         _simulationMapper = A.Fake<SimulationMapper>();
+         CreateSut();
+
+         A.CallTo(() => _simulationMapper.MapToModel(_snapshot.Simulations[0], A<SimulationContext>._)).Returns((MoBiSimulation) null);
+         A.CallTo(() => _simulationMapper.MapToModel(_snapshot.Simulations[1], A<SimulationContext>._)).Returns(new MoBiSimulation().WithId("S2").WithName("simulation-2"));
+         A.CallTo(() => _simulationMapper.MapToModel(_snapshot.Simulations[2], A<SimulationContext>._)).Returns(new MoBiSimulation().WithId("S3").WithName("simulation-3"));
+      }
+
+      protected override void Because()
+      {
+         _result = sut.MapToModel(_snapshot, new ProjectContext(new MoBiProject(), runSimulations: false)).Result;
+      }
+
+      [Observation]
+      public void should_add_only_the_simulations_that_were_mapped()
+      {
+         _result.Simulations.AllNames().ShouldOnlyContainInOrder("simulation-2", "simulation-3");
+      }
+
+      //a null mapping is skipped when the project is filled and must not count as loaded
+      [Observation]
+      public void should_warn_that_not_all_simulations_were_loaded()
+      {
+         A.CallTo(() => _ospSuiteLogger.AddToLog(A<string>.That.Contains("2/3"), LogLevel.Warning, A<string>._)).MustHaveHappened();
+      }
+   }
+
+   internal class When_mapping_a_snapshot_where_a_simulation_runs_out_of_memory : concern_for_ProjectMapper
+   {
+      private SnapshotProject _snapshot;
+
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _coreUserSettings.MaximumNumberOfCoresToUse).Returns(4);
+         var module = _project.Modules.First(x => !x.IsPKSimModule);
+         AddSimulation("simulation-2", module);
+         _snapshot = sut.MapToSnapshot(_project).Result;
+
+         _simulationMapper = A.Fake<SimulationMapper>();
+         CreateSut();
+
+         A.CallTo(() => _simulationMapper.MapToModel(_snapshot.Simulations[0], A<SimulationContext>._)).Returns(new MoBiSimulation().WithId("S1").WithName("simulation"));
+
+         //wrapped the way a blocking wait would deliver it: the load must still fail rather than degrade silently
+         A.CallTo(() => _simulationMapper.MapToModel(_snapshot.Simulations[1], A<SimulationContext>._))
+            .ReturnsLazily(() => Task.FromException<MoBiSimulation>(new AggregateException(new OutOfMemoryException())));
+      }
+
+      [Observation]
+      public void should_fail_the_load()
+      {
+         The.Action(() => sut.MapToModel(_snapshot, new ProjectContext(new MoBiProject(), runSimulations: false)).GetAwaiter().GetResult())
+            .ShouldThrowAn<AggregateException>();
       }
    }
 
