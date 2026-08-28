@@ -41,14 +41,14 @@ namespace MoBi.Core.Snapshots
       }
    }
 
-   public class When_mapping_a_simulation_snapshot_to_model : concern_for_SimulationMapper
+   public abstract class When_mapping_a_simulation_snapshot : concern_for_SimulationMapper
    {
-      private Simulation _snapshot;
-      private SimulationContext _context;
-      private OSPSuite.Core.Domain.Builder.SimulationConfiguration _configuration;
-      private MoBiSimulation _createdSimulation;
-      private bool? _showProgressDuringConstruction;
-      private MoBiSimulation _result;
+      protected Simulation _snapshot;
+      protected SimulationContext _context;
+      protected OSPSuite.Core.Domain.Builder.SimulationConfiguration _configuration;
+      protected MoBiSimulation _createdSimulation;
+      protected bool? _showProgressDuringConstruction;
+      protected MoBiSimulation _result;
 
       protected override async Task Context()
       {
@@ -77,7 +77,10 @@ namespace MoBi.Core.Snapshots
       {
          _result = await sut.MapToModel(_snapshot, _context);
       }
+   }
 
+   public class When_mapping_a_simulation_snapshot_to_model : When_mapping_a_simulation_snapshot
+   {
       [Observation]
       public void should_suppress_the_core_progress_while_the_model_is_constructed()
       {
@@ -88,6 +91,29 @@ namespace MoBi.Core.Snapshots
       public void should_restore_the_progress_flag_on_the_configuration_kept_by_the_simulation()
       {
          _result.Configuration.ShowProgress.ShouldBeTrue();
+      }
+   }
+
+   public class When_mapping_a_simulation_snapshot_whose_configuration_disables_progress : When_mapping_a_simulation_snapshot
+   {
+      protected override async Task Context()
+      {
+         await base.Context();
+         //the flag is not mapped from the snapshot today: starting from false pins the restore to the
+         //captured value rather than to the default
+         _configuration.ShowProgress = false;
+      }
+
+      [Observation]
+      public void should_suppress_the_core_progress_while_the_model_is_constructed()
+      {
+         _showProgressDuringConstruction.ShouldBeEqualTo(false);
+      }
+
+      [Observation]
+      public void should_keep_the_flag_disabled_on_the_configuration_kept_by_the_simulation()
+      {
+         _result.Configuration.ShowProgress.ShouldBeFalse();
       }
    }
 }

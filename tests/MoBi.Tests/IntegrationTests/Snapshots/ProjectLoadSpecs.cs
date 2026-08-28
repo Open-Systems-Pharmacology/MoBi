@@ -144,9 +144,9 @@ namespace MoBi.IntegrationTests.Snapshots
          _sequentialProject = _project;
       }
 
-      public override void Cleanup()
+      public override void GlobalCleanup()
       {
-         base.Cleanup();
+         base.GlobalCleanup();
          File.Delete(_snapshotFile);
       }
 

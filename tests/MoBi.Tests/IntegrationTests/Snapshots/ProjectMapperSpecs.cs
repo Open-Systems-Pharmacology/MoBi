@@ -441,7 +441,7 @@ namespace MoBi.IntegrationTests.Snapshots
          A.CallTo(() => _ospSuiteLogger.AddToLog(A<string>.That.Contains("simulation-2"), LogLevel.Error, A<string>._)).MustHaveHappened();
       }
 
-      //an OSPSuite exception is logged as a warning with its clean message, without a stack trace
+      //an info exception such as MoBiException is logged as a warning with its clean message, without a stack trace
       [Observation]
       public void should_log_a_message_naming_the_missing_module()
       {

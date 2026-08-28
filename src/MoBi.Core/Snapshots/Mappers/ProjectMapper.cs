@@ -149,7 +149,9 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
          //before the remaining simulations are mapped in parallel
          await mapSimulationAt(0);
 
-         await Parallel.ForEachAsync(Enumerable.Range(1, snapshots.Length - 1), parallelOptions(), (index, _) => new ValueTask(mapSimulationAt(index)));
+         var options = parallelOptions();
+         _logger.AddDebug($"Constructing simulations with up to {options.MaxDegreeOfParallelism} core(s)", projectSnapshot.Name);
+         await Parallel.ForEachAsync(Enumerable.Range(1, snapshots.Length - 1), options, (index, _) => new ValueTask(mapSimulationAt(index)));
 
          for (var i = 0; i < snapshots.Length; i++)
          {
@@ -204,16 +206,16 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
    private static object base64StringToPKSimSnapshot(string base64String) => JsonConvert.DeserializeObject<object>(base64String.FromBase64String());
    private static string pkSimSnapshotToBase64String(object pkSimSnapshot) => JsonConvert.SerializeObject(pkSimSnapshot).ToBase64String();
 
-   private ParallelOptions parallelOptions()
+   private ParallelOptions parallelOptions() => new ParallelOptions
    {
-      var maxDegreeOfParallelism = Math.Max(1, _userSettings.MaximumNumberOfCoresToUse);
-      _logger.AddDebug($"Parallel operations limited to {maxDegreeOfParallelism} core(s)");
-      return new ParallelOptions {MaxDegreeOfParallelism = maxDegreeOfParallelism};
-   }
+      MaxDegreeOfParallelism = Math.Max(1, _userSettings.MaximumNumberOfCoresToUse)
+   };
 
    private async Task runParallelSimulations(ModelProject project)
    {
-      await Parallel.ForEachAsync(project.Simulations, parallelOptions(), async (sim, ct) =>
+      var options = parallelOptions();
+      _logger.AddDebug($"Running simulations with up to {options.MaxDegreeOfParallelism} core(s)", project.Name);
+      await Parallel.ForEachAsync(project.Simulations, options, async (sim, ct) =>
       {
          try
          {

@@ -79,7 +79,7 @@ namespace MoBi.Core.Snapshots
       [Observation]
       public void should_throw_an_exception_naming_the_missing_module()
       {
-         The.Action(() => sut.MapToModel(_snapshot, _context)).ShouldThrowAn<MoBiException>();
+         The.Action(() => sut.MapToModel(_snapshot, _context).GetAwaiter().GetResult()).ShouldThrowAn<MoBiException>();
       }
    }
 
