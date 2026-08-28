@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using OSPSuite.BDDHelper;
@@ -9,12 +8,13 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class concern_for_RemoveSelectedBuildingBlockFromLastModuleConfigurationCommand : ContextSpecification<RemoveSelectedBuildingBlockFromLastModuleConfigurationCommand<InitialConditionsBuildingBlock>>
+   public class concern_for_RemoveSelectedBuildingBlockFromModuleConfigurationCommand : ContextSpecification<RemoveSelectedBuildingBlockFromModuleConfigurationCommand<InitialConditionsBuildingBlock>>
    {
       protected IMoBiContext _context;
       protected MoBiSimulation _simulation;
       protected Module _module;
       protected InitialConditionsBuildingBlock _buildingBlock;
+      protected ModuleConfiguration _moduleConfiguration;
 
       protected override void Context()
       {
@@ -25,20 +25,20 @@ namespace MoBi.Core.Commands
          _module = new Module().WithId("moduleId");
          _buildingBlock = new InitialConditionsBuildingBlock().WithId("parameterValuesBuildingBlockId");
          _module.Add(_buildingBlock);
-         var moduleConfiguration = new ModuleConfiguration(_module)
+         _moduleConfiguration = new ModuleConfiguration(_module)
          {
             SelectedInitialConditions = _buildingBlock
          };
-         _simulation.Configuration.AddModuleConfiguration(moduleConfiguration);
-         
+         _simulation.Configuration.AddModuleConfiguration(_moduleConfiguration);
+
          A.CallTo(() => _context.Get<Module>(_module.Id)).Returns(_module);
          A.CallTo(() => _context.Get<InitialConditionsBuildingBlock>(_buildingBlock.Id)).Returns(_buildingBlock);
          A.CallTo(() => _context.Get<IMoBiSimulation>(_simulation.Id)).Returns(_simulation);
-         sut = new RemoveSelectedBuildingBlockFromLastModuleConfigurationCommand<InitialConditionsBuildingBlock>(_buildingBlock, _simulation);
+         sut = new RemoveSelectedBuildingBlockFromModuleConfigurationCommand<InitialConditionsBuildingBlock>(_buildingBlock, _moduleConfiguration, _simulation);
       }
    }
 
-   public class When_reverting_the_remove_selected_building_block_command : concern_for_RemoveSelectedBuildingBlockFromLastModuleConfigurationCommand
+   public class When_reverting_the_remove_selected_building_block_command : concern_for_RemoveSelectedBuildingBlockFromModuleConfigurationCommand
    {
       private InitialConditionsBuildingBlock _deserializedBuildingBlock;
       private readonly byte[] _deserializeToken = Array.Empty<byte>();
@@ -59,7 +59,7 @@ namespace MoBi.Core.Commands
       [Observation]
       public void the_selected_building_block_should_be_set()
       {
-         _simulation.Configuration.ModuleConfigurations.Last().SelectedInitialConditions.ShouldBeEqualTo(_deserializedBuildingBlock);
+         _moduleConfiguration.SelectedInitialConditions.ShouldBeEqualTo(_deserializedBuildingBlock);
       }
 
       [Observation]
@@ -69,7 +69,7 @@ namespace MoBi.Core.Commands
       }
    }
 
-   public class When_removing_the_selected_building_block_module : concern_for_RemoveSelectedBuildingBlockFromLastModuleConfigurationCommand
+   public class When_removing_the_selected_building_block_module : concern_for_RemoveSelectedBuildingBlockFromModuleConfigurationCommand
    {
       protected override void Because()
       {
@@ -85,7 +85,36 @@ namespace MoBi.Core.Commands
       [Observation]
       public void the_module_configuration_should_not_have_selected_building_block()
       {
-         _simulation.Configuration.ModuleConfigurations.Last().SelectedInitialConditions.ShouldBeNull();
+         _moduleConfiguration.SelectedInitialConditions.ShouldBeNull();
+      }
+   }
+
+   public class When_removing_the_selected_building_block_from_a_module_configuration_that_is_not_the_last : concern_for_RemoveSelectedBuildingBlockFromModuleConfigurationCommand
+   {
+      private ModuleConfiguration _lastModuleConfiguration;
+
+      protected override void Context()
+      {
+         base.Context();
+         _lastModuleConfiguration = new ModuleConfiguration(new Module().WithId("lastModuleId"));
+         _simulation.Configuration.AddModuleConfiguration(_lastModuleConfiguration);
+      }
+
+      protected override void Because()
+      {
+         sut.Execute(_context);
+      }
+
+      [Observation]
+      public void the_building_block_should_be_removed_from_the_selected_module()
+      {
+         _module.BuildingBlocks.ShouldNotContain(_buildingBlock);
+      }
+
+      [Observation]
+      public void the_selected_building_block_should_be_cleared_in_the_selected_module_configuration()
+      {
+         _moduleConfiguration.SelectedInitialConditions.ShouldBeNull();
       }
    }
 }

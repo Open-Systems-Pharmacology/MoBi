@@ -289,7 +289,7 @@ namespace MoBi.Assets
 
          public static string CommitingChangesToModulesMessage(ModuleConfiguration moduleConfiguration, bool hasMoleculeChanges, bool hasParameterChanges)
          {
-            var message = $"Values changed in a simulation are always committed to the last module of the simulation configuration. {Environment.NewLine}";
+            var message = $"Values changed in the simulation will be committed to the module <i>{moduleConfiguration.Module.Name}</i>. {Environment.NewLine}";
 
             if (hasMoleculeChanges)
             {
@@ -1762,6 +1762,8 @@ namespace MoBi.Assets
 
          public static string SelectTheBuildingBlockWhereEntitiesWillBeAddedOrUpdated(string typeBeingAdded) => $"Select the building block where {typeBeingAdded} will be added or updated";
          public static readonly string SelectBuildingBlock = "Select Building Block";
+         public static readonly string SelectTheModuleWhereChangesWillBeCommitted = "Select the module where the simulation changes will be committed";
+         public static readonly string SelectModule = "Select Module";
          public static readonly string MakeDefault = "Make defaults";
          public static readonly string LoadFromDefaults = "Load from defaults";
          public static readonly string MergeBehavior = "Merge Behavior";

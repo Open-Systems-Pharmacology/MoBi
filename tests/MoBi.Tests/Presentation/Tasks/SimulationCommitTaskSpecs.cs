@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Commands;
@@ -7,6 +10,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Helper;
 using MoBi.Core.Services;
 using MoBi.HelpersForTests;
+using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -14,6 +18,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Presenters;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -284,6 +289,120 @@ namespace MoBi.Presentation.Tasks
       {
          _moduleConfiguration.SelectedInitialConditions.ShouldNotBeNull();
          _moduleConfiguration.SelectedParameterValues.ShouldNotBeNull();
+      }
+   }
+
+   public class When_committing_changes_to_a_simulation_with_multiple_module_configurations : concern_for_SimulationCommitTask
+   {
+      protected Module _lastModule;
+      protected ModuleConfiguration _lastModuleConfiguration;
+      protected Module _projectModule;
+      protected IModalPresenter _modalPresenter;
+      protected ISelectSinglePresenter<Module> _selectModulePresenter;
+
+      protected override void Context()
+      {
+         base.Context();
+         _lastModule = new Module();
+         _lastModuleConfiguration = new ModuleConfiguration(_lastModule);
+         _simulationWithChanges.Configuration.AddModuleConfiguration(_lastModuleConfiguration);
+
+         _projectModule = new Module();
+         A.CallTo(() => _templateResolverTask.TemplateModuleFor(_module)).Returns(_projectModule);
+
+         var parameterPathCache = new PathCacheForSpecs<Parameter>
+         {
+            new Parameter { Name = "name" }
+         };
+
+         var moleculeAmount = new MoleculeAmount { Name = "name" };
+         new Container().WithName("top").Add(moleculeAmount);
+         var initialConditionsPathCache = new PathCacheForSpecs<MoleculeAmount>
+         {
+            moleculeAmount
+         };
+
+         A.CallTo(() => _entitiesInSimulationRetriever.EntitiesFrom<Parameter>(_simulationWithChanges)).Returns(parameterPathCache);
+         A.CallTo(() => _entitiesInSimulationRetriever.EntitiesFrom<DistributedParameter>(_simulationWithChanges)).Returns(new PathCacheForSpecs<DistributedParameter>());
+         A.CallTo(() => _entitiesInSimulationRetriever.EntitiesFrom<MoleculeAmount>(_simulationWithChanges)).Returns(initialConditionsPathCache);
+
+         _modalPresenter = A.Fake<IModalPresenter>();
+         _selectModulePresenter = A.Fake<ISelectSinglePresenter<Module>>();
+         A.CallTo(() => _interactionTaskContext.ApplicationController.Start<IModalPresenter>()).Returns(_modalPresenter);
+         A.CallTo(() => _interactionTaskContext.ApplicationController.Start<ISelectSinglePresenter<Module>>()).Returns(_selectModulePresenter);
+      }
+   }
+
+   public class When_the_user_selects_the_module_to_commit_to : When_committing_changes_to_a_simulation_with_multiple_module_configurations
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _simulationWithChanges.AddOriginalQuantityValue(new OriginalQuantityValue { Path = new ObjectPath("name"), Value = 1.0 });
+         _simulationWithChanges.AddOriginalQuantityValue(new OriginalQuantityValue { Path = new ObjectPath("top", "name"), Value = 1.0 });
+         A.CallTo(() => _modalPresenter.Show(A<Size?>._)).Returns(true);
+         A.CallTo(() => _selectModulePresenter.Selection).Returns(_module);
+      }
+
+      protected override void Because()
+      {
+         sut.CommitSimulationChanges(_simulationWithChanges);
+      }
+
+      [Observation]
+      public void the_modules_of_the_simulation_are_offered_for_selection()
+      {
+         A.CallTo(() => _selectModulePresenter.InitializeWith(A<IEnumerable<Module>>._, A<Func<Module, IComparable>>._)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void new_building_blocks_are_created_in_the_selected_module()
+      {
+         _module.InitialConditionsCollection.Count.ShouldBeEqualTo(1);
+         _module.ParameterValuesCollection.Count.ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void new_building_blocks_are_selected_in_the_selected_module_configuration()
+      {
+         _moduleConfiguration.SelectedInitialConditions.ShouldNotBeNull();
+         _moduleConfiguration.SelectedParameterValues.ShouldNotBeNull();
+      }
+
+      [Observation]
+      public void the_last_module_configuration_is_not_modified()
+      {
+         _lastModule.BuildingBlocks.Count().ShouldBeEqualTo(0);
+         _lastModuleConfiguration.SelectedInitialConditions.ShouldBeNull();
+         _lastModuleConfiguration.SelectedParameterValues.ShouldBeNull();
+      }
+   }
+
+   public class When_the_user_cancels_the_module_selection : When_committing_changes_to_a_simulation_with_multiple_module_configurations
+   {
+      private IMoBiCommand _command;
+
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _modalPresenter.Show(A<Size?>._)).Returns(false);
+      }
+
+      protected override void Because()
+      {
+         _command = sut.CommitSimulationChanges(_simulationWithChanges);
+      }
+
+      [Observation]
+      public void no_command_is_returned()
+      {
+         _command.ShouldBeNull();
+      }
+
+      [Observation]
+      public void the_user_is_not_asked_to_confirm_the_commit()
+      {
+         A.CallTo(() => _interactionTaskContext.DialogCreator.MessageBoxYesNo(A<string>._, A<ViewResult>._)).MustNotHaveHappened();
       }
    }
 }

@@ -6,12 +6,14 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Extensions;
 using MoBi.Core.Services;
+using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
 using static MoBi.Assets.AppConstants.Commands;
 
@@ -20,10 +22,10 @@ namespace MoBi.Presentation.Tasks
    public interface ISimulationCommitTask
    {
       /// <summary>
-      ///    Commits <paramref name="simulationWithChanges" /> changes to the last module in the simulation configuration
-      ///    by creating or updating it's initial conditions and parameter values building blocks
-      ///    The last module has to be used because if you re-create the simulation from the same modules
-      ///    this is the only way you will get the same simulation
+      ///    Commits <paramref name="simulationWithChanges" /> changes to a module of the simulation configuration
+      ///    by creating or updating it's initial conditions and parameter values building blocks.
+      ///    When the simulation is configured with multiple modules, the user selects the module to commit to,
+      ///    the last module being the default
       /// </summary>
       /// <returns>An executed command</returns>
       IMoBiCommand CommitSimulationChanges(IMoBiSimulation simulationWithChanges);
@@ -66,29 +68,31 @@ namespace MoBi.Presentation.Tasks
          changesFrom<Parameter>(simulationWithChanges).Each(x => parameterChanges.Add(x));
          changesFrom<DistributedParameter>(simulationWithChanges).Each(x => parameterChanges.Add(x));
 
-         var message = CommitingChangesToModulesMessage(simulationWithChanges.Configuration.ModuleConfigurations.Last(), moleculeChanges.Any(), parameterChanges.Any());
+         var moduleConfiguration = selectModuleConfigurationFrom(simulationWithChanges);
+         if (moduleConfiguration == null)
+            return null;
+
+         var message = CommitingChangesToModulesMessage(moduleConfiguration, moleculeChanges.Any(), parameterChanges.Any());
 
          if (_interactionTaskContext.DialogCreator.MessageBoxYesNo(message) != ViewResult.Yes)
             return null;
 
-         var lastModuleConfiguration = simulationWithChanges.Configuration.ModuleConfigurations.Last();
-
          var macroCommand = new MoBiMacroCommand
          {
             CommandType = CommitCommand,
-            Description = CommitCommandDescription(simulationWithChanges, lastModuleConfiguration.Module),
+            Description = CommitCommandDescription(simulationWithChanges, moduleConfiguration.Module),
             ObjectType = _objectTypeResolver.TypeFor<Module>()
          };
 
-         if (lastModuleConfiguration.SelectedInitialConditions == null)
-            macroCommand.AddRange(addNewInitialConditionsFromSimulationChanges(simulationWithChanges, lastModuleConfiguration, moleculeChanges));
+         if (moduleConfiguration.SelectedInitialConditions == null)
+            macroCommand.AddRange(addNewInitialConditionsFromSimulationChanges(simulationWithChanges, moduleConfiguration, moleculeChanges));
          else
-            macroCommand.AddRange(updateInitialConditionsFromSimulationChanges(lastModuleConfiguration, moleculeChanges, simulationWithChanges));
+            macroCommand.AddRange(updateInitialConditionsFromSimulationChanges(moduleConfiguration, moleculeChanges, simulationWithChanges));
 
-         if (lastModuleConfiguration.SelectedParameterValues == null)
-            macroCommand.AddRange(addNewParameterValuesFromSimulationChanges(simulationWithChanges, lastModuleConfiguration, parameterChanges));
+         if (moduleConfiguration.SelectedParameterValues == null)
+            macroCommand.AddRange(addNewParameterValuesFromSimulationChanges(simulationWithChanges, moduleConfiguration, parameterChanges));
          else
-            macroCommand.AddRange(updateParameterValuesFromSimulationChanges(lastModuleConfiguration, parameterChanges, simulationWithChanges));
+            macroCommand.AddRange(updateParameterValuesFromSimulationChanges(moduleConfiguration, parameterChanges, simulationWithChanges));
 
          macroCommand.Add(new ClearOriginalQuantitiesTrackerCommand(simulationWithChanges));
 
@@ -101,6 +105,33 @@ namespace MoBi.Presentation.Tasks
       private void showErrorForUntraceableChanges(IMoBiSimulation simulationWithChanges)
       {
          _interactionTaskContext.DialogCreator.MessageBoxError(AppConstants.Captions.SimulationHasChangesThatCannotBeCommitted(simulationWithChanges.Name));
+      }
+
+      /// <summary>
+      ///    Returns the module configuration where the changes will be committed. When the simulation is configured
+      ///    with multiple modules, the user selects the module, the last module being the default.
+      ///    Returns null if the user cancels the selection
+      /// </summary>
+      private ModuleConfiguration selectModuleConfigurationFrom(IMoBiSimulation simulation)
+      {
+         var moduleConfigurations = simulation.Configuration.ModuleConfigurations;
+         if (moduleConfigurations.Count == 1)
+            return moduleConfigurations.Last();
+
+         var lastModule = moduleConfigurations.Last().Module;
+         using (var modal = _interactionTaskContext.ApplicationController.Start<IModalPresenter>())
+         {
+            var presenter = _interactionTaskContext.ApplicationController.Start<ISelectSinglePresenter<Module>>();
+            presenter.SetDescription(AppConstants.Captions.SelectTheModuleWhereChangesWillBeCommitted);
+            modal.Text = AppConstants.Captions.SelectModule;
+            modal.Encapsulate(presenter);
+            presenter.InitializeWith(moduleConfigurations.Select(x => x.Module), x => !Equals(x, lastModule));
+
+            if (!modal.Show(presenter.ModalSize))
+               return null;
+
+            return moduleConfigurations.First(x => Equals(x.Module, presenter.Selection));
+         }
       }
 
       /// <summary>
@@ -144,7 +175,7 @@ namespace MoBi.Presentation.Tasks
          var commands = new List<IMoBiCommand>
          {
             new AddBuildingBlockToModuleCommand<ParameterValuesBuildingBlock>(templateBuildingBlock, templateModule),
-            new AddSelectedBuildingBlockToLastModuleConfigurationCommand<ParameterValuesBuildingBlock>(simulationBuildingBlock, simulation).AsHidden()
+            new AddSelectedBuildingBlockToModuleConfigurationCommand<ParameterValuesBuildingBlock>(simulationBuildingBlock, moduleConfiguration, simulation).AsHidden()
          };
 
          commands.AddRange(parameterChanges.Select(x => synchronizeParameterValueCommand(x.quantity, x.quantityPath, templateBuildingBlock, simulation).AsHidden()));
@@ -168,7 +199,7 @@ namespace MoBi.Presentation.Tasks
          var commands = new List<IMoBiCommand>
          {
             new AddBuildingBlockToModuleCommand<InitialConditionsBuildingBlock>(templateBuildingBlock, templateModule),
-            new AddSelectedBuildingBlockToLastModuleConfigurationCommand<InitialConditionsBuildingBlock>(simulationBuildingBlock, simulation).AsHidden()
+            new AddSelectedBuildingBlockToModuleConfigurationCommand<InitialConditionsBuildingBlock>(simulationBuildingBlock, moduleConfiguration, simulation).AsHidden()
          };
 
          commands.AddRange(moleculeChanges.Select(x => synchronizeInitialConditionCommand(x.quantity, x.quantityPath, templateBuildingBlock, simulation).AsHidden()));
