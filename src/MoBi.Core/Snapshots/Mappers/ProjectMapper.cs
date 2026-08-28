@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MoBi.Assets;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Extensions;
 using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
 using Newtonsoft.Json;
@@ -146,7 +147,7 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
                _logger.AddInfo(AppConstants.Captions.SimulationsLoadedMessage(snapshot.Name, loadedCount, snapshots.Length), projectSnapshot.Name);
                return true;
             }
-            catch (Exception e) when (!isOutOfMemory(e))
+            catch (Exception e) when (!e.IsOutOfMemory())
             {
                _logger.AddException(e, projectSnapshot.Name);
                _logger.AddError(AppConstants.Exceptions.CannotLoadSimulation(snapshot.Name), projectSnapshot.Name);
@@ -188,22 +189,26 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       var parameterIdentifications = await AllParameterIdentificationsFrom(projectSnapshot.ParameterIdentifications, snapshotContext);
       parameterIdentifications?.Each(pi => AddParameterIdentificationToProject(project, pi));
 
+      var runsAborted = false;
       if (simulationContext.Run && project.Simulations.Any())
       {
          try
          {
             await runParallelSimulations(project);
          }
-         catch (Exception e) when (isOutOfMemory(e))
+         catch (Exception e) when (e.IsOutOfMemory())
          {
             //running the simulations is optional, reloading the project is not: keep the loaded project
+            runsAborted = true;
             _logger.AddException(e, project.Name);
             _logger.AddError(AppConstants.Exceptions.SimulationRunsAbortedAfterOutOfMemory, project.Name);
          }
       }
 
-      //map analyses after the run so that simulation result columns are available to resolve the curves
-      simulationsWithSnapshots.Each(x => _simulationMapper.MapAnalysesToSimulation(x.simulation, x.snapshot, simulationContext));
+      //map analyses after the run so that simulation result columns are available to resolve the curves;
+      //after an aborted run phase the analyses are mapped as in a no-run load: there are no results to read
+      var analysesContext = runsAborted ? new SimulationContext(false, snapshotContext) : simulationContext;
+      simulationsWithSnapshots.Each(x => _simulationMapper.MapAnalysesToSimulation(x.simulation, x.snapshot, analysesContext));
 
       await updateProjectClassifications(projectSnapshot, snapshotContext);
 
@@ -234,23 +239,6 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
    private static object base64StringToPKSimSnapshot(string base64String) => JsonConvert.DeserializeObject<object>(base64String.FromBase64String());
    private static string pkSimSnapshotToBase64String(object pkSimSnapshot) => JsonConvert.SerializeObject(pkSimSnapshot).ToBase64String();
 
-   //an out-of-memory failure must fail the load rather than degrade it silently, also when an
-   //intermediate layer wrapped it (AggregateException from a blocking wait, reflection invocation, ...)
-   private static bool isOutOfMemory(Exception e)
-   {
-      switch (e)
-      {
-         case null:
-            return false;
-         case OutOfMemoryException:
-            return true;
-         case AggregateException aggregateException:
-            return aggregateException.InnerExceptions.Any(isOutOfMemory);
-         default:
-            return isOutOfMemory(e.InnerException);
-      }
-   }
-
    private ParallelOptions parallelOptions() => new ParallelOptions
    {
       MaxDegreeOfParallelism = Math.Max(1, _userSettings.MaximumNumberOfCoresToUse)
@@ -260,6 +248,7 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
    {
       var options = parallelOptions();
       _logger.AddDebug(AppConstants.Captions.RunningSimulationsWithCoresMessage(options.MaxDegreeOfParallelism), project.Name);
+      var abortedByOutOfMemory = 0;
       await Parallel.ForEachAsync(project.Simulations, options, async (sim, ct) =>
       {
          try
@@ -268,9 +257,16 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
          }
          catch (OperationCanceledException)
          {
-            //cancelled because another run failed hard; not a failure of this simulation
+            //only the cancellations that follow an out-of-memory abort are collateral and stay quiet
+            if (Volatile.Read(ref abortedByOutOfMemory) == 0)
+               _logger.AddInfo(AppConstants.Captions.SimulationRunCancelledMessage(sim.Name), project.Name);
          }
-         catch (Exception ex) when (!isOutOfMemory(ex))
+         catch (Exception ex) when (ex.IsOutOfMemory())
+         {
+            Interlocked.Exchange(ref abortedByOutOfMemory, 1);
+            throw;
+         }
+         catch (Exception ex)
          {
             _logger.AddException(ex);
          }

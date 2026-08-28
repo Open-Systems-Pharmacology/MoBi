@@ -4,7 +4,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using FakeItEasy;
 using Microsoft.Extensions.Logging;
+using MoBi.Assets;
 using MoBi.Core;
+using MoBi.Core.Extensions;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Serialization.Xml.Services;
@@ -47,7 +49,7 @@ namespace MoBi.IntegrationTests.Snapshots
       protected IPKSimStarter _pkSimStarter;
       private ISimulationSettingsFactory _simulationSettingsFactory;
       protected SimulationMapper _simulationMapper;
-      private ICoreSimulationRunner _coreSimulationRunner;
+      protected ICoreSimulationRunner _coreSimulationRunner;
       protected ICoreUserSettings _coreUserSettings;
       protected IParameterValueUpdateManager _parameterValueUpdateManager;
       protected IndividualBuildingBlock _snapshotIndividualBuildingBlock;
@@ -329,6 +331,7 @@ namespace MoBi.IntegrationTests.Snapshots
    internal class When_mapping_a_snapshot_where_a_simulation_runs_out_of_memory : concern_for_ProjectMapper
    {
       private SnapshotProject _snapshot;
+      private Exception _failure;
 
       protected override void Context()
       {
@@ -348,11 +351,104 @@ namespace MoBi.IntegrationTests.Snapshots
             .ReturnsLazily(() => Task.FromException<MoBiSimulation>(new AggregateException(new OutOfMemoryException())));
       }
 
-      [Observation]
-      public void should_fail_the_load()
+      protected override void Because()
       {
-         The.Action(() => sut.MapToModel(_snapshot, new ProjectContext(new MoBiProject(), runSimulations: false)).GetAwaiter().GetResult())
-            .ShouldThrowAn<AggregateException>();
+         try
+         {
+            sut.MapToModel(_snapshot, new ProjectContext(new MoBiProject(), runSimulations: false)).GetAwaiter().GetResult();
+         }
+         catch (Exception e)
+         {
+            _failure = e;
+         }
+      }
+
+      [Observation]
+      public void should_fail_the_load_with_the_out_of_memory_in_the_exception_chain()
+      {
+         _failure.ShouldBeAnInstanceOf<AggregateException>();
+         _failure.IsOutOfMemory().ShouldBeTrue();
+      }
+
+      //no silent degradation: an out-of-memory failure must not be reported as a per-simulation load error
+      [Observation]
+      public void should_not_log_the_out_of_memory_as_a_simulation_load_error()
+      {
+         A.CallTo(() => _ospSuiteLogger.AddToLog(AppConstants.Exceptions.CannotLoadSimulation("simulation-2"), A<LogLevel>._, A<string>._)).MustNotHaveHappened();
+      }
+   }
+
+   internal class When_mapping_a_snapshot_where_a_simulation_run_runs_out_of_memory : concern_for_ProjectMapper
+   {
+      private SnapshotProject _snapshot;
+      private MoBiProject _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _coreUserSettings.MaximumNumberOfCoresToUse).Returns(1);
+         var module = _project.Modules.First(x => !x.IsPKSimModule);
+         AddSimulation("simulation-2", module);
+         _snapshot = sut.MapToSnapshot(_project).Result;
+         //the parameter identification references the real 'simulation' and cannot map against the bare stub below
+         _snapshot.ParameterIdentifications = null;
+
+         _simulationMapper = A.Fake<SimulationMapper>();
+         CreateSut();
+
+         A.CallTo(() => _simulationMapper.MapToModel(_snapshot.Simulations[0], A<SimulationContext>._)).Returns(new MoBiSimulation().WithId("S1").WithName("simulation"));
+         A.CallTo(() => _simulationMapper.MapToModel(_snapshot.Simulations[1], A<SimulationContext>._)).Returns(new MoBiSimulation().WithId("S2").WithName("simulation-2"));
+
+         A.CallTo(() => _coreSimulationRunner.RunSimulationAsync(A<IMoBiSimulation>.That.Matches(x => x.Name == "simulation"), A<bool>._)).Throws<OutOfMemoryException>();
+      }
+
+      protected override void Because()
+      {
+         _result = sut.MapToModel(_snapshot, new ProjectContext(new MoBiProject(), runSimulations: true)).Result;
+      }
+
+      //running the simulations is optional, reloading the project is not
+      [Observation]
+      public void should_keep_the_loaded_project_and_report_the_aborted_runs()
+      {
+         _result.Simulations.AllNames().ShouldOnlyContainInOrder("simulation", "simulation-2");
+         A.CallTo(() => _ospSuiteLogger.AddToLog(AppConstants.Exceptions.SimulationRunsAbortedAfterOutOfMemory, LogLevel.Error, A<string>._)).MustHaveHappened();
+      }
+   }
+
+   internal class When_mapping_a_snapshot_where_a_simulation_run_is_cancelled : concern_for_ProjectMapper
+   {
+      private SnapshotProject _snapshot;
+
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _coreUserSettings.MaximumNumberOfCoresToUse).Returns(1);
+         var module = _project.Modules.First(x => !x.IsPKSimModule);
+         AddSimulation("simulation-2", module);
+         _snapshot = sut.MapToSnapshot(_project).Result;
+         //the parameter identification references the real 'simulation' and cannot map against the bare stub below
+         _snapshot.ParameterIdentifications = null;
+
+         _simulationMapper = A.Fake<SimulationMapper>();
+         CreateSut();
+
+         A.CallTo(() => _simulationMapper.MapToModel(_snapshot.Simulations[0], A<SimulationContext>._)).Returns(new MoBiSimulation().WithId("S1").WithName("simulation"));
+         A.CallTo(() => _simulationMapper.MapToModel(_snapshot.Simulations[1], A<SimulationContext>._)).Returns(new MoBiSimulation().WithId("S2").WithName("simulation-2"));
+
+         A.CallTo(() => _coreSimulationRunner.RunSimulationAsync(A<IMoBiSimulation>.That.Matches(x => x.Name == "simulation"), A<bool>._)).Throws<OperationCanceledException>();
+      }
+
+      protected override void Because()
+      {
+         sut.MapToModel(_snapshot, new ProjectContext(new MoBiProject(), runSimulations: true)).GetAwaiter().GetResult();
+      }
+
+      //a cancelled run is not silent: only the collateral cancellations after an out-of-memory abort are
+      [Observation]
+      public void should_log_the_cancelled_run()
+      {
+         A.CallTo(() => _ospSuiteLogger.AddToLog(AppConstants.Captions.SimulationRunCancelledMessage("simulation"), LogLevel.Information, A<string>._)).MustHaveHappened();
       }
    }
 

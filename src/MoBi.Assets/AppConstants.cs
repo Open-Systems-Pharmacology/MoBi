@@ -1511,6 +1511,7 @@ namespace MoBi.Assets
          public static string ConstructingSimulationMessage(string simulationName) => $"Constructing simulation '{simulationName}'...";
          public static string ConstructingSimulationsWithCoresMessage(int numberOfCores) => $"Constructing simulations with up to {numberOfCores} core(s)";
          public static string RunningSimulationsWithCoresMessage(int numberOfCores) => $"Running simulations with up to {numberOfCores} core(s)";
+         public static string SimulationRunCancelledMessage(string simulationName) => $"Run of simulation '{simulationName}' was cancelled";
          public static string OnlySomeSimulationsLoadedMessage(int loadedCount, int simulationCount) => $"Only {loadedCount}/{simulationCount} {"simulation".PluralizeIf(simulationCount)} loaded";
          public static readonly string AddParameter = "Add Parameter ";
          public static readonly string AddMolecule = "Add Molecule";
