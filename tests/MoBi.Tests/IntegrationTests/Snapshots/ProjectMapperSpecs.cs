@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using FakeItEasy;
 using Microsoft.Extensions.Logging;
 using MoBi.Core;
@@ -44,7 +46,7 @@ namespace MoBi.IntegrationTests.Snapshots
       private ParameterIdentificationMapper _parameterIdentificationMapper;
       protected IPKSimStarter _pkSimStarter;
       private ISimulationSettingsFactory _simulationSettingsFactory;
-      private SimulationMapper _simulationMapper;
+      protected SimulationMapper _simulationMapper;
       private ICoreSimulationRunner _coreSimulationRunner;
       protected ICoreUserSettings _coreUserSettings;
       protected IParameterValueUpdateManager _parameterValueUpdateManager;
@@ -70,7 +72,7 @@ namespace MoBi.IntegrationTests.Snapshots
          A.CallTo(() => _context.Resolve<ISnapshotMapper>()).ReturnsLazily(x => IoC.Resolve<ISnapshotMapper>());
 
          _project = new MoBiProject();
-         sut = new ProjectMapper(_xmlSerializationService, _creationMetaDataFactory, _classificationSnapshotTask, _context, _ospSuiteLogger, _parameterIdentificationMapper, _simulationMapper, _pkSimStarter, _simulationSettingsFactory, _coreSimulationRunner, _coreUserSettings, _parameterValueUpdateManager);
+         CreateSut();
 
          var module = new Module().WithId("module").WithName("module");
          _project.AddModule(module);
@@ -146,6 +148,11 @@ namespace MoBi.IntegrationTests.Snapshots
          _project.AddClassifiable(new ClassifiableParameterIdentification { Subject = parameterIdentification, Parent = _parameterIdentificationClassification });
       }
 
+      protected void CreateSut()
+      {
+         sut = new ProjectMapper(_xmlSerializationService, _creationMetaDataFactory, _classificationSnapshotTask, _context, _ospSuiteLogger, _parameterIdentificationMapper, _simulationMapper, _pkSimStarter, _simulationSettingsFactory, _coreSimulationRunner, _coreUserSettings, _parameterValueUpdateManager);
+      }
+
       protected void AddSimulation(string name, Module module)
       {
          var simulation = new MoBiSimulation().WithId(name).WithName(name);
@@ -192,6 +199,83 @@ namespace MoBi.IntegrationTests.Snapshots
       public void should_warn_that_not_all_simulations_were_loaded()
       {
          A.CallTo(() => _ospSuiteLogger.AddToLog(A<string>.That.Contains("2/3"), LogLevel.Warning, A<string>._)).MustHaveHappened();
+      }
+   }
+
+   internal class When_mapping_a_snapshot_where_leading_simulations_cannot_be_loaded : concern_for_ProjectMapper
+   {
+      private SnapshotProject _snapshot;
+      private MoBiProject _result;
+      private ManualResetEventSlim _secondMappingStarted;
+      private ManualResetEventSlim _releaseSecondMapping;
+      private ManualResetEventSlim _thirdMappingStarted;
+      private bool _thirdStartedWhileSecondWasRunning;
+
+      protected override void Context()
+      {
+         base.Context();
+         _secondMappingStarted = new ManualResetEventSlim();
+         _releaseSecondMapping = new ManualResetEventSlim();
+         _thirdMappingStarted = new ManualResetEventSlim();
+
+         //cores are available: a fan-out that started before the first success would map the third
+         //simulation while the second is still running
+         A.CallTo(() => _coreUserSettings.MaximumNumberOfCoresToUse).Returns(4);
+         var module = _project.Modules.First(x => !x.IsPKSimModule);
+         AddSimulation("simulation-2", module);
+         AddSimulation("simulation-3", module);
+         _snapshot = sut.MapToSnapshot(_project).Result;
+
+         //a faked simulation mapper makes the mapping timings controllable
+         _simulationMapper = A.Fake<SimulationMapper>();
+         CreateSut();
+
+         MoBiSimulation failWhenReleased()
+         {
+            _secondMappingStarted.Set();
+            _releaseSecondMapping.Wait(TimeSpan.FromSeconds(5));
+            throw new Exception();
+         }
+
+         A.CallTo(() => _simulationMapper.MapToModel(_snapshot.Simulations[0], A<SimulationContext>._)).Throws<Exception>();
+         A.CallTo(() => _simulationMapper.MapToModel(_snapshot.Simulations[1], A<SimulationContext>._)).ReturnsLazily(() => Task.Run(failWhenReleased));
+         A.CallTo(() => _simulationMapper.MapToModel(_snapshot.Simulations[2], A<SimulationContext>._)).ReturnsLazily(() =>
+         {
+            _thirdMappingStarted.Set();
+            return Task.FromResult(new MoBiSimulation().WithId("S3").WithName("simulation-3"));
+         });
+      }
+
+      protected override void Because()
+      {
+         var mapping = sut.MapToModel(_snapshot, new ProjectContext(new MoBiProject(), runSimulations: false));
+         _secondMappingStarted.Wait(TimeSpan.FromSeconds(5)).ShouldBeTrue();
+
+         //no other mapping may begin while the second one - not yet successful - is still running
+         _thirdStartedWhileSecondWasRunning = _thirdMappingStarted.Wait(TimeSpan.FromMilliseconds(500));
+
+         _releaseSecondMapping.Set();
+         _result = mapping.Result;
+      }
+
+      public override void Cleanup()
+      {
+         base.Cleanup();
+         _secondMappingStarted.Dispose();
+         _releaseSecondMapping.Dispose();
+         _thirdMappingStarted.Dispose();
+      }
+
+      [Observation]
+      public void should_map_sequentially_until_a_simulation_succeeds()
+      {
+         _thirdStartedWhileSecondWasRunning.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_add_the_simulation_that_could_be_loaded()
+      {
+         _result.Simulations.AllNames().ShouldOnlyContainInOrder("simulation-3");
       }
    }
 

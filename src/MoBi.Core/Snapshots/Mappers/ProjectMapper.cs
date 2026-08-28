@@ -129,19 +129,22 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
 
          _logger.AddInfo(AppConstants.Captions.LoadingSimulationsMessage(snapshots.Length), projectSnapshot.Name);
 
-         async Task mapSimulationAt(int index)
+         async Task<bool> mapSimulationAt(int index)
          {
             var snapshot = snapshots[index];
             try
             {
+               _logger.AddDebug($"Constructing simulation '{snapshot.Name}'...", projectSnapshot.Name);
                mappedSimulations[index] = await _simulationMapper.MapToModel(snapshot, simulationContext);
                var loadedCount = Interlocked.Increment(ref numberOfSimulationsLoaded);
                _logger.AddInfo(AppConstants.Captions.SimulationsLoadedMessage(snapshot.Name, loadedCount, snapshots.Length), projectSnapshot.Name);
+               return mappedSimulations[index] != null;
             }
-            catch (Exception e)
+            catch (Exception e) when (e is not OutOfMemoryException)
             {
                _logger.AddException(e, projectSnapshot.Name);
                _logger.AddError(AppConstants.Exceptions.CannotLoadSimulation(snapshot.Name), projectSnapshot.Name);
+               return false;
             }
          }
 
@@ -150,9 +153,9 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
          var warmupCount = 0;
          while (warmupCount < snapshots.Length)
          {
-            await mapSimulationAt(warmupCount);
+            var success = await mapSimulationAt(warmupCount);
             warmupCount++;
-            if (mappedSimulations[warmupCount - 1] != null)
+            if (success)
                break;
          }
 
@@ -231,7 +234,7 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
          {
             await _simulationRunner.RunSimulationAsync(sim);
          }
-         catch (Exception ex)
+         catch (Exception ex) when (ex is not OutOfMemoryException)
          {
             _logger.AddException(ex);
          }
