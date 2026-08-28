@@ -73,6 +73,41 @@ namespace MoBi.Core.Service
       }
    }
 
+   class When_creating_several_simulations : concern_for_SimulationFactory
+   {
+      private IMoBiContext _fakeContext;
+      private SimulationConfiguration _simulationConfiguration;
+
+      protected override void Context()
+      {
+         base.Context();
+         _fakeContext = A.Fake<IMoBiContext>();
+         //each call must get its own clone manager: it carries per-operation state (FormulaCache)
+         A.CallTo(() => _fakeContext.Resolve<ICloneManagerForBuildingBlock>()).ReturnsLazily(() => IoC.Resolve<ICloneManagerForBuildingBlock>());
+         sut = new SimulationFactory(_idGenerator,
+            _metaDataFactory,
+            _parameterIdUpdater,
+            IoC.Resolve<IDiagramManagerFactory>(),
+            IoC.Resolve<ISimulationConfigurationFactory>(),
+            IoC.Resolve<IDimensionValidator>(),
+            IoC.Resolve<IModelConstructor>(),
+            _fakeContext);
+         _simulationConfiguration = DomainFactoryForSpecs.CreateDefaultConfiguration();
+      }
+
+      protected override void Because()
+      {
+         sut.CreateSimulationAndValidate(_simulationConfiguration, "one");
+         sut.CreateSimulationAndValidate(_simulationConfiguration, "two");
+      }
+
+      [Observation]
+      public void should_resolve_a_fresh_clone_manager_for_each_simulation()
+      {
+         A.CallTo(() => _fakeContext.Resolve<ICloneManagerForBuildingBlock>()).MustHaveHappenedTwiceExactly();
+      }
+   }
+
    class When_creating_an_empty_simulation : concern_for_SimulationFactory
    {
       private IMoBiSimulation _result;

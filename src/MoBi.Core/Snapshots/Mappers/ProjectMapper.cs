@@ -129,31 +129,47 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
 
          _logger.AddInfo(AppConstants.Captions.LoadingSimulationsMessage(snapshots.Length), projectSnapshot.Name);
 
-         async Task mapSimulationAt(int index)
+         async Task<bool> mapSimulationAt(int index)
          {
             var snapshot = snapshots[index];
             try
             {
-               mappedSimulations[index] = await _simulationMapper.MapToModel(snapshot, simulationContext);
+               _logger.AddDebug(AppConstants.Captions.ConstructingSimulationMessage(snapshot.Name), projectSnapshot.Name);
+               var simulation = await _simulationMapper.MapToModel(snapshot, simulationContext);
+               mappedSimulations[index] = simulation;
+
+               //a null mapping is skipped when the project is filled and must not count as loaded
+               if (simulation == null)
+                  return false;
+
                var loadedCount = Interlocked.Increment(ref numberOfSimulationsLoaded);
                _logger.AddInfo(AppConstants.Captions.SimulationsLoadedMessage(snapshot.Name, loadedCount, snapshots.Length), projectSnapshot.Name);
+               return true;
             }
-            catch (Exception e)
+            catch (Exception e) when (!e.IsOutOfMemory())
             {
                _logger.AddException(e, projectSnapshot.Name);
                _logger.AddError(AppConstants.Exceptions.CannotLoadSimulation(snapshot.Name), projectSnapshot.Name);
+               return false;
             }
          }
 
-         //the first simulation is mapped on its own so that lazily initialized services are warmed up
-         //before the remaining simulations are mapped in parallel
-         await mapSimulationAt(0);
+         //simulations are mapped sequentially until one succeeds, so that lazily initialized services are
+         //warmed up before the remaining simulations are mapped in parallel
+         var warmupCount = 0;
+         while (warmupCount < snapshots.Length)
+         {
+            var success = await mapSimulationAt(warmupCount);
+            warmupCount++;
+            if (success)
+               break;
+         }
 
-         if (snapshots.Length > 1)
+         if (snapshots.Length > warmupCount)
          {
             var options = parallelOptions();
-            _logger.AddDebug($"Constructing simulations with up to {options.MaxDegreeOfParallelism} core(s)", projectSnapshot.Name);
-            await Parallel.ForEachAsync(Enumerable.Range(1, snapshots.Length - 1), options, (index, _) => new ValueTask(mapSimulationAt(index)));
+            _logger.AddDebug(AppConstants.Captions.ConstructingSimulationsWithCoresMessage(options.MaxDegreeOfParallelism), projectSnapshot.Name);
+            await Parallel.ForEachAsync(Enumerable.Range(warmupCount, snapshots.Length - warmupCount), options, (index, _) => new ValueTask(mapSimulationAt(index)));
          }
 
          for (var i = 0; i < snapshots.Length; i++)
@@ -172,13 +188,26 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       var parameterIdentifications = await AllParameterIdentificationsFrom(projectSnapshot.ParameterIdentifications, snapshotContext);
       parameterIdentifications?.Each(pi => AddParameterIdentificationToProject(project, pi));
 
+      var runsAborted = false;
       if (simulationContext.Run && project.Simulations.Any())
       {
-         await runParallelSimulations(project);
+         try
+         {
+            await runParallelSimulations(project);
+         }
+         catch (Exception e) when (e.IsOutOfMemory())
+         {
+            //running the simulations is optional, reloading the project is not: keep the loaded project
+            runsAborted = true;
+            _logger.AddException(e, project.Name);
+            _logger.AddError(AppConstants.Exceptions.SimulationRunsAbortedAfterOutOfMemory, project.Name);
+         }
       }
 
-      //map analyses after the run so that simulation result columns are available to resolve the curves
-      simulationsWithSnapshots.Each(x => _simulationMapper.MapAnalysesToSimulation(x.simulation, x.snapshot, simulationContext));
+      //map analyses after the run so that simulation result columns are available to resolve the curves;
+      //after an aborted run phase the analyses are mapped as in a no-run load: there are no results to read
+      var analysesContext = runsAborted ? new SimulationContext(false, snapshotContext) : simulationContext;
+      simulationsWithSnapshots.Each(x => _simulationMapper.MapAnalysesToSimulation(x.simulation, x.snapshot, analysesContext));
 
       await updateProjectClassifications(projectSnapshot, snapshotContext);
 
@@ -217,12 +246,28 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
    private async Task runParallelSimulations(ModelProject project)
    {
       var options = parallelOptions();
-      _logger.AddDebug($"Running simulations with up to {options.MaxDegreeOfParallelism} core(s)", project.Name);
+      _logger.AddDebug(AppConstants.Captions.RunningSimulationsWithCoresMessage(options.MaxDegreeOfParallelism), project.Name);
+      var abortedByOutOfMemory = 0;
       await Parallel.ForEachAsync(project.Simulations, options, async (sim, ct) =>
       {
          try
          {
-            await _simulationRunner.RunSimulationAsync(sim);
+            //the runner does not take a token; stop this run when another one fails hard and cancels the loop
+            using (ct.Register(() => _simulationRunner.StopSimulation(sim)))
+            {
+               await _simulationRunner.RunSimulationAsync(sim);
+            }
+         }
+         catch (OperationCanceledException)
+         {
+            //only the cancellations that follow an out-of-memory abort are collateral and stay quiet
+            if (Volatile.Read(ref abortedByOutOfMemory) == 0)
+               _logger.AddInfo(AppConstants.Captions.SimulationRunCancelledMessage(sim.Name), project.Name);
+         }
+         catch (Exception ex) when (ex.IsOutOfMemory())
+         {
+            Interlocked.Exchange(ref abortedByOutOfMemory, 1);
+            throw;
          }
          catch (Exception ex)
          {
