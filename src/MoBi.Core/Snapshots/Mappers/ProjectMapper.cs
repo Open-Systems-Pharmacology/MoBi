@@ -149,9 +149,12 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
          //before the remaining simulations are mapped in parallel
          await mapSimulationAt(0);
 
-         var options = parallelOptions();
-         _logger.AddDebug($"Constructing simulations with up to {options.MaxDegreeOfParallelism} core(s)", projectSnapshot.Name);
-         await Parallel.ForEachAsync(Enumerable.Range(1, snapshots.Length - 1), options, (index, _) => new ValueTask(mapSimulationAt(index)));
+         if (snapshots.Length > 1)
+         {
+            var options = parallelOptions();
+            _logger.AddDebug($"Constructing simulations with up to {options.MaxDegreeOfParallelism} core(s)", projectSnapshot.Name);
+            await Parallel.ForEachAsync(Enumerable.Range(1, snapshots.Length - 1), options, (index, _) => new ValueTask(mapSimulationAt(index)));
+         }
 
          for (var i = 0; i < snapshots.Length; i++)
          {

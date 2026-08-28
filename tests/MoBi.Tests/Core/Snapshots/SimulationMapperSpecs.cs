@@ -77,16 +77,17 @@ namespace MoBi.Core.Snapshots
       {
          _result = await sut.MapToModel(_snapshot, _context);
       }
-   }
 
-   public class When_mapping_a_simulation_snapshot_to_model : When_mapping_a_simulation_snapshot
-   {
+      //runs once per derived fixture, whatever the starting value of the flag
       [Observation]
       public void should_suppress_the_core_progress_while_the_model_is_constructed()
       {
          _showProgressDuringConstruction.ShouldBeEqualTo(false);
       }
+   }
 
+   public class When_mapping_a_simulation_snapshot_to_model : When_mapping_a_simulation_snapshot
+   {
       [Observation]
       public void should_restore_the_progress_flag_on_the_configuration_kept_by_the_simulation()
       {
@@ -102,12 +103,6 @@ namespace MoBi.Core.Snapshots
          //the flag is not mapped from the snapshot today: starting from false pins the restore to the
          //captured value rather than to the default
          _configuration.ShowProgress = false;
-      }
-
-      [Observation]
-      public void should_suppress_the_core_progress_while_the_model_is_constructed()
-      {
-         _showProgressDuringConstruction.ShouldBeEqualTo(false);
       }
 
       [Observation]
