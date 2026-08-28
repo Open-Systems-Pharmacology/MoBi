@@ -1,4 +1,6 @@
 ﻿using System.Threading.Tasks;
+using MoBi.Assets;
+using MoBi.Core.Exceptions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Snapshots.Mappers;
 
@@ -9,6 +11,9 @@ public class ModuleConfigurationMapper : SnapshotMapperBase<OSPSuite.Core.Domain
    public override Task<OSPSuite.Core.Domain.ModuleConfiguration> MapToModel(ModuleConfiguration snapshot, SimulationContext context)
    {
       var module = context.MoBiProject().ModuleByName(snapshot.Module);
+      if (module == null)
+         throw new MoBiException(AppConstants.Exceptions.ModuleNotFound(snapshot.Module));
+
       var configuration = new OSPSuite.Core.Domain.ModuleConfiguration(module);
 
       if (!string.IsNullOrEmpty(snapshot.SelectedInitialConditions))

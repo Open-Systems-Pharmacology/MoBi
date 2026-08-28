@@ -23,7 +23,6 @@ namespace MoBi.Core.Service
       private ISimulationConfigurationFactory _simulationConfigurationFactory;
       private IDimensionValidator _dimensionValidator;
       private IModelConstructor _modelConstructor;
-      protected ICloneManagerForBuildingBlock _cloneManager;
       private IMoBiContext _context;
 
       protected override void Context()
@@ -37,17 +36,15 @@ namespace MoBi.Core.Service
          _modelConstructor = IoC.Resolve<IModelConstructor>();
          _context = IoC.Resolve<IMoBiContext>();
          _context.NewProject();
-         
-         _cloneManager = IoC.Resolve<ICloneManagerForBuildingBlock>();
-         sut = new SimulationFactory(_idGenerator, 
-            _metaDataFactory, 
-            _parameterIdUpdater, 
+
+         sut = new SimulationFactory(_idGenerator,
+            _metaDataFactory,
+            _parameterIdUpdater,
             _diagramManagerFactory,
             _simulationConfigurationFactory,
-            _dimensionValidator, 
-            _modelConstructor, 
-            _context, 
-            _cloneManager);
+            _dimensionValidator,
+            _modelConstructor,
+            _context);
       }
    }
 

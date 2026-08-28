@@ -47,7 +47,6 @@ namespace MoBi.Core.Domain.Services
       private readonly IDimensionValidator _dimensionValidator;
       private readonly IModelConstructor _modelConstructor;
       private readonly IMoBiContext _context;
-      private readonly ICloneManagerForBuildingBlock _cloneManager;
 
       public SimulationFactory(IIdGenerator idGenerator,
          ICreationMetaDataFactory creationMetaDataFactory,
@@ -56,8 +55,7 @@ namespace MoBi.Core.Domain.Services
          ISimulationConfigurationFactory simulationConfigurationFactory,
          IDimensionValidator dimensionValidator,
          IModelConstructor modelConstructor,
-         IMoBiContext context,
-         ICloneManagerForBuildingBlock cloneManager)
+         IMoBiContext context)
       {
          _idGenerator = idGenerator;
          _creationMetaDataFactory = creationMetaDataFactory;
@@ -67,7 +65,6 @@ namespace MoBi.Core.Domain.Services
          _dimensionValidator = dimensionValidator;
          _modelConstructor = modelConstructor;
          _context = context;
-         _cloneManager = cloneManager;
       }
 
       public IMoBiSimulation CreateFrom(SimulationConfiguration simulationConfiguration, IModel model, IEnumerable<SimulationEntitySource> entitySources)
@@ -120,7 +117,8 @@ namespace MoBi.Core.Domain.Services
       public SimulationAndValidationResult CreateSimulationAndValidate(SimulationConfiguration configurationReferencingBuildingBlocks, string simulationName)
       {
          var results = CreateModelAndValidate(configurationReferencingBuildingBlocks, simulationName);
-         var clonedConfiguration = _cloneManager.Clone(configurationReferencingBuildingBlocks);
+         var cloneManager = _context.Resolve<ICloneManagerForBuildingBlock>();
+         var clonedConfiguration = cloneManager.Clone(configurationReferencingBuildingBlocks);
          var simulation = CreateFrom(clonedConfiguration, results.Model, results.SimulationBuilder.EntitySources).WithName(simulationName);
          return new SimulationAndValidationResult(simulation, results.ValidationResult);
       }

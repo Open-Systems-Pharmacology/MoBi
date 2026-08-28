@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Exceptions;
 using MoBi.Core.Snapshots.Mappers;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -60,6 +61,25 @@ namespace MoBi.Core.Snapshots
       {
          _result.SelectedInitialConditions.ShouldBeEqualTo(_project.Modules.First().InitialConditionsCollection.FindByName("ic"));
          _result.SelectedParameterValues.ShouldBeEqualTo(_project.Modules.First().ParameterValuesCollection.FindByName("pv"));
+      }
+   }
+
+   public class When_mapping_a_snapshot_referencing_a_module_not_in_the_project : concern_for_ModuleConfigurationMapper
+   {
+      private SimulationContext _context;
+      private ModuleConfiguration _snapshot;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         _context = new SimulationContext(false, new SnapshotContext(new MoBiProject(), SnapshotVersions.Current));
+         _snapshot = new ModuleConfiguration {Module = "does-not-exist"};
+      }
+
+      [Observation]
+      public void should_throw_an_exception_naming_the_missing_module()
+      {
+         The.Action(() => sut.MapToModel(_snapshot, _context).GetAwaiter().GetResult()).ShouldThrowAn<MoBiException>();
       }
    }
 

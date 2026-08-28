@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using MoBi.Assets;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Serialization.Xml.Services;
@@ -116,29 +118,55 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       var observedData = await ObservedDataFrom(projectSnapshot.ObservedData, snapshotContext);
       observedData?.Each(repository => AddObservedDataToProject(project, repository));
 
-      var simulationContext = new SimulationContext(context.RunSimulations, snapshotContext)
-      {
-         NumberOfSimulationsToLoad = projectSnapshot.Simulations?.Length ?? 0,
-         NumberOfSimulationsLoaded = 0
-      };
+      var simulationContext = new SimulationContext(context.RunSimulations, snapshotContext);
 
       var simulationsWithSnapshots = new List<(MoBiSimulation simulation, Simulation snapshot)>();
-      if (projectSnapshot.Simulations != null)
+      if (projectSnapshot.Simulations != null && projectSnapshot.Simulations.Length > 0)
       {
-         foreach (var x in projectSnapshot.Simulations)
+         var snapshots = projectSnapshot.Simulations;
+         var mappedSimulations = new MoBiSimulation[snapshots.Length];
+         var numberOfSimulationsLoaded = 0;
+
+         _logger.AddInfo(AppConstants.Captions.LoadingSimulationsMessage(snapshots.Length), projectSnapshot.Name);
+
+         async Task mapSimulationAt(int index)
          {
+            var snapshot = snapshots[index];
             try
             {
-               var simulation = await _simulationMapper.MapToModel(x, simulationContext);
-               addSimulations(project, simulation);
-               simulationsWithSnapshots.Add((simulation, x));
-               simulationContext.NumberOfSimulationsLoaded++;
+               mappedSimulations[index] = await _simulationMapper.MapToModel(snapshot, simulationContext);
+               var loadedCount = Interlocked.Increment(ref numberOfSimulationsLoaded);
+               _logger.AddInfo(AppConstants.Captions.SimulationsLoadedMessage(snapshot.Name, loadedCount, snapshots.Length), projectSnapshot.Name);
             }
             catch (Exception e)
             {
-               _logger.AddException(e);
+               _logger.AddException(e, projectSnapshot.Name);
+               _logger.AddError(AppConstants.Exceptions.CannotLoadSimulation(snapshot.Name), projectSnapshot.Name);
             }
          }
+
+         //the first simulation is mapped on its own so that lazily initialized services are warmed up
+         //before the remaining simulations are mapped in parallel
+         await mapSimulationAt(0);
+
+         if (snapshots.Length > 1)
+         {
+            var options = parallelOptions();
+            _logger.AddDebug($"Constructing simulations with up to {options.MaxDegreeOfParallelism} core(s)", projectSnapshot.Name);
+            await Parallel.ForEachAsync(Enumerable.Range(1, snapshots.Length - 1), options, (index, _) => new ValueTask(mapSimulationAt(index)));
+         }
+
+         for (var i = 0; i < snapshots.Length; i++)
+         {
+            if (mappedSimulations[i] == null)
+               continue;
+
+            addSimulations(project, mappedSimulations[i]);
+            simulationsWithSnapshots.Add((mappedSimulations[i], snapshots[i]));
+         }
+
+         if (numberOfSimulationsLoaded < snapshots.Length)
+            _logger.AddWarning(AppConstants.Captions.OnlySomeSimulationsLoadedMessage(numberOfSimulationsLoaded, snapshots.Length), projectSnapshot.Name);
       }
 
       var parameterIdentifications = await AllParameterIdentificationsFrom(projectSnapshot.ParameterIdentifications, snapshotContext);
@@ -181,13 +209,15 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
    private static object base64StringToPKSimSnapshot(string base64String) => JsonConvert.DeserializeObject<object>(base64String.FromBase64String());
    private static string pkSimSnapshotToBase64String(object pkSimSnapshot) => JsonConvert.SerializeObject(pkSimSnapshot).ToBase64String();
 
+   private ParallelOptions parallelOptions() => new ParallelOptions
+   {
+      MaxDegreeOfParallelism = Math.Max(1, _userSettings.MaximumNumberOfCoresToUse)
+   };
+
    private async Task runParallelSimulations(ModelProject project)
    {
-      var options = new ParallelOptions
-      {
-         MaxDegreeOfParallelism = Math.Max(1, _userSettings.MaximumNumberOfCoresToUse)
-      };
-
+      var options = parallelOptions();
+      _logger.AddDebug($"Running simulations with up to {options.MaxDegreeOfParallelism} core(s)", project.Name);
       await Parallel.ForEachAsync(project.Simulations, options, async (sim, ct) =>
       {
          try
