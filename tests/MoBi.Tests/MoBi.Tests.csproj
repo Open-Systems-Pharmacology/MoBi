@@ -35,6 +35,7 @@
     <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.3" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\MoBi.CLI\MoBi.CLI.csproj" />
     <ProjectReference Include="..\..\src\MoBi.CLI.Core\MoBi.CLI.Core.csproj" />
     <ProjectReference Include="..\..\src\MoBi.Core\MoBi.Core.csproj" />
     <ProjectReference Include="..\..\src\MoBi.Engine\MoBi.Engine.csproj" />

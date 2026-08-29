@@ -43,6 +43,7 @@ namespace MoBi.CLI
       private static void startCommand<TRunOptions>(CLICommand<TRunOptions> command) where TRunOptions : IProvidePKSimPath
       {
          ApplicationStartup.Start();
+         command.ApplyCoresTo(IoC.Resolve<ICoreUserSettings>());
          var runOptions = command.ToRunOptions();
 
          if (!string.IsNullOrEmpty(runOptions.PKSimPath))
