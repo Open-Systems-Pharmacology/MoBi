@@ -66,7 +66,7 @@ internal class when_creating_simulation : when_creating_from_mobi_project
 {
    protected override void Because()
    {
-      _creationResult = sut.CreateSimulationAndValidateFrom(_request);
+      _creationResult = sut.CreateSimulationsAndValidateFrom(_request).Single();
    }
 
    [Observation]
@@ -179,16 +179,6 @@ internal class when_creating_multiple_simulations_without_requests : when_creati
    }
 }
 
-internal abstract class when_creating_an_invalid_configuration : when_creating_from_mobi_project
-{
-   [Observation]
-   public void should_throw_expected_exception()
-   {
-      The.Action(() => sut.CreateSimulationAndValidateFrom(_request))
-         .ShouldThrowAn<InvalidOperationException>();
-   }
-}
-
 internal class when_creating_simulation_from_pkml_module : concern_for_SimulationTask
 {
    private SimulationCreationResult _creationResult;
@@ -206,7 +196,7 @@ internal class when_creating_simulation_from_pkml_module : concern_for_Simulatio
 
    protected override void Because()
    {
-      _creationResult = sut.CreateSimulationAndValidateFrom(_request);
+      _creationResult = sut.CreateSimulationsAndValidateFrom(_request).Single();
    }
 
    [Observation]
@@ -238,7 +228,7 @@ internal class when_creating_simulation_with_warnings_only : concern_for_Simulat
 
    protected override void Because()
    {
-      _creationResult = sut.CreateSimulationAndValidateFrom(_request);
+      _creationResult = sut.CreateSimulationsAndValidateFrom(_request).Single();
    }
 
    [Observation]
@@ -270,10 +260,11 @@ internal class when_creating_simulation_with_errors : concern_for_SimulationTask
    }
 
    [Observation]
-   public void should_throw_expected_exception()
+   public void should_return_the_errors_instead_of_a_simulation()
    {
-      The.Action(() => sut.CreateSimulationAndValidateFrom(_request))
-         .ShouldThrowAn<InvalidOperationException>();
+      var result = sut.CreateSimulationsAndValidateFrom(_request).Single();
+      result.Simulation.ShouldBeNull();
+      result.Errors.Any().ShouldBeTrue();
    }
 }
 
@@ -298,7 +289,7 @@ internal class when_creating_simulation_with_create_all_process_rate_parameters_
 
    protected override void Because()
    {
-      _creationResult = sut.CreateSimulationAndValidateFrom(_request);
+      _creationResult = sut.CreateSimulationsAndValidateFrom(_request).Single();
    }
 
    [Observation]
@@ -334,7 +325,7 @@ internal class when_creating_simulation_with_custom_simulation_settings : concer
 
    protected override void Because()
    {
-      _creationResult = sut.CreateSimulationAndValidateFrom(_request);
+      _creationResult = sut.CreateSimulationsAndValidateFrom(_request).Single();
    }
 
    [Observation]
@@ -377,7 +368,7 @@ internal class when_creating_simulation_with_calculation_method_override : conce
 
    protected override void Because()
    {
-      _creationResult = sut.CreateSimulationAndValidateFrom(_request);
+      _creationResult = sut.CreateSimulationsAndValidateFrom(_request).Single();
    }
 
    [Observation]
