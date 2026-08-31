@@ -17,7 +17,7 @@ namespace MoBi.R.Services
    {
       /// <summary>
       ///    Creates and validates one simulation per request, named after <see cref="SimulationRequest.SimulationName" />.
-      ///    The simulations are created in parallel and the results are returned in the request order.
+      ///    The results are returned in the request order.
       /// </summary>
       SimulationCreationResult[] CreateSimulationsAndValidateFrom(params SimulationRequest[] requests);
 
