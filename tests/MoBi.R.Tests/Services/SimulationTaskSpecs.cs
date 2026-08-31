@@ -8,6 +8,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility.Extensions;
 using static MoBi.R.Tests.HelperForSpecs;
 using IProjectTask = MoBi.R.Services.IProjectTask;
 using ModuleConfiguration = MoBi.R.Domain.ModuleConfiguration;
@@ -82,6 +83,99 @@ internal class when_creating_simulation : when_creating_from_mobi_project
       var module = _creationResult.Simulation.Configuration.ModuleConfigurations
          .FirstOrDefault(x => x.Module.Name == "Module1")?.Module;
       module.ShouldNotBeNull();
+   }
+}
+
+internal abstract class when_creating_multiple_simulations_from_requests : when_creating_from_mobi_project
+{
+   protected SimulationCreationResult[] _results;
+   protected string[] _simulationNames;
+   protected SimulationRequest[] _requests;
+
+   protected override void Context()
+   {
+      base.Context();
+      _requests = _simulationNames.Select(createRequest).ToArray();
+   }
+
+   protected override void Because()
+   {
+      _results = sut.CreateSimulationsAndValidateFrom(_requests);
+   }
+
+   private SimulationRequest createRequest(string simulationName)
+   {
+      var request = new SimulationRequest { SimulationName = simulationName };
+      request.AddModuleConfiguration(_moduleConfiguration);
+      (_expressionProfilesForSimulation ?? Array.Empty<ExpressionProfileBuildingBlock>()).Each(request.AddExpressionProfile);
+      request.SetIndividual(_individualForSimulation);
+      return request;
+   }
+}
+
+internal class when_creating_multiple_simulations : when_creating_multiple_simulations_from_requests
+{
+   protected override void Context()
+   {
+      _simulationNames = new[] { "ParallelSim1", "ParallelSim2", "ParallelSim3", "ParallelSim4" };
+      base.Context();
+   }
+
+   [Observation]
+   public void should_return_one_result_per_request_in_the_request_order()
+   {
+      _results.Length.ShouldBeEqualTo(_simulationNames.Length);
+      _results.Select(x => x.Simulation.Name).ToArray().ShouldBeEqualTo(_simulationNames);
+   }
+
+   [Observation]
+   public void should_create_all_simulations_from_the_shared_module()
+   {
+      _results.Each(result =>
+      {
+         result.Simulation.ShouldNotBeNull();
+         result.Simulation.Configuration.ModuleConfigurations
+            .FirstOrDefault(x => x.Module.Name == "Module1")?.Module.ShouldNotBeNull();
+      });
+   }
+}
+
+internal class when_creating_multiple_simulations_and_one_cannot_be_created : when_creating_multiple_simulations_from_requests
+{
+   protected override void Context()
+   {
+      _simulationNames = new[] { "ParallelSim1", $"Invalid{Constants.ILLEGAL_CHARACTERS.First()}Name", "ParallelSim3" };
+      base.Context();
+   }
+
+   [Observation]
+   public void should_return_the_errors_for_the_failing_simulation()
+   {
+      _results[1].Simulation.ShouldBeNull();
+      _results[1].Errors.Any().ShouldBeTrue();
+   }
+
+   [Observation]
+   public void should_create_the_other_simulations_in_the_request_order()
+   {
+      _results[0].Simulation.Name.ShouldBeEqualTo(_simulationNames[0]);
+      _results[2].Simulation.Name.ShouldBeEqualTo(_simulationNames[2]);
+   }
+}
+
+internal class when_creating_multiple_simulations_without_requests : when_creating_from_mobi_project
+{
+   [Observation]
+   public void should_throw_expected_exception_when_the_requests_are_null()
+   {
+      The.Action(() => sut.CreateSimulationsAndValidateFrom(null))
+         .ShouldThrowAn<InvalidArgumentException>();
+   }
+
+   [Observation]
+   public void should_return_no_results_when_there_are_no_requests()
+   {
+      sut.CreateSimulationsAndValidateFrom().ShouldBeEmpty();
    }
 }
 
