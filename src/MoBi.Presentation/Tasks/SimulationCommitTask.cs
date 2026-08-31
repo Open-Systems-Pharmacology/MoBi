@@ -13,7 +13,6 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
-using OSPSuite.Presentation.Presenters;
 using OSPSuite.Utility.Extensions;
 using static MoBi.Assets.AppConstants.Commands;
 
@@ -24,8 +23,9 @@ namespace MoBi.Presentation.Tasks
       /// <summary>
       ///    Commits <paramref name="simulationWithChanges" /> changes to a module of the simulation configuration
       ///    by creating or updating it's initial conditions and parameter values building blocks.
-      ///    When the simulation is configured with multiple modules, the user selects the module to commit to,
-      ///    the last module being the default
+      ///    The user selects the module and the parameter values building block (or a new one) to commit to,
+      ///    the last module and its selected building block being the default. When the target building block
+      ///    is not the one used by the simulation, the simulation stays out of sync and has to be configured manually
       /// </summary>
       /// <returns>An executed command</returns>
       IMoBiCommand CommitSimulationChanges(IMoBiSimulation simulationWithChanges);
@@ -68,11 +68,14 @@ namespace MoBi.Presentation.Tasks
          changesFrom<Parameter>(simulationWithChanges).Each(x => parameterChanges.Add(x));
          changesFrom<DistributedParameter>(simulationWithChanges).Each(x => parameterChanges.Add(x));
 
-         var moduleConfiguration = selectModuleConfigurationFrom(simulationWithChanges);
-         if (moduleConfiguration == null)
+         var commitTarget = selectCommitTargetFrom(simulationWithChanges);
+         if (commitTarget == null)
             return null;
 
-         var message = CommitingChangesToModulesMessage(moduleConfiguration, moleculeChanges.Any(), parameterChanges.Any());
+         var moduleConfiguration = commitTarget.ModuleConfiguration;
+         var simulationStaysOutOfSync = parameterChanges.Any() && !commitsToUsedParameterValues(commitTarget);
+
+         var message = CommitingChangesToModulesMessage(moduleConfiguration, commitTarget.ParameterValues, simulationStaysOutOfSync, moleculeChanges.Any(), parameterChanges.Any());
 
          if (_interactionTaskContext.DialogCreator.MessageBoxYesNo(message) != ViewResult.Yes)
             return null;
@@ -89,12 +92,10 @@ namespace MoBi.Presentation.Tasks
          else
             macroCommand.AddRange(updateInitialConditionsFromSimulationChanges(moduleConfiguration, moleculeChanges, simulationWithChanges));
 
-         if (moduleConfiguration.SelectedParameterValues == null)
-            macroCommand.AddRange(addNewParameterValuesFromSimulationChanges(simulationWithChanges, moduleConfiguration, parameterChanges));
-         else
-            macroCommand.AddRange(updateParameterValuesFromSimulationChanges(moduleConfiguration, parameterChanges, simulationWithChanges));
+         macroCommand.AddRange(parameterValuesCommandsFor(simulationWithChanges, commitTarget, parameterChanges));
 
-         macroCommand.Add(new ClearOriginalQuantitiesTrackerCommand(simulationWithChanges));
+         if (!simulationStaysOutOfSync)
+            macroCommand.Add(new ClearOriginalQuantitiesTrackerCommand(simulationWithChanges));
 
          macroCommand.RunCommand(_context);
          _context.PublishEvent(new SimulationReloadEvent(simulationWithChanges));
@@ -108,30 +109,81 @@ namespace MoBi.Presentation.Tasks
       }
 
       /// <summary>
-      ///    Returns the module configuration where the changes will be committed. When the simulation is configured
-      ///    with multiple modules, the user selects the module, the last module being the default.
+      ///    Returns the module and parameter values building block where the changes will be committed, both selected
+      ///    by the user, the last module and its selected building block being the default.
       ///    Returns null if the user cancels the selection
       /// </summary>
-      private ModuleConfiguration selectModuleConfigurationFrom(IMoBiSimulation simulation)
+      private CommitTarget selectCommitTargetFrom(IMoBiSimulation simulation)
       {
          var moduleConfigurations = simulation.Configuration.ModuleConfigurations;
-         if (moduleConfigurations.Count == 1)
-            return moduleConfigurations.Last();
 
-         var lastModule = moduleConfigurations.Last().Module;
-         using (var modal = _interactionTaskContext.ApplicationController.Start<IModalPresenter>())
+         // there is no selection to make when the simulation uses a single module without a selected parameter
+         // values building block and the template module does not contain any to select from
+         if (moduleConfigurations.Count == 1 && moduleConfigurations[0].SelectedParameterValues == null && !_templateResolverTask.TemplateModuleFor(moduleConfigurations[0].Module).ParameterValuesCollection.Any())
+            return new CommitTarget(moduleConfigurations[0], parameterValues: null);
+
+         using (var presenter = _context.Resolve<ISelectCommitTargetPresenter>())
          {
-            var presenter = _interactionTaskContext.ApplicationController.Start<ISelectSinglePresenter<Module>>();
-            presenter.SetDescription(AppConstants.Captions.SelectTheModuleWhereChangesWillBeCommitted);
-            modal.Text = AppConstants.Captions.SelectModule;
-            modal.Encapsulate(presenter);
-            presenter.InitializeWith(moduleConfigurations.Select(x => x.Module), x => !Equals(x, lastModule));
-
-            if (!modal.Show(presenter.ModalSize))
-               return null;
-
-            return moduleConfigurations.First(x => Equals(x.Module, presenter.Selection));
+            return presenter.SelectCommitTargetFor(simulation);
          }
+      }
+
+      /// <summary>
+      ///    Returns true when the changes will be committed to the parameter values building block used by the
+      ///    simulation, meaning the simulation is in sync with its building blocks after the commit
+      /// </summary>
+      private bool commitsToUsedParameterValues(CommitTarget commitTarget)
+      {
+         var selectedParameterValues = commitTarget.ModuleConfiguration.SelectedParameterValues;
+         if (commitTarget.CreateNewParameterValues)
+            return selectedParameterValues == null;
+
+         return selectedParameterValues != null && Equals(_templateResolverTask.TemplateBuildingBlockFor(selectedParameterValues), commitTarget.ParameterValues);
+      }
+
+      private IEnumerable<IMoBiCommand> parameterValuesCommandsFor(IMoBiSimulation simulation, CommitTarget commitTarget, IReadOnlyList<(ObjectPath quantityPath, IParameter quantity)> parameterChanges)
+      {
+         var moduleConfiguration = commitTarget.ModuleConfiguration;
+
+         if (commitTarget.CreateNewParameterValues)
+            return moduleConfiguration.SelectedParameterValues == null
+               ? addNewParameterValuesFromSimulationChanges(simulation, moduleConfiguration, parameterChanges)
+               : addNewParameterValuesToTemplateModule(simulation, moduleConfiguration, parameterChanges);
+
+         return commitsToUsedParameterValues(commitTarget)
+            ? updateParameterValuesFromSimulationChanges(moduleConfiguration, parameterChanges, simulation)
+            : updateNotUsedParameterValues(commitTarget.ParameterValues, parameterChanges, simulation);
+      }
+
+      /// <summary>
+      ///    Creates commands that synchronize the changes from the simulation into <paramref name="templateBuildingBlock" />,
+      ///    a building block that is not used by the simulation. The simulation configuration is not updated
+      /// </summary>
+      private IEnumerable<IMoBiCommand> updateNotUsedParameterValues(ParameterValuesBuildingBlock templateBuildingBlock, IReadOnlyList<(ObjectPath quantityPath, IParameter quantity)> parameterChanges, IMoBiSimulation simulation)
+      {
+         return parameterChanges.Select(x => synchronizeParameterValueCommand(x.quantity, x.quantityPath, templateBuildingBlock, simulation));
+      }
+
+      /// <summary>
+      ///    Creates commands that add a new ParameterValuesBuildingBlock containing the changes from the simulation to the
+      ///    template module only. The simulation configuration is not updated because it already uses another building block
+      /// </summary>
+      private IEnumerable<IMoBiCommand> addNewParameterValuesToTemplateModule(IMoBiSimulation simulation, ModuleConfiguration moduleConfiguration, IReadOnlyList<(ObjectPath quantityPath, IParameter quantity)> parameterChanges)
+      {
+         if (!parameterChanges.Any())
+            return new[] { new MoBiEmptyCommand() };
+
+         var templateModule = _templateResolverTask.TemplateModuleFor(moduleConfiguration.Module);
+         var templateBuildingBlock = _context.Create<ParameterValuesBuildingBlock>().WithName(simulation.Name);
+         _nameCorrector.AutoCorrectName(templateModule.BuildingBlocks.OfType<ParameterValuesBuildingBlock>().AllNames(), templateBuildingBlock);
+
+         var commands = new List<IMoBiCommand>
+         {
+            new AddBuildingBlockToModuleCommand<ParameterValuesBuildingBlock>(templateBuildingBlock, templateModule)
+         };
+
+         commands.AddRange(parameterChanges.Select(x => synchronizeParameterValueCommand(x.quantity, x.quantityPath, templateBuildingBlock, simulation).AsHidden()));
+         return commands;
       }
 
       /// <summary>
