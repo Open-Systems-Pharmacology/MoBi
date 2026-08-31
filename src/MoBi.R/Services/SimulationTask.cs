@@ -15,11 +15,14 @@ namespace MoBi.R.Services
 {
    public interface ISimulationTask
    {
-      SimulationCreationResult CreateSimulationAndValidateFrom(string simulationName, SimulationRequest request);
+      /// <summary>
+      ///    Creates and validates a simulation named after <see cref="SimulationRequest.SimulationName" />.
+      /// </summary>
+      SimulationCreationResult CreateSimulationAndValidateFrom(SimulationRequest request);
 
       /// <summary>
-      ///    Creates and validates one simulation per request, named after <see cref="SimulationRequest.SimulationName" />.
-      ///    The simulations are created in parallel and the results are returned in the request order.
+      ///    Creates and validates one simulation per request. The simulations are created in parallel and the results are
+      ///    returned in the request order.
       /// </summary>
       SimulationCreationResult[] CreateSimulationsAndValidateFrom(params SimulationRequest[] requests);
 
@@ -63,7 +66,7 @@ namespace MoBi.R.Services
          return allNamedObjects.FindByName(namedObjectToSelect);
       }
 
-      public SimulationCreationResult CreateSimulationAndValidateFrom(string simulationName, SimulationRequest request)
+      public SimulationCreationResult CreateSimulationAndValidateFrom(SimulationRequest request)
       {
          if (request == null)
             throw new InvalidArgumentException(AppConstants.Exceptions.SimulationRequestCannotBeNull);
@@ -71,7 +74,7 @@ namespace MoBi.R.Services
          var modulesArray = request?.ModuleConfigurations?.ToArray() ?? Array.Empty<ModuleConfiguration>();
          var expressionsArray = request?.ExpressionProfiles?.ToArray() ?? Array.Empty<ExpressionProfileBuildingBlock>();
 
-         return _simulationFactory.CreateSimulationFrom(simulationName,
+         return _simulationFactory.CreateSimulationFrom(request.SimulationName,
             modulesArray,
             expressionsArray,
             request.Individual,
@@ -91,7 +94,7 @@ namespace MoBi.R.Services
          {
             try
             {
-               results[index] = CreateSimulationAndValidateFrom(requests[index]?.SimulationName, requests[index]);
+               results[index] = CreateSimulationAndValidateFrom(requests[index]);
             }
             catch (Exception e) when (!e.IsOutOfMemory())
             {

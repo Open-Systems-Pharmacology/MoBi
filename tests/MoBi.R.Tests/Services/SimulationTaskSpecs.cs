@@ -52,7 +52,7 @@ internal class when_creating_from_mobi_project : concern_for_SimulationTask
 
       _moduleConfiguration = sut.CreateModuleConfiguration(_moduleForSimulation, "Parameter Values", "Initial Conditions");
 
-      _request = new SimulationRequest();
+      _request = new SimulationRequest { SimulationName = _simulationName };
       _request.AddModuleConfiguration(_moduleConfiguration);
       foreach (var ep in _expressionProfilesForSimulation ?? Array.Empty<ExpressionProfileBuildingBlock>())
          _request.AddExpressionProfile(ep);
@@ -66,7 +66,7 @@ internal class when_creating_simulation : when_creating_from_mobi_project
 {
    protected override void Because()
    {
-      _creationResult = sut.CreateSimulationAndValidateFrom(_simulationName, _request);
+      _creationResult = sut.CreateSimulationAndValidateFrom(_request);
    }
 
    [Observation]
@@ -184,7 +184,7 @@ internal abstract class when_creating_an_invalid_configuration : when_creating_f
    [Observation]
    public void should_throw_expected_exception()
    {
-      The.Action(() => sut.CreateSimulationAndValidateFrom(_simulationName, _request))
+      The.Action(() => sut.CreateSimulationAndValidateFrom(_request))
          .ShouldThrowAn<InvalidOperationException>();
    }
 }
@@ -200,13 +200,13 @@ internal class when_creating_simulation_from_pkml_module : concern_for_Simulatio
       _simulationName = "SimFromPKML";
       var moduleConfig = sut.CreateModuleConfiguration(module);
 
-      _request = new SimulationRequest();
+      _request = new SimulationRequest { SimulationName = _simulationName };
       _request.AddModuleConfiguration(moduleConfig);
    }
 
    protected override void Because()
    {
-      _creationResult = sut.CreateSimulationAndValidateFrom(_simulationName, _request);
+      _creationResult = sut.CreateSimulationAndValidateFrom(_request);
    }
 
    [Observation]
@@ -229,7 +229,7 @@ internal class when_creating_simulation_with_warnings_only : concern_for_Simulat
       _simulationName = "SimWithWarningsOnly";
       var moduleConfig = sut.CreateModuleConfiguration(_moduleForSimulation, "Parameter Values", "Initial Conditions");
 
-      _request = new SimulationRequest();
+      _request = new SimulationRequest { SimulationName = _simulationName };
       _request.AddModuleConfiguration(moduleConfig);
       _request.SetIndividual(_projectTask.IndividualBuildingBlockByName(_project, "European (P-gp modified, CYP3A4 36 h)"));
 
@@ -238,7 +238,7 @@ internal class when_creating_simulation_with_warnings_only : concern_for_Simulat
 
    protected override void Because()
    {
-      _creationResult = sut.CreateSimulationAndValidateFrom(_simulationName, _request);
+      _creationResult = sut.CreateSimulationAndValidateFrom(_request);
    }
 
    [Observation]
@@ -262,7 +262,7 @@ internal class when_creating_simulation_with_errors : concern_for_SimulationTask
       var module = _projectTask.ModuleByName(_project, "Module1");
       var moduleConfig = sut.CreateModuleConfiguration(module);
 
-      _request = new SimulationRequest();
+      _request = new SimulationRequest { SimulationName = _simulationName };
       _request.AddModuleConfiguration(moduleConfig);
       _request.SetIndividual(_projectTask.IndividualBuildingBlockByName(_project, "European (P-gp modified, CYP3A4 36 h)"));
 
@@ -272,7 +272,7 @@ internal class when_creating_simulation_with_errors : concern_for_SimulationTask
    [Observation]
    public void should_throw_expected_exception()
    {
-      The.Action(() => sut.CreateSimulationAndValidateFrom(_simulationName, _request))
+      The.Action(() => sut.CreateSimulationAndValidateFrom(_request))
          .ShouldThrowAn<InvalidOperationException>();
    }
 }
@@ -288,7 +288,7 @@ internal class when_creating_simulation_with_create_all_process_rate_parameters_
       _moduleForSimulation = _projectTask.ModuleByName(_project, "Module1");
       var moduleConfig = sut.CreateModuleConfiguration(_moduleForSimulation, "Parameter Values", "Initial Conditions");
 
-      _request = new SimulationRequest();
+      _request = new SimulationRequest { SimulationName = _simulationName };
       _request.AddModuleConfiguration(moduleConfig);
       _request.SetIndividual(_projectTask.IndividualBuildingBlockByName(_project, "European (P-gp modified, CYP3A4 36 h)"));
       _request.CreateAllProcessRateParameters = true;
@@ -298,7 +298,7 @@ internal class when_creating_simulation_with_create_all_process_rate_parameters_
 
    protected override void Because()
    {
-      _creationResult = sut.CreateSimulationAndValidateFrom(_simulationName, _request);
+      _creationResult = sut.CreateSimulationAndValidateFrom(_request);
    }
 
    [Observation]
@@ -324,7 +324,7 @@ internal class when_creating_simulation_with_custom_simulation_settings : concer
       var customSettings = new SimulationSettings();
       customSettings.Name = "CustomSettings";
 
-      _request = new SimulationRequest();
+      _request = new SimulationRequest { SimulationName = _simulationName };
       _request.AddModuleConfiguration(moduleConfig);
       _request.SetIndividual(_projectTask.IndividualBuildingBlockByName(_project, "European (P-gp modified, CYP3A4 36 h)"));
       _request.SimulationSettings = customSettings;
@@ -334,7 +334,7 @@ internal class when_creating_simulation_with_custom_simulation_settings : concer
 
    protected override void Because()
    {
-      _creationResult = sut.CreateSimulationAndValidateFrom(_simulationName, _request);
+      _creationResult = sut.CreateSimulationAndValidateFrom(_request);
    }
 
    [Observation]
@@ -367,7 +367,7 @@ internal class when_creating_simulation_with_calculation_method_override : conce
       
       var moduleConfiguration = sut.CreateModuleConfiguration(_moduleForSimulation, "Parameter Values", "Initial Conditions");
 
-      _request = new SimulationRequest();
+      _request = new SimulationRequest { SimulationName = _simulationName };
       _request.AddModuleConfiguration(moduleConfiguration);
       _request.SetIndividual(_projectTask.IndividualBuildingBlockByName(_project, "European (P-gp modified, CYP3A4 36 h)"));
       _request.AddMoleculeUsedCalculationMethod("Molecule name", _category, _overriddenCalculationMethod);
@@ -377,7 +377,7 @@ internal class when_creating_simulation_with_calculation_method_override : conce
 
    protected override void Because()
    {
-      _creationResult = sut.CreateSimulationAndValidateFrom(_simulationName, _request);
+      _creationResult = sut.CreateSimulationAndValidateFrom(_request);
    }
 
    [Observation]
