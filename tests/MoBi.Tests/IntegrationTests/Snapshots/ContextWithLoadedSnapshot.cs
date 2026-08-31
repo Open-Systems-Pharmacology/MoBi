@@ -17,11 +17,11 @@ namespace MoBi.IntegrationTests.Snapshots
       private ISnapshotTask _snapshotTask;
       protected MoBiProject _project;
 
-      public void LoadSnapshot(string snapshotFileName, bool isFullPath = false)
+      public void LoadSnapshot(string snapshotFileName, bool isFullPath = false, bool runSimulations = true)
       {
          var snapshotFile = isFullPath ? snapshotFileName : DomainHelperForSpecs.TestFileFullPath($"{snapshotFileName}.json");
          _snapshotTask = IoC.Resolve<ISnapshotTask>();
-         _project = _snapshotTask.LoadProjectFromSnapshotFileAsync(snapshotFile).Result;
+         _project = _snapshotTask.LoadProjectFromSnapshotFileAsync(snapshotFile, runSimulations).Result;
       }
 
       public TBuildingBlock FindByName<TBuildingBlock>(string name) where TBuildingBlock : class, IBuildingBlock

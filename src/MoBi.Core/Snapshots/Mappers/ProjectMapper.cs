@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using MoBi.Assets;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Serialization.Xml.Services;
@@ -116,41 +118,96 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       var observedData = await ObservedDataFrom(projectSnapshot.ObservedData, snapshotContext);
       observedData?.Each(repository => AddObservedDataToProject(project, repository));
 
-      var simulationContext = new SimulationContext(context.RunSimulations, snapshotContext)
-      {
-         NumberOfSimulationsToLoad = projectSnapshot.Simulations?.Length ?? 0,
-         NumberOfSimulationsLoaded = 0
-      };
+      var simulationContext = new SimulationContext(context.RunSimulations, snapshotContext);
 
       var simulationsWithSnapshots = new List<(MoBiSimulation simulation, Simulation snapshot)>();
-      if (projectSnapshot.Simulations != null)
+      if (projectSnapshot.Simulations != null && projectSnapshot.Simulations.Length > 0)
       {
-         foreach (var x in projectSnapshot.Simulations)
+         var snapshots = projectSnapshot.Simulations;
+         var mappedSimulations = new MoBiSimulation[snapshots.Length];
+         var numberOfSimulationsLoaded = 0;
+
+         _logger.AddInfo(AppConstants.Captions.LoadingSimulationsMessage(snapshots.Length), projectSnapshot.Name);
+
+         async Task<bool> mapSimulationAt(int index)
          {
+            var snapshot = snapshots[index];
             try
             {
-               var simulation = await _simulationMapper.MapToModel(x, simulationContext);
-               addSimulations(project, simulation);
-               simulationsWithSnapshots.Add((simulation, x));
-               simulationContext.NumberOfSimulationsLoaded++;
+               _logger.AddDebug(AppConstants.Captions.ConstructingSimulationMessage(snapshot.Name), projectSnapshot.Name);
+               var simulation = await _simulationMapper.MapToModel(snapshot, simulationContext);
+               mappedSimulations[index] = simulation;
+
+               //a null mapping is skipped when the project is filled and must not count as loaded
+               if (simulation == null)
+                  return false;
+
+               var loadedCount = Interlocked.Increment(ref numberOfSimulationsLoaded);
+               _logger.AddInfo(AppConstants.Captions.SimulationsLoadedMessage(snapshot.Name, loadedCount, snapshots.Length), projectSnapshot.Name);
+               return true;
             }
-            catch (Exception e)
+            catch (Exception e) when (!e.IsOutOfMemory())
             {
-               _logger.AddException(e);
+               _logger.AddException(e, projectSnapshot.Name);
+               _logger.AddError(AppConstants.Exceptions.CannotLoadSimulation(snapshot.Name), projectSnapshot.Name);
+               return false;
             }
          }
+
+         //simulations are mapped sequentially until one succeeds, so that lazily initialized services are
+         //warmed up before the remaining simulations are mapped in parallel
+         var warmupCount = 0;
+         while (warmupCount < snapshots.Length)
+         {
+            var success = await mapSimulationAt(warmupCount);
+            warmupCount++;
+            if (success)
+               break;
+         }
+
+         if (snapshots.Length > warmupCount)
+         {
+            var options = parallelOptions();
+            _logger.AddDebug(AppConstants.Captions.ConstructingSimulationsWithCoresMessage(options.MaxDegreeOfParallelism), projectSnapshot.Name);
+            await Parallel.ForEachAsync(Enumerable.Range(warmupCount, snapshots.Length - warmupCount), options, (index, _) => new ValueTask(mapSimulationAt(index)));
+         }
+
+         for (var i = 0; i < snapshots.Length; i++)
+         {
+            if (mappedSimulations[i] == null)
+               continue;
+
+            addSimulations(project, mappedSimulations[i]);
+            simulationsWithSnapshots.Add((mappedSimulations[i], snapshots[i]));
+         }
+
+         if (numberOfSimulationsLoaded < snapshots.Length)
+            _logger.AddWarning(AppConstants.Captions.OnlySomeSimulationsLoadedMessage(numberOfSimulationsLoaded, snapshots.Length), projectSnapshot.Name);
       }
 
       var parameterIdentifications = await AllParameterIdentificationsFrom(projectSnapshot.ParameterIdentifications, snapshotContext);
       parameterIdentifications?.Each(pi => AddParameterIdentificationToProject(project, pi));
 
+      var runsAborted = false;
       if (simulationContext.Run && project.Simulations.Any())
       {
-         await runParallelSimulations(project);
+         try
+         {
+            await runParallelSimulations(project);
+         }
+         catch (Exception e) when (e.IsOutOfMemory())
+         {
+            //running the simulations is optional, reloading the project is not: keep the loaded project
+            runsAborted = true;
+            _logger.AddException(e, project.Name);
+            _logger.AddError(AppConstants.Exceptions.SimulationRunsAbortedAfterOutOfMemory, project.Name);
+         }
       }
 
-      //map analyses after the run so that simulation result columns are available to resolve the curves
-      simulationsWithSnapshots.Each(x => _simulationMapper.MapAnalysesToSimulation(x.simulation, x.snapshot, simulationContext));
+      //map analyses after the run so that simulation result columns are available to resolve the curves;
+      //after an aborted run phase the analyses are mapped as in a no-run load: there are no results to read
+      var analysesContext = runsAborted ? new SimulationContext(false, snapshotContext) : simulationContext;
+      simulationsWithSnapshots.Each(x => _simulationMapper.MapAnalysesToSimulation(x.simulation, x.snapshot, analysesContext));
 
       await updateProjectClassifications(projectSnapshot, snapshotContext);
 
@@ -181,18 +238,36 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
    private static object base64StringToPKSimSnapshot(string base64String) => JsonConvert.DeserializeObject<object>(base64String.FromBase64String());
    private static string pkSimSnapshotToBase64String(object pkSimSnapshot) => JsonConvert.SerializeObject(pkSimSnapshot).ToBase64String();
 
+   private ParallelOptions parallelOptions() => new ParallelOptions
+   {
+      MaxDegreeOfParallelism = Math.Max(1, _userSettings.MaximumNumberOfCoresToUse)
+   };
+
    private async Task runParallelSimulations(ModelProject project)
    {
-      var options = new ParallelOptions
-      {
-         MaxDegreeOfParallelism = Math.Max(1, _userSettings.MaximumNumberOfCoresToUse)
-      };
-
+      var options = parallelOptions();
+      _logger.AddDebug(AppConstants.Captions.RunningSimulationsWithCoresMessage(options.MaxDegreeOfParallelism), project.Name);
+      var abortedByOutOfMemory = 0;
       await Parallel.ForEachAsync(project.Simulations, options, async (sim, ct) =>
       {
          try
          {
-            await _simulationRunner.RunSimulationAsync(sim);
+            //the runner does not take a token; stop this run when another one fails hard and cancels the loop
+            using (ct.Register(() => _simulationRunner.StopSimulation(sim)))
+            {
+               await _simulationRunner.RunSimulationAsync(sim);
+            }
+         }
+         catch (OperationCanceledException)
+         {
+            //only the cancellations that follow an out-of-memory abort are collateral and stay quiet
+            if (Volatile.Read(ref abortedByOutOfMemory) == 0)
+               _logger.AddInfo(AppConstants.Captions.SimulationRunCancelledMessage(sim.Name), project.Name);
+         }
+         catch (Exception ex) when (ex.IsOutOfMemory())
+         {
+            Interlocked.Exchange(ref abortedByOutOfMemory, 1);
+            throw;
          }
          catch (Exception ex)
          {

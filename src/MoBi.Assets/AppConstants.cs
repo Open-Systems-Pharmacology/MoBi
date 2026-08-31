@@ -1270,6 +1270,9 @@ namespace MoBi.Assets
          public static readonly string ErrorInFormula = "Error in Formula";
          public static readonly string AppliedMoleculeNotInProject = "Applied Molecule is not in Project";
          public static readonly string CouldNotCreateSimulation = "Unable to create the simulation. Please check warnings or errors in the notification view.";
+         public static string CannotLoadSimulation(string simulationName) => $"Cannot load simulation '{simulationName}'";
+         public static readonly string SimulationRunsAbortedAfterOutOfMemory = "The simulation runs were aborted after running out of memory. The loaded project is unaffected.";
+         public static string ModuleNotFound(string moduleName) => $"Module '{moduleName}' not found in project";
          public static readonly string TemplateShouldContainAtLeastOneCurve = "Template should contain at least one curve.";
          public static readonly string FrameworkExceptionOccurred = "An exception occurred";
          public static readonly string MergingSpatialStructuresIsNotSupported = "Merging Spatial Structures is not supported.";
@@ -1503,6 +1506,13 @@ namespace MoBi.Assets
          public const string CreatingSimulation = "Creating...";
          public const string ConfiguringSimulation = "Configuring...";
          public const string UpdatingSimulation = "Updating...";
+         public static string LoadingSimulationsMessage(int simulationCount) => $"Loading {simulationCount} {"simulation".PluralizeIf(simulationCount)}...";
+         public static string SimulationsLoadedMessage(string simulationName, int loadedCount, int simulationCount) => $"Simulation '{simulationName}' loaded ({loadedCount}/{simulationCount})";
+         public static string ConstructingSimulationMessage(string simulationName) => $"Constructing simulation '{simulationName}'...";
+         public static string ConstructingSimulationsWithCoresMessage(int numberOfCores) => $"Constructing simulations with up to {numberOfCores} core(s)";
+         public static string RunningSimulationsWithCoresMessage(int numberOfCores) => $"Running simulations with up to {numberOfCores} core(s)";
+         public static string SimulationRunCancelledMessage(string simulationName) => $"Run of simulation '{simulationName}' was cancelled";
+         public static string OnlySomeSimulationsLoadedMessage(int loadedCount, int simulationCount) => $"Only {loadedCount}/{simulationCount} {"simulation".PluralizeIf(simulationCount)} loaded";
          public static readonly string AddParameter = "Add Parameter ";
          public static readonly string AddMolecule = "Add Molecule";
          public static readonly string LoadParameter = "Load Parameter ";

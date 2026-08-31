@@ -20,9 +20,9 @@
 
   <ItemGroup>
     <PackageReference Include="OSPSuite.Utility" Version="5.0.0.11" />
-    <PackageReference Include="OSPSuite.Presentation" Version="13.0.161" />
-    <PackageReference Include="OSPSuite.Presentation.Serialization" Version="13.0.161" />
-    <PackageReference Include="OSPSuite.Core" Version="13.0.161" />
+    <PackageReference Include="OSPSuite.Presentation" Version="13.0.166" />
+    <PackageReference Include="OSPSuite.Presentation.Serialization" Version="13.0.166" />
+    <PackageReference Include="OSPSuite.Core" Version="13.0.166" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\LICENSE">
