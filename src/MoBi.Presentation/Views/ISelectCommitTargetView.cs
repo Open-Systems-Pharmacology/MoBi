@@ -11,8 +11,10 @@ namespace MoBi.Presentation.Views
    {
       void BindModules(IEnumerable<ListItemDTO<Module>> modules, Module selectedModule);
       void BindParameterValues(IEnumerable<ListItemDTO<ParameterValuesBuildingBlock>> parameterValues, ParameterValuesBuildingBlock selectedParameterValues);
+      void BindInitialConditions(IEnumerable<ListItemDTO<InitialConditionsBuildingBlock>> initialConditions, InitialConditionsBuildingBlock selectedInitialConditions);
       Module SelectedModule { get; }
       ParameterValuesBuildingBlock SelectedParameterValues { get; }
+      InitialConditionsBuildingBlock SelectedInitialConditions { get; }
       void SetDescription(string description);
    }
 }

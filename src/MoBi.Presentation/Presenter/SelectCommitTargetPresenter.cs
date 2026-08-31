@@ -14,10 +14,11 @@ namespace MoBi.Presentation.Presenter
 {
    public class CommitTarget
    {
-      public CommitTarget(ModuleConfiguration moduleConfiguration, ParameterValuesBuildingBlock parameterValues)
+      public CommitTarget(ModuleConfiguration moduleConfiguration, ParameterValuesBuildingBlock parameterValues, InitialConditionsBuildingBlock initialConditions)
       {
          ModuleConfiguration = moduleConfiguration;
          ParameterValues = parameterValues;
+         InitialConditions = initialConditions;
       }
 
       public ModuleConfiguration ModuleConfiguration { get; }
@@ -27,13 +28,20 @@ namespace MoBi.Presentation.Presenter
       /// </summary>
       public ParameterValuesBuildingBlock ParameterValues { get; }
 
+      /// <summary>
+      ///    Template building block receiving the initial condition changes. Null when a new building block should be created
+      /// </summary>
+      public InitialConditionsBuildingBlock InitialConditions { get; }
+
       public bool CreateNewParameterValues => ParameterValues == null;
+
+      public bool CreateNewInitialConditions => InitialConditions == null;
    }
 
    public interface ISelectCommitTargetPresenter : IDisposablePresenter
    {
       /// <summary>
-      ///    Asks the user to select the module and the parameter values building block (or a new one) where the changes
+      ///    Asks the user to select the module and, for each type, the building block (or a new one) where the changes
       ///    of <paramref name="simulation" /> will be committed. The last module is preselected as the default.
       ///    Returns null if the user cancels the selection
       /// </summary>
@@ -46,21 +54,27 @@ namespace MoBi.Presentation.Presenter
    {
       private readonly ITemplateResolverTask _templateResolverTask;
       private readonly IItemToListItemMapper<Module> _moduleToListItemMapper;
-      private readonly IItemToListItemMapper<ParameterValuesBuildingBlock> _buildingBlockToListItemMapper;
+      private readonly IItemToListItemMapper<ParameterValuesBuildingBlock> _parameterValuesToListItemMapper;
+      private readonly IItemToListItemMapper<InitialConditionsBuildingBlock> _initialConditionsToListItemMapper;
       private readonly ParameterValuesBuildingBlock _newParameterValues;
+      private readonly InitialConditionsBuildingBlock _newInitialConditions;
       private IReadOnlyList<ModuleConfiguration> _moduleConfigurations;
 
       public SelectCommitTargetPresenter(ISelectCommitTargetView view,
          ITemplateResolverTask templateResolverTask,
          IItemToListItemMapper<Module> moduleToListItemMapper,
-         IItemToListItemMapper<ParameterValuesBuildingBlock> buildingBlockToListItemMapper) : base(view)
+         IItemToListItemMapper<ParameterValuesBuildingBlock> parameterValuesToListItemMapper,
+         IItemToListItemMapper<InitialConditionsBuildingBlock> initialConditionsToListItemMapper) : base(view)
       {
          _templateResolverTask = templateResolverTask;
          _moduleToListItemMapper = moduleToListItemMapper;
          _moduleToListItemMapper.Initialize(x => x.Name);
-         _buildingBlockToListItemMapper = buildingBlockToListItemMapper;
-         _buildingBlockToListItemMapper.Initialize(x => x.Name);
+         _parameterValuesToListItemMapper = parameterValuesToListItemMapper;
+         _parameterValuesToListItemMapper.Initialize(x => x.Name);
+         _initialConditionsToListItemMapper = initialConditionsToListItemMapper;
+         _initialConditionsToListItemMapper.Initialize(x => x.Name);
          _newParameterValues = new ParameterValuesBuildingBlock().WithName(AppConstants.Captions.NewWindow(ObjectTypes.ParameterValuesBuildingBlock));
+         _newInitialConditions = new InitialConditionsBuildingBlock().WithName(AppConstants.Captions.NewWindow(ObjectTypes.InitialConditionsBuildingBlock));
       }
 
       public CommitTarget SelectCommitTargetFor(IMoBiSimulation simulation)
@@ -78,7 +92,10 @@ namespace MoBi.Presentation.Presenter
             return null;
 
          var selectedParameterValues = _view.SelectedParameterValues;
-         return new CommitTarget(moduleConfigurationFor(_view.SelectedModule), ReferenceEquals(selectedParameterValues, _newParameterValues) ? null : selectedParameterValues);
+         var selectedInitialConditions = _view.SelectedInitialConditions;
+         return new CommitTarget(moduleConfigurationFor(_view.SelectedModule),
+            ReferenceEquals(selectedParameterValues, _newParameterValues) ? null : selectedParameterValues,
+            ReferenceEquals(selectedInitialConditions, _newInitialConditions) ? null : selectedInitialConditions);
       }
 
       public void ModuleChanged() => bindBuildingBlocksFor(moduleConfigurationFor(_view.SelectedModule));
@@ -86,12 +103,20 @@ namespace MoBi.Presentation.Presenter
       private void bindBuildingBlocksFor(ModuleConfiguration moduleConfiguration)
       {
          var templateModule = _templateResolverTask.TemplateModuleFor(moduleConfiguration.Module);
+
          var allParameterValues = templateModule.ParameterValuesCollection.Concat(new[] { _newParameterValues });
          var selectedParameterValues = moduleConfiguration.SelectedParameterValues == null
             ? _newParameterValues
             : _templateResolverTask.TemplateBuildingBlockFor(moduleConfiguration.SelectedParameterValues);
 
-         _view.BindParameterValues(allParameterValues.Select(_buildingBlockToListItemMapper.MapFrom), selectedParameterValues);
+         _view.BindParameterValues(allParameterValues.Select(_parameterValuesToListItemMapper.MapFrom), selectedParameterValues);
+
+         var allInitialConditions = templateModule.InitialConditionsCollection.Concat(new[] { _newInitialConditions });
+         var selectedInitialConditions = moduleConfiguration.SelectedInitialConditions == null
+            ? _newInitialConditions
+            : _templateResolverTask.TemplateBuildingBlockFor(moduleConfiguration.SelectedInitialConditions);
+
+         _view.BindInitialConditions(allInitialConditions.Select(_initialConditionsToListItemMapper.MapFrom), selectedInitialConditions);
       }
 
       private ModuleConfiguration moduleConfigurationFor(Module module) => _moduleConfigurations.First(x => Equals(x.Module, module));

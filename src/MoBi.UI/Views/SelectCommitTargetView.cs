@@ -32,8 +32,10 @@ namespace MoBi.UI.Views
          base.InitializeResources();
          layoutItemModule.Text = AppConstants.Captions.Module.FormatForLabel();
          layoutItemParameterValues.Text = ObjectTypes.ParameterValuesBuildingBlock.FormatForLabel();
+         layoutItemInitialConditions.Text = ObjectTypes.InitialConditionsBuildingBlock.FormatForLabel();
          cmbModule.Properties.TextEditStyle = TextEditStyles.DisableTextEditor;
          cmbParameterValues.Properties.TextEditStyle = TextEditStyles.DisableTextEditor;
+         cmbInitialConditions.Properties.TextEditStyle = TextEditStyles.DisableTextEditor;
          descriptionLabel.AsDescription();
          Text = AppConstants.Captions.SelectCommitTarget;
       }
@@ -50,9 +52,17 @@ namespace MoBi.UI.Views
          select(cmbParameterValues, item => Equals(item.DowncastTo<ListItemDTO<ParameterValuesBuildingBlock>>().Item, selectedParameterValues));
       }
 
+      public void BindInitialConditions(IEnumerable<ListItemDTO<InitialConditionsBuildingBlock>> initialConditions, InitialConditionsBuildingBlock selectedInitialConditions)
+      {
+         fill(cmbInitialConditions, initialConditions);
+         select(cmbInitialConditions, item => Equals(item.DowncastTo<ListItemDTO<InitialConditionsBuildingBlock>>().Item, selectedInitialConditions));
+      }
+
       public Module SelectedModule => (cmbModule.SelectedItem as ListItemDTO<Module>)?.Item;
 
       public ParameterValuesBuildingBlock SelectedParameterValues => (cmbParameterValues.SelectedItem as ListItemDTO<ParameterValuesBuildingBlock>)?.Item;
+
+      public InitialConditionsBuildingBlock SelectedInitialConditions => (cmbInitialConditions.SelectedItem as ListItemDTO<InitialConditionsBuildingBlock>)?.Item;
 
       public void SetDescription(string description) => descriptionLabel.Text = description;
 

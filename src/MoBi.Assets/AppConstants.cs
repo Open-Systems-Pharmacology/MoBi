@@ -287,14 +287,14 @@ namespace MoBi.Assets
             return DisplayValue(displayValue.ConvertedTo<string>(), displayUnit);
          }
 
-         public static string CommitingChangesToModulesMessage(ModuleConfiguration moduleConfiguration, ParameterValuesBuildingBlock targetParameterValues, bool simulationStaysOutOfSync, bool hasMoleculeChanges, bool hasParameterChanges)
+         public static string CommitingChangesToModulesMessage(Module module, InitialConditionsBuildingBlock targetInitialConditions, ParameterValuesBuildingBlock targetParameterValues, bool simulationStaysOutOfSync, bool hasMoleculeChanges, bool hasParameterChanges)
          {
-            var moduleName = moduleConfiguration.Module.Name;
+            var moduleName = module.Name;
             var message = $"Values changed in the simulation will be committed to the module <i>{moduleName}</i>. {Environment.NewLine}";
 
             if (hasMoleculeChanges)
             {
-               var icName = moduleConfiguration.SelectedInitialConditions == null ? $"A new initial conditions building block will be created in module <i>{moduleName}</i>" : $"Initial conditions will be written to the initial conditions building block <i>{moduleConfiguration.SelectedInitialConditions.Name}</i> in module <i>{moduleName}</i>";
+               var icName = targetInitialConditions == null ? $"A new initial conditions building block will be created in module <i>{moduleName}</i>" : $"Initial conditions will be written to the initial conditions building block <i>{targetInitialConditions.Name}</i> in module <i>{moduleName}</i>";
                message += $"{Environment.NewLine}- {icName}";
             }
 
@@ -305,7 +305,7 @@ namespace MoBi.Assets
             }
 
             if (simulationStaysOutOfSync)
-               message += $"{Environment.NewLine}{Environment.NewLine}<b>Warning:</b> the target parameter values building block will not be used by the simulation. The simulation will stay out of sync until it is manually configured to use the committed building block.";
+               message += $"{Environment.NewLine}{Environment.NewLine}<b>Warning:</b> changes are committed to a building block that is not used by the simulation. The simulation will stay out of sync until it is manually configured to use the committed building block.";
 
             return message;
          }
@@ -1776,8 +1776,8 @@ namespace MoBi.Assets
 
          public static string SelectTheBuildingBlockWhereEntitiesWillBeAddedOrUpdated(string typeBeingAdded) => $"Select the building block where {typeBeingAdded} will be added or updated";
          public static readonly string SelectBuildingBlock = "Select Building Block";
-         public static readonly string SelectCommitTargetDescription = "Select the module and the parameter values building block where the simulation changes will be committed";
-         public static readonly string SelectCommitTarget = "Select Module and Building Block";
+         public static readonly string SelectCommitTargetDescription = "Select the module and the building blocks where the simulation changes will be committed";
+         public static readonly string SelectCommitTarget = "Select Module and Building Blocks";
          public static readonly string MakeDefault = "Make defaults";
          public static readonly string LoadFromDefaults = "Load from defaults";
          public static readonly string MergeBehavior = "Merge Behavior";

@@ -23,8 +23,8 @@ namespace MoBi.Presentation.Tasks
       /// <summary>
       ///    Commits <paramref name="simulationWithChanges" /> changes to a module of the simulation configuration
       ///    by creating or updating it's initial conditions and parameter values building blocks.
-      ///    The user selects the module and the parameter values building block (or a new one) to commit to,
-      ///    the last module and its selected building block being the default. When the target building block
+      ///    The user selects the module and, for each building block type, the building block (or a new one) to commit to,
+      ///    the last module and its selected building blocks being the default. When a target building block
       ///    is not the one used by the simulation, the simulation stays out of sync and has to be configured manually
       /// </summary>
       /// <returns>An executed command</returns>
@@ -73,9 +73,10 @@ namespace MoBi.Presentation.Tasks
             return null;
 
          var moduleConfiguration = commitTarget.ModuleConfiguration;
-         var simulationStaysOutOfSync = parameterChanges.Any() && !commitsToUsedParameterValues(commitTarget);
+         var simulationStaysOutOfSync = parameterChanges.Any() && !commitsToUsedParameterValues(commitTarget) ||
+                                        moleculeChanges.Any() && !commitsToUsedInitialConditions(commitTarget);
 
-         var message = CommitingChangesToModulesMessage(moduleConfiguration, commitTarget.ParameterValues, simulationStaysOutOfSync, moleculeChanges.Any(), parameterChanges.Any());
+         var message = CommitingChangesToModulesMessage(moduleConfiguration.Module, commitTarget.InitialConditions, commitTarget.ParameterValues, simulationStaysOutOfSync, moleculeChanges.Any(), parameterChanges.Any());
 
          if (_interactionTaskContext.DialogCreator.MessageBoxYesNo(message) != ViewResult.Yes)
             return null;
@@ -87,11 +88,7 @@ namespace MoBi.Presentation.Tasks
             ObjectType = _objectTypeResolver.TypeFor<Module>()
          };
 
-         if (moduleConfiguration.SelectedInitialConditions == null)
-            macroCommand.AddRange(addNewInitialConditionsFromSimulationChanges(simulationWithChanges, moduleConfiguration, moleculeChanges));
-         else
-            macroCommand.AddRange(updateInitialConditionsFromSimulationChanges(moduleConfiguration, moleculeChanges, simulationWithChanges));
-
+         macroCommand.AddRange(initialConditionsCommandsFor(simulationWithChanges, commitTarget, moleculeChanges));
          macroCommand.AddRange(parameterValuesCommandsFor(simulationWithChanges, commitTarget, parameterChanges));
 
          if (!simulationStaysOutOfSync)
@@ -109,23 +106,32 @@ namespace MoBi.Presentation.Tasks
       }
 
       /// <summary>
-      ///    Returns the module and parameter values building block where the changes will be committed, both selected
-      ///    by the user, the last module and its selected building block being the default.
+      ///    Returns the module and the building block of each type where the changes will be committed, all selected
+      ///    by the user, the last module and its selected building blocks being the default.
       ///    Returns null if the user cancels the selection
       /// </summary>
       private CommitTarget selectCommitTargetFrom(IMoBiSimulation simulation)
       {
          var moduleConfigurations = simulation.Configuration.ModuleConfigurations;
 
-         // there is no selection to make when the simulation uses a single module without a selected parameter
-         // values building block and the template module does not contain any to select from
-         if (moduleConfigurations.Count == 1 && moduleConfigurations[0].SelectedParameterValues == null && !_templateResolverTask.TemplateModuleFor(moduleConfigurations[0].Module).ParameterValuesCollection.Any())
-            return new CommitTarget(moduleConfigurations[0], parameterValues: null);
+         // there is no selection to make when the simulation uses a single module without selected building
+         // blocks and the template module does not contain any to select from
+         if (moduleConfigurations.Count == 1 && noBuildingBlockToSelectFor(moduleConfigurations[0]))
+            return new CommitTarget(moduleConfigurations[0], parameterValues: null, initialConditions: null);
 
          using (var presenter = _context.Resolve<ISelectCommitTargetPresenter>())
          {
             return presenter.SelectCommitTargetFor(simulation);
          }
+      }
+
+      private bool noBuildingBlockToSelectFor(ModuleConfiguration moduleConfiguration)
+      {
+         if (moduleConfiguration.SelectedParameterValues != null || moduleConfiguration.SelectedInitialConditions != null)
+            return false;
+
+         var templateModule = _templateResolverTask.TemplateModuleFor(moduleConfiguration.Module);
+         return !templateModule.ParameterValuesCollection.Any() && !templateModule.InitialConditionsCollection.Any();
       }
 
       /// <summary>
@@ -139,6 +145,19 @@ namespace MoBi.Presentation.Tasks
             return selectedParameterValues == null;
 
          return selectedParameterValues != null && Equals(_templateResolverTask.TemplateBuildingBlockFor(selectedParameterValues), commitTarget.ParameterValues);
+      }
+
+      /// <summary>
+      ///    Returns true when the changes will be committed to the initial conditions building block used by the
+      ///    simulation, meaning the simulation is in sync with its building blocks after the commit
+      /// </summary>
+      private bool commitsToUsedInitialConditions(CommitTarget commitTarget)
+      {
+         var selectedInitialConditions = commitTarget.ModuleConfiguration.SelectedInitialConditions;
+         if (commitTarget.CreateNewInitialConditions)
+            return selectedInitialConditions == null;
+
+         return selectedInitialConditions != null && Equals(_templateResolverTask.TemplateBuildingBlockFor(selectedInitialConditions), commitTarget.InitialConditions);
       }
 
       private IEnumerable<IMoBiCommand> parameterValuesCommandsFor(IMoBiSimulation simulation, CommitTarget commitTarget, IReadOnlyList<(ObjectPath quantityPath, IParameter quantity)> parameterChanges)
@@ -155,6 +174,20 @@ namespace MoBi.Presentation.Tasks
             : updateNotUsedParameterValues(commitTarget.ParameterValues, parameterChanges, simulation);
       }
 
+      private IEnumerable<IMoBiCommand> initialConditionsCommandsFor(IMoBiSimulation simulation, CommitTarget commitTarget, IReadOnlyList<(ObjectPath quantityPath, MoleculeAmount quantity)> moleculeChanges)
+      {
+         var moduleConfiguration = commitTarget.ModuleConfiguration;
+
+         if (commitTarget.CreateNewInitialConditions)
+            return moduleConfiguration.SelectedInitialConditions == null
+               ? addNewInitialConditionsFromSimulationChanges(simulation, moduleConfiguration, moleculeChanges)
+               : addNewInitialConditionsToTemplateModule(simulation, moduleConfiguration, moleculeChanges);
+
+         return commitsToUsedInitialConditions(commitTarget)
+            ? updateInitialConditionsFromSimulationChanges(moduleConfiguration, moleculeChanges, simulation)
+            : updateNotUsedInitialConditions(commitTarget.InitialConditions, moleculeChanges, simulation);
+      }
+
       /// <summary>
       ///    Creates commands that synchronize the changes from the simulation into <paramref name="templateBuildingBlock" />,
       ///    a building block that is not used by the simulation. The simulation configuration is not updated
@@ -162,6 +195,15 @@ namespace MoBi.Presentation.Tasks
       private IEnumerable<IMoBiCommand> updateNotUsedParameterValues(ParameterValuesBuildingBlock templateBuildingBlock, IReadOnlyList<(ObjectPath quantityPath, IParameter quantity)> parameterChanges, IMoBiSimulation simulation)
       {
          return parameterChanges.Select(x => synchronizeParameterValueCommand(x.quantity, x.quantityPath, templateBuildingBlock, simulation));
+      }
+
+      /// <summary>
+      ///    Creates commands that synchronize the changes from the simulation into <paramref name="templateBuildingBlock" />,
+      ///    a building block that is not used by the simulation. The simulation configuration is not updated
+      /// </summary>
+      private IEnumerable<IMoBiCommand> updateNotUsedInitialConditions(InitialConditionsBuildingBlock templateBuildingBlock, IReadOnlyList<(ObjectPath quantityPath, MoleculeAmount quantity)> moleculeChanges, IMoBiSimulation simulation)
+      {
+         return moleculeChanges.Select(x => synchronizeInitialConditionCommand(x.quantity, x.quantityPath, templateBuildingBlock, simulation));
       }
 
       /// <summary>
@@ -183,6 +225,28 @@ namespace MoBi.Presentation.Tasks
          };
 
          commands.AddRange(parameterChanges.Select(x => synchronizeParameterValueCommand(x.quantity, x.quantityPath, templateBuildingBlock, simulation).AsHidden()));
+         return commands;
+      }
+
+      /// <summary>
+      ///    Creates commands that add a new InitialConditionsBuildingBlock containing the changes from the simulation to the
+      ///    template module only. The simulation configuration is not updated because it already uses another building block
+      /// </summary>
+      private IEnumerable<IMoBiCommand> addNewInitialConditionsToTemplateModule(IMoBiSimulation simulation, ModuleConfiguration moduleConfiguration, IReadOnlyList<(ObjectPath quantityPath, MoleculeAmount quantity)> moleculeChanges)
+      {
+         if (!moleculeChanges.Any())
+            return new[] { new MoBiEmptyCommand() };
+
+         var templateModule = _templateResolverTask.TemplateModuleFor(moduleConfiguration.Module);
+         var templateBuildingBlock = _context.Create<InitialConditionsBuildingBlock>().WithName(simulation.Name);
+         _nameCorrector.AutoCorrectName(templateModule.BuildingBlocks.OfType<InitialConditionsBuildingBlock>().AllNames(), templateBuildingBlock);
+
+         var commands = new List<IMoBiCommand>
+         {
+            new AddBuildingBlockToModuleCommand<InitialConditionsBuildingBlock>(templateBuildingBlock, templateModule)
+         };
+
+         commands.AddRange(moleculeChanges.Select(x => synchronizeInitialConditionCommand(x.quantity, x.quantityPath, templateBuildingBlock, simulation).AsHidden()));
          return commands;
       }
 

@@ -28,8 +28,12 @@ namespace MoBi.Presentation
       protected ParameterValuesBuildingBlock _selectedParameterValues;
       protected ParameterValuesBuildingBlock _templateOfSelectedParameterValues;
       protected ParameterValuesBuildingBlock _otherParameterValues;
+      protected InitialConditionsBuildingBlock _selectedInitialConditions;
+      protected InitialConditionsBuildingBlock _templateOfSelectedInitialConditions;
       protected List<ListItemDTO<ParameterValuesBuildingBlock>> _boundParameterValues;
       protected ParameterValuesBuildingBlock _boundSelectedParameterValues;
+      protected List<ListItemDTO<InitialConditionsBuildingBlock>> _boundInitialConditions;
+      protected InitialConditionsBuildingBlock _boundSelectedInitialConditions;
 
       protected override void Context()
       {
@@ -40,10 +44,13 @@ namespace MoBi.Presentation
          _lastModule = new Module().WithName("last");
          _firstModuleConfiguration = new ModuleConfiguration(_firstModule);
          _selectedParameterValues = new ParameterValuesBuildingBlock().WithName("selected");
+         _selectedInitialConditions = new InitialConditionsBuildingBlock().WithName("selected initial conditions");
          _lastModule.Add(_selectedParameterValues);
+         _lastModule.Add(_selectedInitialConditions);
          _lastModuleConfiguration = new ModuleConfiguration(_lastModule)
          {
-            SelectedParameterValues = _selectedParameterValues
+            SelectedParameterValues = _selectedParameterValues,
+            SelectedInitialConditions = _selectedInitialConditions
          };
 
          _simulation = new MoBiSimulation { Configuration = new SimulationConfiguration() };
@@ -53,15 +60,18 @@ namespace MoBi.Presentation
          _templateOfFirstModule = new Module().WithName("first");
          _templateOfSelectedParameterValues = new ParameterValuesBuildingBlock().WithName("selected");
          _otherParameterValues = new ParameterValuesBuildingBlock().WithName("other");
+         _templateOfSelectedInitialConditions = new InitialConditionsBuildingBlock().WithName("selected initial conditions");
          _templateOfLastModule = new Module
          {
             _templateOfSelectedParameterValues,
-            _otherParameterValues
+            _otherParameterValues,
+            _templateOfSelectedInitialConditions
          }.WithName("last");
 
          A.CallTo(() => _templateResolverTask.TemplateModuleFor(_firstModule)).Returns(_templateOfFirstModule);
          A.CallTo(() => _templateResolverTask.TemplateModuleFor(_lastModule)).Returns(_templateOfLastModule);
          A.CallTo(() => _templateResolverTask.TemplateBuildingBlockFor(_selectedParameterValues)).Returns(_templateOfSelectedParameterValues);
+         A.CallTo(() => _templateResolverTask.TemplateBuildingBlockFor(_selectedInitialConditions)).Returns(_templateOfSelectedInitialConditions);
 
          A.CallTo(() => _view.BindParameterValues(A<IEnumerable<ListItemDTO<ParameterValuesBuildingBlock>>>._, A<ParameterValuesBuildingBlock>._))
             .Invokes((IEnumerable<ListItemDTO<ParameterValuesBuildingBlock>> parameterValues, ParameterValuesBuildingBlock selected) =>
@@ -70,7 +80,14 @@ namespace MoBi.Presentation
                _boundSelectedParameterValues = selected;
             });
 
-         sut = new SelectCommitTargetPresenter(_view, _templateResolverTask, new ItemToListItemMapper<Module>(), new ItemToListItemMapper<ParameterValuesBuildingBlock>());
+         A.CallTo(() => _view.BindInitialConditions(A<IEnumerable<ListItemDTO<InitialConditionsBuildingBlock>>>._, A<InitialConditionsBuildingBlock>._))
+            .Invokes((IEnumerable<ListItemDTO<InitialConditionsBuildingBlock>> initialConditions, InitialConditionsBuildingBlock selected) =>
+            {
+               _boundInitialConditions = initialConditions.ToList();
+               _boundSelectedInitialConditions = selected;
+            });
+
+         sut = new SelectCommitTargetPresenter(_view, _templateResolverTask, new ItemToListItemMapper<Module>(), new ItemToListItemMapper<ParameterValuesBuildingBlock>(), new ItemToListItemMapper<InitialConditionsBuildingBlock>());
       }
    }
 
@@ -84,6 +101,7 @@ namespace MoBi.Presentation
          A.CallTo(() => _view.Canceled).Returns(false);
          A.CallTo(() => _view.SelectedModule).Returns(_lastModule);
          A.CallTo(() => _view.SelectedParameterValues).ReturnsLazily(() => _boundSelectedParameterValues);
+         A.CallTo(() => _view.SelectedInitialConditions).ReturnsLazily(() => _boundSelectedInitialConditions);
       }
 
       protected override void Because()
@@ -98,25 +116,31 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void the_template_building_blocks_and_a_create_new_entry_are_bound()
+      public void the_template_building_blocks_and_a_create_new_entry_are_bound_for_each_type()
       {
          _boundParameterValues.Count.ShouldBeEqualTo(3);
          _boundParameterValues[0].Item.ShouldBeEqualTo(_templateOfSelectedParameterValues);
          _boundParameterValues[1].Item.ShouldBeEqualTo(_otherParameterValues);
+
+         _boundInitialConditions.Count.ShouldBeEqualTo(2);
+         _boundInitialConditions[0].Item.ShouldBeEqualTo(_templateOfSelectedInitialConditions);
       }
 
       [Observation]
-      public void the_template_of_the_used_building_block_is_preselected()
+      public void the_templates_of_the_used_building_blocks_are_preselected()
       {
          _boundSelectedParameterValues.ShouldBeEqualTo(_templateOfSelectedParameterValues);
+         _boundSelectedInitialConditions.ShouldBeEqualTo(_templateOfSelectedInitialConditions);
       }
 
       [Observation]
-      public void the_commit_target_is_the_last_module_and_the_template_of_the_used_building_block()
+      public void the_commit_target_is_the_last_module_and_the_templates_of_the_used_building_blocks()
       {
          _commitTarget.ModuleConfiguration.ShouldBeEqualTo(_lastModuleConfiguration);
          _commitTarget.ParameterValues.ShouldBeEqualTo(_templateOfSelectedParameterValues);
          _commitTarget.CreateNewParameterValues.ShouldBeFalse();
+         _commitTarget.InitialConditions.ShouldBeEqualTo(_templateOfSelectedInitialConditions);
+         _commitTarget.CreateNewInitialConditions.ShouldBeFalse();
       }
    }
 
@@ -129,6 +153,7 @@ namespace MoBi.Presentation
          base.Context();
          A.CallTo(() => _view.SelectedModule).Returns(_lastModule);
          A.CallTo(() => _view.SelectedParameterValues).ReturnsLazily(() => _boundParameterValues.Last().Item);
+         A.CallTo(() => _view.SelectedInitialConditions).ReturnsLazily(() => _boundInitialConditions.Last().Item);
       }
 
       protected override void Because()
@@ -137,15 +162,17 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void the_commit_target_creates_a_new_building_block()
+      public void the_commit_target_creates_a_new_building_block_for_each_type()
       {
          _commitTarget.ModuleConfiguration.ShouldBeEqualTo(_lastModuleConfiguration);
          _commitTarget.ParameterValues.ShouldBeNull();
          _commitTarget.CreateNewParameterValues.ShouldBeTrue();
+         _commitTarget.InitialConditions.ShouldBeNull();
+         _commitTarget.CreateNewInitialConditions.ShouldBeTrue();
       }
    }
 
-   public class When_the_user_switches_to_a_module_without_selected_parameter_values : concern_for_SelectCommitTargetPresenter
+   public class When_the_user_switches_to_a_module_without_selected_building_blocks : concern_for_SelectCommitTargetPresenter
    {
       protected override void Context()
       {
@@ -161,10 +188,13 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void only_the_create_new_entry_is_bound_and_preselected()
+      public void only_the_create_new_entries_are_bound_and_preselected()
       {
          _boundParameterValues.Count.ShouldBeEqualTo(1);
          _boundSelectedParameterValues.ShouldBeEqualTo(_boundParameterValues.Single().Item);
+
+         _boundInitialConditions.Count.ShouldBeEqualTo(1);
+         _boundSelectedInitialConditions.ShouldBeEqualTo(_boundInitialConditions.Single().Item);
       }
    }
 
