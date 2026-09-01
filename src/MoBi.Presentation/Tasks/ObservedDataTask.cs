@@ -360,7 +360,18 @@ namespace MoBi.Presentation.Tasks
             return;
 
          metaDataCategory.ShouldListOfValuesBeIncluded = true;
-         allMolecules().OrderBy(molecule => molecule.Name).Each(molecule => addInfoToCategory(metaDataCategory, molecule));
+         allMolecules().OrderBy(molecule => molecule.Name)
+            .Each(molecule => addInfoToCategory(metaDataCategory, molecule, molWeightInDefaultUnitFor(molecule)));
+      }
+
+      private static string molWeightInDefaultUnitFor(IContainer molecule)
+      {
+         var molWeightParameter = molecule.Parameter(Parameters.MOL_WEIGHT);
+         if (molWeightParameter == null || double.IsNaN(molWeightParameter.Value))
+            return string.Empty;
+
+         var dimension = molWeightParameter.Dimension;
+         return dimension.BaseUnitValueToUnitValue(dimension.DefaultUnit, molWeightParameter.Value).ToString();
       }
 
       private IEnumerable<IContainer> allMolecules()
@@ -451,9 +462,9 @@ namespace MoBi.Presentation.Tasks
          }
       }
 
-      private void addInfoToCategory(MetaDataCategory metaDataCategory, IContainer container)
+      private void addInfoToCategory(MetaDataCategory metaDataCategory, IContainer container, string displayValue = null)
       {
-         metaDataCategory.ListOfValues.Add(container.Name, container.Name);
+         metaDataCategory.ListOfValues.Add(container.Name, displayValue ?? container.Name);
 
          var icon = ApplicationIcons.IconByName(container.Icon);
          if (icon != ApplicationIcons.EmptyIcon)
@@ -478,7 +489,7 @@ namespace MoBi.Presentation.Tasks
       {
          var category = new MetaDataCategory();
          action(category);
-         return category.ListOfValues.Values;
+         return category.ListOfValues.Keys;
       }
 
       public IReadOnlyList<string> DefaultMetaDataCategories => new[]
