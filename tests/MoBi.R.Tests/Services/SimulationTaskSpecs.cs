@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FakeItEasy;
+using MoBi.Assets;
+using MoBi.CLI.Core.MinimalImplementations;
 using MoBi.Core.Domain.Model;
 using MoBi.R.Domain;
 using MoBi.R.Services;
@@ -8,6 +11,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility.Extensions;
 using static MoBi.R.Tests.HelperForSpecs;
 using IProjectTask = MoBi.R.Services.IProjectTask;
@@ -134,8 +138,9 @@ internal class when_creating_multiple_simulations : when_creating_multiple_simul
       _results.Each(result =>
       {
          result.Simulation.ShouldNotBeNull();
-         result.Simulation.Configuration.ModuleConfigurations
-            .FirstOrDefault(x => x.Module.Name == "Module1")?.Module.ShouldNotBeNull();
+         var moduleConfiguration = result.Simulation.Configuration.ModuleConfigurations
+            .FirstOrDefault(x => x.Module.Name == "Module1");
+         moduleConfiguration.ShouldNotBeNull();
       });
    }
 }
@@ -160,6 +165,69 @@ internal class when_creating_multiple_simulations_and_one_cannot_be_created : wh
    {
       _results[0].Simulation.Name.ShouldBeEqualTo(_simulationNames[0]);
       _results[2].Simulation.Name.ShouldBeEqualTo(_simulationNames[2]);
+   }
+}
+
+internal class when_creating_a_simulation_without_a_name : when_creating_from_mobi_project
+{
+   private SimulationCreationResult _result;
+
+   protected override void Context()
+   {
+      base.Context();
+      _request.SimulationName = null;
+   }
+
+   protected override void Because()
+   {
+      _result = sut.CreateSimulationsAndValidateFrom(_request).Single();
+   }
+
+   [Observation]
+   public void should_return_the_errors_instead_of_a_simulation()
+   {
+      _result.Simulation.ShouldBeNull();
+      _result.Errors.ShouldContain(AppConstants.Exceptions.SimulationNameIsRequired);
+   }
+}
+
+internal class when_creating_multiple_simulations_with_a_null_request : when_creating_from_mobi_project
+{
+   private SimulationCreationResult[] _results;
+
+   protected override void Because()
+   {
+      _results = sut.CreateSimulationsAndValidateFrom(_request, null);
+   }
+
+   [Observation]
+   public void should_return_the_errors_for_the_null_request()
+   {
+      _results[1].Simulation.ShouldBeNull();
+      _results[1].Errors.ShouldContain(AppConstants.Exceptions.SimulationRequestCannotBeNull);
+   }
+
+   [Observation]
+   public void should_create_the_other_simulation()
+   {
+      _results[0].Simulation.ShouldNotBeNull();
+   }
+}
+
+internal class when_a_simulation_creation_runs_out_of_memory : ContextSpecification<ISimulationTask>
+{
+   protected override void Context()
+   {
+      var simulationFactory = A.Fake<ISimulationFactory>();
+      A.CallTo(simulationFactory).Throws(new OutOfMemoryException());
+      sut = new SimulationTask(simulationFactory, A.Fake<IObjectTypeResolver>(), new CoreUserSettings());
+   }
+
+   [Observation]
+   public void should_let_the_out_of_memory_escape()
+   {
+      The.Action(() => sut.CreateSimulationsAndValidateFrom(new SimulationRequest { SimulationName = "Sim" }))
+         .ShouldThrowAn<OutOfMemoryException>();
    }
 }
 

@@ -17,7 +17,8 @@ namespace MoBi.R.Services
    {
       /// <summary>
       ///    Creates and validates one simulation per request, named after <see cref="SimulationRequest.SimulationName" />.
-      ///    The results are returned in the request order.
+      ///    The results are returned in the request order. A request that cannot be created reports its errors in its
+      ///    result.
       /// </summary>
       SimulationCreationResult[] CreateSimulationsAndValidateFrom(params SimulationRequest[] requests);
 
@@ -85,7 +86,7 @@ namespace MoBi.R.Services
 
          var results = new SimulationCreationResult[requests.Length];
 
-         SimulationCreationResult createAt(int index)
+         bool createAt(int index)
          {
             try
             {
@@ -96,7 +97,7 @@ namespace MoBi.R.Services
                results[index] = new SimulationCreationResult(null, Enumerable.Empty<string>(), new[] { e.Message });
             }
 
-            return results[index];
+            return results[index].Simulation != null;
          }
 
          //simulations are created sequentially until one succeeds, so that lazily initialized services are
@@ -104,9 +105,9 @@ namespace MoBi.R.Services
          var warmupCount = 0;
          while (warmupCount < requests.Length)
          {
-            var result = createAt(warmupCount);
+            var success = createAt(warmupCount);
             warmupCount++;
-            if (result.Simulation != null)
+            if (success)
                break;
          }
 
