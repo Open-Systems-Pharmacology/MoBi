@@ -18,6 +18,7 @@
             components.Dispose();
          }
 
+         disposeBinders();
          base.Dispose(disposing);
       }
 

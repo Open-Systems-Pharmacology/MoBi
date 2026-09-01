@@ -1,31 +1,36 @@
-﻿using System.Collections.Generic;
-using DevExpress.XtraEditors.Controls;
-using MoBi.Assets;
+﻿using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using OSPSuite.Assets;
-using OSPSuite.Core.Domain;
-using OSPSuite.Core.Domain.Builder;
+using OSPSuite.DataBinding;
+using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.Presentation.Extensions;
-using OSPSuite.UI.Controls;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Views;
-using OSPSuite.Utility.Extensions;
 
 namespace MoBi.UI.Views
 {
    public partial class SelectCommitTargetView : BaseModalView, ISelectCommitTargetView
    {
       private ISelectCommitTargetPresenter _presenter;
+      private ScreenBinder<CommitTargetDTO> _screenBinder;
 
       public SelectCommitTargetView()
       {
          InitializeComponent();
-         cmbModule.SelectedIndexChanged += (o, e) => OnEvent(moduleChanged);
       }
 
       public void AttachPresenter(ISelectCommitTargetPresenter presenter) => _presenter = presenter;
+
+      public override void InitializeBinding()
+      {
+         base.InitializeBinding();
+         _screenBinder = new ScreenBinder<CommitTargetDTO>();
+         _screenBinder.Bind(x => x.Module).To(cmbModule).WithValues(x => _presenter.AllModules).Changed += () => OnEvent(_presenter.ModuleChanged);
+         _screenBinder.Bind(x => x.ParameterValues).To(cmbParameterValues).WithValues(x => _presenter.AllParameterValuesFor(x.Module));
+         _screenBinder.Bind(x => x.InitialConditions).To(cmbInitialConditions).WithValues(x => _presenter.AllInitialConditionsFor(x.Module));
+      }
 
       public override void InitializeResources()
       {
@@ -33,61 +38,14 @@ namespace MoBi.UI.Views
          layoutItemModule.Text = AppConstants.Captions.Module.FormatForLabel();
          layoutItemParameterValues.Text = ObjectTypes.ParameterValuesBuildingBlock.FormatForLabel();
          layoutItemInitialConditions.Text = ObjectTypes.InitialConditionsBuildingBlock.FormatForLabel();
-         cmbModule.Properties.TextEditStyle = TextEditStyles.DisableTextEditor;
-         cmbParameterValues.Properties.TextEditStyle = TextEditStyles.DisableTextEditor;
-         cmbInitialConditions.Properties.TextEditStyle = TextEditStyles.DisableTextEditor;
          descriptionLabel.AsDescription();
          Text = AppConstants.Captions.SelectCommitTarget;
       }
 
-      public void BindModules(IEnumerable<ListItemDTO<Module>> modules, Module selectedModule)
-      {
-         fill(cmbModule, modules);
-         select(cmbModule, item => Equals(item.DowncastTo<ListItemDTO<Module>>().Item, selectedModule));
-      }
-
-      public void BindParameterValues(IEnumerable<ListItemDTO<ParameterValuesBuildingBlock>> parameterValues, ParameterValuesBuildingBlock selectedParameterValues)
-      {
-         fill(cmbParameterValues, parameterValues);
-         select(cmbParameterValues, item => Equals(item.DowncastTo<ListItemDTO<ParameterValuesBuildingBlock>>().Item, selectedParameterValues));
-      }
-
-      public void BindInitialConditions(IEnumerable<ListItemDTO<InitialConditionsBuildingBlock>> initialConditions, InitialConditionsBuildingBlock selectedInitialConditions)
-      {
-         fill(cmbInitialConditions, initialConditions);
-         select(cmbInitialConditions, item => Equals(item.DowncastTo<ListItemDTO<InitialConditionsBuildingBlock>>().Item, selectedInitialConditions));
-      }
-
-      public Module SelectedModule => (cmbModule.SelectedItem as ListItemDTO<Module>)?.Item;
-
-      public ParameterValuesBuildingBlock SelectedParameterValues => (cmbParameterValues.SelectedItem as ListItemDTO<ParameterValuesBuildingBlock>)?.Item;
-
-      public InitialConditionsBuildingBlock SelectedInitialConditions => (cmbInitialConditions.SelectedItem as ListItemDTO<InitialConditionsBuildingBlock>)?.Item;
+      public void BindTo(CommitTargetDTO commitTargetDTO) => _screenBinder.BindToSource(commitTargetDTO);
 
       public void SetDescription(string description) => descriptionLabel.Text = description;
 
-      private void moduleChanged()
-      {
-         if (SelectedModule != null)
-            _presenter.ModuleChanged();
-      }
-
-      private static void fill<T>(UxComboBoxEdit comboBox, IEnumerable<ListItemDTO<T>> items)
-      {
-         comboBox.Properties.Items.Clear();
-         items.Each(item => comboBox.Properties.Items.Add(item));
-      }
-
-      private static void select(UxComboBoxEdit comboBox, System.Func<object, bool> isSelectedItem)
-      {
-         for (var i = 0; i < comboBox.Properties.Items.Count; i++)
-         {
-            if (!isSelectedItem(comboBox.Properties.Items[i]))
-               continue;
-
-            comboBox.SelectedIndex = i;
-            return;
-         }
-      }
+      private void disposeBinders() => _screenBinder.Dispose();
    }
 }

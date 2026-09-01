@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
-using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
@@ -30,10 +28,7 @@ namespace MoBi.Presentation
       protected ParameterValuesBuildingBlock _otherParameterValues;
       protected InitialConditionsBuildingBlock _selectedInitialConditions;
       protected InitialConditionsBuildingBlock _templateOfSelectedInitialConditions;
-      protected List<ListItemDTO<ParameterValuesBuildingBlock>> _boundParameterValues;
-      protected ParameterValuesBuildingBlock _boundSelectedParameterValues;
-      protected List<ListItemDTO<InitialConditionsBuildingBlock>> _boundInitialConditions;
-      protected InitialConditionsBuildingBlock _boundSelectedInitialConditions;
+      protected CommitTargetDTO _boundDTO;
 
       protected override void Context()
       {
@@ -73,21 +68,9 @@ namespace MoBi.Presentation
          A.CallTo(() => _templateResolverTask.TemplateBuildingBlockFor(_selectedParameterValues)).Returns(_templateOfSelectedParameterValues);
          A.CallTo(() => _templateResolverTask.TemplateBuildingBlockFor(_selectedInitialConditions)).Returns(_templateOfSelectedInitialConditions);
 
-         A.CallTo(() => _view.BindParameterValues(A<IEnumerable<ListItemDTO<ParameterValuesBuildingBlock>>>._, A<ParameterValuesBuildingBlock>._))
-            .Invokes((IEnumerable<ListItemDTO<ParameterValuesBuildingBlock>> parameterValues, ParameterValuesBuildingBlock selected) =>
-            {
-               _boundParameterValues = parameterValues.ToList();
-               _boundSelectedParameterValues = selected;
-            });
+         A.CallTo(() => _view.BindTo(A<CommitTargetDTO>._)).Invokes((CommitTargetDTO dto) => _boundDTO = dto);
 
-         A.CallTo(() => _view.BindInitialConditions(A<IEnumerable<ListItemDTO<InitialConditionsBuildingBlock>>>._, A<InitialConditionsBuildingBlock>._))
-            .Invokes((IEnumerable<ListItemDTO<InitialConditionsBuildingBlock>> initialConditions, InitialConditionsBuildingBlock selected) =>
-            {
-               _boundInitialConditions = initialConditions.ToList();
-               _boundSelectedInitialConditions = selected;
-            });
-
-         sut = new SelectCommitTargetPresenter(_view, _templateResolverTask, new ItemToListItemMapper<Module>(), new ItemToListItemMapper<ParameterValuesBuildingBlock>(), new ItemToListItemMapper<InitialConditionsBuildingBlock>());
+         sut = new SelectCommitTargetPresenter(_view, _templateResolverTask);
       }
    }
 
@@ -95,42 +78,36 @@ namespace MoBi.Presentation
    {
       private CommitTarget _commitTarget;
 
-      protected override void Context()
-      {
-         base.Context();
-         A.CallTo(() => _view.Canceled).Returns(false);
-         A.CallTo(() => _view.SelectedModule).Returns(_lastModule);
-         A.CallTo(() => _view.SelectedParameterValues).ReturnsLazily(() => _boundSelectedParameterValues);
-         A.CallTo(() => _view.SelectedInitialConditions).ReturnsLazily(() => _boundSelectedInitialConditions);
-      }
-
       protected override void Because()
       {
          _commitTarget = sut.SelectCommitTargetFor(_simulation);
       }
 
       [Observation]
-      public void the_modules_of_the_simulation_are_bound_with_the_last_module_preselected()
+      public void the_modules_of_the_simulation_are_available_for_selection()
       {
-         A.CallTo(() => _view.BindModules(A<IEnumerable<ListItemDTO<Module>>>.That.Matches(x => x.Select(item => item.Item).SequenceEqual(new[] { _firstModule, _lastModule })), _lastModule)).MustHaveHappened();
+         sut.AllModules.ShouldOnlyContainInOrder(_firstModule, _lastModule);
       }
 
       [Observation]
-      public void the_template_building_blocks_and_a_create_new_entry_are_bound_for_each_type()
+      public void the_template_building_blocks_and_a_create_new_entry_are_available_for_each_type()
       {
-         _boundParameterValues.Count.ShouldBeEqualTo(3);
-         _boundParameterValues[0].Item.ShouldBeEqualTo(_templateOfSelectedParameterValues);
-         _boundParameterValues[1].Item.ShouldBeEqualTo(_otherParameterValues);
+         var allParameterValues = sut.AllParameterValuesFor(_lastModule);
+         allParameterValues.Count.ShouldBeEqualTo(3);
+         allParameterValues[0].ShouldBeEqualTo(_templateOfSelectedParameterValues);
+         allParameterValues[1].ShouldBeEqualTo(_otherParameterValues);
 
-         _boundInitialConditions.Count.ShouldBeEqualTo(2);
-         _boundInitialConditions[0].Item.ShouldBeEqualTo(_templateOfSelectedInitialConditions);
+         var allInitialConditions = sut.AllInitialConditionsFor(_lastModule);
+         allInitialConditions.Count.ShouldBeEqualTo(2);
+         allInitialConditions[0].ShouldBeEqualTo(_templateOfSelectedInitialConditions);
       }
 
       [Observation]
-      public void the_templates_of_the_used_building_blocks_are_preselected()
+      public void the_last_module_and_the_templates_of_the_used_building_blocks_are_preselected()
       {
-         _boundSelectedParameterValues.ShouldBeEqualTo(_templateOfSelectedParameterValues);
-         _boundSelectedInitialConditions.ShouldBeEqualTo(_templateOfSelectedInitialConditions);
+         _boundDTO.Module.ShouldBeEqualTo(_lastModule);
+         _boundDTO.ParameterValues.ShouldBeEqualTo(_templateOfSelectedParameterValues);
+         _boundDTO.InitialConditions.ShouldBeEqualTo(_templateOfSelectedInitialConditions);
       }
 
       [Observation]
@@ -144,16 +121,18 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_selecting_the_commit_target_and_the_user_selects_the_create_new_entry : concern_for_SelectCommitTargetPresenter
+   public class When_selecting_the_commit_target_and_the_user_selects_the_create_new_entries : concern_for_SelectCommitTargetPresenter
    {
       private CommitTarget _commitTarget;
 
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _view.SelectedModule).Returns(_lastModule);
-         A.CallTo(() => _view.SelectedParameterValues).ReturnsLazily(() => _boundParameterValues.Last().Item);
-         A.CallTo(() => _view.SelectedInitialConditions).ReturnsLazily(() => _boundInitialConditions.Last().Item);
+         A.CallTo(() => _view.Display()).Invokes(() =>
+         {
+            _boundDTO.ParameterValues = sut.AllParameterValuesFor(_lastModule).Last();
+            _boundDTO.InitialConditions = sut.AllInitialConditionsFor(_lastModule).Last();
+         });
       }
 
       protected override void Because()
@@ -177,24 +156,46 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _view.SelectedModule).Returns(_lastModule);
          sut.SelectCommitTargetFor(_simulation);
-         A.CallTo(() => _view.SelectedModule).Returns(_firstModule);
       }
 
       protected override void Because()
       {
+         _boundDTO.Module = _firstModule;
          sut.ModuleChanged();
       }
 
       [Observation]
-      public void only_the_create_new_entries_are_bound_and_preselected()
+      public void the_create_new_entries_are_preselected()
       {
-         _boundParameterValues.Count.ShouldBeEqualTo(1);
-         _boundSelectedParameterValues.ShouldBeEqualTo(_boundParameterValues.Single().Item);
+         _boundDTO.ParameterValues.ShouldBeEqualTo(sut.AllParameterValuesFor(_firstModule).Single());
+         _boundDTO.InitialConditions.ShouldBeEqualTo(sut.AllInitialConditionsFor(_firstModule).Single());
+      }
 
-         _boundInitialConditions.Count.ShouldBeEqualTo(1);
-         _boundSelectedInitialConditions.ShouldBeEqualTo(_boundInitialConditions.Single().Item);
+      [Observation]
+      public void the_view_is_bound_again_to_refresh_the_building_block_lists()
+      {
+         A.CallTo(() => _view.BindTo(_boundDTO)).MustHaveHappenedTwiceExactly();
+      }
+   }
+
+   public class When_the_template_of_the_used_building_block_cannot_be_resolved : concern_for_SelectCommitTargetPresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _templateResolverTask.TemplateBuildingBlockFor(_selectedParameterValues)).Returns(null);
+      }
+
+      protected override void Because()
+      {
+         sut.SelectCommitTargetFor(_simulation);
+      }
+
+      [Observation]
+      public void the_create_new_entry_is_preselected_so_that_the_selection_is_never_empty()
+      {
+         _boundDTO.ParameterValues.ShouldBeEqualTo(sut.AllParameterValuesFor(_lastModule).Last());
       }
    }
 
