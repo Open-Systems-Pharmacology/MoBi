@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FakeItEasy;
+using MoBi.Assets;
+using MoBi.CLI.Core.MinimalImplementations;
 using MoBi.Core.Domain.Model;
 using MoBi.R.Domain;
 using MoBi.R.Services;
@@ -8,6 +11,8 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Utility.Extensions;
 using static MoBi.R.Tests.HelperForSpecs;
 using IProjectTask = MoBi.R.Services.IProjectTask;
 using ModuleConfiguration = MoBi.R.Domain.ModuleConfiguration;
@@ -51,7 +56,7 @@ internal class when_creating_from_mobi_project : concern_for_SimulationTask
 
       _moduleConfiguration = sut.CreateModuleConfiguration(_moduleForSimulation, "Parameter Values", "Initial Conditions");
 
-      _request = new SimulationRequest();
+      _request = new SimulationRequest { SimulationName = _simulationName };
       _request.AddModuleConfiguration(_moduleConfiguration);
       foreach (var ep in _expressionProfilesForSimulation ?? Array.Empty<ExpressionProfileBuildingBlock>())
          _request.AddExpressionProfile(ep);
@@ -65,7 +70,7 @@ internal class when_creating_simulation : when_creating_from_mobi_project
 {
    protected override void Because()
    {
-      _creationResult = sut.CreateSimulationAndValidateFrom(_simulationName, _request);
+      _creationResult = sut.CreateSimulationsAndValidateFrom(_request).Single();
    }
 
    [Observation]
@@ -85,13 +90,160 @@ internal class when_creating_simulation : when_creating_from_mobi_project
    }
 }
 
-internal abstract class when_creating_an_invalid_configuration : when_creating_from_mobi_project
+internal abstract class when_creating_multiple_simulations_from_requests : when_creating_from_mobi_project
+{
+   protected SimulationCreationResult[] _results;
+   protected string[] _simulationNames;
+   protected SimulationRequest[] _requests;
+
+   protected override void Context()
+   {
+      base.Context();
+      _requests = _simulationNames.Select(createRequest).ToArray();
+   }
+
+   protected override void Because()
+   {
+      _results = sut.CreateSimulationsAndValidateFrom(_requests);
+   }
+
+   private SimulationRequest createRequest(string simulationName)
+   {
+      var request = new SimulationRequest { SimulationName = simulationName };
+      request.AddModuleConfiguration(_moduleConfiguration);
+      (_expressionProfilesForSimulation ?? Array.Empty<ExpressionProfileBuildingBlock>()).Each(request.AddExpressionProfile);
+      request.SetIndividual(_individualForSimulation);
+      return request;
+   }
+}
+
+internal class when_creating_multiple_simulations : when_creating_multiple_simulations_from_requests
+{
+   protected override void Context()
+   {
+      _simulationNames = new[] { "ParallelSim1", "ParallelSim2", "ParallelSim3", "ParallelSim4" };
+      base.Context();
+   }
+
+   [Observation]
+   public void should_return_one_result_per_request_in_the_request_order()
+   {
+      _results.Length.ShouldBeEqualTo(_simulationNames.Length);
+      _results.Select(x => x.Simulation.Name).ToArray().ShouldBeEqualTo(_simulationNames);
+   }
+
+   [Observation]
+   public void should_create_all_simulations_from_the_shared_module()
+   {
+      _results.Each(result =>
+      {
+         result.Simulation.ShouldNotBeNull();
+         var moduleConfiguration = result.Simulation.Configuration.ModuleConfigurations
+            .FirstOrDefault(x => x.Module.Name == "Module1");
+         moduleConfiguration.ShouldNotBeNull();
+      });
+   }
+}
+
+internal class when_creating_multiple_simulations_and_one_cannot_be_created : when_creating_multiple_simulations_from_requests
+{
+   protected override void Context()
+   {
+      _simulationNames = new[] { "ParallelSim1", $"Invalid{Constants.ILLEGAL_CHARACTERS.First()}Name", "ParallelSim3" };
+      base.Context();
+   }
+
+   [Observation]
+   public void should_return_the_errors_for_the_failing_simulation()
+   {
+      _results[1].Simulation.ShouldBeNull();
+      _results[1].Errors.Any().ShouldBeTrue();
+   }
+
+   [Observation]
+   public void should_create_the_other_simulations_in_the_request_order()
+   {
+      _results[0].Simulation.Name.ShouldBeEqualTo(_simulationNames[0]);
+      _results[2].Simulation.Name.ShouldBeEqualTo(_simulationNames[2]);
+   }
+}
+
+internal class when_creating_a_simulation_without_a_name : when_creating_from_mobi_project
+{
+   private SimulationCreationResult _result;
+
+   protected override void Context()
+   {
+      base.Context();
+      _request.SimulationName = null;
+   }
+
+   protected override void Because()
+   {
+      _result = sut.CreateSimulationsAndValidateFrom(_request).Single();
+   }
+
+   [Observation]
+   public void should_return_the_errors_instead_of_a_simulation()
+   {
+      _result.Simulation.ShouldBeNull();
+      _result.Errors.ShouldContain(AppConstants.Exceptions.SimulationNameIsRequired);
+   }
+}
+
+internal class when_creating_multiple_simulations_with_a_null_request : when_creating_from_mobi_project
+{
+   private SimulationCreationResult[] _results;
+
+   protected override void Because()
+   {
+      _results = sut.CreateSimulationsAndValidateFrom(_request, null);
+   }
+
+   [Observation]
+   public void should_return_the_errors_for_the_null_request()
+   {
+      _results[1].Simulation.ShouldBeNull();
+      _results[1].Errors.ShouldContain(AppConstants.Exceptions.SimulationRequestCannotBeNull);
+   }
+
+   [Observation]
+   public void should_create_the_other_simulation()
+   {
+      _results[0].Simulation.ShouldNotBeNull();
+   }
+}
+
+internal class when_a_simulation_creation_runs_out_of_memory : ContextSpecification<ISimulationTask>
+{
+   protected override void Context()
+   {
+      var simulationFactory = A.Fake<ISimulationFactory>();
+      A.CallTo(simulationFactory).Throws(new OutOfMemoryException());
+      sut = new SimulationTask(simulationFactory, A.Fake<IObjectTypeResolver>(), new CoreUserSettings());
+   }
+
+   [Observation]
+   public void should_let_the_out_of_memory_escape()
+   {
+      The.Action(() => sut.CreateSimulationsAndValidateFrom(new SimulationRequest { SimulationName = "Sim" }))
+         .ShouldThrowAn<OutOfMemoryException>();
+   }
+}
+
+internal class when_creating_multiple_simulations_without_requests : when_creating_from_mobi_project
 {
    [Observation]
-   public void should_throw_expected_exception()
+   public void should_throw_expected_exception_when_the_requests_are_null()
    {
-      The.Action(() => sut.CreateSimulationAndValidateFrom(_simulationName, _request))
-         .ShouldThrowAn<InvalidOperationException>();
+      The.Action(() => sut.CreateSimulationsAndValidateFrom(null))
+         .ShouldThrowAn<InvalidArgumentException>();
+   }
+
+   [Observation]
+   public void should_return_no_results_when_there_are_no_requests()
+   {
+      sut.CreateSimulationsAndValidateFrom().ShouldBeEmpty();
    }
 }
 
@@ -106,13 +258,13 @@ internal class when_creating_simulation_from_pkml_module : concern_for_Simulatio
       _simulationName = "SimFromPKML";
       var moduleConfig = sut.CreateModuleConfiguration(module);
 
-      _request = new SimulationRequest();
+      _request = new SimulationRequest { SimulationName = _simulationName };
       _request.AddModuleConfiguration(moduleConfig);
    }
 
    protected override void Because()
    {
-      _creationResult = sut.CreateSimulationAndValidateFrom(_simulationName, _request);
+      _creationResult = sut.CreateSimulationsAndValidateFrom(_request).Single();
    }
 
    [Observation]
@@ -135,7 +287,7 @@ internal class when_creating_simulation_with_warnings_only : concern_for_Simulat
       _simulationName = "SimWithWarningsOnly";
       var moduleConfig = sut.CreateModuleConfiguration(_moduleForSimulation, "Parameter Values", "Initial Conditions");
 
-      _request = new SimulationRequest();
+      _request = new SimulationRequest { SimulationName = _simulationName };
       _request.AddModuleConfiguration(moduleConfig);
       _request.SetIndividual(_projectTask.IndividualBuildingBlockByName(_project, "European (P-gp modified, CYP3A4 36 h)"));
 
@@ -144,7 +296,7 @@ internal class when_creating_simulation_with_warnings_only : concern_for_Simulat
 
    protected override void Because()
    {
-      _creationResult = sut.CreateSimulationAndValidateFrom(_simulationName, _request);
+      _creationResult = sut.CreateSimulationsAndValidateFrom(_request).Single();
    }
 
    [Observation]
@@ -168,7 +320,7 @@ internal class when_creating_simulation_with_errors : concern_for_SimulationTask
       var module = _projectTask.ModuleByName(_project, "Module1");
       var moduleConfig = sut.CreateModuleConfiguration(module);
 
-      _request = new SimulationRequest();
+      _request = new SimulationRequest { SimulationName = _simulationName };
       _request.AddModuleConfiguration(moduleConfig);
       _request.SetIndividual(_projectTask.IndividualBuildingBlockByName(_project, "European (P-gp modified, CYP3A4 36 h)"));
 
@@ -176,10 +328,11 @@ internal class when_creating_simulation_with_errors : concern_for_SimulationTask
    }
 
    [Observation]
-   public void should_throw_expected_exception()
+   public void should_return_the_errors_instead_of_a_simulation()
    {
-      The.Action(() => sut.CreateSimulationAndValidateFrom(_simulationName, _request))
-         .ShouldThrowAn<InvalidOperationException>();
+      var result = sut.CreateSimulationsAndValidateFrom(_request).Single();
+      result.Simulation.ShouldBeNull();
+      result.Errors.Any().ShouldBeTrue();
    }
 }
 
@@ -194,7 +347,7 @@ internal class when_creating_simulation_with_create_all_process_rate_parameters_
       _moduleForSimulation = _projectTask.ModuleByName(_project, "Module1");
       var moduleConfig = sut.CreateModuleConfiguration(_moduleForSimulation, "Parameter Values", "Initial Conditions");
 
-      _request = new SimulationRequest();
+      _request = new SimulationRequest { SimulationName = _simulationName };
       _request.AddModuleConfiguration(moduleConfig);
       _request.SetIndividual(_projectTask.IndividualBuildingBlockByName(_project, "European (P-gp modified, CYP3A4 36 h)"));
       _request.CreateAllProcessRateParameters = true;
@@ -204,7 +357,7 @@ internal class when_creating_simulation_with_create_all_process_rate_parameters_
 
    protected override void Because()
    {
-      _creationResult = sut.CreateSimulationAndValidateFrom(_simulationName, _request);
+      _creationResult = sut.CreateSimulationsAndValidateFrom(_request).Single();
    }
 
    [Observation]
@@ -230,7 +383,7 @@ internal class when_creating_simulation_with_custom_simulation_settings : concer
       var customSettings = new SimulationSettings();
       customSettings.Name = "CustomSettings";
 
-      _request = new SimulationRequest();
+      _request = new SimulationRequest { SimulationName = _simulationName };
       _request.AddModuleConfiguration(moduleConfig);
       _request.SetIndividual(_projectTask.IndividualBuildingBlockByName(_project, "European (P-gp modified, CYP3A4 36 h)"));
       _request.SimulationSettings = customSettings;
@@ -240,7 +393,7 @@ internal class when_creating_simulation_with_custom_simulation_settings : concer
 
    protected override void Because()
    {
-      _creationResult = sut.CreateSimulationAndValidateFrom(_simulationName, _request);
+      _creationResult = sut.CreateSimulationsAndValidateFrom(_request).Single();
    }
 
    [Observation]
@@ -273,7 +426,7 @@ internal class when_creating_simulation_with_calculation_method_override : conce
       
       var moduleConfiguration = sut.CreateModuleConfiguration(_moduleForSimulation, "Parameter Values", "Initial Conditions");
 
-      _request = new SimulationRequest();
+      _request = new SimulationRequest { SimulationName = _simulationName };
       _request.AddModuleConfiguration(moduleConfiguration);
       _request.SetIndividual(_projectTask.IndividualBuildingBlockByName(_project, "European (P-gp modified, CYP3A4 36 h)"));
       _request.AddMoleculeUsedCalculationMethod("Molecule name", _category, _overriddenCalculationMethod);
@@ -283,7 +436,7 @@ internal class when_creating_simulation_with_calculation_method_override : conce
 
    protected override void Because()
    {
-      _creationResult = sut.CreateSimulationAndValidateFrom(_simulationName, _request);
+      _creationResult = sut.CreateSimulationsAndValidateFrom(_request).Single();
    }
 
    [Observation]

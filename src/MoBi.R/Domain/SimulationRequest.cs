@@ -12,6 +12,7 @@ namespace MoBi.R.Domain
       private readonly List<ExpressionProfileBuildingBlock> _expressionProfiles = new();
       private readonly Cache<(string moleculeName, string category), string> _moleculeCalculationMethodOverrides = new();
 
+      public string SimulationName { get; set; }
       public SimulationSettings SimulationSettings { get; set; }
       public bool CreateAllProcessRateParameters { get; set; }
       public IndividualBuildingBlock Individual { get; private set; }

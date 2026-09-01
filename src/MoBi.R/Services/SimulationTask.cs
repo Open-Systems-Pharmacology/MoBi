@@ -1,19 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MoBi.Assets;
 using MoBi.R.Domain;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Extensions;
+using ICoreUserSettings = MoBi.Core.ICoreUserSettings;
 using ModuleConfiguration = MoBi.R.Domain.ModuleConfiguration;
 
 namespace MoBi.R.Services
 {
    public interface ISimulationTask
    {
-      SimulationCreationResult CreateSimulationAndValidateFrom(string simulationName, SimulationRequest request);
+      /// <summary>
+      ///    Creates and validates one simulation per request, named after <see cref="SimulationRequest.SimulationName" />.
+      ///    The results are returned in the request order. A request that cannot be created reports its errors in its
+      ///    result.
+      /// </summary>
+      SimulationCreationResult[] CreateSimulationsAndValidateFrom(params SimulationRequest[] requests);
 
       ModuleConfiguration CreateModuleConfiguration(Module module,
          string selectedParameterValues = null,
@@ -24,11 +31,13 @@ namespace MoBi.R.Services
    {
       private readonly ISimulationFactory _simulationFactory;
       private readonly IObjectTypeResolver _objectTypeResolver;
+      private readonly ICoreUserSettings _userSettings;
 
-      public SimulationTask(ISimulationFactory simulationFactory, IObjectTypeResolver objectTypeResolver)
+      public SimulationTask(ISimulationFactory simulationFactory, IObjectTypeResolver objectTypeResolver, ICoreUserSettings userSettings)
       {
          _simulationFactory = simulationFactory;
          _objectTypeResolver = objectTypeResolver;
+         _userSettings = userSettings;
       }
 
       public ModuleConfiguration CreateModuleConfiguration(Module module,
@@ -53,7 +62,7 @@ namespace MoBi.R.Services
          return allNamedObjects.FindByName(namedObjectToSelect);
       }
 
-      public SimulationCreationResult CreateSimulationAndValidateFrom(string simulationName, SimulationRequest request)
+      private SimulationCreationResult createSimulationAndValidateFrom(SimulationRequest request)
       {
          if (request == null)
             throw new InvalidArgumentException(AppConstants.Exceptions.SimulationRequestCannotBeNull);
@@ -61,7 +70,7 @@ namespace MoBi.R.Services
          var modulesArray = request?.ModuleConfigurations?.ToArray() ?? Array.Empty<ModuleConfiguration>();
          var expressionsArray = request?.ExpressionProfiles?.ToArray() ?? Array.Empty<ExpressionProfileBuildingBlock>();
 
-         return _simulationFactory.CreateSimulationFrom(simulationName,
+         return _simulationFactory.CreateSimulationFrom(request.SimulationName,
             modulesArray,
             expressionsArray,
             request.Individual,
@@ -69,5 +78,48 @@ namespace MoBi.R.Services
             request.CreateAllProcessRateParameters,
             request.SimulationSettings);
       }
+
+      public SimulationCreationResult[] CreateSimulationsAndValidateFrom(params SimulationRequest[] requests)
+      {
+         if (requests == null)
+            throw new InvalidArgumentException(AppConstants.Exceptions.SimulationRequestCannotBeNull);
+
+         var results = new SimulationCreationResult[requests.Length];
+
+         bool createAt(int index)
+         {
+            try
+            {
+               results[index] = createSimulationAndValidateFrom(requests[index]);
+            }
+            catch (Exception e) when (!e.IsOutOfMemory())
+            {
+               results[index] = new SimulationCreationResult(null, Enumerable.Empty<string>(), new[] { e.Message });
+            }
+
+            return results[index].Simulation != null;
+         }
+
+         //simulations are created sequentially until one succeeds, so that lazily initialized services are
+         //warmed up before the remaining simulations are created in parallel
+         var warmupCount = 0;
+         while (warmupCount < requests.Length)
+         {
+            var success = createAt(warmupCount);
+            warmupCount++;
+            if (success)
+               break;
+         }
+
+         if (requests.Length > warmupCount)
+            Parallel.For(warmupCount, requests.Length, parallelOptions(), index => createAt(index));
+
+         return results;
+      }
+
+      private ParallelOptions parallelOptions() => new ParallelOptions
+      {
+         MaxDegreeOfParallelism = Math.Max(1, _userSettings.MaximumNumberOfCoresToUse)
+      };
    }
 }
