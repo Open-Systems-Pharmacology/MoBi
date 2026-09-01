@@ -8,5 +8,7 @@ namespace MoBi.Presentation.Views
    {
       void BindTo(CommitTargetDTO commitTargetDTO);
       void SetDescription(string description);
+      void HideParameterValuesSelection();
+      void HideInitialConditionsSelection();
    }
 }

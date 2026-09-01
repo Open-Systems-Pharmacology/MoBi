@@ -1,4 +1,5 @@
-﻿using MoBi.Assets;
+﻿using DevExpress.XtraLayout.Utils;
+using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
@@ -45,6 +46,10 @@ namespace MoBi.UI.Views
       public void BindTo(CommitTargetDTO commitTargetDTO) => _screenBinder.BindToSource(commitTargetDTO);
 
       public void SetDescription(string description) => descriptionLabel.Text = description;
+
+      public void HideParameterValuesSelection() => layoutItemParameterValues.Visibility = LayoutVisibility.Never;
+
+      public void HideInitialConditionsSelection() => layoutItemInitialConditions.Visibility = LayoutVisibility.Never;
 
       private void disposeBinders() => _screenBinder.Dispose();
    }

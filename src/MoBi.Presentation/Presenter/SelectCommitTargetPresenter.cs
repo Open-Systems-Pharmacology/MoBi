@@ -41,11 +41,12 @@ namespace MoBi.Presentation.Presenter
    public interface ISelectCommitTargetPresenter : IDisposablePresenter
    {
       /// <summary>
-      ///    Asks the user to select the module and, for each type, the building block (or a new one) where the changes
-      ///    of <paramref name="simulation" /> will be committed. The last module is preselected as the default.
+      ///    Asks the user to select the module and, for each type with changes, the building block (or a new one) where
+      ///    the changes of <paramref name="simulation" /> will be committed. The last module is preselected as the default
+      ///    and the building block selection is hidden for a type without changes.
       ///    Returns null if the user cancels the selection
       /// </summary>
-      CommitTarget SelectCommitTargetFor(IMoBiSimulation simulation);
+      CommitTarget SelectCommitTargetFor(IMoBiSimulation simulation, bool hasParameterChanges, bool hasMoleculeChanges);
 
       void ModuleChanged();
       IReadOnlyList<Module> AllModules { get; }
@@ -68,11 +69,17 @@ namespace MoBi.Presentation.Presenter
          _newInitialConditions = new InitialConditionsBuildingBlock().WithName(AppConstants.Captions.NewWindow(ObjectTypes.InitialConditionsBuildingBlock));
       }
 
-      public CommitTarget SelectCommitTargetFor(IMoBiSimulation simulation)
+      public CommitTarget SelectCommitTargetFor(IMoBiSimulation simulation, bool hasParameterChanges, bool hasMoleculeChanges)
       {
          _moduleConfigurations = simulation.Configuration.ModuleConfigurations;
          _commitTargetDTO = new CommitTargetDTO { Module = _moduleConfigurations.Last().Module };
          setDefaultBuildingBlocks();
+
+         if (!hasParameterChanges)
+            _view.HideParameterValuesSelection();
+
+         if (!hasMoleculeChanges)
+            _view.HideInitialConditionsSelection();
 
          _view.SetDescription(AppConstants.Captions.SelectCommitTargetDescription);
          _view.BindTo(_commitTargetDTO);

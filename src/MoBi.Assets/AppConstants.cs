@@ -287,7 +287,10 @@ namespace MoBi.Assets
             return DisplayValue(displayValue.ConvertedTo<string>(), displayUnit);
          }
 
-         public static string CommitingChangesToModulesMessage(Module module, InitialConditionsBuildingBlock targetInitialConditions, ParameterValuesBuildingBlock targetParameterValues, bool simulationStaysOutOfSync, bool hasMoleculeChanges, bool hasParameterChanges)
+         public static readonly string CommitToNotUsedBuildingBlockWarning = "<b>Warning:</b> changes are committed to a building block that is not used by the simulation. The simulation will stay out of sync until it is manually configured to use the committed building block.";
+         public static readonly string CommitShadowedByLaterModuleWarning = "<b>Warning:</b> some of the committed values are also defined in a module later in the simulation configuration. The later values win when the simulation is created, so the simulation will stay out of sync.";
+
+         public static string CommitingChangesToModulesMessage(Module module, InitialConditionsBuildingBlock targetInitialConditions, ParameterValuesBuildingBlock targetParameterValues, bool hasMoleculeChanges, bool hasParameterChanges)
          {
             var moduleName = module.Name;
             var message = $"Values changed in the simulation will be committed to the module <i>{moduleName}</i>. {Environment.NewLine}";
@@ -303,9 +306,6 @@ namespace MoBi.Assets
                var pvName = targetParameterValues == null ? $"A new parameter values building block will be created in module <i>{moduleName}</i>" : $"Parameter values will be written to the parameter values building block <i>{targetParameterValues.Name}</i> in module <i>{moduleName}</i>";
                message += $"{Environment.NewLine}- {pvName}";
             }
-
-            if (simulationStaysOutOfSync)
-               message += $"{Environment.NewLine}{Environment.NewLine}<b>Warning:</b> changes are committed to a building block that is not used by the simulation. The simulation will stay out of sync until it is manually configured to use the committed building block.";
 
             return message;
          }

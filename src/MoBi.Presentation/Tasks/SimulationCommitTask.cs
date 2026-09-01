@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Assets;
@@ -68,15 +69,21 @@ namespace MoBi.Presentation.Tasks
          changesFrom<Parameter>(simulationWithChanges).Each(x => parameterChanges.Add(x));
          changesFrom<DistributedParameter>(simulationWithChanges).Each(x => parameterChanges.Add(x));
 
-         var commitTarget = selectCommitTargetFrom(simulationWithChanges);
+         var commitTarget = selectCommitTargetFrom(simulationWithChanges, parameterChanges.Any(), moleculeChanges.Any());
          if (commitTarget == null)
             return null;
 
          var moduleConfiguration = commitTarget.ModuleConfiguration;
-         var simulationStaysOutOfSync = parameterChanges.Any() && !commitsToUsedParameterValues(commitTarget) ||
-                                        moleculeChanges.Any() && !commitsToUsedInitialConditions(commitTarget);
+         var commitsToNotUsedBuildingBlock = parameterChanges.Any() && !commitsToUsedParameterValues(commitTarget) ||
+                                             moleculeChanges.Any() && !commitsToUsedInitialConditions(commitTarget);
+         var changesShadowedByLaterModule = changesAreShadowedByLaterModule(simulationWithChanges, commitTarget, parameterChanges, moleculeChanges);
+         var simulationStaysOutOfSync = commitsToNotUsedBuildingBlock || changesShadowedByLaterModule;
 
-         var message = CommitingChangesToModulesMessage(moduleConfiguration.Module, commitTarget.InitialConditions, commitTarget.ParameterValues, simulationStaysOutOfSync, moleculeChanges.Any(), parameterChanges.Any());
+         var message = CommitingChangesToModulesMessage(moduleConfiguration.Module, commitTarget.InitialConditions, commitTarget.ParameterValues, moleculeChanges.Any(), parameterChanges.Any());
+         if (commitsToNotUsedBuildingBlock)
+            message += $"{Environment.NewLine}{Environment.NewLine}{CommitToNotUsedBuildingBlockWarning}";
+         if (changesShadowedByLaterModule)
+            message += $"{Environment.NewLine}{Environment.NewLine}{CommitShadowedByLaterModuleWarning}";
 
          if (_interactionTaskContext.DialogCreator.MessageBoxYesNo(message) != ViewResult.Yes)
             return null;
@@ -110,28 +117,43 @@ namespace MoBi.Presentation.Tasks
       ///    by the user, the last module and its selected building blocks being the default.
       ///    Returns null if the user cancels the selection
       /// </summary>
-      private CommitTarget selectCommitTargetFrom(IMoBiSimulation simulation)
+      private CommitTarget selectCommitTargetFrom(IMoBiSimulation simulation, bool hasParameterChanges, bool hasMoleculeChanges)
       {
          var moduleConfigurations = simulation.Configuration.ModuleConfigurations;
 
          // there is no selection to make when the simulation uses a single module without selected building
          // blocks and the template module does not contain any to select from
-         if (moduleConfigurations.Count == 1 && noBuildingBlockToSelectFor(moduleConfigurations[0]))
+         if (moduleConfigurations.Count == 1 && noBuildingBlockToSelectFor(moduleConfigurations[0], hasParameterChanges, hasMoleculeChanges))
             return new CommitTarget(moduleConfigurations[0], parameterValues: null, initialConditions: null);
 
          using (var presenter = _context.Resolve<ISelectCommitTargetPresenter>())
          {
-            return presenter.SelectCommitTargetFor(simulation);
+            return presenter.SelectCommitTargetFor(simulation, hasParameterChanges, hasMoleculeChanges);
          }
       }
 
-      private bool noBuildingBlockToSelectFor(ModuleConfiguration moduleConfiguration)
+      /// <summary>
+      ///    Returns true when there is no building block selection to offer for any of the types with changes
+      /// </summary>
+      private bool noBuildingBlockToSelectFor(ModuleConfiguration moduleConfiguration, bool hasParameterChanges, bool hasMoleculeChanges)
       {
-         if (moduleConfiguration.SelectedParameterValues != null || moduleConfiguration.SelectedInitialConditions != null)
-            return false;
-
          var templateModule = _templateResolverTask.TemplateModuleFor(moduleConfiguration.Module);
-         return !templateModule.ParameterValuesCollection.Any() && !templateModule.InitialConditionsCollection.Any();
+         var parameterValuesToSelect = hasParameterChanges && (moduleConfiguration.SelectedParameterValues != null || templateModule.ParameterValuesCollection.Any());
+         var initialConditionsToSelect = hasMoleculeChanges && (moduleConfiguration.SelectedInitialConditions != null || templateModule.InitialConditionsCollection.Any());
+         return !parameterValuesToSelect && !initialConditionsToSelect;
+      }
+
+      /// <summary>
+      ///    Returns true when any committed path is also defined in a building block selected in a module configuration
+      ///    coming after the target module. Those values win when the simulation is created, so the created simulation
+      ///    would not reproduce the committed values
+      /// </summary>
+      private bool changesAreShadowedByLaterModule(IMoBiSimulation simulation, CommitTarget commitTarget, IReadOnlyList<(ObjectPath quantityPath, IParameter quantity)> parameterChanges, IReadOnlyList<(ObjectPath quantityPath, MoleculeAmount quantity)> moleculeChanges)
+      {
+         var laterModuleConfigurations = simulation.Configuration.ModuleConfigurations.SkipWhile(x => !Equals(x, commitTarget.ModuleConfiguration)).Skip(1).ToList();
+
+         return parameterChanges.Any(change => laterModuleConfigurations.Any(x => x.SelectedParameterValues?[change.quantityPath] != null)) ||
+                moleculeChanges.Any(change => laterModuleConfigurations.Any(x => x.SelectedInitialConditions?[change.quantityPath] != null));
       }
 
       /// <summary>

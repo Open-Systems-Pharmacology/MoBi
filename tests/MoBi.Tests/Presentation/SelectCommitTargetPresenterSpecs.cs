@@ -80,7 +80,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         _commitTarget = sut.SelectCommitTargetFor(_simulation);
+         _commitTarget = sut.SelectCommitTargetFor(_simulation, true, true);
       }
 
       [Observation]
@@ -137,7 +137,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         _commitTarget = sut.SelectCommitTargetFor(_simulation);
+         _commitTarget = sut.SelectCommitTargetFor(_simulation, true, true);
       }
 
       [Observation]
@@ -156,7 +156,7 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         sut.SelectCommitTargetFor(_simulation);
+         sut.SelectCommitTargetFor(_simulation, true, true);
       }
 
       protected override void Because()
@@ -189,13 +189,43 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         sut.SelectCommitTargetFor(_simulation);
+         sut.SelectCommitTargetFor(_simulation, true, true);
       }
 
       [Observation]
       public void the_create_new_entry_is_preselected_so_that_the_selection_is_never_empty()
       {
          _boundDTO.ParameterValues.ShouldBeEqualTo(sut.AllParameterValuesFor(_lastModule).Last());
+      }
+   }
+
+   public class When_selecting_the_commit_target_with_only_parameter_changes : concern_for_SelectCommitTargetPresenter
+   {
+      protected override void Because()
+      {
+         sut.SelectCommitTargetFor(_simulation, hasParameterChanges: true, hasMoleculeChanges: false);
+      }
+
+      [Observation]
+      public void the_initial_conditions_selection_is_hidden()
+      {
+         A.CallTo(() => _view.HideInitialConditionsSelection()).MustHaveHappened();
+         A.CallTo(() => _view.HideParameterValuesSelection()).MustNotHaveHappened();
+      }
+   }
+
+   public class When_selecting_the_commit_target_with_only_molecule_changes : concern_for_SelectCommitTargetPresenter
+   {
+      protected override void Because()
+      {
+         sut.SelectCommitTargetFor(_simulation, hasParameterChanges: false, hasMoleculeChanges: true);
+      }
+
+      [Observation]
+      public void the_parameter_values_selection_is_hidden()
+      {
+         A.CallTo(() => _view.HideParameterValuesSelection()).MustHaveHappened();
+         A.CallTo(() => _view.HideInitialConditionsSelection()).MustNotHaveHappened();
       }
    }
 
@@ -211,7 +241,7 @@ namespace MoBi.Presentation
 
       protected override void Because()
       {
-         _commitTarget = sut.SelectCommitTargetFor(_simulation);
+         _commitTarget = sut.SelectCommitTargetFor(_simulation, true, true);
       }
 
       [Observation]

@@ -48,7 +48,7 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _context.Resolve<ISelectCommitTargetPresenter>()).Returns(_selectCommitTargetPresenter);
 
          // the user accepts the defaults: last module and its selected building blocks or new ones
-         A.CallTo(() => _selectCommitTargetPresenter.SelectCommitTargetFor(_simulationWithChanges)).ReturnsLazily(() =>
+         A.CallTo(() => _selectCommitTargetPresenter.SelectCommitTargetFor(_simulationWithChanges, A<bool>._, A<bool>._)).ReturnsLazily(() =>
          {
             var lastModuleConfiguration = _simulationWithChanges.Configuration.ModuleConfigurations.Last();
             return new CommitTarget(lastModuleConfiguration,
@@ -315,7 +315,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void the_user_is_not_asked_to_select_the_commit_target_because_there_is_no_choice()
       {
-         A.CallTo(() => _selectCommitTargetPresenter.SelectCommitTargetFor(_simulationWithChanges)).MustNotHaveHappened();
+         A.CallTo(() => _selectCommitTargetPresenter.SelectCommitTargetFor(_simulationWithChanges, A<bool>._, A<bool>._)).MustNotHaveHappened();
       }
    }
 
@@ -360,7 +360,7 @@ namespace MoBi.Presentation.Tasks
          base.Context();
          _simulationWithChanges.AddOriginalQuantityValue(new OriginalQuantityValue { Path = new ObjectPath("name"), Value = 1.0 });
          _simulationWithChanges.AddOriginalQuantityValue(new OriginalQuantityValue { Path = new ObjectPath("top", "name"), Value = 1.0 });
-         A.CallTo(() => _selectCommitTargetPresenter.SelectCommitTargetFor(_simulationWithChanges)).Returns(new CommitTarget(_moduleConfiguration, null, null));
+         A.CallTo(() => _selectCommitTargetPresenter.SelectCommitTargetFor(_simulationWithChanges, A<bool>._, A<bool>._)).Returns(new CommitTarget(_moduleConfiguration, null, null));
       }
 
       protected override void Because()
@@ -395,6 +395,47 @@ namespace MoBi.Presentation.Tasks
       {
          _simulationWithChanges.OriginalQuantityValues.Count.ShouldBeEqualTo(0);
       }
+
+      [Observation]
+      public void the_user_selects_the_target_knowing_which_change_types_exist()
+      {
+         A.CallTo(() => _selectCommitTargetPresenter.SelectCommitTargetFor(_simulationWithChanges, true, true)).MustHaveHappened();
+      }
+   }
+
+   public class When_committing_to_a_module_whose_changes_are_shadowed_by_a_later_module : When_committing_changes_to_a_simulation_with_multiple_module_configurations
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _simulationWithChanges.AddOriginalQuantityValue(new OriginalQuantityValue { Path = new ObjectPath("name"), Value = 1.0 });
+         _simulationWithChanges.AddOriginalQuantityValue(new OriginalQuantityValue { Path = new ObjectPath("top", "name"), Value = 1.0 });
+
+         _lastModuleConfiguration.SelectedParameterValues = new ParameterValuesBuildingBlock
+         {
+            new ParameterValue { Path = new ObjectPath("name") }
+         };
+
+         A.CallTo(() => _selectCommitTargetPresenter.SelectCommitTargetFor(_simulationWithChanges, A<bool>._, A<bool>._)).Returns(new CommitTarget(_moduleConfiguration, null, null));
+      }
+
+      protected override void Because()
+      {
+         sut.CommitSimulationChanges(_simulationWithChanges);
+      }
+
+      [Observation]
+      public void the_building_blocks_are_still_created_in_the_selected_module()
+      {
+         _module.InitialConditionsCollection.Count.ShouldBeEqualTo(1);
+         _module.ParameterValuesCollection.Count.ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void the_original_quantity_value_tracker_is_retained_because_the_later_module_overrides_the_committed_values()
+      {
+         _simulationWithChanges.OriginalQuantityValues.Count.ShouldBeEqualTo(2);
+      }
    }
 
    public class When_the_user_cancels_the_commit_target_selection : When_committing_changes_to_a_simulation_with_multiple_module_configurations
@@ -404,7 +445,7 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _selectCommitTargetPresenter.SelectCommitTargetFor(_simulationWithChanges)).Returns(null);
+         A.CallTo(() => _selectCommitTargetPresenter.SelectCommitTargetFor(_simulationWithChanges, A<bool>._, A<bool>._)).Returns(null);
       }
 
       protected override void Because()
@@ -434,7 +475,7 @@ namespace MoBi.Presentation.Tasks
          base.Context();
          _notUsedParameterValues = new ParameterValuesBuildingBlock();
          _projectModule.Add(_notUsedParameterValues);
-         A.CallTo(() => _selectCommitTargetPresenter.SelectCommitTargetFor(_simulationWithChanges)).Returns(new CommitTarget(_moduleConfiguration, _notUsedParameterValues, _projectInitialConditions));
+         A.CallTo(() => _selectCommitTargetPresenter.SelectCommitTargetFor(_simulationWithChanges, A<bool>._, A<bool>._)).Returns(new CommitTarget(_moduleConfiguration, _notUsedParameterValues, _projectInitialConditions));
       }
 
       [Observation]
@@ -463,7 +504,7 @@ namespace MoBi.Presentation.Tasks
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _selectCommitTargetPresenter.SelectCommitTargetFor(_simulationWithChanges)).Returns(new CommitTarget(_moduleConfiguration, null, _projectInitialConditions));
+         A.CallTo(() => _selectCommitTargetPresenter.SelectCommitTargetFor(_simulationWithChanges, A<bool>._, A<bool>._)).Returns(new CommitTarget(_moduleConfiguration, null, _projectInitialConditions));
       }
 
       [Observation]
@@ -503,7 +544,7 @@ namespace MoBi.Presentation.Tasks
          base.Context();
          _notUsedInitialConditions = new InitialConditionsBuildingBlock();
          _projectModule.Add(_notUsedInitialConditions);
-         A.CallTo(() => _selectCommitTargetPresenter.SelectCommitTargetFor(_simulationWithChanges)).Returns(new CommitTarget(_moduleConfiguration, _projectParameterValues, _notUsedInitialConditions));
+         A.CallTo(() => _selectCommitTargetPresenter.SelectCommitTargetFor(_simulationWithChanges, A<bool>._, A<bool>._)).Returns(new CommitTarget(_moduleConfiguration, _projectParameterValues, _notUsedInitialConditions));
       }
 
       [Observation]
