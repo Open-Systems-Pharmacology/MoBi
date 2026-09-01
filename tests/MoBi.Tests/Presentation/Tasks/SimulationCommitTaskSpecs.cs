@@ -7,6 +7,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Helper;
 using MoBi.Core.Services;
 using MoBi.HelpersForTests;
+using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -27,6 +28,7 @@ namespace MoBi.Presentation.Tasks
       protected IMoBiContext _context;
       protected ModuleConfiguration _moduleConfiguration;
       protected Module _module;
+      protected ISelectCommitTargetPresenter _selectCommitTargetPresenter;
 
       protected override void Context()
       {
@@ -42,14 +44,20 @@ namespace MoBi.Presentation.Tasks
          _entitiesInSimulationRetriever = A.Fake<IEntitiesInSimulationRetriever>();
          _nameCorrector = A.Fake<INameCorrector>();
          _interactionTaskContext = A.Fake<IInteractionTaskContext>();
+         _selectCommitTargetPresenter = A.Fake<ISelectCommitTargetPresenter>();
+         A.CallTo(() => _context.Resolve<ISelectCommitTargetPresenter>()).Returns(_selectCommitTargetPresenter);
+
+         // the user accepts the defaults: last module and its selected building blocks or new ones
+         A.CallTo(() => _selectCommitTargetPresenter.SelectCommitTargetFor(_simulationWithChanges, A<bool>._, A<bool>._)).ReturnsLazily(() =>
+         {
+            var lastModuleConfiguration = _simulationWithChanges.Configuration.ModuleConfigurations.Last();
+            return new CommitTarget(lastModuleConfiguration,
+               lastModuleConfiguration.SelectedParameterValues == null ? null : _templateResolverTask.TemplateBuildingBlockFor(lastModuleConfiguration.SelectedParameterValues),
+               lastModuleConfiguration.SelectedInitialConditions == null ? null : _templateResolverTask.TemplateBuildingBlockFor(lastModuleConfiguration.SelectedInitialConditions));
+         });
+
          A.CallTo(() => _interactionTaskContext.DialogCreator.MessageBoxYesNo(A<string>._, A<ViewResult>._)).Returns(ViewResult.Yes);
          sut = new SimulationCommitTask(_context, _templateResolverTask, _entitiesInSimulationRetriever, _nameCorrector, new ObjectTypeResolver(), _interactionTaskContext);
-      }
-
-      [Observation]
-      public void the_simulation_should_not_have_original_value_trackers()
-      {
-         _simulationWithChanges.OriginalQuantityValues.Count.ShouldBeEqualTo(0);
       }
    }
 
@@ -200,6 +208,12 @@ namespace MoBi.Presentation.Tasks
       }
 
       [Observation]
+      public void the_original_quantity_value_tracker_is_cleared()
+      {
+         _simulationWithChanges.OriginalQuantityValues.Count.ShouldBeEqualTo(0);
+      }
+
+      [Observation]
       public void new_start_values_are_updated_not_created()
       {
          _projectModule.InitialConditionsCollection.First().Count().ShouldBeEqualTo(1);
@@ -228,6 +242,12 @@ namespace MoBi.Presentation.Tasks
       {
          _moduleConfiguration.SelectedInitialConditions.Count().ShouldBeEqualTo(1);
          _moduleConfiguration.SelectedParameterValues.Count().ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void the_original_quantity_value_tracker_is_cleared()
+      {
+         _simulationWithChanges.OriginalQuantityValues.Count.ShouldBeEqualTo(0);
       }
    }
 
@@ -284,6 +304,267 @@ namespace MoBi.Presentation.Tasks
       {
          _moduleConfiguration.SelectedInitialConditions.ShouldNotBeNull();
          _moduleConfiguration.SelectedParameterValues.ShouldNotBeNull();
+      }
+
+      [Observation]
+      public void the_original_quantity_value_tracker_is_cleared()
+      {
+         _simulationWithChanges.OriginalQuantityValues.Count.ShouldBeEqualTo(0);
+      }
+
+      [Observation]
+      public void the_user_is_not_asked_to_select_the_commit_target_because_there_is_no_choice()
+      {
+         A.CallTo(() => _selectCommitTargetPresenter.SelectCommitTargetFor(_simulationWithChanges, A<bool>._, A<bool>._)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_committing_changes_to_a_simulation_with_multiple_module_configurations : concern_for_SimulationCommitTask
+   {
+      protected Module _lastModule;
+      protected ModuleConfiguration _lastModuleConfiguration;
+      protected Module _projectModule;
+
+      protected override void Context()
+      {
+         base.Context();
+         _lastModule = new Module();
+         _lastModuleConfiguration = new ModuleConfiguration(_lastModule);
+         _simulationWithChanges.Configuration.AddModuleConfiguration(_lastModuleConfiguration);
+
+         _projectModule = new Module();
+         A.CallTo(() => _templateResolverTask.TemplateModuleFor(_module)).Returns(_projectModule);
+
+         var parameterPathCache = new PathCacheForSpecs<Parameter>
+         {
+            new Parameter { Name = "name" }
+         };
+
+         var moleculeAmount = new MoleculeAmount { Name = "name" };
+         new Container().WithName("top").Add(moleculeAmount);
+         var initialConditionsPathCache = new PathCacheForSpecs<MoleculeAmount>
+         {
+            moleculeAmount
+         };
+
+         A.CallTo(() => _entitiesInSimulationRetriever.EntitiesFrom<Parameter>(_simulationWithChanges)).Returns(parameterPathCache);
+         A.CallTo(() => _entitiesInSimulationRetriever.EntitiesFrom<DistributedParameter>(_simulationWithChanges)).Returns(new PathCacheForSpecs<DistributedParameter>());
+         A.CallTo(() => _entitiesInSimulationRetriever.EntitiesFrom<MoleculeAmount>(_simulationWithChanges)).Returns(initialConditionsPathCache);
+      }
+   }
+
+   public class When_the_user_selects_the_module_to_commit_to : When_committing_changes_to_a_simulation_with_multiple_module_configurations
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _simulationWithChanges.AddOriginalQuantityValue(new OriginalQuantityValue { Path = new ObjectPath("name"), Value = 1.0 });
+         _simulationWithChanges.AddOriginalQuantityValue(new OriginalQuantityValue { Path = new ObjectPath("top", "name"), Value = 1.0 });
+         A.CallTo(() => _selectCommitTargetPresenter.SelectCommitTargetFor(_simulationWithChanges, A<bool>._, A<bool>._)).Returns(new CommitTarget(_moduleConfiguration, null, null));
+      }
+
+      protected override void Because()
+      {
+         sut.CommitSimulationChanges(_simulationWithChanges);
+      }
+
+      [Observation]
+      public void new_building_blocks_are_created_in_the_selected_module()
+      {
+         _module.InitialConditionsCollection.Count.ShouldBeEqualTo(1);
+         _module.ParameterValuesCollection.Count.ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void new_building_blocks_are_selected_in_the_selected_module_configuration()
+      {
+         _moduleConfiguration.SelectedInitialConditions.ShouldNotBeNull();
+         _moduleConfiguration.SelectedParameterValues.ShouldNotBeNull();
+      }
+
+      [Observation]
+      public void the_last_module_configuration_is_not_modified()
+      {
+         _lastModule.BuildingBlocks.Count().ShouldBeEqualTo(0);
+         _lastModuleConfiguration.SelectedInitialConditions.ShouldBeNull();
+         _lastModuleConfiguration.SelectedParameterValues.ShouldBeNull();
+      }
+
+      [Observation]
+      public void the_original_quantity_value_tracker_is_cleared()
+      {
+         _simulationWithChanges.OriginalQuantityValues.Count.ShouldBeEqualTo(0);
+      }
+
+      [Observation]
+      public void the_user_selects_the_target_knowing_which_change_types_exist()
+      {
+         A.CallTo(() => _selectCommitTargetPresenter.SelectCommitTargetFor(_simulationWithChanges, true, true)).MustHaveHappened();
+      }
+   }
+
+   public class When_committing_to_a_module_whose_changes_are_shadowed_by_a_later_module : When_committing_changes_to_a_simulation_with_multiple_module_configurations
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _simulationWithChanges.AddOriginalQuantityValue(new OriginalQuantityValue { Path = new ObjectPath("name"), Value = 1.0 });
+         _simulationWithChanges.AddOriginalQuantityValue(new OriginalQuantityValue { Path = new ObjectPath("top", "name"), Value = 1.0 });
+
+         _lastModuleConfiguration.SelectedParameterValues = new ParameterValuesBuildingBlock
+         {
+            new ParameterValue { Path = new ObjectPath("name") }
+         };
+
+         A.CallTo(() => _selectCommitTargetPresenter.SelectCommitTargetFor(_simulationWithChanges, A<bool>._, A<bool>._)).Returns(new CommitTarget(_moduleConfiguration, null, null));
+      }
+
+      protected override void Because()
+      {
+         sut.CommitSimulationChanges(_simulationWithChanges);
+      }
+
+      [Observation]
+      public void the_building_blocks_are_still_created_in_the_selected_module()
+      {
+         _module.InitialConditionsCollection.Count.ShouldBeEqualTo(1);
+         _module.ParameterValuesCollection.Count.ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void the_original_quantity_value_tracker_is_retained_because_the_later_module_overrides_the_committed_values()
+      {
+         _simulationWithChanges.OriginalQuantityValues.Count.ShouldBeEqualTo(2);
+      }
+   }
+
+   public class When_the_user_cancels_the_commit_target_selection : When_committing_changes_to_a_simulation_with_multiple_module_configurations
+   {
+      private IMoBiCommand _command;
+
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _selectCommitTargetPresenter.SelectCommitTargetFor(_simulationWithChanges, A<bool>._, A<bool>._)).Returns(null);
+      }
+
+      protected override void Because()
+      {
+         _command = sut.CommitSimulationChanges(_simulationWithChanges);
+      }
+
+      [Observation]
+      public void no_command_is_returned()
+      {
+         _command.ShouldBeNull();
+      }
+
+      [Observation]
+      public void the_user_is_not_asked_to_confirm_the_commit()
+      {
+         A.CallTo(() => _interactionTaskContext.DialogCreator.MessageBoxYesNo(A<string>._, A<ViewResult>._)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_committing_to_a_parameter_values_building_block_not_used_by_the_simulation : When_committing_to_configuration_with_selected_building_blocks
+   {
+      private ParameterValuesBuildingBlock _notUsedParameterValues;
+
+      protected override void Context()
+      {
+         base.Context();
+         _notUsedParameterValues = new ParameterValuesBuildingBlock();
+         _projectModule.Add(_notUsedParameterValues);
+         A.CallTo(() => _selectCommitTargetPresenter.SelectCommitTargetFor(_simulationWithChanges, A<bool>._, A<bool>._)).Returns(new CommitTarget(_moduleConfiguration, _notUsedParameterValues, _projectInitialConditions));
+      }
+
+      [Observation]
+      public void the_parameter_values_are_written_to_the_selected_building_block_only()
+      {
+         _notUsedParameterValues.Count().ShouldBeEqualTo(1);
+         _projectParameterValues.Count().ShouldBeEqualTo(0);
+         _parameterValuesBuildingBlock.Count().ShouldBeEqualTo(0);
+      }
+
+      [Observation]
+      public void the_building_block_used_by_the_simulation_stays_selected()
+      {
+         _moduleConfiguration.SelectedParameterValues.ShouldBeEqualTo(_parameterValuesBuildingBlock);
+      }
+
+      [Observation]
+      public void the_original_quantity_value_tracker_is_retained_because_the_simulation_stays_out_of_sync()
+      {
+         _simulationWithChanges.OriginalQuantityValues.Count.ShouldBeEqualTo(2);
+      }
+   }
+
+   public class When_committing_to_a_new_parameter_values_building_block_while_the_simulation_uses_another_one : When_committing_to_configuration_with_selected_building_blocks
+   {
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _selectCommitTargetPresenter.SelectCommitTargetFor(_simulationWithChanges, A<bool>._, A<bool>._)).Returns(new CommitTarget(_moduleConfiguration, null, _projectInitialConditions));
+      }
+
+      [Observation]
+      public void a_new_building_block_is_created_in_the_template_module_only()
+      {
+         _projectModule.ParameterValuesCollection.Count.ShouldBeEqualTo(2);
+         _module.ParameterValuesCollection.Count.ShouldBeEqualTo(1);
+      }
+
+      [Observation]
+      public void the_parameter_values_are_written_to_the_new_building_block_only()
+      {
+         _projectModule.ParameterValuesCollection.Single(x => !Equals(x, _projectParameterValues)).Count().ShouldBeEqualTo(1);
+         _projectParameterValues.Count().ShouldBeEqualTo(0);
+         _parameterValuesBuildingBlock.Count().ShouldBeEqualTo(0);
+      }
+
+      [Observation]
+      public void the_building_block_used_by_the_simulation_stays_selected()
+      {
+         _moduleConfiguration.SelectedParameterValues.ShouldBeEqualTo(_parameterValuesBuildingBlock);
+      }
+
+      [Observation]
+      public void the_original_quantity_value_tracker_is_retained_because_the_simulation_stays_out_of_sync()
+      {
+         _simulationWithChanges.OriginalQuantityValues.Count.ShouldBeEqualTo(2);
+      }
+   }
+
+   public class When_committing_to_an_initial_conditions_building_block_not_used_by_the_simulation : When_committing_to_configuration_with_selected_building_blocks
+   {
+      private InitialConditionsBuildingBlock _notUsedInitialConditions;
+
+      protected override void Context()
+      {
+         base.Context();
+         _notUsedInitialConditions = new InitialConditionsBuildingBlock();
+         _projectModule.Add(_notUsedInitialConditions);
+         A.CallTo(() => _selectCommitTargetPresenter.SelectCommitTargetFor(_simulationWithChanges, A<bool>._, A<bool>._)).Returns(new CommitTarget(_moduleConfiguration, _projectParameterValues, _notUsedInitialConditions));
+      }
+
+      [Observation]
+      public void the_initial_conditions_are_written_to_the_selected_building_block_only()
+      {
+         _notUsedInitialConditions.Count().ShouldBeEqualTo(1);
+         _projectInitialConditions.Count().ShouldBeEqualTo(0);
+         _initialConditionsBuildingBlock.Count().ShouldBeEqualTo(0);
+      }
+
+      [Observation]
+      public void the_building_block_used_by_the_simulation_stays_selected()
+      {
+         _moduleConfiguration.SelectedInitialConditions.ShouldBeEqualTo(_initialConditionsBuildingBlock);
+      }
+
+      [Observation]
+      public void the_original_quantity_value_tracker_is_retained_because_the_simulation_stays_out_of_sync()
+      {
+         _simulationWithChanges.OriginalQuantityValues.Count.ShouldBeEqualTo(2);
       }
    }
 }
