@@ -22,6 +22,8 @@ using OSPSuite.Infrastructure.Import.Core;
 using OSPSuite.Infrastructure.Import.Services;
 using OSPSuite.Utility.Extensions;
 using ImporterConfiguration = OSPSuite.Core.Import.ImporterConfiguration;
+using MoleculeBuilder = OSPSuite.Core.Domain.Builder.MoleculeBuilder;
+using MoleculeBuildingBlock = OSPSuite.Core.Domain.Builder.MoleculeBuildingBlock;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -37,7 +39,7 @@ namespace MoBi.Presentation.Tasks
       private IDataRepositoryExportTask _dataRepositoryTask;
       protected IContainerTask _containerTask;
       private IObjectTypeResolver _objectTypeResolver;
-      private IBuildingBlockRepository _buildingBlockRepository;
+      protected IBuildingBlockRepository _buildingBlockRepository;
       protected IObjectBaseNamingTask _namingTask;
       private IConfirmationManager _confirmationManager;
       protected IParameterIdentificationTask _parameterIdentificationTask;
@@ -534,5 +536,75 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _context.AddToHistory(A<RemoveHistoricResultFromSimulationCommand>.Ignored))
             .MustNotHaveHappened();
       }
+   }
+
+   public class When_providing_the_molecule_meta_data_category_to_the_importer : concern_for_ObservedDataTask
+   {
+      private IReadOnlyList<MetaDataCategory> _metaDataCategories;
+      private IDimension _molWeightDimension;
+
+      protected override void Context()
+      {
+         base.Context();
+
+         _molWeightDimension = new Dimension(new BaseDimensionRepresentation(), Constants.Dimension.MOLECULAR_WEIGHT, "kg/µmol");
+         _molWeightDimension.AddUnit(new Unit("g/mol", 1e-9, 0));
+         _molWeightDimension.DefaultUnit = _molWeightDimension.Unit("g/mol");
+
+         var moleculeBuildingBlock = new MoleculeBuildingBlock();
+         moleculeBuildingBlock.Add(moleculeWithMolWeight("ADC", 0.000148));
+         moleculeBuildingBlock.Add(moleculeWithMolWeight("FcRn", double.NaN));
+
+         A.CallTo(() => _buildingBlockRepository.MoleculeBlockCollection).Returns(new List<MoleculeBuildingBlock> { moleculeBuildingBlock });
+         A.CallTo(() => _dataImporter.DefaultMetaDataCategoriesForObservedData()).Returns(new[]
+         {
+            new MetaDataCategory { Name = Constants.ObservedData.MOLECULE }
+         });
+
+         A.CallTo(() => _dataImporter.ImportDataSets(A<IReadOnlyList<MetaDataCategory>>._, A<IReadOnlyList<ColumnInfo>>._, A<DataImporterSettings>._, A<string>._))
+            .Invokes(call => _metaDataCategories = call.GetArgument<IReadOnlyList<MetaDataCategory>>(0))
+            .Returns((null, null));
+      }
+
+      private MoleculeBuilder moleculeWithMolWeight(string name, double molWeightInBaseUnit)
+      {
+         var molecule = new MoleculeBuilder().WithName(name).WithDimension(Constants.Dimension.NO_DIMENSION);
+         molecule.Add(DomainHelperForSpecs.ConstantParameterWithValue(molWeightInBaseUnit)
+            .WithName(Constants.Parameters.MOL_WEIGHT)
+            .WithDimension(_molWeightDimension)
+            .WithValue(molWeightInBaseUnit));
+         return molecule;
+      }
+
+      protected override void Because()
+      {
+         sut.AddObservedDataToProject();
+      }
+
+      [Observation]
+      public void should_list_the_molecule_names_as_keys()
+      {
+         moleculeCategory().ListOfValues.Keys.ShouldOnlyContainInOrder("ADC", "FcRn");
+      }
+
+      [Observation]
+      public void should_provide_the_molecular_weight_of_the_molecule_in_g_per_mol()
+      {
+         double.Parse(moleculeCategory().ListOfValues["ADC"]).ShouldBeEqualTo(148000, 1e-5);
+      }
+
+      [Observation]
+      public void should_not_provide_a_molecular_weight_for_a_molecule_without_one()
+      {
+         moleculeCategory().ListOfValues["FcRn"].ShouldBeEmpty();
+      }
+
+      [Observation]
+      public void should_offer_the_molecule_names_as_predefined_meta_data_values()
+      {
+         sut.PredefinedValuesFor(Constants.ObservedData.MOLECULE).ShouldOnlyContainInOrder("ADC", "FcRn");
+      }
+
+      private MetaDataCategory moleculeCategory() => _metaDataCategories.First(x => x.Name == Constants.ObservedData.MOLECULE);
    }
 }
