@@ -2,20 +2,21 @@ using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class UpdateInitialConditionIsPresentCommand : BuildingBlockChangeCommandBase<IBuildingBlock<InitialCondition>>
+   public class UpdateInitialConditionIsPresentCommand : BuildingBlockChangeCommandBase<ILookupBuildingBlock<InitialCondition>>
    {
-      private readonly string _initialConditionId;
+      private readonly ObjectPath _initialConditionPath;
       private InitialCondition _initialCondition;
       private readonly bool _oldIsPresent;
       private readonly bool _newIsPresent;
 
-      public UpdateInitialConditionIsPresentCommand(IBuildingBlock<InitialCondition> initialConditionsBuildingBlock, InitialCondition initialCondition, bool isPresent) : base(initialConditionsBuildingBlock)
+      public UpdateInitialConditionIsPresentCommand(ILookupBuildingBlock<InitialCondition> initialConditionsBuildingBlock, InitialCondition initialCondition, bool isPresent) : base(initialConditionsBuildingBlock)
       {
-         _initialConditionId = initialCondition.Id;
+         _initialConditionPath = initialCondition.Path;
          _initialCondition = initialCondition;
          _oldIsPresent = initialCondition.IsPresent;
          _newIsPresent = isPresent;
@@ -40,7 +41,7 @@ namespace MoBi.Core.Commands
       public override void RestoreExecutionData(IMoBiContext context)
       {
          base.RestoreExecutionData(context);
-         _initialCondition = context.Get<InitialCondition>(_initialConditionId);
+         _initialCondition = _buildingBlock.ByPath(_initialConditionPath);
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)

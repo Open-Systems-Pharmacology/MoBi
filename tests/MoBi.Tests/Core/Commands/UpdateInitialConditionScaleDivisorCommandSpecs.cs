@@ -14,8 +14,8 @@ namespace MoBi.Core.Commands
 
       protected override void Context()
       {
-         _startValueBuildingBlock = new InitialConditionsBuildingBlock();
-         _startValue = new InitialCondition { IsPresent = false };
+         _startValueBuildingBlock = new InitialConditionsBuildingBlock { Id = "buildingBlockId" };
+         _startValue = new InitialCondition { Name = "Drug", IsPresent = false };
          _startValueBuildingBlock.Add(_startValue);
          _context = A.Fake<IMoBiContext>();
 
@@ -42,7 +42,9 @@ namespace MoBi.Core.Commands
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _context.Get<InitialCondition>(_startValue.Id)).Returns(_startValue);
+         // the initial condition is not registered in the object repository when it was added after its building block was registered
+         A.CallTo(() => _context.Get<InitialCondition>(_startValue.Id)).Returns((InitialCondition)null);
+         A.CallTo(() => _context.Get<ILookupBuildingBlock<InitialCondition>>(_startValueBuildingBlock.Id)).Returns(_startValueBuildingBlock);
       }
 
       protected override void Because()

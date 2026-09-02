@@ -2,24 +2,25 @@ using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class UpdateInitialConditionScaleDivisorCommand : BuildingBlockChangeCommandBase<IBuildingBlock<InitialCondition>>
+   public class UpdateInitialConditionScaleDivisorCommand : BuildingBlockChangeCommandBase<ILookupBuildingBlock<InitialCondition>>
    {
       private readonly double _newScaleDivisor;
       private readonly double _oldScaleDivisor;
       private InitialCondition _initialCondition;
-      private readonly string _initialConditionId;
+      private readonly ObjectPath _initialConditionPath;
 
-      public UpdateInitialConditionScaleDivisorCommand(IBuildingBlock<InitialCondition> buildingBlock, InitialCondition initialCondition, double newScaleDivisor, double oldScaleDivisor)
+      public UpdateInitialConditionScaleDivisorCommand(ILookupBuildingBlock<InitialCondition> buildingBlock, InitialCondition initialCondition, double newScaleDivisor, double oldScaleDivisor)
          : base(buildingBlock)
       {
          _newScaleDivisor = newScaleDivisor;
          _oldScaleDivisor = oldScaleDivisor;
          _initialCondition = initialCondition;
-         _initialConditionId = initialCondition.Id;
+         _initialConditionPath = initialCondition.Path;
 
          Description = AppConstants.Commands.UpdateInitialConditionScaleDivisor(_initialCondition.Path.ToString(), oldScaleDivisor, newScaleDivisor);
          CommandType = AppConstants.Commands.EditCommand;
@@ -41,7 +42,7 @@ namespace MoBi.Core.Commands
       public override void RestoreExecutionData(IMoBiContext context)
       {
          base.RestoreExecutionData(context);
-         _initialCondition = context.Get<InitialCondition>(_initialConditionId);
+         _initialCondition = _buildingBlock.ByPath(_initialConditionPath);
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
