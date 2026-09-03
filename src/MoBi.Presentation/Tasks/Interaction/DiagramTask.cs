@@ -41,7 +41,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       public void ApplyLayoutTemplate(IContainerBase containerBase, string diagramTemplateXmlFilePath, IDiagramModel model, Action refreshFromDiagramOptions, bool recursive)
       {
          if (string.IsNullOrEmpty(diagramTemplateXmlFilePath)) throw new MoBiException(AppConstants.Exceptions.MissingName);
-         var diagramTemplateModel = LoadDiagramTemplate(diagramTemplateXmlFilePath);
+         var diagramTemplateModel = loadDiagramTemplateFor(model, diagramTemplateXmlFilePath);
          if (diagramTemplateModel == null) throw new MoBiException(AppConstants.Exceptions.DeserializationFailed);
 
          try
@@ -79,19 +79,16 @@ namespace MoBi.Presentation.Tasks.Interaction
          xmlDoc.Save(diagramTemplateXmlFilePath);
       }
 
+      private IDiagramModel loadDiagramTemplateFor(IDiagramModel model, string diagramTemplateXmlFilePath)
+      {
+         var diagramTemplateModel = model.Create();
+         IoC.Resolve<IDiagramModelToXmlMapper>().Deserialize(diagramTemplateModel, loadDiagramTemplateXmlDocument(diagramTemplateXmlFilePath));
+         return diagramTemplateModel;
+      }
+
       public IDiagramModel LoadDiagramTemplate(string diagramTemplateXmlFilePath)
       {
-         if (!File.Exists(diagramTemplateXmlFilePath))
-         {
-            throw new FileNotFoundException("File not found", diagramTemplateXmlFilePath);
-         }
-         var diagramTemplateXmlDocument = new XmlDocument();
-         diagramTemplateXmlDocument.Load(diagramTemplateXmlFilePath);
-
-         if (diagramTemplateXmlDocument.ChildNodes.Count == 0)
-         {
-            throw new MoBiException("Template is empty");
-         }
+         var diagramTemplateXmlDocument = loadDiagramTemplateXmlDocument(diagramTemplateXmlFilePath);
 
          var serializer = IoC.Resolve<IDiagramModelToXmlMapper>();
          if (serializer == null)
@@ -106,6 +103,23 @@ namespace MoBi.Presentation.Tasks.Interaction
          }
 
          return diagramTemplateModel;
+      }
+
+      private static XmlDocument loadDiagramTemplateXmlDocument(string diagramTemplateXmlFilePath)
+      {
+         if (!File.Exists(diagramTemplateXmlFilePath))
+         {
+            throw new FileNotFoundException("File not found", diagramTemplateXmlFilePath);
+         }
+         var diagramTemplateXmlDocument = new XmlDocument();
+         diagramTemplateXmlDocument.Load(diagramTemplateXmlFilePath);
+
+         if (diagramTemplateXmlDocument.ChildNodes.Count == 0)
+         {
+            throw new MoBiException("Template is empty");
+         }
+
+         return diagramTemplateXmlDocument;
       }
 
       public ICommand<IMoBiContext> MoveDiagramNodes(MoBiReactionBuildingBlock sourceBuildingBlock, MoBiReactionBuildingBlock targetBuildingBlock, ReactionBuilder builder, string builderOriginalName)

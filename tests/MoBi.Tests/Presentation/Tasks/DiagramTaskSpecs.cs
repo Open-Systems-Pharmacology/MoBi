@@ -12,7 +12,6 @@ using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Diagram.Elements;
-using OSPSuite.UI.Diagram.Elements;
 
 namespace MoBi.Presentation.Tasks
 {

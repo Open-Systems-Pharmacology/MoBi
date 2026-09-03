@@ -1,7 +1,7 @@
 ﻿using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
 using OSPSuite.Core.Diagram;
-using OSPSuite.UI.Diagram.Managers;
+using OSPSuite.Presentation.Diagram;
 
 namespace MoBi.UI.Diagram.DiagramManagers
 {

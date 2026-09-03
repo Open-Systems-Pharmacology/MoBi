@@ -10,6 +10,7 @@ using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
 using OSPSuite.UI.Views.Diagram;
 using OSPSuite.Utility.Extensions;
+using MoleculeNode = OSPSuite.UI.Diagram.Elements.MoleculeNode;
 
 namespace MoBi.UI.Views.BaseDiagram
 {

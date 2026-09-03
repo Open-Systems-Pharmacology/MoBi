@@ -70,6 +70,7 @@ namespace MoBi.IntegrationTests
             container.RegisterImplementationOf(A.Fake<IMoBiHistoryManager>());
             container.RegisterImplementationOf(A.Fake<IXmlContentSelector>());
             container.RegisterImplementationOf(A.Fake<IDiagramModel>());
+            container.Register<IReactionDiagramModelFactory, ReactionDiagramModelFactory>();
             container.RegisterImplementationOf(A.Fake<IDiagramTask>());
             container.RegisterImplementationOf(A.Fake<IMRUProvider>());
             container.RegisterImplementationOf(A.Fake<IContextMenuView>());

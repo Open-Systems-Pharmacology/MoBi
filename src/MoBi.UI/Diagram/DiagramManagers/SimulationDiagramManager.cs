@@ -10,6 +10,10 @@ using OSPSuite.Presentation.Diagram.Elements;
 using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI.Diagram.Elements;
 using OSPSuite.Utility.Extensions;
+using MoleculeNode = OSPSuite.UI.Diagram.Elements.MoleculeNode;
+using NeighborLink = OSPSuite.UI.Diagram.Elements.NeighborLink;
+using ReactionLink = OSPSuite.UI.Diagram.Elements.ReactionLink;
+using ReactionNode = OSPSuite.UI.Diagram.Elements.ReactionNode;
 
 namespace MoBi.UI.Diagram.DiagramManagers
 {

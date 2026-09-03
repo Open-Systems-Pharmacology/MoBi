@@ -15,7 +15,6 @@ using MoBi.Presentation.Settings;
 using MoBi.Presentation.UICommand;
 using MoBi.Presentation.Views.BaseDiagram;
 using MoBi.UI.UICommands;
-using Northwoods.Go;
 using OSPSuite.Assets;
 using OSPSuite.Core;
 using OSPSuite.Core.Diagram;
@@ -23,7 +22,6 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Diagram.Elements;
 using OSPSuite.Presentation.Services;
-using OSPSuite.UI.Diagram.Elements;
 using OSPSuite.Utility.Extensions;
 using ToolTips = MoBi.Assets.ToolTips;
 using IBuildingBlockRepository = MoBi.Core.Domain.Repository.IBuildingBlockRepository;
@@ -37,6 +35,7 @@ namespace MoBi.UI.Presenters
       private readonly IDiagramPopupMenuBase _reactionPopupMenu;
       private readonly IDiagramLayoutTask _diagramLayoutTask;
       private readonly IBuildingBlockRepository _buildingBlockRepository;
+      private readonly IReactionDiagramModelFactory _reactionDiagramModelFactory;
 
       public ReactionDiagramPresenter(
          IReactionDiagramView view,
@@ -49,6 +48,7 @@ namespace MoBi.UI.Presenters
          IDiagramLayoutTask diagramLayoutTask,
          IStartOptions runOptions,
          IDiagramModelFactory diagramModelFactory,
+         IReactionDiagramModelFactory reactionDiagramModelFactory,
          IBuildingBlockRepository buildingBlockRepository) :
          base(view, layouter, dialogCreator, diagramModelFactory, userSettings, context, diagramTask, runOptions)
       {
@@ -58,6 +58,7 @@ namespace MoBi.UI.Presenters
          _reactionPopupMenu = new PopupMenuReactionBuilder(this, context, runOptions);
          _diagramLayoutTask = diagramLayoutTask;
          _buildingBlockRepository = buildingBlockRepository;
+         _reactionDiagramModelFactory = reactionDiagramModelFactory;
       }
 
       public bool DisplayEductsRight(IBaseNode node)
@@ -88,6 +89,8 @@ namespace MoBi.UI.Presenters
          //to avoid scrollbar error
          ResetViewSize();
       }
+
+      protected override IDiagramModel CreateDiagramModel() => _reactionDiagramModelFactory.Create();
 
       public override IDiagramPopupMenuBase GetPopupMenu(IBaseNode baseNode)
       {
@@ -155,7 +158,7 @@ namespace MoBi.UI.Presenters
          return moleculeNode.GetLinkedNodes<ReactionNode>();
       }
 
-      public void RemoveSelection(IReadOnlyList<GoObject> objectsToBeRemoved)
+      public void RemoveSelection(IReadOnlyList<IBaseNode> objectsToBeRemoved)
       {
          if (allMoleculeNodesUnlinked(objectsToBeRemoved))
             // remove reactions first, then molecules
@@ -172,19 +175,19 @@ namespace MoBi.UI.Presenters
          _view.Select(reactionNode);
       }
 
-      private bool allMoleculeNodesUnlinked(IReadOnlyList<GoObject> goObjects)
+      private bool allMoleculeNodesUnlinked(IReadOnlyList<IBaseNode> nodes)
       {
-         return !goObjects.OfType<MoleculeNode>().Any(moleculeNode =>
-            anyLinkedNodes(moleculeNode) && !moleculeNodeWillBeUnlinkedAfterDelete(moleculeNode, goObjects));
+         return !nodes.OfType<MoleculeNode>().Any(moleculeNode =>
+            anyLinkedNodes(moleculeNode) && !moleculeNodeWillBeUnlinkedAfterDelete(moleculeNode, nodes));
       }
 
-      private bool moleculeNodeWillBeUnlinkedAfterDelete(MoleculeNode moleculeNode, IEnumerable<GoObject> itemsBeingDeleted)
+      private bool moleculeNodeWillBeUnlinkedAfterDelete(MoleculeNode moleculeNode, IEnumerable<IBaseNode> itemsBeingDeleted)
       {
          var linkedReactions = getLinkedReactionsForMoleculeNode(moleculeNode);
          return linkedReactions.All(itemsBeingDeleted.Contains);
       }
 
-      private void removeItem(GoObject itemToDelete)
+      private void removeItem(IBaseNode itemToDelete)
       {
          if (itemToDelete.IsAnImplementationOf<MoleculeNode>())
             RemoveMoleculeNode((MoleculeNode)itemToDelete);
