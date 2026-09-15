@@ -1,10 +1,12 @@
 ﻿using System;
 using FakeItEasy;
 using MoBi.Core;
+using MoBi.Core.Domain.Model;
 using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Utility;
@@ -18,7 +20,10 @@ namespace MoBi.Presentation
       protected IStartableProcessFactory _startableProcessFactory;
       protected IApplicationSettings _applicationSettings;
       protected readonly string _simulationFile = "SimFile.pkml";
-      private ICloneManagerForBuildingBlock _cloneManager;
+      protected ICloneManagerForBuildingBlock _cloneManager;
+      protected IXmlSerializationService _serializationService;
+      protected IMoBiProjectRetriever _projectRetriever;
+      protected IPKSimAssemblyLoader _pkSimLoader;
 
       protected override void Context()
       {
@@ -26,8 +31,63 @@ namespace MoBi.Presentation
          _startableProcessFactory = A.Fake<IStartableProcessFactory>();
          _applicationSettings = A.Fake<IApplicationSettings>();
          _cloneManager = A.Fake<ICloneManagerForBuildingBlock>();
+         _serializationService = A.Fake<IXmlSerializationService>();
+         _projectRetriever = A.Fake<IMoBiProjectRetriever>();
+         _pkSimLoader = A.Fake<IPKSimAssemblyLoader>();
          A.CallTo(() => _configuration.PKSimPath).Returns("path");
-         sut = new PKSimStarter(_configuration, _applicationSettings, _startableProcessFactory, _cloneManager, A.Fake<IXmlSerializationService>(), A.Fake<IMoBiProjectRetriever>(), new PKSimAssemblyLoader());
+         sut = new PKSimStarter(_configuration, _applicationSettings, _startableProcessFactory, _cloneManager, _serializationService, _projectRetriever, _pkSimLoader);
+      }
+   }
+
+   public class When_creating_an_individual_with_PKSim : concern_for_PKSimStarter
+   {
+      private IndividualBuildingBlock _deserializedBuildingBlock;
+      private IndividualBuildingBlock _clonedBuildingBlock;
+      private IBuildingBlock _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         var project = new MoBiProject();
+         _deserializedBuildingBlock = new IndividualBuildingBlock();
+         _clonedBuildingBlock = new IndividualBuildingBlock();
+         A.CallTo(() => _projectRetriever.Current).Returns(project);
+         A.CallTo(() => _pkSimLoader.ExecuteMethod("PKSim.Starter.IndividualCreator", "CreateIndividual", A<object[]>._)).Returns("<pkml/>");
+         A.CallTo(() => _serializationService.Deserialize<IndividualBuildingBlock>("<pkml/>", project)).Returns(_deserializedBuildingBlock);
+         A.CallTo(() => _cloneManager.Clone(_deserializedBuildingBlock)).Returns(_clonedBuildingBlock);
+      }
+
+      protected override void Because()
+      {
+         _result = sut.CreateIndividual();
+      }
+
+      [Observation]
+      public void should_deserialize_the_pkml_returned_by_PKSim_and_return_a_clone_of_the_building_block()
+      {
+         _result.ShouldBeEqualTo(_clonedBuildingBlock);
+      }
+   }
+
+   public class When_creating_an_individual_with_PKSim_was_cancelled : concern_for_PKSimStarter
+   {
+      private IBuildingBlock _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _pkSimLoader.ExecuteMethod("PKSim.Starter.IndividualCreator", "CreateIndividual", A<object[]>._)).Returns(null);
+      }
+
+      protected override void Because()
+      {
+         _result = sut.CreateIndividual();
+      }
+
+      [Observation]
+      public void should_return_null()
+      {
+         _result.ShouldBeNull();
       }
    }
 

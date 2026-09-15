@@ -71,37 +71,33 @@ public abstract class PKSimSnapshotConverterBase : IPKSimSnapshotConverter
 
    public Module LoadModuleFromSnapshot(string serializedSnapshot)
    {
-      var element = _pkSimLoader.ExecuteMethod(SnapshotExchangeType, CREATE_MODULE, [serializedSnapshot]) as string;
-
-      // all object exchanges should be done using serialization to ensure that objects are recreated in MoBi.
-      return _serializationService.Deserialize<Module>(element, _projectRetriever.Current);
+      var pkml = _pkSimLoader.ExecuteMethod(SnapshotExchangeType, CREATE_MODULE, [serializedSnapshot]) as string;
+      return DeserializeFromPKSim<Module>(pkml);
    }
 
    public (Module module, InputMapping[] inputMappings) LoadModuleFromSnapshotAndExportInputs(string serializedSnapshot, QualificationConfiguration qualificationConfiguration)
    {
       var tuple = _pkSimLoader.ExecuteMethod(SnapshotExchangeType, CREATE_MODULE_AND_EXPORT_INPUTS, [serializedSnapshot, qualificationConfiguration]);
 
-      var (element, mappings) = tuple as (string element, InputMapping[] mappings)? ?? (null, null);
-
-      // all object exchanges should be done using serialization to ensure that objects are recreated in MoBi.
-      var module = _serializationService.Deserialize<Module>(element, _projectRetriever.Current);
-
-      return (module, mappings);
+      var (pkml, mappings) = tuple as (string element, InputMapping[] mappings)? ?? (null, null);
+      return (DeserializeFromPKSim<Module>(pkml), mappings);
    }
 
    public ExpressionProfileBuildingBlock LoadExpressionProfileFromSnapshot(string serializedSnapshot)
    {
       var pkml = _pkSimLoader.ExecuteMethod(SnapshotExchangeType, CREATE_EXPRESSION_PROFILE_BUILDING_BLOCK, [serializedSnapshot]) as string;
-
-      // all object exchanges should be done using serialization to ensure that objects are recreated in MoBi.
-      return _serializationService.Deserialize<ExpressionProfileBuildingBlock>(pkml, _projectRetriever.Current);
+      return DeserializeFromPKSim<ExpressionProfileBuildingBlock>(pkml);
    }
 
    public IndividualBuildingBlock LoadIndividualFromSnapshot(string serializedSnapshot)
    {
       var pkml = _pkSimLoader.ExecuteMethod(SnapshotExchangeType, CREATE_INDIVIDUAL_BUILDING_BLOCK, [serializedSnapshot]) as string;
-
-      // all object exchanges should be done using serialization to ensure that objects are recreated in MoBi.
-      return _serializationService.Deserialize<IndividualBuildingBlock>(pkml, _projectRetriever.Current);
+      return DeserializeFromPKSim<IndividualBuildingBlock>(pkml);
    }
+
+   /// <summary>
+   ///    All object exchanges with PK-Sim are done through PKML serialization so that the objects (and everything they
+   ///    reference, e.g. dimensions or spatial structures) are recreated in MoBi.
+   /// </summary>
+   protected T DeserializeFromPKSim<T>(string pkml) => _serializationService.Deserialize<T>(pkml, _projectRetriever.Current);
 }

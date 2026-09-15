@@ -94,13 +94,13 @@ namespace MoBi.Core.Services
 
       private TBuildingBlock executeAndCloneBuildingBlock<TBuildingBlock>(string type, string methodName) where TBuildingBlock : class, IBuildingBlock
       {
-         var buildingBlock = _pkSimLoader.ExecuteMethod(type, methodName) as TBuildingBlock;
+         var pkml = _pkSimLoader.ExecuteMethod(type, methodName) as string;
 
          //in case of cancelling
-         if (buildingBlock == null)
+         if (pkml == null)
             return null;
 
-         return _cloneManager.Clone(buildingBlock);
+         return _cloneManager.Clone(DeserializeFromPKSim<TBuildingBlock>(pkml));
       }
 
       public IReadOnlyList<ExpressionParameterValueUpdate> UpdateExpressionProfileFromDatabase(ExpressionProfileBuildingBlock expressionProfile)
