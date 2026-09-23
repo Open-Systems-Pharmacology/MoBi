@@ -74,6 +74,66 @@ namespace MoBi.Core.Service
       }
    }
 
+   public class When_adding_a_time_profile_analysis_to_a_simulation_without_one : concern_for_MoBiSimulationAnalysisCreator
+   {
+      private MoBiSimulationTimeProfileChart _chart;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation.AddAnalysis(new SimulationPredictedVsObservedChart());
+         _chart = new MoBiSimulationTimeProfileChart();
+         A.CallTo(() => _chartFactory.Create<MoBiSimulationTimeProfileChart>()).Returns(_chart);
+         A.CallTo(() => _executionContext.TypeFor<ISimulationAnalysis>(_chart)).Returns("Time Profile");
+      }
+
+      protected override void Because()
+      {
+         sut.AddTimeProfileAnalysisIfMissing(_simulation);
+      }
+
+      [Observation]
+      public void should_add_a_time_profile_chart_to_the_simulation()
+      {
+         _simulation.Analyses.ShouldContain(_chart);
+      }
+
+      [Observation]
+      public void should_name_the_chart_with_the_default_analysis_name()
+      {
+         _chart.Name.ShouldBeEqualTo("Time Profile");
+      }
+
+      [Observation]
+      public void should_not_publish_a_simulation_analysis_created_event()
+      {
+         A.CallTo(() => _executionContext.PublishEvent(A<SimulationAnalysisCreatedEvent>._)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_adding_a_time_profile_analysis_to_a_simulation_that_already_has_one : concern_for_MoBiSimulationAnalysisCreator
+   {
+      private MoBiSimulationTimeProfileChart _existingChart;
+
+      protected override void Context()
+      {
+         base.Context();
+         _existingChart = new MoBiSimulationTimeProfileChart();
+         _simulation.AddAnalysis(_existingChart);
+      }
+
+      protected override void Because()
+      {
+         sut.AddTimeProfileAnalysisIfMissing(_simulation);
+      }
+
+      [Observation]
+      public void should_not_add_another_chart()
+      {
+         _simulation.Analyses.ShouldOnlyContain(_existingChart);
+      }
+   }
+
    public class When_creating_a_predicted_vs_observed_analysis : concern_for_MoBiSimulationAnalysisCreator
    {
       private ISimulationAnalysis _result;

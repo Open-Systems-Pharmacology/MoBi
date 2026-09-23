@@ -177,7 +177,11 @@ namespace MoBi.Presentation.Presenter
          _view.SetParametersTabEnabled(_simulationRunner.IsSimulationIdle(simulation));
       }
 
-      private void loadAnalyses() => _simulation.Analyses.Each(addAnalysis);
+      private void loadAnalyses()
+      {
+         _simulationAnalysisCreator.AddTimeProfileAnalysisIfMissing(_simulation);
+         _simulation.Analyses.Each(addAnalysis);
+      }
 
       private void addAnalysis(ISimulationAnalysis simulationAnalysis)
       {

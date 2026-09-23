@@ -167,9 +167,50 @@ namespace MoBi.Presentation
       }
 
       [Observation]
+      public void should_add_a_time_profile_analysis_if_missing()
+      {
+         A.CallTo(() => _simulationAnalysisCreator.AddTimeProfileAnalysisIfMissing(_simulation)).MustHaveHappened();
+      }
+
+      [Observation]
       public void should_not_add_any_analysis_to_the_view()
       {
          A.CallTo(() => _view.AddAnalysis(A<ISimulationAnalysis>._, A<IView>._)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_editing_a_simulation_without_a_time_profile_analysis : concern_for_EditSimulationPresenter
+   {
+      private IMoBiSimulation _simulation;
+      private MoBiSimulationTimeProfileChart _timeProfileChart;
+      private ISimulationAnalysisPresenter _timeProfilePresenter;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = new MoBiSimulation();
+         _simulation.Configuration = new SimulationConfiguration { SimulationSettings = new SimulationSettings() };
+         _timeProfileChart = new MoBiSimulationTimeProfileChart();
+         _timeProfilePresenter = A.Fake<ISimulationAnalysisPresenter>();
+         A.CallTo(() => _simulationAnalysisCreator.AddTimeProfileAnalysisIfMissing(_simulation)).Invokes(() => _simulation.AddAnalysis(_timeProfileChart));
+         A.CallTo(() => _simulationAnalysisPresenterFactory.PresenterFor(_timeProfileChart)).Returns(_timeProfilePresenter);
+      }
+
+      protected override void Because()
+      {
+         sut.Edit(_simulation);
+      }
+
+      [Observation]
+      public void should_add_the_time_profile_analysis_to_the_view()
+      {
+         A.CallTo(() => _view.AddAnalysis(_timeProfileChart, _timeProfilePresenter.BaseView)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_not_select_the_time_profile_analysis_tab()
+      {
+         A.CallTo(() => _view.SelectAnalysis(A<ISimulationAnalysis>._)).MustNotHaveHappened();
       }
    }
 
