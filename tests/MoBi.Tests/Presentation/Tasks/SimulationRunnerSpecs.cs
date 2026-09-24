@@ -113,6 +113,7 @@ namespace MoBi.Presentation.Tasks
          _simulation = A.Fake<IMoBiSimulation>();
          A.CallTo(() => _outputSelectionsRetriever.OutputSelectionsFor(_simulation)).Returns(null);
          A.CallTo(() => _eventValidationTask.Validate(_simulation)).Returns(true);
+         A.CallTo(() => _simulation.HasResults).Returns(true);
       }
 
       protected override async Task Because()
@@ -124,6 +125,12 @@ namespace MoBi.Presentation.Tasks
       public void should_retrieve_the_settings_for_the_simulation_if_they_are_not_available_on_the_simulation()
       {
          A.CallTo(() => _outputSelectionsRetriever.OutputSelectionsFor(_simulation)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_not_create_a_time_profile_analysis_based_on_previous_results()
+      {
+         A.CallTo(() => _simulationAnalysisCreator.CreateTimeProfileAnalysisFor(A<IMoBiSimulation>._)).MustNotHaveHappened();
       }
    }
 

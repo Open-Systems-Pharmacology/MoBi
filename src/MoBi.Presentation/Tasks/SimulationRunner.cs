@@ -43,8 +43,9 @@ namespace MoBi.Presentation.Tasks
 
       public override async Task RunSimulationAsync(IMoBiSimulation simulation, bool defineSettings = false)
       {
-         await RunSimulationAsync(simulation, defineSettings, createOutputs: createNewSettings, showWarnings: showWarningsIfAny);
-         addTimeProfileAnalysisIfRequired(simulation);
+         var succeeded = await RunSimulationAsync(simulation, defineSettings, createOutputs: createNewSettings, showWarnings: showWarningsIfAny);
+         if (succeeded)
+            addTimeProfileAnalysisIfRequired(simulation);
       }
 
       private void addTimeProfileAnalysisIfRequired(IMoBiSimulation simulation)
