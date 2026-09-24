@@ -21,6 +21,7 @@ using MoBi.Presentation.Views.BaseDiagram;
 using MoBi.UI.Services;
 using OSPSuite.BDDHelper;
 using OSPSuite.Core;
+using OSPSuite.Core.Chart;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
@@ -84,6 +85,7 @@ namespace MoBi.IntegrationTests
             container.RegisterImplementationOf(A.Fake<ILayerLayouter>());
             container.RegisterImplementationOf(A.Fake<IEntityValidationTask>());
             container.RegisterImplementationOf(A.Fake<IDiagramLayoutTask>());
+            container.RegisterImplementationOf(A.Fake<IChartFactory>());
             var pkSimStarter = A.Fake<IPKSimStarter>();
             container.RegisterImplementationOf(pkSimStarter);
             container.RegisterImplementationOf<IPKSimSnapshotConverter>(pkSimStarter);
