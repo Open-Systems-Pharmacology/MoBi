@@ -112,7 +112,7 @@ namespace MoBi.Presentation.Mappers
 
          var dimension = GetDimension(table, rowIndex, InitialConditions.UNIT, InitialConditions.DIMENSION);
          importedQuantityDTO.Dimension = dimension;
-         importedQuantityDTO.DisplayUnit = dimension.Unit(row[InitialConditions.UNIT].ToString());
+         importedQuantityDTO.DisplayUnit = GetUnit(dimension, row, rowIndex, InitialConditions.UNIT);
 
          importedQuantityDTO.QuantityInBaseUnit = importedQuantityDTO.IsQuantitySpecified ? importedQuantityDTO.ConvertToBaseUnit(GetQuantity(table, rowIndex, InitialConditions.VALUE)) : double.NaN;
 

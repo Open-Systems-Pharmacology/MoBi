@@ -204,6 +204,74 @@ namespace MoBi.Presentation.Mapper
       }
    }
 
+   public class When_converting_data_table_to_import_quantity_dto_with_a_unit_differing_only_in_case : WhenConvertingDataTableToImportQuantityDTOThatDontConform
+   {
+      protected override void Because()
+      {
+         _result = sut.MapFrom(new CaseMismatchUnitsDataTable().ImportTables(), A.Fake<PathAndValueEntityBuildingBlock<ParameterValue>>());
+      }
+
+      [Observation]
+      public void should_log_that_the_unit_was_not_found_and_suggest_the_matching_unit()
+      {
+         _result.Log.Any(x => x.Contains(AppConstants.Exceptions.CouldNotFindUnitInDimension("ML", "Volume", "ml"))).ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_not_log_a_framework_exception()
+      {
+         _result.Log.Any(x => x.Contains(AppConstants.Exceptions.FrameworkExceptionOccurred)).ShouldBeFalse();
+      }
+   }
+
+   public class When_converting_data_table_to_import_quantity_dto_with_an_empty_row : concern_for_DataTableToImportQuantityDTOMapperForParameters
+   {
+      private QuantityImporterDTO _result;
+      private DataTable _tables;
+
+      protected override void Context()
+      {
+         base.Context();
+         _tables = new DataTableProvider().ImportTables();
+         _tables.Rows[1].ItemArray = new object[] { string.Empty, string.Empty, string.Empty, string.Empty };
+      }
+
+      protected override void Because()
+      {
+         _result = sut.MapFrom(_tables, _startValuesBuildingBlock);
+      }
+
+      [Observation]
+      public void should_import_the_rows_after_the_empty_row()
+      {
+         _result.QuantityDTOs.Select(x => x.ContainerPath).ShouldOnlyContain(ContainerPathFromDataTableRow(_tables, 0), ContainerPathFromDataTableRow(_tables, 2));
+      }
+   }
+
+   public class When_converting_data_table_to_import_quantity_dto_with_an_invalid_row_after_an_empty_row : WhenConvertingDataTableToImportQuantityDTOThatDontConform
+   {
+      private DataTable _tables;
+
+      protected override void Context()
+      {
+         base.Context();
+         _tables = new DataTableProvider().ImportTables();
+         _tables.Rows[1].ItemArray = new object[] { string.Empty, string.Empty, string.Empty, string.Empty };
+         _tables.Rows[2][3] = "r/h";
+      }
+
+      protected override void Because()
+      {
+         _result = sut.MapFrom(_tables, _startValuesBuildingBlock);
+      }
+
+      [Observation]
+      public void should_log_the_error_in_the_row_after_the_empty_row()
+      {
+         _result.Log.Any(x => x.Contains(AppConstants.Exceptions.CouldNotFindDimensionFromUnits("r/h"))).ShouldBeTrue();
+      }
+   }
+
    public class When_converting_data_table_to_import_quantity_dto_with_fewer_than_three_columns : WhenConvertingDataTableToImportQuantityDTOThatDontConform
    {
       protected override void Because()
@@ -271,6 +339,14 @@ namespace MoBi.Presentation.Mapper
       protected override string GetUnits(int i)
       {
          return "r/h";
+      }
+   }
+
+   internal class CaseMismatchUnitsDataTable : DataTableProvider
+   {
+      protected override string GetUnits(int i)
+      {
+         return "ML";
       }
    }
 
