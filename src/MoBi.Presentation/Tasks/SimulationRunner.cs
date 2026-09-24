@@ -15,6 +15,7 @@ namespace MoBi.Presentation.Tasks
    {
       private readonly IMoBiApplicationController _applicationController;
       private readonly IOutputSelectionsRetriever _outputSelectionsRetriever;
+      private readonly IMoBiSimulationAnalysisCreator _simulationAnalysisCreator;
 
       public SimulationRunner(IMoBiContext context,
          IMoBiApplicationController applicationController,
@@ -24,7 +25,8 @@ namespace MoBi.Presentation.Tasks
          ISimModelManagerFactory simModelManagerFactory,
          IKeyPathMapper keyPathMapper,
          IEntityValidationTask entityValidationTask, 
-         ISimulationQuantityValueWarningTask simulationQuantityWarningTask) :  base(context, 
+         ISimulationQuantityValueWarningTask simulationQuantityWarningTask,
+         IMoBiSimulationAnalysisCreator simulationAnalysisCreator) :  base(context, 
             simulationPersistableUpdater, 
             displayUnitUpdater, 
             simModelManagerFactory, 
@@ -36,11 +38,21 @@ namespace MoBi.Presentation.Tasks
          _outputSelectionsRetriever = outputSelectionsRetriever;
          _applicationController = applicationController;
          _outputSelectionsRetriever = outputSelectionsRetriever;
+         _simulationAnalysisCreator = simulationAnalysisCreator;
       }
 
-      public override Task RunSimulationAsync(IMoBiSimulation simulation, bool defineSettings = false)
+      public override async Task RunSimulationAsync(IMoBiSimulation simulation, bool defineSettings = false)
       {
-         return RunSimulationAsync(simulation, defineSettings, createOutputs: createNewSettings, showWarnings: showWarningsIfAny);
+         await RunSimulationAsync(simulation, defineSettings, createOutputs: createNewSettings, showWarnings: showWarningsIfAny);
+         addTimeProfileAnalysisIfRequired(simulation);
+      }
+
+      private void addTimeProfileAnalysisIfRequired(IMoBiSimulation simulation)
+      {
+         if (!simulation.HasResults || simulation.Analyses.Any())
+            return;
+
+         _simulationAnalysisCreator.CreateTimeProfileAnalysisFor(simulation);
       }
 
       private bool createNewSettings(IMoBiSimulation simulation)
