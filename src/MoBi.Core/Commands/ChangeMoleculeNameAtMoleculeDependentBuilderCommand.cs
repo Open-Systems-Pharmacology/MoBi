@@ -5,11 +5,11 @@ using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Core.Commands
 {
-   public class ChangeMoleculeNameAtMoleculeDependentBuilderCommandBase : BuildingBlockChangeCommandBase<IBuildingBlock>
+   public abstract class ChangeMoleculeNameAtMoleculeDependentBuilderCommandBase : BuildingBlockChangeCommandBase<IBuildingBlock>
    {
       protected IMoleculeDependentBuilder _moleculeDependentBuilder;
 
-      public ChangeMoleculeNameAtMoleculeDependentBuilderCommandBase(string newMoleculeName, string oldMoleculeName, IMoleculeDependentBuilder moleculeDependentBuilder, IBuildingBlock buildingBlock):base(buildingBlock)
+      protected ChangeMoleculeNameAtMoleculeDependentBuilderCommandBase(string newMoleculeName, string oldMoleculeName, IMoleculeDependentBuilder moleculeDependentBuilder, IBuildingBlock buildingBlock):base(buildingBlock)
       {
          CommandType = AppConstants.Commands.EditCommand;
          _moleculeDependentBuilder = moleculeDependentBuilder;
@@ -24,10 +24,12 @@ namespace MoBi.Core.Commands
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         var inverseCommand = CommandExtensions.AsInverseFor(new ChangeMoleculeNameAtMoleculeDependentBuilderCommand(OldMoleculeName,NewMoleculeName,_moleculeDependentBuilder,_buildingBlock), this);
+         var inverseCommand = CreateInverseCommand().AsInverseFor(this);
          inverseCommand.Visible = Visible;
          return inverseCommand;
       }
+
+      protected abstract ChangeMoleculeNameAtMoleculeDependentBuilderCommandBase CreateInverseCommand();
 
       protected override void ClearReferences()
       {
@@ -55,6 +57,9 @@ namespace MoBi.Core.Commands
          _moleculeDependentBuilder.RemoveMoleculeNameToExclude(OldMoleculeName);
          _moleculeDependentBuilder.AddMoleculeNameToExclude(NewMoleculeName);
       }
+
+      protected override ChangeMoleculeNameAtMoleculeDependentBuilderCommandBase CreateInverseCommand() =>
+         new ChangeExcludeMoleculeNameAtMoleculeDependentBuilderCommand(OldMoleculeName, NewMoleculeName, _moleculeDependentBuilder, _buildingBlock);
    }
 
    public class ChangeMoleculeNameAtMoleculeDependentBuilderCommand:ChangeMoleculeNameAtMoleculeDependentBuilderCommandBase
@@ -70,5 +75,8 @@ namespace MoBi.Core.Commands
          _moleculeDependentBuilder.RemoveMoleculeName(OldMoleculeName);
          _moleculeDependentBuilder.AddMoleculeName(NewMoleculeName);
       }
+
+      protected override ChangeMoleculeNameAtMoleculeDependentBuilderCommandBase CreateInverseCommand() =>
+         new ChangeMoleculeNameAtMoleculeDependentBuilderCommand(OldMoleculeName, NewMoleculeName, _moleculeDependentBuilder, _buildingBlock);
    }
 }
