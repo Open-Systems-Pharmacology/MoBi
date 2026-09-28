@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Globalization;
+using System.Linq;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Utility.Extensions;
@@ -46,6 +47,7 @@ namespace MoBi.Presentation.Mapper
 
          A.CallTo(() => _dimensionFactory.DimensionForUnit("mol")).Returns(_concentrationDimension);
          A.CallTo(() => _dimensionFactory.DimensionForUnit("ml")).Returns(_volumeDimension);
+         A.CallTo(() => _dimensionFactory.DimensionForUnit("ML")).Returns(_volumeDimension);
          A.CallTo(() => _dimensionFactory.DimensionForUnit("s")).Returns(_timeDimension);
          A.CallTo(() => _dimensionFactory.DimensionForUnit("1/min")).Returns(_inversedTime);
          A.CallTo(() => _dimensionFactory.Has(_inversedTime.Name)).Returns(true);
@@ -85,6 +87,7 @@ namespace MoBi.Presentation.Mapper
 
          A.CallTo(() => _dimensionFactory.DimensionForUnit("mol")).Returns(_amountDimension);
          A.CallTo(() => _dimensionFactory.DimensionForUnit("mmol")).Returns(_amountDimension);
+         A.CallTo(() => _dimensionFactory.DimensionForUnit("MMOL")).Returns(_amountDimension);
          A.CallTo(() => _dimensionFactory.DimensionForUnit("mol/l")).Returns(_concentrationDimension);
          A.CallTo(() => _dimensionFactory.DimensionForUnit("s")).Returns(_timeDimension);
          A.CallTo(() => _dimensionFactory.DimensionForUnit("")).Throws<Exception>();
@@ -472,6 +475,36 @@ namespace MoBi.Presentation.Mapper
       public void should_trim_trailing_empty_segments_from_the_path()
       {
          _result.QuantityDTOs[0].ContainerPath.Count.ShouldBeEqualTo(5);
+      }
+   }
+
+   public class When_converting_ic_data_table_with_a_unit_differing_only_in_case : concern_for_DataTableToImportQuantityDTOMapperForMolecules
+   {
+      private QuantityImporterDTO _result;
+
+      protected override void Because()
+      {
+         _result = sut.MapFrom(new CaseMismatchUnitsMsvDataTableProvider().ImportTables(), _initialConditionsBuildingBlock);
+      }
+
+      [Observation]
+      public void should_log_that_the_unit_was_not_found_and_suggest_the_matching_unit()
+      {
+         _result.Log.Any(x => x.Contains(AppConstants.Exceptions.CouldNotFindUnitInDimension("MMOL", Constants.Dimension.MOLAR_AMOUNT, "mmol"))).ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_result_in_no_imported_quantities()
+      {
+         _result.Count.ShouldBeEqualTo(0);
+      }
+   }
+
+   public class CaseMismatchUnitsMsvDataTableProvider : MsvDataTableProvider
+   {
+      protected override string GetUnits(int i)
+      {
+         return "MMOL";
       }
    }
 

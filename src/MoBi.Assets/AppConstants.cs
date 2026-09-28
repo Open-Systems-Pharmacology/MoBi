@@ -1381,6 +1381,12 @@ namespace MoBi.Assets
 
          public static string CouldNotFindDimension(string dimension) => $"Could not find the dimension: {dimension}";
 
+         public static string CouldNotFindUnitInDimension(string unit, string dimension, string suggestedUnit)
+         {
+            var message = $"Could not find the unit '{unit}' in dimension '{dimension}'";
+            return string.IsNullOrEmpty(suggestedUnit) ? message : $"{message} (did you mean '{suggestedUnit}'?)";
+         }
+
          public static string CannotRemoveParameter(string parameterName, string containerName, string containerType) =>
             $"Parameter '{parameterName}' is a mandatory parameter of {containerType.ToLowerInvariant()} '{containerName}' and cannot be removed.";
 
