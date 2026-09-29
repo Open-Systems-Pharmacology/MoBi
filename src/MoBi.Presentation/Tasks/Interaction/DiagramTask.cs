@@ -96,12 +96,8 @@ namespace MoBi.Presentation.Tasks.Interaction
             throw new MoBiException("Serializer not found");
          }
 
-         var diagramTemplateModel = serializer.XmlDocumentToDiagramModel(diagramTemplateXmlDocument);
-         if (diagramTemplateModel == null)
-         {
-            throw new MoBiException("Deserialization failed");
-         }
-
+         var diagramTemplateModel = IoC.Resolve<IDiagramModelFactory>().Create();
+         serializer.Deserialize(diagramTemplateModel, diagramTemplateXmlDocument);
          return diagramTemplateModel;
       }
 

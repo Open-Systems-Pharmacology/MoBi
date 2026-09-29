@@ -41,7 +41,6 @@ namespace MoBi.BatchTool
             container.Register<IJournalDiagramManagerFactory, BatchJournalDiagramManagerFactory>();
             container.Register<IDiagramModelToXmlMapper, BatchDiagramModelToXmlMapper>(LifeStyle.Singleton);
             container.Register<IDiagramModel, BatchDiagramModel>(LifeStyle.Singleton);
-            container.Register<IReactionDiagramModelFactory, BatchReactionDiagramModelFactory>();
          }
          setupDimensions(container);
          setupCalculationMethods(container);

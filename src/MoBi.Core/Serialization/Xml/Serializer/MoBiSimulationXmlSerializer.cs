@@ -1,10 +1,8 @@
 using System.Xml.Linq;
 using MoBi.Core.Chart;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Model.Diagram;
 using OSPSuite.Core.Chart.Simulations;
 using OSPSuite.Core.Domain;
-using OSPSuite.Core.Serialization.Diagram;
 using OSPSuite.Core.Serialization.Xml;
 using OSPSuite.Serializer;
 
@@ -33,12 +31,16 @@ namespace MoBi.Core.Serialization.Xml.Serializer
 
       public override MoBiSimulation CreateObject(XElement element, SerializationContext serializationContext)
       {
-         return new MoBiSimulation { DiagramManager = serializationContext.Resolve<ISimulationDiagramManager>() };
+         return new MoBiSimulation();
       }
 
       protected override void TypedDeserialize(MoBiSimulation simulation, XElement simulationElement, SerializationContext serializationContext)
       {
          base.TypedDeserialize(simulation, simulationElement, serializationContext);
+
+         var diagramModelElement = simulationElement.Element(Constants.Serialization.DIAGRAM_MODEL);
+         if (diagramModelElement != null)
+            simulation.DiagramModelXml = new XElement(diagramModelElement);
 
          if (simulation.ResultsDataRepository != null)
             serializationContext.AddRepository(simulation.ResultsDataRepository);
@@ -46,12 +48,6 @@ namespace MoBi.Core.Serialization.Xml.Serializer
          var analysesElement = simulationElement.Element(_analysesElement);
          if (analysesElement != null)
             deserializeAnalysesFrom(simulation, analysesElement, serializationContext);
-
-         var diagramSerializer = serializationContext.Resolve<IDiagramModelToXmlMapper>();
-
-         var diagramElement = simulationElement.Element(diagramSerializer.ElementName);
-         if (diagramElement != null)
-            simulation.DiagramModel = diagramSerializer.XmlDocumentToDiagramModel(diagramElement.ToXmlDocument());
       }
 
       private void deserializeAnalysesFrom(MoBiSimulation simulation, XElement analysesElement, SerializationContext serializationContext)
@@ -84,11 +80,6 @@ namespace MoBi.Core.Serialization.Xml.Serializer
       {
          var simulationElement = base.TypedSerialize(simulation, serializationContext);
 
-         var diagramSerializer = serializationContext.Resolve<IDiagramModelToXmlMapper>();
-
-         if (simulation.DiagramModel != null)
-            simulationElement.Add(diagramSerializer.DiagramModelToXmlDocument(simulation.DiagramModel).ToXElement());
-
          // Serialize all analyses into an <Analyses> wrapper element
          var analysesElement = new XElement(_analysesElement);
          foreach (var analysis in simulation.Analyses)
@@ -97,6 +88,8 @@ namespace MoBi.Core.Serialization.Xml.Serializer
          }
 
          simulationElement.Add(analysesElement);
+         if (simulation.DiagramModelXml != null)
+            simulationElement.Add(new XElement(simulation.DiagramModelXml));
 
          return simulationElement;
       }

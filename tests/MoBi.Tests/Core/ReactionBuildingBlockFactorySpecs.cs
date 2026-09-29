@@ -19,13 +19,13 @@ namespace MoBi.Core
       {
          var objectBaseFactory = A.Fake<IObjectBaseFactory>();
          var diagramManagerFactory = A.Fake<IDiagramManagerFactory>();
-         var reactionDiagramModelFactory = A.Fake<IReactionDiagramModelFactory>();
+         var diagramModelFactory = A.Fake<IDiagramModelFactory>();
          _diagramManager = A.Fake<IMoBiReactionDiagramManager>();
          _diagramModel = A.Fake<IDiagramModel>();
          A.CallTo(() => objectBaseFactory.Create<MoBiReactionBuildingBlock>()).Returns(new MoBiReactionBuildingBlock());
          A.CallTo(() => diagramManagerFactory.Create<IMoBiReactionDiagramManager>()).Returns(_diagramManager);
-         A.CallTo(() => reactionDiagramModelFactory.Create()).Returns(_diagramModel);
-         sut = new ReactionBuildingBlockFactory(objectBaseFactory, diagramManagerFactory, reactionDiagramModelFactory);
+         A.CallTo(() => diagramModelFactory.Create()).Returns(_diagramModel);
+         sut = new ReactionBuildingBlockFactory(objectBaseFactory, diagramManagerFactory, diagramModelFactory);
       }
    }
 

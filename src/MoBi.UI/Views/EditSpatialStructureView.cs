@@ -1,5 +1,4 @@
-﻿using System;
-using DevExpress.XtraEditors;
+﻿using DevExpress.XtraEditors;
 using DevExpress.XtraTab;
 using MoBi.Assets;
 using MoBi.Presentation.Presenter;
@@ -36,12 +35,8 @@ namespace MoBi.UI.Views
          tabDiagram.InitWith(AppConstants.Captions.ModelDiagram, ApplicationIcons.Diagram);
          tabTree.InitWith(AppConstants.Captions.Tree, ApplicationIcons.Tree);
 
-         spliterDiagram.CollapsePanel = SplitCollapsePanel.Panel1;
-         spliterDiagram.Horizontal = true;
-
          splitHierarchyEdit.CollapsePanel = SplitCollapsePanel.Panel1;
          splitHierarchyEdit.Horizontal = true;
-         spliterDiagram.SplitterPosition = Convert.ToInt32(Height * AppConstants.Diagram.SplitterDiagramRatio);
 
          EditCaption = AppConstants.Captions.Parameters;
          EditIcon = ApplicationIcons.Parameter;
@@ -75,7 +70,7 @@ namespace MoBi.UI.Views
 
       public void SetSpaceDiagramView(ISpatialStructureDiagramView view)
       {
-         spliterDiagram.Panel2.FillWith(view);
+         tabDiagram.FillWith(view);
       }
    }
 }

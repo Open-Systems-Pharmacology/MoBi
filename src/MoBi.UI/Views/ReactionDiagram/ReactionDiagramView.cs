@@ -6,6 +6,7 @@ using MoBi.Presentation.Views.BaseDiagram;
 using MoBi.UI.Presenters;
 using OSPSuite.Core.Diagram;
 using OSPSuite.Presentation.Diagram.Elements;
+using OSPSuite.Presentation.Extensions;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
 using OSPSuite.UI.Views.Diagram;

@@ -35,7 +35,6 @@ namespace MoBi.UI.Presenters
       private readonly IDiagramPopupMenuBase _reactionPopupMenu;
       private readonly IDiagramLayoutTask _diagramLayoutTask;
       private readonly IBuildingBlockRepository _buildingBlockRepository;
-      private readonly IReactionDiagramModelFactory _reactionDiagramModelFactory;
 
       public ReactionDiagramPresenter(
          IReactionDiagramView view,
@@ -48,7 +47,6 @@ namespace MoBi.UI.Presenters
          IDiagramLayoutTask diagramLayoutTask,
          IStartOptions runOptions,
          IDiagramModelFactory diagramModelFactory,
-         IReactionDiagramModelFactory reactionDiagramModelFactory,
          IBuildingBlockRepository buildingBlockRepository) :
          base(view, layouter, dialogCreator, diagramModelFactory, userSettings, context, diagramTask, runOptions)
       {
@@ -58,7 +56,6 @@ namespace MoBi.UI.Presenters
          _reactionPopupMenu = new PopupMenuReactionBuilder(this, context, runOptions);
          _diagramLayoutTask = diagramLayoutTask;
          _buildingBlockRepository = buildingBlockRepository;
-         _reactionDiagramModelFactory = reactionDiagramModelFactory;
       }
 
       public bool DisplayEductsRight(IBaseNode node)
@@ -89,8 +86,6 @@ namespace MoBi.UI.Presenters
          //to avoid scrollbar error
          ResetViewSize();
       }
-
-      protected override IDiagramModel CreateDiagramModel() => _reactionDiagramModelFactory.Create();
 
       public override IDiagramPopupMenuBase GetPopupMenu(IBaseNode baseNode)
       {

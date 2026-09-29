@@ -20,7 +20,6 @@ using OSPSuite.Presentation.Presenters.ParameterIdentifications;
 using OSPSuite.Presentation.Presenters.SensitivityAnalyses;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Settings;
-using OSPSuite.UI.Diagram.Elements;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Format;
 using OSPSuite.Utility.Validation;

@@ -9,7 +9,6 @@ using DevExpress.XtraTab.ViewInfo;
 using MoBi.Assets;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
-using MoBi.Presentation.Views.BaseDiagram;
 using MoBi.UI.Extensions;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
@@ -28,7 +27,6 @@ namespace MoBi.UI.Views.SimulationView
       public EditSimulationView(IMainView mainView, IImageListRetriever imageListRetriever) : base(mainView)
       {
          InitializeComponent();
-         spliterDiagram.CollapsePanel = SplitCollapsePanel.Panel1;
          splitSimulationParameters.CollapsePanel = SplitCollapsePanel.Panel1;
          tabs.ClosePageButtonShowMode = ClosePageButtonShowMode.InActiveTabPageHeader;
          tabs.CloseButtonClick += (o, e) => OnEvent(closeButtonClick, e as ClosePageButtonEventArgs);
@@ -47,24 +45,17 @@ namespace MoBi.UI.Views.SimulationView
       {
          base.InitializeResources();
          ApplicationIcon = ApplicationIcons.Simulation;
-         tabDiagram.InitWith(AppConstants.Captions.ModelDiagram, ApplicationIcons.Diagram);
          tabTree.InitWith(AppConstants.Captions.Tree, ApplicationIcons.Tree);
          tabSimulation.InitWith(AppConstants.Captions.SimulationParameters, ApplicationIcons.Parameter);
          tabData.InitWith(AppConstants.Captions.SimulationObservedData, ApplicationIcons.ObservedData);
          tabChanges.InitWith(AppConstants.Captions.Changes, ApplicationIcons.Comparison);
 
-         tabsNavigation.SelectedPageChanging += (o, e) => OnEvent(tabSelectionChanged, e);
          tabs.SelectedPageChanging += (o, e) => OnEvent(tabSelectionChanged, e);
-
-         spliterDiagram.Horizontal = true;
-         spliterDiagram.SplitterPosition = Convert.ToInt32(Height * AppConstants.Diagram.SplitterDiagramRatio);
       }
 
       private void tabSelectionChanged(TabPageChangingEventArgs e)
       {
-         if (e.Page.Equals(tabDiagram))
-            simulationPresenter.LoadDiagram();
-         else if (e.Page.Equals(tabChanges))
+         if (e.Page.Equals(tabChanges))
             simulationPresenter.LoadChanges();
       }
 
@@ -105,11 +96,6 @@ namespace MoBi.UI.Views.SimulationView
       public void SetDataView(ISimulationOutputMappingView view)
       {
          tabData.FillWith(view);
-      }
-
-      public void SetModelDiagram(ISimulationDiagramView subView)
-      {
-         spliterDiagram.Panel2.FillWith(subView);
       }
 
       public bool ShowsResults => tabs.SelectedTabPage?.Tag is ISimulationAnalysis;

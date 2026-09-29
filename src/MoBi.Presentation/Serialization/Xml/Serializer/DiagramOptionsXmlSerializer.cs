@@ -12,11 +12,8 @@ namespace MoBi.Presentation.Serialization.Xml.Serializer
       {
          Map(options => options.SnapGridVisible);
          Map(options => options.MoleculePropertiesVisible);
-         Map(options => options.ObserverLinksVisible);
-         Map(options => options.UnusedMoleculesVisibleInModelDiagram);
          Map(options => options.DefaultNodeSizeReaction);
          Map(options => options.DefaultNodeSizeMolecule);
-         Map(options => options.DefaultNodeSizeObserver);
          Map(options => options.DiagramColors);
       }
 

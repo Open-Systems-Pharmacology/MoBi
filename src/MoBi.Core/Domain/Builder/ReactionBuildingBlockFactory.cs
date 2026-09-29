@@ -15,20 +15,20 @@ namespace MoBi.Core.Domain.Builder
    {
       private readonly IObjectBaseFactory _objectBaseFactory;
       private readonly IDiagramManagerFactory _diagramManagerFactory;
-      private readonly IReactionDiagramModelFactory _reactionDiagramModelFactory;
+      private readonly IDiagramModelFactory _diagramModelFactory;
 
-      public ReactionBuildingBlockFactory(IObjectBaseFactory objectBaseFactory, IDiagramManagerFactory diagramManagerFactory, IReactionDiagramModelFactory reactionDiagramModelFactory)
+      public ReactionBuildingBlockFactory(IObjectBaseFactory objectBaseFactory, IDiagramManagerFactory diagramManagerFactory, IDiagramModelFactory diagramModelFactory)
       {
          _objectBaseFactory = objectBaseFactory;
          _diagramManagerFactory = diagramManagerFactory;
-         _reactionDiagramModelFactory = reactionDiagramModelFactory;
+         _diagramModelFactory = diagramModelFactory;
       }
 
       public MoBiReactionBuildingBlock Create()
       {
          var buildingBlock = _objectBaseFactory.Create<MoBiReactionBuildingBlock>();
          buildingBlock.DiagramManager = _diagramManagerFactory.Create<IMoBiReactionDiagramManager>();
-         buildingBlock.DiagramModel = _reactionDiagramModelFactory.Create();
+         buildingBlock.DiagramModel = _diagramModelFactory.Create();
          return buildingBlock;
       }
    }

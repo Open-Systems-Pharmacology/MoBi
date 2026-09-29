@@ -14,7 +14,6 @@ using OSPSuite.Presentation.Presenters.ParameterIdentifications;
 using OSPSuite.Presentation.Presenters.SensitivityAnalyses;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Settings;
-using OSPSuite.UI.Diagram.Elements;
 
 namespace MoBi.BatchTool.Services
 {

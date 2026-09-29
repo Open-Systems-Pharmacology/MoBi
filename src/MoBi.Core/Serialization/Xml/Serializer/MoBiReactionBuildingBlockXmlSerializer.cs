@@ -27,7 +27,7 @@ namespace MoBi.Core.Serialization.Xml.Serializer
 
          if (diagramElement == null) return;
          var xmlDoc = diagramElement.ToXmlDocument();
-         var model = serializationContext.Resolve<IReactionDiagramModelFactory>().Create();
+         var model = serializationContext.Resolve<IDiagramModelFactory>().Create();
          serializer.Deserialize(model, xmlDoc);
          reactionBuildingBlock.DiagramModel = model;
       }

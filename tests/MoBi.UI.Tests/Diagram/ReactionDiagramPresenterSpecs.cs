@@ -41,7 +41,6 @@ namespace MoBi.UI.Diagram
       private ICommandCollector _commandCollector;
       private IStartOptions _runOptions;
       private IDiagramModelFactory _diagramModelFactory;
-      private IReactionDiagramModelFactory _reactionDiagramModelFactory;
       private IMoBiProjectRetriever _moBiProjectRetriever;
       private BuildingBlockRepository _buildingBlockRepository;
 
@@ -58,12 +57,11 @@ namespace MoBi.UI.Diagram
          _commandCollector = A.Fake<ICommandCollector>();
          _runOptions = A.Fake<IStartOptions>();
          _diagramModelFactory = A.Fake<IDiagramModelFactory>();
-         _reactionDiagramModelFactory = A.Fake<IReactionDiagramModelFactory>();
          _moBiProjectRetriever = new MoBiProjectRetriever(_moBiContext);
          _buildingBlockRepository = new BuildingBlockRepository(_moBiProjectRetriever);
          
          sut = new ReactionDiagramPresenter(_reactionDiagramView, _containerBaseLayouter, _moBiContext, _userSettings,
-            _dialogCreator, _moBiApplicationController, _diagramTask, _diagramLayoutTask, _runOptions, _diagramModelFactory, _reactionDiagramModelFactory, _buildingBlockRepository);
+            _dialogCreator, _moBiApplicationController, _diagramTask, _diagramLayoutTask, _runOptions, _diagramModelFactory, _buildingBlockRepository);
 
          sut.InitializeWith(_commandCollector);
       }

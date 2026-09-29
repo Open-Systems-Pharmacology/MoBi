@@ -6,7 +6,6 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using MoBi.Presentation.Presenter.BaseDiagram;
 using MoBi.Presentation.Settings;
-using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views.BaseDiagram;
 using OSPSuite.Core;
 using OSPSuite.Core.Diagram;
@@ -87,19 +86,7 @@ namespace MoBi.Presentation.Presenter.SpaceDiagram
 
       public override void Link(IBaseNode node1, IBaseNode node2, object portObject1, object portObject2)
       {
-         if (!(node1 is IContainerNode containerNode1) || !(node2 is IContainerNode containerNode2))
-            return;
-
-         var addNeighborhoodTask = _context.Resolve<IInteractionTasksForNeighborhood>();
-         AddCommand(addNeighborhoodTask.Add(objectPathFor(containerNode1), objectPathFor(containerNode2)));
-         //because cannot undo this action, reset undo stack
-         DiagramModel.ClearUndoStack();
-      }
-
-      private ObjectPath objectPathFor(IContainerNode containerNode)
-      {
-         var container = _context.Get<IContainer>(containerNode.Id);
-         return container != null ? _context.ObjectPathFactory.CreateAbsoluteObjectPath(container) : DiagramManager.PathForNodeWithoutEntity(containerNode);
+         //the diagram lays the spatial structure out, neighborhoods are created from the tree
       }
 
       public override void Unlink(IBaseNode node1, IBaseNode node2, object portObject1, object portObject2)

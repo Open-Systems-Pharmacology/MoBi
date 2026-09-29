@@ -19,7 +19,6 @@ namespace MoBi.Core.Service
       protected IIdGenerator _idGenerator;
       protected ICreationMetaDataFactory _metaDataFactory;
       protected ISimulationParameterOriginIdUpdater _parameterIdUpdater;
-      private IDiagramManagerFactory _diagramManagerFactory;
       private ISimulationConfigurationFactory _simulationConfigurationFactory;
       private IDimensionValidator _dimensionValidator;
       private IModelConstructor _modelConstructor;
@@ -30,7 +29,6 @@ namespace MoBi.Core.Service
          _idGenerator = IoC.Resolve<IIdGenerator>();
          _metaDataFactory = IoC.Resolve<ICreationMetaDataFactory>();
          _parameterIdUpdater = A.Fake<ISimulationParameterOriginIdUpdater>();
-         _diagramManagerFactory = IoC.Resolve<IDiagramManagerFactory>();
          _simulationConfigurationFactory = IoC.Resolve<ISimulationConfigurationFactory>();
          _dimensionValidator = IoC.Resolve<IDimensionValidator>();
          _modelConstructor = IoC.Resolve<IModelConstructor>();
@@ -40,7 +38,6 @@ namespace MoBi.Core.Service
          sut = new SimulationFactory(_idGenerator,
             _metaDataFactory,
             _parameterIdUpdater,
-            _diagramManagerFactory,
             _simulationConfigurationFactory,
             _dimensionValidator,
             _modelConstructor,
@@ -87,7 +84,6 @@ namespace MoBi.Core.Service
          sut = new SimulationFactory(_idGenerator,
             _metaDataFactory,
             _parameterIdUpdater,
-            IoC.Resolve<IDiagramManagerFactory>(),
             IoC.Resolve<ISimulationConfigurationFactory>(),
             IoC.Resolve<IDimensionValidator>(),
             IoC.Resolve<IModelConstructor>(),

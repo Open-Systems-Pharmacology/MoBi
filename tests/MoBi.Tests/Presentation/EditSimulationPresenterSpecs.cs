@@ -5,7 +5,6 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Services;
 using MoBi.Presentation.Presenter;
-using MoBi.Presentation.Presenter.ModelDiagram;
 using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -25,7 +24,6 @@ namespace MoBi.Presentation
    {
       protected IEditSimulationView _view;
       protected IHierarchicalSimulationPresenter _hierarchicalSimulationPresenter;
-      protected ISimulationDiagramPresenter _diagramPresenter;
       protected IEditSolverSettingsPresenter _solverSettings;
       protected IEditOutputSchemaPresenter _outputSchemaPresenter;
       protected IEditInSimulationPresenterFactory _presenterFactory;
@@ -46,7 +44,6 @@ namespace MoBi.Presentation
       {
          _view = A.Fake<IEditSimulationView>();
          _hierarchicalSimulationPresenter = A.Fake<IHierarchicalSimulationPresenter>();
-         _diagramPresenter = A.Fake<ISimulationDiagramPresenter>();
          _solverSettings = A.Fake<IEditSolverSettingsPresenter>();
          _outputSchemaPresenter = A.Fake<IEditOutputSchemaPresenter>();
          _presenterFactory = A.Fake<IEditInSimulationPresenterFactory>();
@@ -63,8 +60,8 @@ namespace MoBi.Presentation
          _simulationAnalysisCreator = A.Fake<IMoBiSimulationAnalysisCreator>();
          _contextMenuFactory = A.Fake<ISimulationAnalysisPresenterContextMenuFactory>();
 
-         sut = new EditSimulationPresenter(_view, _hierarchicalSimulationPresenter, _diagramPresenter,
-            _solverSettings, _outputSchemaPresenter, _presenterFactory, new HeavyWorkManagerForSpecs(),
+         sut = new EditSimulationPresenter(_view, _hierarchicalSimulationPresenter,
+            _solverSettings, _outputSchemaPresenter, _presenterFactory,
             _editFavoritePresenter, _userDefinedParametersPresenter, _simulationOutputMappingPresenter,
             _context, _outputMappingMatchingTask, _simulationChangesPresenter, _entitySourceReferenceFactory,
             _simulationRunner, _simulationAnalysisPresenterFactory, _eventPublisher,
@@ -635,29 +632,6 @@ namespace MoBi.Presentation
       public void should_not_show_results_tab_when_already_showing()
       {
          A.CallTo(() => _view.ShowResultsTab()).MustNotHaveHappened();
-      }
-   }
-
-   public class When_the_simulation_presenter_is_loading_the_diagram : concern_for_EditSimulationPresenter
-   {
-      private IMoBiSimulation _simulation;
-
-      protected override void Context()
-      {
-         base.Context();
-         _simulation = A.Fake<IMoBiSimulation>();
-         sut.Edit(_simulation);
-      }
-
-      protected override void Because()
-      {
-         sut.LoadDiagram();
-      }
-
-      [Observation]
-      public void should_initialise_Diagram_presenter()
-      {
-         A.CallTo(() => _diagramPresenter.Edit(_simulation)).MustHaveHappened();
       }
    }
 
