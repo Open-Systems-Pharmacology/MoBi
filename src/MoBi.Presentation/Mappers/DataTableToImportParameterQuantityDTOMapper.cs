@@ -31,7 +31,7 @@ namespace MoBi.Presentation.Mappers
             Dimension = dimension,
             ContainerPath = new ObjectPath(containerPath),
             Name = parameterName,
-            DisplayUnit = dimension.Unit(row[Parameters.UNIT].ToString()),
+            DisplayUnit = GetUnit(dimension, row, rowIndex, Parameters.UNIT),
             IsQuantitySpecified = true,
             IsScaleDivisorSpecified = false
          };

@@ -1,4 +1,4 @@
-name: Code Coverage 13.0
+name: Code Coverage 13.1
 
 on:
     schedule:
@@ -23,7 +23,7 @@ jobs:
           dotnet restore
 
       - name: Build
-        run: dotnet build MoBi.sln /p:Version=13.0.9999 -p:ExcludeDesigner=true
+        run: dotnet build MoBi.sln /p:Version=13.1.9999 -p:ExcludeDesigner=true
 
       - name: Cover and report
         uses: Open-Systems-Pharmacology/Workflows/.github/actions/dotCover@main

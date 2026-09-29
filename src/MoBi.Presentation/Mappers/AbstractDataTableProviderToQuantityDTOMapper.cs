@@ -64,6 +64,18 @@ namespace MoBi.Presentation.Mappers
          return _dimensionFactory.Dimension(dimensionName);
       }
 
+      protected static Unit GetUnit(IDimension dimension, DataRow row, int rowIndex, int unitColumn)
+      {
+         var unitName = row[unitColumn].ToString();
+         var unit = dimension.FindUnit(unitName);
+         if (unit != null)
+            return unit;
+
+         var suggestedUnit = dimension.FindUnit(unitName, ignoreCase: true);
+         throw new ImportQuantityDTOsFromDataTablesMapperException(row, rowIndex,
+            AppConstants.Exceptions.CouldNotFindUnitInDimension(unitName, dimension.Name, suggestedUnit?.Name));
+      }
+
       /// <summary>
       ///    Gets the object path from a string in a datarow removing trailing empty path elements
       /// </summary>
@@ -166,7 +178,10 @@ namespace MoBi.Presentation.Mappers
          foreach (DataRow row in table.Rows)
          {
             if (isRowEmpty(table, rowIndex))
+            {
+               rowIndex++;
                continue;
+            }
             try
             {
                var dto = MapQuantityFromRow(table, table.Rows[rowIndex], rowIndex);
