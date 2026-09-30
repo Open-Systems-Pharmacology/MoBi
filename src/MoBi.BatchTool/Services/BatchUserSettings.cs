@@ -45,7 +45,6 @@ namespace MoBi.BatchTool.Services
       public string IconSizeGeneral { get; set; }
       public bool RenameDependentObjectsDefault { get; set; }
       public bool CheckDimensions { get; set; }
-      public IForceLayoutConfiguration ForceLayoutConfigutation { get; set; }
       public ChartOptions ChartOptions { get; set; }
       public string MainViewLayout { get; set; }
       public string RibbonLayout { get; set; }
@@ -82,7 +81,6 @@ namespace MoBi.BatchTool.Services
       {
          ProjectFiles = new List<string>();
          DiagramOptions = new DiagramOptions();
-         ForceLayoutConfigutation = new ForceLayoutConfiguration();
          ChartOptions = new ChartOptions();
          DisplayUnits = new DisplayUnitsManager();
          ComparerSettings = new ComparerSettings { CompareHiddenEntities = true };

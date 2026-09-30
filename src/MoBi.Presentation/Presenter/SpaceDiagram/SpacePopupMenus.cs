@@ -59,7 +59,6 @@ namespace MoBi.Presentation.Presenter.SpaceDiagram
       protected override void SetLayoutMenuItems(IContextMenuView contextMenuView, IContainerBase containerBase)
       {
          AddTemplateLayoutMenuItems(contextMenuView, containerBase);
-         AddAutoLayoutMenuItems(contextMenuView, containerBase);
          contextMenuView.AddMenuItem(SubMenuLayout);
       }
    }
@@ -73,7 +72,6 @@ namespace MoBi.Presentation.Presenter.SpaceDiagram
       protected override void SetLayoutMenuItems(IContextMenuView contextMenuView, IContainerBase containerBase)
       {
          AddTemplateLayoutMenuItems(contextMenuView, containerBase);
-         AddAutoLayoutMenuItems(contextMenuView, containerBase);
          contextMenuView.AddMenuItem(SubMenuLayout);
       }
    }

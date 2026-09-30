@@ -131,8 +131,6 @@ namespace MoBi.UI
          sut.ValidationSettings.CheckRules = true;
          sut.ValidationSettings.ShowPKSimObserverMessages = true;
 
-         sut.ForceLayoutConfigutation.BaseGravitationalMass = 10F;
-         sut.ForceLayoutConfigutation.MaxIterations = 500;
       }
 
       protected override void Because()
@@ -170,14 +168,6 @@ namespace MoBi.UI
          _clone.ValidationSettings.CheckDimensions.ShouldBeTrue();
          _clone.ValidationSettings.CheckRules.ShouldBeTrue();
          _clone.ValidationSettings.ShowPKSimObserverMessages.ShouldBeTrue();
-      }
-
-      [Observation]
-      public void should_deep_clone_force_layout_configuration()
-      {
-         ReferenceEquals(_clone.ForceLayoutConfigutation, sut.ForceLayoutConfigutation).ShouldBeFalse();
-         _clone.ForceLayoutConfigutation.BaseGravitationalMass.ShouldBeEqualTo(10F);
-         _clone.ForceLayoutConfigutation.MaxIterations.ShouldBeEqualTo(500);
       }
 
       [Observation]
@@ -252,7 +242,6 @@ namespace MoBi.UI
          sut.DiagramOptions.SnapGridVisible = false;
          sut.ChartOptions.SimulationInCurveName = false;
          sut.ValidationSettings.CheckDimensions = false;
-         sut.ForceLayoutConfigutation.BaseGravitationalMass = 2F;
 
          _clone = sut.Clone();
          _clone.RenameDependentObjectsDefault = false;
@@ -266,7 +255,6 @@ namespace MoBi.UI
          _clone.DiagramOptions.SnapGridVisible = true;
          _clone.ChartOptions.SimulationInCurveName = true;
          _clone.ValidationSettings.CheckDimensions = true;
-         _clone.ForceLayoutConfigutation.BaseGravitationalMass = 10F;
       }
 
       protected override void Because()
@@ -338,12 +326,6 @@ namespace MoBi.UI
       public void should_update_validation_settings()
       {
          sut.ValidationSettings.CheckDimensions.ShouldBeTrue();
-      }
-
-      [Observation]
-      public void should_update_force_layout_configuration()
-      {
-         sut.ForceLayoutConfigutation.BaseGravitationalMass.ShouldBeEqualTo(10F);
       }
 
       [Observation]

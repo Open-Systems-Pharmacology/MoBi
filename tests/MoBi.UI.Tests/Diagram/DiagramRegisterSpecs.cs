@@ -36,11 +36,5 @@ namespace MoBi.UI.Diagram
       {
          _container.Resolve<INeighborhoodNode>().ShouldBeAnInstanceOf<NeighborhoodNode>();
       }
-
-      [Observation]
-      public void should_register_the_force_layout_configuration()
-      {
-         _container.Resolve<IForceLayoutConfiguration>().ShouldBeAnInstanceOf<ForceLayoutConfiguration>();
-      }
    }
 }

@@ -10,7 +10,6 @@ namespace MoBi.UI.Diagram
       {
          container.Register<IContainerNode, ContainerNode>();
          container.Register<INeighborhoodNode, NeighborhoodNode>();
-         container.Register<IForceLayoutConfiguration, ForceLayoutConfiguration>();
       }
    }
 }
