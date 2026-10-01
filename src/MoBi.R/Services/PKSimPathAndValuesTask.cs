@@ -21,7 +21,7 @@ public abstract class PKSimPathAndValuesTask<TBuildingBlock, TBuilder> : PathAnd
    protected PKSimPathAndValuesTask(ISerializationTask serializationTask, IXmlSerializationService xmlSerializationService, IPKSimAssemblyLoader pkSimLoader) : base(serializationTask, xmlSerializationService)
    {
       _pkSimLoader = pkSimLoader;
-      _pkSimLoader.InitializePath(pkSimAssemblyPath());
+      _pkSimLoader.InitializePath(pkSimAssemblyPath);
    }
 
    private static string pkSimAssemblyPath() =>
