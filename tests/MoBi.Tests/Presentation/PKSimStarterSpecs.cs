@@ -219,6 +219,7 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
+         sut = new PKSimStarter(_configuration, _applicationSettings, _startableProcessFactory, _cloneManager, _serializationService, _projectRetriever, new PKSimAssemblyLoader());
          A.CallTo(() => _applicationSettings.PKSimPath).Returns(_pkSimUserSettingsPath);
       }
 
