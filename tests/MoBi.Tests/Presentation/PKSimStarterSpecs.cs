@@ -1,5 +1,7 @@
 ﻿using System;
+using System.IO;
 using FakeItEasy;
+using MoBi.Assets;
 using MoBi.Core;
 using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
@@ -132,6 +134,50 @@ namespace MoBi.Presentation
       public void should_start_mobi_with_the_simulation_file()
       {
          A.CallTo(() => _startableProcessFactory.CreateStartableProcess(_pkSimUserSettingsPath, A<string[]>._)).MustHaveHappened();
+      }
+
+      public override void GlobalCleanup()
+      {
+         base.GlobalCleanup();
+         FileHelper.FileExists = _oldFileHelper;
+      }
+   }
+
+   public class When_loading_a_module_from_snapshot_and_the_pksim_path_was_set_after_the_starter_was_created : concern_for_PKSimStarter
+   {
+      private readonly string _pkSimUserSettingsPath = Path.Combine("PortableFolder", "PKSim.exe");
+      private Func<string, bool> _oldFileHelper;
+      private OSPSuiteException _exception;
+
+      public override void GlobalContext()
+      {
+         base.GlobalContext();
+         _oldFileHelper = FileHelper.FileExists;
+         FileHelper.FileExists = s => s == _pkSimUserSettingsPath;
+      }
+
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _applicationSettings.PKSimPath).Returns(_pkSimUserSettingsPath);
+      }
+
+      protected override void Because()
+      {
+         try
+         {
+            sut.LoadModuleFromSnapshot("snapshot");
+         }
+         catch (OSPSuiteException e)
+         {
+            _exception = e;
+         }
+      }
+
+      [Observation]
+      public void should_look_for_the_pksim_assemblies_next_to_the_pksim_path_from_the_application_settings()
+      {
+         _exception.Message.ShouldBeEqualTo(AppConstants.PKSim.CouldNotFindCompatiblePKSimAssemblies(Path.Combine("PortableFolder", "PKSim.Starter.dll")));
       }
 
       public override void GlobalCleanup()

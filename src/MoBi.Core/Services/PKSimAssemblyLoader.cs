@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 using MoBi.Assets;
 using MoBi.Core.Exceptions;
@@ -7,19 +8,19 @@ namespace MoBi.Core.Services;
 
 public interface IPKSimAssemblyLoader
 {
-   void InitializePath(string path);
+   void InitializePath(Func<string> pathRetriever);
    void LoadPKSimAssembly();
    object ExecuteMethod(string type, string methodName, object[] parameters = null);
 }
 
 public class PKSimAssemblyLoader : IPKSimAssemblyLoader
 {
-   private string _assemblyPath;
+   private Func<string> _pathRetriever;
    private Assembly _externalAssembly;
 
-   public void InitializePath(string path)
+   public void InitializePath(Func<string> pathRetriever)
    {
-      _assemblyPath = path;
+      _pathRetriever = pathRetriever;
    }
 
    public void LoadPKSimAssembly()
@@ -27,13 +28,14 @@ public class PKSimAssemblyLoader : IPKSimAssemblyLoader
       if (_externalAssembly != null)
          return;
 
-      if (_assemblyPath == null)
+      if (_pathRetriever == null)
          throw new MoBiException(AppConstants.PKSim.PKSimAssemblyLoaderNotInitialized);
 
-      if (!FileHelper.FileExists(_assemblyPath))
-         throw new MoBiException(AppConstants.PKSim.CouldNotFindCompatiblePKSimAssemblies(_assemblyPath));
+      var assemblyPath = _pathRetriever();
+      if (!FileHelper.FileExists(assemblyPath))
+         throw new MoBiException(AppConstants.PKSim.CouldNotFindCompatiblePKSimAssemblies(assemblyPath));
 
-      _externalAssembly = Assembly.LoadFrom(_assemblyPath);
+      _externalAssembly = Assembly.LoadFrom(assemblyPath);
    }
 
    private MethodInfo getMethod(string type, string methodName)
