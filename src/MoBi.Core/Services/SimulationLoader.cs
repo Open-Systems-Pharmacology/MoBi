@@ -12,6 +12,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Serialization.Exchange;
+using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Services
@@ -98,7 +99,9 @@ namespace MoBi.Core.Services
          // Correct any remaining name conflicts
          modulesToRename.Where(x => takenNames.Contains(x.Name)).Each(x => _nameCorrector.AutoCorrectName(takenNames, x));
 
-         _simulationEntitySourceUpdater.UpdateEntitySourcesForModuleRenames(originalModuleNames.Zip(modulesToRename.AllNames()), simulation);
+         var newModuleNamesByOldName = new Cache<string, string>();
+         originalModuleNames.Each((originalName, index) => newModuleNamesByOldName.Add(originalName, modulesToRename[index].Name));
+         _simulationEntitySourceUpdater.UpdateEntitySourcesForModuleRenames(newModuleNamesByOldName, simulation);
       }
 
       private void renameModulesAfterSimulation(Module module, string simulationName, string originalSimulationName)

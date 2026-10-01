@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Domain.Services
@@ -20,7 +20,7 @@ namespace MoBi.Core.Domain.Services
 
       void UpdateEntitySourcesForModuleRename(string oldModuleName, string newModuleName, IMoBiSimulation simulation);
 
-      void UpdateEntitySourcesForModuleRenames(IEnumerable<(string oldModuleName, string newModuleName)> moduleRenames, IMoBiSimulation simulation);
+      void UpdateEntitySourcesForModuleRenames(ICache<string, string> newModuleNamesByOldName, IMoBiSimulation simulation);
 
       void UpdateEntitySourcesForBuildingBlockRename(string oldName, IBuildingBlock renamedBuildingBlock, IMoBiSimulation simulation);
 
@@ -54,11 +54,11 @@ namespace MoBi.Core.Domain.Services
          simulation.EntitySources.Where(x => string.Equals(x.ModuleName, oldModuleName)).ToList().Each(x => updateModuleNameInEntitySources(newModuleName, simulation.EntitySources, x));
       }
 
-      public void UpdateEntitySourcesForModuleRenames(IEnumerable<(string oldModuleName, string newModuleName)> moduleRenames, IMoBiSimulation simulation)
+      public void UpdateEntitySourcesForModuleRenames(ICache<string, string> newModuleNamesByOldName, IMoBiSimulation simulation)
       {
          // Match the original sources so that chained renames (A to B, B to C) are not applied twice
          var originalSources = simulation.EntitySources.ToList();
-         moduleRenames.Each(rename => originalSources.Where(x => string.Equals(x.ModuleName, rename.oldModuleName)).Each(x => updateModuleNameInEntitySources(rename.newModuleName, simulation.EntitySources, x)));
+         newModuleNamesByOldName.KeyValues.Each(rename => originalSources.Where(x => string.Equals(x.ModuleName, rename.Key)).Each(x => updateModuleNameInEntitySources(rename.Value, simulation.EntitySources, x)));
       }
 
       public void UpdateEntitySourcesForBuildingBlockRename(string oldName, IBuildingBlock renamedBuildingBlock, IMoBiSimulation simulation)

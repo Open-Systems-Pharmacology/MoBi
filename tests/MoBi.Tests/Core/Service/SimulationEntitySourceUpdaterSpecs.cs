@@ -8,6 +8,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility.Collections;
 
 namespace MoBi.Core.Service
 {
@@ -161,7 +162,7 @@ namespace MoBi.Core.Service
 
       protected override void Because()
       {
-         sut.UpdateEntitySourcesForModuleRenames(new[] { ("Sim", "Sim 1"), ("Sim 1", "Sim 1 1") }, _simulation);
+         sut.UpdateEntitySourcesForModuleRenames(new Cache<string, string> { { "Sim", "Sim 1" }, { "Sim 1", "Sim 1 1" } }, _simulation);
       }
 
       [Observation]
