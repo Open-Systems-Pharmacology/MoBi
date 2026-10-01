@@ -29,7 +29,7 @@ namespace MoBi.Core
          _nameCorrector = A.Fake<INameCorrector>();
          _cloneManager = A.Fake<ICloneManagerForSimulation>();
          _context = A.Fake<IMoBiContext>();
-         sut = new SimulationLoader(_cloneManager, _nameCorrector, _context);
+         sut = new SimulationLoader(_cloneManager, _nameCorrector, _context, new SimulationEntitySourceUpdater(A.Fake<IMoBiProjectRetriever>()));
 
          _project = DomainHelperForSpecs.NewProject();
          _simulation = new MoBiSimulation().WithId("SimId");
@@ -221,6 +221,72 @@ namespace MoBi.Core
       {
          var simulationNames = _project.Simulations.Select(x => x.Name).ToList();
          simulationNames.Distinct().Count().ShouldBeEqualTo(simulationNames.Count);
+      }
+   }
+
+   public class When_adding_a_simulation_whose_module_and_building_blocks_are_renamed_during_import : concern_for_SimulationLoader
+   {
+      protected override void Context()
+      {
+         base.Context();
+         //the project already contains the same simulation, loaded once before
+         _project.AddModule(new Module().WithName("Vergin 1995 IV"));
+         _project.AddIndividualBuildingBlock(new IndividualBuildingBlock().WithName("Vergin_1995_IV"));
+         _project.AddExpressionProfileBuildingBlock(new ExpressionProfileBuildingBlock().WithName("CYP3A4|Human|Healthy"));
+
+         _simulation.Name = "Vergin 1995 IV";
+         _simulation.Model = new Model { Neighborhoods = new Container() };
+         _simulation.Model.Root = new Container();
+         _simulation.Configuration.AddModuleConfiguration(new ModuleConfiguration(new Module().WithName("Vergin 1995 IV")));
+         _simulation.Configuration.Individual = new IndividualBuildingBlock().WithName("Vergin_1995_IV");
+         _simulation.Configuration.AddExpressionProfile(new ExpressionProfileBuildingBlock().WithName("CYP3A4|Human|Healthy"));
+         _simulation.AddEntitySources(new[]
+         {
+            new SimulationEntitySource("Organism|Volume", "Organism", nameof(SpatialStructure), "Vergin 1995 IV", "Organism|Volume"),
+            new SimulationEntitySource("Organism|Weight", "Vergin_1995_IV", nameof(IndividualBuildingBlock), null, "Organism|Weight"),
+            new SimulationEntitySource("Organism|Liver|CYP3A4|Reference concentration", "CYP3A4|Human|Healthy", nameof(ExpressionProfileBuildingBlock), null, "Organism|Liver|CYP3A4|Reference concentration"),
+            new SimulationEntitySource("Organism|Lumen|Volume", "Organism", nameof(SpatialStructure), "moduleName", "Organism|Lumen|Volume")
+         });
+
+         A.CallTo(() => _cloneManager.CloneSimulationConfiguration(A<SimulationConfiguration>._)).Returns(_simulationConfiguration);
+
+         A.CallTo(_nameCorrector).WithReturnType<bool>()
+            .Invokes(() => _simulation.Name = "Vergin 1995 IV 1").Returns(true);
+
+         A.CallTo(() => _nameCorrector.AutoCorrectName(A<IEnumerable<string>>._, A<IndividualBuildingBlock>._))
+            .Invokes((IEnumerable<string> usedNames, IndividualBuildingBlock objectForRename) => objectForRename.Name += " 1");
+
+         A.CallTo(() => _nameCorrector.AutoCorrectName(A<IEnumerable<string>>._, A<ExpressionProfileBuildingBlock>._))
+            .Invokes((IEnumerable<string> usedNames, ExpressionProfileBuildingBlock objectForRename) => objectForRename.Name += " 1");
+      }
+
+      protected override void Because()
+      {
+         sut.AddSimulationToProject(_simulation);
+      }
+
+      [Observation]
+      public void the_entity_sources_should_reference_the_renamed_module()
+      {
+         _simulation.EntitySources.SourceByPath("Organism|Volume").ModuleName.ShouldBeEqualTo("Vergin 1995 IV 1");
+      }
+
+      [Observation]
+      public void the_entity_sources_should_reference_the_renamed_individual()
+      {
+         _simulation.EntitySources.SourceByPath("Organism|Weight").BuildingBlockName.ShouldBeEqualTo("Vergin_1995_IV 1");
+      }
+
+      [Observation]
+      public void the_entity_sources_should_reference_the_renamed_expression_profile()
+      {
+         _simulation.EntitySources.SourceByPath("Organism|Liver|CYP3A4|Reference concentration").BuildingBlockName.ShouldBeEqualTo("CYP3A4|Human|Healthy 1");
+      }
+
+      [Observation]
+      public void the_entity_sources_of_modules_that_were_not_renamed_should_not_change()
+      {
+         _simulation.EntitySources.SourceByPath("Organism|Lumen|Volume").ModuleName.ShouldBeEqualTo("moduleName");
       }
    }
 
