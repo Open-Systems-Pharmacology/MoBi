@@ -11,6 +11,7 @@ using MoBi.Core.Services;
 using MoBi.R.Services;
 using OSPSuite.CLI.Core.MinimalImplementations;
 using OSPSuite.Core;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Serialization.Diagram;
 using OSPSuite.Infrastructure.Serialization.ORM.History;
@@ -61,6 +62,7 @@ namespace MoBi.R
          container.Register<IHistoryManagerFactory, HistoryManagerFactory>(LifeStyle.Singleton);
          container.Register<IDiagramManagerFactory, DiagramManagerFactory>(LifeStyle.Singleton);
          container.Register<ICoreUserSettings, OSPSuite.Core.ICoreUserSettings, CoreUserSettings>(LifeStyle.Singleton);
+         container.Register<IGroupRepository, GroupRepository>(LifeStyle.Singleton);
       }
    }
 }
