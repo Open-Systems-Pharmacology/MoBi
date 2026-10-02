@@ -8,6 +8,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility.Collections;
 
 namespace MoBi.Core.Service
 {
@@ -139,6 +140,43 @@ namespace MoBi.Core.Service
          simulation1EntitySources.Length.ShouldBeEqualTo(2);
          simulation1EntitySources[0].SourcePath.ShouldBeEqualTo(_newPath);
          simulation1EntitySources[1].SourcePath.ShouldBeEqualTo(_oldPath);
+      }
+   }
+
+   public class When_updating_sources_for_chained_module_renames : concern_for_SimulationEntitySourceUpdater
+   {
+      private IMoBiSimulation _simulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = new MoBiSimulation();
+         _simulation.AddEntitySources(new[]
+         {
+            new SimulationEntitySource("path1", "bb", "atype", "Sim", "sourcePath1"),
+            new SimulationEntitySource("path2", "bb", "atype", "Sim 1", "sourcePath2"),
+            new SimulationEntitySource("path3", "bb", "atype", "other", "sourcePath3"),
+            new SimulationEntitySource("path4", "bb", "atype", null, "sourcePath4")
+         });
+      }
+
+      protected override void Because()
+      {
+         sut.UpdateEntitySourcesForModuleRenames(new Cache<string, string> { { "Sim", "Sim 1" }, { "Sim 1", "Sim 1 1" } }, _simulation);
+      }
+
+      [Observation]
+      public void each_source_should_reference_the_new_name_of_its_own_module()
+      {
+         _simulation.EntitySources.SourceByPath("path1").ModuleName.ShouldBeEqualTo("Sim 1");
+         _simulation.EntitySources.SourceByPath("path2").ModuleName.ShouldBeEqualTo("Sim 1 1");
+      }
+
+      [Observation]
+      public void sources_of_other_modules_should_not_change()
+      {
+         _simulation.EntitySources.SourceByPath("path3").ModuleName.ShouldBeEqualTo("other");
+         _simulation.EntitySources.SourceByPath("path4").ModuleName.ShouldBeNull();
       }
    }
 }

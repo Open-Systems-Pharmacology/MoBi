@@ -66,7 +66,7 @@ namespace MoBi.Presentation
          _snapshotTask = A.Fake<ISnapshotTask>();
          
          sut = new ProjectTask(_context, _serializationTask, _dialogCreator, _mruProvider, _heavyWorkManager,
-            new SimulationLoader(_cloneManager, _nameCorrector, _context), _sbmlTask, _parameterIdentificationRunner, _simulationRunner, _snapshotTask, _applicationController);
+            new SimulationLoader(_cloneManager, _nameCorrector, _context, A.Fake<ISimulationEntitySourceUpdater>()), _sbmlTask, _parameterIdentificationRunner, _simulationRunner, _snapshotTask, _applicationController);
       }
    }
 

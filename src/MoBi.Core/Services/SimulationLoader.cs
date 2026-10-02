@@ -12,6 +12,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Serialization.Exchange;
+using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Services
@@ -27,12 +28,14 @@ namespace MoBi.Core.Services
       private readonly INameCorrector _nameCorrector;
       private readonly IMoBiContext _context;
       private readonly ICloneManagerForSimulation _cloneManager;
+      private readonly ISimulationEntitySourceUpdater _simulationEntitySourceUpdater;
 
-      public SimulationLoader(ICloneManagerForSimulation cloneManager, INameCorrector nameCorrector, IMoBiContext context)
+      public SimulationLoader(ICloneManagerForSimulation cloneManager, INameCorrector nameCorrector, IMoBiContext context, ISimulationEntitySourceUpdater simulationEntitySourceUpdater)
       {
          _cloneManager = cloneManager;
          _nameCorrector = nameCorrector;
          _context = context;
+         _simulationEntitySourceUpdater = simulationEntitySourceUpdater;
       }
 
       public ICommand AddSimulationToProject(IMoBiSimulation simulation)
@@ -60,10 +63,10 @@ namespace MoBi.Core.Services
          if (shouldCloneSimulation)
             moBiSimulation = cloneSimulation(moBiSimulation);
 
-         renameCollidingEntities(moBiSimulation.Configuration.ExpressionProfiles, project.ExpressionProfileCollection);
+         renameCollidingEntities(moBiSimulation.Configuration.ExpressionProfiles, project.ExpressionProfileCollection, moBiSimulation);
 
          if (moBiSimulation.Configuration.Individual != null)
-            renameCollidingEntities(new[] { moBiSimulation.Configuration.Individual }, project.IndividualsCollection);
+            renameCollidingEntities(new[] { moBiSimulation.Configuration.Individual }, project.IndividualsCollection, moBiSimulation);
 
          moBiSimulation.ResultsDataRepository = simulation.ResultsDataRepository;
 
@@ -71,7 +74,7 @@ namespace MoBi.Core.Services
          if (!_nameCorrector.CorrectName(project.Simulations, moBiSimulation))
             return;
 
-         correctModuleNames(moBiSimulation.Modules, moBiSimulation.Name, project.Modules, originalSimulationName);
+         correctModuleNames(moBiSimulation, project.Modules, originalSimulationName);
 
          if (originalSimulationName != moBiSimulation.Name) //has been renamed
             loadCommand.Add(new RenameModelCommand(moBiSimulation.Model, moBiSimulation.Name));
@@ -82,16 +85,23 @@ namespace MoBi.Core.Services
          loadCommand.AddCommand(new AddSimulationCommand(moBiSimulation));
       }
 
-      private void correctModuleNames(IReadOnlyList<Module> modulesToRename, string simulationName, IReadOnlyList<Module> existingModules, string originalSimulationName)
+      private void correctModuleNames(IMoBiSimulation simulation, IReadOnlyList<Module> existingModules, string originalSimulationName)
       {
+         var modulesToRename = simulation.Modules;
+         var originalModuleNames = modulesToRename.AllNames();
+
          //these names are unique so better creating a HashSet.
          var takenNames = existingModules.AllNames().ToHashSet();
 
          modulesToRename
-            .Each(module=> renameModulesAfterSimulation(module, simulationName, originalSimulationName));
+            .Each(module=> renameModulesAfterSimulation(module, simulation.Name, originalSimulationName));
 
          // Correct any remaining name conflicts
          modulesToRename.Where(x => takenNames.Contains(x.Name)).Each(x => _nameCorrector.AutoCorrectName(takenNames, x));
+
+         var newModuleNamesByOldName = new Cache<string, string>();
+         originalModuleNames.Each((originalName, index) => newModuleNamesByOldName.Add(originalName, modulesToRename[index].Name));
+         _simulationEntitySourceUpdater.UpdateEntitySourcesForModuleRenames(newModuleNamesByOldName, simulation);
       }
 
       private void renameModulesAfterSimulation(Module module, string simulationName, string originalSimulationName)
@@ -100,10 +110,15 @@ namespace MoBi.Core.Services
             module.Name = module.Name.Replace(originalSimulationName, simulationName);
       }
       
-      private void renameCollidingEntities<T>(IEnumerable<T> entitiesToRename, IReadOnlyList<IWithName> existingEntities) where T : IObjectBase
+      private void renameCollidingEntities<T>(IEnumerable<T> entitiesToRename, IReadOnlyList<IWithName> existingEntities, IMoBiSimulation simulation) where T : IBuildingBlock
       {
          var takenNames = existingEntities.AllNames();
-         entitiesToRename.Where(x => takenNames.Contains(x.Name)).Each(x => _nameCorrector.AutoCorrectName(takenNames, x));
+         entitiesToRename.Where(x => takenNames.Contains(x.Name)).Each(x =>
+         {
+            var oldName = x.Name;
+            _nameCorrector.AutoCorrectName(takenNames, x);
+            _simulationEntitySourceUpdater.UpdateEntitySourcesForBuildingBlockRename(oldName, x, simulation);
+         });
       }
 
       public ICommand AddSimulationToProject(SimulationTransfer simulationTransfer)
