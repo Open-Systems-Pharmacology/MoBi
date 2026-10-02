@@ -62,7 +62,6 @@ namespace MoBi.R
          container.Register<IHistoryManagerFactory, HistoryManagerFactory>(LifeStyle.Singleton);
          container.Register<IDiagramManagerFactory, DiagramManagerFactory>(LifeStyle.Singleton);
          container.Register<ICoreUserSettings, OSPSuite.Core.ICoreUserSettings, CoreUserSettings>(LifeStyle.Singleton);
-         // MoBi's GroupRepository is never loaded in R. The minimal one keeps the group ids read from the file.
          container.Register<IGroupRepository, GroupRepository>(LifeStyle.Singleton);
       }
    }
