@@ -4,6 +4,7 @@ using MoBi.Core.Domain.Model;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Comparison;
+using OSPSuite.Presentation.Mappers;
 using OSPSuite.Presentation.Presenters.Diagram;
 using OSPSuite.Utility.Container;
 
@@ -28,6 +29,12 @@ namespace MoBi.IntegrationTests
       {
          var presenter = IoC.Resolve<IBaseDiagramPresenter<IMoBiSimulation>>();
          presenter.ShouldNotBeNull();
+      }
+
+      [Observation]
+      public void should_be_able_to_resolve_the_diff_item_mapper()
+      {
+         IoC.Resolve<IDiffItemToDiffItemDTOMapper>().ShouldBeAnInstanceOf<DiffItemToDiffItemDTOMapper>();
       }
    }
 }
