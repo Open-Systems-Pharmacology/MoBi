@@ -85,7 +85,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          {
             throw new FileNotFoundException("File not found", diagramTemplateXmlFilePath);
          }
-         var diagramTemplateXmlDocument = new XmlDocument();
+         var diagramTemplateXmlDocument = new XmlDocument { XmlResolver = null };
          diagramTemplateXmlDocument.Load(diagramTemplateXmlFilePath);
 
          if (diagramTemplateXmlDocument.ChildNodes.Count == 0)
