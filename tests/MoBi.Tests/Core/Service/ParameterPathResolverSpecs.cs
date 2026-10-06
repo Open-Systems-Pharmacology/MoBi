@@ -129,6 +129,7 @@ namespace MoBi.Core.Service
       public void should_return_null_when_the_path_cannot_be_resolved()
       {
          Resolve("Organism", "Kidney", "Volume").ShouldBeNull();
+         Resolve("Organism", "Kidney", "Drug", "LocalMoleculeParameter").ShouldBeNull();
          Resolve("Volume").ShouldBeNull();
       }
    }

@@ -57,6 +57,10 @@ namespace MoBi.Core.Services
 
       private IParameter resolveLocalMoleculeParameter(ObjectPath parameterPath)
       {
+         var containerPath = new ObjectPath(parameterPath.Take(parameterPath.Count - 2));
+         if (!spatialStructureContainers.Any(x => containerPath.TryResolve<IContainer>(x) != null))
+            return null;
+
          var moleculeParameterPath = new ObjectPath(parameterPath.Skip(parameterPath.Count - 2));
          return resolveIn(_buildingBlockRepository.MoleculeBlockCollection.SelectMany(x => x), moleculeParameterPath);
       }
