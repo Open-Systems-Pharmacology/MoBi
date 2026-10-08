@@ -3,6 +3,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Utility.Collections;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Core.Domain.Services
@@ -18,6 +19,8 @@ namespace MoBi.Core.Domain.Services
       void UpdateEntitySourcesForBuildingBlockRename(string oldName, IBuildingBlock renamedBuildingBlock);
 
       void UpdateEntitySourcesForModuleRename(string oldModuleName, string newModuleName, IMoBiSimulation simulation);
+
+      void UpdateEntitySourcesForModuleRenames(ICache<string, string> newModuleNamesByOldName, IMoBiSimulation simulation);
 
       void UpdateEntitySourcesForBuildingBlockRename(string oldName, IBuildingBlock renamedBuildingBlock, IMoBiSimulation simulation);
 
@@ -49,6 +52,13 @@ namespace MoBi.Core.Domain.Services
       {
          // ToList needed because iteration modifies the enumerable
          simulation.EntitySources.Where(x => string.Equals(x.ModuleName, oldModuleName)).ToList().Each(x => updateModuleNameInEntitySources(newModuleName, simulation.EntitySources, x));
+      }
+
+      public void UpdateEntitySourcesForModuleRenames(ICache<string, string> newModuleNamesByOldName, IMoBiSimulation simulation)
+      {
+         // Match the original sources so that chained renames (A to B, B to C) are not applied twice
+         var originalSources = simulation.EntitySources.ToList();
+         newModuleNamesByOldName.KeyValues.Each(rename => originalSources.Where(x => string.Equals(x.ModuleName, rename.Key)).Each(x => updateModuleNameInEntitySources(rename.Value, simulation.EntitySources, x)));
       }
 
       public void UpdateEntitySourcesForBuildingBlockRename(string oldName, IBuildingBlock renamedBuildingBlock, IMoBiSimulation simulation)

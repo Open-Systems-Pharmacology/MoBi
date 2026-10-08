@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using System.Linq;
-using MoBi.Core.Domain.Repository;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.CLI.Core.MinimalImplementations;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Populations;
