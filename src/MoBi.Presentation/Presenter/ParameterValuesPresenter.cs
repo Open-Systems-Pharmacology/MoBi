@@ -5,6 +5,7 @@ using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Helper;
+using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Tasks.Interaction;
@@ -38,6 +39,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IParameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper _parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper;
       private readonly IViewItemContextMenuFactory _viewItemContextMenuFactory;
       private readonly IDialogCreator _dialogCreator;
+      private readonly IParameterPathResolver _parameterPathResolver;
 
       public ParameterValuesPresenter(
          IParameterValuesView view,
@@ -51,13 +53,15 @@ namespace MoBi.Presentation.Presenter
          IParameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper,
          IDimensionFactory dimensionFactory,
          IViewItemContextMenuFactory viewItemContextMenuFactory,
-         IDialogCreator dialogCreator) : base(view, valueMapper, parameterValuesTask, parameterValuesCreator, context, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
+         IDialogCreator dialogCreator,
+         IParameterPathResolver parameterPathResolver) : base(view, valueMapper, parameterValuesTask, parameterValuesCreator, context, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
       {
          _parameterValuesTask = parameterValuesTask;
          _displayUnitRetriever = displayUnitRetriever;
          _parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper = parameterValuesBuildingBlockToParameterValuesBuildingBlockDTOMapper;
          _viewItemContextMenuFactory = viewItemContextMenuFactory;
          _dialogCreator = dialogCreator;
+         _parameterPathResolver = parameterPathResolver;
          view.HideElements(HidablePathAndValuesViewElement.RefreshButton | HidablePathAndValuesViewElement.PresenceRibbon | HidablePathAndValuesViewElement.NegativeValuesRibbon);
       }
 
@@ -112,8 +116,11 @@ namespace MoBi.Presentation.Presenter
             Description = AppConstants.Commands.AddNewParameterValues(buildingBlockToAddTo.DisplayName)
          };
 
+         var pathsAndResolvedParameters = objectPathsToAdd.Select(x => (path: x, resolvedParameter: _parameterPathResolver.Resolve(x))).ToList();
+         var unresolvedPaths = pathsAndResolvedParameters.Where(x => x.resolvedParameter == null).Select(x => x.path.PathAsString).ToList();
+
          var maxPathLengthBeforeAdd = longestPathLength(_buildingBlock);
-         macroCommand.AddRange(objectPathsToAdd.Select(entityPath => addAndUpdatePath(buildingBlockToAddTo, entityPath)));
+         macroCommand.AddRange(pathsAndResolvedParameters.Select(x => addAndUpdatePath(buildingBlockToAddTo, x.path, x.resolvedParameter)));
 
          var maxPathLengthAfterAdd = longestPathLength(_buildingBlock);
          if (maxPathLengthAfterAdd > maxPathLengthBeforeAdd)
@@ -122,15 +129,21 @@ namespace MoBi.Presentation.Presenter
          if (allSkipped.Any())
             _dialogCreator.MessageBoxInfo(AppConstants.Captions.BuildingBlockAlreadyContains(allSkipped.Select(x => x.PathAsString).ToList()));
 
-         if(objectPathsToAdd.Any())
-            _dialogCreator.MessageBoxInfo(AppConstants.Warnings.CheckDimensionOfAddedParameters);
+         if (unresolvedPaths.Any())
+            _dialogCreator.MessageBoxInfo(AppConstants.Warnings.CheckDimensionOfAddedParameters(unresolvedPaths));
 
          return macroCommand;
       }
 
-      private IMoBiCommand addAndUpdatePath(ParameterValuesBuildingBlock buildingBlockToAddTo, ObjectPath entityPath)
+      private IMoBiCommand addAndUpdatePath(ParameterValuesBuildingBlock buildingBlockToAddTo, ObjectPath entityPath, IWithDisplayUnit resolvedParameter)
       {
          var addedDTO = AddNewEmptyPathAndValueEntity();
+         if (resolvedParameter != null)
+         {
+            addedDTO.ParameterValue.Dimension = resolvedParameter.Dimension;
+            addedDTO.ParameterValue.DisplayUnit = resolvedParameter.DisplayUnit;
+         }
+
          return _parameterValuesTask.SetFullPath(addedDTO.ParameterValue, entityPath, buildingBlockToAddTo);
       }
 
