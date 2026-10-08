@@ -73,12 +73,12 @@ public class CoreSimulationRunner : ICoreSimulationRunner
       return RunSimulationAsync(simulation, defineSettings, createOutputs: null, showWarnings: null);
    }
 
-   protected async Task RunSimulationAsync(IMoBiSimulation simulation, bool defineSettings, Func<IMoBiSimulation, bool> createOutputs, Action<SimulationRunResults> showWarnings)
+   protected async Task<bool> RunSimulationAsync(IMoBiSimulation simulation, bool defineSettings, Func<IMoBiSimulation, bool> createOutputs, Action<SimulationRunResults> showWarnings)
    {
       if (validate(simulation, defineSettings, createOutputs))
-         return;
+         return false;
 
-      await startSimulationRunAsync(simulation, showWarnings);
+      return await startSimulationRunAsync(simulation, showWarnings);
    }
 
    private bool validate(IMoBiSimulation simulation, bool defineSettings, Func<IMoBiSimulation, bool> createOutputs)
@@ -203,11 +203,11 @@ public class CoreSimulationRunner : ICoreSimulationRunner
       _quantitySelectionsRetriever.UpdatePersistableOutputsIn(simulation);
    }
 
-   private async Task startSimulationRunAsync(IMoBiSimulation simulation, Action<SimulationRunResults> resultsAction = null)
+   private async Task<bool> startSimulationRunAsync(IMoBiSimulation simulation, Action<SimulationRunResults> resultsAction = null)
    {
       var cts = new CancellationTokenSource();
       if (!_cancellationTokenSources.TryAdd(simulation, cts)) //this will prevent from running one that is already running
-         return;
+         return false;
 
       var runValidationResult = new RunValidationResult();
       _simulationQuantityWarningTask.WarnForNonFiniteQuantities(simulation.Model, runValidationResult);
@@ -256,6 +256,8 @@ public class CoreSimulationRunner : ICoreSimulationRunner
          
          _context.PublishEvent(new SimulationRunFinishedEvent(simulation, succeeded));
       }
+
+      return succeeded;
    }
 
    private bool validateSimulation(IMoBiSimulation simulation)

@@ -31,6 +31,7 @@ using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Core;
 using OSPSuite.Presentation.DTO;
+using OSPSuite.Presentation.Mappers;
 using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Presenters.Comparisons;
 using OSPSuite.Presentation.Presenters.ContextMenus;
@@ -117,6 +118,7 @@ namespace MoBi.Presentation
 
          container.Register<IObservedDataConfiguration, ObservedDataTask>();
          container.Register<IPathToPathElementsMapper, PathToPathElementsMapper>();
+         container.Register<IDiffItemToDiffItemDTOMapper, DiffItemToDiffItemDTOMapper>();
          container.Register<IDataColumnToPathElementsMapper, DataColumnToPathElementsMapper>();
          container.Register<IDisplayNameProvider, DisplayNameProvider>();
          container.Register<IRenameObjectDTOFactory, RenameObjectDTOFactory>();
