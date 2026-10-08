@@ -14,7 +14,7 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.UI.Views.ReactionDiagram
 {
-   public class ReactionDiagramView : DevExpressDiagramView, IReactionDiagramView
+   public class ReactionDiagramView : DiagramView, IReactionDiagramView
    {
       private ReactionDiagramPresenter _reactionDiagramPresenter;
 

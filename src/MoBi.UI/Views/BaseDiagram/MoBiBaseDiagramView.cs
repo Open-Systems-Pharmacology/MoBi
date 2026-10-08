@@ -12,7 +12,7 @@ using OSPSuite.Utility.Extensions;
 
 namespace MoBi.UI.Views.BaseDiagram
 {
-   public class MoBiBaseDiagramView : DevExpressDiagramView, IMoBiBaseDiagramView
+   public class MoBiBaseDiagramView : DiagramView, IMoBiBaseDiagramView
    {
       private IMoBiBaseDiagramPresenter _moBiDiagramPresenter;
 
