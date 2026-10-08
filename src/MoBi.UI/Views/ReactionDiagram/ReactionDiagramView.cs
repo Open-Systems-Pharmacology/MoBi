@@ -25,12 +25,12 @@ namespace MoBi.UI.Views.ReactionDiagram
 
       public void AttachPresenter(IReactionDiagramPresenter presenter)
       {
-         _reactionDiagramPresenter = presenter as ReactionDiagramPresenter;
-         base.AttachPresenter(presenter);
+         AttachPresenter(presenter as IMoBiBaseDiagramPresenter);
       }
 
       public void AttachPresenter(IMoBiBaseDiagramPresenter presenter)
       {
+         _reactionDiagramPresenter = presenter as ReactionDiagramPresenter;
          base.AttachPresenter(presenter);
       }
 
