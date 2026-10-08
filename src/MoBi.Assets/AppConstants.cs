@@ -1619,7 +1619,6 @@ namespace MoBi.Assets
          public static readonly string Group = "Group";
          public static readonly string AddTag = "Add Tag";
          public static readonly string ContainerTags = "Container Tags";
-         public static readonly string ModelDiagram = "Diagram";
          public static readonly string SimulationParameters = "Parameters";
          public static readonly string Results = "Results";
          public static readonly string TimeProfile = "Time Profile";

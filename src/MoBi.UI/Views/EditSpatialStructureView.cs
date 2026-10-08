@@ -32,7 +32,7 @@ namespace MoBi.UI.Views
          base.InitializeResources();
          Caption = AppConstants.Captions.SpatialStructure;
          ApplicationIcon = ApplicationIcons.SpatialStructure;
-         tabDiagram.InitWith(AppConstants.Captions.ModelDiagram, ApplicationIcons.Diagram);
+         tabDiagram.InitWith(AppConstants.Captions.Diagram, ApplicationIcons.Diagram);
          tabTree.InitWith(AppConstants.Captions.Tree, ApplicationIcons.Tree);
 
          splitHierarchyEdit.CollapsePanel = SplitCollapsePanel.Panel1;
