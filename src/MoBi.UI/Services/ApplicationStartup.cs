@@ -110,12 +110,6 @@ namespace MoBi.UI.Services
          return new ProgressUpdater(splashPublisher);
       }
 
-      private static void updateGoDiagramKey()
-      {
-         // This line is patched during creation of setup. Do not modify.
-         UIRegister.GoDiagramKey = $"{Environment.GetEnvironmentVariable("GO_DIAGRAM_KEY")}";
-      }
-
       private static void registerUIComponents(IContainer container)
       {
          container.AddRegister(x => x.FromType<DiagramRegister>());
@@ -195,8 +189,6 @@ namespace MoBi.UI.Services
       {
          Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
          Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
-
-         updateGoDiagramKey();
 
          var container = new CastleWindsorContainer();
          IoC.InitializeWith(container);

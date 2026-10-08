@@ -20,7 +20,6 @@ using OSPSuite.Presentation.Presenters.ParameterIdentifications;
 using OSPSuite.Presentation.Presenters.SensitivityAnalyses;
 using OSPSuite.Presentation.Services;
 using OSPSuite.Presentation.Settings;
-using OSPSuite.UI.Diagram.Elements;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Format;
 using OSPSuite.Utility.Validation;
@@ -77,7 +76,6 @@ namespace MoBi.UI.Settings
 
       public bool RenameDependentObjectsDefault { get; set; }
       public IDiagramOptions DiagramOptions { get; set; }
-      public IForceLayoutConfiguration ForceLayoutConfigutation { get; set; }
       public ChartOptions ChartOptions { get; set; }
       public string MainViewLayout { get; set; }
       public ObjectPathType ObjectPathType { get; set; }
@@ -114,7 +112,6 @@ namespace MoBi.UI.Settings
          MRUListItemCount = 5;
          ProjectFiles = new List<string>();
          DiagramOptions = new DiagramOptions();
-         ForceLayoutConfigutation = new ForceLayoutConfiguration();
          ChartOptions = new ChartOptions();
          ParameterDefaultDimension = Constants.Dimension.DIMENSIONLESS;
          DirectoryMapSettings.AddUsedDirectory(AppConstants.DirectoryKey.LAYOUT, configuration.CurrentUserFolderPath);
@@ -145,7 +142,6 @@ namespace MoBi.UI.Settings
          _numericFormatterOptions = new NumericFormatterOptions();
          DirectoryMapSettings = new DirectoryMapSettings();
          DiagramOptions = new DiagramOptions();
-         ForceLayoutConfigutation = new ForceLayoutConfiguration();
          ChartOptions = new ChartOptions();
          ValidationSettings = new ValidationSettings();
          DisplayUnits = new DisplayUnitsManager();
@@ -179,7 +175,6 @@ namespace MoBi.UI.Settings
          NumberOfBins = source.NumberOfBins;
          NumberOfIndividualsPerBin = source.NumberOfIndividualsPerBin;
          DiagramOptions.UpdatePropertiesFrom(source.DiagramOptions);
-         ForceLayoutConfigutation.UpdatePropertiesFrom(source.ForceLayoutConfigutation);
          ChartOptions.UpdatePropertiesFrom(source.ChartOptions);
          ValidationSettings.UpdatePropertiesFrom(source.ValidationSettings);
          DisplayUnits.UpdatePropertiesFrom(source.DisplayUnits, null);

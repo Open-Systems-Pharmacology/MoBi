@@ -23,10 +23,7 @@ namespace MoBi.Presentation.Serialization.Xml.Serializer
          Map(colors => colors.NeighborhoodNode);
          Map(colors => colors.NeighborhoodLink);
          Map(colors => colors.NeighborhoodPort);
-         Map(colors => colors.TransportLink);
          Map(colors => colors.MoleculeNode);
-         Map(colors => colors.ObserverNode);
-         Map(colors => colors.ObserverLink);
          Map(colors => colors.ReactionNode);
          Map(colors => colors.ReactionPortEduct);
          Map(colors => colors.ReactionLinkEduct);

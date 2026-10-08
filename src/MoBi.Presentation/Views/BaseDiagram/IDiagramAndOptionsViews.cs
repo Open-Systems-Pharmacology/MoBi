@@ -1,5 +1,4 @@
 using MoBi.Core.Domain.Model.Diagram;
-using MoBi.Presentation.Presenter.ModelDiagram;
 using MoBi.Presentation.Presenter.ReactionDiagram;
 using MoBi.Presentation.Presenter.SpaceDiagram;
 using OSPSuite.Core.Diagram;
@@ -13,11 +12,6 @@ namespace MoBi.Presentation.Views.BaseDiagram
 
    public interface ISpatialStructureDiagramView : IView<ISpatialStructureDiagramPresenter>, IMoBiBaseDiagramView
    {
-   }
-
-   public interface ISimulationDiagramView : IView<ISimulationDiagramPresenter>, IMoBiBaseDiagramView
-   {
-      void ObserverLinksVisible(IDiagramModel diagramModel, bool visible);
    }
 
    public interface IDiagramOptionsView : ISimpleEditView<IDiagramOptions>

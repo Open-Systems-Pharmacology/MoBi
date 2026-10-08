@@ -56,7 +56,6 @@ namespace MoBi.R
          container.Register<ISpatialStructureDiagramManager, SpatialStructureDiagramManager>();
          container.Register<IDiagramModelToXmlMapper, DiagramModelToXmlMapper>();
          container.Register<IMoBiReactionDiagramManager, MoBiReactionDiagramManager>();
-         container.Register<ISimulationDiagramManager, SimulationDiagramManager>();
          container.Register<IMoBiConfiguration, IApplicationConfiguration, MoBiConfiguration>(LifeStyle.Singleton);
          container.Register<IMoBiXmlSerializerRepository, MoBiCoreXmlSerializerRepository>(LifeStyle.Singleton);
          container.Register<IHistoryManagerFactory, HistoryManagerFactory>(LifeStyle.Singleton);

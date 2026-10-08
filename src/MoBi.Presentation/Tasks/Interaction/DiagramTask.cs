@@ -41,7 +41,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       public void ApplyLayoutTemplate(IContainerBase containerBase, string diagramTemplateXmlFilePath, IDiagramModel model, Action refreshFromDiagramOptions, bool recursive)
       {
          if (string.IsNullOrEmpty(diagramTemplateXmlFilePath)) throw new MoBiException(AppConstants.Exceptions.MissingName);
-         var diagramTemplateModel = LoadDiagramTemplate(diagramTemplateXmlFilePath);
+         var diagramTemplateModel = loadDiagramTemplateFor(model, diagramTemplateXmlFilePath);
          if (diagramTemplateModel == null) throw new MoBiException(AppConstants.Exceptions.DeserializationFailed);
 
          try
@@ -79,7 +79,29 @@ namespace MoBi.Presentation.Tasks.Interaction
          xmlDoc.Save(diagramTemplateXmlFilePath);
       }
 
+      private IDiagramModel loadDiagramTemplateFor(IDiagramModel model, string diagramTemplateXmlFilePath)
+      {
+         var diagramTemplateModel = model.Create();
+         IoC.Resolve<IDiagramModelToXmlMapper>().Deserialize(diagramTemplateModel, loadDiagramTemplateXmlDocument(diagramTemplateXmlFilePath));
+         return diagramTemplateModel;
+      }
+
       public IDiagramModel LoadDiagramTemplate(string diagramTemplateXmlFilePath)
+      {
+         var diagramTemplateXmlDocument = loadDiagramTemplateXmlDocument(diagramTemplateXmlFilePath);
+
+         var serializer = IoC.Resolve<IDiagramModelToXmlMapper>();
+         if (serializer == null)
+         {
+            throw new MoBiException("Serializer not found");
+         }
+
+         var diagramTemplateModel = IoC.Resolve<IDiagramModelFactory>().Create();
+         serializer.Deserialize(diagramTemplateModel, diagramTemplateXmlDocument);
+         return diagramTemplateModel;
+      }
+
+      private static XmlDocument loadDiagramTemplateXmlDocument(string diagramTemplateXmlFilePath)
       {
          if (!File.Exists(diagramTemplateXmlFilePath))
          {
@@ -93,19 +115,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             throw new MoBiException("Template is empty");
          }
 
-         var serializer = IoC.Resolve<IDiagramModelToXmlMapper>();
-         if (serializer == null)
-         {
-            throw new MoBiException("Serializer not found");
-         }
-
-         var diagramTemplateModel = serializer.XmlDocumentToDiagramModel(diagramTemplateXmlDocument);
-         if (diagramTemplateModel == null)
-         {
-            throw new MoBiException("Deserialization failed");
-         }
-
-         return diagramTemplateModel;
+         return diagramTemplateXmlDocument;
       }
 
       public ICommand<IMoBiContext> MoveDiagramNodes(MoBiReactionBuildingBlock sourceBuildingBlock, MoBiReactionBuildingBlock targetBuildingBlock, ReactionBuilder builder, string builderOriginalName)

@@ -27,7 +27,6 @@ namespace MoBi.UI.Views.BaseDiagram
          base.InitializeResources();
          defaultSizeOfNewReactionControlItem.Text = AppConstants.Captions.DefaultSizeOfNewReaction.FormatForLabel();
          defaultSizeOfNewMoleculeControlItem.Text = AppConstants.Captions.DefaultSizeOfNewMolecule.FormatForLabel();
-         defaultSizeOfNewObserverControlItem.Text = AppConstants.Captions.DefaultSizeOfNewObserver.FormatForLabel();
 
          colorsLayoutControlGroup.Text = AppConstants.Captions.ChartItemDefaultColors;
 
@@ -38,10 +37,6 @@ namespace MoBi.UI.Views.BaseDiagram
          neighborhoodLinkControlItem.Text = AppConstants.Captions.NeighborhoodLink.FormatForLabel();
          neighborhoodNodeControlItem.Text = AppConstants.Captions.NeighborhoodNode.FormatForLabel();
          neighborhoodPortControlItem.Text = AppConstants.Captions.NeighborhoodPort.FormatForLabel();
-
-         transportLinkControlItem.Text = AppConstants.Captions.TransportLink.FormatForLabel();
-         observerNodeControlItem.Text = AppConstants.Captions.ObserverNode.FormatForLabel();
-         observerLinkControlItem.Text = AppConstants.Captions.ObserverLink.FormatForLabel();
 
          moleculeNodeControlItem.Text = AppConstants.Captions.MoleculeNode.FormatForLabel();
 
@@ -65,8 +60,6 @@ namespace MoBi.UI.Views.BaseDiagram
          _screenBinder = new ScreenBinder<IDiagramOptions>();
          _screenBinder.Bind(options => options.SnapGridVisible).To(chkSnapGridVisible);
          _screenBinder.Bind(options => options.MoleculePropertiesVisible).To(chkMoleculePropertiesVisible);
-         _screenBinder.Bind(options => options.ObserverLinksVisible).To(chkObserverLinksVisible);
-         _screenBinder.Bind(options => options.UnusedMoleculesVisibleInModelDiagram).To(chkUnusedMoleculesVisibleInModelDiagram);
          var items = Enum.GetValues(typeof (NodeSize)) as NodeSize[];
          if (items != null)
             _screenBinder.Bind(options => options.DefaultNodeSizeReaction).To(cbeDefaultNodeSizeReaction).WithValues(items);
@@ -74,7 +67,6 @@ namespace MoBi.UI.Views.BaseDiagram
             _screenBinder.Bind(options => options.DefaultNodeSizeReaction).To(cbeDefaultNodeSizeReaction).WithValues(getNodeSizes);
 
          _screenBinder.Bind(options => options.DefaultNodeSizeMolecule).To(cbeDefaultNodeSizeMolecule).WithValues(getNodeSizes);
-         _screenBinder.Bind(options => options.DefaultNodeSizeObserver).To(cbeDefaultNodeSizeObserver).WithValues(getNodeSizes);
 
          _colorBinder = new ScreenBinder<IDiagramColors>();
 
@@ -84,9 +76,6 @@ namespace MoBi.UI.Views.BaseDiagram
          _colorBinder.Bind(colors => colors.NeighborhoodLink).To(coeNeighborhoodLink);
          _colorBinder.Bind(colors => colors.NeighborhoodNode).To(coeNeighborhoodNode);
          _colorBinder.Bind(colors => colors.NeighborhoodPort).To(coeNeighborhoodPort);
-         _colorBinder.Bind(colors => colors.TransportLink).To(coeTransportLink);
-         _colorBinder.Bind(colors => colors.ObserverNode).To(coeObserverNode);
-         _colorBinder.Bind(colors => colors.ObserverLink).To(coeObserverLink);
          _colorBinder.Bind(colors => colors.MoleculeNode).To(coeMoleculeNode);
          _colorBinder.Bind(colors => colors.ReactionNode).To(coeReactionNode);
          _colorBinder.Bind(colors => colors.ReactionPortEduct).To(coeReactionPortEduct);

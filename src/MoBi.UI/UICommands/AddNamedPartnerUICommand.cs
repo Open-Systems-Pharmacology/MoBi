@@ -2,9 +2,9 @@
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Extensions;
+using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.MenuAndBars;
-using OSPSuite.UI.Diagram.Elements;
 
 namespace MoBi.UI.UICommands
 {

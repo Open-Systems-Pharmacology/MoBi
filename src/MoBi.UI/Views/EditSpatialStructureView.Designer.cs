@@ -1,5 +1,4 @@
-﻿using DevExpress.XtraEditors;
-using DevExpress.XtraTab;
+﻿using DevExpress.XtraTab;
 using MoBi.Presentation.Views;
 using MoBi.UI.Views.SpaceDiagram;
 
@@ -37,8 +36,6 @@ namespace MoBi.UI.Views
          this.tabsNavigation = new DevExpress.XtraTab.XtraTabControl();
          this.tabTree = new DevExpress.XtraTab.XtraTabPage();
          this.tabDiagram = new DevExpress.XtraTab.XtraTabPage();
-         this.spliterDiagram = new DevExpress.XtraEditors.SplitContainerControl();
-         this._diagramOverview = new OSPSuite.UI.Views.Diagram.BaseDiagramOverview();
          ((System.ComponentModel.ISupportInitialize)(this.tabPagesControl)).BeginInit();
          this.tabPagesControl.SuspendLayout();
          this.tabEditBuildingBlock.SuspendLayout();
@@ -48,8 +45,6 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.tabsNavigation)).BeginInit();
          this.tabsNavigation.SuspendLayout();
          this.tabDiagram.SuspendLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.spliterDiagram)).BeginInit();
-         this.spliterDiagram.SuspendLayout();
          this.SuspendLayout();
          // 
          // tabPagesControl
@@ -99,46 +94,9 @@ namespace MoBi.UI.Views
          // 
          // tabDiagram
          // 
-         this.tabDiagram.Controls.Add(this.spliterDiagram);
          this.tabDiagram.Name = "tabDiagram";
          this.tabDiagram.Size = new System.Drawing.Size(801, 438);
          this.tabDiagram.Text = "xtraTabPage2";
-         // 
-         // spliterDiagram
-         // 
-         this.spliterDiagram.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.spliterDiagram.Horizontal = false;
-         this.spliterDiagram.Location = new System.Drawing.Point(0, 0);
-         this.spliterDiagram.Name = "spliterDiagram";
-         this.spliterDiagram.Panel1.Controls.Add(this._diagramOverview);
-         this.spliterDiagram.Panel1.Text = "Panel1";
-         this.spliterDiagram.Panel2.Text = "Panel2";
-         this.spliterDiagram.Size = new System.Drawing.Size(801, 438);
-         this.spliterDiagram.SplitterPosition = 96;
-         this.spliterDiagram.TabIndex = 3;
-         this.spliterDiagram.Text = "spliterDiagram";
-         // 
-         // _diagramOverview
-         // 
-         this._diagramOverview.AllowCopy = false;
-         this._diagramOverview.AllowDelete = false;
-         this._diagramOverview.AllowDragOut = false;
-         this._diagramOverview.AllowDrop = false;
-         this._diagramOverview.AllowEdit = false;
-         this._diagramOverview.AllowInsert = false;
-         this._diagramOverview.AllowLink = false;
-         this._diagramOverview.ArrowMoveLarge = 10F;
-         this._diagramOverview.ArrowMoveSmall = 1F;
-         this._diagramOverview.BackColor = System.Drawing.Color.White;
-         this._diagramOverview.Dock = System.Windows.Forms.DockStyle.Fill;
-         this._diagramOverview.DocScale = 0.125F;
-         this._diagramOverview.DragsRealtime = true;
-         this._diagramOverview.Location = new System.Drawing.Point(0, 0);
-         this._diagramOverview.Name = "_diagramOverview";
-         this._diagramOverview.ShowsNegativeCoordinates = false;
-         this._diagramOverview.Size = new System.Drawing.Size(801, 96);
-         this._diagramOverview.TabIndex = 0;
-         this._diagramOverview.Text = "goOverview1";
          // 
          // EditSpatialStructureView
          // 
@@ -157,8 +115,6 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.tabsNavigation)).EndInit();
          this.tabsNavigation.ResumeLayout(false);
          this.tabDiagram.ResumeLayout(false);
-         ((System.ComponentModel.ISupportInitialize)(this.spliterDiagram)).EndInit();
-         this.spliterDiagram.ResumeLayout(false);
          this.ResumeLayout(false);
 
       }
@@ -169,7 +125,5 @@ namespace MoBi.UI.Views
       private XtraTabControl tabsNavigation;
       private XtraTabPage tabTree;
       private XtraTabPage tabDiagram;
-      private SplitContainerControl spliterDiagram;
-      private OSPSuite.UI.Views.Diagram.BaseDiagramOverview _diagramOverview;
    }
 }

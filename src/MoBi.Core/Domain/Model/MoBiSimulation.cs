@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 using MoBi.Core.Chart;
 using MoBi.Core.Domain.Extensions;
 using OSPSuite.Core.Chart;
-using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Data;
@@ -15,9 +15,10 @@ using OSPSuite.Utility.Visitor;
 
 namespace MoBi.Core.Domain.Model;
 
-public interface IMoBiSimulation : IWithDiagramFor<IMoBiSimulation>, ISimulation, IWithChartTemplates
+public interface IMoBiSimulation : ISimulation, IWithChartTemplates
 {
    ICache<string, DataRepository> HistoricResults { get; }
+   XElement DiagramModelXml { get; set; }
 
    void Update(SimulationConfiguration simulationConfiguration, IModel model, IReadOnlyCollection<SimulationEntitySource> simulationEntitySources);
    SolverSettings Solver { get; }
@@ -76,10 +77,9 @@ public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
 {
    private readonly IList<ISimulationAnalysis> _allSimulationAnalyses = new List<ISimulationAnalysis>();
    private DataRepository _results;
-   public IDiagramModel DiagramModel { get; set; }
 
    public string ParameterIdentificationWorkingDirectory { get; set; }
-   public IDiagramManager<IMoBiSimulation> DiagramManager { get; set; }
+   public XElement DiagramModelXml { get; set; }
    public OutputMappings OutputMappings { get; set; } = new OutputMappings();
 
    /// <summary>
@@ -276,8 +276,9 @@ public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
       _usedObservedData.Clear();
       sourceSimulation.UsedObservedData.Each(x => AddUsedObservedData(x.Clone()));
       HasUntraceableChanges = sourceSimulation.HasUntraceableChanges;
+      if (sourceSimulation.DiagramModelXml != null)
+         DiagramModelXml = new XElement(sourceSimulation.DiagramModelXml);
 
-      this.UpdateDiagramFrom(sourceSimulation);
       _allSimulationAnalyses.Clear();
       sourceSimulation.Analyses.OfType<IUpdatable>().Each(analysis =>
       {
