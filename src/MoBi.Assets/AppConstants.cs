@@ -1849,7 +1849,7 @@ namespace MoBi.Assets
          public static readonly string CloseView = "Close";
          public static readonly string CloseAll = "Close All Documents";
          public static readonly string CloseAllButThis = "Close All But This";
-         public static readonly string Chart = "Chart";
+         public static readonly string Diagram = "Diagram";
          public static readonly string Mean = "Mean";
          public static readonly string Minimum = "Minimum";
          public static readonly string Maximum = "Maximum";
