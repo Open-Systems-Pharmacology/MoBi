@@ -276,8 +276,7 @@ public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
       _usedObservedData.Clear();
       sourceSimulation.UsedObservedData.Each(x => AddUsedObservedData(x.Clone()));
       HasUntraceableChanges = sourceSimulation.HasUntraceableChanges;
-      if (sourceSimulation.DiagramModelXml != null)
-         DiagramModelXml = new XElement(sourceSimulation.DiagramModelXml);
+      DiagramModelXml = sourceSimulation.DiagramModelXml == null ? null : new XElement(sourceSimulation.DiagramModelXml);
 
       _allSimulationAnalyses.Clear();
       sourceSimulation.Analyses.OfType<IUpdatable>().Each(analysis =>
