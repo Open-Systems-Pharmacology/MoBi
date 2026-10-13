@@ -210,6 +210,31 @@ namespace MoBi.Core
       }
    }
 
+   public class When_updating_properties_from_a_source_simulation_without_a_saved_diagram_layout : concern_for_MoBiSimulation
+   {
+      private ICloneManager _cloneManager;
+      private MoBiSimulation _moBiSimulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _cloneManager = A.Fake<ICloneManager>();
+         _moBiSimulation = new MoBiSimulation();
+         sut.DiagramModelXml = new XElement("DiagramModel", new XAttribute("IsLayouted", "True"));
+      }
+
+      protected override void Because()
+      {
+         sut.UpdatePropertiesFrom(_moBiSimulation, _cloneManager);
+      }
+
+      [Observation]
+      public void should_not_keep_the_layout_it_had_before()
+      {
+         sut.DiagramModelXml.ShouldBeNull();
+      }
+   }
+
    public class When_updating_properties_from_a_source_simulation_that_already_has_analyses : concern_for_MoBiSimulation
    {
       private ICloneManager _cloneManager;
