@@ -1,7 +1,7 @@
 ﻿using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Journal;
-using OSPSuite.UI.Diagram.Managers;
-using OSPSuite.UI.Diagram.Services;
+using OSPSuite.Presentation.Diagram;
+using OSPSuite.Presentation.Diagram.Services;
 
 namespace MoBi.BatchTool.Services
 {

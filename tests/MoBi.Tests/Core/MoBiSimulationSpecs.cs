@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System.Xml.Linq;
+using System.Collections.Generic;
 using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Chart;
 using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Core.Domain.UnitSystem;
 using MoBi.HelpersForTests;
 using OSPSuite.BDDHelper;
@@ -134,14 +134,12 @@ namespace MoBi.Core
    {
       private ICloneManager _cloneManager;
       private MoBiSimulation _moBiSimulation;
-      private ISimulationDiagramManager _simulationDiagramManager;
 
       protected override void Context()
       {
          base.Context();
          _cloneManager = A.Fake<ICloneManager>();
-         _simulationDiagramManager = A.Fake<ISimulationDiagramManager>();
-         _moBiSimulation = new MoBiSimulation { DiagramManager = _simulationDiagramManager };
+         _moBiSimulation = new MoBiSimulation();
          sut.Model = new Model();
          sut.Model.Root = new Container();
 
@@ -160,6 +158,7 @@ namespace MoBi.Core
          });
          _moBiSimulation.AddUsedObservedData(DomainHelperForSpecs.ObservedData("usedData"));
          _moBiSimulation.HasUntraceableChanges = true;
+         _moBiSimulation.DiagramModelXml = new XElement("DiagramModel", new XAttribute("IsLayouted", "True"));
       }
 
       protected override void Because()
@@ -182,9 +181,10 @@ namespace MoBi.Core
       }
 
       [Observation]
-      public void the_source_diagram_manager_creates_new_diagram_manager_for_target()
+      public void should_copy_the_saved_diagram_layout_of_the_source_simulation()
       {
-         A.CallTo(() => _simulationDiagramManager.Create()).MustHaveHappened();
+         sut.DiagramModelXml.ShouldNotBeEqualTo(_moBiSimulation.DiagramModelXml);
+         XNode.DeepEquals(sut.DiagramModelXml, _moBiSimulation.DiagramModelXml).ShouldBeTrue();
       }
 
       [Observation]
@@ -207,6 +207,31 @@ namespace MoBi.Core
          sut.UsedObservedData.ElementAt(0).Id.ShouldBeEqualTo("usedData");
          sut.UsedObservedData.ElementAt(0).Simulation.ShouldBeEqualTo(sut);
          sut.UsedObservedData.ElementAt(0).ShouldNotBeEqualTo(_moBiSimulation.UsedObservedData.First());
+      }
+   }
+
+   public class When_updating_properties_from_a_source_simulation_without_a_saved_diagram_layout : concern_for_MoBiSimulation
+   {
+      private ICloneManager _cloneManager;
+      private MoBiSimulation _moBiSimulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _cloneManager = A.Fake<ICloneManager>();
+         _moBiSimulation = new MoBiSimulation();
+         sut.DiagramModelXml = new XElement("DiagramModel", new XAttribute("IsLayouted", "True"));
+      }
+
+      protected override void Because()
+      {
+         sut.UpdatePropertiesFrom(_moBiSimulation, _cloneManager);
+      }
+
+      [Observation]
+      public void should_not_keep_the_layout_it_had_before()
+      {
+         sut.DiagramModelXml.ShouldBeNull();
       }
    }
 

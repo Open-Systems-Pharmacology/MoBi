@@ -62,7 +62,6 @@ namespace MoBi.Presentation.Presenter.ReactionDiagram
       protected override void SetLayoutMenuItems(IContextMenuView contextMenuView, IContainerBase containerBase)
       {
          AddTemplateLayoutMenuItems(contextMenuView, containerBase);
-         AddAutoLayoutMenuItems(contextMenuView, containerBase);
          contextMenuView.AddMenuItem(SubMenuLayout);
          contextMenuView.AddMenuItem(CreateMenuButton.WithCaption("AutoLayout in layers")
             .WithActionCommand(() => Presenter.LayerLayout(containerBase)));

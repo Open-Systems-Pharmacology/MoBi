@@ -1,18 +1,20 @@
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
+using MoBi.Presentation.Presenter.BaseDiagram;
 using MoBi.Presentation.Presenter.ReactionDiagram;
 using MoBi.Presentation.Views.BaseDiagram;
 using MoBi.UI.Presenters;
-using MoBi.UI.Views.BaseDiagram;
-using Northwoods.Go;
-using OSPSuite.UI.Diagram.Elements;
+using OSPSuite.Core.Diagram;
+using OSPSuite.Presentation.Diagram.Elements;
+using OSPSuite.Presentation.Extensions;
+using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Services;
+using OSPSuite.UI.Views.Diagram;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.UI.Views.ReactionDiagram
 {
-   public class ReactionDiagramView : MoBiBaseDiagramView, IReactionDiagramView
+   public class ReactionDiagramView : DiagramView, IReactionDiagramView
    {
       private ReactionDiagramPresenter _reactionDiagramPresenter;
 
@@ -23,26 +25,52 @@ namespace MoBi.UI.Views.ReactionDiagram
 
       public void AttachPresenter(IReactionDiagramPresenter presenter)
       {
+         AttachPresenter(presenter as IMoBiBaseDiagramPresenter);
+      }
+
+      public void AttachPresenter(IMoBiBaseDiagramPresenter presenter)
+      {
          _reactionDiagramPresenter = presenter as ReactionDiagramPresenter;
          base.AttachPresenter(presenter);
       }
 
-      protected override void OnSelectionDeleting(CancelEventArgs e)
-      {
-         var goObjects = _goView.Selection.ToList();
-         // Any nodes that match our types and we process this delete
-         if (anyMoleculesOrReactions(goObjects))
-            _reactionDiagramPresenter.RemoveSelection(goObjects);
-         // Otherwise pass requests to delete links and other items to the base class
-         else
-            base.OnSelectionDeleting(e);
+      public bool IsMoleculeNode(IBaseNode baseNode) => baseNode is MoleculeNode;
 
-         e.Cancel = true;
+      public void ExpandParents(IBaseNode baseNode)
+      {
+         baseNode.GetParentNodes().Each(parent => parent.IsExpanded = true);
       }
 
-      private static bool anyMoleculesOrReactions(List<GoObject> goObjects)
+      protected override void OnLinkCreated(IBaseNode fromNode, IBaseNode toNode, object fromPort, object toPort)
       {
-         return goObjects.Any(x => x.IsAnImplementationOf<MoleculeNode>()) || goObjects.Any(x => x.IsAnImplementationOf<ReactionNode>());
+         _reactionDiagramPresenter.Link(fromNode, toNode, fromPort, toPort);
+      }
+
+      protected override void OnSelectionDeleting(IReadOnlyList<IBaseNode> nodes, IReadOnlyList<IBaseLink> links)
+      {
+         if (anyMoleculesOrReactions(nodes))
+            _reactionDiagramPresenter.RemoveSelection(nodes);
+         else
+            links.OfType<ReactionLink>().Each(unlink);
+      }
+
+      protected override void OnNodeDoubleClicked(IBaseNode node)
+      {
+         _reactionDiagramPresenter.ModelSelect(node.Id);
+      }
+
+      private void unlink(ReactionLink link)
+      {
+         var fromNode = link.GetFromNode();
+         var toNode = link.GetToNode();
+         _reactionDiagramPresenter.Unlink(fromNode, toNode, portFor(fromNode, link), portFor(toNode, link));
+      }
+
+      private static object portFor(IBaseNode node, ReactionLink link) => node is ReactionNode ? (object) link.Type : null;
+
+      private static bool anyMoleculesOrReactions(IReadOnlyList<IBaseNode> nodes)
+      {
+         return nodes.Any(x => x is MoleculeNode || x is ReactionNode);
       }
    }
 }

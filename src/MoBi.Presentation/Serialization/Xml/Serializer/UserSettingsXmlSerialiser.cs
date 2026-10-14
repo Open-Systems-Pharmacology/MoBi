@@ -17,7 +17,6 @@ namespace MoBi.Presentation.Serialization.Xml.Serializer
          Map(x => x.MRUListItemCount);
          Map(x => x.RenameDependentObjectsDefault);
          Map(x => x.DiagramOptions);
-         Map(x => x.ForceLayoutConfigutation);
          Map(x => x.ChartOptions);
          Map(x => x.MainViewLayout);
          Map(x => x.RibbonLayout);

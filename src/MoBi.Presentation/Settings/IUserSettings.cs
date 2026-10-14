@@ -20,7 +20,6 @@ namespace MoBi.Presentation.Settings
    {
       string IconSizeGeneral { get; set; }
       bool RenameDependentObjectsDefault { get; set; }
-      IForceLayoutConfiguration ForceLayoutConfigutation { get; set; }
       ChartOptions ChartOptions { get; set; }
       string MainViewLayout { get; set; }
       string RibbonLayout { get; set; }

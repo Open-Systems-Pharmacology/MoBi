@@ -6,7 +6,6 @@ using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Services;
-using MoBi.Presentation.Presenter.ModelDiagram;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
@@ -23,7 +22,6 @@ namespace MoBi.Presentation.Presenter
    public interface IEditSimulationPresenter :
       IPresenter<IEditSimulationView>,
       ISingleStartPresenter<IMoBiSimulation>,
-      IDiagramBuildingBlockPresenter,
       IListener<SimulationRunFinishedEvent>,
       IListener<EntitySelectedEvent>,
       IListener<SimulationReloadEvent>,
@@ -34,7 +32,6 @@ namespace MoBi.Presentation.Presenter
       IListener<SimulationAnalysisCreatedEvent>,
       IPresenterWithAnalyses
    {
-      void LoadDiagram();
       void LoadChanges();
       void RemoveAnalysis(ISimulationAnalysis analysis);
       void ShowContextMenu(ISimulationAnalysis analysis, Point popupLocation);
@@ -44,15 +41,12 @@ namespace MoBi.Presentation.Presenter
    {
       private IMoBiSimulation _simulation;
       private readonly IHierarchicalSimulationPresenter _hierarchicalPresenter;
-      private readonly ISimulationDiagramPresenter _simulationDiagramPresenter;
       private readonly IEditSolverSettingsPresenter _solverSettingsPresenter;
       private readonly IEditOutputSchemaPresenter _editOutputSchemaPresenter;
       private readonly ISimulationChangesPresenter _simulationChangesPresenter;
       private readonly ISimulationEntitySourceReferenceFactory _entitySourceReferenceFactory;
       private readonly IEditInSimulationPresenterFactory _showPresenterFactory;
       private readonly ICache<Type, IEditInSimulationPresenter> _cacheShowPresenter;
-      private bool _diagramLoaded;
-      private readonly IHeavyWorkManager _heavyWorkManager;
       private readonly IEditFavoritesInSimulationPresenter _favoritesPresenter;
       private readonly IUserDefinedParametersPresenter _userDefinedParametersPresenter;
       protected readonly IMoBiContext _context;
@@ -69,11 +63,9 @@ namespace MoBi.Presentation.Presenter
       public EditSimulationPresenter(
          IEditSimulationView view,
          IHierarchicalSimulationPresenter hierarchicalPresenter,
-         ISimulationDiagramPresenter simulationDiagramPresenter,
          IEditSolverSettingsPresenter solverSettingsPresenter,
          IEditOutputSchemaPresenter editOutputSchemaPresenter,
          IEditInSimulationPresenterFactory showPresenterFactory,
-         IHeavyWorkManager heavyWorkManager,
          IEditFavoritesInSimulationPresenter favoritesPresenter,
          IUserDefinedParametersPresenter userDefinedParametersPresenter,
          ISimulationOutputMappingPresenter simulationOutputMappingPresenter,
@@ -92,12 +84,10 @@ namespace MoBi.Presentation.Presenter
          _entitySourceReferenceFactory = entitySourceReferenceFactory;
          _editOutputSchemaPresenter = editOutputSchemaPresenter;
          _showPresenterFactory = showPresenterFactory;
-         _heavyWorkManager = heavyWorkManager;
          _favoritesPresenter = favoritesPresenter;
          _userDefinedParametersPresenter = userDefinedParametersPresenter;
          _solverSettingsPresenter = solverSettingsPresenter;
          _hierarchicalPresenter = hierarchicalPresenter;
-         _simulationDiagramPresenter = simulationDiagramPresenter;
          _simulationOutputMappingPresenter = simulationOutputMappingPresenter;
          _context = context;
          _simulationRunner = simulationRunner;
@@ -107,13 +97,12 @@ namespace MoBi.Presentation.Presenter
          _contextMenuFactory = contextMenuFactory;
          _outputMappingMatchingTask = outputMappingMatchingTask;
          _view.SetTreeView(hierarchicalPresenter.BaseView);
-         _view.SetModelDiagram(_simulationDiagramPresenter.View);
          _hierarchicalPresenter.ShowOutputSchema = showOutputSchema;
          _hierarchicalPresenter.ShowSolverSettings = showSolverSettings;
          _hierarchicalPresenter.SimulationFavorites = () => _favoritesPresenter.Favorites();
          _view.SetChangesView(changesPresenter.View);
          _view.SetDataView(_simulationOutputMappingPresenter.View);
-         AddSubPresenters(_hierarchicalPresenter, _simulationDiagramPresenter, _solverSettingsPresenter, _editOutputSchemaPresenter,
+         AddSubPresenters(_hierarchicalPresenter, _solverSettingsPresenter, _editOutputSchemaPresenter,
             _favoritesPresenter, _userDefinedParametersPresenter, _simulationOutputMappingPresenter, _simulationChangesPresenter);
          _cacheShowPresenter = new Cache<Type, IEditInSimulationPresenter> { OnMissingKey = x => null };
       }
@@ -293,13 +282,6 @@ namespace MoBi.Presentation.Presenter
          return showPresenter;
       }
 
-      public void LoadDiagram()
-      {
-         if (_diagramLoaded) return;
-         _heavyWorkManager.Start(() => _simulationDiagramPresenter.Edit(_simulation), AppConstants.Captions.LoadingDiagram);
-         _diagramLoaded = true;
-      }
-
       private bool shouldShow(IEntity entity)
       {
          if (entity == null)
@@ -307,12 +289,6 @@ namespace MoBi.Presentation.Presenter
 
          return _simulation.Model.Root.Equals(entity.RootContainer) || _simulation.Model.Neighborhoods.Equals(entity.RootContainer);
       }
-
-      public void ZoomIn() => _simulationDiagramPresenter.Zoom(AppConstants.Diagram.Model.ZoomInFactor);
-
-      public void ZoomOut() => _simulationDiagramPresenter.Zoom(1 / AppConstants.Diagram.Model.ZoomInFactor);
-
-      public void FitToPage() => _simulationDiagramPresenter.Zoom(AppConstants.Diagram.Base.ZoomFitToPageFactor);
 
       protected override void UpdateCaption() => _view.Caption = AppConstants.Captions.SimulationCaption(_simulation.Name);
 
@@ -325,7 +301,6 @@ namespace MoBi.Presentation.Presenter
       private void reloadAll()
       {
          _hierarchicalPresenter.Clear();
-         _diagramLoaded = false;
          edit(_simulation);
       }
 

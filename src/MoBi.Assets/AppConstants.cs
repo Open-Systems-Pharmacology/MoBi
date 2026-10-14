@@ -1619,7 +1619,6 @@ namespace MoBi.Assets
          public static readonly string Group = "Group";
          public static readonly string AddTag = "Add Tag";
          public static readonly string ContainerTags = "Container Tags";
-         public static readonly string ModelDiagram = "Diagram";
          public static readonly string SimulationParameters = "Parameters";
          public static readonly string Results = "Results";
          public static readonly string TimeProfile = "Time Profile";
@@ -1810,7 +1809,6 @@ namespace MoBi.Assets
          public static readonly string DefaultChartYScaling = "Default Chart Y Scale";
          public static readonly string DefaultSizeOfNewReaction = "Default Size of New Reaction";
          public static readonly string DefaultSizeOfNewMolecule = "Default Size of New Molecule";
-         public static readonly string DefaultSizeOfNewObserver = "Default Size of New Observer";
          public static readonly string ChartItemDefaultColors = "Chart Item Default Colors";
          public static readonly string ContainerLogical = "Container Logical";
          public static readonly string ContainerPhysical = "Container Physical";
@@ -1818,9 +1816,6 @@ namespace MoBi.Assets
          public static readonly string NeighborhoodLink = "Neighborhood Link";
          public static readonly string NeighborhoodNode = "Neighborhood Node";
          public static readonly string NeighborhoodPort = "Neighborhood Port";
-         public static readonly string TransportLink = "Transport Link";
-         public static readonly string ObserverNode = "Observer Node";
-         public static readonly string ObserverLink = "Observer Link";
          public static readonly string MoleculeNode = "Molecule Node";
          public static readonly string ReactionNode = "Reaction Node";
          public static readonly string ReactionPortEduct = "Reaction Port Educt";
@@ -1853,7 +1848,7 @@ namespace MoBi.Assets
          public static readonly string CloseView = "Close";
          public static readonly string CloseAll = "Close All Documents";
          public static readonly string CloseAllButThis = "Close All But This";
-         public static readonly string Chart = "Chart";
+         public static readonly string Diagram = "Diagram";
          public static readonly string Mean = "Mean";
          public static readonly string Minimum = "Minimum";
          public static readonly string Maximum = "Maximum";
@@ -2395,13 +2390,6 @@ namespace MoBi.Assets
          {
             public static readonly float ZoomInFactor = 3 / 2F;
          }
-
-         public static class Model
-         {
-            public static readonly float ZoomInFactor = 3 / 2F;
-         }
-
-         public static readonly double SplitterDiagramRatio = 0.2;
 
          public static string MoleculeNodeAlreadyExistsForMolecule(string moleculeName)
          {

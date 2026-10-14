@@ -11,7 +11,6 @@ using MoBi.Presentation.MenusAndBars.ContextMenus;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Presenter.BaseDiagram;
 using MoBi.Presentation.Presenter.Main;
-using MoBi.Presentation.Presenter.ModelDiagram;
 using MoBi.Core.Serialization.Xml;
 using MoBi.Presentation.Presenter.SpaceDiagram;
 using MoBi.Presentation.Serialization.Xml;
@@ -141,7 +140,6 @@ namespace MoBi.Presentation
 
       private void registerDiagramPresenter(IContainer container)
       {
-         container.Register<ISimulationDiagramPresenter, IMoBiBaseDiagramPresenter<IMoBiSimulation>, IBaseDiagramPresenter<IMoBiSimulation>, SimulationDiagramPresenter>(LifeStyle.Transient);
          container.Register<ISpatialStructureDiagramPresenter, IMoBiBaseDiagramPresenter<MoBiSpatialStructure>, IBaseDiagramPresenter<MoBiSpatialStructure>, SpatialStructureDiagramPresenter>(LifeStyle.Transient);
       }
 

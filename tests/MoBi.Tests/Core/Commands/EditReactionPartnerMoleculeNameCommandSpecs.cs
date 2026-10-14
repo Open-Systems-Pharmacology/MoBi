@@ -8,7 +8,6 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Diagram.Elements;
-using OSPSuite.UI.Diagram.Elements;
 
 namespace MoBi.Core.Commands
 {

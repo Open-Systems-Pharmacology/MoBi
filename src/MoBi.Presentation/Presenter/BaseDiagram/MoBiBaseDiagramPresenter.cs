@@ -75,7 +75,6 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
          _context = context;
          _diagramTask = diagramTask;
          _userSettings = userSettings;
-         LayoutConfiguration = userSettings.ForceLayoutConfigutation;
          _diagramPopupMenu = new DiagramPopupMenuBase(this, context, runOptions);
          _containerPopupMenu = _diagramPopupMenu;
          _neighborhoodPopupMenu = _diagramPopupMenu;
@@ -241,7 +240,7 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
          {
             // move node to "free" location
             var freeNodes = new List<IHasLayoutInfo> { addedNode };
-            Layout(addedNode.GetParent(), AppConstants.Diagram.Base.LayoutDepthChildren, freeNodes);
+            PlaceFreeNodes(addedNode.GetParent(), freeNodes);
          }
 
          DiagramManager.UpdateInsertLocation();

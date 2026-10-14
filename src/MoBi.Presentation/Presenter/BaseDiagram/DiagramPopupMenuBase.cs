@@ -98,7 +98,6 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
 
       protected virtual void SetLayoutMenuItems(IContextMenuView contextMenuView, IContainerBase containerBase)
       {
-         AddAutoLayoutMenuItems(contextMenuView, containerBase);
          contextMenuView.AddMenuItem(SubMenuLayout);
       }
 
@@ -122,13 +121,6 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
          SubMenuDiagram.AddItem(CreateMenuButton.WithCaption("Save Image...").WithActionCommand(() => Presenter.SaveBitmapToFile(containerBase)));
 
          contextMenuView.AddMenuItem(SubMenuDiagram);
-      }
-
-      protected void AddAutoLayoutMenuItems(IContextMenuView contextMenuView, IContainerBase containerBase)
-      {
-         if (containerBase == null) return;
-
-         SubMenuLayout.AddItem(CreateMenuButton.WithCaption("AutoLayout Children").AsGroupStarter().WithActionCommand(() => Presenter.Layout(containerBase, AppConstants.Diagram.Base.LayoutDepthChildren, null)));
       }
 
       protected void AddTemplateLayoutMenuItems(IContextMenuView contextMenuView, IContainerBase containerBase)
@@ -186,18 +178,6 @@ namespace MoBi.Presentation.Presenter.BaseDiagram
          subMenuDiagram.AddItem(
             CreateMenuButton.WithCaption("Print Preview...").WithActionCommand(() => Presenter.PrintDiagram()));
 
-         var subMenuLayout = CreateSubMenu.WithCaption("Layout");
-         if (containerBase != null) subMenuDetailed.AddItem(subMenuLayout);
-         subMenuLayout.AddItem(
-            CreateMenuButton.WithCaption("AutoLayout Grandchildren")
-               .WithActionCommand(
-                  () =>
-                     Presenter.Layout(containerBase, AppConstants.Diagram.Base.LayoutDepthGrandChildren,
-                        null)));
-         subMenuLayout.AddItem(
-            CreateMenuButton.WithCaption("AutoLayout all Descendants")
-               .WithActionCommand(
-                  () => Presenter.Layout(containerBase, AppConstants.Diagram.Base.LayoutDepthAll, null)));
          if (_runOptions.IsDeveloperMode)
          {
             var subMenuDeveloper = CreateSubMenu.WithCaption("Developer Functions").AsGroupStarter()

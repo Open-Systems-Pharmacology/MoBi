@@ -37,17 +37,11 @@ namespace MoBi.UI.Views.BaseDiagram
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
          this.coeReactionPortModifier = new OSPSuite.UI.Controls.UxColorPickEditWithHistory();
          this.coeReactionLinkModifier = new OSPSuite.UI.Controls.UxColorPickEditWithHistory();
-         this.coeTransportLink = new OSPSuite.UI.Controls.UxColorPickEditWithHistory();
-         this.coeObserverNode = new OSPSuite.UI.Controls.UxColorPickEditWithHistory();
-         this.coeObserverLink = new OSPSuite.UI.Controls.UxColorPickEditWithHistory();
          this.coeReactionPortEduct = new OSPSuite.UI.Controls.UxColorPickEditWithHistory();
-         this.chkUnusedMoleculesVisibleInModelDiagram = new OSPSuite.UI.Controls.UxCheckEdit();
          this.coeReactionNode = new OSPSuite.UI.Controls.UxColorPickEditWithHistory();
          this.coeReactionLinkProduct = new OSPSuite.UI.Controls.UxColorPickEditWithHistory();
          this.coeReactionPortProduct = new OSPSuite.UI.Controls.UxColorPickEditWithHistory();
          this.chkSnapGridVisible = new OSPSuite.UI.Controls.UxCheckEdit();
-         this.chkObserverLinksVisible = new OSPSuite.UI.Controls.UxCheckEdit();
-         this.cbeDefaultNodeSizeObserver = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.coeReactionLinkEduct = new OSPSuite.UI.Controls.UxColorPickEditWithHistory();
          this.cbeDefaultNodeSizeReaction = new OSPSuite.UI.Controls.UxComboBoxEdit();
          this.cbeDefaultNodeSizeMolecule = new OSPSuite.UI.Controls.UxComboBoxEdit();
@@ -60,11 +54,8 @@ namespace MoBi.UI.Views.BaseDiagram
          this.coeNeighborhoodPort = new OSPSuite.UI.Controls.UxColorPickEditWithHistory();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutControlGroup2 = new DevExpress.XtraLayout.LayoutControlGroup();
-         this.defaultSizeOfNewObserverControlItem = new DevExpress.XtraLayout.LayoutControlItem();
          this.defaultSizeOfNewMoleculeControlItem = new DevExpress.XtraLayout.LayoutControlItem();
          this.defaultSizeOfNewReactionControlItem = new DevExpress.XtraLayout.LayoutControlItem();
-         this.layoutControlItem4 = new DevExpress.XtraLayout.LayoutControlItem();
-         this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
          this.showSnapGridControlItem = new DevExpress.XtraLayout.LayoutControlItem();
          this.colorsLayoutControlGroup = new DevExpress.XtraLayout.LayoutControlGroup();
@@ -75,8 +66,6 @@ namespace MoBi.UI.Views.BaseDiagram
          this.neighborhoodLinkControlItem = new DevExpress.XtraLayout.LayoutControlItem();
          this.neighborhoodNodeControlItem = new DevExpress.XtraLayout.LayoutControlItem();
          this.neighborhoodPortControlItem = new DevExpress.XtraLayout.LayoutControlItem();
-         this.transportLinkControlItem = new DevExpress.XtraLayout.LayoutControlItem();
-         this.observerNodeControlItem = new DevExpress.XtraLayout.LayoutControlItem();
          this.reactionNodeControlItem = new DevExpress.XtraLayout.LayoutControlItem();
          this.reactionPortEductControlItem = new DevExpress.XtraLayout.LayoutControlItem();
          this.reactionLinkEductControlItem = new DevExpress.XtraLayout.LayoutControlItem();
@@ -84,7 +73,6 @@ namespace MoBi.UI.Views.BaseDiagram
          this.reactionLinkProductControlItem = new DevExpress.XtraLayout.LayoutControlItem();
          this.reactionPortModifierControlItem = new DevExpress.XtraLayout.LayoutControlItem();
          this.reactionLinkModifierControlItem = new DevExpress.XtraLayout.LayoutControlItem();
-         this.observerLinkControlItem = new DevExpress.XtraLayout.LayoutControlItem();
          this.timer1 = new System.Windows.Forms.Timer(this.components);
          this.layoutControlItem5 = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
@@ -93,17 +81,11 @@ namespace MoBi.UI.Views.BaseDiagram
          this.layoutControl.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.coeReactionPortModifier.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.coeReactionLinkModifier.Properties)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.coeTransportLink.Properties)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.coeObserverNode.Properties)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.coeObserverLink.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.coeReactionPortEduct.Properties)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.chkUnusedMoleculesVisibleInModelDiagram.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.coeReactionNode.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.coeReactionLinkProduct.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.coeReactionPortProduct.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.chkSnapGridVisible.Properties)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.chkObserverLinksVisible.Properties)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.cbeDefaultNodeSizeObserver.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.coeReactionLinkEduct.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbeDefaultNodeSizeReaction.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbeDefaultNodeSizeMolecule.Properties)).BeginInit();
@@ -116,11 +98,8 @@ namespace MoBi.UI.Views.BaseDiagram
          ((System.ComponentModel.ISupportInitialize)(this.coeNeighborhoodPort.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup2)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.defaultSizeOfNewObserverControlItem)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.defaultSizeOfNewMoleculeControlItem)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.defaultSizeOfNewReactionControlItem)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.showSnapGridControlItem)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.colorsLayoutControlGroup)).BeginInit();
@@ -131,8 +110,6 @@ namespace MoBi.UI.Views.BaseDiagram
          ((System.ComponentModel.ISupportInitialize)(this.neighborhoodLinkControlItem)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.neighborhoodNodeControlItem)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.neighborhoodPortControlItem)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.transportLinkControlItem)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.observerNodeControlItem)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.reactionNodeControlItem)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.reactionPortEductControlItem)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.reactionLinkEductControlItem)).BeginInit();
@@ -140,7 +117,6 @@ namespace MoBi.UI.Views.BaseDiagram
          ((System.ComponentModel.ISupportInitialize)(this.reactionLinkProductControlItem)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.reactionPortModifierControlItem)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.reactionLinkModifierControlItem)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.observerLinkControlItem)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem5)).BeginInit();
          this.SuspendLayout();
          // 
@@ -160,17 +136,11 @@ namespace MoBi.UI.Views.BaseDiagram
          this.layoutControl.AllowCustomization = false;
          this.layoutControl.Controls.Add(this.coeReactionPortModifier);
          this.layoutControl.Controls.Add(this.coeReactionLinkModifier);
-         this.layoutControl.Controls.Add(this.coeTransportLink);
-         this.layoutControl.Controls.Add(this.coeObserverNode);
-         this.layoutControl.Controls.Add(this.coeObserverLink);
          this.layoutControl.Controls.Add(this.coeReactionPortEduct);
-         this.layoutControl.Controls.Add(this.chkUnusedMoleculesVisibleInModelDiagram);
          this.layoutControl.Controls.Add(this.coeReactionNode);
          this.layoutControl.Controls.Add(this.coeReactionLinkProduct);
          this.layoutControl.Controls.Add(this.coeReactionPortProduct);
          this.layoutControl.Controls.Add(this.chkSnapGridVisible);
-         this.layoutControl.Controls.Add(this.chkObserverLinksVisible);
-         this.layoutControl.Controls.Add(this.cbeDefaultNodeSizeObserver);
          this.layoutControl.Controls.Add(this.chkMoleculePropertiesVisible);
          this.layoutControl.Controls.Add(this.coeReactionLinkEduct);
          this.layoutControl.Controls.Add(this.cbeDefaultNodeSizeReaction);
@@ -214,42 +184,6 @@ namespace MoBi.UI.Views.BaseDiagram
          this.coeReactionLinkModifier.StyleController = this.layoutControl;
          this.coeReactionLinkModifier.TabIndex = 202;
          // 
-         // coeTransportLink
-         // 
-         this.coeTransportLink.EditValue = System.Drawing.Color.Empty;
-         this.coeTransportLink.Location = new System.Drawing.Point(205, 292);
-         this.coeTransportLink.Name = "coeTransportLink";
-         this.coeTransportLink.Properties.AutomaticColor = System.Drawing.Color.Black;
-         this.coeTransportLink.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-         this.coeTransportLink.Size = new System.Drawing.Size(90, 20);
-         this.coeTransportLink.StyleController = this.layoutControl;
-         this.coeTransportLink.TabIndex = 218;
-         // 
-         // coeObserverNode
-         // 
-         this.coeObserverNode.EditValue = System.Drawing.Color.Empty;
-         this.coeObserverNode.Location = new System.Drawing.Point(205, 316);
-         this.coeObserverNode.Name = "coeObserverNode";
-         this.coeObserverNode.Properties.AutomaticColor = System.Drawing.Color.Black;
-         this.coeObserverNode.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-         this.coeObserverNode.Size = new System.Drawing.Size(90, 20);
-         this.coeObserverNode.StyleController = this.layoutControl;
-         this.coeObserverNode.TabIndex = 210;
-         // 
-         // coeObserverLink
-         // 
-         this.coeObserverLink.EditValue = System.Drawing.Color.Empty;
-         this.coeObserverLink.Location = new System.Drawing.Point(205, 340);
-         this.coeObserverLink.Name = "coeObserverLink";
-         this.coeObserverLink.Properties.AutomaticColor = System.Drawing.Color.Black;
-         this.coeObserverLink.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-         this.coeObserverLink.Size = new System.Drawing.Size(90, 20);
-         this.coeObserverLink.StyleController = this.layoutControl;
-         this.coeObserverLink.TabIndex = 208;
-         // 
          // coeReactionPortEduct
          // 
          this.coeReactionPortEduct.EditValue = System.Drawing.Color.Empty;
@@ -261,17 +195,6 @@ namespace MoBi.UI.Views.BaseDiagram
          this.coeReactionPortEduct.Size = new System.Drawing.Size(83, 20);
          this.coeReactionPortEduct.StyleController = this.layoutControl;
          this.coeReactionPortEduct.TabIndex = 198;
-         // 
-         // chkUnusedMoleculesVisibleInModelDiagram
-         // 
-         this.chkUnusedMoleculesVisibleInModelDiagram.AllowClicksOutsideControlArea = false;
-         this.chkUnusedMoleculesVisibleInModelDiagram.EditValue = true;
-         this.chkUnusedMoleculesVisibleInModelDiagram.Location = new System.Drawing.Point(14, 83);
-         this.chkUnusedMoleculesVisibleInModelDiagram.Name = "chkUnusedMoleculesVisibleInModelDiagram";
-         this.chkUnusedMoleculesVisibleInModelDiagram.Properties.Caption = "Show unused Molecules in Simulation";
-         this.chkUnusedMoleculesVisibleInModelDiagram.Size = new System.Drawing.Size(248, 19);
-         this.chkUnusedMoleculesVisibleInModelDiagram.StyleController = this.layoutControl;
-         this.chkUnusedMoleculesVisibleInModelDiagram.TabIndex = 113;
          // 
          // coeReactionNode
          // 
@@ -319,27 +242,6 @@ namespace MoBi.UI.Views.BaseDiagram
          this.chkSnapGridVisible.Size = new System.Drawing.Size(248, 19);
          this.chkSnapGridVisible.StyleController = this.layoutControl;
          this.chkSnapGridVisible.TabIndex = 101;
-         // 
-         // chkObserverLinksVisible
-         // 
-         this.chkObserverLinksVisible.AllowClicksOutsideControlArea = false;
-         this.chkObserverLinksVisible.EditValue = true;
-         this.chkObserverLinksVisible.Location = new System.Drawing.Point(14, 60);
-         this.chkObserverLinksVisible.Name = "chkObserverLinksVisible";
-         this.chkObserverLinksVisible.Properties.Caption = "Show Observer Links";
-         this.chkObserverLinksVisible.Size = new System.Drawing.Size(248, 19);
-         this.chkObserverLinksVisible.StyleController = this.layoutControl;
-         this.chkObserverLinksVisible.TabIndex = 102;
-         // 
-         // cbeDefaultNodeSizeObserver
-         // 
-         this.cbeDefaultNodeSizeObserver.Location = new System.Drawing.Point(457, 62);
-         this.cbeDefaultNodeSizeObserver.Name = "cbeDefaultNodeSizeObserver";
-         this.cbeDefaultNodeSizeObserver.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
-            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-         this.cbeDefaultNodeSizeObserver.Size = new System.Drawing.Size(116, 20);
-         this.cbeDefaultNodeSizeObserver.StyleController = this.layoutControl;
-         this.cbeDefaultNodeSizeObserver.TabIndex = 105;
          // 
          // coeReactionLinkEduct
          // 
@@ -472,26 +374,14 @@ namespace MoBi.UI.Views.BaseDiagram
          // 
          this.layoutControlGroup2.CustomizationFormText = "layoutControlGroup2";
          this.layoutControlGroup2.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.defaultSizeOfNewObserverControlItem,
             this.defaultSizeOfNewMoleculeControlItem,
             this.defaultSizeOfNewReactionControlItem,
-            this.layoutControlItem4,
-            this.layoutControlItem3,
             this.layoutControlItem2,
             this.showSnapGridControlItem});
          this.layoutControlGroup2.Location = new System.Drawing.Point(0, 0);
          this.layoutControlGroup2.Name = "layoutControlGroup2";
          this.layoutControlGroup2.Size = new System.Drawing.Size(587, 116);
          this.layoutControlGroup2.TextVisible = false;
-         // 
-         // defaultSizeOfNewObserverControlItem
-         // 
-         this.defaultSizeOfNewObserverControlItem.Control = this.cbeDefaultNodeSizeObserver;
-         this.defaultSizeOfNewObserverControlItem.CustomizationFormText = "defaultSizeOfNewObserverControlItem";
-         this.defaultSizeOfNewObserverControlItem.Location = new System.Drawing.Point(252, 48);
-         this.defaultSizeOfNewObserverControlItem.Name = "defaultSizeOfNewObserverControlItem";
-         this.defaultSizeOfNewObserverControlItem.Size = new System.Drawing.Size(311, 44);
-         this.defaultSizeOfNewObserverControlItem.TextSize = new System.Drawing.Size(188, 13);
          // 
          // defaultSizeOfNewMoleculeControlItem
          // 
@@ -511,33 +401,13 @@ namespace MoBi.UI.Views.BaseDiagram
          this.defaultSizeOfNewReactionControlItem.Size = new System.Drawing.Size(311, 24);
          this.defaultSizeOfNewReactionControlItem.TextSize = new System.Drawing.Size(188, 13);
          // 
-         // layoutControlItem4
-         // 
-         this.layoutControlItem4.Control = this.chkUnusedMoleculesVisibleInModelDiagram;
-         this.layoutControlItem4.CustomizationFormText = "layoutControlItem4";
-         this.layoutControlItem4.Location = new System.Drawing.Point(0, 69);
-         this.layoutControlItem4.Name = "layoutControlItem4";
-         this.layoutControlItem4.Size = new System.Drawing.Size(252, 23);
-         this.layoutControlItem4.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutControlItem4.TextVisible = false;
-         // 
-         // layoutControlItem3
-         // 
-         this.layoutControlItem3.Control = this.chkObserverLinksVisible;
-         this.layoutControlItem3.CustomizationFormText = "layoutControlItem3";
-         this.layoutControlItem3.Location = new System.Drawing.Point(0, 46);
-         this.layoutControlItem3.Name = "layoutControlItem3";
-         this.layoutControlItem3.Size = new System.Drawing.Size(252, 23);
-         this.layoutControlItem3.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutControlItem3.TextVisible = false;
-         // 
          // layoutControlItem2
          // 
          this.layoutControlItem2.Control = this.chkMoleculePropertiesVisible;
          this.layoutControlItem2.CustomizationFormText = "layoutControlItem2";
          this.layoutControlItem2.Location = new System.Drawing.Point(0, 23);
          this.layoutControlItem2.Name = "layoutControlItem2";
-         this.layoutControlItem2.Size = new System.Drawing.Size(252, 23);
+         this.layoutControlItem2.Size = new System.Drawing.Size(252, 25);
          this.layoutControlItem2.TextSize = new System.Drawing.Size(0, 0);
          this.layoutControlItem2.TextVisible = false;
          // 
@@ -562,16 +432,13 @@ namespace MoBi.UI.Views.BaseDiagram
             this.neighborhoodLinkControlItem,
             this.neighborhoodNodeControlItem,
             this.neighborhoodPortControlItem,
-            this.transportLinkControlItem,
-            this.observerNodeControlItem,
             this.reactionNodeControlItem,
             this.reactionPortEductControlItem,
             this.reactionLinkEductControlItem,
             this.reactionPortProductControlItem,
             this.reactionLinkProductControlItem,
             this.reactionPortModifierControlItem,
-            this.reactionLinkModifierControlItem,
-            this.observerLinkControlItem});
+            this.reactionLinkModifierControlItem});
          this.colorsLayoutControlGroup.Location = new System.Drawing.Point(0, 116);
          this.colorsLayoutControlGroup.Name = "colorsLayoutControlGroup";
          this.colorsLayoutControlGroup.Size = new System.Drawing.Size(587, 288);
@@ -637,26 +504,8 @@ namespace MoBi.UI.Views.BaseDiagram
          this.neighborhoodPortControlItem.CustomizationFormText = "layoutControlItem10";
          this.neighborhoodPortControlItem.Location = new System.Drawing.Point(0, 120);
          this.neighborhoodPortControlItem.Name = "neighborhoodPortControlItem";
-         this.neighborhoodPortControlItem.Size = new System.Drawing.Size(285, 24);
+         this.neighborhoodPortControlItem.Size = new System.Drawing.Size(285, 126);
          this.neighborhoodPortControlItem.TextSize = new System.Drawing.Size(188, 13);
-         // 
-         // transportLinkControlItem
-         // 
-         this.transportLinkControlItem.Control = this.coeTransportLink;
-         this.transportLinkControlItem.CustomizationFormText = "layoutControlItem11";
-         this.transportLinkControlItem.Location = new System.Drawing.Point(0, 144);
-         this.transportLinkControlItem.Name = "transportLinkControlItem";
-         this.transportLinkControlItem.Size = new System.Drawing.Size(285, 24);
-         this.transportLinkControlItem.TextSize = new System.Drawing.Size(188, 13);
-         // 
-         // observerNodeControlItem
-         // 
-         this.observerNodeControlItem.Control = this.coeObserverNode;
-         this.observerNodeControlItem.CustomizationFormText = "layoutControlItem12";
-         this.observerNodeControlItem.Location = new System.Drawing.Point(0, 168);
-         this.observerNodeControlItem.Name = "observerNodeControlItem";
-         this.observerNodeControlItem.Size = new System.Drawing.Size(285, 24);
-         this.observerNodeControlItem.TextSize = new System.Drawing.Size(188, 13);
          // 
          // reactionNodeControlItem
          // 
@@ -721,15 +570,6 @@ namespace MoBi.UI.Views.BaseDiagram
          this.reactionLinkModifierControlItem.Size = new System.Drawing.Size(278, 78);
          this.reactionLinkModifierControlItem.TextSize = new System.Drawing.Size(188, 13);
          // 
-         // observerLinkControlItem
-         // 
-         this.observerLinkControlItem.Control = this.coeObserverLink;
-         this.observerLinkControlItem.CustomizationFormText = "layoutControlItem13";
-         this.observerLinkControlItem.Location = new System.Drawing.Point(0, 192);
-         this.observerLinkControlItem.Name = "observerLinkControlItem";
-         this.observerLinkControlItem.Size = new System.Drawing.Size(285, 54);
-         this.observerLinkControlItem.TextSize = new System.Drawing.Size(188, 13);
-         // 
          // layoutControlItem5
          // 
          this.layoutControlItem5.CustomizationFormText = "layoutControlItem5";
@@ -751,17 +591,11 @@ namespace MoBi.UI.Views.BaseDiagram
          this.layoutControl.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.coeReactionPortModifier.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.coeReactionLinkModifier.Properties)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.coeTransportLink.Properties)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.coeObserverNode.Properties)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.coeObserverLink.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.coeReactionPortEduct.Properties)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.chkUnusedMoleculesVisibleInModelDiagram.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.coeReactionNode.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.coeReactionLinkProduct.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.coeReactionPortProduct.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.chkSnapGridVisible.Properties)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.chkObserverLinksVisible.Properties)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.cbeDefaultNodeSizeObserver.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.coeReactionLinkEduct.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbeDefaultNodeSizeReaction.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.cbeDefaultNodeSizeMolecule.Properties)).EndInit();
@@ -774,11 +608,8 @@ namespace MoBi.UI.Views.BaseDiagram
          ((System.ComponentModel.ISupportInitialize)(this.coeNeighborhoodPort.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup2)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.defaultSizeOfNewObserverControlItem)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.defaultSizeOfNewMoleculeControlItem)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.defaultSizeOfNewReactionControlItem)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.showSnapGridControlItem)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.colorsLayoutControlGroup)).EndInit();
@@ -789,8 +620,6 @@ namespace MoBi.UI.Views.BaseDiagram
          ((System.ComponentModel.ISupportInitialize)(this.neighborhoodLinkControlItem)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.neighborhoodNodeControlItem)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.neighborhoodPortControlItem)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.transportLinkControlItem)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.observerNodeControlItem)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.reactionNodeControlItem)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.reactionPortEductControlItem)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.reactionLinkEductControlItem)).EndInit();
@@ -798,7 +627,6 @@ namespace MoBi.UI.Views.BaseDiagram
          ((System.ComponentModel.ISupportInitialize)(this.reactionLinkProductControlItem)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.reactionPortModifierControlItem)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.reactionLinkModifierControlItem)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.observerLinkControlItem)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem5)).EndInit();
          this.ResumeLayout(false);
 
@@ -808,23 +636,17 @@ namespace MoBi.UI.Views.BaseDiagram
 
       private OSPSuite.UI.Controls.UxComboBoxEdit cbeDefaultNodeSizeReaction;
       private OSPSuite.UI.Controls.UxComboBoxEdit cbeDefaultNodeSizeMolecule;
-      private OSPSuite.UI.Controls.UxComboBoxEdit cbeDefaultNodeSizeObserver;
       private System.Windows.Forms.Timer timer1;
       private DevExpress.XtraEditors.TextEdit txtContainerOpacity;
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup1;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup2;
-      private DevExpress.XtraLayout.LayoutControlItem defaultSizeOfNewObserverControlItem;
       private DevExpress.XtraLayout.LayoutControlItem defaultSizeOfNewMoleculeControlItem;
       private DevExpress.XtraLayout.LayoutControlItem defaultSizeOfNewReactionControlItem;
-      private DevExpress.XtraLayout.LayoutControlItem layoutControlItem4;
-      private DevExpress.XtraLayout.LayoutControlItem layoutControlItem3;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
       private DevExpress.XtraLayout.LayoutControlItem containerLogicalControlItem;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem5;
       private UxCheckEdit chkMoleculePropertiesVisible;
-      private UxCheckEdit chkObserverLinksVisible;
-      private UxCheckEdit chkUnusedMoleculesVisibleInModelDiagram;
       private DevExpress.XtraLayout.LayoutControlGroup colorsLayoutControlGroup;
       private DevExpress.XtraLayout.LayoutControlItem moleculeNodeControlItem;
       private DevExpress.XtraLayout.LayoutControlItem containerPhysicalControlItem;
@@ -832,9 +654,6 @@ namespace MoBi.UI.Views.BaseDiagram
       private DevExpress.XtraLayout.LayoutControlItem neighborhoodLinkControlItem;
       private DevExpress.XtraLayout.LayoutControlItem neighborhoodNodeControlItem;
       private DevExpress.XtraLayout.LayoutControlItem neighborhoodPortControlItem;
-      private DevExpress.XtraLayout.LayoutControlItem transportLinkControlItem;
-      private DevExpress.XtraLayout.LayoutControlItem observerNodeControlItem;
-      private DevExpress.XtraLayout.LayoutControlItem observerLinkControlItem;
       private DevExpress.XtraLayout.LayoutControlItem reactionNodeControlItem;
       private DevExpress.XtraLayout.LayoutControlItem reactionPortEductControlItem;
       private DevExpress.XtraLayout.LayoutControlItem reactionLinkEductControlItem;
@@ -844,10 +663,7 @@ namespace MoBi.UI.Views.BaseDiagram
       private DevExpress.XtraLayout.LayoutControlItem reactionLinkModifierControlItem;
       private UxCheckEdit chkSnapGridVisible;
       private DevExpress.XtraLayout.LayoutControlItem showSnapGridControlItem;
-      private UxColorPickEditWithHistory coeTransportLink;
       private UxColorPickEditWithHistory coeReactionPortModifier;
-      private UxColorPickEditWithHistory coeObserverNode;
-      private UxColorPickEditWithHistory coeObserverLink;
       private UxColorPickEditWithHistory coeReactionLinkModifier;
       private UxColorPickEditWithHistory coeReactionPortEduct;
       private UxColorPickEditWithHistory coeReactionNode;

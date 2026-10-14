@@ -20,7 +20,6 @@ namespace MoBi.BatchTool
             }
          );
 
-         container.Register<ISimulationDiagramManager, SimulationDiagramManager>();
          container.Register<IMoBiReactionDiagramManager, MoBiReactionDiagramManager>();
          container.Register<ISpatialStructureDiagramManager, SpatialStructureDiagramManager>();
       }

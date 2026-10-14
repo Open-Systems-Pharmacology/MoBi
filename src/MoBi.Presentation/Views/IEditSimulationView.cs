@@ -1,5 +1,4 @@
 ﻿using MoBi.Presentation.Presenter;
-using MoBi.Presentation.Views.BaseDiagram;
 using OSPSuite.Core.Domain;
 using OSPSuite.Presentation.Views;
 
@@ -9,7 +8,6 @@ namespace MoBi.Presentation.Views
    {
       void SetEditView(IView view);
       void SetTreeView(IView view);
-      void SetModelDiagram(ISimulationDiagramView subView);
 
       /// <summary>
       ///    Indicates whether the current view is an analysis tab

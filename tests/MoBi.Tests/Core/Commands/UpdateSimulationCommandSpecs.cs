@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Xml.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
@@ -123,12 +125,6 @@ namespace MoBi.Core.Commands
       }
 
       [Observation]
-      public void should_change_the_node_ids_in_diagram_model()
-      {
-         A.CallTo(() => _simulation.DiagramModel.ReplaceNodeIds(A<IDictionary<string, string>>._)).MustHaveHappened();
-      }
-
-      [Observation]
       public void should_call_update_for_simulation()
       {
          A.CallTo(() => _simulation.Update(_simulationConfiguration, _model, _simulationEntitySources)).MustHaveHappened();
@@ -158,6 +154,41 @@ namespace MoBi.Core.Commands
       public void should_notify_the_simulation_unloaded_event_before_updating_the_simulation()
       {
          _event.Simulation.Configuration.ShouldBeEqualTo(_oldBuildConfiguration);
+      }
+   }
+
+   internal class When_executing_an_update_simulation_command_for_a_simulation_with_a_saved_diagram_layout : ContextSpecification<UpdateSimulationCommand>
+   {
+      private MoBiSimulation _simulation;
+      private IMoBiContext _context;
+
+      protected override void Context()
+      {
+         _simulation = new MoBiSimulation
+         {
+            Model = modelWithOrganism("old-id"),
+            DiagramModelXml = XElement.Parse(@"<DiagramModel><MultiPortContainerNode Id=""old-id"" Name=""Organism"" /><MultiPortContainerNode Id=""unknown"" Name=""Other"" /></DiagramModel>")
+         };
+         _context = A.Fake<IMoBiContext>();
+         sut = new UpdateSimulationCommand(_simulation, modelWithOrganism("new-id"), new List<SimulationEntitySource>(), new SimulationConfiguration());
+      }
+
+      private static IModel modelWithOrganism(string id)
+      {
+         var root = new Container().WithName("S");
+         root.Add(new Container().WithName("Organism").WithId(id));
+         return new Model {Root = root};
+      }
+
+      protected override void Because()
+      {
+         sut.Execute(_context);
+      }
+
+      [Observation]
+      public void should_replace_the_node_ids_of_the_saved_diagram_layout_by_the_ids_of_the_matching_entities()
+      {
+         _simulation.DiagramModelXml.Descendants().Attributes("Id").Select(x => x.Value).ShouldOnlyContain("new-id", "unknown");
       }
    }
 }

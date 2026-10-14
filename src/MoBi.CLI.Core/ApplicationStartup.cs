@@ -74,7 +74,6 @@ namespace MoBi.CLI.Core
          container.Register<IPKSimStarter, IPKSimSnapshotConverter, PKSimStarter>(LifeStyle.Singleton);
          container.Register<ISpatialStructureDiagramManager, SpatialStructureDiagramManager>();
          container.Register<IMoBiReactionDiagramManager, MoBiReactionDiagramManager>();
-         container.Register<ISimulationDiagramManager, SimulationDiagramManager>();
          container.Register<ISettingsPersistor<IApplicationSettings>, ApplicationSettingsPersistor>();
 
          register.PerformMappingForSerializerIn(container);

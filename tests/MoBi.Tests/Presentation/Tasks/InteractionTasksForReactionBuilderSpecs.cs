@@ -13,7 +13,6 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Presentation.Diagram.Elements;
-using OSPSuite.UI.Diagram.Elements;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation.Tasks

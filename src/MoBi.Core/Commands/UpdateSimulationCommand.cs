@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using OSPSuite.Assets;
 using OSPSuite.Core.Commands.Core;
-using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
@@ -65,8 +65,8 @@ namespace MoBi.Core.Commands
 
          updateReferencesToSimulation(context);
 
-         if (_simulationToUpdate.DiagramModel != null)
-            replaceDiagramModelNodeIds(_simulationToUpdate.DiagramModel, oldIdCache, getEntityIdCache(_simulationToUpdate));
+         if (_simulationToUpdate.DiagramModelXml != null)
+            replaceDiagramModelNodeIds(_simulationToUpdate.DiagramModelXml, oldIdCache, getEntityIdCache(_simulationToUpdate));
 
          context.Register(_simulationToUpdate);
          _wasChanged = _simulationToUpdate.HasChanged;
@@ -105,10 +105,12 @@ namespace MoBi.Core.Commands
          return idCache;
       }
 
-      private static void replaceDiagramModelNodeIds(IDiagramModel diagramModel, ICache<string, string> oldIdCache, ICache<string, string> newIdCache)
+      private static void replaceDiagramModelNodeIds(XElement diagramModelXml, ICache<string, string> oldIdCache, ICache<string, string> newIdCache)
       {
          var replacementDictionary = makeReplacementDictionary(oldIdCache, newIdCache);
-         diagramModel.ReplaceNodeIds(replacementDictionary);
+         diagramModelXml.Descendants().Attributes("Id")
+            .Where(id => replacementDictionary.ContainsKey(id.Value))
+            .Each(id => id.Value = replacementDictionary[id.Value]);
       }
 
       public override void RestoreExecutionData(IMoBiContext context)

@@ -17,7 +17,6 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Presentation.Diagram.Elements;
 using OSPSuite.Presentation.Presenters.ContextMenus;
-using OSPSuite.UI.Diagram.Elements;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.Presentation

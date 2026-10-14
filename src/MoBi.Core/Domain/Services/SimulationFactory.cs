@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Domain.Model.Diagram;
 using MoBi.Core.Events;
 using MoBi.Core.Exceptions;
 using MoBi.Core.Services;
@@ -42,7 +41,6 @@ namespace MoBi.Core.Domain.Services
       private readonly IIdGenerator _idGenerator;
       private readonly ICreationMetaDataFactory _creationMetaDataFactory;
       private readonly ISimulationParameterOriginIdUpdater _simulationParameterOriginIdUpdater;
-      private readonly IDiagramManagerFactory _diagramManagerFactory;
       private readonly ISimulationConfigurationFactory _simulationConfigurationFactory;
       private readonly IDimensionValidator _dimensionValidator;
       private readonly IModelConstructor _modelConstructor;
@@ -51,7 +49,6 @@ namespace MoBi.Core.Domain.Services
       public SimulationFactory(IIdGenerator idGenerator,
          ICreationMetaDataFactory creationMetaDataFactory,
          ISimulationParameterOriginIdUpdater simulationParameterOriginIdUpdater,
-         IDiagramManagerFactory diagramManagerFactory,
          ISimulationConfigurationFactory simulationConfigurationFactory,
          IDimensionValidator dimensionValidator,
          IModelConstructor modelConstructor,
@@ -60,7 +57,6 @@ namespace MoBi.Core.Domain.Services
          _idGenerator = idGenerator;
          _creationMetaDataFactory = creationMetaDataFactory;
          _simulationParameterOriginIdUpdater = simulationParameterOriginIdUpdater;
-         _diagramManagerFactory = diagramManagerFactory;
          _simulationConfigurationFactory = simulationConfigurationFactory;
          _dimensionValidator = dimensionValidator;
          _modelConstructor = modelConstructor;
@@ -71,7 +67,6 @@ namespace MoBi.Core.Domain.Services
       {
          var moBiSimulation = new MoBiSimulation
          {
-            DiagramManager = _diagramManagerFactory.Create<ISimulationDiagramManager>(),
             Configuration = simulationConfiguration,
             Model = model,
             Creation = _creationMetaDataFactory.Create(),

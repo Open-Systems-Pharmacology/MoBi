@@ -13,7 +13,6 @@ using MoBi.Presentation.UICommand;
 using MoBi.Presentation.Views.BaseDiagram;
 using MoBi.UI.Diagram.DiagramManagers;
 using MoBi.UI.Presenters;
-using Northwoods.Go;
 using NUnit.Framework;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -25,7 +24,6 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Diagram.Elements;
 using OSPSuite.Presentation.Services;
-using OSPSuite.UI.Diagram.Elements;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.UI.Diagram
@@ -104,7 +102,7 @@ namespace MoBi.UI.Diagram
 
    public abstract class When_deleteing_nodes_from_a_reaction_building_block : concern_for_ReactionDiagramPresenter
    {
-      protected IReadOnlyList<GoObject> _objectsToRemove;
+      protected IReadOnlyList<IBaseNode> _objectsToRemove;
       protected IMoleculeNode _moleculeNode;
       protected ReactionNode _reactionNode;
       protected MoBiReactionBuildingBlock _reactionBuildingBlock;
@@ -157,7 +155,7 @@ namespace MoBi.UI.Diagram
       protected override void Context()
       {
          base.Context();
-         _objectsToRemove = new List<GoObject> { _moleculeNode as MoleculeNode };
+         _objectsToRemove = new List<IBaseNode> { _moleculeNode };
       }
 
       protected override void Because()
@@ -183,7 +181,7 @@ namespace MoBi.UI.Diagram
       protected override void Context()
       {
          base.Context();
-         _objectsToRemove = new List<GoObject> { _reactionNode, _moleculeNode as MoleculeNode };
+         _objectsToRemove = new List<IBaseNode> { _reactionNode, _moleculeNode };
       }
 
       protected override void Because()

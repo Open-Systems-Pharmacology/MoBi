@@ -7,11 +7,11 @@ using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Presentation.Diagram;
-using OSPSuite.UI.Diagram.Elements;
+using OSPSuite.Presentation.Diagram.Elements;
 
 namespace MoBi.UI.Diagram.DiagramManagers
 {
-   public class SpatialStructureDiagramManager : BaseDiagramManager<SimpleContainerNode, SimpleNeighborhoodNode, MoBiSpatialStructure>, ISpatialStructureDiagramManager
+   public class SpatialStructureDiagramManager : BaseDiagramManager<ContainerNode, NeighborhoodNode, MoBiSpatialStructure>, ISpatialStructureDiagramManager
    {
       // complement and update ViewModel from PkModel and couple ViewModel and PkModel
       protected override void UpdateDiagramModel(MoBiSpatialStructure spatialStructure, IDiagramModel diagramModel, bool coupleAll)
@@ -23,7 +23,7 @@ namespace MoBi.UI.Diagram.DiagramManagers
          {
             // create neighborhoodsContainerNode, because entities are only added 
             // for available parentContainerNodes
-            var neighborhoodsContainerNode = AddAndCoupleNode<IContainer, SimpleContainerNode>(diagramModel, spatialStructure.NeighborhoodsContainer, coupleAll);
+            var neighborhoodsContainerNode = AddAndCoupleNode<IContainer, ContainerNode>(diagramModel, spatialStructure.NeighborhoodsContainer, coupleAll);
             neighborhoodsContainerNode.IsVisible = false;
             neighborhoodsContainerNode.Visible = false; // to avoid visibility in PrintPreview - seems not to be sufficient
             unusedNodeIds.Remove(spatialStructure.NeighborhoodsContainer.Id);

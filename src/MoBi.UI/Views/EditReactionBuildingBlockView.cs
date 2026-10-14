@@ -25,7 +25,7 @@ namespace MoBi.UI.Views
          ApplicationIcon = ApplicationIcons.Reaction;
          tabFavorites.InitWith(Captions.Favorites, ApplicationIcons.Favorites);
          tabUserDefined.InitWith(AppConstants.Captions.UserDefined, ApplicationIcons.UserDefinedVariability);
-         tabFlowChart.InitWith(AppConstants.Captions.Chart, ApplicationIcons.Diagram);
+         tabFlowChart.InitWith(AppConstants.Captions.Diagram, ApplicationIcons.Diagram);
          tabList.InitWith(AppConstants.Captions.List, ApplicationIcons.Parameter);
          splitContainerControl1.CollapsePanel = SplitCollapsePanel.Panel1;
          EditCaption = AppConstants.Captions.Reactions;

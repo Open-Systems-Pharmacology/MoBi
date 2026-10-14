@@ -2,6 +2,7 @@
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Model.Diagram;
+using OSPSuite.Core.Diagram;
 using OSPSuite.Core.Serialization.Diagram;
 using OSPSuite.Core.Serialization.Xml;
 
@@ -27,7 +28,9 @@ namespace MoBi.Core.Serialization.Xml.Serializer
          if (diagramElement == null) return;
 
          var xmlDoc = diagramElement.ToXmlDocument();
-         spatialStructure.DiagramModel = serializer.XmlDocumentToDiagramModel(xmlDoc);
+         var model = serializationContext.Resolve<IDiagramModelFactory>().Create();
+         serializer.Deserialize(model, xmlDoc);
+         spatialStructure.DiagramModel = model;
       }
 
       protected override XElement TypedSerialize(MoBiSpatialStructure spatialStructure, SerializationContext serializationContext)

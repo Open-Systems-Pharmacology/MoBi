@@ -102,10 +102,6 @@ task :create_local_nuget_r do
   build_dependency_manager
 end
 
-task :update_go_license, [:file_path, :license] do |t, args|
-   Utils.update_go_diagram_license args.file_path, args.license
-end
-
 def copy_templates_files(source_dir)
    FileUtils.mkdir_p setup_temp_dir
    FileUtils.copy_entry File.join(source_dir, 'ChartLayouts'), File.join(setup_temp_dir, 'ChartLayouts')
