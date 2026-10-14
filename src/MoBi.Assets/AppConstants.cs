@@ -1285,7 +1285,6 @@ namespace MoBi.Assets
          public static readonly string ReactionNodeMissingInLink = "Reaction Node missing in Link";
          public static readonly string MoleculeNodeMissingInLink = "Molecule Node missing in Link";
          public static readonly string FileInNotAnExcelFile = "File is not an Excel file";
-         public static readonly string ImporterConfigurationNotFoundInProject = "Importer configuration for this dataset was not found in this project.\n\nThe data cannot be reloaded.";
 
          public static string DuplicatedImportedValue(string path) => $"Duplicated entry for imported value with path '{path}'";
 
