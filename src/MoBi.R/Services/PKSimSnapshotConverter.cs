@@ -19,7 +19,7 @@ namespace MoBi.R.Services
       public PKSimSnapshotConverter(IXmlSerializationService serializationService, IMoBiProjectRetriever projectRetriever, IPKSimAssemblyLoader pkSimLoader)
          : base(pkSimLoader, serializationService, projectRetriever)
       {
-         _pkSimLoader.InitializePath(pkSimAssemblyPath());
+         _pkSimLoader.InitializePath(pkSimAssemblyPath);
       }
 
       protected override string SnapshotExchangeType => PKSIM_R_SNAPSHOT_EXCHANGE;

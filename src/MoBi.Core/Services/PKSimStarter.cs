@@ -55,7 +55,7 @@ namespace MoBi.Core.Services
          _applicationSettings = applicationSettings;
          _startableProcessFactory = startableProcessFactory;
          _cloneManager = cloneManager;
-         _pkSimLoader.InitializePath(retrievePKSimAssemblyPath());
+         _pkSimLoader.InitializePath(retrievePKSimAssemblyPath);
       }
 
       protected override string SnapshotExchangeType => PKSIM_UI_STARTER_SNAPSHOT_EXCHANGE;

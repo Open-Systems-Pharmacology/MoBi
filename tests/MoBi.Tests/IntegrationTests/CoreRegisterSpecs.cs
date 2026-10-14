@@ -4,6 +4,7 @@ using MoBi.Core.Domain.Model;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Comparison;
+using OSPSuite.Presentation.Mappers;
 using OSPSuite.Utility.Container;
 
 namespace MoBi.IntegrationTests
@@ -20,6 +21,12 @@ namespace MoBi.IntegrationTests
          var diffBuilderRepository = IoC.Resolve<IDiffBuilderRepository>();
          var simulationDiffBuilder = diffBuilderRepository.BuilderFor(new MoBiSimulation());
          simulationDiffBuilder.ShouldBeAnInstanceOf<MoBiSimulationDiffBuilder>();
+      }
+
+      [Observation]
+      public void should_be_able_to_resolve_the_diff_item_mapper()
+      {
+         IoC.Resolve<IDiffItemToDiffItemDTOMapper>().ShouldBeAnInstanceOf<DiffItemToDiffItemDTOMapper>();
       }
    }
 }

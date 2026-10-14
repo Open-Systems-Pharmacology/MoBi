@@ -10,6 +10,7 @@ using MoBi.Core.Services;
 using MoBi.HelpersForTests;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Chart.Simulations;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -36,6 +37,7 @@ namespace MoBi.Presentation.Tasks
       protected IKeyPathMapper _keyPathMapper;
       protected IEntityValidationTask _eventValidationTask;
       protected ISimulationQuantityValueWarningTask _simulationQuantityWarningTask;
+      protected IMoBiSimulationAnalysisCreator _simulationAnalysisCreator;
 
       protected override Task Context()
       {
@@ -48,6 +50,7 @@ namespace MoBi.Presentation.Tasks
          _keyPathMapper = A.Fake<IKeyPathMapper>();
          _eventValidationTask = A.Fake<IEntityValidationTask>();
          _simulationQuantityWarningTask = A.Fake<ISimulationQuantityValueWarningTask>();
+         _simulationAnalysisCreator = A.Fake<IMoBiSimulationAnalysisCreator>();
 
          sut = new SimulationRunner(
             _context,
@@ -58,7 +61,8 @@ namespace MoBi.Presentation.Tasks
             _simModelManagerFactory,
             _keyPathMapper,
             _eventValidationTask,
-            _simulationQuantityWarningTask);
+            _simulationQuantityWarningTask,
+            _simulationAnalysisCreator);
 
          return Task.CompletedTask;
       }
@@ -109,6 +113,7 @@ namespace MoBi.Presentation.Tasks
          _simulation = A.Fake<IMoBiSimulation>();
          A.CallTo(() => _outputSelectionsRetriever.OutputSelectionsFor(_simulation)).Returns(null);
          A.CallTo(() => _eventValidationTask.Validate(_simulation)).Returns(true);
+         A.CallTo(() => _simulation.HasResults).Returns(true);
       }
 
       protected override async Task Because()
@@ -120,6 +125,12 @@ namespace MoBi.Presentation.Tasks
       public void should_retrieve_the_settings_for_the_simulation_if_they_are_not_available_on_the_simulation()
       {
          A.CallTo(() => _outputSelectionsRetriever.OutputSelectionsFor(_simulation)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_not_create_a_time_profile_analysis_based_on_previous_results()
+      {
+         A.CallTo(() => _simulationAnalysisCreator.CreateTimeProfileAnalysisFor(A<IMoBiSimulation>._)).MustNotHaveHappened();
       }
    }
 
@@ -329,6 +340,48 @@ namespace MoBi.Presentation.Tasks
       {
          _concentrationColumn.DataInfo.MolWeight.ShouldBeEqualTo(_moleculeWeight.Value);
          _fractionColumn.DataInfo.MolWeight.ShouldBeNull();
+      }
+
+      [Observation]
+      public void should_create_a_time_profile_analysis_for_the_simulation_without_analyses()
+      {
+         A.CallTo(() => _simulationAnalysisCreator.CreateTimeProfileAnalysisFor(_simulation)).MustHaveHappened();
+      }
+   }
+
+   public class When_the_simulation_runner_is_running_a_simulation_that_already_has_an_analysis : concern_for_SimulationRunner
+   {
+      private MoBiSimulation _simulation;
+      private ISimModelManager _simModelManager;
+
+      protected override async Task Context()
+      {
+         await base.Context();
+         var outputSelections = new OutputSelections();
+         outputSelections.AddOutput(new QuantitySelection("A", QuantityType.Drug));
+         _simulation = new MoBiSimulation
+         {
+            Model = new Model { Root = new Container() },
+            Configuration = new SimulationConfiguration { SimulationSettings = new SimulationSettings { OutputSelections = outputSelections } }
+         };
+         _simulation.AddAnalysis(new SimulationPredictedVsObservedChart());
+
+         _simModelManager = A.Fake<ISimModelManager>();
+         A.CallTo(() => _simModelManagerFactory.Create()).Returns(_simModelManager);
+         A.CallTo(() => _simModelManager.RunSimulationAsync(_simulation, A<CancellationToken>._, null))
+            .Returns(Task.FromResult(new SimulationRunResults(warnings: Enumerable.Empty<SolverWarning>(), results: new DataRepository("NEW"))));
+         A.CallTo(() => _eventValidationTask.Validate(_simulation)).Returns(true);
+      }
+
+      protected override async Task Because()
+      {
+         await sut.SecureAwait(x => x.RunSimulationAsync(_simulation));
+      }
+
+      [Observation]
+      public void should_not_create_a_time_profile_analysis()
+      {
+         A.CallTo(() => _simulationAnalysisCreator.CreateTimeProfileAnalysisFor(A<IMoBiSimulation>._)).MustNotHaveHappened();
       }
    }
 
