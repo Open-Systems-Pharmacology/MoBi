@@ -248,6 +248,12 @@ namespace MoBi.Presentation.Tasks
       public void AddAndReplaceObservedDataFromConfigurationToProject(ImporterConfiguration configuration,
          IReadOnlyList<DataRepository> observedDataFromSameFile)
       {
+         if (configuration == null)
+         {
+            _dialogCreator.MessageBoxError(AppConstants.Exceptions.ImporterConfigurationNotFoundInProject);
+            return;
+         }
+
          var importedObservedData = getObservedDataFromImporter(configuration);
          var reloadDataSets =
             _dataImporter.CalculateReloadDataSetsFromConfiguration(importedObservedData.ToList(), observedDataFromSameFile.ToList());

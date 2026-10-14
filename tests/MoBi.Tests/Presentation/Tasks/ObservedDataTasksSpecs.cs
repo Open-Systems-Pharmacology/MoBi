@@ -477,6 +477,26 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
+   internal class When_reloading_data_and_the_importer_configuration_is_not_in_the_project : concern_for_ObservedDataTask
+   {
+      protected override void Because()
+      {
+         sut.AddAndReplaceObservedDataFromConfigurationToProject(null, new List<DataRepository> { _dataRepository });
+      }
+
+      [Observation]
+      public void should_tell_the_user_that_the_data_cannot_be_reloaded()
+      {
+         A.CallTo(() => _dialogCreator.MessageBoxError(AppConstants.Exceptions.ImporterConfigurationNotFoundInProject)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_not_ask_for_a_file_to_import()
+      {
+         A.CallTo(() => _dialogCreator.AskForFileToOpen(A<string>._, A<string>._, A<string>._, A<string>._, A<string>._)).MustNotHaveHappened();
+      }
+   }
+
    internal abstract class RemovingSingleResultFromASimulationBase : concern_for_ObservedDataTask
    {
       protected DataRepository _currentResult;
