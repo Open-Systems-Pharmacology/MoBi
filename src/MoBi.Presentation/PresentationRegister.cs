@@ -117,6 +117,7 @@ namespace MoBi.Presentation
          container.RegisterFactory<IHeavyWorkPresenterFactory>();
 
          container.Register<IObservedDataConfiguration, ObservedDataTask>();
+         container.Register<IObservedDataImporter, ObservedDataTask>();
          container.Register<IPathToPathElementsMapper, PathToPathElementsMapper>();
          container.Register<IDiffItemToDiffItemDTOMapper, DiffItemToDiffItemDTOMapper>();
          container.Register<IDataColumnToPathElementsMapper, DataColumnToPathElementsMapper>();

@@ -13,7 +13,6 @@ using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Events;
 using OSPSuite.Core.Import;
@@ -42,7 +41,6 @@ namespace MoBi.Presentation.Tasks
       protected IBuildingBlockRepository _buildingBlockRepository;
       protected IObjectBaseNamingTask _namingTask;
       private IConfirmationManager _confirmationManager;
-      protected IParameterIdentificationTask _parameterIdentificationTask;
       protected IOutputMappingMatchingTask _outputMappingMatchingTask;
 
       protected override void Context()
@@ -59,9 +57,8 @@ namespace MoBi.Presentation.Tasks
          _buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
          _namingTask = A.Fake<IObjectBaseNamingTask>();
          _confirmationManager = A.Fake<IConfirmationManager>();
-         _parameterIdentificationTask = A.Fake<IParameterIdentificationTask>();
          _outputMappingMatchingTask = A.Fake<IOutputMappingMatchingTask>();
-         sut = new ObservedDataTask(_dataImporter, _context, _dialogCreator, _interactionTask, _dataRepositoryTask, _containerTask, _objectTypeResolver, _buildingBlockRepository, _namingTask, _confirmationManager, _parameterIdentificationTask, _outputMappingMatchingTask);
+         sut = new ObservedDataTask(_dataImporter, _context, _dialogCreator, _interactionTask, _dataRepositoryTask, _containerTask, _objectTypeResolver, _buildingBlockRepository, _namingTask, _confirmationManager, _outputMappingMatchingTask);
 
          _project = DomainHelperForSpecs.NewProject();
          A.CallTo(() => _context.Project).Returns(_project);
@@ -103,18 +100,62 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class When_adding_and_replacing_observed_data_from_configuration_to_project : concern_for_ObservedDataTask
+   public class When_importing_observed_data_from_a_configuration : concern_for_ObservedDataTask
    {
+      private ImporterConfiguration _configuration;
+      private IReadOnlyList<DataRepository> _importedObservedData;
+      private IReadOnlyList<DataRepository> _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         _configuration = new ImporterConfiguration();
+         _importedObservedData = new[] { _dataRepository };
+
+         A.CallTo(() => _dialogCreator.AskForFileToOpen(A<string>._, A<string>._, A<string>._, A<string>._, A<string>._)).Returns("data.xlsx");
+         A.CallTo(() => _dataImporter.ImportFromConfiguration(_configuration, A<IReadOnlyList<MetaDataCategory>>._, A<IReadOnlyList<ColumnInfo>>._, A<DataImporterSettings>._, "data.xlsx"))
+            .Returns(_importedObservedData);
+      }
+
       protected override void Because()
       {
-         sut.AddAndReplaceObservedDataFromConfigurationToProject(A.Fake<ImporterConfiguration>(), A.Fake<IReadOnlyList<DataRepository>>());
+         _result = sut.ImportFrom(_configuration);
       }
 
       [Observation]
-      public void should_call_update_parameter_identification_Using()
+      public void should_return_the_observed_data_imported_from_the_selected_file()
       {
-         A.CallTo(() => _parameterIdentificationTask.UpdateParameterIdentificationsUsing(A<IReadOnlyList<DataRepository>>._))
-            .MustHaveHappened();
+         _result.ShouldBeEqualTo(_importedObservedData);
+      }
+   }
+
+   public class When_adding_imported_observed_data_to_the_project : concern_for_ObservedDataTask
+   {
+      protected override void Context()
+      {
+         base.Context();
+         _dataRepository.Name = "A";
+         _dataRepository.BaseGrid.Name = "B";
+         _dataRepository.Add(new DataColumn("name", DimensionFactoryForSpecs.MassDimension, _dataRepository.BaseGrid));
+         A.CallTo(() => _containerTask.CreateUniqueName(A<IEnumerable<IWithName>>._, "A", true)).Returns("A");
+      }
+
+      protected override void Because()
+      {
+         sut.AddImportedObservedDataToProject(_dataRepository);
+      }
+
+      [Observation]
+      public void should_add_the_observed_data_to_the_project()
+      {
+         _project.AllObservedData.Contains(_dataRepository).ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_give_the_columns_a_path_starting_with_the_observed_data_name()
+      {
+         _dataRepository.BaseGrid.QuantityInfo.PathAsString.ShouldBeEqualTo("A|B");
+         _dataRepository.AllButBaseGrid().First().QuantityInfo.PathAsString.ShouldBeEqualTo("A|name");
       }
    }
 
@@ -352,148 +393,6 @@ namespace MoBi.Presentation.Tasks
 
          _simulation2.HistoricResults.Count.ShouldBeEqualTo(0);
          _simulation2.ResultsDataRepository.ShouldBeNull();
-      }
-   }
-
-   internal class When_reloading_data_from_the_same_configuration_and_matches_exist : concern_for_ObservedDataTask
-   {
-      private ImporterConfiguration _importerConfiguration;
-      private IReadOnlyList<DataRepository> _existingData;
-      private DataRepository _matchingRepository, _nonMatchingRepository;
-
-      protected override void Context()
-      {
-         base.Context();
-         _dataRepository.Add(new DataColumn("id", DimensionFactoryForSpecs.MassDimension, _dataRepository.BaseGrid));
-         _existingData = new List<DataRepository> { _dataRepository };
-         _importerConfiguration = A.Fake<ImporterConfiguration>();
-         _importerConfiguration.Id = "Id";
-         _importerConfiguration.AddParameter(A.Fake<DataFormatParameter>());
-         _nonMatchingRepository = new DataRepository("non_matching");
-
-         _matchingRepository = new DataRepository("new");
-
-         _dataRepository.ExtendedProperties.Add("old_key", new ExtendedProperty<string> { Value = "old_value" });
-         _matchingRepository.ExtendedProperties.Add("old_key", new ExtendedProperty<string> { Value = "old_value" });
-         configureColumns(_matchingRepository, _dataRepository);
-
-         A.CallTo(() => _dataImporter.ImportFromConfiguration(A<ImporterConfiguration>._, A<IReadOnlyList<MetaDataCategory>>.Ignored, A<IReadOnlyList<ColumnInfo>>.Ignored, A<DataImporterSettings>.Ignored, A<string>.Ignored))
-            .Returns(new List<DataRepository> { _matchingRepository, _nonMatchingRepository });
-
-         A.CallTo(() => _dataImporter.CalculateReloadDataSetsFromConfiguration(A<IReadOnlyList<DataRepository>>._, A<IReadOnlyList<DataRepository>>._))
-            .Returns(new ReloadDataSets(Enumerable.Empty<DataRepository>(), new[] { _matchingRepository, _nonMatchingRepository }, Enumerable.Empty<DataRepository>()));
-      }
-
-      private void configureColumns(DataRepository reImportedData, DataRepository dataRepository)
-      {
-         dataRepository.BaseGrid.Values = new[] { 0.0f };
-         dataRepository.BaseGrid.Name = "Time";
-         dataRepository.AllButBaseGrid().Each(x => x.Values = new[] { 1.0f });
-         dataRepository.AllButBaseGrid().ToList().Each((x, i) => x.Name = $"name{i}");
-         var newBaseGrid = new BaseGrid(dataRepository.BaseGrid.Id, dataRepository.BaseGrid.Name, dataRepository.BaseGrid.Dimension);
-         _matchingRepository.Add(newBaseGrid);
-         dataRepository.AllButBaseGrid().Each(column => reImportedData.Add(new DataColumn(column.Id, column.Dimension, newBaseGrid)));
-
-         _matchingRepository.BaseGrid.Values = new[] { 10.0f };
-         _matchingRepository.AllButBaseGrid().Each(x => x.Values = new[] { 11.0f });
-         _matchingRepository.BaseGrid.Name = "Time";
-         _matchingRepository.AllButBaseGrid().ToList().Each((x, i) => x.Name = $"name{i}");
-      }
-
-      protected override void Because()
-      {
-         sut.AddAndReplaceObservedDataFromConfigurationToProject(_importerConfiguration, _existingData);
-      }
-
-      [Observation]
-      public void the_project_must_be_marked_as_changed()
-      {
-         A.CallTo(() => _context.ProjectChanged()).MustHaveHappened();
-      }
-
-      [Observation]
-      public void the_loaded_data_should_be_replaced_with_new_data_on_matching_repository()
-      {
-         _dataRepository.BaseGrid.Values.First().ShouldBeEqualTo(10.0f);
-         _dataRepository.AllButBaseGrid().All(x => x.Values.First() == 11.0f).ShouldBeTrue();
-      }
-   }
-
-   internal class When_reloading_data_from_the_same_configuration_and_no_matching_import_is_found : concern_for_ObservedDataTask
-   {
-      private ImporterConfiguration _importerConfiguration;
-      private IReadOnlyList<DataRepository> _existingData;
-      private DataRepository _reImportedData;
-
-      protected override void Context()
-      {
-         base.Context();
-         _dataRepository.Add(new DataColumn("id", DimensionFactoryForSpecs.MassDimension, _dataRepository.BaseGrid));
-         _existingData = new List<DataRepository> { _dataRepository };
-         _importerConfiguration = A.Fake<ImporterConfiguration>();
-         _importerConfiguration.Id = "Id";
-         _importerConfiguration.AddParameter(A.Fake<DataFormatParameter>());
-
-         _reImportedData = new DataRepository("new");
-
-         _dataRepository.ExtendedProperties.Add("old_key", new ExtendedProperty<string> { Value = "old_value" });
-         _reImportedData.ExtendedProperties.Add("new_key", new ExtendedProperty<string> { Value = "new_value" });
-         configureColumns(_reImportedData, _dataRepository);
-
-         A.CallTo(() => _dataImporter.ImportFromConfiguration(A<ImporterConfiguration>._, A<IReadOnlyList<MetaDataCategory>>.Ignored, A<IReadOnlyList<ColumnInfo>>.Ignored, A<DataImporterSettings>.Ignored, A<string>.Ignored))
-            .Returns(new List<DataRepository> { _reImportedData });
-
-         A.CallTo(() => _dataImporter.CalculateReloadDataSetsFromConfiguration(A<IReadOnlyList<DataRepository>>._, A<IReadOnlyList<DataRepository>>._)).Returns(new ReloadDataSets(Enumerable.Empty<DataRepository>(), new[] { _reImportedData }, Enumerable.Empty<DataRepository>()));
-      }
-
-      private void configureColumns(DataRepository reImportedData, DataRepository dataRepository)
-      {
-         dataRepository.BaseGrid.Values = new[] { 0.0f };
-         dataRepository.AllButBaseGrid().Each(x => x.Values = new[] { 1.0f });
-         var newBaseGrid = new BaseGrid(dataRepository.BaseGrid.Id, dataRepository.BaseGrid.Name, dataRepository.BaseGrid.Dimension);
-         _reImportedData.Add(newBaseGrid);
-         dataRepository.AllButBaseGrid().Each(column => reImportedData.Add(new DataColumn(column.Id, column.Dimension, newBaseGrid)));
-
-         _reImportedData.BaseGrid.Values = new[] { 10.0f };
-         _reImportedData.AllButBaseGrid().Each(x => x.Values = new[] { 11.0f });
-      }
-
-      protected override void Because()
-      {
-         sut.AddAndReplaceObservedDataFromConfigurationToProject(_importerConfiguration, _existingData);
-      }
-
-      [Observation]
-      public void the_project_must_not_be_marked_as_changed()
-      {
-         A.CallTo(() => _context.ProjectChanged()).MustNotHaveHappened();
-      }
-
-      [Observation]
-      public void the_loaded_data_should_not_be_replaced_with_new_data()
-      {
-         _dataRepository.BaseGrid.Values.First().ShouldBeEqualTo(0.0f);
-         _dataRepository.AllButBaseGrid().All(x => x.Values.First() == 1.0f).ShouldBeTrue();
-      }
-   }
-
-   internal class When_reloading_data_and_the_importer_configuration_is_not_in_the_project : concern_for_ObservedDataTask
-   {
-      protected override void Because()
-      {
-         sut.AddAndReplaceObservedDataFromConfigurationToProject(null, new List<DataRepository> { _dataRepository });
-      }
-
-      [Observation]
-      public void should_tell_the_user_that_the_data_cannot_be_reloaded()
-      {
-         A.CallTo(() => _dialogCreator.MessageBoxError(AppConstants.Exceptions.ImporterConfigurationNotFoundInProject)).MustHaveHappened();
-      }
-
-      [Observation]
-      public void should_not_ask_for_a_file_to_import()
-      {
-         A.CallTo(() => _dialogCreator.AskForFileToOpen(A<string>._, A<string>._, A<string>._, A<string>._, A<string>._)).MustNotHaveHappened();
       }
    }
 

@@ -14,7 +14,6 @@ using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Data;
 using OSPSuite.Core.Domain.Services;
-using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Services;
 using OSPSuite.Infrastructure.Import.Core;
 using OSPSuite.Infrastructure.Import.Services;
@@ -38,19 +37,16 @@ namespace MoBi.Presentation.Tasks
       /// </summary>
       void RemoveResultsFromSimulations(IReadOnlyList<DataRepository> resultsToRemove);
 
-      void AddAndReplaceObservedDataFromConfigurationToProject(ImporterConfiguration configuration, IReadOnlyList<DataRepository> observedDataFromSameFile);
-
       void DeleteResultsFromSimulation(IMoBiSimulation simulation, DataRepository dataRepository);
    }
 
-   public class ObservedDataTask : OSPSuite.Core.Domain.Services.ObservedDataTask, IObservedDataTask
+   public class ObservedDataTask : OSPSuite.Core.Domain.Services.ObservedDataTask, IObservedDataTask, IObservedDataImporter
    {
       private readonly IDataImporter _dataImporter;
       private readonly IMoBiContext _context;
       private readonly IInteractionTask _interactionTask;
       private readonly IBuildingBlockRepository _buildingBlockRepository;
       private readonly IObjectBaseNamingTask _namingTask;
-      private readonly IParameterIdentificationTask _parameterIdentificationTask;
 
       public ObservedDataTask(
          IDataImporter dataImporter,
@@ -63,7 +59,6 @@ namespace MoBi.Presentation.Tasks
          IBuildingBlockRepository buildingBlockRepository,
          IObjectBaseNamingTask namingTask,
          IConfirmationManager confirmationManager,
-         IParameterIdentificationTask parameterIdentificationTask,
          IOutputMappingMatchingTask outputMappingMatchingTask) : base(dialogCreator, context, dataRepositoryTask, containerTask, objectTypeResolver, confirmationManager, outputMappingMatchingTask)
       {
          _dataImporter = dataImporter;
@@ -71,7 +66,6 @@ namespace MoBi.Presentation.Tasks
          _buildingBlockRepository = buildingBlockRepository;
          _namingTask = namingTask;
          _context = context;
-         _parameterIdentificationTask = parameterIdentificationTask;
       }
 
       public void AddObservedDataToProject()
@@ -89,12 +83,15 @@ namespace MoBi.Presentation.Tasks
             return;
 
          foreach (var repository in dataRepositories)
-         {
-            AddObservedDataToProject(repository);
-            adjustRepositoryPaths(repository);
-         }
+            AddImportedObservedDataToProject(repository);
 
          AddImporterConfigurationToProject(configuration);
+      }
+
+      public void AddImportedObservedDataToProject(DataRepository observedData)
+      {
+         AddObservedDataToProject(observedData);
+         adjustRepositoryPaths(observedData);
       }
 
       private void adjustRepositoryPaths(DataRepository repository)
@@ -245,95 +242,17 @@ namespace MoBi.Presentation.Tasks
          _context.AddToHistory(macroCommand.RunCommand(_context));
       }
 
-      public void AddAndReplaceObservedDataFromConfigurationToProject(ImporterConfiguration configuration,
-         IReadOnlyList<DataRepository> observedDataFromSameFile)
-      {
-         if (configuration == null)
-         {
-            _dialogCreator.MessageBoxError(AppConstants.Exceptions.ImporterConfigurationNotFoundInProject);
-            return;
-         }
-
-         var importedObservedData = getObservedDataFromImporter(configuration);
-         var reloadDataSets =
-            _dataImporter.CalculateReloadDataSetsFromConfiguration(importedObservedData.ToList(), observedDataFromSameFile.ToList());
-
-         foreach (var dataSet in reloadDataSets.NewDataSets)
-         {
-            AddObservedDataToProject(dataSet);
-            adjustRepositoryPaths(dataSet);
-         }
-
-         foreach (var dataSet in reloadDataSets.DataSetsToBeDeleted.ToArray()) //toDo it should be checked if to array solves the deleting problem
-         {
-            Delete(dataSet);
-         }
-
-         foreach (var dataSet in reloadDataSets.OverwrittenDataSets)
-         {
-            replaceData(dataSet, findDataRepositoryInList(observedDataFromSameFile, dataSet));
-         }
-
-         _parameterIdentificationTask.UpdateParameterIdentificationsUsing(observedDataFromSameFile);
-      }
-
-      private void replaceData(DataRepository dataSet, DataRepository existingDataSet)
-      {
-         if (existingDataSet == null)
-            return;
-
-         _context.ProjectChanged();
-
-         foreach (var column in dataSet.Columns)
-         {
-            var dataColumn = new DataColumn(column.Id, column.Name, column.Dimension, column.BaseGrid)
-            {
-               QuantityInfo = column.QuantityInfo,
-               DataInfo = column.DataInfo,
-               IsInternal = column.IsInternal,
-               Values = column.Values
-            };
-
-            if (column.IsBaseGrid())
-            {
-               existingDataSet.BaseGrid.Values = dataColumn.Values;
-            }
-            else
-            {
-               var existingColumn = existingDataSet.FirstOrDefault(x => x.Name == column.Name);
-               if (existingColumn == null)
-                  existingDataSet.Add(column);
-               else
-                  existingColumn.Values = column.Values;
-            }
-         }
-      }
-
-      private DataRepository findDataRepositoryInList(IEnumerable<DataRepository> dataRepositoryList, DataRepository targetDataRepository)
-      {
-         return dataRepositoryList.FirstOrDefault(dataRepo => targetDataRepository.ExtendedProperties.KeyValues.All(keyValuePair => propertyMatches(dataRepo, keyValuePair)));
-      }
-
-      private static bool propertyMatches(DataRepository dataRepo, KeyValuePair<string, IExtendedProperty> keyValuePair)
-      {
-         if (!dataRepo.ExtendedProperties.Contains(keyValuePair.Key))
-            return false;
-
-         return dataRepo.ExtendedProperties[keyValuePair.Key].ValueAsObject.ToString() == keyValuePair.Value.ValueAsObject.ToString();
-      }
-
-      private IEnumerable<DataRepository> getObservedDataFromImporter(ImporterConfiguration configuration)
+      public IReadOnlyList<DataRepository> ImportFrom(ImporterConfiguration configuration)
       {
          var (metaDataCategories, dataImporterSettings) = initializeSettings();
 
-         var importedObservedData = _dataImporter.ImportFromConfiguration(
+         return _dataImporter.ImportFromConfiguration(
             configuration,
             metaDataCategories,
             _dataImporter.ColumnInfosForObservedData(),
             dataImporterSettings,
             _dialogCreator.AskForFileToOpen(Captions.Importer.SelectFileToImport, Captions.Importer.ImportFileFilter, DirectoryKey.OBSERVED_DATA)
          );
-         return importedObservedData;
       }
 
       private ICommand removeResultFromSimulationCommand(DataRepository dataRepository)

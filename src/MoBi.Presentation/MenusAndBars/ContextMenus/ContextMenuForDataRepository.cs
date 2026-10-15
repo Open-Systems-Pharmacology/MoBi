@@ -119,8 +119,8 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
 
       private IMenuBarItem createReloadItemFor(DataRepository dataRepository)
       {
-         return CreateMenuButton.WithCaption(AppConstants.MenuNames.ReloadAll) //ToDo: move to Core, also from PK-Sim
-            .WithCommandFor<ReloadAllObservedDataCommand, DataRepository>(dataRepository, _container)
+         return CreateMenuButton.WithCaption(AppConstants.MenuNames.ReloadAll)
+            .WithCommandFor<ReloadAllObservedDataUICommand, DataRepository>(dataRepository, _container)
             .AsDisabledIf(string.IsNullOrEmpty(dataRepository.ConfigurationId))
             .WithIcon(ApplicationIcons.Excel);
       }
