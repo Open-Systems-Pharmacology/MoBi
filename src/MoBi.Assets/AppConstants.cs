@@ -272,6 +272,7 @@ namespace MoBi.Assets
          public static readonly string AddedMultipleBuildingBlocksFromFile = "Added multiple building blocks from file";
          public static readonly string ChangeFormulaUsablePath = "Change formula usable path";
          public static string AddNewParameterValues(string buildingBlockName) => $"Add new Parameter Values to {buildingBlockName}";
+         public static string AddNewInitialConditions(string buildingBlockName) => $"Add new Initial Conditions to {buildingBlockName}";
 
          public static string ConvertDistributedPathAndValueEntityToConstantValue(string type, string path) => $"Convert distributed {type} '{path}' to constant value";
 
@@ -1749,6 +1750,7 @@ namespace MoBi.Assets
          public static readonly string ChangeDefaultCurveForNewSimulations = "Change default curve for new simulations";
          public static readonly string IndividualParameters = "Individual Parameters";
          public static readonly string ParameterPathsToAdd = "Parameter Paths to Add";
+         public static readonly string InitialConditionPathsToAdd = "Initial Condition Paths to Add";
          public static readonly string Allowed = "Allowed";
          public static readonly string NotAllowed = "Not Allowed";
          public static readonly string Presence = "Presence";
@@ -1890,6 +1892,7 @@ namespace MoBi.Assets
          public static readonly string PasteFormula = "Paste Formula";
          public static readonly string SelectOutputFolder = "Select output folder";
          public static readonly string SelectParameter = "Select parameter";
+         public static readonly string SelectMolecule = "Select molecule";
          public static readonly string ExpressionParameters = "Expression Parameters";
          public static readonly string FindReferences = "Find References...";
          public static readonly string UsedBy = "Used By";
@@ -2191,6 +2194,42 @@ namespace MoBi.Assets
                sb.AppendLine("It already exists in the building block");
             else
                sb.AppendLine("They already exist in the building block");
+
+            return sb.ToString();
+         }
+
+         public static string InitialConditionsBuildingBlockAlreadyContains(IReadOnlyList<string> paths)
+         {
+            var pathsNotAdded = paths.Count;
+            var sb = new StringBuilder();
+
+            if (pathsNotAdded == 1)
+               sb.AppendLine("An initial condition could not be added");
+            else
+               sb.AppendLine("Some initial conditions could not be added");
+
+            sb.AppendLine(NamesList(paths));
+
+            if (pathsNotAdded == 1)
+               sb.AppendLine("It already exists in the building block");
+            else
+               sb.AppendLine("They already exist in the building block");
+
+            return sb.ToString();
+         }
+
+         public static string InvalidInitialConditionPaths(IReadOnlyList<string> paths)
+         {
+            var sb = new StringBuilder();
+
+            if (paths.Count == 1)
+               sb.AppendLine("An initial condition could not be added");
+            else
+               sb.AppendLine("Some initial conditions could not be added");
+
+            sb.AppendLine(NamesList(paths));
+
+            sb.AppendLine("An initial condition path must end with the name of a molecule, and the container before it must be a physical container in a spatial structure");
 
             return sb.ToString();
          }

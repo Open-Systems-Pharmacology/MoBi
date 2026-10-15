@@ -9,6 +9,7 @@ using MoBi.Core.Mappers;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
+using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
@@ -41,6 +42,8 @@ namespace MoBi.Presentation.Tasks.Interaction
       IMoBiCommand RefreshInitialConditionsFromBuildingBlocks(TBuildingBlock buildingBlock, IReadOnlyList<InitialCondition> initialConditions);
 
       bool CorrectName(TBuildingBlock buildingBlock, Module module);
+
+      IReadOnlyList<ObjectPath> GetNewPaths();
    }
 
    public class InitialConditionsTask<TBuildingBlock> : InteractionTasksForExtendablePathAndValueEntity<TBuildingBlock, InitialCondition>, IInitialConditionsTask<TBuildingBlock>
@@ -127,6 +130,32 @@ namespace MoBi.Presentation.Tasks.Interaction
          // an existing building block in the InitialConditionsCollection
          var forbiddenNames = _editTask.GetForbiddenNames(buildingBlock, module.InitialConditionsCollection);
          return InteractionTask.CorrectName(buildingBlock, forbiddenNames);
+      }
+
+      public IReadOnlyList<ObjectPath> GetNewPaths()
+      {
+         var selections = SelectNewPaths<ICreateInitialConditionPathsFromReferencesPresenter>(AppConstants.Captions.SelectMolecule);
+         var moleculeNames = _interactionTaskContext.BuildingBlockRepository.MoleculeBlockCollection.SelectMany(x => x).Select(x => x.Name).ToList();
+         var physicalContainerPaths = _interactionTaskContext.BuildingBlockRepository.SpatialStructureCollection.SelectMany(x => x.PhysicalContainers).Select(x => Context.ObjectPathFactory.CreateAbsoluteObjectPath(x).PathAsString).ToList();
+
+         var invalidSelections = selections.Where(x => !isInitialConditionPath(x, moleculeNames, physicalContainerPaths)).ToList();
+         var validSelections = selections.Except(invalidSelections).ToList();
+
+         if (invalidSelections.Any())
+            _interactionTaskContext.DialogCreator.MessageBoxInfo(AppConstants.Captions.InvalidInitialConditionPaths(invalidSelections.Select(x => x.PathAsString).ToList()));
+
+         return validSelections;
+      }
+
+      private static bool isInitialConditionPath(ObjectPath path, IReadOnlyList<string> moleculeNames, IReadOnlyList<string> physicalContainerPaths)
+      {
+         if (path.Count < 2)
+            return false;
+
+         var containerPath = path.Clone<ObjectPath>();
+         containerPath.RemoveAt(containerPath.Count - 1);
+
+         return moleculeNames.Contains(path.Last()) && physicalContainerPaths.Contains(containerPath.PathAsString);
       }
 
       private IMoBiCommand updateNegativeValuesAllowed(TBuildingBlock initialConditions, InitialCondition msv, bool negativeValuesAllowed)

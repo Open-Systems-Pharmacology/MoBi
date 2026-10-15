@@ -19,6 +19,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 
 namespace MoBi.Presentation
@@ -38,6 +39,7 @@ namespace MoBi.Presentation
       private IInitialConditionsBuildingBlockToInitialConditionsBuildingBlockDTOMapper _buildingBlockMapper;
       private IPathAndValueEntityToDistributedParameterMapper _mapper;
       private IViewItemContextMenuFactory _viewItemContextMenuFactory;
+      protected IDialogCreator _dialogCreator;
 
       protected override void Context()
       {
@@ -53,6 +55,7 @@ namespace MoBi.Presentation
          _formulaToValueFormulaDTOMapper = new FormulaToValueFormulaDTOMapper();
          _buildingBlockMapper = new InitialConditionsBuildingBlockToInitialConditionsBuildingBlockDTOMapper(_dtoMapper, _mapper);
          _viewItemContextMenuFactory = A.Fake<IViewItemContextMenuFactory>();
+         _dialogCreator = A.Fake<IDialogCreator>();
          sut = new InitialConditionsPresenter(
             _view,
             _dtoMapper,
@@ -63,7 +66,8 @@ namespace MoBi.Presentation
             _dimensionFactory,
             _distributedParameterPresenter,
             _buildingBlockMapper,
-            _viewItemContextMenuFactory);
+            _viewItemContextMenuFactory,
+            _dialogCreator);
 
          _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock();
 
@@ -260,6 +264,46 @@ namespace MoBi.Presentation
       public void should_save_the_currently_focused_start_values_and_set_it_back_to_the_view()
       {
          _view.FocusedStartValue.ShouldBeEqualTo(_initialConditionDTO2);
+      }
+   }
+
+   public class When_adding_new_initial_conditions_from_paths : concern_for_InitialConditionsPresenter
+   {
+      private ObjectPath _existingPath;
+      private ObjectPath _newPath;
+
+      protected override void Context()
+      {
+         base.Context();
+         _existingPath = new ObjectPath("Organism", "Plasma", "Drug");
+         _newPath = new ObjectPath("Organism", "Plasma", "Metabolite");
+         _initialConditionsBuildingBlock.Add(new InitialCondition { ContainerPath = new ObjectPath("Organism", "Plasma"), Name = "Drug" });
+         sut.Edit(_initialConditionsBuildingBlock);
+
+         A.CallTo(() => _initialConditionTask.GetNewPaths()).Returns(new[] { _existingPath, _newPath });
+      }
+
+      protected override void Because()
+      {
+         sut.AddNewInitialConditions();
+      }
+
+      [Observation]
+      public void an_initial_condition_should_be_added_for_the_new_path()
+      {
+         A.CallTo(() => _initialConditionTask.SetFullPath(A<InitialCondition>._, _newPath, _initialConditionsBuildingBlock)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_path_already_in_the_building_block_should_be_skipped()
+      {
+         A.CallTo(() => _initialConditionTask.SetFullPath(A<InitialCondition>._, _existingPath, _initialConditionsBuildingBlock)).MustNotHaveHappened();
+      }
+
+      [Observation]
+      public void the_user_should_be_told_which_paths_were_skipped()
+      {
+         A.CallTo(() => _dialogCreator.MessageBoxInfo(AppConstants.Captions.InitialConditionsBuildingBlockAlreadyContains(new[] { _existingPath.PathAsString }))).MustHaveHappened();
       }
    }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using MoBi.Assets;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Extensions;
@@ -18,15 +19,24 @@ namespace MoBi.Presentation.Presenter
    }
 
 
+   public interface ICreateInitialConditionPathsFromReferencesPresenter : ICreateObjectPathsFromReferencesPresenter
+   {
+   }
+
    public class CreateObjectPathsFromReferencesPresenter : AbstractCommandCollectorPresenter<ICreateObjectPathsFromReferencesView, ICreateObjectPathsFromReferencesPresenter>, ICreateObjectPathsFromReferencesPresenter
    {
-      private readonly ISelectReferenceAtParameterValuePresenter _selectReferencePresenter;
+      private readonly ISelectReferencePresenter _selectReferencePresenter;
 
-      public CreateObjectPathsFromReferencesPresenter(ICreateObjectPathsFromReferencesView view, ISelectReferenceAtParameterValuePresenter selectReferencePresenter) : base(view)
+      public CreateObjectPathsFromReferencesPresenter(ICreateObjectPathsFromReferencesView view, ISelectReferenceAtParameterValuePresenter selectReferencePresenter) : this(view, selectReferencePresenter, AppConstants.Captions.ParameterPathsToAdd)
+      {
+      }
+
+      protected CreateObjectPathsFromReferencesPresenter(ICreateObjectPathsFromReferencesView view, ISelectReferencePresenter selectReferencePresenter, string pathsToAddCaption) : base(view)
       {
          _selectReferencePresenter = selectReferencePresenter;
          _subPresenterManager.Add(_selectReferencePresenter);
          view.AddReferenceSelectionView(_selectReferencePresenter.View);
+         view.PathsToAddCaption = pathsToAddCaption;
          _selectReferencePresenter.SelectionChangedEvent += enableDisableButtons;
       }
       
@@ -48,6 +58,13 @@ namespace MoBi.Presentation.Presenter
       {
          _selectReferencePresenter.View.SetLayoutItemLocalisationVisible(visible);
          _selectReferencePresenter.View.SetRelativePathRadioButtonEnabled(visible);
-      }  
+      }
+   }
+
+   public class CreateInitialConditionPathsFromReferencesPresenter : CreateObjectPathsFromReferencesPresenter, ICreateInitialConditionPathsFromReferencesPresenter
+   {
+      public CreateInitialConditionPathsFromReferencesPresenter(ICreateObjectPathsFromReferencesView view, ISelectReferenceAtInitialConditionPresenter selectReferencePresenter) : base(view, selectReferencePresenter, AppConstants.Captions.InitialConditionPathsToAdd)
+      {
+      }
    }
 }

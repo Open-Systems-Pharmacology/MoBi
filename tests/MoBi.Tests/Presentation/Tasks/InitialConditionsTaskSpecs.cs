@@ -836,4 +836,62 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _nameCorrector.AutoCorrectName(A<IEnumerable<string>>._, _refreshedFormula)).MustHaveHappenedOnceExactly();
       }
    }
+
+   public class When_selecting_new_initial_condition_paths_to_add : concern_for_InitialConditionsTask
+   {
+      private IReadOnlyList<ObjectPath> _results;
+      private ICreateInitialConditionPathsFromReferencesPresenter _createObjectPathsPresenter;
+      private IModalPresenter _modalPresenter;
+      private ObjectPath _validPath;
+      private ObjectPath _unknownMoleculePath;
+      private ObjectPath _logicalContainerPath;
+      private ObjectPath _unknownContainerPath;
+      private ObjectPath _moleculeOnlyPath;
+
+      protected override void Context()
+      {
+         base.Context();
+         var organism = new Container().WithName("Organism").WithMode(ContainerMode.Logical);
+         organism.Add(new Container().WithName("Plasma").WithMode(ContainerMode.Physical));
+         var spatialStructure = new MoBiSpatialStructure();
+         spatialStructure.AddTopContainer(organism);
+
+         var molecules = new MoleculeBuildingBlock { new MoleculeBuilder().WithName("Drug") };
+
+         _validPath = new ObjectPath("Organism", "Plasma", "Drug");
+         _unknownMoleculePath = new ObjectPath("Organism", "Plasma", "Unknown");
+         _logicalContainerPath = new ObjectPath("Organism", "Drug");
+         _unknownContainerPath = new ObjectPath("Organism", "Kidney", "Drug");
+         _moleculeOnlyPath = new ObjectPath("Drug");
+
+         _modalPresenter = A.Fake<IModalPresenter>();
+         _createObjectPathsPresenter = A.Fake<ICreateInitialConditionPathsFromReferencesPresenter>();
+
+         A.CallTo(() => _context.Context.ObjectPathFactory).Returns(new ObjectPathFactoryForSpecs());
+         A.CallTo(() => _context.BuildingBlockRepository.SpatialStructureCollection).Returns(new[] { spatialStructure });
+         A.CallTo(() => _context.BuildingBlockRepository.MoleculeBlockCollection).Returns(new[] { molecules });
+         A.CallTo(() => _context.ApplicationController.Start<ICreateInitialConditionPathsFromReferencesPresenter>()).Returns(_createObjectPathsPresenter);
+         A.CallTo(() => _context.ApplicationController.Start<IModalPresenter>()).Returns(_modalPresenter);
+         A.CallTo(() => _createObjectPathsPresenter.GetAllSelections()).Returns(new[] { _validPath, _unknownMoleculePath, _logicalContainerPath, _unknownContainerPath, _moleculeOnlyPath });
+         A.CallTo(() => _modalPresenter.Show(_createObjectPathsPresenter.ModalSize)).Returns(true);
+      }
+
+      protected override void Because()
+      {
+         _results = sut.GetNewPaths();
+      }
+
+      [Observation]
+      public void only_paths_ending_in_a_molecule_inside_a_physical_container_should_be_returned()
+      {
+         _results.ShouldOnlyContain(_validPath);
+      }
+
+      [Observation]
+      public void the_user_should_be_told_which_paths_were_rejected()
+      {
+         var rejectedPaths = new[] { _unknownMoleculePath, _logicalContainerPath, _unknownContainerPath, _moleculeOnlyPath }.Select(x => x.PathAsString).ToList();
+         A.CallTo(() => _context.DialogCreator.MessageBoxInfo(AppConstants.Captions.InvalidInitialConditionPaths(rejectedPaths))).MustHaveHappened();
+      }
+   }
 }

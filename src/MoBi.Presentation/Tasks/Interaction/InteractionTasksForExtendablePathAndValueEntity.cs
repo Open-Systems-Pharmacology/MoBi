@@ -237,6 +237,45 @@ namespace MoBi.Presentation.Tasks.Interaction
          return _entityPathTask.UpdateContainerPath(buildingBlock, pathAndValueEntity, indexToUpdate, newValue);
       }
 
+      public IMoBiCommand SetFullPath(TPathAndValueEntity pathAndValueEntity, ObjectPath entityPath, TBuildingBlock buildingBlock)
+      {
+         var newName = entityPath.Last();
+         entityPath.RemoveAt(entityPath.Count - 1);
+
+         var objectType = new ObjectTypeResolver().TypeFor(pathAndValueEntity);
+         var macroCommand = new MoBiMacroCommand
+         {
+            ObjectType = objectType,
+            CommandType = AppConstants.Commands.EditCommand,
+            Description = AppConstants.Commands.EditPathAndName(objectType, pathAndValueEntity.ContainerPath, entityPath, pathAndValueEntity.Name, newName)
+         };
+         // Run this first before creating the command for rename because the entity needs to be in the building block before the name can be changed
+         macroCommand.Add(_entityPathTask.SetContainerPathCommand(buildingBlock, pathAndValueEntity, entityPath).RunCommand(Context));
+         macroCommand.Add(_entityPathTask.UpdateNameCommand(buildingBlock, pathAndValueEntity, newName).RunCommand(Context));
+
+         return macroCommand;
+      }
+
+      protected IReadOnlyList<ObjectPath> SelectNewPaths<TPresenter>(string caption) where TPresenter : ICreateObjectPathsFromReferencesPresenter
+      {
+         using (var modalPresenter = ApplicationController.Start<IModalPresenter>())
+         {
+            var createObjectPathsPresenter = ApplicationController.Start<TPresenter>();
+
+            modalPresenter.Text = caption;
+            //The order of this next 2 lines should not be changed, as they are used to encapsulate the presenter
+            //and to initialize it with the correct data so that the initial state of the OK button is correct
+            modalPresenter.Encapsulate(createObjectPathsPresenter);
+            createObjectPathsPresenter.Init(null, new List<IObjectBase>(), null);
+            createObjectPathsPresenter.SetRelativePathSelectorVisible(false);
+
+            if (!modalPresenter.Show(createObjectPathsPresenter.ModalSize))
+               return Enumerable.Empty<ObjectPath>().ToList();
+
+            return createObjectPathsPresenter.GetAllSelections();
+         }
+      }
+
       public override IMoBiCommand GetRemoveCommand(TBuildingBlock objectToRemove, Module parent, IBuildingBlock buildingBlock)
       {
          return new RemoveBuildingBlockFromModuleCommand<TBuildingBlock>(objectToRemove, parent);
