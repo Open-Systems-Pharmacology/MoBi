@@ -680,11 +680,6 @@ namespace MoBi.Assets
             return $"Changing {objectType} original path {originalPath} to new path {newPath}";
          }
 
-         public static string EditPathAndName(string objectType, ObjectPath originalPath, ObjectPath newPath, string originalName, string newName)
-         {
-            return $"Changing {objectType} original name from {originalName} to {newName} and original path from {originalPath} to {newPath}";
-         }
-
          public static string UpdateDimensions(string objectName, string objectType, IDimension oldDimension, IDimension newDimension, string buildingBlockName)
          {
             return string.Format("Changing dimension of {1} '{0}' from '{2}' to '{3}' in building block {4}", objectName, objectType.ToLowerInvariant(), oldDimension, newDimension, buildingBlockName);

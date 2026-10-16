@@ -239,21 +239,13 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public IMoBiCommand SetFullPath(TPathAndValueEntity pathAndValueEntity, ObjectPath entityPath, TBuildingBlock buildingBlock)
       {
-         var newName = entityPath.Last();
-         entityPath.RemoveAt(entityPath.Count - 1);
+         var containerPath = entityPath.Clone<ObjectPath>();
+         containerPath.RemoveAt(containerPath.Count - 1);
 
-         var objectType = new ObjectTypeResolver().TypeFor(pathAndValueEntity);
-         var macroCommand = new MoBiMacroCommand
-         {
-            ObjectType = objectType,
-            CommandType = AppConstants.Commands.EditCommand,
-            Description = AppConstants.Commands.EditPathAndName(objectType, pathAndValueEntity.ContainerPath, entityPath, pathAndValueEntity.Name, newName)
-         };
-         // Run this first before creating the command for rename because the entity needs to be in the building block before the name can be changed
-         macroCommand.Add(_entityPathTask.SetContainerPathCommand(buildingBlock, pathAndValueEntity, entityPath).RunCommand(Context));
-         macroCommand.Add(_entityPathTask.UpdateNameCommand(buildingBlock, pathAndValueEntity, newName).RunCommand(Context));
+         pathAndValueEntity.ContainerPath = containerPath;
+         pathAndValueEntity.Name = entityPath.Last();
 
-         return macroCommand;
+         return AddPathAndValueEntityToBuildingBlock(buildingBlock, pathAndValueEntity);
       }
 
       protected IReadOnlyList<ObjectPath> SelectNewPaths<TPresenter>(string caption) where TPresenter : ICreateObjectPathsFromReferencesPresenter

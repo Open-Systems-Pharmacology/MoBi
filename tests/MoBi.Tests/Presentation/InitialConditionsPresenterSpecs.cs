@@ -280,7 +280,7 @@ namespace MoBi.Presentation
          _initialConditionsBuildingBlock.Add(new InitialCondition { ContainerPath = new ObjectPath("Organism", "Plasma"), Name = "Drug" });
          sut.Edit(_initialConditionsBuildingBlock);
 
-         A.CallTo(() => _initialConditionTask.GetNewPaths()).Returns(new[] { _existingPath, _newPath });
+         A.CallTo(() => _initialConditionTask.GetNewPaths()).Returns(new[] { _existingPath, _newPath, new ObjectPath("Organism", "Plasma", "Metabolite") });
       }
 
       protected override void Because()
@@ -289,9 +289,9 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void an_initial_condition_should_be_added_for_the_new_path()
+      public void an_initial_condition_should_be_added_once_for_the_new_path()
       {
-         A.CallTo(() => _initialConditionTask.SetFullPath(A<InitialCondition>._, _newPath, _initialConditionsBuildingBlock)).MustHaveHappened();
+         A.CallTo(() => _initialConditionTask.SetFullPath(A<InitialCondition>._, _newPath, _initialConditionsBuildingBlock)).MustHaveHappenedOnceExactly();
       }
 
       [Observation]

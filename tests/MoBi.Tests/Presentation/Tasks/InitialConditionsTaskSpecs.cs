@@ -894,4 +894,51 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _context.DialogCreator.MessageBoxInfo(AppConstants.Captions.InvalidInitialConditionPaths(rejectedPaths))).MustHaveHappened();
       }
    }
+
+   public class When_setting_the_full_path_of_new_initial_conditions : concern_for_InitialConditionsTask
+   {
+      private InitialCondition _initialCondition;
+
+      protected override void Context()
+      {
+         base.Context();
+         _initialCondition = new InitialCondition();
+      }
+
+      protected override void Because()
+      {
+         sut.SetFullPath(_initialCondition, new ObjectPath("Organism", "Plasma", "Drug"), _initialConditionsBuildingBlock);
+      }
+
+      [Observation]
+      public void the_initial_condition_should_be_added_to_the_building_block_with_the_path()
+      {
+         _initialConditionsBuildingBlock.FindByPath(new ObjectPath("Organism", "Plasma", "Drug")).ShouldBeEqualTo(_initialCondition);
+      }
+   }
+
+   public class When_undoing_initial_conditions_added_with_their_full_path : concern_for_InitialConditionsTask
+   {
+      private MoBiMacroCommand _macroCommand;
+
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _context.Context.Get<ILookupBuildingBlock<InitialCondition>>(A<string>._)).Returns(_initialConditionsBuildingBlock);
+         _macroCommand = new MoBiMacroCommand();
+         _macroCommand.Add(sut.SetFullPath(new InitialCondition(), new ObjectPath("Organism", "Plasma", "Drug"), _initialConditionsBuildingBlock));
+         _macroCommand.Add(sut.SetFullPath(new InitialCondition(), new ObjectPath("Organism", "Plasma", "Metabolite"), _initialConditionsBuildingBlock));
+      }
+
+      protected override void Because()
+      {
+         _macroCommand.InvokeInverse(_context.Context);
+      }
+
+      [Observation]
+      public void the_added_initial_conditions_should_be_removed()
+      {
+         _initialConditionsBuildingBlock.ShouldBeEmpty();
+      }
+   }
 }
