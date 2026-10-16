@@ -80,6 +80,8 @@ namespace MoBi.Presentation.Tasks.Interaction
       /// <returns>The command that was run to edit the container path</returns>
       IMoBiCommand EditPathAndValueEntityContainerPath(TBuildingBlock buildingBlock, TPathAndValueEntity pathAndValueEntity, int indexToUpdate, string newValue);
 
+      IMoBiCommand AddWithFullPathCommand(TPathAndValueEntity pathAndValueEntity, ObjectPath entityPath, TBuildingBlock buildingBlock);
+
       /// <summary>
       ///    Retrieves all the parent container path elements from the molecule building block and spatial structure
       /// </summary>

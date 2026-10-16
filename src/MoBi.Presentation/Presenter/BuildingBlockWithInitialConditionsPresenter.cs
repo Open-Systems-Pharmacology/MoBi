@@ -54,14 +54,13 @@ namespace MoBi.Presentation.Presenter
       private readonly IInitialConditionsTask<TBuildingBlock> _initialConditionsTask;
 
       protected BuildingBlockWithInitialConditionsPresenter(TView view,
-         IInitialConditionToInitialConditionDTOMapper dtoMapper,
          IInitialConditionsTask<TBuildingBlock> initialConditionsTask,
          IInitialConditionsCreator msvCreator,
          IMoBiContext context,
          IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper,
          IDimensionFactory dimensionFactory,
          IDistributedPathAndValueEntityPresenter<InitialConditionDTO, TBuildingBlock> distributedParameterPresenter) :
-         base(view, dtoMapper, initialConditionsTask, msvCreator, context, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
+         base(view, initialConditionsTask, msvCreator, context, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
       {
          _initialConditionsTask = initialConditionsTask;
       }

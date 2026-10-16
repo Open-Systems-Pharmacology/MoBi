@@ -74,6 +74,12 @@ namespace MoBi.Core.Domain.Extensions
 
       public static bool IsPkSimModule(this IBuildingBlock buildingBlock) =>
          buildingBlock?.Module?.IsPKSimModule ?? false;
+
+      /// <summary>
+      ///    Returns the <paramref name="buildingBlocks" /> of <paramref name="module" /> first, keeping the order of the others
+      /// </summary>
+      public static IEnumerable<T> ModuleFirst<T>(this IEnumerable<T> buildingBlocks, Module module) where T : IBuildingBlock =>
+         buildingBlocks.OrderBy(x => Equals(x.Module, module) ? 0 : 1);
    }
 
    public static class MoleculeBuildingBlockExtensions

@@ -5,6 +5,8 @@ using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Mappers;
+using MoBi.Core.Services;
+using MoBi.HelpersForTests;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
@@ -19,6 +21,7 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Services;
 using OSPSuite.Presentation.Presenters.ContextMenus;
 
 namespace MoBi.Presentation
@@ -27,7 +30,7 @@ namespace MoBi.Presentation
    {
       protected IInitialConditionsView _view;
       protected IInitialConditionToInitialConditionDTOMapper _dtoMapper;
-      private IMoBiContext _context;
+      protected IMoBiContext _context;
       protected IInitialConditionsTask<InitialConditionsBuildingBlock> _initialConditionTask;
       protected ICommandCollector _commandCollector;
       protected InitialConditionsBuildingBlock _initialConditionsBuildingBlock;
@@ -38,6 +41,8 @@ namespace MoBi.Presentation
       private IInitialConditionsBuildingBlockToInitialConditionsBuildingBlockDTOMapper _buildingBlockMapper;
       private IPathAndValueEntityToDistributedParameterMapper _mapper;
       private IViewItemContextMenuFactory _viewItemContextMenuFactory;
+      protected IDialogCreator _dialogCreator;
+      protected IInitialConditionPathResolver _initialConditionPathResolver;
 
       protected override void Context()
       {
@@ -53,9 +58,10 @@ namespace MoBi.Presentation
          _formulaToValueFormulaDTOMapper = new FormulaToValueFormulaDTOMapper();
          _buildingBlockMapper = new InitialConditionsBuildingBlockToInitialConditionsBuildingBlockDTOMapper(_dtoMapper, _mapper);
          _viewItemContextMenuFactory = A.Fake<IViewItemContextMenuFactory>();
+         _dialogCreator = A.Fake<IDialogCreator>();
+         _initialConditionPathResolver = A.Fake<IInitialConditionPathResolver>();
          sut = new InitialConditionsPresenter(
             _view,
-            _dtoMapper,
             _initialConditionTask,
             _initialConditionsCreator,
             _context,
@@ -63,7 +69,9 @@ namespace MoBi.Presentation
             _dimensionFactory,
             _distributedParameterPresenter,
             _buildingBlockMapper,
-            _viewItemContextMenuFactory);
+            _viewItemContextMenuFactory,
+            _dialogCreator,
+            _initialConditionPathResolver);
 
          _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock();
 
@@ -93,30 +101,6 @@ namespace MoBi.Presentation
       {
          sut.SetNegativeValuesAllowed(_dto, allowNegative);
          A.CallTo(() => _initialConditionTask.SetNegativeValuesAllowed(_initialConditionsBuildingBlock, A<IEnumerable<InitialCondition>>.That.Contains(_initialCondition), allowNegative)).MustHaveHappened();
-      }
-   }
-
-   public class When_adding_a_new_empty_start_value : concern_for_InitialConditionsPresenter
-   {
-      private IDimension _defaultDimension;
-
-      protected override void Context()
-      {
-         base.Context();
-         sut.Edit(_initialConditionsBuildingBlock);
-         _defaultDimension = A.Fake<IDimension>();
-         A.CallTo(() => _initialConditionTask.GetDefaultDimension()).Returns(_defaultDimension);
-      }
-
-      protected override void Because()
-      {
-         sut.AddNewEmptyPathAndValueEntity();
-      }
-
-      [Observation]
-      public void the_start_value_creator_should_create_the_empty_start_value()
-      {
-         A.CallTo(() => _initialConditionsCreator.CreateEmptyStartValue(_initialConditionTask.GetDefaultDimension())).MustHaveHappened();
       }
    }
 
@@ -260,6 +244,78 @@ namespace MoBi.Presentation
       public void should_save_the_currently_focused_start_values_and_set_it_back_to_the_view()
       {
          _view.FocusedStartValue.ShouldBeEqualTo(_initialConditionDTO2);
+      }
+   }
+
+   public class When_adding_new_initial_conditions_from_paths : concern_for_InitialConditionsPresenter
+   {
+      private ObjectPath _existingPath;
+      private ObjectPath _resolvedPath;
+      private ObjectPath _unresolvedPath;
+      private MoleculeBuilder _molecule;
+      private InitialCondition _resolvedInitialCondition;
+      private Module _module;
+
+      protected override void Context()
+      {
+         base.Context();
+         _existingPath = new ObjectPath("Organism", "Plasma", "Drug");
+         _resolvedPath = new ObjectPath("Organism", "Plasma", "Metabolite");
+         _unresolvedPath = new ObjectPath("Organism", "Tumor", "Metabolite");
+         _molecule = new MoleculeBuilder { Dimension = DimensionFactoryForSpecs.MassDimension };
+         _molecule.DisplayUnit = _molecule.Dimension.Unit("mg");
+         _initialConditionsBuildingBlock.Add(new InitialCondition { ContainerPath = new ObjectPath("Organism", "Plasma"), Name = "Drug" });
+         _module = new Module { _initialConditionsBuildingBlock };
+         sut.Edit(_initialConditionsBuildingBlock);
+
+         A.CallTo(() => _initialConditionsCreator.CreateEmptyStartValue(A<IDimension>._)).ReturnsLazily(() => new InitialCondition());
+         A.CallTo(() => _initialConditionPathResolver.Resolve(A<ObjectPath>._, A<Module>._)).Returns(null);
+         A.CallTo(() => _initialConditionPathResolver.Resolve(_resolvedPath, _module)).Returns(_molecule);
+         A.CallTo(() => _initialConditionTask.AddWithFullPathCommand(A<InitialCondition>._, _resolvedPath, _initialConditionsBuildingBlock)).Invokes(x => _resolvedInitialCondition = x.GetArgument<InitialCondition>(0));
+         A.CallTo(() => _initialConditionTask.GetNewPaths()).Returns(new[] { _existingPath, _resolvedPath, new ObjectPath("Organism", "Plasma", "Metabolite"), _unresolvedPath });
+      }
+
+      protected override void Because()
+      {
+         sut.AddNewInitialConditions();
+      }
+
+      [Observation]
+      public void an_initial_condition_should_be_added_once_for_each_new_path()
+      {
+         A.CallTo(() => _initialConditionTask.AddWithFullPathCommand(A<InitialCondition>._, _resolvedPath, _initialConditionsBuildingBlock)).MustHaveHappenedOnceExactly();
+         A.CallTo(() => _initialConditionTask.AddWithFullPathCommand(A<InitialCondition>._, _unresolvedPath, _initialConditionsBuildingBlock)).MustHaveHappenedOnceExactly();
+      }
+
+      [Observation]
+      public void the_path_already_in_the_building_block_should_be_skipped()
+      {
+         A.CallTo(() => _initialConditionTask.AddWithFullPathCommand(A<InitialCondition>._, _existingPath, _initialConditionsBuildingBlock)).MustNotHaveHappened();
+      }
+
+      [Observation]
+      public void the_user_should_be_told_which_paths_were_skipped()
+      {
+         A.CallTo(() => _dialogCreator.MessageBoxInfo(AppConstants.Captions.InitialConditionsBuildingBlockAlreadyContains(new[] { _existingPath.PathAsString }))).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_dimension_and_display_unit_of_the_resolved_molecule_should_be_used()
+      {
+         _resolvedInitialCondition.Dimension.ShouldBeEqualTo(_molecule.Dimension);
+         _resolvedInitialCondition.DisplayUnit.ShouldBeEqualTo(_molecule.DisplayUnit);
+      }
+
+      [Observation]
+      public void the_user_should_be_told_which_initial_conditions_do_not_match_the_project()
+      {
+         A.CallTo(() => _dialogCreator.MessageBoxInfo(AppConstants.Warnings.AddedInitialConditionsNotFoundInProject(new[] { _unresolvedPath.PathAsString }))).MustHaveHappened();
+      }
+
+      [Observation]
+      public void the_initial_conditions_should_be_added_in_one_bulk_update()
+      {
+         A.CallTo(() => _context.PublishEvent(A<BulkUpdateStartedEvent>._)).MustHaveHappenedOnceExactly();
       }
    }
 }

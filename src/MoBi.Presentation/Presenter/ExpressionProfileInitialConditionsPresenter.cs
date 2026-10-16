@@ -20,7 +20,6 @@ namespace MoBi.Presentation.Presenter
       private readonly IExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper _buildingBlockMapper;
 
       public ExpressionProfileInitialConditionsPresenter(IInitialConditionsView view,
-         IInitialConditionToInitialConditionDTOMapper dtoMapper,
          IInitialConditionsTask<ExpressionProfileBuildingBlock> initialConditionsTask,
          IInitialConditionsCreator msvCreator,
          IMoBiContext context,
@@ -29,7 +28,6 @@ namespace MoBi.Presentation.Presenter
          IInitialConditionsDistributedInExpressionProfilePresenter distributedParameterPresenter,
          IExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper buildingBlockMapper) :
          base(view,
-            dtoMapper,
             initialConditionsTask,
             msvCreator,
             context,

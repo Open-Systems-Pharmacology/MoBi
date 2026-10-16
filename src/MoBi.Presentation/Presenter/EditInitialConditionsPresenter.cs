@@ -9,7 +9,7 @@ namespace MoBi.Presentation.Presenter
 {
    public interface IEditInitialConditionsPresenter : ISingleStartPresenter<InitialConditionsBuildingBlock>, IListener<EntitySelectedEvent>
    {
-      void AddNewEmptyInitialCondition();
+      void AddNewInitialConditions();
    }
 
    public class EditInitialConditionsPresenter : EditBuildingBlockPresenterBase<IEditInitialConditionsView, IEditInitialConditionsPresenter, InitialConditionsBuildingBlock, InitialCondition>,
@@ -38,9 +38,9 @@ namespace MoBi.Presentation.Presenter
          _view.Display();
       }
 
-      public void AddNewEmptyInitialCondition()
+      public void AddNewInitialConditions()
       {
-         _initialConditionsPresenter.AddNewEmptyPathAndValueEntity();
+         _initialConditionsPresenter.AddNewInitialConditions();
       }
 
       protected override void UpdateCaption()

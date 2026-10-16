@@ -237,6 +237,39 @@ namespace MoBi.Presentation.Tasks.Interaction
          return _entityPathTask.UpdateContainerPath(buildingBlock, pathAndValueEntity, indexToUpdate, newValue);
       }
 
+      public IMoBiCommand AddWithFullPathCommand(TPathAndValueEntity pathAndValueEntity, ObjectPath entityPath, TBuildingBlock buildingBlock)
+      {
+         var containerPath = entityPath.Clone<ObjectPath>();
+         containerPath.RemoveAt(containerPath.Count - 1);
+
+         pathAndValueEntity.ContainerPath = containerPath;
+         pathAndValueEntity.Name = entityPath.Last();
+
+         return GenerateAddCommand(buildingBlock, pathAndValueEntity);
+      }
+
+      protected static bool PathContainsIllegalCharacters(ObjectPath objectPath) => objectPath.Any(element => Constants.ILLEGAL_CHARACTERS.Any(element.Contains));
+
+      protected IReadOnlyList<ObjectPath> SelectNewPaths<TPresenter>(string caption) where TPresenter : ICreateObjectPathsFromReferencesPresenter
+      {
+         using (var modalPresenter = ApplicationController.Start<IModalPresenter>())
+         {
+            var createObjectPathsPresenter = ApplicationController.Start<TPresenter>();
+
+            modalPresenter.Text = caption;
+            //The order of this next 2 lines should not be changed, as they are used to encapsulate the presenter
+            //and to initialize it with the correct data so that the initial state of the OK button is correct
+            modalPresenter.Encapsulate(createObjectPathsPresenter);
+            createObjectPathsPresenter.Init(null, new List<IObjectBase>(), null);
+            createObjectPathsPresenter.SetRelativePathSelectorVisible(false);
+
+            if (!modalPresenter.Show(createObjectPathsPresenter.ModalSize))
+               return Enumerable.Empty<ObjectPath>().ToList();
+
+            return createObjectPathsPresenter.GetAllSelections();
+         }
+      }
+
       public override IMoBiCommand GetRemoveCommand(TBuildingBlock objectToRemove, Module parent, IBuildingBlock buildingBlock)
       {
          return new RemoveBuildingBlockFromModuleCommand<TBuildingBlock>(objectToRemove, parent);

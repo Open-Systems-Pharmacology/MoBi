@@ -37,11 +37,6 @@ namespace MoBi.Presentation.Presenter
       void UpdatePathAndValueEntityName(TPathAndValueEntityDTO pathAndValueEntityDTO, string newValue);
 
       /// <summary>
-      ///    Adds a new empty path and value entity to the view
-      /// </summary>
-      TPathAndValueEntityDTO AddNewEmptyPathAndValueEntity();
-
-      /// <summary>
       ///    Sets if new formula can be created. Default is true
       /// </summary>
       bool CanCreateNewFormula { set; }

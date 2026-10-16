@@ -24,7 +24,7 @@ namespace MoBi.Presentation.UICommand
       protected override void PerformExecute()
       {
          var presenter = _applicationController.Open<IEditInitialConditionsPresenter, InitialConditionsBuildingBlock>(Subject, _moBiHistoryManager);
-         presenter.AddNewEmptyInitialCondition();
+         presenter.AddNewInitialConditions();
       }
    }
 }

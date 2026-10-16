@@ -23,7 +23,6 @@ namespace MoBi.Presentation.Tasks.Interaction
    public interface IParameterValuesTask : IInteractionTasksForExtendablePathAndValueEntity<ParameterValuesBuildingBlock, ParameterValue>
    {
       void AddStartValueExpression(ParameterValuesBuildingBlock buildingBlock);
-      IMoBiCommand SetFullPath(ParameterValue parameterValue, ObjectPath entityPath, ParameterValuesBuildingBlock buildingBlock);
       IReadOnlyList<ObjectPath> GetNewPaths();
       bool CorrectName(ParameterValuesBuildingBlock buildingBlock, Module module);
    }
@@ -104,53 +103,17 @@ namespace MoBi.Presentation.Tasks.Interaction
          AddCommand(ExtendBuildingBlockWith(buildingBlock, newParameterValues.Except(allSkipped).ToList()));
       }
 
-      public IMoBiCommand SetFullPath(ParameterValue parameterValue, ObjectPath entityPath, ParameterValuesBuildingBlock buildingBlock)
-      {
-         var newName = entityPath.Last();
-         entityPath.RemoveAt(entityPath.Count - 1);
-
-         var objectType = new ObjectTypeResolver().TypeFor(parameterValue);
-         var macroCommand = new MoBiMacroCommand
-         {
-            ObjectType = objectType,
-            CommandType = AppConstants.Commands.EditCommand,
-            Description = AppConstants.Commands.EditPathAndName(objectType, parameterValue.ContainerPath, entityPath, parameterValue.Name, newName)
-         };
-         // Run this first before creating the command for rename because the entity needs to be in the building block before the name can be changed
-         macroCommand.Add(_entityPathTask.SetContainerPathCommand(buildingBlock, parameterValue, entityPath).RunCommand(Context));
-         macroCommand.Add(_entityPathTask.UpdateNameCommand(buildingBlock, parameterValue, newName).RunCommand(Context));
-
-         return macroCommand;
-      }
-
       public IReadOnlyList<ObjectPath> GetNewPaths()
       {
-         using (var modalPresenter = ApplicationController.Start<IModalPresenter>())
-         {
-            var referenceAtParamValuePresenter = ApplicationController.Start<ICreateObjectPathsFromReferencesPresenter>();
+         var selections = SelectNewPaths<ICreateObjectPathsFromReferencesPresenter>(AppConstants.Captions.SelectParameter);
+         var invalidSelections = selections.Where(PathContainsIllegalCharacters).ToList();
+         var validSelections = selections.Except(invalidSelections).ToList();
 
-            modalPresenter.Text = AppConstants.Captions.SelectParameter;
-            //The order of this next 2 lines should not be changed, as they are used to encapsulate the presenter
-            //and to initialize it with the correct data so that the initial state of the OK button is correct
-            modalPresenter.Encapsulate(referenceAtParamValuePresenter);
-            referenceAtParamValuePresenter.Init(null, new List<IObjectBase>(), null);
-            referenceAtParamValuePresenter.SetRelativePathSelectorVisible(false);
+         if (invalidSelections.Any())
+            _interactionTaskContext.DialogCreator.MessageBoxInfo(AppConstants.Captions.PathsContainIllegalCharacters(invalidSelections.Select(x => x.PathAsString).ToList(), Constants.ILLEGAL_CHARACTERS));
 
-            if (!modalPresenter.Show(referenceAtParamValuePresenter.ModalSize))
-               return Enumerable.Empty<ObjectPath>().ToList();
-
-            var selections = referenceAtParamValuePresenter.GetAllSelections();
-            var invalidSelections = selections.Where(pathContainsIllegalCharacters).ToList();
-            var validSelections = selections.Except(invalidSelections).ToList();
-
-            if (invalidSelections.Any())
-               _interactionTaskContext.DialogCreator.MessageBoxInfo(AppConstants.Captions.PathsContainIllegalCharacters(invalidSelections.Select(x => x.PathAsString).ToList(), Constants.ILLEGAL_CHARACTERS));
-
-            return validSelections;
-         }
+         return validSelections;
       }
-
-      private bool pathContainsIllegalCharacters(ObjectPath objectPath) => objectPath.Any(element => Constants.ILLEGAL_CHARACTERS.Any(element.Contains));
 
       private IReadOnlyList<ParameterValue> createExpressionBasedOn(IReadOnlyList<IContainer> organs, IReadOnlyList<MoleculeBuilder> molecules) => organs.SelectMany(x => _parameterValuesCreator.CreateExpressionFrom(x, molecules)).ToList();
 

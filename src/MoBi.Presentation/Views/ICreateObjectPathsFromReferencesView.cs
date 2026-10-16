@@ -12,5 +12,6 @@ namespace MoBi.Presentation.Views
       Size? ModalSize { get; }
       void CanAdd(bool canAdd);
       void AddSelectedPaths(IReadOnlyList<string> pathsToAdd);
+      string PathsToAddCaption { set; }
    }
 }
