@@ -93,7 +93,7 @@ namespace MoBi.Presentation.Presenter
       private IMoBiCommand addAndUpdatePath(InitialConditionsBuildingBlock buildingBlockToAddTo, ObjectPath entityPath)
       {
          var addedDTO = AddNewEmptyPathAndValueEntity();
-         return _initialConditionsTask.SetFullPath(addedDTO.InitialCondition, entityPath, buildingBlockToAddTo);
+         return _initialConditionsTask.AddWithFullPath(addedDTO.InitialCondition, entityPath, buildingBlockToAddTo);
       }
 
       protected override IReadOnlyList<InitialConditionDTO> ValueDTOsFor(InitialConditionsBuildingBlock buildingBlock) => _buildingBlockMapper.MapFrom(buildingBlock).ParameterDTOs;

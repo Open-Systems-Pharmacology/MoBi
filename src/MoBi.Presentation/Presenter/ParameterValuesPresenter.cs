@@ -144,7 +144,7 @@ namespace MoBi.Presentation.Presenter
             addedDTO.ParameterValue.DisplayUnit = resolvedParameter.DisplayUnit;
          }
 
-         return _parameterValuesTask.SetFullPath(addedDTO.ParameterValue, entityPath, buildingBlockToAddTo);
+         return _parameterValuesTask.AddWithFullPath(addedDTO.ParameterValue, entityPath, buildingBlockToAddTo);
       }
 
       private bool alreadyIn(ObjectPath objectPath, ParameterValuesBuildingBlock buildingBlock)

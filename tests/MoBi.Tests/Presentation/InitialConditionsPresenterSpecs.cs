@@ -291,13 +291,13 @@ namespace MoBi.Presentation
       [Observation]
       public void an_initial_condition_should_be_added_once_for_the_new_path()
       {
-         A.CallTo(() => _initialConditionTask.SetFullPath(A<InitialCondition>._, _newPath, _initialConditionsBuildingBlock)).MustHaveHappenedOnceExactly();
+         A.CallTo(() => _initialConditionTask.AddWithFullPath(A<InitialCondition>._, _newPath, _initialConditionsBuildingBlock)).MustHaveHappenedOnceExactly();
       }
 
       [Observation]
       public void the_path_already_in_the_building_block_should_be_skipped()
       {
-         A.CallTo(() => _initialConditionTask.SetFullPath(A<InitialCondition>._, _existingPath, _initialConditionsBuildingBlock)).MustNotHaveHappened();
+         A.CallTo(() => _initialConditionTask.AddWithFullPath(A<InitialCondition>._, _existingPath, _initialConditionsBuildingBlock)).MustNotHaveHappened();
       }
 
       [Observation]

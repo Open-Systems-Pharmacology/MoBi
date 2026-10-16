@@ -237,7 +237,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return _entityPathTask.UpdateContainerPath(buildingBlock, pathAndValueEntity, indexToUpdate, newValue);
       }
 
-      public IMoBiCommand SetFullPath(TPathAndValueEntity pathAndValueEntity, ObjectPath entityPath, TBuildingBlock buildingBlock)
+      public IMoBiCommand AddWithFullPath(TPathAndValueEntity pathAndValueEntity, ObjectPath entityPath, TBuildingBlock buildingBlock)
       {
          var containerPath = entityPath.Clone<ObjectPath>();
          containerPath.RemoveAt(containerPath.Count - 1);

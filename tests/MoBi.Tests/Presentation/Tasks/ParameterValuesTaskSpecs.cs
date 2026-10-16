@@ -493,8 +493,8 @@ namespace MoBi.Presentation.Tasks
          base.Context();
          A.CallTo(() => _context.Context.Get<ILookupBuildingBlock<ParameterValue>>(A<string>._)).Returns(_parameterValueBuildingBlock);
          _macroCommand = new MoBiMacroCommand();
-         _macroCommand.Add(sut.SetFullPath(new ParameterValue(), new ObjectPath("Organism", "Volume"), _parameterValueBuildingBlock));
-         _macroCommand.Add(sut.SetFullPath(new ParameterValue(), new ObjectPath("Organism", "Weight"), _parameterValueBuildingBlock));
+         _macroCommand.Add(sut.AddWithFullPath(new ParameterValue(), new ObjectPath("Organism", "Volume"), _parameterValueBuildingBlock));
+         _macroCommand.Add(sut.AddWithFullPath(new ParameterValue(), new ObjectPath("Organism", "Weight"), _parameterValueBuildingBlock));
       }
 
       protected override void Because()

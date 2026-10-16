@@ -895,7 +895,7 @@ namespace MoBi.Presentation.Tasks
       }
    }
 
-   public class When_setting_the_full_path_of_new_initial_conditions : concern_for_InitialConditionsTask
+   public class When_adding_a_new_initial_condition_with_its_full_path : concern_for_InitialConditionsTask
    {
       private InitialCondition _initialCondition;
 
@@ -907,7 +907,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         sut.SetFullPath(_initialCondition, new ObjectPath("Organism", "Plasma", "Drug"), _initialConditionsBuildingBlock);
+         sut.AddWithFullPath(_initialCondition, new ObjectPath("Organism", "Plasma", "Drug"), _initialConditionsBuildingBlock);
       }
 
       [Observation]
@@ -926,8 +926,8 @@ namespace MoBi.Presentation.Tasks
          base.Context();
          A.CallTo(() => _context.Context.Get<ILookupBuildingBlock<InitialCondition>>(A<string>._)).Returns(_initialConditionsBuildingBlock);
          _macroCommand = new MoBiMacroCommand();
-         _macroCommand.Add(sut.SetFullPath(new InitialCondition(), new ObjectPath("Organism", "Plasma", "Drug"), _initialConditionsBuildingBlock));
-         _macroCommand.Add(sut.SetFullPath(new InitialCondition(), new ObjectPath("Organism", "Plasma", "Metabolite"), _initialConditionsBuildingBlock));
+         _macroCommand.Add(sut.AddWithFullPath(new InitialCondition(), new ObjectPath("Organism", "Plasma", "Drug"), _initialConditionsBuildingBlock));
+         _macroCommand.Add(sut.AddWithFullPath(new InitialCondition(), new ObjectPath("Organism", "Plasma", "Metabolite"), _initialConditionsBuildingBlock));
       }
 
       protected override void Because()
