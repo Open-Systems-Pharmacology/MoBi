@@ -106,7 +106,7 @@ namespace MoBi.Presentation.Tasks.Interaction
       public IReadOnlyList<ObjectPath> GetNewPaths()
       {
          var selections = SelectNewPaths<ICreateObjectPathsFromReferencesPresenter>(AppConstants.Captions.SelectParameter);
-         var invalidSelections = selections.Where(pathContainsIllegalCharacters).ToList();
+         var invalidSelections = selections.Where(PathContainsIllegalCharacters).ToList();
          var validSelections = selections.Except(invalidSelections).ToList();
 
          if (invalidSelections.Any())
@@ -114,8 +114,6 @@ namespace MoBi.Presentation.Tasks.Interaction
 
          return validSelections;
       }
-
-      private bool pathContainsIllegalCharacters(ObjectPath objectPath) => objectPath.Any(element => Constants.ILLEGAL_CHARACTERS.Any(element.Contains));
 
       private IReadOnlyList<ParameterValue> createExpressionBasedOn(IReadOnlyList<IContainer> organs, IReadOnlyList<MoleculeBuilder> molecules) => organs.SelectMany(x => _parameterValuesCreator.CreateExpressionFrom(x, molecules)).ToList();
 

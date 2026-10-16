@@ -1245,6 +1245,7 @@ namespace MoBi.Assets
          }
 
          public static string CheckDimensionOfAddedParameters(IReadOnlyList<string> paths) => $"The <i>Dimension</i> property of the following added parameters could not be determined:{NamesList(paths)}Please set the <i>Dimension</i> of these parameters.";
+         public static string AddedInitialConditionsNotFoundInProject(IReadOnlyList<string> paths) => $"The following added initial conditions do not match a molecule in a physical container of the project:{NamesList(paths)}They are only used in simulations containing that molecule and a physical container at that path. Please check their <i>Dimension</i> and <i>Display Unit</i>.";
          public static readonly string ThisItNotATemplateBuildingBlock = "This is not the template building block!";
          public static string PleaseEditTheParameterInTheIndividualBuildingblock(string buildingBlockName) => $"<b>Please edit the parameter in the Individual Building Block '{buildingBlockName}.'</b>";
       }
@@ -2213,7 +2214,7 @@ namespace MoBi.Assets
             return sb.ToString();
          }
 
-         public static string InvalidInitialConditionPaths(IReadOnlyList<string> paths)
+         public static string InvalidInitialConditionPaths(IReadOnlyList<string> paths, IReadOnlyList<string> illegalCharacters)
          {
             var sb = new StringBuilder();
 
@@ -2224,7 +2225,8 @@ namespace MoBi.Assets
 
             sb.AppendLine(NamesList(paths));
 
-            sb.AppendLine("An initial condition path must end with the name of a molecule, and the container before it must be a physical container in a spatial structure");
+            sb.AppendLine("An initial condition path must contain a container and a molecule name, and cannot contain:");
+            sb.AppendLine(illegalCharacters.ToString<string>(", ", "'"));
 
             return sb.ToString();
          }

@@ -486,20 +486,20 @@ namespace MoBi.Presentation.Tasks
 
    public class When_undoing_parameter_values_added_with_their_full_path : concern_for_ParameterValuesTask
    {
-      private MoBiMacroCommand _macroCommand;
+      private BulkUpdateMacroCommand _macroCommand;
 
       protected override void Context()
       {
          base.Context();
          A.CallTo(() => _context.Context.Get<ILookupBuildingBlock<ParameterValue>>(A<string>._)).Returns(_parameterValueBuildingBlock);
-         _macroCommand = new MoBiMacroCommand();
-         _macroCommand.Add(sut.AddWithFullPath(new ParameterValue(), new ObjectPath("Organism", "Volume"), _parameterValueBuildingBlock));
-         _macroCommand.Add(sut.AddWithFullPath(new ParameterValue(), new ObjectPath("Organism", "Weight"), _parameterValueBuildingBlock));
+         _macroCommand = new BulkUpdateMacroCommand();
+         _macroCommand.Add(sut.AddWithFullPathCommand(new ParameterValue(), new ObjectPath("Organism", "Volume"), _parameterValueBuildingBlock));
+         _macroCommand.Add(sut.AddWithFullPathCommand(new ParameterValue(), new ObjectPath("Organism", "Weight"), _parameterValueBuildingBlock));
       }
 
       protected override void Because()
       {
-         _macroCommand.InvokeInverse(_context.Context);
+         _macroCommand.ExecuteAndInvokeInverse(_context.Context);
       }
 
       [Observation]

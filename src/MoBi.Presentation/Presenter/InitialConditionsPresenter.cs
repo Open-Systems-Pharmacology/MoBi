@@ -4,7 +4,9 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
+using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Tasks.Interaction;
@@ -35,10 +37,10 @@ namespace MoBi.Presentation.Presenter
       private readonly IInitialConditionsBuildingBlockToInitialConditionsBuildingBlockDTOMapper _buildingBlockMapper;
       private readonly IViewItemContextMenuFactory _viewItemContextMenuFactory;
       private readonly IDialogCreator _dialogCreator;
+      private readonly IInitialConditionPathResolver _initialConditionPathResolver;
 
       public InitialConditionsPresenter(
          IInitialConditionsView view,
-         IInitialConditionToInitialConditionDTOMapper dtoMapper,
          IInitialConditionsTask<InitialConditionsBuildingBlock> initialConditionsTask,
          IInitialConditionsCreator msvCreator,
          IMoBiContext context,
@@ -47,13 +49,15 @@ namespace MoBi.Presentation.Presenter
          IInitialConditionsDistributedPathAndValueEntityPresenter distributedParameterPresenter,
          IInitialConditionsBuildingBlockToInitialConditionsBuildingBlockDTOMapper buildingBlockMapper,
          IViewItemContextMenuFactory viewItemContextMenuFactory,
-         IDialogCreator dialogCreator)
-         : base(view, dtoMapper, initialConditionsTask, msvCreator, context, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
+         IDialogCreator dialogCreator,
+         IInitialConditionPathResolver initialConditionPathResolver)
+         : base(view, initialConditionsTask, msvCreator, context, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
       {
          _initialConditionsTask = initialConditionsTask;
          _buildingBlockMapper = buildingBlockMapper;
          _viewItemContextMenuFactory = viewItemContextMenuFactory;
          _dialogCreator = dialogCreator;
+         _initialConditionPathResolver = initialConditionPathResolver;
       }
 
       public void AddNewInitialConditions()
@@ -70,15 +74,19 @@ namespace MoBi.Presentation.Presenter
 
          var objectPathsToAdd = objectPaths.Except(allSkipped).ToList();
 
-         var macroCommand = new MoBiMacroCommand
+         var macroCommand = new BulkUpdateMacroCommand
          {
             ObjectType = new ObjectTypeResolver().TypeFor<InitialCondition>(),
             CommandType = AppConstants.Commands.AddCommand,
             Description = AppConstants.Commands.AddNewInitialConditions(buildingBlockToAddTo.DisplayName)
          };
 
+         var pathsAndResolvedMolecules = objectPathsToAdd.Select(x => (path: x, resolvedMolecule: _initialConditionPathResolver.Resolve(x))).ToList();
+         var unresolvedPaths = pathsAndResolvedMolecules.Where(x => x.resolvedMolecule == null).Select(x => x.path.PathAsString).ToList();
+
          var maxPathLengthBeforeAdd = longestPathLength(_buildingBlock);
-         macroCommand.AddRange(objectPathsToAdd.Select(entityPath => addAndUpdatePath(buildingBlockToAddTo, entityPath)));
+         macroCommand.AddRange(pathsAndResolvedMolecules.Select(x => addWithFullPathCommand(buildingBlockToAddTo, x.path, x.resolvedMolecule)));
+         macroCommand.RunCommand(_context);
 
          var maxPathLengthAfterAdd = longestPathLength(_buildingBlock);
          if (maxPathLengthAfterAdd > maxPathLengthBeforeAdd)
@@ -87,13 +95,22 @@ namespace MoBi.Presentation.Presenter
          if (allSkipped.Any())
             _dialogCreator.MessageBoxInfo(AppConstants.Captions.InitialConditionsBuildingBlockAlreadyContains(allSkipped.Select(x => x.PathAsString).ToList()));
 
+         if (unresolvedPaths.Any())
+            _dialogCreator.MessageBoxInfo(AppConstants.Warnings.AddedInitialConditionsNotFoundInProject(unresolvedPaths));
+
          return macroCommand;
       }
 
-      private IMoBiCommand addAndUpdatePath(InitialConditionsBuildingBlock buildingBlockToAddTo, ObjectPath entityPath)
+      private IMoBiCommand addWithFullPathCommand(InitialConditionsBuildingBlock buildingBlockToAddTo, ObjectPath entityPath, MoleculeBuilder resolvedMolecule)
       {
-         var addedDTO = AddNewEmptyPathAndValueEntity();
-         return _initialConditionsTask.AddWithFullPath(addedDTO.InitialCondition, entityPath, buildingBlockToAddTo);
+         var initialCondition = CreateEmptyPathAndValueEntity();
+         if (resolvedMolecule != null)
+         {
+            initialCondition.Dimension = resolvedMolecule.Dimension;
+            initialCondition.DisplayUnit = resolvedMolecule.DisplayUnit;
+         }
+
+         return _initialConditionsTask.AddWithFullPathCommand(initialCondition, entityPath, buildingBlockToAddTo);
       }
 
       protected override IReadOnlyList<InitialConditionDTO> ValueDTOsFor(InitialConditionsBuildingBlock buildingBlock) => _buildingBlockMapper.MapFrom(buildingBlock).ParameterDTOs;

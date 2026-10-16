@@ -2,6 +2,7 @@
 using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Events;
 using MoBi.Core.Mappers;
 using MoBi.Core.Services;
 using MoBi.HelpersForTests;
@@ -31,6 +32,7 @@ namespace MoBi.Presentation
       private IPathAndValueEntityToDistributedParameterMapper _mapper;
       protected IParameterPathResolver _parameterPathResolver;
       private IParameterValuesCreator _parameterValuesCreator;
+      protected IMoBiContext _context;
 
       protected override void Context()
       {
@@ -43,13 +45,13 @@ namespace MoBi.Presentation
          _dialogCreator = A.Fake<IDialogCreator>();
          _parameterPathResolver = A.Fake<IParameterPathResolver>();
          _parameterValuesCreator = A.Fake<IParameterValuesCreator>();
+         _context = A.Fake<IMoBiContext>();
          A.CallTo(() => _parameterValuesCreator.CreateEmptyStartValue(A<IDimension>._)).ReturnsLazily(() => new ParameterValue());
          sut = new ParameterValuesPresenter(
             _parameterValuesView,
-            new ParameterValueToParameterValueDTOMapper(A.Fake<IFormulaToValueFormulaDTOMapper>()),
             _parameterValuesTask,
             _parameterValuesCreator,
-            A.Fake<IMoBiContext>(),
+            _context,
             A.Fake<IDisplayUnitRetriever>(),
             A.Fake<IFormulaToValueFormulaDTOMapper>(),
             A.Fake<IParameterValueDistributedPathAndValueEntityPresenter>(),
@@ -98,7 +100,7 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _parameterValuesTask.AddWithFullPath(A<ParameterValue>._, _path1, _parameterValuesBuildingBlock)).Invokes(() => addPVToBuildingBlock(_path1));
+         A.CallTo(() => _parameterValuesTask.AddWithFullPathCommand(A<ParameterValue>._, _path1, _parameterValuesBuildingBlock)).Invokes(() => addPVToBuildingBlock(_path1));
       }
 
       private void addPVToBuildingBlock(ObjectPath path)
@@ -109,15 +111,21 @@ namespace MoBi.Presentation
       [Observation]
       public void parameters_should_be_added_for_all_selected_paths()
       {
-         A.CallTo(() => _parameterValuesTask.AddWithFullPath(A<ParameterValue>._, _path1, _parameterValuesBuildingBlock)).MustHaveHappened();
-         A.CallTo(() => _parameterValuesTask.AddWithFullPath(A<ParameterValue>._, _path2, _parameterValuesBuildingBlock)).MustHaveHappened();
-         A.CallTo(() => _parameterValuesTask.AddWithFullPath(A<ParameterValue>._, _path3, _parameterValuesBuildingBlock)).MustHaveHappened();
+         A.CallTo(() => _parameterValuesTask.AddWithFullPathCommand(A<ParameterValue>._, _path1, _parameterValuesBuildingBlock)).MustHaveHappened();
+         A.CallTo(() => _parameterValuesTask.AddWithFullPathCommand(A<ParameterValue>._, _path2, _parameterValuesBuildingBlock)).MustHaveHappened();
+         A.CallTo(() => _parameterValuesTask.AddWithFullPathCommand(A<ParameterValue>._, _path3, _parameterValuesBuildingBlock)).MustHaveHappened();
       }
 
       [Observation]
       public void the_view_should_have_columns_initialized()
       {
          A.CallTo(() => _parameterValuesView.InitializePathColumns()).MustHaveHappenedTwiceExactly();
+      }
+
+      [Observation]
+      public void the_parameter_values_should_be_added_in_one_bulk_update()
+      {
+         A.CallTo(() => _context.PublishEvent(A<BulkUpdateStartedEvent>._)).MustHaveHappenedOnceExactly();
       }
    }
 
@@ -141,9 +149,9 @@ namespace MoBi.Presentation
       [Observation]
       public void parameters_should_be_added_for_all_selected_paths()
       {
-         A.CallTo(() => _parameterValuesTask.AddWithFullPath(A<ParameterValue>._, _path1, _parameterValuesBuildingBlock)).MustNotHaveHappened();
-         A.CallTo(() => _parameterValuesTask.AddWithFullPath(A<ParameterValue>._, _path2, _parameterValuesBuildingBlock)).MustHaveHappened();
-         A.CallTo(() => _parameterValuesTask.AddWithFullPath(A<ParameterValue>._, _path3, _parameterValuesBuildingBlock)).MustHaveHappened();
+         A.CallTo(() => _parameterValuesTask.AddWithFullPathCommand(A<ParameterValue>._, _path1, _parameterValuesBuildingBlock)).MustNotHaveHappened();
+         A.CallTo(() => _parameterValuesTask.AddWithFullPathCommand(A<ParameterValue>._, _path2, _parameterValuesBuildingBlock)).MustHaveHappened();
+         A.CallTo(() => _parameterValuesTask.AddWithFullPathCommand(A<ParameterValue>._, _path3, _parameterValuesBuildingBlock)).MustHaveHappened();
       }
    }
 
@@ -161,7 +169,7 @@ namespace MoBi.Presentation
          A.CallTo(() => _parameterPathResolver.Resolve(_path1)).Returns(_resolvedParameter);
          A.CallTo(() => _parameterPathResolver.Resolve(_path2)).Returns(null);
          A.CallTo(() => _parameterPathResolver.Resolve(_path3)).Returns(null);
-         A.CallTo(() => _parameterValuesTask.AddWithFullPath(A<ParameterValue>._, _path1, _parameterValuesBuildingBlock)).Invokes(x => _parameterValueForPath1 = x.GetArgument<ParameterValue>(0));
+         A.CallTo(() => _parameterValuesTask.AddWithFullPathCommand(A<ParameterValue>._, _path1, _parameterValuesBuildingBlock)).Invokes(x => _parameterValueForPath1 = x.GetArgument<ParameterValue>(0));
       }
 
       [Observation]

@@ -4,6 +4,7 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
@@ -43,7 +44,6 @@ namespace MoBi.Presentation.Presenter
 
       public ParameterValuesPresenter(
          IParameterValuesView view,
-         IParameterValueToParameterValueDTOMapper valueMapper,
          IParameterValuesTask parameterValuesTask,
          IParameterValuesCreator parameterValuesCreator,
          IMoBiContext context,
@@ -54,7 +54,7 @@ namespace MoBi.Presentation.Presenter
          IDimensionFactory dimensionFactory,
          IViewItemContextMenuFactory viewItemContextMenuFactory,
          IDialogCreator dialogCreator,
-         IParameterPathResolver parameterPathResolver) : base(view, valueMapper, parameterValuesTask, parameterValuesCreator, context, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
+         IParameterPathResolver parameterPathResolver) : base(view, parameterValuesTask, parameterValuesCreator, context, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
       {
          _parameterValuesTask = parameterValuesTask;
          _displayUnitRetriever = displayUnitRetriever;
@@ -109,7 +109,7 @@ namespace MoBi.Presentation.Presenter
 
          var objectPathsToAdd = objectPaths.Except(allSkipped).ToList();
 
-         var macroCommand = new MoBiMacroCommand
+         var macroCommand = new BulkUpdateMacroCommand
          {
             ObjectType = new ObjectTypeResolver().TypeFor<ParameterValue>(),
             CommandType = AppConstants.Commands.AddCommand,
@@ -120,7 +120,8 @@ namespace MoBi.Presentation.Presenter
          var unresolvedPaths = pathsAndResolvedParameters.Where(x => x.resolvedParameter == null).Select(x => x.path.PathAsString).ToList();
 
          var maxPathLengthBeforeAdd = longestPathLength(_buildingBlock);
-         macroCommand.AddRange(pathsAndResolvedParameters.Select(x => addAndUpdatePath(buildingBlockToAddTo, x.path, x.resolvedParameter)));
+         macroCommand.AddRange(pathsAndResolvedParameters.Select(x => addWithFullPathCommand(buildingBlockToAddTo, x.path, x.resolvedParameter)));
+         macroCommand.RunCommand(_context);
 
          var maxPathLengthAfterAdd = longestPathLength(_buildingBlock);
          if (maxPathLengthAfterAdd > maxPathLengthBeforeAdd)
@@ -135,16 +136,16 @@ namespace MoBi.Presentation.Presenter
          return macroCommand;
       }
 
-      private IMoBiCommand addAndUpdatePath(ParameterValuesBuildingBlock buildingBlockToAddTo, ObjectPath entityPath, IWithDisplayUnit resolvedParameter)
+      private IMoBiCommand addWithFullPathCommand(ParameterValuesBuildingBlock buildingBlockToAddTo, ObjectPath entityPath, IWithDisplayUnit resolvedParameter)
       {
-         var addedDTO = AddNewEmptyPathAndValueEntity();
+         var parameterValue = CreateEmptyPathAndValueEntity();
          if (resolvedParameter != null)
          {
-            addedDTO.ParameterValue.Dimension = resolvedParameter.Dimension;
-            addedDTO.ParameterValue.DisplayUnit = resolvedParameter.DisplayUnit;
+            parameterValue.Dimension = resolvedParameter.Dimension;
+            parameterValue.DisplayUnit = resolvedParameter.DisplayUnit;
          }
 
-         return _parameterValuesTask.AddWithFullPath(addedDTO.ParameterValue, entityPath, buildingBlockToAddTo);
+         return _parameterValuesTask.AddWithFullPathCommand(parameterValue, entityPath, buildingBlockToAddTo);
       }
 
       private bool alreadyIn(ObjectPath objectPath, ParameterValuesBuildingBlock buildingBlock)

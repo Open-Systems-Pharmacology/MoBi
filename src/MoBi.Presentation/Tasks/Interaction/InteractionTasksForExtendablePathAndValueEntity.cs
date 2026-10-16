@@ -237,7 +237,7 @@ namespace MoBi.Presentation.Tasks.Interaction
          return _entityPathTask.UpdateContainerPath(buildingBlock, pathAndValueEntity, indexToUpdate, newValue);
       }
 
-      public IMoBiCommand AddWithFullPath(TPathAndValueEntity pathAndValueEntity, ObjectPath entityPath, TBuildingBlock buildingBlock)
+      public IMoBiCommand AddWithFullPathCommand(TPathAndValueEntity pathAndValueEntity, ObjectPath entityPath, TBuildingBlock buildingBlock)
       {
          var containerPath = entityPath.Clone<ObjectPath>();
          containerPath.RemoveAt(containerPath.Count - 1);
@@ -245,8 +245,10 @@ namespace MoBi.Presentation.Tasks.Interaction
          pathAndValueEntity.ContainerPath = containerPath;
          pathAndValueEntity.Name = entityPath.Last();
 
-         return AddPathAndValueEntityToBuildingBlock(buildingBlock, pathAndValueEntity);
+         return GenerateAddCommand(buildingBlock, pathAndValueEntity);
       }
+
+      protected static bool PathContainsIllegalCharacters(ObjectPath objectPath) => objectPath.Any(element => Constants.ILLEGAL_CHARACTERS.Any(element.Contains));
 
       protected IReadOnlyList<ObjectPath> SelectNewPaths<TPresenter>(string caption) where TPresenter : ICreateObjectPathsFromReferencesPresenter
       {

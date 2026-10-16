@@ -135,27 +135,13 @@ namespace MoBi.Presentation.Tasks.Interaction
       public IReadOnlyList<ObjectPath> GetNewPaths()
       {
          var selections = SelectNewPaths<ICreateInitialConditionPathsFromReferencesPresenter>(AppConstants.Captions.SelectMolecule);
-         var moleculeNames = _interactionTaskContext.BuildingBlockRepository.MoleculeBlockCollection.SelectMany(x => x).Select(x => x.Name).ToList();
-         var physicalContainerPaths = _interactionTaskContext.BuildingBlockRepository.SpatialStructureCollection.SelectMany(x => x.PhysicalContainers).Select(x => Context.ObjectPathFactory.CreateAbsoluteObjectPath(x).PathAsString).ToList();
-
-         var invalidSelections = selections.Where(x => !isInitialConditionPath(x, moleculeNames, physicalContainerPaths)).ToList();
+         var invalidSelections = selections.Where(x => x.Count < 2 || PathContainsIllegalCharacters(x)).ToList();
          var validSelections = selections.Except(invalidSelections).ToList();
 
          if (invalidSelections.Any())
-            _interactionTaskContext.DialogCreator.MessageBoxInfo(AppConstants.Captions.InvalidInitialConditionPaths(invalidSelections.Select(x => x.PathAsString).ToList()));
+            _interactionTaskContext.DialogCreator.MessageBoxInfo(AppConstants.Captions.InvalidInitialConditionPaths(invalidSelections.Select(x => x.PathAsString).ToList(), Constants.ILLEGAL_CHARACTERS));
 
          return validSelections;
-      }
-
-      private static bool isInitialConditionPath(ObjectPath path, IReadOnlyList<string> moleculeNames, IReadOnlyList<string> physicalContainerPaths)
-      {
-         if (path.Count < 2)
-            return false;
-
-         var containerPath = path.Clone<ObjectPath>();
-         containerPath.RemoveAt(containerPath.Count - 1);
-
-         return moleculeNames.Contains(path.Last()) && physicalContainerPaths.Contains(containerPath.PathAsString);
       }
 
       private IMoBiCommand updateNegativeValuesAllowed(TBuildingBlock initialConditions, InitialCondition msv, bool negativeValuesAllowed)

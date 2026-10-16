@@ -843,36 +843,24 @@ namespace MoBi.Presentation.Tasks
       private ICreateInitialConditionPathsFromReferencesPresenter _createObjectPathsPresenter;
       private IModalPresenter _modalPresenter;
       private ObjectPath _validPath;
-      private ObjectPath _unknownMoleculePath;
-      private ObjectPath _logicalContainerPath;
-      private ObjectPath _unknownContainerPath;
+      private ObjectPath _pathNotInProject;
+      private ObjectPath _illegalCharacterPath;
       private ObjectPath _moleculeOnlyPath;
 
       protected override void Context()
       {
          base.Context();
-         var organism = new Container().WithName("Organism").WithMode(ContainerMode.Logical);
-         organism.Add(new Container().WithName("Plasma").WithMode(ContainerMode.Physical));
-         var spatialStructure = new MoBiSpatialStructure();
-         spatialStructure.AddTopContainer(organism);
-
-         var molecules = new MoleculeBuildingBlock { new MoleculeBuilder().WithName("Drug") };
-
          _validPath = new ObjectPath("Organism", "Plasma", "Drug");
-         _unknownMoleculePath = new ObjectPath("Organism", "Plasma", "Unknown");
-         _logicalContainerPath = new ObjectPath("Organism", "Drug");
-         _unknownContainerPath = new ObjectPath("Organism", "Kidney", "Drug");
+         _pathNotInProject = new ObjectPath("Organism", "Kidney", "Unknown");
+         _illegalCharacterPath = new ObjectPath("Organism", "Pla*sma", "Drug");
          _moleculeOnlyPath = new ObjectPath("Drug");
 
          _modalPresenter = A.Fake<IModalPresenter>();
          _createObjectPathsPresenter = A.Fake<ICreateInitialConditionPathsFromReferencesPresenter>();
 
-         A.CallTo(() => _context.Context.ObjectPathFactory).Returns(new ObjectPathFactoryForSpecs());
-         A.CallTo(() => _context.BuildingBlockRepository.SpatialStructureCollection).Returns(new[] { spatialStructure });
-         A.CallTo(() => _context.BuildingBlockRepository.MoleculeBlockCollection).Returns(new[] { molecules });
          A.CallTo(() => _context.ApplicationController.Start<ICreateInitialConditionPathsFromReferencesPresenter>()).Returns(_createObjectPathsPresenter);
          A.CallTo(() => _context.ApplicationController.Start<IModalPresenter>()).Returns(_modalPresenter);
-         A.CallTo(() => _createObjectPathsPresenter.GetAllSelections()).Returns(new[] { _validPath, _unknownMoleculePath, _logicalContainerPath, _unknownContainerPath, _moleculeOnlyPath });
+         A.CallTo(() => _createObjectPathsPresenter.GetAllSelections()).Returns(new[] { _validPath, _pathNotInProject, _illegalCharacterPath, _moleculeOnlyPath });
          A.CallTo(() => _modalPresenter.Show(_createObjectPathsPresenter.ModalSize)).Returns(true);
       }
 
@@ -882,16 +870,16 @@ namespace MoBi.Presentation.Tasks
       }
 
       [Observation]
-      public void only_paths_ending_in_a_molecule_inside_a_physical_container_should_be_returned()
+      public void paths_with_a_container_and_a_name_should_be_returned_even_if_they_are_not_in_the_project()
       {
-         _results.ShouldOnlyContain(_validPath);
+         _results.ShouldOnlyContain(_validPath, _pathNotInProject);
       }
 
       [Observation]
       public void the_user_should_be_told_which_paths_were_rejected()
       {
-         var rejectedPaths = new[] { _unknownMoleculePath, _logicalContainerPath, _unknownContainerPath, _moleculeOnlyPath }.Select(x => x.PathAsString).ToList();
-         A.CallTo(() => _context.DialogCreator.MessageBoxInfo(AppConstants.Captions.InvalidInitialConditionPaths(rejectedPaths))).MustHaveHappened();
+         var rejectedPaths = new[] { _illegalCharacterPath, _moleculeOnlyPath }.Select(x => x.PathAsString).ToList();
+         A.CallTo(() => _context.DialogCreator.MessageBoxInfo(AppConstants.Captions.InvalidInitialConditionPaths(rejectedPaths, Constants.ILLEGAL_CHARACTERS))).MustHaveHappened();
       }
    }
 
@@ -907,7 +895,7 @@ namespace MoBi.Presentation.Tasks
 
       protected override void Because()
       {
-         sut.AddWithFullPath(_initialCondition, new ObjectPath("Organism", "Plasma", "Drug"), _initialConditionsBuildingBlock);
+         sut.AddWithFullPathCommand(_initialCondition, new ObjectPath("Organism", "Plasma", "Drug"), _initialConditionsBuildingBlock).Execute(_context.Context);
       }
 
       [Observation]
@@ -919,20 +907,20 @@ namespace MoBi.Presentation.Tasks
 
    public class When_undoing_initial_conditions_added_with_their_full_path : concern_for_InitialConditionsTask
    {
-      private MoBiMacroCommand _macroCommand;
+      private BulkUpdateMacroCommand _macroCommand;
 
       protected override void Context()
       {
          base.Context();
          A.CallTo(() => _context.Context.Get<ILookupBuildingBlock<InitialCondition>>(A<string>._)).Returns(_initialConditionsBuildingBlock);
-         _macroCommand = new MoBiMacroCommand();
-         _macroCommand.Add(sut.AddWithFullPath(new InitialCondition(), new ObjectPath("Organism", "Plasma", "Drug"), _initialConditionsBuildingBlock));
-         _macroCommand.Add(sut.AddWithFullPath(new InitialCondition(), new ObjectPath("Organism", "Plasma", "Metabolite"), _initialConditionsBuildingBlock));
+         _macroCommand = new BulkUpdateMacroCommand();
+         _macroCommand.Add(sut.AddWithFullPathCommand(new InitialCondition(), new ObjectPath("Organism", "Plasma", "Drug"), _initialConditionsBuildingBlock));
+         _macroCommand.Add(sut.AddWithFullPathCommand(new InitialCondition(), new ObjectPath("Organism", "Plasma", "Metabolite"), _initialConditionsBuildingBlock));
       }
 
       protected override void Because()
       {
-         _macroCommand.InvokeInverse(_context.Context);
+         _macroCommand.ExecuteAndInvokeInverse(_context.Context);
       }
 
       [Observation]

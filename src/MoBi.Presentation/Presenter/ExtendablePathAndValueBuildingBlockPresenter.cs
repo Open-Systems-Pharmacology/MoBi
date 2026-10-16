@@ -32,8 +32,6 @@ namespace MoBi.Presentation.Presenter
       where TStartValueDTO : ExtendablePathAndValueEntityDTO<TPathAndValueEntity, TStartValueDTO>
       where TBuildingBlock : class, IBuildingBlock<TPathAndValueEntity>
    {
-      protected readonly IPathAndValueEntityToPathAndValueEntityDTOMapper<TPathAndValueEntity, TStartValueDTO> _valueMapper;
-
       private readonly IInteractionTasksForExtendablePathAndValueEntity<TBuildingBlock, TPathAndValueEntity> _interactionTasksForExtendablePathAndValueEntity;
       protected BindingList<TStartValueDTO> _startValueDTOs;
       private readonly IEmptyStartValueCreator<TPathAndValueEntity> _emptyStartValueCreator;
@@ -47,7 +45,6 @@ namespace MoBi.Presentation.Presenter
       public bool IsLatched { get; set; }
 
       protected ExtendablePathAndValueBuildingBlockPresenter(TView view,
-         IPathAndValueEntityToPathAndValueEntityDTOMapper<TPathAndValueEntity, TStartValueDTO> valueMapper,
          IInteractionTasksForExtendablePathAndValueEntity<TBuildingBlock, TPathAndValueEntity> interactionTasksForExtendablePathAndValueEntity,
          IEmptyStartValueCreator<TPathAndValueEntity> emptyStartValueCreator,
          IMoBiContext context,
@@ -58,7 +55,6 @@ namespace MoBi.Presentation.Presenter
       {
          _objectType = new ObjectTypeResolver().TypeFor(_focusedStartValue);
          _interactionTasksForExtendablePathAndValueEntity = interactionTasksForExtendablePathAndValueEntity;
-         _valueMapper = valueMapper;
          IsOriginalStartValue = isOriginalStartValue;
          _emptyStartValueCreator = emptyStartValueCreator;
          _context = context;
@@ -218,15 +214,6 @@ namespace MoBi.Presentation.Presenter
          _handleChangedEvents = false;
       }
 
-      public TStartValueDTO AddNewEmptyPathAndValueEntity()
-      {
-         var newParameterValue = _emptyStartValueCreator.CreateEmptyStartValue(_interactionTasksForExtendablePathAndValueEntity.GetDefaultDimension());
-         var newRecord = _valueMapper.MapFrom(newParameterValue, _buildingBlock);
-
-         _startValueDTOs.Insert(0, newRecord);
-         bindToView();
-
-         return newRecord;
-      }
+      protected TPathAndValueEntity CreateEmptyPathAndValueEntity() => _emptyStartValueCreator.CreateEmptyStartValue(_interactionTasksForExtendablePathAndValueEntity.GetDefaultDimension());
    }
 }
