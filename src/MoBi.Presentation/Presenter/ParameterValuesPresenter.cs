@@ -116,7 +116,7 @@ namespace MoBi.Presentation.Presenter
             Description = AppConstants.Commands.AddNewParameterValues(buildingBlockToAddTo.DisplayName)
          };
 
-         var pathsAndResolvedParameters = objectPathsToAdd.Select(x => (path: x, resolvedParameter: _parameterPathResolver.Resolve(x))).ToList();
+         var pathsAndResolvedParameters = objectPathsToAdd.Select(x => (path: x, resolvedParameter: _parameterPathResolver.Resolve(x, buildingBlockToAddTo.Module))).ToList();
          var unresolvedPaths = pathsAndResolvedParameters.Where(x => x.resolvedParameter == null).Select(x => x.path.PathAsString).ToList();
 
          var maxPathLengthBeforeAdd = longestPathLength(_buildingBlock);

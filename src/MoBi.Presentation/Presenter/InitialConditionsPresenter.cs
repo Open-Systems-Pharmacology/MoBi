@@ -81,7 +81,7 @@ namespace MoBi.Presentation.Presenter
             Description = AppConstants.Commands.AddNewInitialConditions(buildingBlockToAddTo.DisplayName)
          };
 
-         var pathsAndResolvedMolecules = objectPathsToAdd.Select(x => (path: x, resolvedMolecule: _initialConditionPathResolver.Resolve(x))).ToList();
+         var pathsAndResolvedMolecules = objectPathsToAdd.Select(x => (path: x, resolvedMolecule: _initialConditionPathResolver.Resolve(x, buildingBlockToAddTo.Module))).ToList();
          var unresolvedPaths = pathsAndResolvedMolecules.Where(x => x.resolvedMolecule == null).Select(x => x.path.PathAsString).ToList();
 
          var maxPathLengthBeforeAdd = longestPathLength(_buildingBlock);

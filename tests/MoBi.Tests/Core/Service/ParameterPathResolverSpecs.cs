@@ -20,7 +20,7 @@ namespace MoBi.Core.Service
          sut = new ParameterPathResolver(_buildingBlockRepository);
       }
 
-      protected IWithDisplayUnit Resolve(params string[] path) => sut.Resolve(new ObjectPath(path));
+      protected IWithDisplayUnit Resolve(params string[] path) => sut.Resolve(new ObjectPath(path), null);
    }
 
    public class When_resolving_parameter_paths_in_the_building_blocks_of_the_project : concern_for_ParameterPathResolver
@@ -131,6 +131,47 @@ namespace MoBi.Core.Service
          Resolve("Organism", "Kidney", "Volume").ShouldBeNull();
          Resolve("Organism", "Kidney", "Drug", "LocalMoleculeParameter").ShouldBeNull();
          Resolve("Volume").ShouldBeNull();
+      }
+   }
+
+   public class When_resolving_a_parameter_path_defined_in_several_modules : concern_for_ParameterPathResolver
+   {
+      private Parameter _volumeInFirstModule;
+      private Parameter _volumeInSecondModule;
+      private Module _secondModule;
+
+      protected override void Context()
+      {
+         base.Context();
+         _volumeInFirstModule = new Parameter { Name = "Volume" };
+         _volumeInSecondModule = new Parameter { Name = "Volume" };
+         var firstSpatialStructure = spatialStructureWith(_volumeInFirstModule);
+         var secondSpatialStructure = spatialStructureWith(_volumeInSecondModule);
+         _ = new Module { firstSpatialStructure };
+         _secondModule = new Module { secondSpatialStructure };
+
+         A.CallTo(() => _buildingBlockRepository.SpatialStructureCollection).Returns(new List<MoBiSpatialStructure> { firstSpatialStructure, secondSpatialStructure });
+      }
+
+      private static MoBiSpatialStructure spatialStructureWith(IParameter volume)
+      {
+         var organism = new Container { Name = "Organism" };
+         organism.Add(volume);
+         var spatialStructure = new MoBiSpatialStructure();
+         spatialStructure.AddTopContainer(organism);
+         return spatialStructure;
+      }
+
+      [Observation]
+      public void should_resolve_the_parameter_of_the_given_module_first()
+      {
+         sut.Resolve(new ObjectPath("Organism", "Volume"), _secondModule).ShouldBeEqualTo(_volumeInSecondModule);
+      }
+
+      [Observation]
+      public void should_resolve_the_first_parameter_found_when_the_given_module_does_not_define_it()
+      {
+         sut.Resolve(new ObjectPath("Organism", "Volume"), new Module()).ShouldBeEqualTo(_volumeInFirstModule);
       }
    }
 }

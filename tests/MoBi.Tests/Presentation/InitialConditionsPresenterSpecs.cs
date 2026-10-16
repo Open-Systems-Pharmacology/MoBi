@@ -254,6 +254,7 @@ namespace MoBi.Presentation
       private ObjectPath _unresolvedPath;
       private MoleculeBuilder _molecule;
       private InitialCondition _resolvedInitialCondition;
+      private Module _module;
 
       protected override void Context()
       {
@@ -264,11 +265,12 @@ namespace MoBi.Presentation
          _molecule = new MoleculeBuilder { Dimension = DimensionFactoryForSpecs.MassDimension };
          _molecule.DisplayUnit = _molecule.Dimension.Unit("mg");
          _initialConditionsBuildingBlock.Add(new InitialCondition { ContainerPath = new ObjectPath("Organism", "Plasma"), Name = "Drug" });
+         _module = new Module { _initialConditionsBuildingBlock };
          sut.Edit(_initialConditionsBuildingBlock);
 
          A.CallTo(() => _initialConditionsCreator.CreateEmptyStartValue(A<IDimension>._)).ReturnsLazily(() => new InitialCondition());
-         A.CallTo(() => _initialConditionPathResolver.Resolve(A<ObjectPath>._)).Returns(null);
-         A.CallTo(() => _initialConditionPathResolver.Resolve(_resolvedPath)).Returns(_molecule);
+         A.CallTo(() => _initialConditionPathResolver.Resolve(A<ObjectPath>._, A<Module>._)).Returns(null);
+         A.CallTo(() => _initialConditionPathResolver.Resolve(_resolvedPath, _module)).Returns(_molecule);
          A.CallTo(() => _initialConditionTask.AddWithFullPathCommand(A<InitialCondition>._, _resolvedPath, _initialConditionsBuildingBlock)).Invokes(x => _resolvedInitialCondition = x.GetArgument<InitialCondition>(0));
          A.CallTo(() => _initialConditionTask.GetNewPaths()).Returns(new[] { _existingPath, _resolvedPath, new ObjectPath("Organism", "Plasma", "Metabolite"), _unresolvedPath });
       }

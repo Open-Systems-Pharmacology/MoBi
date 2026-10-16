@@ -166,9 +166,9 @@ namespace MoBi.Presentation
          _resolvedParameter = new Parameter { Dimension = DimensionFactoryForSpecs.MassDimension };
          _resolvedParameter.DisplayUnit = _resolvedParameter.Dimension.Unit("mg");
 
-         A.CallTo(() => _parameterPathResolver.Resolve(_path1)).Returns(_resolvedParameter);
-         A.CallTo(() => _parameterPathResolver.Resolve(_path2)).Returns(null);
-         A.CallTo(() => _parameterPathResolver.Resolve(_path3)).Returns(null);
+         A.CallTo(() => _parameterPathResolver.Resolve(_path1, A<Module>._)).Returns(_resolvedParameter);
+         A.CallTo(() => _parameterPathResolver.Resolve(_path2, A<Module>._)).Returns(null);
+         A.CallTo(() => _parameterPathResolver.Resolve(_path3, A<Module>._)).Returns(null);
          A.CallTo(() => _parameterValuesTask.AddWithFullPathCommand(A<ParameterValue>._, _path1, _parameterValuesBuildingBlock)).Invokes(x => _parameterValueForPath1 = x.GetArgument<ParameterValue>(0));
       }
 
@@ -191,7 +191,7 @@ namespace MoBi.Presentation
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _parameterPathResolver.Resolve(A<ObjectPath>._)).Returns(new Parameter { Dimension = DimensionFactoryForSpecs.MassDimension });
+         A.CallTo(() => _parameterPathResolver.Resolve(A<ObjectPath>._, A<Module>._)).Returns(new Parameter { Dimension = DimensionFactoryForSpecs.MassDimension });
       }
 
       [Observation]
