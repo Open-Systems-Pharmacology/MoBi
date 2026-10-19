@@ -100,6 +100,8 @@ namespace MoBi.Presentation.Presenter
             // Any time the user visits the module configuration page, we force them to use 'Next' to move to
             // the calculation methods page. That way the list of molecules represents all the selected modules
             View.SetControlEnabled(SimulationItems.MoleculeCalculationMethodsConfiguration, false);
+            // The final options page comes after the calculation methods page and must not allow skipping it
+            View.SetControlEnabled(SimulationItems.FinalOptions, false);
          }
          else
             View.NextEnabled = true;
@@ -129,6 +131,8 @@ namespace MoBi.Presentation.Presenter
          moduleConfigurations.Each(simulationConfiguration.AddModuleConfiguration);
          simulationConfiguration.Individual = selectedIndividual;
          selectedExpressions.Each(simulationConfiguration.AddExpressionProfile);
+
+         PresenterAt(SimulationItems.FinalOptions).SaveOptions();
 
          simulationConfiguration.ShouldValidate = true;
          simulationConfiguration.PerformCircularReferenceCheck = _userSettings.CheckCircularReference;

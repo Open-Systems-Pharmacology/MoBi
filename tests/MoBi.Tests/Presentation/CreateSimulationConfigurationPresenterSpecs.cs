@@ -37,11 +37,14 @@ namespace MoBi.Presentation
       protected IModuleConfigurationDTOToModuleConfigurationMapper _moduleConfigurationMapper;
       protected ISimulationConfigurationFactory _simulationConfigurationFactory;
       protected ICloneManagerForBuildingBlock _cloneManager;
+      protected IFinalOptionsPresenter _finalOptionsPresenter;
 
       protected override void Context()
       {
          _view = A.Fake<ICreateSimulationConfigurationView>();
          _subPresenterManager = A.Fake<ISubPresenterItemManager<ISimulationConfigurationItemPresenter>>();
+         _finalOptionsPresenter = A.Fake<IFinalOptionsPresenter>();
+         A.CallTo(() => _subPresenterManager.PresenterAt(SimulationItems.FinalOptions)).Returns(_finalOptionsPresenter);
          _clonedSimulationSettings = new SimulationSettings();
          _moduleConfigurationMapper = A.Fake<IModuleConfigurationDTOToModuleConfigurationMapper>();
 
@@ -89,6 +92,12 @@ namespace MoBi.Presentation
       public void should_revert_commands()
       {
          _result.ShouldBeNull();
+      }
+
+      [Observation]
+      public void should_not_save_the_final_options()
+      {
+         A.CallTo(() => _finalOptionsPresenter.SaveOptions()).MustNotHaveHappened();
       }
    }
 
@@ -157,6 +166,18 @@ namespace MoBi.Presentation
       public void should_set_the_check_circular_reference_according_to_value_in_user_settings()
       {
          _simulationConfiguration.PerformCircularReferenceCheck.ShouldBeEqualTo(_userSettings.CheckCircularReference);
+      }
+
+      [Observation]
+      public void should_save_the_final_options()
+      {
+         A.CallTo(() => _finalOptionsPresenter.SaveOptions()).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_disable_the_final_options_page_until_the_calculation_methods_page_is_reached()
+      {
+         A.CallTo(() => _view.SetControlEnabled(SimulationItems.FinalOptions, false)).MustHaveHappened();
       }
    }
 
