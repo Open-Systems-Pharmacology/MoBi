@@ -9,6 +9,7 @@ using MoBi.Core.Mappers;
 using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
+using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using OSPSuite.Assets;
 using OSPSuite.Core.Domain;
@@ -41,6 +42,8 @@ namespace MoBi.Presentation.Tasks.Interaction
       IMoBiCommand RefreshInitialConditionsFromBuildingBlocks(TBuildingBlock buildingBlock, IReadOnlyList<InitialCondition> initialConditions);
 
       bool CorrectName(TBuildingBlock buildingBlock, Module module);
+
+      IReadOnlyList<ObjectPath> GetNewPaths();
    }
 
    public class InitialConditionsTask<TBuildingBlock> : InteractionTasksForExtendablePathAndValueEntity<TBuildingBlock, InitialCondition>, IInitialConditionsTask<TBuildingBlock>
@@ -127,6 +130,18 @@ namespace MoBi.Presentation.Tasks.Interaction
          // an existing building block in the InitialConditionsCollection
          var forbiddenNames = _editTask.GetForbiddenNames(buildingBlock, module.InitialConditionsCollection);
          return InteractionTask.CorrectName(buildingBlock, forbiddenNames);
+      }
+
+      public IReadOnlyList<ObjectPath> GetNewPaths()
+      {
+         var selections = SelectNewPaths<ICreateInitialConditionPathsFromReferencesPresenter>(AppConstants.Captions.SelectMolecule);
+         var invalidSelections = selections.Where(x => x.Count < 2 || PathContainsIllegalCharacters(x)).ToList();
+         var validSelections = selections.Except(invalidSelections).ToList();
+
+         if (invalidSelections.Any())
+            _interactionTaskContext.DialogCreator.MessageBoxInfo(AppConstants.Captions.InvalidInitialConditionPaths(invalidSelections.Select(x => x.PathAsString).ToList(), Constants.ILLEGAL_CHARACTERS));
+
+         return validSelections;
       }
 
       private IMoBiCommand updateNegativeValuesAllowed(TBuildingBlock initialConditions, InitialCondition msv, bool negativeValuesAllowed)

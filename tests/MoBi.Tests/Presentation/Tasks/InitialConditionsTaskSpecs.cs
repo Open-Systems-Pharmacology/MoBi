@@ -836,4 +836,97 @@ namespace MoBi.Presentation.Tasks
          A.CallTo(() => _nameCorrector.AutoCorrectName(A<IEnumerable<string>>._, _refreshedFormula)).MustHaveHappenedOnceExactly();
       }
    }
+
+   public class When_selecting_new_initial_condition_paths_to_add : concern_for_InitialConditionsTask
+   {
+      private IReadOnlyList<ObjectPath> _results;
+      private ICreateInitialConditionPathsFromReferencesPresenter _createObjectPathsPresenter;
+      private IModalPresenter _modalPresenter;
+      private ObjectPath _validPath;
+      private ObjectPath _pathNotInProject;
+      private ObjectPath _illegalCharacterPath;
+      private ObjectPath _moleculeOnlyPath;
+
+      protected override void Context()
+      {
+         base.Context();
+         _validPath = new ObjectPath("Organism", "Plasma", "Drug");
+         _pathNotInProject = new ObjectPath("Organism", "Kidney", "Unknown");
+         _illegalCharacterPath = new ObjectPath("Organism", "Pla*sma", "Drug");
+         _moleculeOnlyPath = new ObjectPath("Drug");
+
+         _modalPresenter = A.Fake<IModalPresenter>();
+         _createObjectPathsPresenter = A.Fake<ICreateInitialConditionPathsFromReferencesPresenter>();
+
+         A.CallTo(() => _context.ApplicationController.Start<ICreateInitialConditionPathsFromReferencesPresenter>()).Returns(_createObjectPathsPresenter);
+         A.CallTo(() => _context.ApplicationController.Start<IModalPresenter>()).Returns(_modalPresenter);
+         A.CallTo(() => _createObjectPathsPresenter.GetAllSelections()).Returns(new[] { _validPath, _pathNotInProject, _illegalCharacterPath, _moleculeOnlyPath });
+         A.CallTo(() => _modalPresenter.Show(_createObjectPathsPresenter.ModalSize)).Returns(true);
+      }
+
+      protected override void Because()
+      {
+         _results = sut.GetNewPaths();
+      }
+
+      [Observation]
+      public void paths_with_a_container_and_a_name_should_be_returned_even_if_they_are_not_in_the_project()
+      {
+         _results.ShouldOnlyContain(_validPath, _pathNotInProject);
+      }
+
+      [Observation]
+      public void the_user_should_be_told_which_paths_were_rejected()
+      {
+         var rejectedPaths = new[] { _illegalCharacterPath, _moleculeOnlyPath }.Select(x => x.PathAsString).ToList();
+         A.CallTo(() => _context.DialogCreator.MessageBoxInfo(AppConstants.Captions.InvalidInitialConditionPaths(rejectedPaths, Constants.ILLEGAL_CHARACTERS))).MustHaveHappened();
+      }
+   }
+
+   public class When_adding_a_new_initial_condition_with_its_full_path : concern_for_InitialConditionsTask
+   {
+      private InitialCondition _initialCondition;
+
+      protected override void Context()
+      {
+         base.Context();
+         _initialCondition = new InitialCondition();
+      }
+
+      protected override void Because()
+      {
+         sut.AddWithFullPathCommand(_initialCondition, new ObjectPath("Organism", "Plasma", "Drug"), _initialConditionsBuildingBlock).Execute(_context.Context);
+      }
+
+      [Observation]
+      public void the_initial_condition_should_be_added_to_the_building_block_with_the_path()
+      {
+         _initialConditionsBuildingBlock.FindByPath(new ObjectPath("Organism", "Plasma", "Drug")).ShouldBeEqualTo(_initialCondition);
+      }
+   }
+
+   public class When_undoing_initial_conditions_added_with_their_full_path : concern_for_InitialConditionsTask
+   {
+      private BulkUpdateMacroCommand _macroCommand;
+
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _context.Context.Get<ILookupBuildingBlock<InitialCondition>>(A<string>._)).Returns(_initialConditionsBuildingBlock);
+         _macroCommand = new BulkUpdateMacroCommand();
+         _macroCommand.Add(sut.AddWithFullPathCommand(new InitialCondition(), new ObjectPath("Organism", "Plasma", "Drug"), _initialConditionsBuildingBlock));
+         _macroCommand.Add(sut.AddWithFullPathCommand(new InitialCondition(), new ObjectPath("Organism", "Plasma", "Metabolite"), _initialConditionsBuildingBlock));
+      }
+
+      protected override void Because()
+      {
+         _macroCommand.ExecuteAndInvokeInverse(_context.Context);
+      }
+
+      [Observation]
+      public void the_added_initial_conditions_should_be_removed()
+      {
+         _initialConditionsBuildingBlock.ShouldBeEmpty();
+      }
+   }
 }

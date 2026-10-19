@@ -29,7 +29,6 @@ namespace MoBi.UI.Views
          memoEditObjectPaths.Properties.WordWrap = false;
          btnAdd.Click += (sender, args) => _presenter.AddSelection();
 
-         pathsToBeAddedGroup.Text = AppConstants.Captions.ParameterPathsToAdd;
          lblDescription.AutoSizeMode = LabelAutoSizeMode.Vertical;
          lblDescription.Text = AppConstants.Captions.AddAndEditPathsDescription;
          pathsToBeAddedGroup.Size = new Size(layoutControlItem4.Width, pathsToBeAddedGroup.Height);
@@ -50,6 +49,11 @@ namespace MoBi.UI.Views
       public Size? ModalSize => UIConstants.UI.PARAMETER_SELECTION_SIZE;
 
       public void CanAdd(bool canAdd) => btnAdd.Enabled = canAdd;
+
+      public string PathsToAddCaption
+      {
+         set => pathsToBeAddedGroup.Text = value;
+      }
 
       public void AddSelectedPaths(IReadOnlyList<string> pathsToAdd)
       {

@@ -48,17 +48,17 @@ namespace MoBi.Presentation
       }
    }
 
-   public class When_adding_a_molecule_start_value : concern_for_EditInitialConditionsPresenter
+   public class When_adding_new_initial_conditions : concern_for_EditInitialConditionsPresenter
    {
       protected override void Because()
       {
-         sut.AddNewEmptyInitialCondition();
+         sut.AddNewInitialConditions();
       }
 
       [Observation]
-      public void the_subpresenter_is_used_to_add_the_molecule_start_value()
+      public void the_subpresenter_is_used_to_add_the_initial_conditions()
       {
-         A.CallTo(() => _initialConditionsPresenter.AddNewEmptyPathAndValueEntity()).MustHaveHappened();
+         A.CallTo(() => _initialConditionsPresenter.AddNewInitialConditions()).MustHaveHappened();
       }
    }
 }

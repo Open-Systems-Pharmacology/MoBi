@@ -483,4 +483,29 @@ namespace MoBi.Presentation.Tasks
          _results.All(x => !x.PathAsString.Contains(Constants.WILD_CARD)).ShouldBeTrue();
       }
    }
+
+   public class When_undoing_parameter_values_added_with_their_full_path : concern_for_ParameterValuesTask
+   {
+      private BulkUpdateMacroCommand _macroCommand;
+
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _context.Context.Get<ILookupBuildingBlock<ParameterValue>>(A<string>._)).Returns(_parameterValueBuildingBlock);
+         _macroCommand = new BulkUpdateMacroCommand();
+         _macroCommand.Add(sut.AddWithFullPathCommand(new ParameterValue(), new ObjectPath("Organism", "Volume"), _parameterValueBuildingBlock));
+         _macroCommand.Add(sut.AddWithFullPathCommand(new ParameterValue(), new ObjectPath("Organism", "Weight"), _parameterValueBuildingBlock));
+      }
+
+      protected override void Because()
+      {
+         _macroCommand.ExecuteAndInvokeInverse(_context.Context);
+      }
+
+      [Observation]
+      public void the_added_parameter_values_should_be_removed()
+      {
+         _parameterValueBuildingBlock.ShouldBeEmpty();
+      }
+   }
 }
