@@ -1,5 +1,6 @@
 using FakeItEasy;
 using MoBi.Core;
+using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
@@ -15,6 +16,8 @@ namespace MoBi.Presentation
       protected IValidationOptionsPresenter _validationOptionsPresenter;
       protected IUserSettings _userSettings;
       protected ValidationSettings _userValidationSettings;
+      protected ValidationSettings _editedValidationSettings;
+      protected FinalOptionsDTO _finalOptionsDTO;
 
       protected override void Context()
       {
@@ -23,6 +26,13 @@ namespace MoBi.Presentation
          _userSettings = A.Fake<IUserSettings>();
          _userValidationSettings = new ValidationSettings { CheckDimensions = true, CheckCircularReference = true, CheckRules = false };
          A.CallTo(() => _userSettings.ValidationSettings).Returns(_userValidationSettings);
+         _userSettings.WarnForNonFiniteQuantities = true;
+
+         A.CallTo(() => _validationOptionsPresenter.Edit(A<ValidationSettings>._))
+            .Invokes(x => _editedValidationSettings = x.GetArgument<ValidationSettings>(0));
+         A.CallTo(() => _view.BindTo(A<FinalOptionsDTO>._))
+            .Invokes(x => _finalOptionsDTO = x.GetArgument<FinalOptionsDTO>(0));
+
          sut = new FinalOptionsPresenter(_view, _validationOptionsPresenter, _userSettings);
       }
    }
@@ -38,15 +48,6 @@ namespace MoBi.Presentation
 
    public class When_the_final_options_presenter_is_editing_a_simulation_configuration : concern_for_FinalOptionsPresenter
    {
-      private ValidationSettings _editedValidationSettings;
-
-      protected override void Context()
-      {
-         base.Context();
-         A.CallTo(() => _validationOptionsPresenter.Edit(A<ValidationSettings>._))
-            .Invokes(x => _editedValidationSettings = x.GetArgument<ValidationSettings>(0));
-      }
-
       protected override void Because()
       {
          sut.Edit(new SimulationConfiguration());
@@ -61,17 +62,20 @@ namespace MoBi.Presentation
          _editedValidationSettings.CheckCircularReference.ShouldBeTrue();
          _editedValidationSettings.CheckRules.ShouldBeFalse();
       }
+
+      [Observation]
+      public void should_bind_the_view_to_the_user_setting_for_non_finite_quantity_warnings()
+      {
+         _finalOptionsDTO.ShouldNotBeNull();
+         _finalOptionsDTO.WarnForNonFiniteQuantities.ShouldBeTrue();
+      }
    }
 
    public class When_the_user_changes_the_final_options_without_saving : concern_for_FinalOptionsPresenter
    {
-      private ValidationSettings _editedValidationSettings;
-
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _validationOptionsPresenter.Edit(A<ValidationSettings>._))
-            .Invokes(x => _editedValidationSettings = x.GetArgument<ValidationSettings>(0));
          sut.Edit(new SimulationConfiguration());
       }
 
@@ -79,28 +83,32 @@ namespace MoBi.Presentation
       {
          _editedValidationSettings.CheckCircularReference = false;
          _editedValidationSettings.CheckRules = true;
+         _finalOptionsDTO.WarnForNonFiniteQuantities = false;
       }
 
       [Observation]
-      public void should_not_change_the_user_settings()
+      public void should_not_change_the_user_validation_settings()
       {
          _userValidationSettings.CheckCircularReference.ShouldBeTrue();
          _userValidationSettings.CheckRules.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_not_change_the_user_setting_for_non_finite_quantity_warnings()
+      {
+         _userSettings.WarnForNonFiniteQuantities.ShouldBeTrue();
       }
    }
 
    public class When_saving_the_final_options : concern_for_FinalOptionsPresenter
    {
-      private ValidationSettings _editedValidationSettings;
-
       protected override void Context()
       {
          base.Context();
-         A.CallTo(() => _validationOptionsPresenter.Edit(A<ValidationSettings>._))
-            .Invokes(x => _editedValidationSettings = x.GetArgument<ValidationSettings>(0));
          sut.Edit(new SimulationConfiguration());
          _editedValidationSettings.CheckCircularReference = false;
          _editedValidationSettings.CheckRules = true;
+         _finalOptionsDTO.WarnForNonFiniteQuantities = false;
       }
 
       protected override void Because()
@@ -109,11 +117,17 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_update_the_user_settings_with_the_edited_options()
+      public void should_update_the_user_validation_settings_with_the_edited_options()
       {
          _userValidationSettings.CheckCircularReference.ShouldBeFalse();
          _userValidationSettings.CheckRules.ShouldBeTrue();
          _userValidationSettings.CheckDimensions.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_update_the_user_setting_for_non_finite_quantity_warnings()
+      {
+         _userSettings.WarnForNonFiniteQuantities.ShouldBeFalse();
       }
    }
 }

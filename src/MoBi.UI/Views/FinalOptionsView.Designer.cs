@@ -29,15 +29,19 @@ namespace MoBi.UI.Views
       private void InitializeComponent()
       {
          this.layoutControl = new OSPSuite.UI.Controls.UxLayoutControl();
+         this.chkWarnForNonFiniteQuantities = new OSPSuite.UI.Controls.UxCheckEdit();
          this.pnlValidationOptions = new DevExpress.XtraEditors.PanelControl();
          this.layoutControlGroup = new DevExpress.XtraLayout.LayoutControlGroup();
+         this.layoutItemWarnForNonFiniteQuantities = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutGroupValidation = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutItemValidationOptions = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
          this.layoutControl.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.chkWarnForNonFiniteQuantities.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.pnlValidationOptions)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemWarnForNonFiniteQuantities)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupValidation)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemValidationOptions)).BeginInit();
          this.SuspendLayout();
@@ -45,6 +49,7 @@ namespace MoBi.UI.Views
          // layoutControl
          //
          this.layoutControl.AllowCustomization = false;
+         this.layoutControl.Controls.Add(this.chkWarnForNonFiniteQuantities);
          this.layoutControl.Controls.Add(this.pnlValidationOptions);
          this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
          this.layoutControl.Location = new System.Drawing.Point(0, 0);
@@ -54,11 +59,21 @@ namespace MoBi.UI.Views
          this.layoutControl.TabIndex = 0;
          this.layoutControl.Text = "layoutControl";
          //
+         // chkWarnForNonFiniteQuantities
+         //
+         this.chkWarnForNonFiniteQuantities.AllowClicksOutsideControlArea = false;
+         this.chkWarnForNonFiniteQuantities.Location = new System.Drawing.Point(12, 12);
+         this.chkWarnForNonFiniteQuantities.Name = "chkWarnForNonFiniteQuantities";
+         this.chkWarnForNonFiniteQuantities.Properties.Caption = "chkWarnForNonFiniteQuantities";
+         this.chkWarnForNonFiniteQuantities.Size = new System.Drawing.Size(782, 20);
+         this.chkWarnForNonFiniteQuantities.StyleController = this.layoutControl;
+         this.chkWarnForNonFiniteQuantities.TabIndex = 5;
+         //
          // pnlValidationOptions
          //
-         this.pnlValidationOptions.Location = new System.Drawing.Point(24, 43);
+         this.pnlValidationOptions.Location = new System.Drawing.Point(24, 67);
          this.pnlValidationOptions.Name = "pnlValidationOptions";
-         this.pnlValidationOptions.Size = new System.Drawing.Size(758, 288);
+         this.pnlValidationOptions.Size = new System.Drawing.Size(758, 264);
          this.pnlValidationOptions.TabIndex = 4;
          //
          // layoutControlGroup
@@ -66,25 +81,35 @@ namespace MoBi.UI.Views
          this.layoutControlGroup.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
          this.layoutControlGroup.GroupBordersVisible = false;
          this.layoutControlGroup.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
+            this.layoutItemWarnForNonFiniteQuantities,
             this.layoutGroupValidation});
          this.layoutControlGroup.Name = "layoutControlGroup";
          this.layoutControlGroup.Size = new System.Drawing.Size(806, 355);
          this.layoutControlGroup.TextVisible = false;
          //
+         // layoutItemWarnForNonFiniteQuantities
+         //
+         this.layoutItemWarnForNonFiniteQuantities.Control = this.chkWarnForNonFiniteQuantities;
+         this.layoutItemWarnForNonFiniteQuantities.Location = new System.Drawing.Point(0, 0);
+         this.layoutItemWarnForNonFiniteQuantities.Name = "layoutItemWarnForNonFiniteQuantities";
+         this.layoutItemWarnForNonFiniteQuantities.Size = new System.Drawing.Size(786, 24);
+         this.layoutItemWarnForNonFiniteQuantities.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutItemWarnForNonFiniteQuantities.TextVisible = false;
+         //
          // layoutGroupValidation
          //
          this.layoutGroupValidation.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutItemValidationOptions});
-         this.layoutGroupValidation.Location = new System.Drawing.Point(0, 0);
+         this.layoutGroupValidation.Location = new System.Drawing.Point(0, 24);
          this.layoutGroupValidation.Name = "layoutGroupValidation";
-         this.layoutGroupValidation.Size = new System.Drawing.Size(786, 335);
+         this.layoutGroupValidation.Size = new System.Drawing.Size(786, 311);
          //
          // layoutItemValidationOptions
          //
          this.layoutItemValidationOptions.Control = this.pnlValidationOptions;
          this.layoutItemValidationOptions.Location = new System.Drawing.Point(0, 0);
          this.layoutItemValidationOptions.Name = "layoutItemValidationOptions";
-         this.layoutItemValidationOptions.Size = new System.Drawing.Size(762, 292);
+         this.layoutItemValidationOptions.Size = new System.Drawing.Size(762, 268);
          this.layoutItemValidationOptions.TextSize = new System.Drawing.Size(0, 0);
          this.layoutItemValidationOptions.TextVisible = false;
          //
@@ -98,8 +123,10 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
          this.layoutControl.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.chkWarnForNonFiniteQuantities.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.pnlValidationOptions)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemWarnForNonFiniteQuantities)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupValidation)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemValidationOptions)).EndInit();
          this.ResumeLayout(false);
@@ -109,8 +136,10 @@ namespace MoBi.UI.Views
       #endregion
 
       private OSPSuite.UI.Controls.UxLayoutControl layoutControl;
+      private OSPSuite.UI.Controls.UxCheckEdit chkWarnForNonFiniteQuantities;
       private DevExpress.XtraEditors.PanelControl pnlValidationOptions;
       private DevExpress.XtraLayout.LayoutControlGroup layoutControlGroup;
+      private DevExpress.XtraLayout.LayoutControlItem layoutItemWarnForNonFiniteQuantities;
       private DevExpress.XtraLayout.LayoutControlGroup layoutGroupValidation;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemValidationOptions;
    }
