@@ -5,6 +5,7 @@ using MoBi.Assets;
 using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Extensions;
+using MoBi.Core.Serialization.Exchange;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.Core.Commands.Core;
@@ -36,7 +37,7 @@ namespace MoBi.Presentation.Tasks.Edit
 
    public class EditTasksForSimulation : EditTasksForBuildingBlock<IMoBiSimulation>, IEditTasksForSimulation
    {
-      private readonly ISimulationPersistor _simulationPersistor;
+      private readonly IMoBiSimulationPersistor _simulationPersistor;
       private readonly IDialogCreator _dialogCreator;
       private readonly IModelReportCreator _reportCreator;
       private readonly IDataRepositoryExportTask _dataRepositoryTask;
@@ -46,7 +47,7 @@ namespace MoBi.Presentation.Tasks.Edit
 
       public EditTasksForSimulation(
          IInteractionTaskContext interactionTaskContext,
-         ISimulationPersistor simulationPersistor,
+         IMoBiSimulationPersistor simulationPersistor,
          IDialogCreator dialogCreator,
          IDataRepositoryExportTask dataRepositoryTask,
          IModelReportCreator reportCreator,
@@ -177,7 +178,7 @@ namespace MoBi.Presentation.Tasks.Edit
          if (filePath.IsNullOrEmpty()) 
             return;
 
-         _simulationPersistor.Save(new SimulationTransfer { Simulation = simulation }, filePath);
+         _simulationPersistor.Save(simulation, filePath);
       }
 
       public void ExportSimModelXml(IMoBiSimulation simulation)

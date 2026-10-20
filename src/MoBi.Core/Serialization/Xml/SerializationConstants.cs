@@ -18,5 +18,7 @@
       public static string MoBiReactionBuildingBlock = "ReactionBuildingBlock";
       public static string MoBiSpatialStructure = "SpatialStructure";
       public static string MoBiResults = "Results";
+      public static string OriginalQuantityValues = "OriginalQuantityValues";
+      public static string HasUntraceableChanges = "hasUntraceableChanges";
    }
 }
