@@ -15,6 +15,7 @@ using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Container;
 using SimulationPredictedVsObservedChart = OSPSuite.Core.Chart.Simulations.SimulationPredictedVsObservedChart;
 using SnapshotSimulation = MoBi.Core.Snapshots.Simulation;
+using ModelSimulationValidationOptions = MoBi.Core.Domain.Model.SimulationValidationOptions;
 
 namespace MoBi.IntegrationTests.Snapshots
 {
@@ -132,6 +133,41 @@ namespace MoBi.IntegrationTests.Snapshots
       {
          _result.OutputSelections.Count().ShouldBeEqualTo(1);
          _result.OutputSelections.First().ShouldBeEqualTo("sim|container|quantity");
+      }
+
+      [Observation]
+      public void validation_options_should_not_be_exported_when_none_are_set()
+      {
+         _result.ValidationOptions.ShouldBeNull();
+      }
+   }
+
+   public class When_mapping_a_simulation_with_validation_options_to_snapshot : concern_for_SimulationMapper
+   {
+      private Simulation _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation.ValidationOptions = new ModelSimulationValidationOptions { CheckRules = false, WarnForNonFiniteQuantities = true };
+      }
+
+      protected override void Because()
+      {
+         _result = sut.MapToSnapshot(_simulation, _project).Result;
+      }
+
+      [Observation]
+      public void the_options_that_are_set_should_be_exported()
+      {
+         _result.ValidationOptions.CheckRules.ShouldBeEqualTo(false);
+         _result.ValidationOptions.WarnForNonFiniteQuantities.ShouldBeEqualTo(true);
+      }
+
+      [Observation]
+      public void the_options_that_are_not_set_should_not_be_exported()
+      {
+         _result.ValidationOptions.CheckDimensions.ShouldBeNull();
       }
    }
 

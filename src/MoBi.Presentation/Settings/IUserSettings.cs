@@ -47,9 +47,6 @@ namespace MoBi.Presentation.Settings
       bool ShowAdvancedParameters { get; set; }
 
       NotificationType VisibleNotification { get; set; }
-      bool ShowPKSimObserverMessages { get; set; }
-      bool ShowUnresolvedEndosomeMessagesForInitialConditions { get; set; }
-      bool CheckCircularReference { get; set; }
       bool GroupParameters { get; set; }
       bool V13ConversionInfoShown { get; set; }
 

@@ -6,4 +6,7 @@ public interface ICoreUserSettings : OSPSuite.Core.ICoreUserSettings
    bool ShowPKSimDimensionProblemWarnings { get; set; }
    bool ShowCannotCalcErrors { get; set; }
    bool CheckRules { get; set; }
+   bool CheckCircularReference { get; set; }
+   bool ShowPKSimObserverMessages { get; set; }
+   bool ShowUnresolvedEndosomeMessagesForInitialConditions { get; set; }
 }

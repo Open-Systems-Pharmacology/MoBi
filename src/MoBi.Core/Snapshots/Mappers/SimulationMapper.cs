@@ -16,6 +16,7 @@ using OSPSuite.Core.Snapshots.Mappers;
 using OSPSuite.Utility.Extensions;
 using ModelSimulationPredictedVsObservedChart = OSPSuite.Core.Chart.Simulations.SimulationPredictedVsObservedChart;
 using ModelSimulationResidualVsTimeChart = OSPSuite.Core.Chart.Simulations.SimulationResidualVsTimeChart;
+using ModelSimulationValidationOptions = MoBi.Core.Domain.Model.SimulationValidationOptions;
 
 namespace MoBi.Core.Snapshots.Mappers;
 
@@ -70,7 +71,7 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
       var showProgress = configuration.ShowProgress;
       configuration.ShowProgress = false;
 
-      var (simulation, _) = _simulationFactory.CreateSimulationAndValidate(configuration, snapshot.Name);
+      var (simulation, _) = _simulationFactory.CreateSimulationAndValidate(configuration, snapshot.Name, validationOptionsFrom(snapshot.ValidationOptions));
       var mobiSimulation = simulation as MoBiSimulation;
 
       //the simulation keeps a clone of the configuration: restore the flag there so the simulation
@@ -106,6 +107,7 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
       var snapshot = await SnapshotFrom(simulation);
       snapshot.OutputMappings = await _outputMappingMapper.MapToSnapshots(simulation.OutputMappings.All);
       snapshot.Configuration = await _simulationConfigurationMapper.MapToSnapshot(simulation.Configuration);
+      snapshot.ValidationOptions = validationOptionsSnapshotFrom(simulation.ValidationOptions);
       snapshot.OutputSelections = await _outputSelectionsMapper.MapToSnapshot(simulation.OutputSelections);
 
       var timeProfileCharts = simulation.Analyses.OfType<MoBiSimulationTimeProfileChart>().ToList();
@@ -127,6 +129,48 @@ public class SimulationMapper : ObjectBaseSnapshotMapperBase<MoBiSimulation, Sim
       snapshot.ScaleDivisors = allScaleDivisorsChangedByUserFrom(simulation);
 
       return snapshot;
+   }
+
+   private static SimulationValidationOptions validationOptionsSnapshotFrom(ModelSimulationValidationOptions validationOptions)
+   {
+      var snapshot = new SimulationValidationOptions
+      {
+         CheckDimensions = validationOptions.CheckDimensions,
+         ShowPKSimDimensionProblemWarnings = validationOptions.ShowPKSimDimensionProblemWarnings,
+         ShowCannotCalcErrors = validationOptions.ShowCannotCalcErrors,
+         ShowPKSimObserverMessages = validationOptions.ShowPKSimObserverMessages,
+         CheckRules = validationOptions.CheckRules,
+         CheckCircularReference = validationOptions.CheckCircularReference,
+         ShowUnresolvedEndosomesWarningsForInitialConditions = validationOptions.ShowUnresolvedEndosomesWarningsForInitialConditions,
+         WarnForNonFiniteQuantities = validationOptions.WarnForNonFiniteQuantities
+      };
+
+      //Options that are not set fall back to the user settings: only export them when at least one is set
+      var anyOptionSet = new[]
+      {
+         snapshot.CheckDimensions, snapshot.ShowPKSimDimensionProblemWarnings, snapshot.ShowCannotCalcErrors, snapshot.ShowPKSimObserverMessages,
+         snapshot.CheckRules, snapshot.CheckCircularReference, snapshot.ShowUnresolvedEndosomesWarningsForInitialConditions, snapshot.WarnForNonFiniteQuantities
+      }.Any(x => x.HasValue);
+
+      return anyOptionSet ? snapshot : null;
+   }
+
+   private static ModelSimulationValidationOptions validationOptionsFrom(SimulationValidationOptions snapshot)
+   {
+      if (snapshot == null)
+         return new ModelSimulationValidationOptions();
+
+      return new ModelSimulationValidationOptions
+      {
+         CheckDimensions = snapshot.CheckDimensions,
+         ShowPKSimDimensionProblemWarnings = snapshot.ShowPKSimDimensionProblemWarnings,
+         ShowCannotCalcErrors = snapshot.ShowCannotCalcErrors,
+         ShowPKSimObserverMessages = snapshot.ShowPKSimObserverMessages,
+         CheckRules = snapshot.CheckRules,
+         CheckCircularReference = snapshot.CheckCircularReference,
+         ShowUnresolvedEndosomesWarningsForInitialConditions = snapshot.ShowUnresolvedEndosomesWarningsForInitialConditions,
+         WarnForNonFiniteQuantities = snapshot.WarnForNonFiniteQuantities
+      };
    }
 
    private void updateParameters(MoBiSimulation simulation, LocalizedParameter[] snapshotParameters)

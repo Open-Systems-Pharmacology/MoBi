@@ -37,7 +37,7 @@ namespace MoBi.UI.Views
          Caption = AppConstants.Captions.FinalOptions;
          ApplicationIcon = ApplicationIcons.Run;
          chkWarnForNonFiniteQuantities.Text = AppConstants.Captions.WarnForNonFiniteQuantities;
-         chkWarnForNonFiniteQuantities.ToolTip = ToolTips.WarnForNonFiniteQuantities;
+         chkWarnForNonFiniteQuantities.ToolTip = ToolTips.WarnForNonFiniteQuantitiesInSimulation;
          chkCheckForNegativeValues.Text = AppConstants.Captions.CheckForNegativeValues;
          chkCheckForNegativeValues.ToolTip = ToolTips.CheckForNegativeValues;
          layoutGroupValidation.Text = AppConstants.Captions.ValidationOptions;

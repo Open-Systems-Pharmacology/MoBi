@@ -1,4 +1,5 @@
 using MoBi.Core;
+using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter.Simulation;
 using MoBi.Presentation.Settings;
@@ -11,10 +12,20 @@ namespace MoBi.Presentation.Presenter
    public interface IFinalOptionsPresenter : ISimulationConfigurationItemPresenter
    {
       /// <summary>
-      ///    Saves the user options edited in the wizard to the user settings and applies the simulation options
-      ///    edited in the wizard to the <paramref name="simulationConfiguration" />
+      ///    Edits the options of the simulation configured with <paramref name="simulationConfiguration" />. Options that
+      ///    are not set in <paramref name="validationOptions" /> start from the user settings
+      /// </summary>
+      void Edit(SimulationConfiguration simulationConfiguration, SimulationValidationOptions validationOptions);
+
+      /// <summary>
+      ///    Applies the solver options edited in the wizard to the <paramref name="simulationConfiguration" />
       /// </summary>
       void ApplyOptionsTo(SimulationConfiguration simulationConfiguration);
+
+      /// <summary>
+      ///    The validation options edited in the wizard, with all options set
+      /// </summary>
+      SimulationValidationOptions ValidationOptions { get; }
    }
 
    public class FinalOptionsPresenter : AbstractSubPresenter<IFinalOptionsView, IFinalOptionsPresenter>, IFinalOptionsPresenter
@@ -32,15 +43,17 @@ namespace MoBi.Presentation.Presenter
          AddSubPresenters(_validationOptionsPresenter);
       }
 
-      public void Edit(SimulationConfiguration simulationConfiguration)
+      public void Edit(SimulationConfiguration simulationConfiguration) => Edit(simulationConfiguration, new SimulationValidationOptions());
+
+      public void Edit(SimulationConfiguration simulationConfiguration, SimulationValidationOptions validationOptions)
       {
-         //Edit copies so that the settings are only updated when the wizard is not canceled
-         _validationSettings = _userSettings.ValidationSettings.Clone();
+         //Edit copies so that nothing is changed when the wizard is canceled
+         _validationSettings = validationOptions.ValidationSettingsWith(_userSettings);
          _validationOptionsPresenter.Edit(_validationSettings);
 
          _finalOptionsDTO = new FinalOptionsDTO
          {
-            WarnForNonFiniteQuantities = _userSettings.WarnForNonFiniteQuantities,
+            WarnForNonFiniteQuantities = validationOptions.WarnForNonFiniteQuantitiesWith(_userSettings),
             CheckForNegativeValues = simulationConfiguration.SimulationSettings.Solver.CheckForNegativeValues
          };
          _view.BindTo(_finalOptionsDTO);
@@ -48,9 +61,9 @@ namespace MoBi.Presentation.Presenter
 
       public void ApplyOptionsTo(SimulationConfiguration simulationConfiguration)
       {
-         _userSettings.ValidationSettings.UpdatePropertiesFrom(_validationSettings);
-         _userSettings.WarnForNonFiniteQuantities = _finalOptionsDTO.WarnForNonFiniteQuantities;
          simulationConfiguration.SimulationSettings.Solver.CheckForNegativeValues = _finalOptionsDTO.CheckForNegativeValues;
       }
+
+      public SimulationValidationOptions ValidationOptions => SimulationValidationOptions.From(_validationSettings, _finalOptionsDTO.WarnForNonFiniteQuantities);
    }
 }

@@ -6,7 +6,6 @@ using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.Simulation;
-using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -22,13 +21,17 @@ namespace MoBi.Presentation.Presenter
    {
       SimulationConfiguration CreateBasedOn(IMoBiSimulation simulation, bool isNew = true);
       string SimulationName { get; }
+
+      /// <summary>
+      ///    The validation options edited in the wizard, to be used for and stored in the simulation
+      /// </summary>
+      SimulationValidationOptions ValidationOptions { get; }
    }
 
    public class CreateSimulationConfigurationPresenter : WizardPresenter<ICreateSimulationConfigurationView, ICreateSimulationConfigurationPresenter, ISimulationConfigurationItemPresenter>, ICreateSimulationConfigurationPresenter
    {
       private SimulationDTO _simulationDTO;
       private readonly IForbiddenNamesRetriever _forbiddenNamesRetriever;
-      protected readonly IUserSettings _userSettings;
       private readonly IModuleConfigurationDTOToModuleConfigurationMapper _moduleConfigurationMapper;
       private readonly ISimulationConfigurationFactory _simulationConfigurationFactory;
       private readonly ICloneManagerForBuildingBlock _cloneManager;
@@ -38,7 +41,6 @@ namespace MoBi.Presentation.Presenter
          ISubPresenterItemManager<ISimulationConfigurationItemPresenter> subPresenterManager,
          IDialogCreator dialogCreator,
          IForbiddenNamesRetriever forbiddenNamesRetriever,
-         IUserSettings userSettings,
          IModuleConfigurationDTOToModuleConfigurationMapper moduleConfigurationMapper,
          ISimulationConfigurationFactory simulationConfigurationFactory,
          ICloneManagerForBuildingBlock cloneManager)
@@ -49,7 +51,6 @@ namespace MoBi.Presentation.Presenter
          _moduleConfigurationMapper = moduleConfigurationMapper;
          _simulationConfigurationFactory = simulationConfigurationFactory;
          _cloneManager = cloneManager;
-         _userSettings = userSettings;
          InitializeWith(commands);
          AllowQuickFinish = false;
       }
@@ -74,6 +75,8 @@ namespace MoBi.Presentation.Presenter
 
       public string SimulationName => _simulationDTO.Name;
 
+      public SimulationValidationOptions ValidationOptions => PresenterAt(SimulationItems.FinalOptions).ValidationOptions;
+
       private void edit(IMoBiSimulation simulation, bool allowNaming)
       {
          _simulationDTO = new SimulationDTO(simulation).WithName(simulation.Name);
@@ -83,7 +86,10 @@ namespace MoBi.Presentation.Presenter
             _simulationDTO.AddUsedNames(nameOfSimulationAlreadyUsed(simulation));
          else
             _view.DisableNaming();
-         _subPresenterItemManager.AllSubPresenters.Each(x => x.Edit(simulation.Configuration));
+
+         var finalOptionsPresenter = PresenterAt(SimulationItems.FinalOptions);
+         _subPresenterItemManager.AllSubPresenters.Where(x => !Equals(x, finalOptionsPresenter)).Each(x => x.Edit(simulation.Configuration));
+         finalOptionsPresenter.Edit(simulation.Configuration, simulation.ValidationOptions);
          _view.BindTo(_simulationDTO);
       }
 
@@ -135,7 +141,6 @@ namespace MoBi.Presentation.Presenter
          PresenterAt(SimulationItems.FinalOptions).ApplyOptionsTo(simulationConfiguration);
 
          simulationConfiguration.ShouldValidate = true;
-         simulationConfiguration.PerformCircularReferenceCheck = _userSettings.CheckCircularReference;
 
          simulationConfiguration.CreateAllProcessRateParameters = _simulationDTO.CreateAllProcessRateParameters;
 
