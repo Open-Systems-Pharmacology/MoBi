@@ -27,6 +27,7 @@ namespace MoBi.UI.Views
       {
          base.InitializeBinding();
          _screenBinder.Bind(x => x.WarnForNonFiniteQuantities).To(chkWarnForNonFiniteQuantities);
+         _screenBinder.Bind(x => x.CheckForNegativeValues).To(chkCheckForNegativeValues);
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
       }
 
@@ -37,6 +38,8 @@ namespace MoBi.UI.Views
          ApplicationIcon = ApplicationIcons.Run;
          chkWarnForNonFiniteQuantities.Text = AppConstants.Captions.WarnForNonFiniteQuantities;
          chkWarnForNonFiniteQuantities.ToolTip = ToolTips.WarnForNonFiniteQuantities;
+         chkCheckForNegativeValues.Text = AppConstants.Captions.CheckForNegativeValues;
+         chkCheckForNegativeValues.ToolTip = ToolTips.CheckForNegativeValues;
          layoutGroupValidation.Text = AppConstants.Captions.ValidationOptions;
          layoutGroupValidation.Padding = new Padding(0);
          layoutItemValidationOptions.TextVisible = false;

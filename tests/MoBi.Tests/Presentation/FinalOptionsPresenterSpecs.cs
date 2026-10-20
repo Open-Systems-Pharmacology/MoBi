@@ -1,11 +1,13 @@
 using FakeItEasy;
 using MoBi.Core;
+using MoBi.HelpersForTests;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 
 namespace MoBi.Presentation
@@ -18,6 +20,7 @@ namespace MoBi.Presentation
       protected ValidationSettings _userValidationSettings;
       protected ValidationSettings _editedValidationSettings;
       protected FinalOptionsDTO _finalOptionsDTO;
+      protected SimulationConfiguration _simulationConfiguration;
 
       protected override void Context()
       {
@@ -27,6 +30,7 @@ namespace MoBi.Presentation
          _userValidationSettings = new ValidationSettings { CheckDimensions = true, CheckCircularReference = true, CheckRules = false };
          A.CallTo(() => _userSettings.ValidationSettings).Returns(_userValidationSettings);
          _userSettings.WarnForNonFiniteQuantities = true;
+         _simulationConfiguration = SimulationConfigurationCheckingForNegativeValues(true);
 
          A.CallTo(() => _validationOptionsPresenter.Edit(A<ValidationSettings>._))
             .Invokes(x => _editedValidationSettings = x.GetArgument<ValidationSettings>(0));
@@ -34,6 +38,15 @@ namespace MoBi.Presentation
             .Invokes(x => _finalOptionsDTO = x.GetArgument<FinalOptionsDTO>(0));
 
          sut = new FinalOptionsPresenter(_view, _validationOptionsPresenter, _userSettings);
+      }
+
+      protected static SimulationConfiguration SimulationConfigurationCheckingForNegativeValues(bool checkForNegativeValues)
+      {
+         var solverSettings = new SolverSettings();
+         solverSettings.Add(DomainHelperForSpecs.ConstantParameterWithValue().WithName(Constants.Parameters.CHECK_FOR_NEGATIVE_VALUES));
+         solverSettings.CheckForNegativeValues = checkForNegativeValues;
+
+         return new SimulationConfiguration { SimulationSettings = new SimulationSettings { Solver = solverSettings } };
       }
    }
 
@@ -50,7 +63,7 @@ namespace MoBi.Presentation
    {
       protected override void Because()
       {
-         sut.Edit(new SimulationConfiguration());
+         sut.Edit(_simulationConfiguration);
       }
 
       [Observation]
@@ -69,14 +82,20 @@ namespace MoBi.Presentation
          _finalOptionsDTO.ShouldNotBeNull();
          _finalOptionsDTO.WarnForNonFiniteQuantities.ShouldBeTrue();
       }
+
+      [Observation]
+      public void should_bind_the_view_to_the_check_for_negative_values_solver_setting_of_the_simulation_configuration()
+      {
+         _finalOptionsDTO.CheckForNegativeValues.ShouldBeTrue();
+      }
    }
 
-   public class When_the_user_changes_the_final_options_without_saving : concern_for_FinalOptionsPresenter
+   public class When_the_user_changes_the_final_options_without_applying_them : concern_for_FinalOptionsPresenter
    {
       protected override void Context()
       {
          base.Context();
-         sut.Edit(new SimulationConfiguration());
+         sut.Edit(_simulationConfiguration);
       }
 
       protected override void Because()
@@ -84,6 +103,7 @@ namespace MoBi.Presentation
          _editedValidationSettings.CheckCircularReference = false;
          _editedValidationSettings.CheckRules = true;
          _finalOptionsDTO.WarnForNonFiniteQuantities = false;
+         _finalOptionsDTO.CheckForNegativeValues = false;
       }
 
       [Observation]
@@ -98,22 +118,32 @@ namespace MoBi.Presentation
       {
          _userSettings.WarnForNonFiniteQuantities.ShouldBeTrue();
       }
+
+      [Observation]
+      public void should_not_change_the_solver_settings_of_the_edited_simulation_configuration()
+      {
+         _simulationConfiguration.SimulationSettings.Solver.CheckForNegativeValues.ShouldBeTrue();
+      }
    }
 
-   public class When_saving_the_final_options : concern_for_FinalOptionsPresenter
+   public class When_applying_the_final_options_to_a_simulation_configuration : concern_for_FinalOptionsPresenter
    {
+      private SimulationConfiguration _newSimulationConfiguration;
+
       protected override void Context()
       {
          base.Context();
-         sut.Edit(new SimulationConfiguration());
+         _newSimulationConfiguration = SimulationConfigurationCheckingForNegativeValues(true);
+         sut.Edit(_simulationConfiguration);
          _editedValidationSettings.CheckCircularReference = false;
          _editedValidationSettings.CheckRules = true;
          _finalOptionsDTO.WarnForNonFiniteQuantities = false;
+         _finalOptionsDTO.CheckForNegativeValues = false;
       }
 
       protected override void Because()
       {
-         sut.SaveOptions();
+         sut.ApplyOptionsTo(_newSimulationConfiguration);
       }
 
       [Observation]
@@ -128,6 +158,12 @@ namespace MoBi.Presentation
       public void should_update_the_user_setting_for_non_finite_quantity_warnings()
       {
          _userSettings.WarnForNonFiniteQuantities.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_update_the_check_for_negative_values_solver_setting_of_the_simulation_configuration()
+      {
+         _newSimulationConfiguration.SimulationSettings.Solver.CheckForNegativeValues.ShouldBeFalse();
       }
    }
 }

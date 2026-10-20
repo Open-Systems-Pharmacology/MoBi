@@ -95,9 +95,9 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_not_save_the_final_options()
+      public void should_not_apply_the_final_options()
       {
-         A.CallTo(() => _finalOptionsPresenter.SaveOptions()).MustNotHaveHappened();
+         A.CallTo(() => _finalOptionsPresenter.ApplyOptionsTo(A<SimulationConfiguration>._)).MustNotHaveHappened();
       }
    }
 
@@ -141,6 +141,12 @@ namespace MoBi.Presentation
       {
          _result.SimulationSettings.ShouldBeEqualTo(_clonedSimulationSettings);
       }
+
+      [Observation]
+      public void should_apply_the_final_options_to_the_resulting_simulation_configuration()
+      {
+         A.CallTo(() => _finalOptionsPresenter.ApplyOptionsTo(_result)).MustHaveHappened();
+      }
    }
 
    public class creating_a_new_simulation_configuration : concern_for_CreateSimulationConfigurationPresenter
@@ -169,9 +175,9 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_save_the_final_options()
+      public void should_apply_the_final_options_to_the_new_simulation_configuration()
       {
-         A.CallTo(() => _finalOptionsPresenter.SaveOptions()).MustHaveHappened();
+         A.CallTo(() => _finalOptionsPresenter.ApplyOptionsTo(A<SimulationConfiguration>._)).MustHaveHappened();
       }
 
       [Observation]

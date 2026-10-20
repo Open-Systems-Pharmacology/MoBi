@@ -132,7 +132,7 @@ namespace MoBi.Presentation.Presenter
          simulationConfiguration.Individual = selectedIndividual;
          selectedExpressions.Each(simulationConfiguration.AddExpressionProfile);
 
-         PresenterAt(SimulationItems.FinalOptions).SaveOptions();
+         PresenterAt(SimulationItems.FinalOptions).ApplyOptionsTo(simulationConfiguration);
 
          simulationConfiguration.ShouldValidate = true;
          simulationConfiguration.PerformCircularReferenceCheck = _userSettings.CheckCircularReference;
