@@ -1,22 +1,27 @@
-﻿using MoBi.Assets;
+﻿using DevExpress.XtraLayout.Utils;
+using MoBi.Assets;
 using MoBi.Core;
+using MoBi.Presentation.DTO;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Views;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.UI.Controls;
+using ToolTips = MoBi.Assets.ToolTips;
 
 namespace MoBi.UI.Views
 {
    public partial class ValidationOptionsView : BaseUserControl, IValidationOptionsView
    {
       private readonly ScreenBinder<ValidationSettings> _screenBinder;
+      private readonly ScreenBinder<SimulationSolverOptionsDTO> _solverOptionsBinder;
       private IValidationOptionsPresenter _presenter;
 
       public ValidationOptionsView()
       {
          InitializeComponent();
          _screenBinder = new ScreenBinder<ValidationSettings>();
+         _solverOptionsBinder = new ScreenBinder<SimulationSolverOptionsDTO>();
       }
 
       public override void InitializeBinding()
@@ -45,13 +50,20 @@ namespace MoBi.UI.Views
          _screenBinder.Bind(x => x.ShowUnresolvedEndosomesWarningsForInitialConditions)
             .To(chkShowUnresolvedInitialConditions);
 
+         _screenBinder.Bind(x => x.WarnForNonFiniteQuantities)
+            .To(chkShowNonFiniteQuantityWarnings);
+
          _screenBinder.Bind(x => x.CheckRules)
             .To(chkValidateRules);
 
          _screenBinder.Bind(x => x.CheckCircularReference)
             .To(chkPerformCircularReferenceCheck);
 
+         _solverOptionsBinder.Bind(x => x.CheckForNegativeValues)
+            .To(chkCheckForNegativeValues);
+
          RegisterValidationFor(_screenBinder, NotifyViewChanged);
+         RegisterValidationFor(_solverOptionsBinder, NotifyViewChanged);
       }
 
       public override void InitializeResources()
@@ -62,8 +74,15 @@ namespace MoBi.UI.Views
          chkShowPKSimWarnings.Text = AppConstants.Captions.ShowPKSimParameterWarnings;
          chkShowUnableToCalculateWarnings.Text = AppConstants.Captions.ShowUnableCalculateWarnings;
          chkShowUnresolvedInitialConditions.Text = AppConstants.Captions.ShowUnresolvedEndosomeWarningsForInitialConditions;
+         chkShowNonFiniteQuantityWarnings.Text = AppConstants.Captions.ShowWarningsForNonFiniteQuantities;
+         chkShowNonFiniteQuantityWarnings.ToolTip = ToolTips.ShowWarningsForNonFiniteQuantities;
          chkValidateRules.Text = AppConstants.Captions.ValidateRules;
+         chkCheckForNegativeValues.Text = AppConstants.Captions.CheckForNegativeValues;
+         chkCheckForNegativeValues.ToolTip = ToolTips.CheckForNegativeValues;
          chkPerformCircularReferenceCheck.Text = AppConstants.Captions.PerformCircularReferenceCheck;
+
+         //The solver options are only shown when editing the options of a simulation
+         layoutItemCheckForNegativeValues.Visibility = LayoutVisibility.Never;
       }
 
       public void AttachPresenter(IValidationOptionsPresenter presenter)
@@ -74,6 +93,12 @@ namespace MoBi.UI.Views
       public void BindTo(ValidationSettings validationOptions)
       {
          _screenBinder.BindToSource(validationOptions);
+      }
+
+      public void BindTo(SimulationSolverOptionsDTO simulationSolverOptionsDTO)
+      {
+         layoutItemCheckForNegativeValues.Visibility = LayoutVisibility.Always;
+         _solverOptionsBinder.BindToSource(simulationSolverOptionsDTO);
       }
    }
 }

@@ -1,8 +1,7 @@
 namespace MoBi.Presentation.DTO
 {
-   public class FinalOptionsDTO
+   public class SimulationSolverOptionsDTO
    {
-      public bool WarnForNonFiniteQuantities { get; set; }
       public bool CheckForNegativeValues { get; set; }
    }
 }

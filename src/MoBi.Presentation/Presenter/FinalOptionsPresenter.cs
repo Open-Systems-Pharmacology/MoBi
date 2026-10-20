@@ -33,7 +33,7 @@ namespace MoBi.Presentation.Presenter
       private readonly IValidationOptionsPresenter _validationOptionsPresenter;
       private readonly IUserSettings _userSettings;
       private ValidationSettings _validationSettings;
-      private FinalOptionsDTO _finalOptionsDTO;
+      private SimulationSolverOptionsDTO _simulationSolverOptionsDTO;
 
       public FinalOptionsPresenter(IFinalOptionsView view, IValidationOptionsPresenter validationOptionsPresenter, IUserSettings userSettings) : base(view)
       {
@@ -49,21 +49,18 @@ namespace MoBi.Presentation.Presenter
       {
          //Edit copies so that nothing is changed when the wizard is canceled
          _validationSettings = validationOptions.ValidationSettingsWith(_userSettings);
-         _validationOptionsPresenter.Edit(_validationSettings);
-
-         _finalOptionsDTO = new FinalOptionsDTO
+         _simulationSolverOptionsDTO = new SimulationSolverOptionsDTO
          {
-            WarnForNonFiniteQuantities = validationOptions.WarnForNonFiniteQuantitiesWith(_userSettings),
             CheckForNegativeValues = simulationConfiguration.SimulationSettings.Solver.CheckForNegativeValues
          };
-         _view.BindTo(_finalOptionsDTO);
+         _validationOptionsPresenter.Edit(_validationSettings, _simulationSolverOptionsDTO);
       }
 
       public void ApplyOptionsTo(SimulationConfiguration simulationConfiguration)
       {
-         simulationConfiguration.SimulationSettings.Solver.CheckForNegativeValues = _finalOptionsDTO.CheckForNegativeValues;
+         simulationConfiguration.SimulationSettings.Solver.CheckForNegativeValues = _simulationSolverOptionsDTO.CheckForNegativeValues;
       }
 
-      public SimulationValidationOptions ValidationOptions => SimulationValidationOptions.From(_validationSettings, _finalOptionsDTO.WarnForNonFiniteQuantities);
+      public SimulationValidationOptions ValidationOptions => SimulationValidationOptions.From(_validationSettings);
    }
 }

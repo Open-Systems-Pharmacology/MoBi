@@ -12,7 +12,6 @@ using OSPSuite.Presentation.Extensions;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Extensions;
 using OSPSuite.UI.Views;
-using ToolTips = MoBi.Assets.ToolTips;
 
 namespace MoBi.UI.Views
 {
@@ -34,7 +33,6 @@ namespace MoBi.UI.Views
          _screenBinder.Bind(x => x.MRUListItemCount).To(tbMRUFiles);
          _screenBinder.Bind(x => x.DecimalPlace).To(tbDecimalPlace);
          _screenBinder.Bind(x => x.MaximumNumberOfCoresToUse).To(tbNumberOfProcessors);
-         _screenBinder.Bind(x => x.WarnForNonFiniteQuantities).To(chkWarnForNonFiniteQUantities);
 
          _screenBinder.Bind(x => x.DefaultParameterGroupingModeForPIAndSA)
             .To(cbDefaultParameterGroupingModePISA)
@@ -75,8 +73,6 @@ namespace MoBi.UI.Views
          layoutItemParameterLayout.Text = AppConstants.Captions.DefaultParameterView.FormatForLabel();
 
          chkRenameDependent.Text = AppConstants.Captions.RenameDependentObjects;
-         chkWarnForNonFiniteQUantities.Text = AppConstants.Captions.WarnForNonFiniteQuantities;
-         chkWarnForNonFiniteQUantities.ToolTip = ToolTips.WarnForNonFiniteQuantities;
       }
 
       public override bool HasError => _screenBinder.HasError;

@@ -48,6 +48,10 @@ namespace MoBi.UI.Views
          this.layoutControlItem5 = new DevExpress.XtraLayout.LayoutControlItem();
          this.chkShowUnresolvedInitialConditions = new OSPSuite.UI.Controls.UxCheckEdit();
          this.layoutControlItem6 = new DevExpress.XtraLayout.LayoutControlItem();
+         this.chkShowNonFiniteQuantityWarnings = new OSPSuite.UI.Controls.UxCheckEdit();
+         this.layoutItemNonFiniteQuantityWarnings = new DevExpress.XtraLayout.LayoutControlItem();
+         this.chkCheckForNegativeValues = new OSPSuite.UI.Controls.UxCheckEdit();
+         this.layoutItemCheckForNegativeValues = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).BeginInit();
          this.layoutControl.SuspendLayout();
@@ -66,6 +70,10 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem5)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.chkShowUnresolvedInitialConditions.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem6)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.chkShowNonFiniteQuantityWarnings.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemNonFiniteQuantityWarnings)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.chkCheckForNegativeValues.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemCheckForNegativeValues)).BeginInit();
          this.SuspendLayout();
          // 
          // layoutControl
@@ -78,18 +86,20 @@ namespace MoBi.UI.Views
          this.layoutControl.Controls.Add(this.chkShowUnableToCalculateWarnings);
          this.layoutControl.Controls.Add(this.chkValidateDimensions);
          this.layoutControl.Controls.Add(this.chkValiadatePkSimStandardObserver);
+         this.layoutControl.Controls.Add(this.chkShowNonFiniteQuantityWarnings);
+         this.layoutControl.Controls.Add(this.chkCheckForNegativeValues);
          this.layoutControl.Dock = System.Windows.Forms.DockStyle.Fill;
          this.layoutControl.Location = new System.Drawing.Point(0, 0);
          this.layoutControl.Name = "layoutControl";
          this.layoutControl.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(881, 194, 650, 400);
          this.layoutControl.Root = this.layoutControlGroup;
-         this.layoutControl.Size = new System.Drawing.Size(331, 243);
+         this.layoutControl.Size = new System.Drawing.Size(331, 291);
          this.layoutControl.TabIndex = 0;
          this.layoutControl.Text = "layoutControl1";
-         // 
+         //
          // chkPerformCircularReferenceCheck
-         // 
-         this.chkPerformCircularReferenceCheck.Location = new System.Drawing.Point(2, 146);
+         //
+         this.chkPerformCircularReferenceCheck.Location = new System.Drawing.Point(2, 194);
          this.chkPerformCircularReferenceCheck.Name = "chkPerformCircularReferenceCheck";
          this.chkPerformCircularReferenceCheck.Properties.Caption = "chkPerformCircularReferenceCheck";
          this.chkPerformCircularReferenceCheck.Size = new System.Drawing.Size(327, 20);
@@ -98,7 +108,7 @@ namespace MoBi.UI.Views
          // 
          // chkValidateRules
          // 
-         this.chkValidateRules.Location = new System.Drawing.Point(2, 122);
+         this.chkValidateRules.Location = new System.Drawing.Point(2, 146);
          this.chkValidateRules.Name = "chkValidateRules";
          this.chkValidateRules.Properties.Caption = "chkValidateRules";
          this.chkValidateRules.Size = new System.Drawing.Size(327, 20);
@@ -108,7 +118,7 @@ namespace MoBi.UI.Views
          // chkShowPKSimWarnings
          // 
          this.chkShowPKSimWarnings.AllowClicksOutsideControlArea = false;
-         this.chkShowPKSimWarnings.Location = new System.Drawing.Point(2, 98);
+         this.chkShowPKSimWarnings.Location = new System.Drawing.Point(2, 122);
          this.chkShowPKSimWarnings.Name = "chkShowPKSimWarnings";
          this.chkShowPKSimWarnings.Properties.Caption = "chkShowPKSimWarnings";
          this.chkShowPKSimWarnings.Size = new System.Drawing.Size(327, 20);
@@ -118,7 +128,7 @@ namespace MoBi.UI.Views
          // chkShowUnableToCalculateWarnings
          // 
          this.chkShowUnableToCalculateWarnings.AllowClicksOutsideControlArea = false;
-         this.chkShowUnableToCalculateWarnings.Location = new System.Drawing.Point(2, 74);
+         this.chkShowUnableToCalculateWarnings.Location = new System.Drawing.Point(2, 98);
          this.chkShowUnableToCalculateWarnings.Name = "chkShowUnableToCalculateWarnings";
          this.chkShowUnableToCalculateWarnings.Properties.Caption = "chkShowUnableToCalculateWarnings";
          this.chkShowUnableToCalculateWarnings.Size = new System.Drawing.Size(327, 20);
@@ -128,7 +138,7 @@ namespace MoBi.UI.Views
          // chkValidateDimensions
          // 
          this.chkValidateDimensions.AllowClicksOutsideControlArea = false;
-         this.chkValidateDimensions.Location = new System.Drawing.Point(2, 50);
+         this.chkValidateDimensions.Location = new System.Drawing.Point(2, 74);
          this.chkValidateDimensions.Name = "chkValidateDimensions";
          this.chkValidateDimensions.Properties.Caption = "chkValidateDimensions";
          this.chkValidateDimensions.Size = new System.Drawing.Size(327, 20);
@@ -157,10 +167,12 @@ namespace MoBi.UI.Views
             this.layoutItemPKSIMWarnings,
             this.layoutControlItem4,
             this.layoutControlItem5,
-            this.layoutControlItem6});
+            this.layoutControlItem6,
+            this.layoutItemNonFiniteQuantityWarnings,
+            this.layoutItemCheckForNegativeValues});
          this.layoutControlGroup.Name = "Root";
          this.layoutControlGroup.Padding = new DevExpress.XtraLayout.Utils.Padding(0, 0, 0, 0);
-         this.layoutControlGroup.Size = new System.Drawing.Size(331, 243);
+         this.layoutControlGroup.Size = new System.Drawing.Size(331, 291);
          this.layoutControlGroup.TextVisible = false;
          // 
          // layoutControlItem1
@@ -177,7 +189,7 @@ namespace MoBi.UI.Views
          // 
          this.layoutControlItem2.Control = this.chkValidateDimensions;
          this.layoutControlItem2.CustomizationFormText = "layoutControlItem2";
-         this.layoutControlItem2.Location = new System.Drawing.Point(0, 48);
+         this.layoutControlItem2.Location = new System.Drawing.Point(0, 72);
          this.layoutControlItem2.Name = "layoutControlItem2";
          this.layoutControlItem2.Size = new System.Drawing.Size(331, 24);
          this.layoutControlItem2.TextSize = new System.Drawing.Size(0, 0);
@@ -187,7 +199,7 @@ namespace MoBi.UI.Views
          // 
          this.layoutControlItem3.Control = this.chkShowUnableToCalculateWarnings;
          this.layoutControlItem3.CustomizationFormText = "layoutControlItem3";
-         this.layoutControlItem3.Location = new System.Drawing.Point(0, 72);
+         this.layoutControlItem3.Location = new System.Drawing.Point(0, 96);
          this.layoutControlItem3.Name = "layoutControlItem3";
          this.layoutControlItem3.Size = new System.Drawing.Size(331, 24);
          this.layoutControlItem3.TextSize = new System.Drawing.Size(0, 0);
@@ -197,7 +209,7 @@ namespace MoBi.UI.Views
          // 
          this.layoutItemPKSIMWarnings.Control = this.chkShowPKSimWarnings;
          this.layoutItemPKSIMWarnings.CustomizationFormText = "layoutItemPKSIMWarnings";
-         this.layoutItemPKSIMWarnings.Location = new System.Drawing.Point(0, 96);
+         this.layoutItemPKSIMWarnings.Location = new System.Drawing.Point(0, 120);
          this.layoutItemPKSIMWarnings.Name = "layoutItemPKSIMWarnings";
          this.layoutItemPKSIMWarnings.Size = new System.Drawing.Size(331, 24);
          this.layoutItemPKSIMWarnings.TextSize = new System.Drawing.Size(0, 0);
@@ -206,7 +218,7 @@ namespace MoBi.UI.Views
          // layoutControlItem4
          // 
          this.layoutControlItem4.Control = this.chkValidateRules;
-         this.layoutControlItem4.Location = new System.Drawing.Point(0, 120);
+         this.layoutControlItem4.Location = new System.Drawing.Point(0, 144);
          this.layoutControlItem4.Name = "layoutControlItem4";
          this.layoutControlItem4.Size = new System.Drawing.Size(331, 24);
          this.layoutControlItem4.TextSize = new System.Drawing.Size(0, 0);
@@ -215,7 +227,7 @@ namespace MoBi.UI.Views
          // layoutControlItem5
          // 
          this.layoutControlItem5.Control = this.chkPerformCircularReferenceCheck;
-         this.layoutControlItem5.Location = new System.Drawing.Point(0, 144);
+         this.layoutControlItem5.Location = new System.Drawing.Point(0, 192);
          this.layoutControlItem5.Name = "layoutControlItem5";
          this.layoutControlItem5.Size = new System.Drawing.Size(331, 99);
          this.layoutControlItem5.TextSize = new System.Drawing.Size(0, 0);
@@ -239,14 +251,52 @@ namespace MoBi.UI.Views
          this.layoutControlItem6.Size = new System.Drawing.Size(331, 24);
          this.layoutControlItem6.TextSize = new System.Drawing.Size(0, 0);
          this.layoutControlItem6.TextVisible = false;
-         // 
+         //
+         // chkShowNonFiniteQuantityWarnings
+         //
+         this.chkShowNonFiniteQuantityWarnings.AllowClicksOutsideControlArea = false;
+         this.chkShowNonFiniteQuantityWarnings.Location = new System.Drawing.Point(2, 50);
+         this.chkShowNonFiniteQuantityWarnings.Name = "chkShowNonFiniteQuantityWarnings";
+         this.chkShowNonFiniteQuantityWarnings.Properties.Caption = "chkShowNonFiniteQuantityWarnings";
+         this.chkShowNonFiniteQuantityWarnings.Size = new System.Drawing.Size(327, 20);
+         this.chkShowNonFiniteQuantityWarnings.StyleController = this.layoutControl;
+         this.chkShowNonFiniteQuantityWarnings.TabIndex = 11;
+         //
+         // layoutItemNonFiniteQuantityWarnings
+         //
+         this.layoutItemNonFiniteQuantityWarnings.Control = this.chkShowNonFiniteQuantityWarnings;
+         this.layoutItemNonFiniteQuantityWarnings.Location = new System.Drawing.Point(0, 48);
+         this.layoutItemNonFiniteQuantityWarnings.Name = "layoutItemNonFiniteQuantityWarnings";
+         this.layoutItemNonFiniteQuantityWarnings.Size = new System.Drawing.Size(331, 24);
+         this.layoutItemNonFiniteQuantityWarnings.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutItemNonFiniteQuantityWarnings.TextVisible = false;
+         //
+         // chkCheckForNegativeValues
+         //
+         this.chkCheckForNegativeValues.AllowClicksOutsideControlArea = false;
+         this.chkCheckForNegativeValues.Location = new System.Drawing.Point(2, 170);
+         this.chkCheckForNegativeValues.Name = "chkCheckForNegativeValues";
+         this.chkCheckForNegativeValues.Properties.Caption = "chkCheckForNegativeValues";
+         this.chkCheckForNegativeValues.Size = new System.Drawing.Size(327, 20);
+         this.chkCheckForNegativeValues.StyleController = this.layoutControl;
+         this.chkCheckForNegativeValues.TabIndex = 12;
+         //
+         // layoutItemCheckForNegativeValues
+         //
+         this.layoutItemCheckForNegativeValues.Control = this.chkCheckForNegativeValues;
+         this.layoutItemCheckForNegativeValues.Location = new System.Drawing.Point(0, 168);
+         this.layoutItemCheckForNegativeValues.Name = "layoutItemCheckForNegativeValues";
+         this.layoutItemCheckForNegativeValues.Size = new System.Drawing.Size(331, 24);
+         this.layoutItemCheckForNegativeValues.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutItemCheckForNegativeValues.TextVisible = false;
+         //
          // ValidationOptionsView
-         // 
+         //
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.Controls.Add(this.layoutControl);
          this.Name = "ValidationOptionsView";
-         this.Size = new System.Drawing.Size(331, 243);
+         this.Size = new System.Drawing.Size(331, 291);
          ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControl)).EndInit();
          this.layoutControl.ResumeLayout(false);
@@ -265,6 +315,10 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem5)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.chkShowUnresolvedInitialConditions.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem6)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.chkShowNonFiniteQuantityWarnings.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemNonFiniteQuantityWarnings)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.chkCheckForNegativeValues.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutItemCheckForNegativeValues)).EndInit();
          this.ResumeLayout(false);
 
       }
@@ -287,5 +341,9 @@ namespace MoBi.UI.Views
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem5;
       private UxCheckEdit chkShowUnresolvedInitialConditions;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItem6;
+      private UxCheckEdit chkShowNonFiniteQuantityWarnings;
+      private DevExpress.XtraLayout.LayoutControlItem layoutItemNonFiniteQuantityWarnings;
+      private UxCheckEdit chkCheckForNegativeValues;
+      private DevExpress.XtraLayout.LayoutControlItem layoutItemCheckForNegativeValues;
    }
 }

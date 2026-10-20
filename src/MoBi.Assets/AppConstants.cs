@@ -1772,7 +1772,7 @@ namespace MoBi.Assets
          public static readonly string AddingParametersToASimulationIsNotSupported = "Adding parameters to a simulation is not supported";
          public static readonly string DefaultParameterView = "Default parameter view";
          public static readonly string RenameDependentObjects = "Rename dependent objects";
-         public static readonly string WarnForNonFiniteQuantities = "Warn for non-finite quantities";
+         public static readonly string ShowWarningsForNonFiniteQuantities = "Show warnings for non-finite quantities";
          public static readonly string CheckForNegativeValues = "Check for negative values";
          public static readonly string CalculationMethods = "Calculation Methods";
          public static readonly string CellularPermeabilities = "Cellular Permeabilities";

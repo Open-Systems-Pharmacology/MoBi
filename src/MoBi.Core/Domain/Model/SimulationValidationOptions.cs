@@ -16,10 +16,9 @@ namespace MoBi.Core.Domain.Model
       public bool? WarnForNonFiniteQuantities { get; set; }
 
       /// <summary>
-      ///    Creates options with all values set from <paramref name="validationSettings" /> and
-      ///    <paramref name="warnForNonFiniteQuantities" />
+      ///    Creates options with all values set from <paramref name="validationSettings" />
       /// </summary>
-      public static SimulationValidationOptions From(ValidationSettings validationSettings, bool warnForNonFiniteQuantities)
+      public static SimulationValidationOptions From(ValidationSettings validationSettings)
       {
          return new SimulationValidationOptions
          {
@@ -30,7 +29,7 @@ namespace MoBi.Core.Domain.Model
             CheckRules = validationSettings.CheckRules,
             CheckCircularReference = validationSettings.CheckCircularReference,
             ShowUnresolvedEndosomesWarningsForInitialConditions = validationSettings.ShowUnresolvedEndosomesWarningsForInitialConditions,
-            WarnForNonFiniteQuantities = warnForNonFiniteQuantities
+            WarnForNonFiniteQuantities = validationSettings.WarnForNonFiniteQuantities
          };
       }
 
@@ -49,7 +48,8 @@ namespace MoBi.Core.Domain.Model
             ShowPKSimObserverMessages = ShowPKSimObserverMessages ?? userSettings.ShowPKSimObserverMessages,
             CheckRules = CheckRules ?? userSettings.CheckRules,
             CheckCircularReference = CheckCircularReference ?? userSettings.CheckCircularReference,
-            ShowUnresolvedEndosomesWarningsForInitialConditions = ShowUnresolvedEndosomesWarningsForInitialConditions ?? userSettings.ShowUnresolvedEndosomeMessagesForInitialConditions
+            ShowUnresolvedEndosomesWarningsForInitialConditions = ShowUnresolvedEndosomesWarningsForInitialConditions ?? userSettings.ShowUnresolvedEndosomeMessagesForInitialConditions,
+            WarnForNonFiniteQuantities = WarnForNonFiniteQuantitiesWith(userSettings)
          };
       }
 

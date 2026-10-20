@@ -43,6 +43,7 @@ namespace MoBi.Core
          _result.CheckRules.ShouldBeTrue();
          _result.CheckCircularReference.ShouldBeTrue();
          _result.ShowUnresolvedEndosomesWarningsForInitialConditions.ShouldBeTrue();
+         _result.WarnForNonFiniteQuantities.ShouldBeTrue();
          sut.WarnForNonFiniteQuantitiesWith(_userSettings).ShouldBeTrue();
       }
    }
@@ -69,6 +70,7 @@ namespace MoBi.Core
       {
          _result.CheckRules.ShouldBeFalse();
          _result.ShowPKSimObserverMessages.ShouldBeFalse();
+         _result.WarnForNonFiniteQuantities.ShouldBeFalse();
          sut.WarnForNonFiniteQuantitiesWith(_userSettings).ShouldBeFalse();
       }
 
@@ -95,13 +97,14 @@ namespace MoBi.Core
             ShowPKSimObserverMessages = false,
             CheckRules = true,
             CheckCircularReference = false,
-            ShowUnresolvedEndosomesWarningsForInitialConditions = true
+            ShowUnresolvedEndosomesWarningsForInitialConditions = true,
+            WarnForNonFiniteQuantities = false
          };
       }
 
       protected override void Because()
       {
-         sut = SimulationValidationOptions.From(_validationSettings, warnForNonFiniteQuantities: false);
+         sut = SimulationValidationOptions.From(_validationSettings);
       }
 
       [Observation]

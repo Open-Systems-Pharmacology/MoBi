@@ -11,6 +11,7 @@ namespace MoBi.Core
       private bool _checkRules;
       private bool _checkCircularReference;
       private bool _showUnresolvedEndosomesWarningsForInitialConditions;
+      private bool _warnForNonFiniteQuantities;
 
       public bool CheckDimensions
       {
@@ -61,6 +62,12 @@ namespace MoBi.Core
          set => SetProperty(ref _showUnresolvedEndosomesWarningsForInitialConditions, value);
       }
 
+      public bool WarnForNonFiniteQuantities
+      {
+         get => _warnForNonFiniteQuantities;
+         set => SetProperty(ref _warnForNonFiniteQuantities, value);
+      }
+
       public ValidationSettings Clone()
       {
          var clone = new ValidationSettings();
@@ -77,6 +84,7 @@ namespace MoBi.Core
          CheckRules = source.CheckRules;
          CheckCircularReference = source.CheckCircularReference;
          ShowUnresolvedEndosomesWarningsForInitialConditions = source.ShowUnresolvedEndosomesWarningsForInitialConditions;
+         WarnForNonFiniteQuantities = source.WarnForNonFiniteQuantities;
       }
    }
 }
