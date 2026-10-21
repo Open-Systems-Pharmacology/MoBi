@@ -52,8 +52,6 @@ namespace MoBi.UI.Views
          this.tabChartOptions = new DevExpress.XtraTab.XtraTabPage();
          this.tabDisplayUnits = new DevExpress.XtraTab.XtraTabPage();
          this.tabApplicationSettings = new DevExpress.XtraTab.XtraTabPage();
-         this.chkWarnForNonFiniteQUantities = new OSPSuite.UI.Controls.UxCheckEdit();
-         this.layoutControlItemWarnForNonFiniteParameters = new DevExpress.XtraLayout.LayoutControlItem();
          ((System.ComponentModel.ISupportInitialize)(this.tablePanel)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this._errorProvider)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.tabControl)).BeginInit();
@@ -75,8 +73,6 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupValidationItems)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemValidationItems)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemParameterLayout)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.chkWarnForNonFiniteQUantities.Properties)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemWarnForNonFiniteParameters)).BeginInit();
          this.SuspendLayout();
          // 
          // tablePanel
@@ -115,7 +111,6 @@ namespace MoBi.UI.Views
          this.layoutControl1.Controls.Add(this.tbDecimalPlace);
          this.layoutControl1.Controls.Add(this.tbMRUFiles);
          this.layoutControl1.Controls.Add(this.chkRenameDependent);
-         this.layoutControl1.Controls.Add(this.chkWarnForNonFiniteQUantities);
          this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
          this.layoutControl1.Location = new System.Drawing.Point(0, 0);
          this.layoutControl1.Name = "layoutControl1";
@@ -126,7 +121,7 @@ namespace MoBi.UI.Views
          // 
          // cbDefaultParameterGroupingModePISA
          // 
-         this.cbDefaultParameterGroupingModePISA.Location = new System.Drawing.Point(198, 132);
+         this.cbDefaultParameterGroupingModePISA.Location = new System.Drawing.Point(198, 108);
          this.cbDefaultParameterGroupingModePISA.Name = "cbDefaultParameterGroupingModePISA";
          this.cbDefaultParameterGroupingModePISA.Properties.AllowMouseWheel = false;
          this.cbDefaultParameterGroupingModePISA.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
@@ -137,7 +132,7 @@ namespace MoBi.UI.Views
          // 
          // tbNumberOfProcessors
          // 
-         this.tbNumberOfProcessors.Location = new System.Drawing.Point(198, 108);
+         this.tbNumberOfProcessors.Location = new System.Drawing.Point(198, 84);
          this.tbNumberOfProcessors.Name = "tbNumberOfProcessors";
          this.tbNumberOfProcessors.Size = new System.Drawing.Size(585, 20);
          this.tbNumberOfProcessors.StyleController = this.layoutControl1;
@@ -145,9 +140,9 @@ namespace MoBi.UI.Views
          // 
          // pnlValidationOptions
          // 
-         this.pnlValidationOptions.Location = new System.Drawing.Point(24, 189);
+         this.pnlValidationOptions.Location = new System.Drawing.Point(24, 165);
          this.pnlValidationOptions.Name = "pnlValidationOptions";
-         this.pnlValidationOptions.Size = new System.Drawing.Size(747, 216);
+         this.pnlValidationOptions.Size = new System.Drawing.Size(747, 240);
          this.pnlValidationOptions.TabIndex = 8;
          // 
          // tbDecimalPlace
@@ -157,7 +152,7 @@ namespace MoBi.UI.Views
             0,
             0,
             0});
-         this.tbDecimalPlace.Location = new System.Drawing.Point(198, 84);
+         this.tbDecimalPlace.Location = new System.Drawing.Point(198, 60);
          this.tbDecimalPlace.Name = "tbDecimalPlace";
          this.tbDecimalPlace.Size = new System.Drawing.Size(585, 20);
          this.tbDecimalPlace.StyleController = this.layoutControl1;
@@ -170,7 +165,7 @@ namespace MoBi.UI.Views
             0,
             0,
             0});
-         this.tbMRUFiles.Location = new System.Drawing.Point(198, 60);
+         this.tbMRUFiles.Location = new System.Drawing.Point(198, 36);
          this.tbMRUFiles.Name = "tbMRUFiles";
          this.tbMRUFiles.Size = new System.Drawing.Size(585, 20);
          this.tbMRUFiles.StyleController = this.layoutControl1;
@@ -197,8 +192,7 @@ namespace MoBi.UI.Views
             this.layoutItemNumberOfRecentProjects,
             this.layoutItemNumberOfProcessors,
             this.layoutGroupValidationItems,
-            this.layoutItemParameterLayout,
-            this.layoutControlItemWarnForNonFiniteParameters});
+            this.layoutItemParameterLayout});
          this.layoutControlGroup1.Name = "layoutControlGroup1";
          this.layoutControlGroup1.Size = new System.Drawing.Size(795, 429);
          this.layoutControlGroup1.TextVisible = false;
@@ -217,7 +211,7 @@ namespace MoBi.UI.Views
          // 
          this.layoutItemDecimalPlace.Control = this.tbDecimalPlace;
          this.layoutItemDecimalPlace.CustomizationFormText = "layoutItemDecimalPlace";
-         this.layoutItemDecimalPlace.Location = new System.Drawing.Point(0, 72);
+         this.layoutItemDecimalPlace.Location = new System.Drawing.Point(0, 48);
          this.layoutItemDecimalPlace.Name = "layoutItemDecimalPlace";
          this.layoutItemDecimalPlace.Size = new System.Drawing.Size(775, 24);
          this.layoutItemDecimalPlace.TextSize = new System.Drawing.Size(174, 13);
@@ -226,7 +220,7 @@ namespace MoBi.UI.Views
          // 
          this.layoutItemNumberOfRecentProjects.Control = this.tbMRUFiles;
          this.layoutItemNumberOfRecentProjects.CustomizationFormText = "layoutItemNumberOfRecentProjects";
-         this.layoutItemNumberOfRecentProjects.Location = new System.Drawing.Point(0, 48);
+         this.layoutItemNumberOfRecentProjects.Location = new System.Drawing.Point(0, 24);
          this.layoutItemNumberOfRecentProjects.Name = "layoutItemNumberOfRecentProjects";
          this.layoutItemNumberOfRecentProjects.Size = new System.Drawing.Size(775, 24);
          this.layoutItemNumberOfRecentProjects.TextSize = new System.Drawing.Size(174, 13);
@@ -234,7 +228,7 @@ namespace MoBi.UI.Views
          // layoutItemNumberOfProcessors
          // 
          this.layoutItemNumberOfProcessors.Control = this.tbNumberOfProcessors;
-         this.layoutItemNumberOfProcessors.Location = new System.Drawing.Point(0, 96);
+         this.layoutItemNumberOfProcessors.Location = new System.Drawing.Point(0, 72);
          this.layoutItemNumberOfProcessors.Name = "layoutItemNumberOfProcessors";
          this.layoutItemNumberOfProcessors.Size = new System.Drawing.Size(775, 24);
          this.layoutItemNumberOfProcessors.TextSize = new System.Drawing.Size(174, 13);
@@ -243,9 +237,9 @@ namespace MoBi.UI.Views
          // 
          this.layoutGroupValidationItems.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutItemValidationItems});
-         this.layoutGroupValidationItems.Location = new System.Drawing.Point(0, 144);
+         this.layoutGroupValidationItems.Location = new System.Drawing.Point(0, 120);
          this.layoutGroupValidationItems.Name = "layoutGroupValidationItems";
-         this.layoutGroupValidationItems.Size = new System.Drawing.Size(775, 265);
+         this.layoutGroupValidationItems.Size = new System.Drawing.Size(775, 289);
          // 
          // layoutItemValidationItems
          // 
@@ -253,14 +247,14 @@ namespace MoBi.UI.Views
          this.layoutItemValidationItems.CustomizationFormText = "layoutItemValidationItems";
          this.layoutItemValidationItems.Location = new System.Drawing.Point(0, 0);
          this.layoutItemValidationItems.Name = "layoutItemValidationItems";
-         this.layoutItemValidationItems.Size = new System.Drawing.Size(751, 220);
+         this.layoutItemValidationItems.Size = new System.Drawing.Size(751, 244);
          this.layoutItemValidationItems.TextSize = new System.Drawing.Size(0, 0);
          this.layoutItemValidationItems.TextVisible = false;
          // 
          // layoutItemParameterLayout
          // 
          this.layoutItemParameterLayout.Control = this.cbDefaultParameterGroupingModePISA;
-         this.layoutItemParameterLayout.Location = new System.Drawing.Point(0, 120);
+         this.layoutItemParameterLayout.Location = new System.Drawing.Point(0, 96);
          this.layoutItemParameterLayout.Name = "layoutItemParameterLayout";
          this.layoutItemParameterLayout.Size = new System.Drawing.Size(775, 24);
          this.layoutItemParameterLayout.TextSize = new System.Drawing.Size(174, 13);
@@ -289,25 +283,6 @@ namespace MoBi.UI.Views
          this.tabApplicationSettings.Name = "tabApplicationSettings";
          this.tabApplicationSettings.Size = new System.Drawing.Size(795, 429);
          this.tabApplicationSettings.Text = "tabApplicationSettings";
-         // 
-         // chkWarnForNonFiniteParameters
-         // 
-         this.chkWarnForNonFiniteQUantities.AllowClicksOutsideControlArea = false;
-         this.chkWarnForNonFiniteQUantities.Location = new System.Drawing.Point(12, 36);
-         this.chkWarnForNonFiniteQUantities.Name = "chkWarnForNonFiniteQUantities";
-         this.chkWarnForNonFiniteQUantities.Properties.Caption = "chkWarnForNonFiniteParameters";
-         this.chkWarnForNonFiniteQUantities.Size = new System.Drawing.Size(771, 20);
-         this.chkWarnForNonFiniteQUantities.StyleController = this.layoutControl1;
-         this.chkWarnForNonFiniteQUantities.TabIndex = 11;
-         // 
-         // layoutControlItemWarnForNonFiniteParameters
-         // 
-         this.layoutControlItemWarnForNonFiniteParameters.Control = this.chkWarnForNonFiniteQUantities;
-         this.layoutControlItemWarnForNonFiniteParameters.Location = new System.Drawing.Point(0, 24);
-         this.layoutControlItemWarnForNonFiniteParameters.Name = "layoutControlItemWarnForNonFiniteParameters";
-         this.layoutControlItemWarnForNonFiniteParameters.Size = new System.Drawing.Size(775, 24);
-         this.layoutControlItemWarnForNonFiniteParameters.TextSize = new System.Drawing.Size(0, 0);
-         this.layoutControlItemWarnForNonFiniteParameters.TextVisible = false;
          // 
          // UserSettingsView
          // 
@@ -339,8 +314,6 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.layoutGroupValidationItems)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemValidationItems)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutItemParameterLayout)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.chkWarnForNonFiniteQUantities.Properties)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemWarnForNonFiniteParameters)).EndInit();
          this.ResumeLayout(false);
          this.PerformLayout();
 
@@ -369,7 +342,5 @@ namespace MoBi.UI.Views
       private DevExpress.XtraTab.XtraTabPage tabApplicationSettings;
       private UxComboBoxEdit cbDefaultParameterGroupingModePISA;
       private DevExpress.XtraLayout.LayoutControlItem layoutItemParameterLayout;
-      private UxCheckEdit chkWarnForNonFiniteQUantities;
-      private DevExpress.XtraLayout.LayoutControlItem layoutControlItemWarnForNonFiniteParameters;
    }
 }

@@ -13,6 +13,7 @@ public class Simulation : SnapshotBase
 
    public CurveChart[] Charts { get; set; }
    public SimulationConfiguration Configuration { get; set; }
+   public SimulationValidationOptions ValidationOptions { get; set; }
    public OutputSelections OutputSelections { get; set; }
 
    public string ParameterIdentificationWorkingDirectory { get; set; }

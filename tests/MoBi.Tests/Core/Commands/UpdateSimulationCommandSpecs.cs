@@ -73,6 +73,81 @@ namespace MoBi.Core.Commands
       }
    }
 
+   internal abstract class When_updating_a_simulation_with_validation_options : concern_for_UpdateSimulationCommand
+   {
+      protected IMoBiContext _context;
+      protected SimulationValidationOptions _oldValidationOptions;
+      protected SimulationValidationOptions _newValidationOptions;
+
+      protected override void Context()
+      {
+         base.Context();
+         _context = A.Fake<IMoBiContext>();
+         _oldValidationOptions = new SimulationValidationOptions { CheckRules = false };
+         _newValidationOptions = new SimulationValidationOptions { CheckRules = true };
+         _simulation.ValidationOptions = _oldValidationOptions;
+
+         var oldValidationOptionsSerialization = new byte[] { 1 };
+         A.CallTo(() => _context.Serialize(_oldValidationOptions)).Returns(oldValidationOptionsSerialization);
+         A.CallTo(() => _context.Deserialize<SimulationValidationOptions>(oldValidationOptionsSerialization)).Returns(_oldValidationOptions);
+         A.CallTo(() => _context.Get<IMoBiSimulation>(_simulation.Id)).Returns(_simulation);
+      }
+   }
+
+   internal class When_executing_an_update_simulation_command_with_validation_options : When_updating_a_simulation_with_validation_options
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut = new UpdateSimulationCommand(_simulation, _model, _simulationEntitySources, _simulationConfiguration, _newValidationOptions);
+      }
+
+      protected override void Because()
+      {
+         sut.Execute(_context);
+      }
+
+      [Observation]
+      public void should_replace_the_validation_options_of_the_simulation()
+      {
+         _simulation.ValidationOptions.ShouldBeEqualTo(_newValidationOptions);
+      }
+   }
+
+   internal class When_reversing_an_update_simulation_command_with_validation_options : When_updating_a_simulation_with_validation_options
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut = new UpdateSimulationCommand(_simulation, _model, _simulationEntitySources, _simulationConfiguration, _newValidationOptions);
+      }
+
+      protected override void Because()
+      {
+         sut.ExecuteAndInvokeInverse(_context);
+      }
+
+      [Observation]
+      public void should_restore_the_previous_validation_options_of_the_simulation()
+      {
+         _simulation.ValidationOptions.ShouldBeEqualTo(_oldValidationOptions);
+      }
+   }
+
+   internal class When_executing_an_update_simulation_command_without_validation_options : When_updating_a_simulation_with_validation_options
+   {
+      protected override void Because()
+      {
+         sut.Execute(_context);
+      }
+
+      [Observation]
+      public void should_keep_the_validation_options_of_the_simulation()
+      {
+         _simulation.ValidationOptions.ShouldBeEqualTo(_oldValidationOptions);
+      }
+   }
+
    internal class When_executing_an_update_simulation_command : concern_for_UpdateSimulationCommand
    {
       private IMoBiContext _context;

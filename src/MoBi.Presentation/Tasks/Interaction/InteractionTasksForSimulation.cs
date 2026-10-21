@@ -139,7 +139,7 @@ namespace MoBi.Presentation.Tasks.Interaction
             if (simulationConfiguration == null)
                return null;
 
-            var (simulation, validationResult) = _simulationFactory.CreateSimulationAndValidate(simulationConfiguration, presenter.SimulationName);
+            var (simulation, validationResult) = _simulationFactory.CreateSimulationAndValidate(simulationConfiguration, presenter.SimulationName, presenter.ValidationOptions);
             _removedNeighborhoodsDialogTask.ShowRemovedNeighborhoodsFrom(validationResult);
             return simulation;
          }

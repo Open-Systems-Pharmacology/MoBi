@@ -8,6 +8,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Services;
 using ISimulationPersistableUpdater = MoBi.Core.Services.ISimulationPersistableUpdater;
+using IMoBiCoreUserSettings = MoBi.Core.ICoreUserSettings;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -26,14 +27,16 @@ namespace MoBi.Presentation.Tasks
          IKeyPathMapper keyPathMapper,
          IEntityValidationTask entityValidationTask, 
          ISimulationQuantityValueWarningTask simulationQuantityWarningTask,
-         IMoBiSimulationAnalysisCreator simulationAnalysisCreator) :  base(context, 
-            simulationPersistableUpdater, 
-            displayUnitUpdater, 
-            simModelManagerFactory, 
-            keyPathMapper, 
-            entityValidationTask, 
-            outputSelectionsRetriever, 
-            simulationQuantityWarningTask)
+         IMoBiSimulationAnalysisCreator simulationAnalysisCreator,
+         IMoBiCoreUserSettings userSettings) :  base(context,
+            simulationPersistableUpdater,
+            displayUnitUpdater,
+            simModelManagerFactory,
+            keyPathMapper,
+            entityValidationTask,
+            outputSelectionsRetriever,
+            simulationQuantityWarningTask,
+            userSettings)
       {
          _outputSelectionsRetriever = outputSelectionsRetriever;
          _applicationController = applicationController;

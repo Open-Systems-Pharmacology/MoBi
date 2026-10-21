@@ -10,6 +10,9 @@ namespace MoBi.CLI.Core.MinimalImplementations
       public bool ShowPKSimDimensionProblemWarnings { get; set; }
       public bool ShowCannotCalcErrors { get; set; }
       public bool CheckRules { get; set; }
+      public bool CheckCircularReference { get; set; } = true;
+      public bool ShowPKSimObserverMessages { get; set; }
+      public bool ShowUnresolvedEndosomeMessagesForInitialConditions { get; set; }
 
       public int MaximumNumberOfCoresToUse { get; set; } = Math.Max(Environment.ProcessorCount - 1, 1);
       public int NumberOfBins { get; set; } = AppConstants.DEFAULT_NUMBER_OF_BINS;

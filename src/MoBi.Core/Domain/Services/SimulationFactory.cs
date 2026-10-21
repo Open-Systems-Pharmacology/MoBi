@@ -25,15 +25,23 @@ namespace MoBi.Core.Domain.Services
       /// </summary>
       IMoBiSimulation Create();
 
-      SimulationAndValidationResult CreateSimulationAndValidate(SimulationConfiguration configurationReferencingBuildingBlocks, string simulationName);
+      /// <summary>
+      ///    Creates and validates a new simulation using the <paramref name="validationOptions" />, which are then stored in
+      ///    the simulation. Options that are not set, or all options when <paramref name="validationOptions" /> is
+      ///    <c>null</c>, fall back to the user settings
+      /// </summary>
+      SimulationAndValidationResult CreateSimulationAndValidate(SimulationConfiguration configurationReferencingBuildingBlocks, string simulationName, SimulationValidationOptions validationOptions = null);
 
       /// <summary>
       ///    Creates the model from <paramref name="simulationConfiguration" /> and validates its dimensions. With
       ///    <paramref name="throwOnInvalid" /> <c>true</c> (the default) an invalid model throws
       ///    <see cref="ValidationFailedMoBiException" />; pass <c>false</c> to get the result back instead — always
       ///    non-null, with <c>IsInvalid</c> set when the model could not be created.
+      ///    The model is created and validated using the <paramref name="validationOptions" /> of the simulation. Options
+      ///    that are not set, or all options when <paramref name="validationOptions" /> is <c>null</c>, fall back to the
+      ///    user settings
       /// </summary>
-      CreationResult CreateModelAndValidate(SimulationConfiguration simulationConfiguration, string modelName, bool throwOnInvalid = true);
+      CreationResult CreateModelAndValidate(SimulationConfiguration simulationConfiguration, string modelName, bool throwOnInvalid = true, SimulationValidationOptions validationOptions = null);
    }
 
    public class SimulationFactory : ISimulationFactory
@@ -45,6 +53,7 @@ namespace MoBi.Core.Domain.Services
       private readonly IDimensionValidator _dimensionValidator;
       private readonly IModelConstructor _modelConstructor;
       private readonly IMoBiContext _context;
+      private readonly ICoreUserSettings _userSettings;
 
       public SimulationFactory(IIdGenerator idGenerator,
          ICreationMetaDataFactory creationMetaDataFactory,
@@ -52,7 +61,8 @@ namespace MoBi.Core.Domain.Services
          ISimulationConfigurationFactory simulationConfigurationFactory,
          IDimensionValidator dimensionValidator,
          IModelConstructor modelConstructor,
-         IMoBiContext context)
+         IMoBiContext context,
+         ICoreUserSettings userSettings)
       {
          _idGenerator = idGenerator;
          _creationMetaDataFactory = creationMetaDataFactory;
@@ -61,6 +71,7 @@ namespace MoBi.Core.Domain.Services
          _dimensionValidator = dimensionValidator;
          _modelConstructor = modelConstructor;
          _context = context;
+         _userSettings = userSettings;
       }
 
       public IMoBiSimulation CreateFrom(SimulationConfiguration simulationConfiguration, IModel model, IEnumerable<SimulationEntitySource> entitySources)
@@ -86,15 +97,20 @@ namespace MoBi.Core.Domain.Services
          return CreateFrom(_simulationConfigurationFactory.Create(), null, null);
       }
 
-      private void validateDimensions(IModel model, SimulationBuilder simulationBuilder)
+      private void validateDimensions(IModel model, SimulationBuilder simulationBuilder, ValidationSettings validationSettings)
       {
-         _dimensionValidator.Validate(model, simulationBuilder)
-            .SecureContinueWith(t => showWarnings(t.Result));
+         _dimensionValidator.Validate(model, simulationBuilder, validationSettings)
+            .SecureContinueWith(t => showWarnings(t.Result, validationSettings));
       }
 
-      public CreationResult CreateModelAndValidate(SimulationConfiguration simulationConfiguration, string modelName, bool throwOnInvalid = true)
+      public CreationResult CreateModelAndValidate(SimulationConfiguration simulationConfiguration, string modelName, bool throwOnInvalid = true, SimulationValidationOptions validationOptions = null)
       {
-         var results = createModel(simulationConfiguration, modelName);
+         var options = validationOptions ?? new SimulationValidationOptions();
+         var validationSettings = options.ValidationSettingsWith(_userSettings);
+         simulationConfiguration.PerformCircularReferenceCheck = validationSettings.CheckCircularReference;
+         simulationConfiguration.WarnForNonFiniteQuantities = options.WarnForNonFiniteQuantitiesWith(_userSettings);
+
+         var results = createModel(simulationConfiguration, modelName, validationSettings);
 
          if (results.IsInvalid)
          {
@@ -104,31 +120,33 @@ namespace MoBi.Core.Domain.Services
             return results;
          }
 
-         validateDimensions(results.Model, results.SimulationBuilder);
+         validateDimensions(results.Model, results.SimulationBuilder, validationSettings);
 
          return results;
       }
 
-      public SimulationAndValidationResult CreateSimulationAndValidate(SimulationConfiguration configurationReferencingBuildingBlocks, string simulationName)
+      public SimulationAndValidationResult CreateSimulationAndValidate(SimulationConfiguration configurationReferencingBuildingBlocks, string simulationName, SimulationValidationOptions validationOptions = null)
       {
-         var results = CreateModelAndValidate(configurationReferencingBuildingBlocks, simulationName);
+         var options = validationOptions ?? new SimulationValidationOptions();
+         var results = CreateModelAndValidate(configurationReferencingBuildingBlocks, simulationName, validationOptions: options);
          var cloneManager = _context.Resolve<ICloneManagerForBuildingBlock>();
          var clonedConfiguration = cloneManager.Clone(configurationReferencingBuildingBlocks);
          var simulation = CreateFrom(clonedConfiguration, results.Model, results.SimulationBuilder.EntitySources).WithName(simulationName);
+         simulation.ValidationOptions = options.Clone();
          return new SimulationAndValidationResult(simulation, results.ValidationResult);
       }
 
-      private CreationResult createModel(SimulationConfiguration simulationConfiguration, string name)
+      private CreationResult createModel(SimulationConfiguration simulationConfiguration, string name, ValidationSettings validationSettings)
       {
          //CreateModelFrom always returns a result - an invalid one carrying the validation messages when the build fails - never null
          var result = _modelConstructor.CreateModelFrom(simulationConfiguration, name);
-         showWarnings(result.ValidationResult);
+         showWarnings(result.ValidationResult, validationSettings);
          return result;
       }
 
-      private void showWarnings(ValidationResult validationResult)
+      private void showWarnings(ValidationResult validationResult, ValidationSettings validationSettings)
       {
-         _context.PublishEvent(new ShowValidationResultsEvent(validationResult));
+         _context.PublishEvent(new ShowValidationResultsEvent(validationResult, validationSettings));
       }
    }
 }

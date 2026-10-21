@@ -188,9 +188,16 @@ namespace MoBi.Core.Events
    {
       public ValidationResult ValidationResult { get; }
 
-      public ShowValidationResultsEvent(ValidationResult validationResult)
+      /// <summary>
+      ///    The validation settings of the simulation the results were created for. When <c>null</c>, the user settings
+      ///    decide which messages are shown
+      /// </summary>
+      public ValidationSettings ValidationSettings { get; }
+
+      public ShowValidationResultsEvent(ValidationResult validationResult, ValidationSettings validationSettings = null)
       {
          ValidationResult = validationResult;
+         ValidationSettings = validationSettings;
       }
    }
 

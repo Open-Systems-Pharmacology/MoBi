@@ -10,6 +10,7 @@ namespace MoBi.Presentation.Presenter.Simulation
       public static readonly SimulationItem<IEditModuleConfigurationsPresenter> ModuleConfiguration = createFor<IEditModuleConfigurationsPresenter>();
       public static readonly SimulationItem<IEditIndividualAndExpressionConfigurationsPresenter> IndividualAndExpressionConfiguration = createFor<IEditIndividualAndExpressionConfigurationsPresenter>();
       public static readonly SimulationItem<IEditMoleculeCalculationMethodsPresenter> MoleculeCalculationMethodsConfiguration = createFor<IEditMoleculeCalculationMethodsPresenter>();
+      public static readonly SimulationItem<IFinalOptionsPresenter> FinalOptions = createFor<IFinalOptionsPresenter>();
 
       private static SimulationItem<T> createFor<T>() where T : ISimulationConfigurationItemPresenter
       {

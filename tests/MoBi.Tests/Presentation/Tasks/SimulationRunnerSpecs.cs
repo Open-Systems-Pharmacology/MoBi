@@ -23,6 +23,7 @@ using OSPSuite.Core.Services;
 using OSPSuite.SimModel;
 using OSPSuite.Utility.Extensions;
 using ISimulationPersistableUpdater = MoBi.Core.Services.ISimulationPersistableUpdater;
+using IMoBiCoreUserSettings = MoBi.Core.ICoreUserSettings;
 
 namespace MoBi.Presentation.Tasks
 {
@@ -38,9 +39,11 @@ namespace MoBi.Presentation.Tasks
       protected IEntityValidationTask _eventValidationTask;
       protected ISimulationQuantityValueWarningTask _simulationQuantityWarningTask;
       protected IMoBiSimulationAnalysisCreator _simulationAnalysisCreator;
+      protected IMoBiCoreUserSettings _userSettings;
 
       protected override Task Context()
       {
+         _userSettings = A.Fake<IMoBiCoreUserSettings>();
          _context = A.Fake<IMoBiContext>();
          _outputSelectionsRetriever = A.Fake<IOutputSelectionsRetriever>();
          _simulationPersistableUpdater = A.Fake<ISimulationPersistableUpdater>();
@@ -62,7 +65,8 @@ namespace MoBi.Presentation.Tasks
             _keyPathMapper,
             _eventValidationTask,
             _simulationQuantityWarningTask,
-            _simulationAnalysisCreator);
+            _simulationAnalysisCreator,
+            _userSettings);
 
          return Task.CompletedTask;
       }
@@ -245,8 +249,10 @@ namespace MoBi.Presentation.Tasks
             Model = new Model
             {
                Root = new Container()
-            }
+            },
+            ValidationOptions = new SimulationValidationOptions { WarnForNonFiniteQuantities = true }
          };
+         _userSettings.WarnForNonFiniteQuantities = false;
          var globalMoleculeContainer = new Container { Name = "DRUG" };
          _moleculeWeight = new Parameter()
             .WithName(Constants.Parameters.MOL_WEIGHT)
@@ -324,9 +330,9 @@ namespace MoBi.Presentation.Tasks
       }
 
       [Observation]
-      public void should_check_for_non_finite_values()
+      public void should_check_for_non_finite_values_using_the_option_of_the_simulation()
       {
-         A.CallTo(() => _simulationQuantityWarningTask.WarnForNonFiniteQuantities(_simulation.Model, A<RunValidationResult>._)).MustHaveHappened();
+         A.CallTo(() => _simulationQuantityWarningTask.WarnForNonFiniteQuantities(_simulation.Model, A<RunValidationResult>._, true)).MustHaveHappened();
       }
 
       [Observation]

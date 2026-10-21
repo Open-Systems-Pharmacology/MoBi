@@ -42,6 +42,7 @@ public class CoreSimulationRunner : ICoreSimulationRunner
    private readonly IEntityValidationTask _entityValidationTask;
    private readonly IQuantitySelectionsRetriever _quantitySelectionsRetriever;
    private readonly ISimulationQuantityValueWarningTask _simulationQuantityWarningTask;
+   private readonly ICoreUserSettings _userSettings;
 
    public CoreSimulationRunner(IMoBiContext context,
       ISimulationPersistableUpdater simulationPersistableUpdater,
@@ -49,12 +50,14 @@ public class CoreSimulationRunner : ICoreSimulationRunner
       ISimModelManagerFactory simModelManagerFactory,
       IKeyPathMapper keyPathMapper,
       IEntityValidationTask entityValidationTask,
-      IQuantitySelectionsRetriever quantitySelectionsRetriever, 
-      ISimulationQuantityValueWarningTask simulationQuantityWarningTask)
+      IQuantitySelectionsRetriever quantitySelectionsRetriever,
+      ISimulationQuantityValueWarningTask simulationQuantityWarningTask,
+      ICoreUserSettings userSettings)
    {
       _context = context;
       _quantitySelectionsRetriever = quantitySelectionsRetriever;
       _simulationQuantityWarningTask = simulationQuantityWarningTask;
+      _userSettings = userSettings;
       _simulationPersistableUpdater = simulationPersistableUpdater;
       _displayUnitUpdater = displayUnitUpdater;
       _simModelManagerFactory = simModelManagerFactory;
@@ -210,7 +213,7 @@ public class CoreSimulationRunner : ICoreSimulationRunner
          return false;
 
       var runValidationResult = new RunValidationResult();
-      _simulationQuantityWarningTask.WarnForNonFiniteQuantities(simulation.Model, runValidationResult);
+      _simulationQuantityWarningTask.WarnForNonFiniteQuantities(simulation.Model, runValidationResult, simulation.ValidationOptions.WarnForNonFiniteQuantitiesWith(_userSettings));
 
       _context.PublishEvent(new SimulationRunStartedEvent(simulation));
       _context.PublishEvent(new ProgressInitEvent(100, AppConstants.SimulationRun));

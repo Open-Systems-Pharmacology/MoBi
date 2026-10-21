@@ -1731,6 +1731,8 @@ namespace MoBi.Assets
          public static readonly string ShowUnableCalculateWarnings = "Show warnings when formulas dimension could not be calculated";
          public static readonly string ValidatePKSimStandardObserver = "Show warnings from PK-Sim standard observers";
          public static readonly string ShowUnresolvedEndosomeWarningsForInitialConditions = "Show warnings for unresolved endosome containers";
+         public static readonly string CircularReferenceCheck = "Perform circular reference check";
+         public static readonly string ValidationOptionFromUserSettings = "User setting";
          public static readonly string PlotProcessRateParameter = "Plot process rate parameter";
          public static readonly string Source = "Source";
          public static readonly string Target = "Target";
@@ -1772,7 +1774,8 @@ namespace MoBi.Assets
          public static readonly string AddingParametersToASimulationIsNotSupported = "Adding parameters to a simulation is not supported";
          public static readonly string DefaultParameterView = "Default parameter view";
          public static readonly string RenameDependentObjects = "Rename dependent objects";
-         public static readonly string WarnForNonFiniteQuantities = "Warn for non-finite quantities";
+         public static readonly string ShowWarningsForNonFiniteQuantities = "Show warnings for non-finite quantities";
+         public static readonly string CheckForNegativeValues = "Check for negative values";
          public static readonly string CalculationMethods = "Calculation Methods";
          public static readonly string CellularPermeabilities = "Cellular Permeabilities";
          public static readonly string PartitionCoefficients = "Partition Coefficients";

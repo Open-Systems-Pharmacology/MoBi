@@ -248,6 +248,42 @@ namespace MoBi.Presentation
       }
    }
 
+   public class When_the_notification_list_presenter_is_being_notified_of_validations_of_a_simulation_showing_messages_hidden_by_the_user_settings : concern_for_NotificationPresenter
+   {
+      private ValidationResult _validationResult;
+      private ValidationSettings _simulationValidationSettings;
+
+      protected override void Context()
+      {
+         base.Context();
+         _userSettings.ShowPKSimObserverMessages = false;
+         _userSettings.ShowUnresolvedEndosomeMessagesForInitialConditions = false;
+         _simulationValidationSettings = new ValidationSettings { ShowPKSimObserverMessages = true, ShowUnresolvedEndosomesWarningsForInitialConditions = true };
+         _validationResult = new ValidationResult();
+
+         var staticObserver = A.Fake<ObserverBuilder>().WithId("1").WithName(AppConstants.DefaultNames.PKSimStaticObservers[0]);
+         _validationResult.AddMessage(NotificationType.Error, staticObserver, string.Empty);
+         var initialCondition = new InitialCondition
+         {
+            Name = "moleculeName",
+            ContainerPath = new ObjectPath("Endosome"),
+            Id = "3"
+         };
+         _validationResult.AddMessage(NotificationType.Warning, initialCondition, Validation.StartValueDefinedForContainerThatCannotBeResolved("moleculeName", "Endosome"));
+      }
+
+      protected override void Because()
+      {
+         sut.Handle(new ShowValidationResultsEvent(_validationResult, _simulationValidationSettings));
+      }
+
+      [Observation]
+      public void should_use_the_validation_settings_of_the_simulation_to_decide_which_notifications_are_visible()
+      {
+         _allNotifications.Count().ShouldBeEqualTo(2);
+      }
+   }
+
    public class When_the_notification_list_presenter_is_being_notified_that_neighborhoods_are_defined_between_logical_containers : concern_for_NotificationPresenter
    {
       private ValidationResult _validationResult;

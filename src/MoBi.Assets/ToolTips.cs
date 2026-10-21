@@ -20,7 +20,8 @@ namespace MoBi.Assets
       public static readonly string AddToProject = "Save as a new building block in project.";
       public static readonly string ResetParameterToolTip = "Reset parameter to default";
       public static readonly string SaveSimulationSettingsToolTip = "Save current simulations settings as template into project or user profile. These settings will be used as default settings for each newly created simulation.";
-      public static readonly string WarnForNonFiniteQuantities = "Show a warning for each quantity whose value is NaN or infinite at time t=0.\nThe check is performed when a simulation is created and each time it is run.";
+      public static readonly string ShowWarningsForNonFiniteQuantities = "Show a warning for each quantity whose value is NaN or infinite at time t=0.\nThe check is performed when a simulation is created and each time it is run.";
+      public static readonly string CheckForNegativeValues ="Check during the simulation run that amounts which do not allow negative values do not become negative.\nUncheck to turn the check off for all amounts. This solver setting only applies to this simulation and can be changed later in its simulation settings.";
 
       public static class BuildingBlockMolecule
       {
