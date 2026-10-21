@@ -176,14 +176,14 @@ namespace MoBi.Presentation.Presenter.Main
 
       public void Handle(ShowValidationResultsEvent validationResultsEvent)
       {
-         updateNotificationWith(validationResultsEvent.ValidationResult.Messages.Select(m => _notificationMessageMapper.MapFrom(m)));
+         updateNotificationWith(validationResultsEvent.ValidationResult.Messages.Select(m => _notificationMessageMapper.MapFrom(m)), validationResultsEvent.ValidationSettings);
       }
 
-      private void updateNotificationWith(IEnumerable<NotificationMessageDTO> notificationMessages)
+      private void updateNotificationWith(IEnumerable<NotificationMessageDTO> notificationMessages, ValidationSettings validationSettings = null)
       {
          _allNotifications = new NotifyList<NotificationMessageDTO>(_allNotifications);
 
-         notificationMessages.Where(notificationIsVisible).Each(m =>
+         notificationMessages.Where(x => notificationIsVisible(x, validationSettings)).Each(m =>
          {
             if (!_allNotifications.Contains(m))
                _allNotifications.Add(m);
@@ -192,13 +192,13 @@ namespace MoBi.Presentation.Presenter.Main
          bindToView();
       }
 
-      private bool notificationIsVisible(NotificationMessageDTO message)
+      private bool notificationIsVisible(NotificationMessageDTO message, ValidationSettings validationSettings)
       {
          if (isUnresolvedEndosomeForInitialConditionMessage(message))
-            return _userSettings.ShowUnresolvedEndosomeMessagesForInitialConditions;
+            return validationSettings?.ShowUnresolvedEndosomesWarningsForInitialConditions ?? _userSettings.ShowUnresolvedEndosomeMessagesForInitialConditions;
 
          if (isPKSimObserverMessage(message))
-            return _userSettings.ShowPKSimObserverMessages;
+            return validationSettings?.ShowPKSimObserverMessages ?? _userSettings.ShowPKSimObserverMessages;
 
          if (isLogicalNeighborMessageForLiverNeighborhood(message))
             return false;

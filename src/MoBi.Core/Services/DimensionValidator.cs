@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MoBi.Assets;
+using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Extensions;
 using OSPSuite.Core.Domain;
@@ -57,11 +58,17 @@ namespace MoBi.Core.Services
 
       public Task<ValidationResult> Validate(IModel model, SimulationBuilder simulationBuilder) => Validate(new[] { model.Root, model.Neighborhoods }, simulationBuilder);
 
-      public Task<ValidationResult> Validate(IEnumerable<IContainer> containers, SimulationBuilder simulationBuilder)
+      public Task<ValidationResult> Validate(IEnumerable<IContainer> containers, SimulationBuilder simulationBuilder) =>
+         validate(containers, simulationBuilder, new SimulationValidationOptions().ValidationSettingsWith(_userSettings));
+
+      public Task<ValidationResult> Validate(IModel model, SimulationBuilder simulationBuilder, ValidationSettings validationSettings) =>
+         validate(new[] { model.Root, model.Neighborhoods }, simulationBuilder, validationSettings);
+
+      private Task<ValidationResult> validate(IEnumerable<IContainer> containers, SimulationBuilder simulationBuilder, ValidationSettings validationSettings)
       {
          return Task.Run(() =>
          {
-            var validationRun = new ValidationRun(_dimensionParser, _objectPathFactory, _userSettings, _hiddenNotifications, simulationBuilder);
+            var validationRun = new ValidationRun(_dimensionParser, _objectPathFactory, validationSettings, _hiddenNotifications, simulationBuilder);
             containers.Each(c => c.AcceptVisitor(validationRun));
             return validationRun.Result;
          });
@@ -80,17 +87,17 @@ namespace MoBi.Core.Services
 
          public ValidationResult Result { get; } = new ValidationResult();
 
-         public ValidationRun(DimensionParser dimensionParser, IObjectPathFactory objectPathFactory, IMoBiCoreUserSettings userSettings,
+         public ValidationRun(DimensionParser dimensionParser, IObjectPathFactory objectPathFactory, ValidationSettings validationSettings,
             IDictionary<string, string> hiddenNotifications, SimulationBuilder simulationBuilder)
          {
             _dimensionParser = dimensionParser;
             _objectPathFactory = objectPathFactory;
             _hiddenNotifications = hiddenNotifications;
             _simulationBuilder = simulationBuilder;
-            _checkDimensions = userSettings.CheckDimensions;
-            _checkRules = userSettings.CheckRules;
-            _showPKSimDimensionProblemWarnings = userSettings.ShowPKSimDimensionProblemWarnings;
-            _showCannotCalcErrors = userSettings.ShowCannotCalcErrors;
+            _checkDimensions = validationSettings.CheckDimensions;
+            _checkRules = validationSettings.CheckRules;
+            _showPKSimDimensionProblemWarnings = validationSettings.ShowPKSimDimensionProblemWarnings;
+            _showCannotCalcErrors = validationSettings.ShowCannotCalcErrors;
          }
 
          public void Visit(IEntity entity)

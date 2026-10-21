@@ -90,7 +90,7 @@ namespace MoBi.Presentation.Tasks
          _heavyWorkManager.Start(() =>
          {
             var simulationConfiguration = _context.Resolve<ISimulationConfigurationFactory>().CreateFromProjectTemplatesBasedOn(simulationToUpdate.Configuration);
-            var (command, result) = updateSimulation(simulationToUpdate, simulationConfiguration);
+            var (command, result) = updateSimulation(simulationToUpdate, simulationConfiguration, simulationToUpdate.ValidationOptions);
             macroCommand.Add(command);
             validationResult = result;
          }, AppConstants.Captions.UpdatingSimulation);
@@ -152,7 +152,7 @@ namespace MoBi.Presentation.Tasks
          var cloneManager = _context.Resolve<ICloneManagerForBuildingBlock>();
 
          var templateConfiguration = configurationFactory.CreateFromProjectTemplatesBasedOn(result.Simulation.Configuration);
-         result.CreationResult = simulationFactory.CreateModelAndValidate(templateConfiguration, result.Simulation.Model.Name, throwOnInvalid: false);
+         result.CreationResult = simulationFactory.CreateModelAndValidate(templateConfiguration, result.Simulation.Model.Name, throwOnInvalid: false, validationOptions: result.Simulation.ValidationOptions);
          result.ClonedConfiguration = cloneManager.Clone(templateConfiguration);
       }
 
@@ -186,9 +186,11 @@ namespace MoBi.Presentation.Tasks
       public ICommand ConfigureSimulation(IMoBiSimulation simulationToConfigure)
       {
          SimulationConfiguration simulationConfiguration;
+         SimulationValidationOptions validationOptions;
          using (var presenter = _applicationController.Start<ICreateSimulationConfigurationPresenter>())
          {
             simulationConfiguration = presenter.CreateBasedOn(simulationToConfigure, isNew: false);
+            validationOptions = simulationConfiguration == null ? null : presenter.ValidationOptions;
          }
 
          if (simulationConfiguration == null)
@@ -198,7 +200,7 @@ namespace MoBi.Presentation.Tasks
          ValidationResult validationResult = null;
          _heavyWorkManager.Start(() =>
          {
-            (command, validationResult) = updateSimulation(simulationToConfigure, simulationConfiguration);
+            (command, validationResult) = updateSimulation(simulationToConfigure, simulationConfiguration, validationOptions);
          }, AppConstants.Captions.ConfiguringSimulation);
 
          //shown once the heavy work completes so that the dialog is displayed from the UI thread
@@ -209,13 +211,14 @@ namespace MoBi.Presentation.Tasks
 
       private (ICommand<IMoBiContext> command, ValidationResult validationResult) updateSimulation(
          IMoBiSimulation simulationToUpdate,
-         SimulationConfiguration simulationConfigurationReferencingTemplates)
+         SimulationConfiguration simulationConfigurationReferencingTemplates,
+         SimulationValidationOptions validationOptions)
       {
          CreationResult results = null;
          _context.PublishEvent(new ClearNotificationsEvent(MessageOrigin.Simulation));
 
          //create model using referencing templates
-         results = _simulationFactory.CreateModelAndValidate(simulationConfigurationReferencingTemplates, simulationToUpdate.Model.Name);
+         results = _simulationFactory.CreateModelAndValidate(simulationConfigurationReferencingTemplates, simulationToUpdate.Model.Name, validationOptions: validationOptions);
 
          if (results == null)
             return (new MoBiEmptyCommand(), null);
@@ -223,7 +226,7 @@ namespace MoBi.Presentation.Tasks
          //create a clone then that will be saved in the simulation
          var simulationBuildConfiguration = _cloneManager.Clone(simulationConfigurationReferencingTemplates);
 
-         var updateSimulationCommand = new UpdateSimulationCommand(simulationToUpdate, results.Model, results.SimulationBuilder.EntitySources, simulationBuildConfiguration);
+         var updateSimulationCommand = new UpdateSimulationCommand(simulationToUpdate, results.Model, results.SimulationBuilder.EntitySources, simulationBuildConfiguration, validationOptions);
 
          updateSimulationCommand.RunCommand(_context);
 

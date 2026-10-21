@@ -250,7 +250,7 @@ namespace MoBi.Presentation
          A.CallTo(() => _applicationController.Start<ICreateSimulationConfigurationPresenter>()).Returns(_presenter);
          A.CallTo(() => _applicationController.PresenterFor(_simulation)).Returns(A.Fake<IEditSimulationPresenter>());
          A.CallTo(() => _simulationFactory.Create()).Returns(_simulation);
-         A.CallTo(() => _simulationFactory.CreateSimulationAndValidate(_simulationConfiguration, A<string>._)).Returns(new SimulationAndValidationResult(_configuredSimulation, new ValidationResult()));
+         A.CallTo(() => _simulationFactory.CreateSimulationAndValidate(_simulationConfiguration, A<string>._, A<SimulationValidationOptions>._)).Returns(new SimulationAndValidationResult(_configuredSimulation, new ValidationResult()));
       }
 
       protected override void Because()
@@ -280,6 +280,12 @@ namespace MoBi.Presentation
       public void should_start_edit_action_for_the_new_simulation()
       {
          A.CallTo(() => _editTask.Edit(_configuredSimulation)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_create_the_simulation_with_the_validation_options_edited_in_the_wizard()
+      {
+         A.CallTo(() => _simulationFactory.CreateSimulationAndValidate(_simulationConfiguration, A<string>._, _presenter.ValidationOptions)).MustHaveHappened();
       }
    }
 

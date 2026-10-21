@@ -10,5 +10,11 @@ namespace MoBi.Core.Domain.Services
       Task<ValidationResult> Validate(IContainer container, SimulationBuilder simulationBuilder);
       Task<ValidationResult> Validate(IModel model, SimulationBuilder simulationBuilder);
       Task<ValidationResult> Validate(IEnumerable<IContainer> containers, SimulationBuilder simulationBuilder);
+
+      /// <summary>
+      ///    Validates the <paramref name="model" /> using the <paramref name="validationSettings" /> instead of the user
+      ///    settings
+      /// </summary>
+      Task<ValidationResult> Validate(IModel model, SimulationBuilder simulationBuilder, ValidationSettings validationSettings);
    }
 }

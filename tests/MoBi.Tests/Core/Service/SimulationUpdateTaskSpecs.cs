@@ -140,8 +140,8 @@ namespace MoBi.Core.Service
       [Observation]
       public void the_update_should_use_the_validating_create_path_that_throws_on_invalid()
       {
-         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._, true)).MustHaveHappened();
-         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._, false)).MustNotHaveHappened();
+         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._, true, A<SimulationValidationOptions>._)).MustHaveHappened();
+         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._, false, A<SimulationValidationOptions>._)).MustNotHaveHappened();
       }
    }
 
@@ -161,7 +161,7 @@ namespace MoBi.Core.Service
             Model = new Model()
          };
 
-         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._)).Returns(null);
+         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._, A<bool>._, A<SimulationValidationOptions>._)).Returns(null);
       }
 
       protected override void Because()
@@ -197,8 +197,8 @@ namespace MoBi.Core.Service
          var invalidCreationResult = A.Fake<CreationResult>();
          A.CallTo(() => invalidCreationResult.IsInvalid).Returns(true);
 
-         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, "GOOD_MODEL", false)).Returns(creationResult);
-         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, "BAD_MODEL", false)).Returns(invalidCreationResult);
+         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, "GOOD_MODEL", false, A<SimulationValidationOptions>._)).Returns(creationResult);
+         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, "BAD_MODEL", false, A<SimulationValidationOptions>._)).Returns(invalidCreationResult);
       }
 
       protected override void Because()
@@ -239,7 +239,7 @@ namespace MoBi.Core.Service
          A.CallTo(() => simulationBuilder.EntitySources).Returns(new List<SimulationEntitySource> { _entitySource });
          var creationResults = new CreationResult(_model, simulationBuilder);
          _model.Root = new Container();
-         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._)).Returns(creationResults);
+         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._, A<bool>._, A<SimulationValidationOptions>._)).Returns(creationResults);
          A.CallTo(() => _context.CurrentProject).Returns(_moBiProject);
       }
 
@@ -304,7 +304,7 @@ namespace MoBi.Core.Service
          };
 
          A.CallTo(() => _context.CurrentProject).Returns(_moBiProject);
-         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._, true))
+         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._, true, A<SimulationValidationOptions>._))
             .Throws(new ValidationFailedMoBiException("Could not create simulation", new ValidationResult()));
       }
 
@@ -384,7 +384,7 @@ namespace MoBi.Core.Service
 
          var simulationBuilder = new SimulationBuilder(_cloneManagerForModel, _containerMergeTask);
          var creationResults = new CreationResult(_model, simulationBuilder);
-         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._)).Returns(creationResults);
+         A.CallTo(() => _simulationFactory.CreateModelAndValidate(A<SimulationConfiguration>._, A<string>._, A<bool>._, A<SimulationValidationOptions>._)).Returns(creationResults);
       }
 
       protected override void Because()

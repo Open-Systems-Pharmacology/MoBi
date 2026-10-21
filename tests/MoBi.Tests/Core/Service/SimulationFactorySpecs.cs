@@ -23,9 +23,11 @@ namespace MoBi.Core.Service
       private IDimensionValidator _dimensionValidator;
       private IModelConstructor _modelConstructor;
       private IMoBiContext _context;
+      protected ICoreUserSettings _userSettings;
 
       protected override void Context()
       {
+         _userSettings = A.Fake<ICoreUserSettings>();
          _idGenerator = IoC.Resolve<IIdGenerator>();
          _metaDataFactory = IoC.Resolve<ICreationMetaDataFactory>();
          _parameterIdUpdater = A.Fake<ISimulationParameterOriginIdUpdater>();
@@ -41,7 +43,8 @@ namespace MoBi.Core.Service
             _simulationConfigurationFactory,
             _dimensionValidator,
             _modelConstructor,
-            _context);
+            _context,
+            _userSettings);
       }
    }
 
@@ -70,6 +73,53 @@ namespace MoBi.Core.Service
       }
    }
 
+   class When_creating_a_simulation_with_validation_options : concern_for_SimulationFactory
+   {
+      private SimulationConfiguration _simulationConfiguration;
+      private SimulationValidationOptions _validationOptions;
+      private IMoBiSimulation _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulationConfiguration = DomainFactoryForSpecs.CreateDefaultConfiguration();
+         _userSettings.CheckCircularReference = false;
+         _userSettings.WarnForNonFiniteQuantities = true;
+         _validationOptions = new SimulationValidationOptions { CheckCircularReference = true };
+      }
+
+      protected override void Because()
+      {
+         var (simulation, _) = sut.CreateSimulationAndValidate(_simulationConfiguration, "name", _validationOptions);
+         _result = simulation;
+      }
+
+      [Observation]
+      public void should_use_the_options_that_are_set_to_create_the_model()
+      {
+         _simulationConfiguration.PerformCircularReferenceCheck.ShouldBeTrue();
+      }
+
+      [Observation]
+      public void should_use_the_user_settings_for_the_options_that_are_not_set()
+      {
+         _simulationConfiguration.WarnForNonFiniteQuantities.ShouldBeEqualTo(true);
+      }
+
+      [Observation]
+      public void should_store_a_copy_of_the_options_in_the_simulation()
+      {
+         _result.ValidationOptions.ShouldNotBeEqualTo(_validationOptions);
+         _result.ValidationOptions.CheckCircularReference.ShouldBeEqualTo(true);
+      }
+
+      [Observation]
+      public void should_not_store_the_user_settings_for_the_options_that_are_not_set()
+      {
+         _result.ValidationOptions.WarnForNonFiniteQuantities.ShouldBeNull();
+      }
+   }
+
    class When_creating_several_simulations : concern_for_SimulationFactory
    {
       private IMoBiContext _fakeContext;
@@ -87,7 +137,8 @@ namespace MoBi.Core.Service
             IoC.Resolve<ISimulationConfigurationFactory>(),
             IoC.Resolve<IDimensionValidator>(),
             IoC.Resolve<IModelConstructor>(),
-            _fakeContext);
+            _fakeContext,
+            _userSettings);
          _simulationConfiguration = DomainFactoryForSpecs.CreateDefaultConfiguration();
       }
 

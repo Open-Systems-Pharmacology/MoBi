@@ -29,13 +29,19 @@ namespace MoBi.Core.Commands
       private byte[] _simulationEntitySourceSerialization;
       private readonly bool _oldUntraceableChangesState;
       private IReadOnlyCollection<SimulationEntitySource> _newSimulationBuilderEntitySources;
+      private SimulationValidationOptions _updatedValidationOptions;
+      private byte[] _validationOptionsSerialization;
 
-      public UpdateSimulationCommand(IMoBiSimulation simulationToUpdate, IModel newModel, IReadOnlyCollection<SimulationEntitySource> newSimulationBuilderEntitySources, SimulationConfiguration updatedSimulationConfiguration)
-         : this(simulationToUpdate, newModel, newSimulationBuilderEntitySources, updatedSimulationConfiguration, wasChanged: true, newUntraceableChangesState: false)
+      /// <summary>
+      ///    Updates the <paramref name="simulationToUpdate" />. The validation options of the simulation are replaced with
+      ///    <paramref name="updatedValidationOptions" /> unless it is <c>null</c>, in which case they are kept
+      /// </summary>
+      public UpdateSimulationCommand(IMoBiSimulation simulationToUpdate, IModel newModel, IReadOnlyCollection<SimulationEntitySource> newSimulationBuilderEntitySources, SimulationConfiguration updatedSimulationConfiguration, SimulationValidationOptions updatedValidationOptions = null)
+         : this(simulationToUpdate, newModel, newSimulationBuilderEntitySources, updatedSimulationConfiguration, updatedValidationOptions, wasChanged: true, newUntraceableChangesState: false)
       {
       }
 
-      private UpdateSimulationCommand(IMoBiSimulation simulationToUpdate, IModel newModel, IReadOnlyCollection<SimulationEntitySource> newSimulationBuilderEntitySources, SimulationConfiguration updatedSimulationConfiguration, bool wasChanged, bool newUntraceableChangesState)
+      private UpdateSimulationCommand(IMoBiSimulation simulationToUpdate, IModel newModel, IReadOnlyCollection<SimulationEntitySource> newSimulationBuilderEntitySources, SimulationConfiguration updatedSimulationConfiguration, SimulationValidationOptions updatedValidationOptions, bool wasChanged, bool newUntraceableChangesState)
       {
          _hasChanged = wasChanged;
          _newUntraceableChangesState = newUntraceableChangesState;
@@ -44,6 +50,7 @@ namespace MoBi.Core.Commands
          _newModel = newModel;
          _newSimulationBuilderEntitySources = newSimulationBuilderEntitySources;
          _updatedSimulationConfiguration = updatedSimulationConfiguration;
+         _updatedValidationOptions = updatedValidationOptions;
          _simulationId = _simulationToUpdate.Id;
          ObjectType = ObjectTypes.Simulation;
          CommandType = AppConstants.Commands.UpdateCommand;
@@ -55,6 +62,7 @@ namespace MoBi.Core.Commands
          _modelSerialization = context.Serialize(_simulationToUpdate.Model);
          _simulationConfigurationSerialization = context.Serialize(_simulationToUpdate.Configuration);
          _simulationEntitySourceSerialization = context.Serialize(_simulationToUpdate.EntitySources);
+         _validationOptionsSerialization = context.Serialize(_simulationToUpdate.ValidationOptions);
 
          context.UnregisterSimulation(_simulationToUpdate);
          context.PublishEvent(new SimulationUnloadEvent(_simulationToUpdate));
@@ -62,6 +70,9 @@ namespace MoBi.Core.Commands
          var oldIdCache = getEntityIdCache(_simulationToUpdate);
 
          _simulationToUpdate.Update(_updatedSimulationConfiguration, _newModel, _newSimulationBuilderEntitySources);
+
+         if (_updatedValidationOptions != null)
+            _simulationToUpdate.ValidationOptions = _updatedValidationOptions;
 
          updateReferencesToSimulation(context);
 
@@ -119,11 +130,12 @@ namespace MoBi.Core.Commands
          _newModel = context.Deserialize<IModel>(_modelSerialization);
          _updatedSimulationConfiguration = context.Deserialize<SimulationConfiguration>(_simulationConfigurationSerialization);
          _newSimulationBuilderEntitySources = context.Deserialize<SimulationEntitySources>(_simulationEntitySourceSerialization);
+         _updatedValidationOptions = _validationOptionsSerialization == null ? null : context.Deserialize<SimulationValidationOptions>(_validationOptionsSerialization);
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         return new UpdateSimulationCommand(_simulationToUpdate, _newModel, _newSimulationBuilderEntitySources, _updatedSimulationConfiguration, _wasChanged, _oldUntraceableChangesState)
+         return new UpdateSimulationCommand(_simulationToUpdate, _newModel, _newSimulationBuilderEntitySources, _updatedSimulationConfiguration, _updatedValidationOptions, _wasChanged, _oldUntraceableChangesState)
             .AsInverseFor(this);
       }
 
@@ -133,6 +145,7 @@ namespace MoBi.Core.Commands
          _newModel = null;
          _updatedSimulationConfiguration = null;
          _newSimulationBuilderEntitySources = null;
+         _updatedValidationOptions = null;
       }
    }
 }

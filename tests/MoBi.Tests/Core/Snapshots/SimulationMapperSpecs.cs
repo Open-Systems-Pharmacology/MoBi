@@ -12,6 +12,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Services;
 using OSPSuite.Core.Snapshots;
 using OSPSuite.Core.Snapshots.Mappers;
+using ModelSimulationValidationOptions = MoBi.Core.Domain.Model.SimulationValidationOptions;
 
 namespace MoBi.Core.Snapshots
 {
@@ -49,6 +50,7 @@ namespace MoBi.Core.Snapshots
       protected MoBiSimulation _createdSimulation;
       protected bool? _showProgressDuringConstruction;
       protected MoBiSimulation _result;
+      protected ModelSimulationValidationOptions _validationOptionsUsedForConstruction;
 
       protected override async Task Context()
       {
@@ -61,8 +63,9 @@ namespace MoBi.Core.Snapshots
 
          //the factory hands the simulation a clone of the configuration: the clone carries the flag as set during construction
          _createdSimulation = new MoBiSimulation();
-         A.CallTo(() => _simulationFactory.CreateSimulationAndValidate(_configuration, _snapshot.Name)).ReturnsLazily(() =>
+         A.CallTo(() => _simulationFactory.CreateSimulationAndValidate(_configuration, _snapshot.Name, A<ModelSimulationValidationOptions>._)).ReturnsLazily(x =>
          {
+            _validationOptionsUsedForConstruction = x.GetArgument<ModelSimulationValidationOptions>(2);
             _showProgressDuringConstruction = _configuration.ShowProgress;
             _createdSimulation.Configuration = new OSPSuite.Core.Domain.Builder.SimulationConfiguration
             {
@@ -92,6 +95,34 @@ namespace MoBi.Core.Snapshots
       public void should_restore_the_progress_flag_on_the_configuration_kept_by_the_simulation()
       {
          _result.Configuration.ShowProgress.ShouldBeTrue();
+      }
+   }
+
+   public class When_mapping_a_simulation_snapshot_without_validation_options : When_mapping_a_simulation_snapshot
+   {
+      [Observation]
+      public void should_create_the_simulation_with_options_falling_back_to_the_user_settings()
+      {
+         _validationOptionsUsedForConstruction.ShouldNotBeNull();
+         _validationOptionsUsedForConstruction.CheckDimensions.ShouldBeNull();
+         _validationOptionsUsedForConstruction.WarnForNonFiniteQuantities.ShouldBeNull();
+      }
+   }
+
+   public class When_mapping_a_simulation_snapshot_with_validation_options : When_mapping_a_simulation_snapshot
+   {
+      protected override async Task Context()
+      {
+         await base.Context();
+         _snapshot.ValidationOptions = new SimulationValidationOptions { CheckRules = true, WarnForNonFiniteQuantities = false };
+      }
+
+      [Observation]
+      public void should_create_the_simulation_with_the_options_of_the_snapshot()
+      {
+         _validationOptionsUsedForConstruction.CheckRules.ShouldBeEqualTo(true);
+         _validationOptionsUsedForConstruction.WarnForNonFiniteQuantities.ShouldBeEqualTo(false);
+         _validationOptionsUsedForConstruction.CheckDimensions.ShouldBeNull();
       }
    }
 

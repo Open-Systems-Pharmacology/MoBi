@@ -71,7 +71,7 @@ namespace MoBi.BatchTool.Services
       public bool ShowPKSimObserverMessages { get; set; }
       public bool ShowUnresolvedEndosomeMessagesForInitialConditions { get; set; }
       public bool CheckRules { get; set; }
-      public bool CheckCircularReference { get; set; }
+      public bool CheckCircularReference { get; set; } = true;
       public ValidationSettings ValidationSettings { get; private set; }
       public OutputSelections OutputSelections { get; set; }
       public bool GroupParameters { get; set; }

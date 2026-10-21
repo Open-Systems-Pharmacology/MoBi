@@ -56,6 +56,11 @@ public interface IMoBiSimulation : ISimulation, IWithChartTemplates
    bool HasUntraceableChanges { get; set; }
 
    /// <summary>
+   ///    Validation and warning options used when the simulation is created or rebuilt and when it is run
+   /// </summary>
+   SimulationValidationOptions ValidationOptions { get; set; }
+
+   /// <summary>
    ///    Adds an original quantity value so that changes to quantities in the simulation can be tracked.
    ///    There can only be one original quantity value per path, adding a second <paramref name="quantityValue" />
    ///    with identical path has no affect
@@ -87,6 +92,8 @@ public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
    ///    won't be traceable back to a specific building block. This flag is used to indicate that to a user
    /// </summary>
    public bool HasUntraceableChanges { get; set; }
+
+   public SimulationValidationOptions ValidationOptions { get; set; } = new SimulationValidationOptions();
 
    private readonly ICache<string, OriginalQuantityValue> _quantityValueCache = new Cache<string, OriginalQuantityValue>(onMissingKey: key => null);
    private readonly ICache<string, UsedObservedData> _usedObservedData = new Cache<string, UsedObservedData>(x => x.Id);
@@ -276,6 +283,7 @@ public class MoBiSimulation : ModelCoreSimulation, IMoBiSimulation
       _usedObservedData.Clear();
       sourceSimulation.UsedObservedData.Each(x => AddUsedObservedData(x.Clone()));
       HasUntraceableChanges = sourceSimulation.HasUntraceableChanges;
+      ValidationOptions = sourceSimulation.ValidationOptions.Clone();
       DiagramModelXml = sourceSimulation.DiagramModelXml == null ? null : new XElement(sourceSimulation.DiagramModelXml);
 
       _allSimulationAnalyses.Clear();

@@ -10,7 +10,6 @@ using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Presenter.Simulation;
-using MoBi.Presentation.Settings;
 using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
@@ -26,7 +25,6 @@ namespace MoBi.Presentation
    {
       protected ICreateSimulationConfigurationView _view;
       private IModelConstructor _modelConstructor;
-      protected IUserSettings _userSettings;
       private ISimulationFactory _simulationFactory;
       protected ISubPresenterItemManager<ISimulationConfigurationItemPresenter> _subPresenterManager;
       private IDialogCreator _dialogCreator;
@@ -37,11 +35,14 @@ namespace MoBi.Presentation
       protected IModuleConfigurationDTOToModuleConfigurationMapper _moduleConfigurationMapper;
       protected ISimulationConfigurationFactory _simulationConfigurationFactory;
       protected ICloneManagerForBuildingBlock _cloneManager;
+      protected IFinalOptionsPresenter _finalOptionsPresenter;
 
       protected override void Context()
       {
          _view = A.Fake<ICreateSimulationConfigurationView>();
          _subPresenterManager = A.Fake<ISubPresenterItemManager<ISimulationConfigurationItemPresenter>>();
+         _finalOptionsPresenter = A.Fake<IFinalOptionsPresenter>();
+         A.CallTo(() => _subPresenterManager.PresenterAt(SimulationItems.FinalOptions)).Returns(_finalOptionsPresenter);
          _clonedSimulationSettings = new SimulationSettings();
          _moduleConfigurationMapper = A.Fake<IModuleConfigurationDTOToModuleConfigurationMapper>();
 
@@ -50,12 +51,10 @@ namespace MoBi.Presentation
          A.CallTo(() => _modelConstructor.CreateModelFrom(A<SimulationConfiguration>._, A<string>._)).Returns(A.Fake<CreationResult>());
          _cloneManager = A.Fake<ICloneManagerForBuildingBlock>();
          _simulationConfigurationFactory = A.Fake<ISimulationConfigurationFactory>();
-         _userSettings = A.Fake<IUserSettings>();
-         _userSettings.CheckCircularReference = true;
          _simulationFactory = A.Fake<ISimulationFactory>();
          _forbiddenNameRetriever = A.Fake<IForbiddenNamesRetriever>();
          sut = new CreateSimulationConfigurationPresenter(_view, _subPresenterManager, _dialogCreator,
-            _forbiddenNameRetriever, _userSettings, _moduleConfigurationMapper, _simulationConfigurationFactory, _cloneManager);
+            _forbiddenNameRetriever, _moduleConfigurationMapper, _simulationConfigurationFactory, _cloneManager);
 
          _simulation = new MoBiSimulation();
          A.CallTo(() => _simulationFactory.Create()).Returns(_simulation);
@@ -90,6 +89,12 @@ namespace MoBi.Presentation
       {
          _result.ShouldBeNull();
       }
+
+      [Observation]
+      public void should_not_apply_the_final_options()
+      {
+         A.CallTo(() => _finalOptionsPresenter.ApplyOptionsTo(A<SimulationConfiguration>._)).MustNotHaveHappened();
+      }
    }
 
    public class configuring_an_existing_simulation_configuration : concern_for_CreateSimulationConfigurationPresenter
@@ -122,9 +127,9 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_set_the_check_circular_reference_according_to_value_in_user_settings()
+      public void should_edit_the_final_options_with_the_validation_options_of_the_simulation()
       {
-         _simulationConfiguration.PerformCircularReferenceCheck.ShouldBeEqualTo(_userSettings.CheckCircularReference);
+         A.CallTo(() => _finalOptionsPresenter.Edit(_simulation.Configuration, _simulation.ValidationOptions)).MustHaveHappened();
       }
 
       [Observation]
@@ -132,14 +137,24 @@ namespace MoBi.Presentation
       {
          _result.SimulationSettings.ShouldBeEqualTo(_clonedSimulationSettings);
       }
+
+      [Observation]
+      public void should_apply_the_final_options_to_the_resulting_simulation_configuration()
+      {
+         A.CallTo(() => _finalOptionsPresenter.ApplyOptionsTo(_result)).MustHaveHappened();
+      }
    }
 
    public class creating_a_new_simulation_configuration : concern_for_CreateSimulationConfigurationPresenter
    {
+      private SimulationValidationOptions _editedValidationOptions;
+
       protected override void Context()
       {
          base.Context();
          A.CallTo(() => _view.Canceled).Returns(false);
+         _editedValidationOptions = new SimulationValidationOptions { CheckDimensions = false };
+         A.CallTo(() => _finalOptionsPresenter.ValidationOptions).Returns(_editedValidationOptions);
       }
 
       protected override void Because()
@@ -154,9 +169,27 @@ namespace MoBi.Presentation
       }
 
       [Observation]
-      public void should_set_the_check_circular_reference_according_to_value_in_user_settings()
+      public void should_edit_the_final_options_with_the_validation_options_of_the_simulation()
       {
-         _simulationConfiguration.PerformCircularReferenceCheck.ShouldBeEqualTo(_userSettings.CheckCircularReference);
+         A.CallTo(() => _finalOptionsPresenter.Edit(_simulation.Configuration, _simulation.ValidationOptions)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_return_the_validation_options_edited_in_the_final_options()
+      {
+         sut.ValidationOptions.ShouldBeEqualTo(_editedValidationOptions);
+      }
+
+      [Observation]
+      public void should_apply_the_final_options_to_the_new_simulation_configuration()
+      {
+         A.CallTo(() => _finalOptionsPresenter.ApplyOptionsTo(A<SimulationConfiguration>._)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_disable_the_final_options_page_until_the_calculation_methods_page_is_reached()
+      {
+         A.CallTo(() => _view.SetControlEnabled(SimulationItems.FinalOptions, false)).MustHaveHappened();
       }
    }
 

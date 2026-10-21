@@ -25,6 +25,7 @@ namespace MoBi.Core.Serialization.Xml.Serializer
          Map(x => x.HasUpToDateResults);
          Map(x => x.OutputMappings);
          Map(x => x.HasUntraceableChanges);
+         Map(x => x.ValidationOptions);
          MapEnumerable(x => x.OriginalQuantityValues, x => x.AddOriginalQuantityValue);
          MapEnumerable(x => x.UsedObservedData, x => x.AddUsedObservedData);
       }
