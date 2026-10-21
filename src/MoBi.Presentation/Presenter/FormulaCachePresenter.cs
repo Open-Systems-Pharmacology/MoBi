@@ -85,7 +85,11 @@ namespace MoBi.Presentation.Presenter
 
       private void updateFormulasInView(IFormula selectedFormula)
       {
-         Select(selectedFormula);
+         if (selectedFormula == null)
+            clearEditView();
+         else
+            Select(selectedFormula);
+
          _dtoFormulaBuilders = _cache.MapAllUsing(_formulaBuilderToDTOFormulaBuilderMapper);
          _view.Show(_dtoFormulaBuilders);
       }
@@ -208,6 +212,12 @@ namespace MoBi.Presentation.Presenter
          _view.SetEditView(_editPresenter.BaseView);
          _editPresenter.InitializeWith(CommandCollector);
          _editPresenter.Edit(formula);
+      }
+
+      private void clearEditView()
+      {
+         _editPresenter = null;
+         _view.ClearEditView();
       }
 
       private bool formulaIsBeingEdited(IFormula formula)

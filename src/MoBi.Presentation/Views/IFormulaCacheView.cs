@@ -9,6 +9,7 @@ namespace MoBi.Presentation.Views
    {
       void Show(IEnumerable<FormulaBuilderDTO> dtos);
       void SetEditView(IView subView);
+      void ClearEditView();
       void Select(FormulaBuilderDTO dtoFormulaBuilder);
    }
 }

@@ -81,6 +81,8 @@ namespace MoBi.UI.Views
 
       public void SetEditView(IView subView) => splitContainerControl1.Panel2.FillWith(subView);
 
+      public void ClearEditView() => splitContainerControl1.Panel2.Clear();
+
       public void Select(FormulaBuilderDTO dtoFormulaBuilder)
       {
          var rowHandle = _gridBinder.RowHandleFor(dtoFormulaBuilder);

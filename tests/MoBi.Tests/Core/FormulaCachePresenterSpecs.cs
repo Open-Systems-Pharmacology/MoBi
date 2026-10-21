@@ -168,6 +168,56 @@ namespace MoBi.Core
       {
          _buildingBlock.FormulaCache.ShouldNotContain(_formula);
       }
+
+      [Observation]
+      public void the_edit_view_should_be_cleared_because_no_formula_remains()
+      {
+         A.CallTo(() => _view.ClearEditView()).MustHaveHappened();
+      }
+   }
+
+   public class When_removing_a_formula_and_other_formulas_remain_in_the_cache : concern_for_FormulaCachePresenter
+   {
+      private FormulaBuilderDTO _dtoFormula;
+      private IBuildingBlock _buildingBlock;
+      private IFormula _formula;
+      private IFormula _remainingFormula;
+      private IEditTypedFormulaPresenter _editFormulaPresenter;
+
+      protected override void Context()
+      {
+         base.Context();
+         _buildingBlock = new MoBiSpatialStructure();
+         _formula = new ExplicitFormula().WithName("Formula").WithId("F1");
+         _remainingFormula = new ExplicitFormula().WithName("Remaining").WithId("F2");
+         _buildingBlock.AddFormula(_formula);
+         _buildingBlock.AddFormula(_remainingFormula);
+         _editFormulaPresenter = A.Fake<IEditTypedFormulaPresenter>();
+         A.CallTo(() => _formulaPresenterCache.PresenterFor(A<IFormula>._)).Returns(_editFormulaPresenter);
+         sut.InitializeWith(A.Fake<ICommandCollector>());
+         sut.Edit(_buildingBlock);
+         _dtoFormula = new FormulaBuilderDTO(_formula);
+         A.CallTo(() => _formulaChecker.FormulaUsedIn(_buildingBlock, _formula)).Returns(false);
+         A.CallTo(() => _dialogCreator.MessageBoxYesNo(AppConstants.Captions.ReallyDeleteFormula(_formula.Name), ViewResult.Yes))
+            .Returns(ViewResult.Yes);
+      }
+
+      protected override void Because()
+      {
+         sut.Remove(_dtoFormula);
+      }
+
+      [Observation]
+      public void the_edit_view_should_not_be_cleared()
+      {
+         A.CallTo(() => _view.ClearEditView()).MustNotHaveHappened();
+      }
+
+      [Observation]
+      public void the_remaining_formula_should_be_edited()
+      {
+         A.CallTo(() => _editFormulaPresenter.Edit(_remainingFormula)).MustHaveHappened();
+      }
    }
 
    public class When_cloning_a_formula : concern_for_FormulaCachePresenter
