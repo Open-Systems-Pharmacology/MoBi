@@ -1731,6 +1731,8 @@ namespace MoBi.Assets
          public static readonly string ShowUnableCalculateWarnings = "Show warnings when formulas dimension could not be calculated";
          public static readonly string ValidatePKSimStandardObserver = "Show warnings from PK-Sim standard observers";
          public static readonly string ShowUnresolvedEndosomeWarningsForInitialConditions = "Show warnings for unresolved endosome containers";
+         public static readonly string CircularReferenceCheck = "Perform circular reference check";
+         public static readonly string ValidationOptionFromUserSettings = "User setting";
          public static readonly string PlotProcessRateParameter = "Plot process rate parameter";
          public static readonly string Source = "Source";
          public static readonly string Target = "Target";
