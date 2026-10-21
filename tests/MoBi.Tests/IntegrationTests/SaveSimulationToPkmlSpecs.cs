@@ -1,22 +1,28 @@
 using System.Linq;
 using System.Xml.Linq;
+using FakeItEasy;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Serialization.Exchange;
-using MoBi.Core.Serialization.Xml;
 using MoBi.Core.Services;
 using MoBi.Presentation.Tasks;
+using MoBi.Presentation.Tasks.Edit;
+using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Formulas;
+using OSPSuite.Core.Domain.Services;
+using OSPSuite.Core.Domain.Services.ParameterIdentifications;
+using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Serialization.Exchange;
+using OSPSuite.Core.Serialization.SimModel.Services;
+using OSPSuite.Core.Services;
 using OSPSuite.Utility;
 using OSPSuite.Utility.Container;
 using OSPSuite.Utility.Extensions;
 
 namespace MoBi.IntegrationTests
 {
-   public abstract class concern_for_MoBiSimulationPersistor : ContextWithLoadedProject
+   public abstract class concern_for_saving_a_simulation_to_pkml : ContextWithLoadedProject
    {
       protected IMoBiSimulation _simulation;
       protected IMoBiSimulation _reloadedSimulation;
@@ -30,7 +36,11 @@ namespace MoBi.IntegrationTests
          ChangeSimulation();
 
          _pkmlFile = FileHelper.GenerateTemporaryFileName();
-         IoC.Resolve<IMoBiSimulationPersistor>().Save(_simulation, _pkmlFile);
+         var dialogCreator = A.Fake<IDialogCreator>();
+         A.CallTo(() => dialogCreator.AskForFileToSave(A<string>._, A<string>._, A<string>._, A<string>._, A<string>._)).Returns(_pkmlFile);
+         var editTasksForSimulation = new EditTasksForSimulation(A.Fake<IInteractionTaskContext>(), IoC.Resolve<ISimulationPersistor>(), dialogCreator,
+            A.Fake<IDataRepositoryExportTask>(), A.Fake<IModelReportCreator>(), A.Fake<ISimModelExporter>(), A.Fake<IDimensionFactory>(), A.Fake<IParameterIdentificationSimulationPathUpdater>());
+         editTasksForSimulation.Save(_simulation);
 
          var simulationTransfer = IoC.Resolve<ISerializationTask>().Load<SimulationTransfer>(_pkmlFile);
          _reloadedSimulation = simulationTransfer.Simulation.DowncastTo<IMoBiSimulation>();
@@ -51,7 +61,7 @@ namespace MoBi.IntegrationTests
       }
    }
 
-   public class When_saving_a_simulation_with_tracked_changes_to_pkml : concern_for_MoBiSimulationPersistor
+   public class When_saving_a_simulation_with_tracked_changes_to_pkml : concern_for_saving_a_simulation_to_pkml
    {
       private IParameter _changedParameter;
 
@@ -106,21 +116,20 @@ namespace MoBi.IntegrationTests
       }
 
       [Observation]
-      public void should_save_a_file_that_can_still_be_loaded_as_a_core_simulation()
+      public void should_save_a_file_that_can_be_loaded_as_a_core_simulation_transfer()
       {
          var simulationTransfer = IoC.Resolve<ISimulationPersistor>().Load(_pkmlFile);
          simulationTransfer.Simulation.Model.ShouldNotBeNull();
+         simulationTransfer.OriginalQuantityValues.Count.ShouldBeEqualTo(2);
       }
    }
 
-   public class When_saving_a_simulation_without_tracked_changes_to_pkml : concern_for_MoBiSimulationPersistor
+   public class When_saving_a_simulation_without_tracked_changes_to_pkml : concern_for_saving_a_simulation_to_pkml
    {
       [Observation]
       public void should_not_add_tracked_changes_to_the_file()
       {
-         var simulationElement = XElement.Load(_pkmlFile).Element(Constants.Serialization.SIMULATION);
-         simulationElement.Element(SerializationConstants.OriginalQuantityValues).ShouldBeNull();
-         simulationElement.Attribute(SerializationConstants.HasUntraceableChanges).ShouldBeNull();
+         XElement.Load(_pkmlFile).Element(nameof(SimulationTransfer.OriginalQuantityValues)).ShouldBeNull();
       }
 
       [Observation]

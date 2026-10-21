@@ -1,5 +1,4 @@
-﻿using MoBi.Core.Domain;
-using MoBi.Core.Services;
+﻿using MoBi.Core.Services;
 using MoBi.HelpersForTests;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;

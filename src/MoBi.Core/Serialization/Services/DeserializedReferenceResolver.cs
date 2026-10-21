@@ -37,6 +37,7 @@ namespace MoBi.Core.Serialization.Services
             case SimulationTransfer simulationTransfer:
                var sim = simulationTransfer.Simulation.DowncastTo<IMoBiSimulation>();
                updateOutputMappings(sim, simulationTransfer.OutputMappings);
+               updateTrackedChanges(sim, simulationTransfer);
                resolveReferences(sim);
                break;
             case IModel model:
@@ -53,6 +54,15 @@ namespace MoBi.Core.Serialization.Services
          simulation.OutputMappings = outputMappings;
          //It is required to update the references as the simulation created may have another reference as the one deserialized
          outputMappings.Each(x => x.UpdateSimulation(simulation));
+      }
+
+      private void updateTrackedChanges(IMoBiSimulation simulation, SimulationTransfer simulationTransfer)
+      {
+         //The changes made to the simulation are exported in the transfer so that the pkml remains a core simulation
+         simulationTransfer.OriginalQuantityValues?.Each(simulation.AddOriginalQuantityValue);
+
+         if (simulationTransfer.HasUntraceableChanges)
+            simulation.HasUntraceableChanges = true;
       }
 
       private void resolveReferences(IMoBiSimulation simulation)

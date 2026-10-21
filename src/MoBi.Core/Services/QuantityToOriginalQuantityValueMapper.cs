@@ -1,5 +1,4 @@
-﻿using MoBi.Core.Domain;
-using OSPSuite.Core.Domain;
+﻿using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Utility;
 

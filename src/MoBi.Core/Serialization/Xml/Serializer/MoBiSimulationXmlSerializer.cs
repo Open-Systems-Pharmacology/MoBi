@@ -24,9 +24,8 @@ namespace MoBi.Core.Serialization.Xml.Serializer
          Map(x => x.ParameterIdentificationWorkingDirectory);
          Map(x => x.HasUpToDateResults);
          Map(x => x.OutputMappings);
-         //Mapping names are shared with the MoBiSimulationPersistor, which writes these values when exporting to pkml
-         Map(x => x.HasUntraceableChanges).WithMappingName(SerializationConstants.HasUntraceableChanges);
-         MapEnumerable(x => x.OriginalQuantityValues, x => x.AddOriginalQuantityValue).WithMappingName(SerializationConstants.OriginalQuantityValues);
+         Map(x => x.HasUntraceableChanges);
+         MapEnumerable(x => x.OriginalQuantityValues, x => x.AddOriginalQuantityValue);
          MapEnumerable(x => x.UsedObservedData, x => x.AddUsedObservedData);
       }
 

@@ -2,7 +2,6 @@
 using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Serialization.Exchange;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Tasks.Interaction;
 using OSPSuite.BDDHelper;
@@ -11,6 +10,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.Services.ParameterIdentifications;
 using OSPSuite.Core.Domain.UnitSystem;
+using OSPSuite.Core.Serialization.Exchange;
 using OSPSuite.Core.Serialization.SimModel.Services;
 using OSPSuite.Core.Services;
 
@@ -19,7 +19,7 @@ namespace MoBi.Presentation.Tasks
    public abstract class concern_for_EditTasksForSimulation : ContextSpecification<IEditTasksForSimulation>
    {
       protected IInteractionTaskContext _context;
-      protected IMoBiSimulationPersistor _simulationPersistor;
+      protected ISimulationPersistor _simulationPersistor;
       protected IDialogCreator _dialogCreator;
       private IDataRepositoryExportTask _dataRepositoryTask;
       private ISimModelExporter _simulationModelExporter;
@@ -33,7 +33,7 @@ namespace MoBi.Presentation.Tasks
       {
          _project = new MoBiProject();
          _context = A.Fake<IInteractionTaskContext>();
-         _simulationPersistor = A.Fake<IMoBiSimulationPersistor>();
+         _simulationPersistor = A.Fake<ISimulationPersistor>();
          _dialogCreator = A.Fake<IDialogCreator>();
          _dataRepositoryTask = A.Fake<IDataRepositoryExportTask>();
          _simulationModelExporter = A.Fake<ISimModelExporter>();
@@ -81,13 +81,20 @@ namespace MoBi.Presentation.Tasks
    {
       private IMoBiSimulation _simulation;
       private string _filePath;
+      private OriginalQuantityValue _originalQuantityValue;
+      private SimulationTransfer _savedSimulationTransfer;
 
       protected override void Context()
       {
          base.Context();
          _simulation = new MoBiSimulation().WithName("Sim");
+         _originalQuantityValue = new OriginalQuantityValue { Path = "Organism|Volume", Value = 1, Type = OriginalQuantityValue.Types.Quantity };
+         _simulation.AddOriginalQuantityValue(_originalQuantityValue);
+         _simulation.HasUntraceableChanges = true;
          _filePath = "C:\\temp\\Simulation_Sim.pkml";
          A.CallTo(() => _dialogCreator.AskForFileToSave(A<string>._, A<string>._, A<string>._, A<string>._, A<string>._)).Returns(_filePath);
+         A.CallTo(() => _simulationPersistor.Save(A<SimulationTransfer>._, _filePath))
+            .Invokes(x => _savedSimulationTransfer = x.GetArgument<SimulationTransfer>(0));
       }
 
       protected override void Because()
@@ -96,9 +103,16 @@ namespace MoBi.Presentation.Tasks
       }
 
       [Observation]
-      public void should_save_the_simulation_with_its_tracked_changes_to_the_selected_file()
+      public void should_save_the_simulation_to_the_selected_file()
       {
-         A.CallTo(() => _simulationPersistor.Save(_simulation, _filePath)).MustHaveHappened();
+         _savedSimulationTransfer.Simulation.ShouldBeEqualTo(_simulation);
+      }
+
+      [Observation]
+      public void should_save_the_changes_tracked_in_the_simulation()
+      {
+         _savedSimulationTransfer.OriginalQuantityValues.ShouldOnlyContain(_originalQuantityValue);
+         _savedSimulationTransfer.HasUntraceableChanges.ShouldBeTrue();
       }
    }
 
@@ -121,7 +135,7 @@ namespace MoBi.Presentation.Tasks
       [Observation]
       public void should_not_save_the_simulation()
       {
-         A.CallTo(() => _simulationPersistor.Save(A<IMoBiSimulation>._, A<string>._)).MustNotHaveHappened();
+         A.CallTo(() => _simulationPersistor.Save(A<SimulationTransfer>._, A<string>._)).MustNotHaveHappened();
       }
    }
 
