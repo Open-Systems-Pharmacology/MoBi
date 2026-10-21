@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MoBi.Assets;
 using MoBi.CLI.Core.RunOptions;
 using MoBi.Core;
+using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Serialization.ORM;
 using MoBi.Core.Snapshots;
@@ -163,7 +164,7 @@ namespace MoBi.CLI.Core.Services
             ProjectName = project.Name,
          };
 
-         _simulationPersistor.Save(new SimulationTransfer { Simulation = simulation }, simulationExportOptions.TargetPathFor(simulation, Constants.Filter.PKML_EXTENSION));
+         _simulationPersistor.Save(simulation.ToSimulationTransfer(), simulationExportOptions.TargetPathFor(simulation, Constants.Filter.PKML_EXTENSION));
 
          return simulationExport;
       }

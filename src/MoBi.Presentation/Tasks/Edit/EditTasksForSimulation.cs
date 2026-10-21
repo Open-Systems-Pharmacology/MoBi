@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
+using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Extensions;
 using MoBi.Presentation.Presenter;
@@ -177,13 +178,7 @@ namespace MoBi.Presentation.Tasks.Edit
          if (filePath.IsNullOrEmpty()) 
             return;
 
-         //Tracked changes are exported so that they are restored when the pkml is loaded back into MoBi
-         _simulationPersistor.Save(new SimulationTransfer
-         {
-            Simulation = simulation,
-            OriginalQuantityValues = simulation.OriginalQuantityValues.ToList(),
-            HasUntraceableChanges = simulation.HasUntraceableChanges
-         }, filePath);
+         _simulationPersistor.Save(simulation.ToSimulationTransfer(), filePath);
       }
 
       public void ExportSimModelXml(IMoBiSimulation simulation)

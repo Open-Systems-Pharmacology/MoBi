@@ -154,6 +154,8 @@ namespace MoBi.CLI
       private MoBiSimulation _moBiSimulation;
       private ISession _session;
       private ITransaction _transaction;
+      private OriginalQuantityValue _originalQuantityValue;
+      private SimulationTransfer _exportedSimulationTransfer;
 
       protected override async Task Context()
       {
@@ -166,6 +168,11 @@ namespace MoBi.CLI
          _simulationName = "S1";
          _simulation = new Simulation { Name = _simulationName };
          _moBiSimulation = new MoBiSimulation { Name = _simulationName };
+         _originalQuantityValue = new OriginalQuantityValue { Path = "the|path", Value = 5, Type = OriginalQuantityValue.Types.Quantity };
+         _moBiSimulation.AddOriginalQuantityValue(_originalQuantityValue);
+         _moBiSimulation.HasUntraceableChanges = true;
+         A.CallTo(() => _simulationPersistor.Save(A<SimulationTransfer>._, A<string>._))
+            .Invokes(x => _exportedSimulationTransfer = x.GetArgument<SimulationTransfer>(0));
 
          _expectedSimulationPath = Path.ChangeExtension(Path.Combine(_expectedOutputPath, _simulationName, _simulationName), Constants.Filter.PKML_EXTENSION);
 
@@ -253,6 +260,14 @@ namespace MoBi.CLI
       public void should_only_export_the_simulation_required_for_the_qualification()
       {
          A.CallTo(() => _simulationPersistor.Save(A<SimulationTransfer>._, A<string>._)).MustHaveHappened(1, Times.Exactly);
+      }
+
+      [Observation]
+      public void should_export_the_simulation_with_the_changes_tracked_in_the_simulation()
+      {
+         _exportedSimulationTransfer.Simulation.ShouldBeEqualTo(_moBiSimulation);
+         _exportedSimulationTransfer.OriginalQuantityValues.ShouldOnlyContain(_originalQuantityValue);
+         _exportedSimulationTransfer.HasUntraceableChanges.ShouldBeTrue();
       }
 
       [Observation]
