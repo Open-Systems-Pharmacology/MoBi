@@ -1370,8 +1370,6 @@ namespace MoBi.Assets
             return $"'{display}' are not imported to prevent errors, because it is already imported as child of another Container. \n You may add them in a second step if necessary";
          }
 
-         public static string BuildingBlockNotFoundFor(IObjectBase objectBase) => $"BuildingBlock not found for {objectBase.Name}";
-
          public static string UnknownDimension(string name) => $"Dimension '{name}' not available in DimensionFactory.";
 
          public static string CouldNotFindDimensionFromUnits(string unit) => $"Could not find the dimension for this unit: {unit}";

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using MoBi.Assets;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Visitor;
 using MoBi.Core.Domain.Model;
@@ -41,14 +39,13 @@ namespace MoBi.Core.Services
 
             if (objectBase is IBuildingBlock simulationBuildingBlock)
                return typeAndNameMatchedBuildingBlockFor(simulationBuildingBlock, allBuildingBlocks);
-            
-            _entity = objectBase as IEntity;
-            
-            if (_entity == null)
-               throw new ArgumentException(AppConstants.Exceptions.BuildingBlockNotFoundFor(objectBase));
+
+            //any other object (e.g. the model, for which an error is reported when it cannot be built) is not defined in a building block
+            if (!(objectBase is IEntity entity))
+               return null;
 
             //looking for the first building block containing the root container or the entity itself if null
-            _entity = _entity.RootContainer ?? _entity;
+            _entity = entity.RootContainer ?? entity;
             _found = false;
             return allBuildingBlocks.FirstOrDefault(containsEntity);
          }
