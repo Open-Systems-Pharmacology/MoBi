@@ -84,7 +84,8 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public void Visit(InitialConditionsBuildingBlock objToVisit)
       {
-         retrieveTask<InitialConditionsBuildingBlock>(objToVisit);
+         //the initial conditions task is generic and is not registered under IInteractionTasksForBuildingBlock<Module, InitialConditionsBuildingBlock>
+         _task = _container.Resolve<IInitialConditionsTask<InitialConditionsBuildingBlock>>();
       }
 
       public void Visit(ParameterValuesBuildingBlock objToVisit)
