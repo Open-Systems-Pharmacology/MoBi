@@ -272,15 +272,17 @@ namespace MoBi.Presentation.Presenter.Main
          _observedDataInExplorerPresenter.GroupObservedDataByCategory(parentNode, category);
       }
 
-      public override bool RemoveDataUnderClassification(ITreeNode<IClassification> classificationNode)
+      public override bool RemoveDataUnderClassifications(IReadOnlyList<ITreeNode<IClassification>> classificationNodes)
       {
-         if (classificationNode.Tag.ClassificationType == ClassificationType.ObservedData)
-            return _observedDataInExplorerPresenter.RemoveObservedDataUnder(classificationNode);
+         var classificationType = classificationNodes.First().Tag.ClassificationType;
 
-         if (classificationNode.Tag.ClassificationType != ClassificationType.Module)
+         if (classificationType == ClassificationType.ObservedData)
+            return _observedDataInExplorerPresenter.RemoveObservedDataUnder(classificationNodes);
+
+         if (classificationType != ClassificationType.Module)
             return false;
 
-         var allModules = classificationNode.AllNodes<ModuleNode>().Select(x => x.Tag.Subject).ToList();
+         var allModules = classificationNodes.SelectMany(x => x.AllNodes<ModuleNode>()).Select(x => x.Tag.Subject).ToList();
          return !allModules.Any() || _interactionTaskForModule.Remove(allModules);
       }
 

@@ -268,17 +268,17 @@ namespace MoBi.Presentation.Presenter.Main
          /*no category for now*/
       }
 
-      public override bool RemoveDataUnderClassification(ITreeNode<IClassification> classificationNode)
+      public override bool RemoveDataUnderClassifications(IReadOnlyList<ITreeNode<IClassification>> classificationNodes)
       {
-         if (classificationNode.Tag.ClassificationType == ClassificationType.Simulation)
+         if (classificationNodes.First().Tag.ClassificationType == ClassificationType.Simulation)
          {
-            IReadOnlyList<IMoBiSimulation> allSimulations = classificationNode.AllNodes<SimulationNode>().Select(x => x.Tag.Simulation).ToList();
+            IReadOnlyList<IMoBiSimulation> allSimulations = classificationNodes.SelectMany(x => x.AllNodes<SimulationNode>()).Select(x => x.Tag.Simulation).ToList();
             var command = _interactionTasksForSimulation.RemoveMultipleSimulations(allSimulations);
             _context.AddToHistory(command);
             return !command.IsEmpty();
          }
 
-         return _parameterAnalysablesInExplorerPresenter.RemoveDataUnderClassification(classificationNode);
+         return _parameterAnalysablesInExplorerPresenter.RemoveDataUnderClassifications(classificationNodes);
       }
    }
 }
