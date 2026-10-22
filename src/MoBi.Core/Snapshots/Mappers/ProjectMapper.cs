@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using MoBi.Assets;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Exceptions;
+using MoBi.Core.Extensions;
 using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
 using Newtonsoft.Json;
@@ -148,7 +150,7 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
             }
             catch (Exception e) when (!e.IsOutOfMemory())
             {
-               _logger.AddException(e, projectSnapshot.Name);
+               logSimulationLoadFailure(e, projectSnapshot.Name);
                _logger.AddError(AppConstants.Exceptions.CannotLoadSimulation(snapshot.Name), projectSnapshot.Name);
                return false;
             }
@@ -212,6 +214,31 @@ public class ProjectMapper : ProjectMapper<ModelProject, SnapshotProject, Projec
       await updateProjectClassifications(projectSnapshot, snapshotContext);
 
       return project;
+   }
+
+   private void logSimulationLoadFailure(Exception exception, string category)
+   {
+      //the message of a failed validation only points to the notification view, which a snapshot load may not have (e.g. the CLI)
+      if (exception is ValidationFailedMoBiException { ValidationResult: { } validationResult })
+         validationResult.Messages.Each(x => logValidationMessage(x, category));
+      else
+         _logger.AddException(exception, category);
+   }
+
+   private void logValidationMessage(ValidationMessage validationMessage, string category)
+   {
+      switch (validationMessage.NotificationType)
+      {
+         case NotificationType.Error:
+            _logger.AddError(validationMessage.TextWithDetails(), category);
+            break;
+         case NotificationType.Warning:
+            _logger.AddWarning(validationMessage.TextWithDetails(), category);
+            break;
+         default:
+            _logger.AddInfo(validationMessage.TextWithDetails(), category);
+            break;
+      }
    }
 
    private ExpressionProfileBuildingBlock loadExpressionProfileFromSnapshotAndUpdateValues(ExpressionProfileSnapshot expressionProfileSnapshot, ModelProject project)

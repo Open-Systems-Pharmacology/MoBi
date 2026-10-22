@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using FakeItEasy;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
@@ -30,12 +29,18 @@ namespace MoBi.Core.Service
       }
    }
 
-   internal class When_asking_building_block_retriever_to_get_a_buiding_block_for_an_objectbase_and_no_building_block_can_be_found : concern_for_BuildingBlockRetriever
+   internal class When_asking_building_block_retriever_to_get_a_buiding_block_for_an_objectbase_that_is_not_an_entity : concern_for_BuildingBlockRetriever
    {
       [Observation]
-      public void should_throw_an_argument_exception()
+      public void should_return_null()
       {
-         The.Action(() => sut.GetBuildingBlockFor(A.Fake<IObjectBase>(), A.Fake<IBuildingBlock>())).ShouldThrowAn<ArgumentException>();
+         sut.GetBuildingBlockFor(A.Fake<IObjectBase>(), A.Fake<IBuildingBlock>()).ShouldBeNull();
+      }
+
+      [Observation]
+      public void should_return_null_for_a_model()
+      {
+         sut.GetBuildingBlockFor(new Model().WithName("MyModel"), null).ShouldBeNull();
       }
    }
 

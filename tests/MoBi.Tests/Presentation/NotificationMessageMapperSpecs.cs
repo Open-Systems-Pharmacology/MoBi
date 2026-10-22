@@ -1,5 +1,7 @@
-﻿using FakeItEasy;
+﻿using System.Collections.Generic;
+using FakeItEasy;
 using MoBi.Core;
+using MoBi.Core.Helper;
 using MoBi.Core.Services;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter.Main;
@@ -9,6 +11,7 @@ using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
+using IBuildingBlockRepository = MoBi.Core.Domain.Repository.IBuildingBlockRepository;
 
 namespace MoBi.Presentation
 {
@@ -84,6 +87,34 @@ namespace MoBi.Presentation
       public void should_have_retrieved_the_object_type()
       {
          _result.ObjectType.ShouldBeEqualTo(_objectType);
+      }
+   }
+
+   public class When_mapping_a_validation_message_reported_for_the_model_to_a_notification_message : ContextSpecification<INotificationMessageMapper>
+   {
+      private IModel _model;
+      private NotificationMessageDTO _result;
+
+      protected override void Context()
+      {
+         var buildingBlockRepository = A.Fake<IBuildingBlockRepository>();
+         A.CallTo(() => buildingBlockRepository.All()).Returns(new List<IBuildingBlock>());
+         sut = new NotificationMessageMapper(new ObjectTypeResolver(), new BuildingBlockRetriever(buildingBlockRepository));
+         _model = new Model().WithName("MyModel").WithId("ModelId");
+      }
+
+      protected override void Because()
+      {
+         _result = sut.MapFrom(new ValidationMessage(NotificationType.Error, "The model could not be built", _model, null));
+      }
+
+      [Observation]
+      public void should_create_a_notification_for_the_model_that_is_not_defined_in_a_building_block()
+      {
+         _result.Object.ShouldBeEqualTo(_model);
+         _result.ObjectName.ShouldBeEqualTo("MyModel");
+         _result.BuildingBlock.ShouldBeNull();
+         _result.Type.ShouldBeEqualTo(NotificationType.Error);
       }
    }
 

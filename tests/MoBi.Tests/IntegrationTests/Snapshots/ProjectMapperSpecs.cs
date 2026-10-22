@@ -8,6 +8,7 @@ using MoBi.Assets;
 using MoBi.Core;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Exceptions;
 using MoBi.Core.Serialization.Xml.Services;
 using MoBi.Core.Services;
 using MoBi.Core.Snapshots.Mappers;
@@ -809,6 +810,63 @@ namespace MoBi.IntegrationTests.Snapshots
       public void should_warn_that_not_all_simulations_were_loaded()
       {
          A.CallTo(() => _ospSuiteLogger.AddToLog(A<string>.That.Contains("2/3"), LogLevel.Warning, A<string>._)).MustHaveHappened();
+      }
+   }
+
+   internal class When_mapping_a_snapshot_where_the_model_of_a_simulation_cannot_be_created : concern_for_ProjectMapper
+   {
+      private SnapshotProject _snapshot;
+      private MoBiProject _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         _snapshot = sut.MapToSnapshot(_project).Result;
+
+         _simulationMapper = A.Fake<SimulationMapper>();
+         CreateSut();
+
+         var validationResult = new ValidationResult();
+         validationResult.AddMessage(NotificationType.Error, new Parameter().WithName("P1"), "Unable to resolve path 'A|B'");
+         validationResult.AddMessage(NotificationType.Warning, new Parameter().WithName("P2"), "P2 was removed", details: new[] { "in C1", "in C2" });
+         A.CallTo(() => _simulationMapper.MapToModel(_snapshot.Simulations[0], A<SimulationContext>._))
+            .Throws(new ValidationFailedMoBiException(AppConstants.Exceptions.CouldNotCreateSimulation, validationResult));
+      }
+
+      protected override void Because()
+      {
+         _result = sut.MapToModel(_snapshot, new ProjectContext(new MoBiProject(), runSimulations: false)).Result;
+      }
+
+      [Observation]
+      public void should_not_add_the_simulation()
+      {
+         _result.Simulations.ShouldBeEmpty();
+      }
+
+      [Observation]
+      public void should_log_the_validation_errors_as_errors()
+      {
+         A.CallTo(() => _ospSuiteLogger.AddToLog("Unable to resolve path 'A|B'", LogLevel.Error, A<string>._)).MustHaveHappened();
+      }
+
+      [Observation]
+      public void should_log_the_validation_warnings_with_their_details_as_warnings()
+      {
+         A.CallTo(() => _ospSuiteLogger.AddToLog("P2 was removed - in C1, in C2", LogLevel.Warning, A<string>._)).MustHaveHappened();
+      }
+
+      //the exception message only points to the notification view, which is of no help in the log
+      [Observation]
+      public void should_not_log_the_message_of_the_validation_failure()
+      {
+         A.CallTo(() => _ospSuiteLogger.AddToLog(A<string>.That.Contains(AppConstants.Exceptions.CouldNotCreateSimulation), A<LogLevel>._, A<string>._)).MustNotHaveHappened();
+      }
+
+      [Observation]
+      public void should_log_an_error_naming_the_simulation_that_could_not_be_loaded()
+      {
+         A.CallTo(() => _ospSuiteLogger.AddToLog(AppConstants.Exceptions.CannotLoadSimulation("simulation"), LogLevel.Error, A<string>._)).MustHaveHappened();
       }
    }
 
