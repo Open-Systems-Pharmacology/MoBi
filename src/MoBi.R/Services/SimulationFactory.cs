@@ -4,6 +4,7 @@ using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Domain.Builder;
 using MoBi.Core.Exceptions;
+using MoBi.Core.Extensions;
 using MoBi.Core.Services;
 using MoBi.R.Domain;
 using OSPSuite.Core.Domain;
@@ -102,10 +103,10 @@ namespace MoBi.R.Services
             switch (message.NotificationType)
             {
                case NotificationType.Warning:
-                  addValidationMessage(message, warnings);
+                  warnings.Add(message.TextWithDetails());
                   break;
                case NotificationType.Error:
-                  addValidationMessage(message, errors);
+                  errors.Add(message.TextWithDetails());
                   break;
             }
          });
@@ -115,18 +116,5 @@ namespace MoBi.R.Services
 
       private static void addCalculationMethodOverrides(SimulationConfiguration simulationConfiguration, IReadOnlyList<MoleculeCalculationMethodOverride> overrides) => 
          overrides.Each(x => simulationConfiguration.AddCalculationMethodsOverridesFor(x.MoleculeName, x.UsedCalculationMethods));
-
-      private static void addValidationMessage(ValidationMessage message, List<string> messageList)
-      {
-         var detailsText = message.Details != null && message.Details.Any()
-            ? string.Join(", ", message.Details)
-            : string.Empty;
-
-         var fullMessage = string.IsNullOrEmpty(detailsText)
-            ? message.Text
-            : $"{message.Text} - {detailsText}";
-
-         messageList.Add(fullMessage);
-      }
    }
 }
