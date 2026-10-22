@@ -1,5 +1,4 @@
 ﻿using System;
-using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using OSPSuite.Core.Domain;

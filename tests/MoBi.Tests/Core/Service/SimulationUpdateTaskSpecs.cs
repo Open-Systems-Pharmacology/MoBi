@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading;
 using FakeItEasy;
 using MoBi.Core.Commands;
-using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.Services;
 using MoBi.Core.Events;

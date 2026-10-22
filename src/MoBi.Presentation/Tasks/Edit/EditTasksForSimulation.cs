@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using MoBi.Assets;
 using MoBi.Core.Commands;
+using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Extensions;
 using MoBi.Presentation.Presenter;
@@ -177,7 +178,7 @@ namespace MoBi.Presentation.Tasks.Edit
          if (filePath.IsNullOrEmpty()) 
             return;
 
-         _simulationPersistor.Save(new SimulationTransfer { Simulation = simulation }, filePath);
+         _simulationPersistor.Save(simulation.ToSimulationTransfer(), filePath);
       }
 
       public void ExportSimModelXml(IMoBiSimulation simulation)

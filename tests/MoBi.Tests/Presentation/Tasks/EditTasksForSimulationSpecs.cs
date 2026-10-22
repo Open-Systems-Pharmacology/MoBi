@@ -19,8 +19,8 @@ namespace MoBi.Presentation.Tasks
    public abstract class concern_for_EditTasksForSimulation : ContextSpecification<IEditTasksForSimulation>
    {
       protected IInteractionTaskContext _context;
-      private ISimulationPersistor _simulationPersistor;
-      private IDialogCreator _dialogCreator;
+      protected ISimulationPersistor _simulationPersistor;
+      protected IDialogCreator _dialogCreator;
       private IDataRepositoryExportTask _dataRepositoryTask;
       private ISimModelExporter _simulationModelExporter;
       private IModelReportCreator _reportCreator;
@@ -74,6 +74,68 @@ namespace MoBi.Presentation.Tasks
       public void project_should_not_have_changed()
       {
          _project.HasChanged.ShouldBeFalse();
+      }
+   }
+
+   public class When_saving_a_simulation_to_pkml : concern_for_EditTasksForSimulation
+   {
+      private IMoBiSimulation _simulation;
+      private string _filePath;
+      private OriginalQuantityValue _originalQuantityValue;
+      private SimulationTransfer _savedSimulationTransfer;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = new MoBiSimulation().WithName("Sim");
+         _originalQuantityValue = new OriginalQuantityValue { Path = "Organism|Volume", Value = 1, Type = OriginalQuantityValue.Types.Quantity };
+         _simulation.AddOriginalQuantityValue(_originalQuantityValue);
+         _simulation.HasUntraceableChanges = true;
+         _filePath = "C:\\temp\\Simulation_Sim.pkml";
+         A.CallTo(() => _dialogCreator.AskForFileToSave(A<string>._, A<string>._, A<string>._, A<string>._, A<string>._)).Returns(_filePath);
+         A.CallTo(() => _simulationPersistor.Save(A<SimulationTransfer>._, _filePath))
+            .Invokes(x => _savedSimulationTransfer = x.GetArgument<SimulationTransfer>(0));
+      }
+
+      protected override void Because()
+      {
+         sut.Save(_simulation);
+      }
+
+      [Observation]
+      public void should_save_the_simulation_to_the_selected_file()
+      {
+         _savedSimulationTransfer.Simulation.ShouldBeEqualTo(_simulation);
+      }
+
+      [Observation]
+      public void should_save_the_changes_tracked_in_the_simulation()
+      {
+         _savedSimulationTransfer.OriginalQuantityValues.ShouldOnlyContain(_originalQuantityValue);
+         _savedSimulationTransfer.HasUntraceableChanges.ShouldBeTrue();
+      }
+   }
+
+   public class When_saving_a_simulation_to_pkml_and_the_user_cancels : concern_for_EditTasksForSimulation
+   {
+      private IMoBiSimulation _simulation;
+
+      protected override void Context()
+      {
+         base.Context();
+         _simulation = new MoBiSimulation().WithName("Sim");
+         A.CallTo(() => _dialogCreator.AskForFileToSave(A<string>._, A<string>._, A<string>._, A<string>._, A<string>._)).Returns(string.Empty);
+      }
+
+      protected override void Because()
+      {
+         sut.Save(_simulation);
+      }
+
+      [Observation]
+      public void should_not_save_the_simulation()
+      {
+         A.CallTo(() => _simulationPersistor.Save(A<SimulationTransfer>._, A<string>._)).MustNotHaveHappened();
       }
    }
 

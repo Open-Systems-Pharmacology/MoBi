@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using FakeItEasy;
 using MoBi.Core.Chart;
-using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Domain.UnitSystem;
 using MoBi.HelpersForTests;

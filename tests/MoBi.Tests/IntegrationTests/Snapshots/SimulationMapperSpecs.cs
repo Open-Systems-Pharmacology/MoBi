@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using MoBi.Core.Chart;
-using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Services;
 using MoBi.Core.Snapshots;

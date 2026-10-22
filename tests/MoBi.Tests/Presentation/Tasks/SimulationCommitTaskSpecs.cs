@@ -2,7 +2,6 @@
 using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Commands;
-using MoBi.Core.Domain;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Helper;
 using MoBi.Core.Services;
