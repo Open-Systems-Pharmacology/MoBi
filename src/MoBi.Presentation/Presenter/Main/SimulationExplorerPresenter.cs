@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
+using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Nodes;
 using MoBi.Presentation.Tasks.Interaction;
@@ -49,16 +50,23 @@ namespace MoBi.Presentation.Presenter.Main
    {
       private readonly IInteractionTasksForSimulation _interactionTasksForSimulation;
       private readonly IParameterAnalysablesInExplorerPresenter _parameterAnalysablesInExplorerPresenter;
+      private readonly ITemplateResolverTask _templateResolverTask;
+      private readonly IBuildingBlockTaskRetriever _buildingBlockTaskRetriever;
+      private readonly IInteractionTasksForMoleculeBuildingBlock _interactionTasksForMoleculeBuildingBlock;
 
       public SimulationExplorerPresenter(ISimulationExplorerView view, IRegionResolver regionResolver, ITreeNodeFactory treeNodeFactory, IViewItemContextMenuFactory viewItemContextMenuFactory,
          IMoBiContext context, IClassificationPresenter classificationPresenter,
          IToolTipPartCreator toolTipPartCreator, IMultipleTreeNodeContextMenuFactory multipleTreeNodeContextMenuFactory,
-         IProjectRetriever projectRetriever, IInteractionTasksForSimulation interactionTasksForSimulation, IParameterAnalysablesInExplorerPresenter parameterAnalysablesInExplorerPresenter) :
+         IProjectRetriever projectRetriever, IInteractionTasksForSimulation interactionTasksForSimulation, IParameterAnalysablesInExplorerPresenter parameterAnalysablesInExplorerPresenter,
+         ITemplateResolverTask templateResolverTask, IBuildingBlockTaskRetriever buildingBlockTaskRetriever, IInteractionTasksForMoleculeBuildingBlock interactionTasksForMoleculeBuildingBlock) :
          base(view, regionResolver, treeNodeFactory, viewItemContextMenuFactory, context, RegionNames.SimulationExplorer,
             classificationPresenter, toolTipPartCreator, multipleTreeNodeContextMenuFactory, projectRetriever)
       {
          _interactionTasksForSimulation = interactionTasksForSimulation;
          _parameterAnalysablesInExplorerPresenter = parameterAnalysablesInExplorerPresenter;
+         _templateResolverTask = templateResolverTask;
+         _buildingBlockTaskRetriever = buildingBlockTaskRetriever;
+         _interactionTasksForMoleculeBuildingBlock = interactionTasksForMoleculeBuildingBlock;
          _parameterAnalysablesInExplorerPresenter.InitializeWith(this, classificationPresenter);
       }
 
@@ -186,7 +194,44 @@ namespace MoBi.Presentation.Presenter.Main
          if (node.TagAsObject is UsedObservedData)
             return;
 
+         //building blocks shown under a simulation are the simulation's own copies: open the template building block in the project instead
+         if (node is BuildingBlockNode buildingBlockNode)
+         {
+            editTemplateBuildingBlockFor(buildingBlockNode.Tag);
+            return;
+         }
+
+         if (node.TagAsObject is MoleculeBuilder moleculeBuilder && node.ParentNode?.TagAsObject is MoleculeBuildingBlock simulationMoleculeBuildingBlock)
+         {
+            editTemplateMoleculeFor(moleculeBuilder, simulationMoleculeBuildingBlock);
+            return;
+         }
+
          base.NodeDoubleClicked(node);
+      }
+
+      private void editTemplateBuildingBlockFor(IBuildingBlock simulationBuildingBlock)
+      {
+         var templateBuildingBlock = _templateResolverTask.TemplateBuildingBlockFor(simulationBuildingBlock);
+         if (templateBuildingBlock != null)
+            editTemplateBuildingBlock(templateBuildingBlock);
+      }
+
+      private void editTemplateBuildingBlock(IBuildingBlock templateBuildingBlock) =>
+         _buildingBlockTaskRetriever.TaskFor(templateBuildingBlock).EditBuildingBlock(templateBuildingBlock);
+
+      private void editTemplateMoleculeFor(MoleculeBuilder simulationMolecule, MoleculeBuildingBlock simulationMoleculeBuildingBlock)
+      {
+         var templateMoleculeBuildingBlock = _templateResolverTask.TemplateBuildingBlockFor(simulationMoleculeBuildingBlock);
+         if (templateMoleculeBuildingBlock == null)
+            return;
+
+         //the molecule may have been removed from the template in the meantime: open the template building block without selection
+         var templateMolecule = templateMoleculeBuildingBlock.FindByName(simulationMolecule.Name);
+         if (templateMolecule == null)
+            editTemplateBuildingBlock(templateMoleculeBuildingBlock);
+         else
+            _interactionTasksForMoleculeBuildingBlock.Edit(templateMoleculeBuildingBlock, templateMolecule);
       }
 
       public void Handle(SimulationReloadEvent eventToHandle) => reCreateSimulationNode(eventToHandle.Simulation);

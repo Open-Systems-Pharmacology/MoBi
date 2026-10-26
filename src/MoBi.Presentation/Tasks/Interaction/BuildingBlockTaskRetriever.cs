@@ -22,7 +22,9 @@ namespace MoBi.Presentation.Tasks.Interaction
       IVisitor<PassiveTransportBuildingBlock>,
       IVisitor<InitialConditionsBuildingBlock>,
       IVisitor<ParameterValuesBuildingBlock>,
-      IVisitor<SimulationSettings>
+      IVisitor<SimulationSettings>,
+      IVisitor<IndividualBuildingBlock>,
+      IVisitor<ExpressionProfileBuildingBlock>
    {
       private readonly IContainer _container;
       private IInteractionTasksForBuildingBlock _task;
@@ -55,6 +57,11 @@ namespace MoBi.Presentation.Tasks.Interaction
          _task = _container.Resolve<IInteractionTasksForBuildingBlock<Module, TBuildingBlock>>();
       }
 
+      private void retrieveProjectTask<TBuildingBlock>() where TBuildingBlock : class, IBuildingBlock
+      {
+         _task = _container.Resolve<IInteractionTasksForBuildingBlock<MoBiProject, TBuildingBlock>>();
+      }
+
       public void Visit(MoleculeBuildingBlock objToVisit)
       {
          retrieveTask<MoleculeBuildingBlock>(objToVisit);
@@ -77,7 +84,8 @@ namespace MoBi.Presentation.Tasks.Interaction
 
       public void Visit(InitialConditionsBuildingBlock objToVisit)
       {
-         retrieveTask<InitialConditionsBuildingBlock>(objToVisit);
+         //the initial conditions task is generic and is not registered under IInteractionTasksForBuildingBlock<Module, InitialConditionsBuildingBlock>
+         _task = _container.Resolve<IInitialConditionsTask<InitialConditionsBuildingBlock>>();
       }
 
       public void Visit(ParameterValuesBuildingBlock objToVisit)
@@ -103,6 +111,16 @@ namespace MoBi.Presentation.Tasks.Interaction
       public void Visit(SimulationSettings objToVisit)
       {
          retrieveTask<SimulationSettings>(objToVisit);
+      }
+
+      public void Visit(IndividualBuildingBlock objToVisit)
+      {
+         retrieveProjectTask<IndividualBuildingBlock>();
+      }
+
+      public void Visit(ExpressionProfileBuildingBlock objToVisit)
+      {
+         retrieveProjectTask<ExpressionProfileBuildingBlock>();
       }
    }
 }
