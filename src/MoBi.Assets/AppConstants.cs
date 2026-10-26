@@ -1619,6 +1619,7 @@ namespace MoBi.Assets
          public static readonly string TimeProfile = "Time Profile";
          public static readonly string SimulationObservedData = "Observed Data";
          public static readonly string IsStationary = "Stationary";
+         public static readonly string IsXenobiotic = "Xenobiotic";
          public static readonly string DefaultStartAmount = "Amount";
          public static readonly string MoleculeType = "Molecule Type";
          public static readonly string IncludeList = "Include List";

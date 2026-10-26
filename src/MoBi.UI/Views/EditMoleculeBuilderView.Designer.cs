@@ -43,9 +43,11 @@ namespace MoBi.UI.Views
          this.grdCalculationMethodsView = new MoBi.UI.Views.UxGridView();
          this.btName = new DevExpress.XtraEditors.ButtonEdit();
          this.chkIsFloating = new UxCheckEdit();
+         this.chkIsXenobiotic = new UxCheckEdit();
          this.htmlEditor = new DevExpress.XtraEditors.MemoExEdit();
          this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
          this.layoutControlItemIsFloating = new DevExpress.XtraLayout.LayoutControlItem();
+         this.layoutControlItemIsXenobiotic = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutControlItemName = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutControlItemCalculationMethod = new DevExpress.XtraLayout.LayoutControlItem();
          this.layoutControlItemDescription = new DevExpress.XtraLayout.LayoutControlItem();
@@ -65,9 +67,11 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.grdCalculationMethodsView)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.btName.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.chkIsFloating.Properties)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.chkIsXenobiotic.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.htmlEditor.Properties)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemIsFloating)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemIsXenobiotic)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemName)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemCalculationMethod)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemDescription)).BeginInit();
@@ -101,6 +105,7 @@ namespace MoBi.UI.Views
          this.layoutControlProperties.Controls.Add(this.gridControlCalcualtionMethod);
          this.layoutControlProperties.Controls.Add(this.btName);
          this.layoutControlProperties.Controls.Add(this.chkIsFloating);
+         this.layoutControlProperties.Controls.Add(this.chkIsXenobiotic);
          this.layoutControlProperties.Controls.Add(this.htmlEditor);
          this.layoutControlProperties.Dock = System.Windows.Forms.DockStyle.Fill;
          this.layoutControlProperties.Location = new System.Drawing.Point(0, 0);
@@ -158,9 +163,18 @@ namespace MoBi.UI.Views
          this.chkIsFloating.Location = new System.Drawing.Point(12, 36);
          this.chkIsFloating.Name = "chkIsFloating";
          this.chkIsFloating.Properties.Caption = "checkEdit1";
-         this.chkIsFloating.Size = new System.Drawing.Size(361, 19);
+         this.chkIsFloating.Size = new System.Drawing.Size(178, 19);
          this.chkIsFloating.StyleController = this.layoutControlProperties;
          this.chkIsFloating.TabIndex = 5;
+         //
+         // chkIsXenobiotic
+         //
+         this.chkIsXenobiotic.Location = new System.Drawing.Point(194, 36);
+         this.chkIsXenobiotic.Name = "chkIsXenobiotic";
+         this.chkIsXenobiotic.Properties.Caption = "checkEdit2";
+         this.chkIsXenobiotic.Size = new System.Drawing.Size(179, 19);
+         this.chkIsXenobiotic.StyleController = this.layoutControlProperties;
+         this.chkIsXenobiotic.TabIndex = 6;
          // 
          // htmlEditor
          // 
@@ -179,6 +193,7 @@ namespace MoBi.UI.Views
          this.layoutControlGroup1.GroupBordersVisible = false;
          this.layoutControlGroup1.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
             this.layoutControlItemIsFloating,
+            this.layoutControlItemIsXenobiotic,
             this.layoutControlItemName,
             this.layoutControlItemCalculationMethod,
             this.layoutControlItemDescription,
@@ -196,11 +211,23 @@ namespace MoBi.UI.Views
          this.layoutControlItemIsFloating.CustomizationFormText = "layoutControlItemIsFloating";
          this.layoutControlItemIsFloating.Location = new System.Drawing.Point(0, 24);
          this.layoutControlItemIsFloating.Name = "layoutControlItem1";
-         this.layoutControlItemIsFloating.Size = new System.Drawing.Size(365, 24);
+         this.layoutControlItemIsFloating.Size = new System.Drawing.Size(182, 24);
          this.layoutControlItemIsFloating.Text = "layoutControlItemIsFloating";
          this.layoutControlItemIsFloating.TextSize = new System.Drawing.Size(0, 0);
          this.layoutControlItemIsFloating.TextToControlDistance = 0;
          this.layoutControlItemIsFloating.TextVisible = false;
+         //
+         // layoutControlItemIsXenobiotic
+         //
+         this.layoutControlItemIsXenobiotic.Control = this.chkIsXenobiotic;
+         this.layoutControlItemIsXenobiotic.CustomizationFormText = "layoutControlItemIsXenobiotic";
+         this.layoutControlItemIsXenobiotic.Location = new System.Drawing.Point(182, 24);
+         this.layoutControlItemIsXenobiotic.Name = "layoutControlItemIsXenobiotic";
+         this.layoutControlItemIsXenobiotic.Size = new System.Drawing.Size(183, 24);
+         this.layoutControlItemIsXenobiotic.Text = "layoutControlItemIsXenobiotic";
+         this.layoutControlItemIsXenobiotic.TextSize = new System.Drawing.Size(0, 0);
+         this.layoutControlItemIsXenobiotic.TextToControlDistance = 0;
+         this.layoutControlItemIsXenobiotic.TextVisible = false;
          // 
          // layoutControlItemName
          // 
@@ -286,9 +313,11 @@ namespace MoBi.UI.Views
          ((System.ComponentModel.ISupportInitialize)(this.grdCalculationMethodsView)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.btName.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.chkIsFloating.Properties)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.chkIsXenobiotic.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.htmlEditor.Properties)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemIsFloating)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemIsXenobiotic)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemName)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemCalculationMethod)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.layoutControlItemDescription)).EndInit();
@@ -309,6 +338,8 @@ namespace MoBi.UI.Views
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemName;
       private DevExpress.XtraEditors.CheckEdit chkIsFloating;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemIsFloating;
+      private DevExpress.XtraEditors.CheckEdit chkIsXenobiotic;
+      private DevExpress.XtraLayout.LayoutControlItem layoutControlItemIsXenobiotic;
       private DevExpress.XtraGrid.GridControl gridControlCalcualtionMethod;
       private DevExpress.XtraLayout.LayoutControlItem layoutControlItemCalculationMethod;
       private DevExpress.XtraEditors.MemoExEdit htmlEditor;

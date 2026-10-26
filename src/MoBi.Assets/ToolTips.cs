@@ -220,6 +220,7 @@ namespace MoBi.Assets
       public static class Molecules
       {
          public static readonly string IsStationary = "If selected, the molecule is not subjected to active or passive transports";
+         public static readonly string IsXenobiotic = "If selected, the molecule is simulated (e.g. drug, metabolite, inhibitor or complex). Clear it for endogenous, individual-specific molecules such as enzymes, transporters or proteins. Only non-stationary xenobiotic molecules receive the molecule-dependent parameters of the spatial structure and the calculation methods";
          public static readonly string MoleculeName = "Change the name of the molecule";
          public static readonly string DistributionCellular = "Specify calculation method for vascular-intracellular space partition coefficient";
          public static readonly string DiffusionIntCell = "  Specify calculation method for diffusion between interstitial and intracellular space ";

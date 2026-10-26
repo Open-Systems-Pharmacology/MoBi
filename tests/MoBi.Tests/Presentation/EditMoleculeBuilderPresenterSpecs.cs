@@ -7,6 +7,7 @@ using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Edit;
 using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
@@ -89,6 +90,38 @@ namespace MoBi.Presentation
       {
          A.CallTo(() => _editFormulaPresenter.Init(_moleculeBuilder, A<IBuildingBlock>._, A<FormulaDecoder<MoleculeBuilder>>._)).MustHaveHappened();
          A.CallTo(() => _editMoleculeParameters.Edit(_moleculeBuilder)).MustHaveHappened();
+      }
+   }
+
+   public class When_setting_the_xenobiotic_property_of_the_edited_molecule : concern_for_EditMoleculeBuilderPresenter
+   {
+      private MoleculeBuilder _moleculeBuilder;
+      private ICommandCollector _commandCollector;
+
+      protected override void Context()
+      {
+         base.Context();
+         _moleculeBuilder = new MoleculeBuilder { IsXenobiotic = true };
+         _commandCollector = A.Fake<ICommandCollector>();
+         sut.InitializeWith(_commandCollector);
+         sut.Edit(_moleculeBuilder);
+      }
+
+      protected override void Because()
+      {
+         sut.SetXenobioticProperty(false, true);
+      }
+
+      [Observation]
+      public void should_update_the_xenobiotic_flag_of_the_molecule()
+      {
+         _moleculeBuilder.IsXenobiotic.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_register_the_command()
+      {
+         A.CallTo(() => _commandCollector.AddCommand(A<SetXenobioticPropertyCommand>._)).MustHaveHappened();
       }
    }
 }

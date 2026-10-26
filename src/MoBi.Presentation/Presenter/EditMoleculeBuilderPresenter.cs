@@ -28,6 +28,7 @@ namespace MoBi.Presentation.Presenter
       IReadOnlyList<QuantityType> MoleculeTypes { get; }
       void SetMoleculeType(QuantityType newType, QuantityType oldType);
       void SetStationaryProperty(bool isStationaryNewValue, bool oldValue);
+      void SetXenobioticProperty(bool isXenobioticNewValue, bool oldValue);
    }
 
    public class EditMoleculeBuilderPresenter : AbstractSubPresenterWithFormula<IEditMoleculeBuilderView, IEditMoleculeBuilderPresenter>, IEditMoleculeBuilderPresenter, IListener<ChangedCalculationMethodEvent>
@@ -164,6 +165,11 @@ namespace MoBi.Presentation.Presenter
       public void SetStationaryProperty(bool isStationaryNewValue, bool oldValue)
       {
          AddCommand(new SetStationaryPropertyCommand(_moleculeBuilder, isStationaryNewValue, oldValue, BuildingBlock).RunCommand(_context));
+      }
+
+      public void SetXenobioticProperty(bool isXenobioticNewValue, bool oldValue)
+      {
+         AddCommand(new SetXenobioticPropertyCommand(_moleculeBuilder, isXenobioticNewValue, oldValue, BuildingBlock).RunCommand(_context));
       }
 
       public void Handle(ChangedCalculationMethodEvent eventToHandle)

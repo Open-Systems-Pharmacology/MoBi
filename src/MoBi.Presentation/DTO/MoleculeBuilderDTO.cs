@@ -14,6 +14,7 @@ namespace MoBi.Presentation.DTO
       public IReadOnlyList<TransporterMoleculeContainerDTO> TransporterMolecules { get; set; }
       public FormulaBuilderDTO DefaultStartFormula { get; set; }
       public bool Stationary { get; set; }
+      public bool Xenobiotic { get; set; }
       public IReadOnlyList<ParameterDTO> Parameters { get; set; }
       public QuantityType MoleculeType { set; get; }
       public IReadOnlyList<InteractionContainerDTO> InteractionContainerCollection { set; get; }
