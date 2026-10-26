@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using FakeItEasy;
+using MoBi.Core.Commands;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Services;
@@ -7,6 +9,7 @@ using MoBi.Presentation.Presenter.Main;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
+using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
@@ -338,6 +341,82 @@ namespace MoBi.Presentation
       public void should_not_change_the_selection()
       {
          A.CallTo(() => _treeView.SelectNode(_newNode)).MustNotHaveHappened();
+      }
+   }
+
+   public class When_removing_the_simulations_defined_under_multiple_simulation_folders : concern_for_SimulationExplorerPresenter
+   {
+      private ClassificationNode _folder1;
+      private ClassificationNode _folder2;
+      private IMoBiSimulation _otherSimulation;
+      private IReadOnlyList<IMoBiSimulation> _removedSimulations;
+      private IMoBiCommand _command;
+      private bool _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         _otherSimulation = A.Fake<IMoBiSimulation>();
+         A.CallTo(() => _otherSimulation.Id).Returns("sim-2");
+         _folder1 = new ClassificationNode(new Classification {ClassificationType = ClassificationType.Simulation});
+         _folder2 = new ClassificationNode(new Classification {ClassificationType = ClassificationType.Simulation});
+         _folder1.AddChild(new SimulationNode(new ClassifiableSimulation {Subject = _simulation}));
+         _folder2.AddChild(new SimulationNode(new ClassifiableSimulation {Subject = _otherSimulation}));
+
+         _command = A.Fake<IMoBiCommand>();
+         A.CallTo(() => _interactionTasksForSimulation.RemoveMultipleSimulations(A<IReadOnlyList<IMoBiSimulation>>._))
+            .Invokes(x => _removedSimulations = x.GetArgument<IReadOnlyList<IMoBiSimulation>>(0))
+            .Returns(_command);
+      }
+
+      protected override void Because()
+      {
+         _result = sut.RemoveDataUnderClassifications(new[] {_folder1, _folder2});
+      }
+
+      [Observation]
+      public void should_remove_the_simulations_of_all_folders_at_once()
+      {
+         A.CallTo(() => _interactionTasksForSimulation.RemoveMultipleSimulations(A<IReadOnlyList<IMoBiSimulation>>._)).MustHaveHappenedOnceExactly();
+         _removedSimulations.ShouldOnlyContain(_simulation, _otherSimulation);
+      }
+
+      [Observation]
+      public void should_add_one_command_to_the_history()
+      {
+         A.CallTo(() => _context.AddToHistory(_command)).MustHaveHappenedOnceExactly();
+      }
+
+      [Observation]
+      public void should_return_true_if_the_simulations_were_removed()
+      {
+         _result.ShouldBeTrue();
+      }
+   }
+
+   public class When_removing_the_parameter_identifications_defined_under_multiple_folders : concern_for_SimulationExplorerPresenter
+   {
+      private ITreeNode<IClassification>[] _folders;
+
+      protected override void Context()
+      {
+         base.Context();
+         _folders = new ITreeNode<IClassification>[]
+         {
+            new ClassificationNode(new Classification {ClassificationType = ClassificationType.ParameterIdentification}),
+            new ClassificationNode(new Classification {ClassificationType = ClassificationType.ParameterIdentification})
+         };
+      }
+
+      protected override void Because()
+      {
+         sut.RemoveDataUnderClassifications(_folders);
+      }
+
+      [Observation]
+      public void should_let_the_parameter_analysables_presenter_remove_the_data_of_all_folders_at_once()
+      {
+         A.CallTo(() => _parameterAnalysablesPresenter.RemoveDataUnderClassifications(_folders)).MustHaveHappenedOnceExactly();
       }
    }
 }

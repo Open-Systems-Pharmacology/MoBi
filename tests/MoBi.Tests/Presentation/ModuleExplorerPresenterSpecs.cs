@@ -796,6 +796,75 @@ namespace MoBi.Presentation
       }
    }
 
+   public class When_removing_multiple_module_classification_nodes_and_data : concern_for_ModuleExplorerPresenter
+   {
+      private ClassificationNode _folder1;
+      private ClassificationNode _folder2;
+      private Module _module1;
+      private Module _module2;
+      private IReadOnlyList<Module> _removedModules;
+
+      protected override void Context()
+      {
+         base.Context();
+         _module1 = new Module().WithId("Module1");
+         _module2 = new Module().WithId("Module2");
+         _folder1 = new ClassificationNode(new Classification { ClassificationType = ClassificationType.Module });
+         _folder2 = new ClassificationNode(new Classification { ClassificationType = ClassificationType.Module });
+         _folder1.AddChild(new ModuleNode(new ClassifiableModule { Subject = _module1 }));
+         _folder2.AddChild(new ModuleNode(new ClassifiableModule { Subject = _module2 }));
+
+         A.CallTo(() => _interactionTaskForModule.Remove(A<IReadOnlyList<Module>>._))
+            .Invokes(x => _removedModules = x.GetArgument<IReadOnlyList<Module>>(0))
+            .Returns(true);
+      }
+
+      protected override void Because()
+      {
+         sut.RemoveClassifications(new[] { _folder1, _folder2 }, removeData: true);
+      }
+
+      [Observation]
+      public void the_interaction_task_is_used_once_to_remove_the_modules_of_all_folders()
+      {
+         A.CallTo(() => _interactionTaskForModule.Remove(A<IReadOnlyList<Module>>._)).MustHaveHappenedOnceExactly();
+         _removedModules.ShouldOnlyContain(_module1, _module2);
+      }
+
+      [Observation]
+      public void the_classifications_should_be_removed()
+      {
+         A.CallTo(() => _classificationPresenter.RemoveClassification(_folder1)).MustHaveHappened();
+         A.CallTo(() => _classificationPresenter.RemoveClassification(_folder2)).MustHaveHappened();
+      }
+   }
+
+   public class When_removing_the_observed_data_defined_under_multiple_folders_in_the_module_explorer : concern_for_ModuleExplorerPresenter
+   {
+      private ITreeNode<IClassification>[] _folders;
+
+      protected override void Context()
+      {
+         base.Context();
+         _folders = new ITreeNode<IClassification>[]
+         {
+            new ClassificationNode(new Classification { ClassificationType = ClassificationType.ObservedData }),
+            new ClassificationNode(new Classification { ClassificationType = ClassificationType.ObservedData })
+         };
+      }
+
+      protected override void Because()
+      {
+         sut.RemoveDataUnderClassifications(_folders);
+      }
+
+      [Observation]
+      public void should_remove_the_observed_data_of_all_folders_at_once()
+      {
+         A.CallTo(() => _observedDataInExplorerPresenter.RemoveObservedDataUnder(_folders)).MustHaveHappenedOnceExactly();
+      }
+   }
+
    public class When_removing_module_classification_without_module_children : concern_for_ModuleExplorerPresenter
    {
       private ITreeNode<IClassification> _classificationNode;
