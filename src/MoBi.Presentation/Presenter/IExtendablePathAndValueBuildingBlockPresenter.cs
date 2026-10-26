@@ -42,5 +42,26 @@ namespace MoBi.Presentation.Presenter
       bool CanCreateNewFormula { set; }
 
       void Delete(IReadOnlyList<TPathAndValueEntityDTO> selectedStartValues);
+
+      /// <summary>
+      ///    Returns true if at least one path and value entity is selected in the view
+      /// </summary>
+      bool HasSelection { get; }
+
+      /// <summary>
+      ///    Copies the selected path and value entities, including the sub-parameters of distributed entities, to the clipboard
+      /// </summary>
+      void CopySelectionToClipBoard();
+
+      /// <summary>
+      ///    Returns true if the clipboard contains path and value entities that can be pasted into the building block
+      /// </summary>
+      bool CanPasteFromClipBoard();
+
+      /// <summary>
+      ///    Adds the path and value entities from the clipboard to the building block. The user decides which entities with
+      ///    a path already in the building block are replaced.
+      /// </summary>
+      void PasteFromClipBoard();
    }
 }

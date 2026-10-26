@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using FakeItEasy;
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
@@ -6,14 +7,17 @@ using MoBi.Core.Events;
 using MoBi.Core.Mappers;
 using MoBi.Core.Services;
 using MoBi.HelpersForTests;
+using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Presenter;
 using MoBi.Presentation.Tasks.Interaction;
 using MoBi.Presentation.Views;
 using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
+using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Formulas;
 using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 using OSPSuite.Core.Services;
@@ -33,6 +37,7 @@ namespace MoBi.Presentation
       protected IParameterPathResolver _parameterPathResolver;
       private IParameterValuesCreator _parameterValuesCreator;
       protected IMoBiContext _context;
+      protected IClipboardManager _clipboardManager;
 
       protected override void Context()
       {
@@ -46,6 +51,7 @@ namespace MoBi.Presentation
          _parameterPathResolver = A.Fake<IParameterPathResolver>();
          _parameterValuesCreator = A.Fake<IParameterValuesCreator>();
          _context = A.Fake<IMoBiContext>();
+         _clipboardManager = A.Fake<IClipboardManager>();
          A.CallTo(() => _parameterValuesCreator.CreateEmptyStartValue(A<IDimension>._)).ReturnsLazily(() => new ParameterValue());
          sut = new ParameterValuesPresenter(
             _parameterValuesView,
@@ -59,7 +65,8 @@ namespace MoBi.Presentation
             A.Fake<IDimensionFactory>(),
             A.Fake<IViewItemContextMenuFactory>(),
             _dialogCreator,
-            _parameterPathResolver);
+            _parameterPathResolver,
+            _clipboardManager);
 
          sut.Edit(_parameterValuesBuildingBlock);
       }
@@ -198,6 +205,119 @@ namespace MoBi.Presentation
       public void the_user_should_not_be_asked_to_check_the_dimensions()
       {
          A.CallTo(() => _dialogCreator.MessageBoxInfo(A<string>._)).MustNotHaveHappened();
+      }
+   }
+
+   internal class When_copying_the_selected_parameter_values_to_the_clipboard : concern_for_ParameterValuesPresenter
+   {
+      private ParameterValue _parameterValue;
+      private ParameterValue _distributedParameterValue;
+      private ParameterValue _subParameterValue;
+      private IReadOnlyList<IObjectBase> _copiedObjects;
+
+      protected override void Context()
+      {
+         base.Context();
+         _parameterValue = new ParameterValue { Path = new ObjectPath("Organism", "P1") };
+         _distributedParameterValue = new ParameterValue { Path = new ObjectPath("Organism", "P2"), DistributionType = DistributionType.Normal };
+         _subParameterValue = new ParameterValue { Path = new ObjectPath("Organism", "P2", "Mean") };
+
+         var distributedParameterValueDTO = new ParameterValueDTO(_distributedParameterValue, _parameterValuesBuildingBlock);
+         distributedParameterValueDTO.AddSubParameter(new ParameterValueDTO(_subParameterValue, _parameterValuesBuildingBlock));
+
+         A.CallTo(() => _parameterValuesView.SelectedStartValues).Returns(new[] { new ParameterValueDTO(_parameterValue, _parameterValuesBuildingBlock), distributedParameterValueDTO });
+         A.CallTo(() => _clipboardManager.CopyToClipBoard(A<IReadOnlyList<IObjectBase>>._)).Invokes(x => _copiedObjects = x.GetArgument<IReadOnlyList<IObjectBase>>(0));
+      }
+
+      protected override void Because()
+      {
+         sut.CopySelectionToClipBoard();
+      }
+
+      [Observation]
+      public void the_selected_parameter_values_and_the_sub_parameters_of_distributed_values_should_be_copied()
+      {
+         _copiedObjects.ShouldOnlyContain(_parameterValue, _distributedParameterValue, _subParameterValue);
+      }
+   }
+
+   internal class When_copying_to_the_clipboard_and_no_parameter_values_are_selected : concern_for_ParameterValuesPresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _parameterValuesView.SelectedStartValues).Returns(new List<ParameterValueDTO>());
+      }
+
+      protected override void Because()
+      {
+         sut.CopySelectionToClipBoard();
+      }
+
+      [Observation]
+      public void the_clipboard_should_not_be_changed()
+      {
+         A.CallTo(() => _clipboardManager.CopyToClipBoard(A<IReadOnlyList<IObjectBase>>._)).MustNotHaveHappened();
+      }
+   }
+
+   internal class When_pasting_parameter_values_from_the_clipboard : concern_for_ParameterValuesPresenter
+   {
+      private ParameterValue _pastedParameterValue;
+      private IReadOnlyList<ParameterValue> _extendingParameterValues;
+
+      protected override void Context()
+      {
+         base.Context();
+         sut.InitializeWith(A.Fake<ICommandCollector>());
+         _pastedParameterValue = new ParameterValue { Path = new ObjectPath("Organism", "P1") };
+         A.CallTo(() => _clipboardManager.ClipBoardContainsType<ParameterValue>()).Returns(true);
+         A.CallTo(() => _clipboardManager.PasteFromClipBoard(A<Action<ParameterValue>>._)).Invokes(x => x.GetArgument<Action<ParameterValue>>(0)(_pastedParameterValue));
+         A.CallTo(() => _parameterValuesTask.ExtendBuildingBlockWith(_parameterValuesBuildingBlock, A<IReadOnlyList<ParameterValue>>._)).Invokes(x => _extendingParameterValues = x.GetArgument<IReadOnlyList<ParameterValue>>(1));
+      }
+
+      protected override void Because()
+      {
+         sut.PasteFromClipBoard();
+      }
+
+      [Observation]
+      public void the_building_block_should_be_extended_with_the_pasted_parameter_values()
+      {
+         _extendingParameterValues.ShouldOnlyContain(_pastedParameterValue);
+      }
+
+      [Observation]
+      public void the_parameter_values_should_be_pasted_in_one_bulk_update()
+      {
+         A.CallTo(() => _context.PublishEvent(A<BulkUpdateStartedEvent>._)).MustHaveHappenedOnceExactly();
+         A.CallTo(() => _context.PublishEvent(A<BulkUpdateFinishedEvent>._)).MustHaveHappenedOnceExactly();
+      }
+   }
+
+   internal class When_pasting_and_the_clipboard_does_not_contain_parameter_values : concern_for_ParameterValuesPresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         A.CallTo(() => _clipboardManager.ClipBoardContainsType<ParameterValue>()).Returns(false);
+      }
+
+      protected override void Because()
+      {
+         sut.PasteFromClipBoard();
+      }
+
+      [Observation]
+      public void paste_should_not_be_available()
+      {
+         sut.CanPasteFromClipBoard().ShouldBeFalse();
+      }
+
+      [Observation]
+      public void the_building_block_should_not_be_extended()
+      {
+         A.CallTo(() => _parameterValuesTask.ExtendBuildingBlockWith(A<ParameterValuesBuildingBlock>._, A<IReadOnlyList<ParameterValue>>._)).MustNotHaveHappened();
       }
    }
 }

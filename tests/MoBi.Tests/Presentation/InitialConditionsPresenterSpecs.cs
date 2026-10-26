@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FakeItEasy;
 using MoBi.Assets;
@@ -43,6 +44,7 @@ namespace MoBi.Presentation
       private IViewItemContextMenuFactory _viewItemContextMenuFactory;
       protected IDialogCreator _dialogCreator;
       protected IInitialConditionPathResolver _initialConditionPathResolver;
+      protected IClipboardManager _clipboardManager;
 
       protected override void Context()
       {
@@ -60,6 +62,7 @@ namespace MoBi.Presentation
          _viewItemContextMenuFactory = A.Fake<IViewItemContextMenuFactory>();
          _dialogCreator = A.Fake<IDialogCreator>();
          _initialConditionPathResolver = A.Fake<IInitialConditionPathResolver>();
+         _clipboardManager = A.Fake<IClipboardManager>();
          sut = new InitialConditionsPresenter(
             _view,
             _initialConditionTask,
@@ -71,7 +74,8 @@ namespace MoBi.Presentation
             _buildingBlockMapper,
             _viewItemContextMenuFactory,
             _dialogCreator,
-            _initialConditionPathResolver);
+            _initialConditionPathResolver,
+            _clipboardManager);
 
          _initialConditionsBuildingBlock = new InitialConditionsBuildingBlock();
 
@@ -316,6 +320,33 @@ namespace MoBi.Presentation
       public void the_initial_conditions_should_be_added_in_one_bulk_update()
       {
          A.CallTo(() => _context.PublishEvent(A<BulkUpdateStartedEvent>._)).MustHaveHappenedOnceExactly();
+      }
+   }
+
+   internal class When_pasting_initial_conditions_from_the_clipboard : concern_for_InitialConditionsPresenter
+   {
+      private InitialCondition _pastedInitialCondition;
+      private IReadOnlyList<InitialCondition> _extendingInitialConditions;
+
+      protected override void Context()
+      {
+         base.Context();
+         sut.Edit(_initialConditionsBuildingBlock);
+         _pastedInitialCondition = new InitialCondition { Path = new ObjectPath("Organism", "Molecule") };
+         A.CallTo(() => _clipboardManager.ClipBoardContainsType<InitialCondition>()).Returns(true);
+         A.CallTo(() => _clipboardManager.PasteFromClipBoard(A<Action<InitialCondition>>._)).Invokes(x => x.GetArgument<Action<InitialCondition>>(0)(_pastedInitialCondition));
+         A.CallTo(() => _initialConditionTask.ExtendBuildingBlockWith(_initialConditionsBuildingBlock, A<IReadOnlyList<InitialCondition>>._)).Invokes(x => _extendingInitialConditions = x.GetArgument<IReadOnlyList<InitialCondition>>(1));
+      }
+
+      protected override void Because()
+      {
+         sut.PasteFromClipBoard();
+      }
+
+      [Observation]
+      public void the_building_block_should_be_extended_with_the_pasted_initial_conditions()
+      {
+         _extendingInitialConditions.ShouldOnlyContain(_pastedInitialCondition);
       }
    }
 }

@@ -1,7 +1,5 @@
-﻿using System.Windows.Forms;
-using DevExpress.Utils;
+﻿using DevExpress.Utils;
 using DevExpress.XtraBars;
-using DevExpress.XtraGrid.Views.Grid.ViewInfo;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Formatters;
@@ -77,8 +75,6 @@ namespace MoBi.UI.Views
 
          _gridViewBinder.Bind(x => x.Dimension).WithRepository(x => _dimensionComboBoxRepository)
             .WithOnValueUpdating((o, e) => OnEvent(() => onDimensionSet(o, e)));
-
-         gridView.MouseDown += (o, e) => OnEvent(onGridViewMouseDown, e);
       }
 
       public override string NameColumnCaption => AppConstants.Captions.ParameterName;
@@ -100,17 +96,6 @@ namespace MoBi.UI.Views
             gridView.CloseEditor();
             parameterValuesPresenter.SetUnit(parameterValue, unit);
          });
-      }
-
-      private void onGridViewMouseDown(MouseEventArgs e)
-      {
-         if (e.Button != MouseButtons.Right) 
-            return;
-
-         if (gridView.CalcHitInfo(e.Location).HitTest != GridHitTest.EmptyRow)
-            return;
-
-         ((ParameterValuesPresenter)_presenter).ShowContextMenu(null, this.CalculateRelativeOffset(e.Location, gridControl));
       }
 
       private IParameterValuesPresenter parameterValuesPresenter => _presenter.DowncastTo<IParameterValuesPresenter>();

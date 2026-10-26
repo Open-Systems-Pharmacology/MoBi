@@ -8,6 +8,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
+using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Extensions;
 using MoBi.Presentation.Mappers;
@@ -36,6 +37,7 @@ namespace MoBi.Presentation.Presenter
       protected BindingList<TStartValueDTO> _startValueDTOs;
       private readonly IEmptyStartValueCreator<TPathAndValueEntity> _emptyStartValueCreator;
       protected readonly IMoBiContext _context;
+      private readonly IClipboardManager _clipboardManager;
       private bool _handleChangedEvents;
       private TPathAndValueEntity _focusedStartValue;
       public Func<TStartValueDTO, bool> IsOriginalStartValue { get; set; }
@@ -50,7 +52,8 @@ namespace MoBi.Presentation.Presenter
          IMoBiContext context,
          IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper,
          IDimensionFactory dimensionFactory,
-         IDistributedPathAndValueEntityPresenter<TStartValueDTO, TBuildingBlock> distributedPathAndValuePresenter)
+         IDistributedPathAndValueEntityPresenter<TStartValueDTO, TBuildingBlock> distributedPathAndValuePresenter,
+         IClipboardManager clipboardManager)
          : base(view, interactionTasksForExtendablePathAndValueEntity, formulaToValueFormulaDTOMapper, dimensionFactory, distributedPathAndValuePresenter)
       {
          _objectType = new ObjectTypeResolver().TypeFor(_focusedStartValue);
@@ -58,6 +61,7 @@ namespace MoBi.Presentation.Presenter
          IsOriginalStartValue = isOriginalStartValue;
          _emptyStartValueCreator = emptyStartValueCreator;
          _context = context;
+         _clipboardManager = clipboardManager;
          _originalStartValues = new List<TPathAndValueEntity>();
          _handleChangedEvents = true;
          CanCreateNewFormula = true;
@@ -101,6 +105,52 @@ namespace MoBi.Presentation.Presenter
       }
 
       protected abstract string RemoveCommandDescription();
+
+      public bool HasSelection => _view.SelectedStartValues.Any();
+
+      public void CopySelectionToClipBoard()
+      {
+         var selectedEntities = _view.SelectedStartValues
+            .SelectMany(dto => new[] { dto }.Concat(dto.SubParameters))
+            .Select(PathAndValueEntityFrom)
+            .Distinct()
+            .ToList();
+
+         if (!selectedEntities.Any())
+            return;
+
+         _clipboardManager.CopyToClipBoard(selectedEntities);
+      }
+
+      /// <summary>
+      ///    Returns true if path and value entities can be pasted into the edited building block
+      /// </summary>
+      protected virtual bool CanPaste => true;
+
+      public bool CanPasteFromClipBoard() => CanPaste && _clipboardManager.ClipBoardContainsType<TPathAndValueEntity>();
+
+      public void PasteFromClipBoard()
+      {
+         if (!CanPasteFromClipBoard())
+            return;
+
+         var pastedEntities = new List<TPathAndValueEntity>();
+         _clipboardManager.PasteFromClipBoard<TPathAndValueEntity>(pastedEntities.Add);
+
+         if (!pastedEntities.Any())
+            return;
+
+         // Refresh the view once when all entities are added instead of once per entity
+         _context.PublishEvent(new BulkUpdateStartedEvent());
+         try
+         {
+            AddCommand(_interactionTasksForExtendablePathAndValueEntity.ExtendBuildingBlockWith(_buildingBlock, pastedEntities));
+         }
+         finally
+         {
+            _context.PublishEvent(new BulkUpdateFinishedEvent());
+         }
+      }
 
       public void RemovePathAndValueEntity(TStartValueDTO elementToRemove)
       {

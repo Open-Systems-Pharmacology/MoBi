@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Windows.Forms;
 using DevExpress.XtraBars;
 using DevExpress.XtraBars.Ribbon;
 using DevExpress.XtraEditors;
@@ -11,6 +12,7 @@ using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Views.Base;
 using DevExpress.XtraGrid.Views.Grid;
+using DevExpress.XtraGrid.Views.Grid.ViewInfo;
 using DevExpress.XtraLayout;
 using DevExpress.XtraLayout.Utils;
 using MoBi.Assets;
@@ -24,6 +26,8 @@ using OSPSuite.Core.Domain.Builder;
 using OSPSuite.DataBinding;
 using OSPSuite.DataBinding.DevExpress;
 using OSPSuite.DataBinding.DevExpress.XtraGrid;
+using OSPSuite.Presentation.Core;
+using OSPSuite.Presentation.Presenters;
 using OSPSuite.Presentation.Views;
 using OSPSuite.UI.Binders;
 using OSPSuite.UI.Controls;
@@ -32,6 +36,7 @@ using OSPSuite.UI.RepositoryItems;
 using OSPSuite.Utility.Extensions;
 using OSPSuite.Utility.Reflection;
 using OSPSuite.Utility.Validation;
+using Keys = System.Windows.Forms.Keys;
 
 namespace MoBi.UI.Views
 {
@@ -67,6 +72,8 @@ namespace MoBi.UI.Views
          _repositoryItemPopupContainerEdit.PopupControl = _popupControl;
          _repositoryItemPopupContainerEdit.QueryDisplayText += (o, e) => OnEvent(queryText, e);
          gridView.HiddenEditor += (o, e) => hideEditor();
+         gridView.KeyDown += (o, e) => OnEvent(onGridViewKeyDown, e);
+         gridView.MouseDown += (o, e) => OnEvent(onGridViewMouseDown, e);
          ribbonControl.ShowPageHeadersMode = ShowPageHeadersMode.Hide;
          ribbonControl.ShowQatLocationSelector = false;
          ribbonControl.Minimized = true;
@@ -116,6 +123,54 @@ namespace MoBi.UI.Views
 
       private void hideEditor() => _unitControl.Hide();
 
+      private void onGridViewKeyDown(KeyEventArgs e)
+      {
+         if (!e.Control || gridView.IsEditing)
+            return;
+
+         switch (e.KeyCode)
+         {
+            case Keys.C:
+               // Not handled, so that the grid also copies the selected cells as text
+               _presenter.CopySelectionToClipBoard();
+               break;
+            case Keys.V:
+               if (!_presenter.CanPasteFromClipBoard())
+                  return;
+
+               _presenter.PasteFromClipBoard();
+               e.Handled = true;
+               break;
+         }
+      }
+
+      private void onGridViewMouseDown(MouseEventArgs e)
+      {
+         if (e.Button != MouseButtons.Right)
+            return;
+
+         if (!(_presenter is IPresenterWithContextMenu<IViewItem> presenterWithContextMenu))
+            return;
+
+         var hitInfo = gridView.CalcHitInfo(e.Location);
+         if (hitInfo.InRowCell)
+            selectRowIfNotSelected(hitInfo.RowHandle);
+         else if (hitInfo.HitTest != GridHitTest.EmptyRow)
+            return;
+
+         presenterWithContextMenu.ShowContextMenu(null, this.CalculateRelativeOffset(e.Location, gridControl));
+      }
+
+      private void selectRowIfNotSelected(int rowHandle)
+      {
+         if (gridView.GetSelectedRows().Contains(rowHandle))
+            return;
+
+         gridView.ClearSelection();
+         gridView.FocusedRowHandle = rowHandle;
+         gridView.SelectRow(rowHandle);
+      }
+
       private void queryText(QueryDisplayTextEventArgs e)
       {
          var distributedParameter = _gridViewBinder.FocusedElement;
@@ -161,9 +216,9 @@ namespace MoBi.UI.Views
 
       public abstract string NameColumnCaption { get; }
 
-      protected IReadOnlyList<TPathAndValueEntity> SelectedStartValues
+      public IReadOnlyList<TPathAndValueEntity> SelectedStartValues
       {
-         get { return gridView.GetSelectedRows().Select(rowHandle => _gridViewBinder.ElementAt(rowHandle)).ToList(); }
+         get { return gridView.GetSelectedRows().Select(rowHandle => _gridViewBinder.ElementAt(rowHandle)).Where(x => x != null).ToList(); }
       }
 
       public IReadOnlyList<TPathAndValueEntity> VisibleStartValues => gridView.DataController.GetAllFilteredAndSortedRows().Cast<TPathAndValueEntity>().ToList();

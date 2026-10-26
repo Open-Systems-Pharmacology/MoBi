@@ -14,7 +14,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       public ContextMenuFactoryForInitialConditions(IMoBiContext context) => _context = context;
 
       public IContextMenu CreateFor(IViewItem objectRequestingContextMenu, IPresenterWithContextMenu<IViewItem> presenter)
-         => new ContextMenuForInitialConditions(_context);
+         => new ContextMenuForInitialConditions(_context, presenter.DowncastTo<IInitialConditionsPresenter>());
 
       public bool IsSatisfiedBy(IViewItem objectRequestingContextMenu, IPresenterWithContextMenu<IViewItem> presenter)
          => presenter.IsAnImplementationOf<InitialConditionsPresenter>()
