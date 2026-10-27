@@ -49,7 +49,7 @@ namespace MoBi.Core
          _moleculeBuilder.Icon = ApplicationIcons.Molecule.IconName;
          _moleculeBuilder.Id = "ID";
          _moleculeBuilder.IsFloating = true;
-         _moleculeBuilder.IsXenobiotic = false;
+         _moleculeBuilder.IsXenobiotic = true;
          _moleculeBuilder.QuantityType = QuantityType.Drug;
          _activeTransport = A.Fake<TransportBuilder>();
          _transporterMoleculeContainer = new TransporterMoleculeContainer().WithName("transport");
@@ -89,7 +89,7 @@ namespace MoBi.Core
          _result.Description.ShouldBeEqualTo(_moleculeBuilder.Description);
          _result.Icon.ShouldBeEqualTo(ApplicationIcons.Molecule);
          _result.Stationary.ShouldBeEqualTo(!_moleculeBuilder.IsFloating);
-         _result.Xenobiotic.ShouldBeFalse();
+         _result.Xenobiotic.ShouldBeTrue();
          _result.Name.ShouldBeEqualTo(_moleculeBuilder.Name);
       }
    }
