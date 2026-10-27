@@ -53,6 +53,18 @@ namespace MoBi.UI.Diagram.DiagramManagers
          DiagramModel.ClearUndoStack();
       }
 
+      protected override ContainerNode AddContainer(IContainerBase parent, IContainer container, bool recursive, bool coupleAll)
+      {
+         var isNewNode = NodeFor<ContainerNode>(container) == null;
+         var containerNode = base.AddContainer(parent, container, recursive, coupleAll);
+
+         // organs are collapsed when they first appear in the diagram. Existing nodes keep the expansion chosen by the user
+         if (isNewNode && containerNode != null && container.ContainerType == ContainerType.Organ)
+            containerNode.IsExpanded = false;
+
+         return containerNode;
+      }
+
       private void removeByPathRecursively(ObjectPath parentPath, HashSet<string> unusedNodeIds)
       {
          unusedNodeIds.Remove(parentPath);

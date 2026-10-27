@@ -94,4 +94,107 @@ namespace MoBi.UI.Diagram
          _spatialStructure.DiagramModel.GetNode(_spatialStructure.NeighborhoodsContainer.Id).IsVisible.ShouldBeFalse();
       }
    }
+
+   public abstract class concern_for_SpatialStructureDiagramManager_with_organs : concern_for_SpatialStructureDiagramManager
+   {
+      protected MoBiSpatialStructure _spatialStructure;
+      protected IContainer _organism;
+      protected IContainer _bone;
+      protected IContainer _boneInterstitial;
+      protected IContainer _tumor;
+
+      protected override void Context()
+      {
+         base.Context();
+         _organism = new Container { Id = "Organism", Name = "Organism", ContainerType = ContainerType.Organism };
+         _bone = new Container { Id = "Bone", Name = "Bone", ContainerType = ContainerType.Organ };
+         _boneInterstitial = new Container { Id = "BoneInterstitial", Name = "Interstitial", ContainerType = ContainerType.Compartment };
+         _tumor = new Container { Id = "Tumor", Name = "Tumor", ContainerType = ContainerType.Organ };
+         _bone.Add(_boneInterstitial);
+         _organism.Add(_bone);
+
+         _spatialStructure = new MoBiSpatialStructure
+         {
+            DiagramModel = new DiagramModel(),
+            DiagramManager = sut,
+            NeighborhoodsContainer = new Container { Id = "Neighborhoods", Name = "Neighborhoods" }
+         };
+         _spatialStructure.AddTopContainer(_organism);
+         _spatialStructure.AddTopContainer(_tumor);
+      }
+
+      protected IContainerNode NodeFor(IContainer container) => _spatialStructure.DiagramModel.GetNode<IContainerNode>(container.Id);
+   }
+
+   public class When_initializing_the_diagram_manager_with_a_spatial_structure_containing_organs : concern_for_SpatialStructureDiagramManager_with_organs
+   {
+      protected override void Because()
+      {
+         sut.InitializeWith(_spatialStructure, new DiagramOptions());
+      }
+
+      [Observation]
+      public void should_collapse_the_organ_nodes()
+      {
+         NodeFor(_bone).IsExpanded.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_collapse_the_organ_nodes_that_are_top_containers()
+      {
+         NodeFor(_tumor).IsExpanded.ShouldBeFalse();
+      }
+
+      [Observation]
+      public void should_not_collapse_containers_that_are_not_organs()
+      {
+         NodeFor(_organism).IsExpanded.ShouldBeTrue();
+         NodeFor(_boneInterstitial).IsExpanded.ShouldBeTrue();
+      }
+   }
+
+   public class When_refreshing_the_diagram_after_the_user_expanded_an_organ : concern_for_SpatialStructureDiagramManager_with_organs
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.InitializeWith(_spatialStructure, new DiagramOptions());
+         NodeFor(_bone).IsExpanded = true;
+      }
+
+      protected override void Because()
+      {
+         sut.RefreshDiagramFromModel();
+      }
+
+      [Observation]
+      public void should_keep_the_expansion_of_the_existing_organ_node()
+      {
+         NodeFor(_bone).IsExpanded.ShouldBeTrue();
+      }
+   }
+
+   public class When_an_organ_is_added_to_a_spatial_structure_shown_in_the_diagram : concern_for_SpatialStructureDiagramManager_with_organs
+   {
+      private IContainer _kidney;
+
+      protected override void Context()
+      {
+         base.Context();
+         sut.InitializeWith(_spatialStructure, new DiagramOptions());
+         _kidney = new Container { Id = "Kidney", Name = "Kidney", ContainerType = ContainerType.Organ };
+         _organism.Add(_kidney);
+      }
+
+      protected override void Because()
+      {
+         sut.AddObjectBase(_kidney);
+      }
+
+      [Observation]
+      public void should_collapse_the_new_organ_node()
+      {
+         NodeFor(_kidney).IsExpanded.ShouldBeFalse();
+      }
+   }
 }
