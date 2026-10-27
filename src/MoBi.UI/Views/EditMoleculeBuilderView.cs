@@ -63,6 +63,7 @@ namespace MoBi.UI.Views
          base.InitializeBinding();
          _screenBinder = new ScreenBinder<MoleculeBuilderDTO>();
          _screenBinder.Bind(dto => dto.Stationary).To(chkIsFloating).OnValueUpdating += onIsPresentValueSet;
+         _screenBinder.Bind(dto => dto.Xenobiotic).To(chkIsXenobiotic).OnValueUpdating += onIsXenobioticValueSet;
          _screenBinder.Bind(dto => dto.Name).To(btName).OnValueUpdating += OnValueUpdating;
          _screenBinder.Bind(dto => dto.Description).To(htmlEditor).OnValueUpdating += OnValueUpdating;
          _screenBinder.Bind(dto => dto.MoleculeType).To(cbMoleculeType)
@@ -86,6 +87,8 @@ namespace MoBi.UI.Views
          base.InitializeResources();
          chkIsFloating.ToolTip = ToolTips.Molecules.IsStationary;
          chkIsFloating.Text = AppConstants.Captions.IsStationary;
+         chkIsXenobiotic.ToolTip = ToolTips.Molecules.IsXenobiotic;
+         chkIsXenobiotic.Text = AppConstants.Captions.IsXenobiotic;
          UpdateStartAmountDisplay(AppConstants.Captions.DefaultStartAmount);
          layoutControlItemFormula.TextVisible = false;
          layoutControlItemName.Text = AppConstants.Captions.Name.FormatForLabel();
@@ -128,6 +131,11 @@ namespace MoBi.UI.Views
       private void onIsPresentValueSet(MoleculeBuilderDTO moleculeBuilder, PropertyValueSetEventArgs<bool> value)
       {
          this.DoWithinExceptionHandler(() => _presenter.SetStationaryProperty(value.NewValue, value.OldValue));
+      }
+
+      private void onIsXenobioticValueSet(MoleculeBuilderDTO moleculeBuilder, PropertyValueSetEventArgs<bool> value)
+      {
+         this.DoWithinExceptionHandler(() => _presenter.SetXenobioticProperty(value.NewValue, value.OldValue));
       }
 
       private void OnValueUpdating<T>(MoleculeBuilderDTO moleculeBuilder, PropertyValueSetEventArgs<T> value)

@@ -34,6 +34,7 @@ namespace MoBi.Presentation.Mappers
          dto.InteractionContainerCollection = allInteractionContainersDTOFrom(moleculeBuilder);
          dto.DefaultStartFormula = _formulaBuilderMapper.MapFrom(moleculeBuilder.DefaultStartFormula);
          dto.Stationary = !moleculeBuilder.IsFloating;
+         dto.Xenobiotic = moleculeBuilder.IsXenobiotic;
          dto.UsedCalculationMethods = moleculeBuilder.UsedCalculationMethods.MapAllUsing(_usedCalculationMethodMapper);
          dto.MoleculeType = moleculeBuilder.QuantityType;
          return dto;
