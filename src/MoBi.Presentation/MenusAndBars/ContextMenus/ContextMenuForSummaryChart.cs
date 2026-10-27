@@ -57,6 +57,10 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
             .WithCommandFor<EditSummaryChartUICommand, CurveChart>(chart, _container)
             .WithIcon(ApplicationIcons.Edit));
 
+         _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.Rename)
+            .WithCommandFor<RenameSummaryChartUICommand, CurveChart>(chart, _container)
+            .WithIcon(ApplicationIcons.Rename));
+
          _allMenuItems.Add(CreateMenuButton.WithCaption(AppConstants.MenuNames.Delete)
             .WithCommandFor<RemoveSummaryChartUICommand, CurveChart>(chart, _container)
             .WithIcon(ApplicationIcons.Delete));
