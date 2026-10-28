@@ -46,6 +46,7 @@ namespace MoBi.Presentation.Views
       void HideElements(HidablePathAndValuesViewElement elementsToHide);
       void RefreshData();
       TStartValueDTO FocusedStartValue { get; set; }
+      IReadOnlyList<TStartValueDTO> SelectedStartValues { get; }
       bool CanCreateNewFormula { set; }
    }
 }

@@ -1162,6 +1162,8 @@ namespace MoBi.Assets
          public static readonly string ManageTemplates = "Manage Templates...";
          public static readonly string NewParameterValue = "New Parameter Value";
          public static readonly string NewInitialCondition = "New Initial Condition";
+         public static readonly string Copy = "Copy";
+         public static readonly string Paste = "Paste";
          public static readonly string ModelParts = "Model Parts";
          public static readonly string ImportSBML = "Open SBML Model...";
          public static readonly string SaveAsPKML = "Save As PKML...";
