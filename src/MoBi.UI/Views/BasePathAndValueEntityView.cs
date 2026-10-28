@@ -139,7 +139,9 @@ namespace MoBi.UI.Views
                   return;
 
                _presenter.PasteFromClipBoard();
+               // Otherwise the Ctrl+V key press opens the editor of the focused cell and pastes the clipboard text into it
                e.Handled = true;
+               e.SuppressKeyPress = true;
                break;
          }
       }
