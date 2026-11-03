@@ -30,15 +30,6 @@ namespace MoBi.UI.Views
          _screenBinder = new ScreenBinder<TransportBuilderDTO>();
       }
 
-      public bool FormulaHasError
-      {
-         set
-         {
-            tabKinetic.SetImage(value ? ApplicationIcons.DxError : ApplicationIcons.PassiveTransport);
-            tabKinetic.Tooltip = value ? AppConstants.Exceptions.ErrorInFormula : string.Empty;
-         }
-      }
-
       public void EnableDisablePlotProcessRateParameter(bool enable)
       {
          chkPlotParameter.Enabled = enable;

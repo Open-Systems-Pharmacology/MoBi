@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Drawing;
 using DevExpress.XtraBars;
 using DevExpress.XtraEditors.Controls;
 using MoBi.Assets;
@@ -24,21 +23,10 @@ namespace MoBi.UI.Views
    {
       private IEditObserverBuilderPresenter _presenter;
       private ScreenBinder<ObserverBuilderDTO> _screenBinder;
-      private Image _errorImage;
-      private Image _observerImage;
 
       public EditObserverBuilderView()
       {
          InitializeComponent();
-      }
-
-      public bool FormulaHasError
-      {
-         set
-         {
-            tabFormula.Image = value ? _errorImage : _observerImage;
-            tabFormula.Tooltip = value ? AppConstants.Exceptions.ErrorInFormula : string.Empty;
-         }
       }
 
       public void AddMoleculeListView(IView view)
@@ -78,8 +66,6 @@ namespace MoBi.UI.Views
          base.InitializeResources();
          btName.ToolTip = ToolTips.Observer.ObserverName;
          htmlEditor.ToolTip = ToolTips.Description;
-         _errorImage = ApplicationIcons.DxError.ToImage();
-         _observerImage = ApplicationIcons.Observer.ToImage();
          layoutItemDescription.Text = AppConstants.Captions.Description.FormatForLabel();
          layoutItemName.Text = AppConstants.Captions.Name.FormatForLabel();
          layoutItemDimension.Text = AppConstants.Captions.Dimension.FormatForLabel();
@@ -87,6 +73,7 @@ namespace MoBi.UI.Views
          layoutItemDescriptorConditionList.TextVisible = false;
          layoutGroupInContainerWith.Text = AppConstants.Captions.InContainerWith.FormatForLabel();
          tabProperties.SetImage(ApplicationIcons.Properties, IconSizes.Size16x16);
+         tabFormula.SetImage(ApplicationIcons.Observer, IconSizes.Size16x16);
       }
 
       public void Activate()

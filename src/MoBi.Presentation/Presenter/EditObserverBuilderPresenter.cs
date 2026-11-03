@@ -98,15 +98,9 @@ namespace MoBi.Presentation.Presenter
          observerBuilderDTO.AddUsedNames(_editTasks.GetForbiddenNamesWithoutSelf(observerBuilder, existingObjectsInParent));
          _view.BindTo(observerBuilderDTO);
          _descriptorConditionListPresenter.Edit(observerBuilder, x => x.ContainerCriteria, _buildingBlock);
-         FormulaChanged();
       }
 
       private ObserverBuildingBlock observerBuildingBlock => BuildingBlock as ObserverBuildingBlock;
-
-      protected override void FormulaChanged()
-      {
-         _view.FormulaHasError = !_editFormulaPresenter.CanClose;
-      }
 
       protected abstract ObserverBuilderDTO MapFrom(TObserverBuilder observerBuilder);
 

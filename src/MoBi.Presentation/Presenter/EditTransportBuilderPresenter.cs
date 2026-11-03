@@ -90,11 +90,6 @@ namespace MoBi.Presentation.Presenter
          Edit(objectToEdit.DowncastTo<TransportBuilder>());
       }
 
-      protected override void FormulaChanged()
-      {
-         _view.FormulaHasError = !_editFormulaPresenter.CanClose;
-      }
-
       public virtual void Edit(TransportBuilder transportBuilder)
       {
          Edit(transportBuilder, transportBuilder.ParentContainer?.Children);
@@ -110,7 +105,6 @@ namespace MoBi.Presentation.Presenter
          setUpReferenceView();
          View.Show(_transportBuilderDTO);
          _view.EnableDisablePlotProcessRateParameter(_transportBuilder.CreateProcessRateParameter);
-         FormulaChanged();
          _view.ShowMoleculeList = transportIsInPassiveTransportBuildingBlock(transportBuilder);
          _moleculeListPresenter.Edit(transportBuilder);
          _sourceCriteriaPresenter.Edit(_transportBuilder, x => x.SourceCriteria, _buildingBlock);
