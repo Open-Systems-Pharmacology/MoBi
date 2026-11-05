@@ -8,6 +8,7 @@ using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
 using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
+using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Extensions;
 using MoBi.Presentation.Mappers;
@@ -36,6 +37,7 @@ namespace MoBi.Presentation.Presenter
       protected BindingList<TStartValueDTO> _startValueDTOs;
       private readonly IEmptyStartValueCreator<TPathAndValueEntity> _emptyStartValueCreator;
       protected readonly IMoBiContext _context;
+      private readonly IClipboardManager _clipboardManager;
       private bool _handleChangedEvents;
       private TPathAndValueEntity _focusedStartValue;
       public Func<TStartValueDTO, bool> IsOriginalStartValue { get; set; }
@@ -50,7 +52,8 @@ namespace MoBi.Presentation.Presenter
          IMoBiContext context,
          IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper,
          IDimensionFactory dimensionFactory,
-         IDistributedPathAndValueEntityPresenter<TStartValueDTO, TBuildingBlock> distributedPathAndValuePresenter)
+         IDistributedPathAndValueEntityPresenter<TStartValueDTO, TBuildingBlock> distributedPathAndValuePresenter,
+         IClipboardManager clipboardManager)
          : base(view, interactionTasksForExtendablePathAndValueEntity, formulaToValueFormulaDTOMapper, dimensionFactory, distributedPathAndValuePresenter)
       {
          _objectType = new ObjectTypeResolver().TypeFor(_focusedStartValue);
@@ -58,6 +61,7 @@ namespace MoBi.Presentation.Presenter
          IsOriginalStartValue = isOriginalStartValue;
          _emptyStartValueCreator = emptyStartValueCreator;
          _context = context;
+         _clipboardManager = clipboardManager;
          _originalStartValues = new List<TPathAndValueEntity>();
          _handleChangedEvents = true;
          CanCreateNewFormula = true;
@@ -102,6 +106,58 @@ namespace MoBi.Presentation.Presenter
 
       protected abstract string RemoveCommandDescription();
 
+      public bool HasSelection => _view.SelectedStartValues.Any();
+
+      public void CopySelectionToClipBoard() => copyToClipBoard(_view.SelectedStartValues);
+
+      public void CopyAllToClipBoard() => copyToClipBoard(_view.VisibleStartValues);
+
+      private void copyToClipBoard(IReadOnlyList<TStartValueDTO> startValueDTOs)
+      {
+         var entities = startValueDTOs
+            .SelectMany(dto => new[] { dto }.Concat(dto.SubParameters))
+            .Select(PathAndValueEntityFrom)
+            .Distinct()
+            .ToList();
+
+         if (!entities.Any())
+            return;
+
+         _clipboardManager.CopyToClipBoard(entities);
+      }
+
+      /// <summary>
+      ///    Returns true if path and value entities can be pasted into the edited building block
+      /// </summary>
+      protected virtual bool CanPaste => true;
+
+      public bool CanPasteFromClipBoard() => CanPaste && _clipboardManager.ClipBoardContainsType<TPathAndValueEntity>();
+
+      public void PasteFromClipBoard()
+      {
+         if (!CanPasteFromClipBoard())
+            return;
+
+         var pastedEntities = new List<TPathAndValueEntity>();
+         _clipboardManager.PasteFromClipBoard<TPathAndValueEntity>(pastedEntities.Add);
+
+         // Ask which entities to replace before the bulk update, so that the view keeps handling events while the user decides
+         var entitiesToAdd = _interactionTasksForExtendablePathAndValueEntity.FilterEntitiesToRetain(_buildingBlock, pastedEntities);
+         if (!entitiesToAdd.Any())
+            return;
+
+         // Refresh the view once when all entities are added instead of once per entity
+         _context.PublishEvent(new BulkUpdateStartedEvent());
+         try
+         {
+            AddCommand(_interactionTasksForExtendablePathAndValueEntity.AddOrReplaceEntities(_buildingBlock, entitiesToAdd));
+         }
+         finally
+         {
+            _context.PublishEvent(new BulkUpdateFinishedEvent());
+         }
+      }
+
       public void RemovePathAndValueEntity(TStartValueDTO elementToRemove)
       {
          bulkRemove(new List<TStartValueDTO> { elementToRemove });
@@ -112,8 +168,6 @@ namespace MoBi.Presentation.Presenter
          base.Edit(buildingBlock);
          _originalStartValues.Clear();
 
-         // Edit null building block happens when creating a simulation
-         // and no Start Value Building Block exists
          if (_buildingBlock != null)
             _originalStartValues.AddRange(_buildingBlock);
 

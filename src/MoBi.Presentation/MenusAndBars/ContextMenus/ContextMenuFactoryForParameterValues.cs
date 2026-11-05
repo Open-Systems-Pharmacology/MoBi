@@ -14,7 +14,7 @@ namespace MoBi.Presentation.MenusAndBars.ContextMenus
       public ContextMenuFactoryForParameterValues(IMoBiContext context) => _context = context;
 
       public IContextMenu CreateFor(IViewItem objectRequestingContextMenu, IPresenterWithContextMenu<IViewItem> presenter)
-         => new ContextMenuForParameterValues(_context);
+         => new ContextMenuForParameterValues(_context, presenter.DowncastTo<IParameterValuesPresenter>());
 
       public bool IsSatisfiedBy(IViewItem objectRequestingContextMenu, IPresenterWithContextMenu<IViewItem> presenter)
          => presenter.IsAnImplementationOf<ParameterValuesPresenter>()

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Services;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Mappers;
 using MoBi.Presentation.Tasks.Interaction;
@@ -26,19 +27,24 @@ namespace MoBi.Presentation.Presenter
          IFormulaToValueFormulaDTOMapper formulaToValueFormulaDTOMapper,
          IDimensionFactory dimensionFactory,
          IInitialConditionsDistributedInExpressionProfilePresenter distributedParameterPresenter,
-         IExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper buildingBlockMapper) :
+         IExpressionProfileBuildingBlockToExpressionProfileBuildingBlockDTOMapper buildingBlockMapper,
+         IClipboardManager clipboardManager) :
          base(view,
             initialConditionsTask,
             msvCreator,
             context,
             formulaToValueFormulaDTOMapper,
             dimensionFactory,
-            distributedParameterPresenter)
+            distributedParameterPresenter,
+            clipboardManager)
       {
          _buildingBlockMapper = buildingBlockMapper;
          view.HideElements(HidablePathAndValuesViewElement.PresenceRibbon | HidablePathAndValuesViewElement.DeleteButton | HidablePathAndValuesViewElement.DeleteColumn | HidablePathAndValuesViewElement.ValueOriginColumn | HidablePathAndValuesViewElement.IsPresentColumn);
          DisablePathColumns();
       }
+
+      // The initial conditions of an expression profile are defined by the expression profile itself
+      protected override bool CanPaste => false;
 
       protected override IReadOnlyList<InitialConditionDTO> ValueDTOsFor(ExpressionProfileBuildingBlock buildingBlock) => _buildingBlockMapper.MapFrom(buildingBlock).InitialConditionDTOs;
       protected override void SelectEntity(InitialConditionDTO dto) => _view.Select(dto);

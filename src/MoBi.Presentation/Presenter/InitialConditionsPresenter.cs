@@ -50,8 +50,9 @@ namespace MoBi.Presentation.Presenter
          IInitialConditionsBuildingBlockToInitialConditionsBuildingBlockDTOMapper buildingBlockMapper,
          IViewItemContextMenuFactory viewItemContextMenuFactory,
          IDialogCreator dialogCreator,
-         IInitialConditionPathResolver initialConditionPathResolver)
-         : base(view, initialConditionsTask, msvCreator, context, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
+         IInitialConditionPathResolver initialConditionPathResolver,
+         IClipboardManager clipboardManager)
+         : base(view, initialConditionsTask, msvCreator, context, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter, clipboardManager)
       {
          _initialConditionsTask = initialConditionsTask;
          _buildingBlockMapper = buildingBlockMapper;

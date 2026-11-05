@@ -1,6 +1,4 @@
-﻿using System.Windows.Forms;
-using DevExpress.XtraBars;
-using DevExpress.XtraGrid.Views.Grid.ViewInfo;
+﻿using DevExpress.XtraBars;
 using MoBi.Assets;
 using MoBi.Presentation.DTO;
 using MoBi.Presentation.Formatters;
@@ -60,8 +58,6 @@ namespace MoBi.UI.Views
          _gridViewBinder.Bind(x => x.Formula)
             .WithEditRepository(dto => CreateFormulaRepository())
             .WithOnValueUpdating((o, e) => InitialConditionPresenter.SetFormula(o, e.NewValue.Formula));
-
-         gridView.MouseDown += (o, e) => OnEvent(onGridViewMouseDown, e);
       }
 
       public override void InitializeResources()
@@ -105,17 +101,6 @@ namespace MoBi.UI.Views
       public IBuildingBlockWithInitialConditionsPresenter InitialConditionPresenter => _presenter.DowncastTo<IBuildingBlockWithInitialConditionsPresenter>();
 
       public void AttachPresenter(IBuildingBlockWithInitialConditionsPresenter presenter) => _presenter = presenter;
-
-      private void onGridViewMouseDown(MouseEventArgs e)
-      {
-         if (e.Button != MouseButtons.Right)
-            return;
-
-         if (gridView.CalcHitInfo(e.Location).HitTest != GridHitTest.EmptyRow)
-            return;
-
-         ((InitialConditionsPresenter)_presenter).ShowContextMenu(null, this.CalculateRelativeOffset(e.Location, gridControl));
-      }
 
       public BarManager PopupBarManager { get; }
    }

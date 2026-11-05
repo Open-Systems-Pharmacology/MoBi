@@ -54,7 +54,8 @@ namespace MoBi.Presentation.Presenter
          IDimensionFactory dimensionFactory,
          IViewItemContextMenuFactory viewItemContextMenuFactory,
          IDialogCreator dialogCreator,
-         IParameterPathResolver parameterPathResolver) : base(view, parameterValuesTask, parameterValuesCreator, context, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter)
+         IParameterPathResolver parameterPathResolver,
+         IClipboardManager clipboardManager) : base(view, parameterValuesTask, parameterValuesCreator, context, formulaToValueFormulaDTOMapper, dimensionFactory, distributedParameterPresenter, clipboardManager)
       {
          _parameterValuesTask = parameterValuesTask;
          _displayUnitRetriever = displayUnitRetriever;

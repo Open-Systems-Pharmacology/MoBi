@@ -18,6 +18,19 @@ namespace MoBi.Presentation.Tasks.Interaction
       IMoBiCommand Extend(IReadOnlyList<TPathAndValueEntity> pathAndValueEntities, ILookupBuildingBlock<TPathAndValueEntity> buildingBlockToExtend, bool retainConflictingEntities = true);
 
       /// <summary>
+      ///    Returns the <paramref name="newEntities" /> to add to the <paramref name="originalBuildingBlock" />: the ones with
+      ///    a path not in the building block yet, and the ones the user selects to replace the entity with the same path
+      /// </summary>
+      IReadOnlyList<TPathAndValueEntity> FilterEntitiesToRetain(TBuildingBlock originalBuildingBlock, IReadOnlyList<TPathAndValueEntity> newEntities);
+
+      /// <summary>
+      ///    Adds the <paramref name="entities" /> to the <paramref name="buildingBlock" />, replacing the entities with the
+      ///    same path
+      /// </summary>
+      /// <returns>The already run command</returns>
+      IMoBiCommand AddOrReplaceEntities(TBuildingBlock buildingBlock, IReadOnlyList<TPathAndValueEntity> entities);
+
+      /// <summary>
       ///    Generates a command that will add the pathAndValueEntity to the building block
       /// </summary>
       /// <param name="buildingBlock">The building block being updated</param>
