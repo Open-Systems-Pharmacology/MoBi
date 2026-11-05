@@ -318,7 +318,12 @@ namespace MoBi.Presentation.Tasks.Interaction
       public IMoBiCommand ExtendBuildingBlockWith(TBuildingBlock buildingBlock, IReadOnlyList<TPathAndValueEntity> newEntities)
       {
          var newStartValues = FilterEntitiesToRetain(buildingBlock, newEntities);
-         return _extendManager.Extend(newStartValues, buildingBlock, retainConflictingEntities: false);
+         return AddOrReplaceEntities(buildingBlock, newStartValues);
+      }
+
+      public IMoBiCommand AddOrReplaceEntities(TBuildingBlock buildingBlock, IReadOnlyList<TPathAndValueEntity> entities)
+      {
+         return _extendManager.Extend(entities, buildingBlock, retainConflictingEntities: false);
       }
 
       public IReadOnlyList<TPathAndValueEntity> FilterEntitiesToRetain(TBuildingBlock originalBuildingBlock, IReadOnlyList<TPathAndValueEntity> newEntities)

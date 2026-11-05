@@ -335,7 +335,8 @@ namespace MoBi.Presentation
          _pastedInitialCondition = new InitialCondition { Path = new ObjectPath("Organism", "Molecule") };
          A.CallTo(() => _clipboardManager.ClipBoardContainsType<InitialCondition>()).Returns(true);
          A.CallTo(() => _clipboardManager.PasteFromClipBoard(A<Action<InitialCondition>>._)).Invokes(x => x.GetArgument<Action<InitialCondition>>(0)(_pastedInitialCondition));
-         A.CallTo(() => _initialConditionTask.ExtendBuildingBlockWith(_initialConditionsBuildingBlock, A<IReadOnlyList<InitialCondition>>._)).Invokes(x => _extendingInitialConditions = x.GetArgument<IReadOnlyList<InitialCondition>>(1));
+         A.CallTo(() => _initialConditionTask.FilterEntitiesToRetain(_initialConditionsBuildingBlock, A<IReadOnlyList<InitialCondition>>._)).ReturnsLazily(x => x.GetArgument<IReadOnlyList<InitialCondition>>(1));
+         A.CallTo(() => _initialConditionTask.AddOrReplaceEntities(_initialConditionsBuildingBlock, A<IReadOnlyList<InitialCondition>>._)).Invokes(x => _extendingInitialConditions = x.GetArgument<IReadOnlyList<InitialCondition>>(1));
       }
 
       protected override void Because()

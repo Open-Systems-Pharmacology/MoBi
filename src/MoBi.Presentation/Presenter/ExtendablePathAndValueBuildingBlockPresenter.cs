@@ -108,18 +108,22 @@ namespace MoBi.Presentation.Presenter
 
       public bool HasSelection => _view.SelectedStartValues.Any();
 
-      public void CopySelectionToClipBoard()
+      public void CopySelectionToClipBoard() => copyToClipBoard(_view.SelectedStartValues);
+
+      public void CopyAllToClipBoard() => copyToClipBoard(_view.VisibleStartValues);
+
+      private void copyToClipBoard(IReadOnlyList<TStartValueDTO> startValueDTOs)
       {
-         var selectedEntities = _view.SelectedStartValues
+         var entities = startValueDTOs
             .SelectMany(dto => new[] { dto }.Concat(dto.SubParameters))
             .Select(PathAndValueEntityFrom)
             .Distinct()
             .ToList();
 
-         if (!selectedEntities.Any())
+         if (!entities.Any())
             return;
 
-         _clipboardManager.CopyToClipBoard(selectedEntities);
+         _clipboardManager.CopyToClipBoard(entities);
       }
 
       /// <summary>
@@ -137,14 +141,16 @@ namespace MoBi.Presentation.Presenter
          var pastedEntities = new List<TPathAndValueEntity>();
          _clipboardManager.PasteFromClipBoard<TPathAndValueEntity>(pastedEntities.Add);
 
-         if (!pastedEntities.Any())
+         // Ask which entities to replace before the bulk update, so that the view keeps handling events while the user decides
+         var entitiesToAdd = _interactionTasksForExtendablePathAndValueEntity.FilterEntitiesToRetain(_buildingBlock, pastedEntities);
+         if (!entitiesToAdd.Any())
             return;
 
          // Refresh the view once when all entities are added instead of once per entity
          _context.PublishEvent(new BulkUpdateStartedEvent());
          try
          {
-            AddCommand(_interactionTasksForExtendablePathAndValueEntity.ExtendBuildingBlockWith(_buildingBlock, pastedEntities));
+            AddCommand(_interactionTasksForExtendablePathAndValueEntity.AddOrReplaceEntities(_buildingBlock, entitiesToAdd));
          }
          finally
          {
@@ -162,8 +168,6 @@ namespace MoBi.Presentation.Presenter
          base.Edit(buildingBlock);
          _originalStartValues.Clear();
 
-         // Edit null building block happens when creating a simulation
-         // and no Start Value Building Block exists
          if (_buildingBlock != null)
             _originalStartValues.AddRange(_buildingBlock);
 

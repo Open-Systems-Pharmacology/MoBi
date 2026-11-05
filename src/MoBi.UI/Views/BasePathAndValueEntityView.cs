@@ -131,8 +131,11 @@ namespace MoBi.UI.Views
          switch (e.KeyCode)
          {
             case Keys.C:
-               // Not handled, so that the grid also copies the selected cells as text
-               _presenter.CopySelectionToClipBoard();
+               // Not handled, so that the grid also copies the same entries as text. Ctrl+Shift+C copies the entire table.
+               if (e.Shift)
+                  _presenter.CopyAllToClipBoard();
+               else
+                  _presenter.CopySelectionToClipBoard();
                break;
             case Keys.V:
                if (!_presenter.CanPasteFromClipBoard())

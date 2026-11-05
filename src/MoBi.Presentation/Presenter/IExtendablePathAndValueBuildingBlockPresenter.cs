@@ -54,6 +54,12 @@ namespace MoBi.Presentation.Presenter
       void CopySelectionToClipBoard();
 
       /// <summary>
+      ///    Copies all path and value entities shown in the view, including the sub-parameters of distributed entities, to
+      ///    the clipboard
+      /// </summary>
+      void CopyAllToClipBoard();
+
+      /// <summary>
       ///    Returns true if the clipboard contains path and value entities that can be pasted into the building block
       /// </summary>
       bool CanPasteFromClipBoard();

@@ -241,6 +241,36 @@ namespace MoBi.Presentation
       }
    }
 
+   internal class When_copying_all_parameter_values_to_the_clipboard : concern_for_ParameterValuesPresenter
+   {
+      private ParameterValue _selectedParameterValue;
+      private ParameterValue _otherParameterValue;
+      private IReadOnlyList<IObjectBase> _copiedObjects;
+
+      protected override void Context()
+      {
+         base.Context();
+         _selectedParameterValue = new ParameterValue { Path = new ObjectPath("Organism", "P1") };
+         _otherParameterValue = new ParameterValue { Path = new ObjectPath("Organism", "P2") };
+         var selectedParameterValueDTO = new ParameterValueDTO(_selectedParameterValue, _parameterValuesBuildingBlock);
+
+         A.CallTo(() => _parameterValuesView.SelectedStartValues).Returns(new[] { selectedParameterValueDTO });
+         A.CallTo(() => _parameterValuesView.VisibleStartValues).Returns(new[] { selectedParameterValueDTO, new ParameterValueDTO(_otherParameterValue, _parameterValuesBuildingBlock) });
+         A.CallTo(() => _clipboardManager.CopyToClipBoard(A<IReadOnlyList<IObjectBase>>._)).Invokes(x => _copiedObjects = x.GetArgument<IReadOnlyList<IObjectBase>>(0));
+      }
+
+      protected override void Because()
+      {
+         sut.CopyAllToClipBoard();
+      }
+
+      [Observation]
+      public void all_parameter_values_shown_in_the_view_should_be_copied()
+      {
+         _copiedObjects.ShouldOnlyContain(_selectedParameterValue, _otherParameterValue);
+      }
+   }
+
    internal class When_copying_to_the_clipboard_and_no_parameter_values_are_selected : concern_for_ParameterValuesPresenter
    {
       protected override void Context()
@@ -273,7 +303,8 @@ namespace MoBi.Presentation
          _pastedParameterValue = new ParameterValue { Path = new ObjectPath("Organism", "P1") };
          A.CallTo(() => _clipboardManager.ClipBoardContainsType<ParameterValue>()).Returns(true);
          A.CallTo(() => _clipboardManager.PasteFromClipBoard(A<Action<ParameterValue>>._)).Invokes(x => x.GetArgument<Action<ParameterValue>>(0)(_pastedParameterValue));
-         A.CallTo(() => _parameterValuesTask.ExtendBuildingBlockWith(_parameterValuesBuildingBlock, A<IReadOnlyList<ParameterValue>>._)).Invokes(x => _extendingParameterValues = x.GetArgument<IReadOnlyList<ParameterValue>>(1));
+         A.CallTo(() => _parameterValuesTask.FilterEntitiesToRetain(_parameterValuesBuildingBlock, A<IReadOnlyList<ParameterValue>>._)).ReturnsLazily(x => x.GetArgument<IReadOnlyList<ParameterValue>>(1));
+         A.CallTo(() => _parameterValuesTask.AddOrReplaceEntities(_parameterValuesBuildingBlock, A<IReadOnlyList<ParameterValue>>._)).Invokes(x => _extendingParameterValues = x.GetArgument<IReadOnlyList<ParameterValue>>(1));
       }
 
       protected override void Because()
@@ -292,6 +323,43 @@ namespace MoBi.Presentation
       {
          A.CallTo(() => _context.PublishEvent(A<BulkUpdateStartedEvent>._)).MustHaveHappenedOnceExactly();
          A.CallTo(() => _context.PublishEvent(A<BulkUpdateFinishedEvent>._)).MustHaveHappenedOnceExactly();
+      }
+
+      [Observation]
+      public void the_user_should_select_the_parameter_values_to_replace_before_the_bulk_update_starts()
+      {
+         A.CallTo(() => _parameterValuesTask.FilterEntitiesToRetain(_parameterValuesBuildingBlock, A<IReadOnlyList<ParameterValue>>._)).MustHaveHappenedOnceExactly()
+            .Then(A.CallTo(() => _context.PublishEvent(A<BulkUpdateStartedEvent>._)).MustHaveHappenedOnceExactly());
+      }
+   }
+
+   internal class When_pasting_parameter_values_and_the_user_does_not_replace_any_parameter_value : concern_for_ParameterValuesPresenter
+   {
+      protected override void Context()
+      {
+         base.Context();
+         sut.InitializeWith(A.Fake<ICommandCollector>());
+         A.CallTo(() => _clipboardManager.ClipBoardContainsType<ParameterValue>()).Returns(true);
+         A.CallTo(() => _clipboardManager.PasteFromClipBoard(A<Action<ParameterValue>>._)).Invokes(x => x.GetArgument<Action<ParameterValue>>(0)(new ParameterValue { Path = new ObjectPath("Organism", "P1") }));
+         A.CallTo(() => _parameterValuesTask.FilterEntitiesToRetain(_parameterValuesBuildingBlock, A<IReadOnlyList<ParameterValue>>._)).Returns(new List<ParameterValue>());
+      }
+
+      protected override void Because()
+      {
+         sut.PasteFromClipBoard();
+      }
+
+      [Observation]
+      public void the_building_block_should_not_be_extended()
+      {
+         A.CallTo(() => _parameterValuesTask.AddOrReplaceEntities(A<ParameterValuesBuildingBlock>._, A<IReadOnlyList<ParameterValue>>._)).MustNotHaveHappened();
+      }
+
+      [Observation]
+      public void the_view_should_not_be_refreshed()
+      {
+         A.CallTo(() => _context.PublishEvent(A<BulkUpdateStartedEvent>._)).MustNotHaveHappened();
+         A.CallTo(() => _context.PublishEvent(A<BulkUpdateFinishedEvent>._)).MustNotHaveHappened();
       }
    }
 
@@ -317,7 +385,7 @@ namespace MoBi.Presentation
       [Observation]
       public void the_building_block_should_not_be_extended()
       {
-         A.CallTo(() => _parameterValuesTask.ExtendBuildingBlockWith(A<ParameterValuesBuildingBlock>._, A<IReadOnlyList<ParameterValue>>._)).MustNotHaveHappened();
+         A.CallTo(() => _parameterValuesTask.AddOrReplaceEntities(A<ParameterValuesBuildingBlock>._, A<IReadOnlyList<ParameterValue>>._)).MustNotHaveHappened();
       }
    }
 }
