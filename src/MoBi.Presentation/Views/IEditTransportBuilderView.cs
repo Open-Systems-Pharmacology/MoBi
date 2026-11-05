@@ -10,7 +10,6 @@ namespace MoBi.Presentation.Views
       void AddMoleculeSelectionView(IView view);
       void SetParameterView(IView view);
       void ShowParameters();
-      bool FormulaHasError { set; }
       bool ShowMoleculeList { set; }
       void EnableDisablePlotProcessRateParameter(bool newValue);
       void AddSourceCriteriaView(IView view);

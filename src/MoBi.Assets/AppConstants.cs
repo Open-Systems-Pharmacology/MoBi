@@ -1268,7 +1268,6 @@ namespace MoBi.Assets
 
          public static string SourceBuildingBlockNotInProject(string entityType) => $"Building Block used to create {entityType} is not present in project";
          public static readonly string ShouldNeverHappen = "Should never happen";
-         public static readonly string ErrorInFormula = "Error in Formula";
          public static readonly string AppliedMoleculeNotInProject = "Applied Molecule is not in Project";
          public static readonly string CouldNotCreateSimulation = "Unable to create the simulation. Please check warnings or errors in the notification view.";
          public static string CannotLoadSimulation(string simulationName) => $"Cannot load simulation '{simulationName}'";
