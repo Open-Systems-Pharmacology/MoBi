@@ -298,9 +298,18 @@ namespace MoBi.Presentation.Tasks
                if (existingColumn == null)
                   existingDataSet.Add(column);
                else
-                  existingColumn.Values = column.Values;
+                  overwriteColumn(existingColumn, column);
             }
          }
+      }
+
+      private static void overwriteColumn(DataColumn existingColumn, DataColumn reloadedColumn)
+      {
+         //the error type can change on reload. The existing column is kept because simulations, charts and parameter identifications refer to it
+         existingColumn.Dimension = reloadedColumn.Dimension;
+         existingColumn.DataInfo.AuxiliaryType = reloadedColumn.DataInfo.AuxiliaryType;
+         existingColumn.DataInfo.DisplayUnitName = reloadedColumn.DataInfo.DisplayUnitName;
+         existingColumn.Values = reloadedColumn.Values;
       }
 
       private DataRepository findDataRepositoryInList(IEnumerable<DataRepository> dataRepositoryList, DataRepository targetDataRepository)
