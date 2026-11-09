@@ -176,6 +176,10 @@ namespace MoBi.Presentation.Presenter
             if (objectBaseDTO.IsAnImplementationOf<DummyMoleculeContainerDTO>())
                return _objectPathCreator.CreateMoleculePath((DummyMoleculeContainerDTO)objectBaseDTO, shouldCreateAbsolutePath, _refObject);
 
+            // Path and value entities (e.g. individual parameters) are shown in a synthetic tree and are referenced by their own path
+            if (objectBaseDTO.ObjectBase is PathAndValueEntity pathAndValueEntity)
+               return createPathsFromEntity(pathAndValueEntity);
+
             var objectBase = _context.Get<IObjectBase>(objectBaseDTO.Id);
 
             return objectBase != null ? createPathsFromEntity(objectBase) : null;
