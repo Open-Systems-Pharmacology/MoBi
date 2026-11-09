@@ -479,6 +479,7 @@ namespace MoBi.Presentation.Tasks
 
    internal abstract class concern_for_reloading_data_whose_error_type_changed : concern_for_ObservedDataTask
    {
+      protected const string MEASUREMENT = "Measurement";
       protected const string ERROR = "Error";
       protected const string MASS_UNIT = "mg";
       protected const float RELOADED_ERROR_VALUE = 2.0f;
@@ -509,7 +510,7 @@ namespace MoBi.Presentation.Tasks
       {
          dataRepository.BaseGrid.Name = "Time";
          dataRepository.BaseGrid.Values = new[] { 0.0f };
-         var measurement = new DataColumn("Measurement", DimensionFactoryForSpecs.MassDimension, dataRepository.BaseGrid) { Values = new[] { 10.0f } };
+         var measurement = new DataColumn(MEASUREMENT, DimensionFactoryForSpecs.MassDimension, dataRepository.BaseGrid) { Values = new[] { 10.0f } };
          measurement.DataInfo.DisplayUnitName = MASS_UNIT;
 
          var isGeometric = errorType == AuxiliaryType.GeometricStdDev;
@@ -545,6 +546,14 @@ namespace MoBi.Presentation.Tasks
       public void should_keep_the_molecular_weight_of_the_error_column()
       {
          _existingErrorColumn.DataInfo.MolWeight.ShouldBeEqualTo(MOL_WEIGHT);
+      }
+
+      [Observation]
+      public void the_measurement_should_find_the_error_column_by_its_new_error_type()
+      {
+         var measurement = _dataRepository.AllButBaseGrid().Single(x => x.Name == MEASUREMENT);
+         measurement.GetRelatedColumn(reloadedErrorType).ShouldBeEqualTo(_existingErrorColumn);
+         measurement.ContainsRelatedColumn(existingErrorType).ShouldBeFalse();
       }
    }
 
