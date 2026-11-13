@@ -285,6 +285,38 @@ namespace MoBi.Presentation
       }
    }
 
+   internal class When_getting_the_reference_for_a_dragged_individual_parameter : concern_for_SelectReferenceAtParameterValuePresenter
+   {
+      private IndividualParameter _individualParameter;
+      private ReferenceDTO _expectedReference;
+      private ReferenceDTO _result;
+
+      protected override void Context()
+      {
+         base.Context();
+         _individualParameter = new IndividualParameter { Path = new ObjectPath("Organism", "Liver", "Fraction vascular") }.WithId("individualParameterId");
+         _expectedReference = new ReferenceDTO { Path = new FormulaUsablePath("Organism", "Liver", "Fraction vascular") };
+         A.CallTo(() => _objectPathCreator.CreatePathsFromEntity(_individualParameter, A<bool>._, A<IEntity>._, A<IUsingFormula>._)).Returns(_expectedReference);
+      }
+
+      protected override void Because()
+      {
+         _result = sut.GetReferenceObjectFrom(new ObjectBaseDTO(_individualParameter));
+      }
+
+      [Observation]
+      public void should_create_the_reference_from_the_individual_parameter()
+      {
+         _result.ShouldBeEqualTo(_expectedReference);
+      }
+
+      [Observation]
+      public void should_not_look_up_the_individual_parameter_in_the_object_repository()
+      {
+         A.CallTo(() => _context.Get<IObjectBase>(A<string>._)).MustNotHaveHappened();
+      }
+   }
+
    internal class When_selecting_multiple_references_and_not_all_are_parameters : concern_for_SelectReferenceAtParameterValuePresenter
    {
       private ObjectBaseDTO _parameterDTO2;

@@ -23,6 +23,47 @@ namespace MoBi.Presentation
       }
    }
 
+   internal class When_creating_a_relative_path_to_an_individual_parameter : concern_for_ObjectPathCreatorSpecs
+   {
+      private IndividualParameter _individualParameter;
+      private ReferenceDTO _referenceDTO;
+      private IDimension _dimension;
+      private IParameter _localParameter;
+
+      protected override void Context()
+      {
+         base.Context();
+         _dimension = A.Fake<IDimension>();
+         _individualParameter = new IndividualParameter { Path = new ObjectPath("Organism", "Liver", "Fraction vascular"), Dimension = _dimension };
+         // The reference tree places individual parameters into a synthetic container hierarchy
+         _individualParameter.WithParentContainer(new Container().WithName("Liver"));
+         _localParameter = new Parameter().WithName("PRef").WithParentContainer(new Container().WithName("Plasma"));
+      }
+
+      protected override void Because()
+      {
+         _referenceDTO = sut.CreatePathsFromEntity(_individualParameter, shouldCreateAbsolutePaths: false, refObject: _localParameter, editedObject: _localParameter);
+      }
+
+      [Observation]
+      public void should_always_reference_the_individual_parameter_with_its_absolute_path()
+      {
+         _referenceDTO.Path.ShouldOnlyContainInOrder("Organism", "Liver", "Fraction vascular");
+      }
+
+      [Observation]
+      public void should_use_the_dimension_of_the_individual_parameter()
+      {
+         _referenceDTO.Path.Dimension.ShouldBeEqualTo(_dimension);
+      }
+
+      [Observation]
+      public void should_create_an_alias_from_the_individual_parameter_name()
+      {
+         _referenceDTO.Path.Alias.ShouldBeEqualTo("Fraction_vascular");
+      }
+   }
+
    class When_creating_a_realtiv_path_to_a_local_moleculeProperty : concern_for_ObjectPathCreatorSpecs
    {
       private DummyParameterDTO _concentrationDTO;
