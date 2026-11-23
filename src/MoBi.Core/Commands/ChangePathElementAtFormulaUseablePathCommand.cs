@@ -1,7 +1,6 @@
 using MoBi.Assets;
 using OSPSuite.Core.Commands.Core;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -9,21 +8,17 @@ using OSPSuite.Assets;
 
 namespace MoBi.Core.Commands
 {
-   public class ChangePathElementAtFormulaUseablePathCommand : BuildingBlockChangeCommandBase<IBuildingBlock>
+   public class ChangePathElementAtFormulaUseablePathCommand : FormulaChangeCommandBase<IFormula>
    {
       private FormulaUsablePath _path;
       private readonly string _alias;
-      private readonly string _formulaId;
       private readonly string _oldElement;
       private readonly string _newElement;
-      private IFormula _formula;
 
-      public ChangePathElementAtFormulaUseablePathCommand(string newElement, IFormula formula, string oldElement, FormulaUsablePath path,IBuildingBlock buildingBlock):base(buildingBlock)
+      public ChangePathElementAtFormulaUseablePathCommand(string newElement, IFormula formula, string oldElement, FormulaUsablePath path,IBuildingBlock buildingBlock):base(formula, buildingBlock)
       {
          _newElement = newElement;
          _oldElement = oldElement;
-         _formula = formula;
-         _formulaId = formula.Id;
          _path = path;
          _alias = path.Alias;
          Description = AppConstants.Commands.ChangePathElementDescription(_alias, _newElement, _oldElement, formula.Name);
@@ -42,7 +37,6 @@ namespace MoBi.Core.Commands
       protected override void ClearReferences()
       {
          base.ClearReferences();
-         _formula = null;
          _path = null;
       }
 
@@ -50,13 +44,11 @@ namespace MoBi.Core.Commands
       {
          base.ExecuteWith(context);
          _path.Replace(_oldElement, _newElement);
-         _formula.ResetOrigin();
       }
 
       public override void RestoreExecutionData(IMoBiContext context)
       {
          base.RestoreExecutionData(context);
-         _formula = context.Get<IFormula>(_formulaId);
          _path = _formula.FormulaUsablePathBy(_alias);
       }
    }

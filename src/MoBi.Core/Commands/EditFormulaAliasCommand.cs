@@ -2,24 +2,21 @@ using MoBi.Assets;
 using OSPSuite.Core.Commands.Core;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
-using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
 
 namespace MoBi.Core.Commands
 {
-   public class EditFormulaAliasCommand : BuildingBlockChangeCommandBase<IBuildingBlock>
+   public class EditFormulaAliasCommand : FormulaChangeCommandBase<IFormula>
    {
       private readonly string _oldAlias;
       private readonly string _newAlias;
-      private readonly string _formulaId;
 
-      public EditFormulaAliasCommand(IFormula formula, string newAlias, string oldAlias, IBuildingBlock buildingBlock) : base(buildingBlock)
+      public EditFormulaAliasCommand(IFormula formula, string newAlias, string oldAlias, IBuildingBlock buildingBlock) : base(formula, buildingBlock)
       {
          _newAlias = newAlias;
          _oldAlias = oldAlias;
-         _formulaId = formula.Id;
 
          ObjectType = new ObjectTypeResolver().TypeFor(formula);
          CommandType = AppConstants.Commands.EditCommand;
@@ -29,18 +26,15 @@ namespace MoBi.Core.Commands
       protected override void ExecuteWith(IMoBiContext context)
       {
          base.ExecuteWith(context);
-         var formula = context.Get<IFormula>(_formulaId);
 
-         formula.FormulaUsablePathBy(_oldAlias).Alias = _newAlias;
-         formula.ResetOrigin();
+         _formula.FormulaUsablePathBy(_oldAlias).Alias = _newAlias;
 
-         context.PublishEvent(new FormulaChangedEvent(formula));
+         context.PublishEvent(new FormulaChangedEvent(_formula));
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
       {
-         var formula = context.Get<IFormula>(_formulaId);
-         return new EditFormulaAliasCommand(formula, _oldAlias, _newAlias, _buildingBlock).AsInverseFor(this);
+         return new EditFormulaAliasCommand(_formula, _oldAlias, _newAlias, _buildingBlock).AsInverseFor(this);
       }
    }
 }

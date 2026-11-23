@@ -3,7 +3,6 @@ using MoBi.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Model;
-using MoBi.Core.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -11,20 +10,16 @@ using OSPSuite.Assets;
 
 namespace MoBi.Core.Commands
 {
-   public class EditPathAtUsablePathCommand : BuildingBlockChangeCommandBase<IBuildingBlock>
+   public class EditPathAtUsablePathCommand : FormulaChangeCommandBase<IFormula>
    {
       private readonly FormulaUsablePath _oldObjectPath;
       private readonly string _alias;
       private readonly ObjectPath _newObjectPath;
-      private readonly string _formulaId;
       private FormulaUsablePath _formulaPathToUpdate;
-      private IFormula _formula;
 
-      public EditPathAtUsablePathCommand(IFormula formula, ObjectPath newObjectPath, FormulaUsablePath formulaPathToUpdate, IBuildingBlock buildingBlock) : base(buildingBlock)
+      public EditPathAtUsablePathCommand(IFormula formula, ObjectPath newObjectPath, FormulaUsablePath formulaPathToUpdate, IBuildingBlock buildingBlock) : base(formula, buildingBlock)
       {
          _newObjectPath = newObjectPath;
-         _formula = formula;
-         _formulaId = formula.Id;
          _formulaPathToUpdate = formulaPathToUpdate;
          //we need a clone here to save the old path before updating it
          _oldObjectPath = _formulaPathToUpdate.Clone<FormulaUsablePath>();
@@ -40,14 +35,12 @@ namespace MoBi.Core.Commands
          var remove = new List<string>(_formulaPathToUpdate);
          remove.Each(toRemove => _formulaPathToUpdate.Remove(toRemove));
          _newObjectPath.Each(newEntry => _formulaPathToUpdate.Add(newEntry));
-         _formula.ResetOrigin();
       }
 
       protected override void ClearReferences()
       {
          base.ClearReferences();
          _formulaPathToUpdate = null;
-         _formula = null;
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)
@@ -58,7 +51,6 @@ namespace MoBi.Core.Commands
       public override void RestoreExecutionData(IMoBiContext context)
       {
          base.RestoreExecutionData(context);
-         _formula = context.Get<IFormula>(_formulaId);
          _formulaPathToUpdate = _formula.FormulaUsablePathBy(_alias);
       }
    }
