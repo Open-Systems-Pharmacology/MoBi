@@ -1,6 +1,7 @@
 using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
+using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain.Builder;
@@ -37,6 +38,7 @@ namespace MoBi.Core.Commands
       {
          base.ExecuteWith(context);
          _formula.FormulaString = _newFormulaString;
+         _formula.ResetOrigin();
          context.PublishEvent(new FormulaChangedEvent(_formula));
       }
 

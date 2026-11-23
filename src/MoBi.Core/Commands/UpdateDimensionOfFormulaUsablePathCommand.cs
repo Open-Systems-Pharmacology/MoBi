@@ -2,6 +2,7 @@ using MoBi.Assets;
 using OSPSuite.Core.Commands.Core;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
+using MoBi.Core.Extensions;
 using MoBi.Core.Helper;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -33,6 +34,7 @@ namespace MoBi.Core.Commands
          base.ExecuteWith(context);
          var formula = context.Get<IFormula>(_formulaId);
          formula.FormulaUsablePathBy(_alias).Dimension = context.DimensionFactory.Dimension(_newDimension);
+         formula.ResetOrigin();
          context.PublishEvent(new FormulaChangedEvent(formula));
       }
 

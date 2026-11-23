@@ -14,7 +14,7 @@ namespace MoBi.Core.Commands
    public abstract class concern_for_EditPathAtUsablePathCommand : ContextSpecification<EditPathAtUsablePathCommand>
    {
       protected IBuildingBlock _buildingBlock;
-      private IFormula _formula;
+      protected ExplicitFormula _formula;
       protected ObjectPath _newObjectPath;
       protected FormulaUsablePath _oldObjectPath;
       protected IMoBiContext _context;
@@ -22,7 +22,7 @@ namespace MoBi.Core.Commands
 
       protected override void Context()
       {
-         _formula = new ExplicitFormula("A+B").WithId("id");
+         _formula = new ExplicitFormula("A+B").WithId("id").WithOriginId("Origin");
          _buildingBlock = A.Fake<IBuildingBlock>();
          _context = A.Fake<IMoBiContext>();
          _newObjectPath = new FormulaUsablePath("NEW", "PATH").WithAlias("C1");
@@ -47,6 +47,12 @@ namespace MoBi.Core.Commands
       public void should_have_updated_the_old_path_with_the_new_path()
       {
          _oldObjectPath.PathAsString.ShouldBeEqualTo(_newObjectPath.PathAsString);
+      }
+
+      [Observation]
+      public void the_formula_should_lose_its_origin()
+      {
+         _formula.OriginId.ShouldBeEqualTo(string.Empty);
       }
 
       [Observation]

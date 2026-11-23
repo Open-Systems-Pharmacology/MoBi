@@ -19,7 +19,7 @@ namespace MoBi.Core.Commands
       protected override void Context()
       {
          _buildingBlock = A.Fake<IBuildingBlock>();
-         _formula = new ExplicitFormula();
+         _formula = new ExplicitFormula().WithOriginId("Origin");
          _newAlias = "newAlias";
          _oldAlias = "oldAlias";
          _formula.AddObjectPath(new FormulaUsablePath { Alias = _oldAlias });
@@ -56,6 +56,12 @@ namespace MoBi.Core.Commands
       {
          _formula.FormulaUsablePathBy("oldAlias").ShouldBeNull();
          _formula.FormulaUsablePathBy("newAlias").ShouldNotBeNull();
+      }
+
+      [Observation]
+      public void the_formula_should_lose_its_origin()
+      {
+         _formula.OriginId.ShouldBeEqualTo(string.Empty);
       }
    }
 

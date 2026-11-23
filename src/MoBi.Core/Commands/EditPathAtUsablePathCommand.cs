@@ -3,6 +3,7 @@ using MoBi.Assets;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -22,6 +23,7 @@ namespace MoBi.Core.Commands
       public EditPathAtUsablePathCommand(IFormula formula, ObjectPath newObjectPath, FormulaUsablePath formulaPathToUpdate, IBuildingBlock buildingBlock) : base(buildingBlock)
       {
          _newObjectPath = newObjectPath;
+         _formula = formula;
          _formulaId = formula.Id;
          _formulaPathToUpdate = formulaPathToUpdate;
          //we need a clone here to save the old path before updating it
@@ -38,12 +40,14 @@ namespace MoBi.Core.Commands
          var remove = new List<string>(_formulaPathToUpdate);
          remove.Each(toRemove => _formulaPathToUpdate.Remove(toRemove));
          _newObjectPath.Each(newEntry => _formulaPathToUpdate.Add(newEntry));
+         _formula.ResetOrigin();
       }
 
       protected override void ClearReferences()
       {
          base.ClearReferences();
          _formulaPathToUpdate = null;
+         _formula = null;
       }
 
       protected override ICommand<IMoBiContext> GetInverseCommand(IMoBiContext context)

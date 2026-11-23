@@ -1,6 +1,7 @@
 using MoBi.Assets;
 using OSPSuite.Core.Commands.Core;
 using MoBi.Core.Domain.Model;
+using MoBi.Core.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -49,6 +50,7 @@ namespace MoBi.Core.Commands
       {
          base.ExecuteWith(context);
          _path.Replace(_oldElement, _newElement);
+         _formula.ResetOrigin();
       }
 
       public override void RestoreExecutionData(IMoBiContext context)

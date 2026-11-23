@@ -11,16 +11,30 @@ namespace MoBi.Core.Commands
    public abstract class concern_for_AddFormulaUsablePathCommandSpecs : ContextSpecification<AddFormulaUsablePathCommand>
    {
       protected TimePath _timePath;
-      protected IFormula _formula;
+      protected ExplicitFormula _formula;
       protected IMoBiContext _context;
 
       protected override void Context()
       {
-         _formula = new ExplicitFormula();
+         _formula = new ExplicitFormula().WithOriginId("Origin");
          _timePath = new TimePath();
          _context = A.Fake<IMoBiContext>();
 
          sut = new AddFormulaUsablePathCommand(_formula, _timePath, A.Fake<IBuildingBlock>());
+      }
+   }
+
+   internal class When_adding_a_formula_usable_path_to_a_formula_with_an_origin : concern_for_AddFormulaUsablePathCommandSpecs
+   {
+      protected override void Because()
+      {
+         sut.Execute(_context);
+      }
+
+      [Observation]
+      public void the_formula_should_lose_its_origin()
+      {
+         _formula.OriginId.ShouldBeEqualTo(string.Empty);
       }
    }
 

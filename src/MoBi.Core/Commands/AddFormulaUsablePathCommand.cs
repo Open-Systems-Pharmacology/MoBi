@@ -1,6 +1,7 @@
 ﻿using MoBi.Assets;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
+using MoBi.Core.Extensions;
 using OSPSuite.Core.Commands.Core;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
@@ -26,6 +27,7 @@ namespace MoBi.Core.Commands
       {
          base.ExecuteWith(context);
          _parent.AddObjectPath(_pathToAdd);
+         _parent.ResetOrigin();
          Description = AppConstants.Commands.AddToDescription(ObjectType, _pathToAdd.Alias, _parent.Name);
          context.PublishEvent(new AddedFormulaUsablePathEvent(_parent, _pathToAdd));
          context.PublishEvent(new FormulaChangedEvent(_parent));

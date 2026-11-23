@@ -2,6 +2,7 @@ using MoBi.Assets;
 using OSPSuite.Core.Commands.Core;
 using MoBi.Core.Domain.Model;
 using MoBi.Core.Events;
+using MoBi.Core.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Formulas;
@@ -24,6 +25,7 @@ namespace MoBi.Core.Commands
          base.ExecuteWith(context);
          Description = AppConstants.Commands.RemoveFromDescription(ObjectType, _itemToRemove.Alias, _parent.Name);
          _parent.RemoveObjectPath(_itemToRemove);
+         _parent.ResetOrigin();
          context.PublishEvent(new RemovedFormulaUsablePathEvent(_parent, _itemToRemove));
          context.PublishEvent(new FormulaChangedEvent(_parent));
       }
