@@ -7,6 +7,7 @@ using OSPSuite.BDDHelper;
 using OSPSuite.BDDHelper.Extensions;
 using OSPSuite.Core.Domain;
 using OSPSuite.Core.Domain.Builder;
+using OSPSuite.Core.Domain.Services;
 using OSPSuite.Core.Domain.UnitSystem;
 
 namespace MoBi.Presentation
@@ -61,6 +62,35 @@ namespace MoBi.Presentation
       public void should_create_an_alias_from_the_individual_parameter_name()
       {
          _referenceDTO.Path.Alias.ShouldBeEqualTo("Fraction_vascular");
+      }
+   }
+
+   internal class When_creating_a_path_to_an_individual_parameter_from_an_event : ContextSpecification<IObjectPathCreator>
+   {
+      private IndividualParameter _individualParameter;
+      private ReferenceDTO _referenceDTO;
+      private IDimension _dimension;
+      private IParameter _eventParameter;
+
+      protected override void Context()
+      {
+         IAliasCreator aliasCreator = new AliasCreator();
+         sut = new ObjectPathCreatorAtEvent(new ObjectPathFactory(aliasCreator), aliasCreator, A.Fake<IMoBiContext>(), A.Fake<IReactionDimensionRetriever>());
+         _dimension = A.Fake<IDimension>();
+         _individualParameter = new IndividualParameter { Path = new ObjectPath("Organism", "Liver", "Fraction vascular"), Dimension = _dimension };
+         _eventParameter = new Parameter().WithName("Dose").WithParentContainer(new EventGroupBuilder().WithName("Events"));
+      }
+
+      protected override void Because()
+      {
+         _referenceDTO = sut.CreatePathsFromEntity(_individualParameter, shouldCreateAbsolutePaths: false, refObject: _eventParameter, editedObject: _eventParameter);
+      }
+
+      [Observation]
+      public void should_reference_the_individual_parameter_with_its_absolute_path()
+      {
+         _referenceDTO.Path.ShouldOnlyContainInOrder("Organism", "Liver", "Fraction vascular");
+         _referenceDTO.Path.Dimension.ShouldBeEqualTo(_dimension);
       }
    }
 

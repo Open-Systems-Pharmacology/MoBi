@@ -3,6 +3,7 @@ using MoBi.Core.Domain.Extensions;
 using MoBi.Core.Domain.Model;
 using MoBi.Presentation.DTO;
 using OSPSuite.Core.Domain;
+using OSPSuite.Core.Domain.Builder;
 using OSPSuite.Core.Domain.Services;
 
 namespace MoBi.Presentation.Presenter
@@ -19,6 +20,9 @@ namespace MoBi.Presentation.Presenter
 
       public override ReferenceDTO CreatePathsFromEntity(IObjectBase objectBase, bool shouldCreateAbsolutePaths, IEntity refObject, IUsingFormula editedObject)
       {
+         if (objectBase is PathAndValueEntity)
+            return base.CreatePathsFromEntity(objectBase, shouldCreateAbsolutePaths, refObject, editedObject);
+
          var entity = objectBase as IFormulaUsable;
          var dtoReference = new ReferenceDTO();
          if (entity == null) return dtoReference;
