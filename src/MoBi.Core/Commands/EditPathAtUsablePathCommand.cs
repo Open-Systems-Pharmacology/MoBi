@@ -10,19 +10,16 @@ using OSPSuite.Assets;
 
 namespace MoBi.Core.Commands
 {
-   public class EditPathAtUsablePathCommand : BuildingBlockChangeCommandBase<IBuildingBlock>
+   public class EditPathAtUsablePathCommand : FormulaChangeCommandBase<IFormula>
    {
       private readonly FormulaUsablePath _oldObjectPath;
       private readonly string _alias;
       private readonly ObjectPath _newObjectPath;
-      private readonly string _formulaId;
       private FormulaUsablePath _formulaPathToUpdate;
-      private IFormula _formula;
 
-      public EditPathAtUsablePathCommand(IFormula formula, ObjectPath newObjectPath, FormulaUsablePath formulaPathToUpdate, IBuildingBlock buildingBlock) : base(buildingBlock)
+      public EditPathAtUsablePathCommand(IFormula formula, ObjectPath newObjectPath, FormulaUsablePath formulaPathToUpdate, IBuildingBlock buildingBlock) : base(formula, buildingBlock)
       {
          _newObjectPath = newObjectPath;
-         _formulaId = formula.Id;
          _formulaPathToUpdate = formulaPathToUpdate;
          //we need a clone here to save the old path before updating it
          _oldObjectPath = _formulaPathToUpdate.Clone<FormulaUsablePath>();
@@ -54,7 +51,6 @@ namespace MoBi.Core.Commands
       public override void RestoreExecutionData(IMoBiContext context)
       {
          base.RestoreExecutionData(context);
-         _formula = context.Get<IFormula>(_formulaId);
          _formulaPathToUpdate = _formula.FormulaUsablePathBy(_alias);
       }
    }

@@ -174,19 +174,8 @@ namespace MoBi.Core.Services
          return withUpdatedDefaultStateAndValueOrigin(command.RunCommand(_context), formula, buildingBlock);
       }
 
-      private IMoBiCommand swapFormulaUsablePaths(IFormula formula, FormulaUsablePath oldPath, FormulaUsablePath newPath, IBuildingBlock buildingBlock)
-      {
-         var macroCommand = new MoBiMacroCommand
-         {
-            Description = AppConstants.Commands.ChangeFormulaUsablePath,
-            ObjectType = ObjectTypes.Formula,
-            CommandType = AppConstants.Commands.EditCommand
-         };
-
-         macroCommand.Add(new RemoveFormulaUsablePathCommand(formula, oldPath, buildingBlock));
-         macroCommand.Add(new AddFormulaUsablePathCommand(formula, newPath, buildingBlock));
-         return macroCommand;
-      }
+      private IMoBiCommand swapFormulaUsablePaths(IFormula formula, FormulaUsablePath oldPath, FormulaUsablePath newPath, IBuildingBlock buildingBlock) =>
+         new SwapFormulaUsablePathCommand(formula, oldPath, newPath, buildingBlock);
 
       private bool isTimePathAndDimension(ObjectPath newPath, IDimension dimension) => dimension.Equals(timeDimension) && newPath.PathAsString.Equals(Constants.TIME);
 

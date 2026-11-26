@@ -8,18 +8,14 @@ using OSPSuite.Core.Domain.Formulas;
 
 namespace MoBi.Core.Commands
 {
-   public class EditFormulaStringCommand : BuildingBlockChangeCommandBase<IBuildingBlock>
+   public class EditFormulaStringCommand : FormulaChangeCommandBase<FormulaWithFormulaString>
    {
       private readonly string _newFormulaString;
       private readonly string _oldFormulaString;
-      private readonly string _formulaId;
-      private FormulaWithFormulaString _formula;
 
       public EditFormulaStringCommand(string newFormulaString, FormulaWithFormulaString formula, IBuildingBlock buildingBlock)
-         : base(buildingBlock)
+         : base(formula, buildingBlock)
       {
-         _formulaId = formula.Id;
-         _formula = formula;
          _newFormulaString = newFormulaString;
          _oldFormulaString = formula.FormulaString;
 
@@ -38,18 +34,6 @@ namespace MoBi.Core.Commands
          base.ExecuteWith(context);
          _formula.FormulaString = _newFormulaString;
          context.PublishEvent(new FormulaChangedEvent(_formula));
-      }
-
-      public override void RestoreExecutionData(IMoBiContext context)
-      {
-         base.RestoreExecutionData(context);
-         _formula = context.Get<FormulaWithFormulaString>(_formulaId);
-      }
-
-      protected override void ClearReferences()
-      {
-         base.ClearReferences();
-         _formula = null;
       }
    }
 }

@@ -20,7 +20,7 @@ namespace MoBi.Core.Commands
          _buildingBlock = A.Fake<IBuildingBlock>();
          _newFormulaString = "newFormulaString";
          _oldFormulaString = "oldFormulaString";
-         _formula = new ExplicitFormula(_oldFormulaString);
+         _formula = new ExplicitFormula(_oldFormulaString).WithOriginId("Origin");
          _context = A.Fake<IMoBiContext>();
          A.CallTo(() => _context.Get<FormulaWithFormulaString>(_formula.Id)).Returns(_formula);
 
@@ -39,6 +39,12 @@ namespace MoBi.Core.Commands
       public void the_formula_string_should_be_updated()
       {
          _formula.FormulaString.ShouldBeEqualTo(_newFormulaString);
+      }
+
+      [Observation]
+      public void the_formula_should_lose_its_origin()
+      {
+         _formula.OriginId.ShouldBeEqualTo(string.Empty);
       }
    }
 

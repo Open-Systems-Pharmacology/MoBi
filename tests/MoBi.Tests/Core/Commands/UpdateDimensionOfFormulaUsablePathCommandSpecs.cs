@@ -14,7 +14,7 @@ namespace MoBi.Core.Commands
    {
       private IBuildingBlock _buildingBlock;
       protected string _alias;
-      protected IFormula _formula;
+      protected ExplicitFormula _formula;
       private IDimension _newDimension;
       protected IMoBiContext _context;
 
@@ -22,7 +22,7 @@ namespace MoBi.Core.Commands
       {
          _buildingBlock = A.Fake<IBuildingBlock>();
          _alias = "alias";
-         _formula = new ExplicitFormula("string");
+         _formula = new ExplicitFormula("string").WithOriginId("Origin");
          _formula.AddObjectPath(new FormulaUsablePath { Alias = _alias, Dimension = DomainHelperForSpecs.AmountDimension });
          _newDimension = DomainHelperForSpecs.ConcentrationDimension;
          _context = A.Fake<IMoBiContext>();
@@ -45,6 +45,12 @@ namespace MoBi.Core.Commands
       public void should_update_the_usable_path_dimension()
       {
          _formula.FormulaUsablePathBy(_alias).Dimension.ShouldBeEqualTo(DomainHelperForSpecs.ConcentrationDimension);
+      }
+
+      [Observation]
+      public void the_formula_should_lose_its_origin()
+      {
+         _formula.OriginId.ShouldBeEqualTo(string.Empty);
       }
    }
 
