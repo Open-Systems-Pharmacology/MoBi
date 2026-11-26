@@ -55,9 +55,11 @@ namespace MoBi.Presentation.Presenter
       {
          _analysisChart = simulationAnalysis as AnalysisChart;
          _simulation = analysable as IMoBiSimulation;
-         UpdateTemplatesFor(_simulation);
          _chartTasks.SetOriginText(_simulation.Name, _analysisChart);
          refreshChartData();
+         //the chart template menu only lists templates matching the type of the chart being edited.
+         //It can only be created once the chart is bound to the editor
+         UpdateTemplatesFor(_simulation);
       }
 
       public void UpdateAnalysisBasedOn(IAnalysable analysable)
