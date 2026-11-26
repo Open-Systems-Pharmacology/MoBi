@@ -276,6 +276,15 @@ public class When_initializing_analysis_with_a_simulation_and_chart : concern_fo
    {
       sut.Analysis.ShouldBeEqualTo(_analysisChart);
    }
+
+   [Observation]
+   public void should_bind_the_chart_to_the_editor_before_creating_the_chart_template_menu()
+   {
+      //the chart template menu filters the templates of the simulation by the type of the edited chart
+      var editorPresenter = _chartPresenterContext.EditorAndDisplayPresenter.EditorPresenter;
+      A.CallTo(() => editorPresenter.Edit(_analysisChart)).MustHaveHappened()
+         .Then(A.CallTo(() => editorPresenter.AddChartTemplateMenu(_simulation, A<Action<CurveChartTemplate>>._)).MustHaveHappened());
+   }
 }
 
 public class When_updating_analysis_based_on_a_simulation : concern_for_SimulationChartPresenter

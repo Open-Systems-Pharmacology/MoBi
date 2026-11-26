@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using MoBi.Assets;
 using OSPSuite.Utility.Extensions;
 using MoBi.Core.Domain.Extensions;
@@ -54,8 +55,11 @@ namespace MoBi.Presentation.Presenter
       /// <returns> the dto Object for the reference</returns>
       public virtual ReferenceDTO CreatePathsFromEntity(IObjectBase objectBase, bool shouldCreateAbsolutePaths, IEntity refObject, IUsingFormula editedObject)
       {
+         if (objectBase is PathAndValueEntity pathAndValueEntity)
+            return createPathFromPathAndValueEntity(pathAndValueEntity);
+
          var dto = new ReferenceDTO();
-         if (!objectBase.IsAnImplementationOf<IFormulaUsable>()) 
+         if (!objectBase.IsAnImplementationOf<IFormulaUsable>())
             return null;
 
          var formulaUsable = objectBase.DowncastTo<IFormulaUsable>();
@@ -82,6 +86,19 @@ namespace MoBi.Presentation.Presenter
          dto.BuildMode = parameter.BuildMode;
          updateReferenceForTransportMoleculeContainer(dto, parameter, shouldCreateAbsolutePaths);
          return dto;
+      }
+
+      /// <summary>
+      ///    Path and value entities (e.g. individual or expression parameters) are not part of a container hierarchy.
+      ///    Their path is already the absolute path of the quantity they define in the model, so they are always
+      ///    referenced with that absolute path.
+      /// </summary>
+      private ReferenceDTO createPathFromPathAndValueEntity(PathAndValueEntity pathAndValueEntity)
+      {
+         return new ReferenceDTO
+         {
+            Path = CreateFormulaUsablePathFrom(pathAndValueEntity.Path.ToArray(), pathAndValueEntity.Name, pathAndValueEntity.Dimension)
+         };
       }
 
       private void updateReferenceForTransportMoleculeContainer(ReferenceDTO dto, IParameter parameter, bool shouldCreateAbsolutePaths)
